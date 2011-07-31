@@ -20,20 +20,20 @@ import VASSAL.tools.SequenceEncoder;
 
 /**
  * Adds a menu entry that fires a specified key event to the module window.
- * Effectively allows a Game Piece to activate a button in the toolbar  
+ * Effectively allows a Game Piece to activate a button in the toolbar
  * @author rkinney
- * 
+ *
  */
 public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public static final String ID="globalhotkey;";
-  
+
   protected NamedKeyStroke commandKey;
   protected NamedKeyStroke globalHotKey;
   protected String commandName="Hotkey";
   protected KeyCommand[] commands;
   protected KeyCommand command;
   protected String description = "";
-  
+
   public GlobalHotKey() {
     this(ID,null);
   }
@@ -114,26 +114,26 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getDescription() + " command");
   }
-  
+
   public static class Ed implements PieceEditor {
-    
+
     private StringConfigurer commandConfig;
     private NamedHotKeyConfigurer commandKeyConfig;
     private NamedHotKeyConfigurer hotKeyConfig;
     protected StringConfigurer descConfig;
-    
+
     private Box controls;
 
     public Ed(GlobalHotKey k) {
       controls = Box.createVerticalBox();
-      
+
       descConfig = new StringConfigurer(null, "Description:  ", k.description);
       controls.add(descConfig.getControls());
-      
+
       commandConfig = new StringConfigurer(null,"Menu text:  ",k.commandName);
       controls.add(commandConfig.getControls());
 
@@ -157,8 +157,8 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());
       return ID+se.getValue();
     }
-    
+
   }
-  
-  
+
+
 }

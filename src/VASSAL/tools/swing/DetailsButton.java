@@ -47,8 +47,8 @@ import net.miginfocom.swing.MigLayout;
  * @since 3.1.0
  */
 public class DetailsButton extends JButton {
-  private static final long serialVersionUID = 1L; 
- 
+  private static final long serialVersionUID = 1L;
+
   protected static final Icon collapsedIcon =
     UIManager.getIcon("Tree.collapsedIcon");
   protected static final Icon expandedIcon =
@@ -76,7 +76,7 @@ public class DetailsButton extends JButton {
     this.hideText = hideText;
 
     if (expander != null) setExpander(expander);
-    
+
     setAction(new AbstractAction(showText, collapsedIcon) {
       private static final long serialVersionUID = 1L;
 
@@ -111,7 +111,7 @@ public class DetailsButton extends JButton {
    * The width of the expanding component is adjusted to match the width of
    * the buddy component when the expanding component is invisible.
    *
-   * @param comp the buddy component  
+   * @param comp the buddy component
    */
   public void setBuddy(Component comp) {
     buddy = comp;
@@ -140,7 +140,7 @@ public class DetailsButton extends JButton {
       if (!expander.isPreferredSizeSet()) {
         expander.setSize(buddy.getWidth(), 300);
       }
-    } 
+    }
     else {
       setText(showText);
       setIcon(collapsedIcon);
@@ -171,7 +171,7 @@ public class DetailsButton extends JButton {
         comp.setPreferredSize(d);
       }
     }
-  } 
+  }
 
   public static void main(String[] args) {
     final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
@@ -181,7 +181,7 @@ public class DetailsButton extends JButton {
         final JTextArea a = new JTextArea(loremIpsum, 25, 80);
         a.setLineWrap(true);
         a.setWrapStyleWord(true);
-      
+
         final JScrollPane sp1 = new JScrollPane(a);
 
         final JTextArea b = new JTextArea(loremIpsum, 25, 80);
@@ -200,7 +200,7 @@ public class DetailsButton extends JButton {
         contents.add(sp2, "cell 0 2, grow, push");
 
         final JDialog d = new JDialog();
-        d.add(contents); 
+        d.add(contents);
         d.setResizable(true);
         d.setLocationRelativeTo(null);
         d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -244,5 +244,5 @@ public class DetailsButton extends JButton {
         d.setVisible(true);
       }
     });
-  }  
+  }
 }

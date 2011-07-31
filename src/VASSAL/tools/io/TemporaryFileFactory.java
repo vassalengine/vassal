@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * A factory for temporary files.
- * 
+ *
  * @since 3.2.0
  * @author Joel Uckelman
  */

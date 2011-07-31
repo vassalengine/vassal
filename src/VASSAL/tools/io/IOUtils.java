@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -38,7 +38,7 @@ import javax.imageio.stream.ImageInputStream;
  *
  * @author Joel Uckelman
  * @since 3.1.0
- */ 
+ */
 public class IOUtils extends org.apache.commons.io.IOUtils {
   protected IOUtils() {}
 
@@ -127,12 +127,12 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    */
   public static void closeQuietly(Closeable c) {
     if (c == null) return;
-    
+
     try {
       c.close();
     }
     catch (IOException e) {
-      // ignore 
+      // ignore
     }
   }
 
@@ -144,7 +144,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    *
    * @param s a (possibly <code>null</code>) <code>ServerSocket</code>
    */
-  // FIXME: Remove in Java 1.6+, when ServerSocket implements Closeable 
+  // FIXME: Remove in Java 1.6+, when ServerSocket implements Closeable
   public static void closeQuietly(ServerSocket s) {
     if (s == null) return;
 
@@ -259,10 +259,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   }
 
   /**
-   * Reads from an {@link InputStream} to a byte array. This will always 
+   * Reads from an {@link InputStream} to a byte array. This will always
    * completely fill the byte array, unless there are no more bytes to
    * read from the stream.
-   * 
+   *
    * @param in the input stream from which to read
    * @param buf the byte array to fill
    * @return the number of bytes read, of <code>-1</code> if at the end of
@@ -281,5 +281,5 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
     // This will read at least one byte if there are any to be read,
     // so bytes read cannot be zero.
     return off == 0 ? -1 : off;
-  } 
+  }
 }

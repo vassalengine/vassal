@@ -38,11 +38,11 @@ public class SimpleFuture<V> implements SettableFuture<V> {
   protected Throwable exception = null;
   protected volatile boolean cancelled = false;
 
-  protected final CountDownLatch done = new CountDownLatch(1); 
+  protected final CountDownLatch done = new CountDownLatch(1);
 
-  /** 
+  /**
    * {@inheritDoc}
-   * 
+   *
    * <p>This implementation is uninteruptable, so ignores the parameter.</p>
    */
   public boolean cancel(boolean mayInterruptIfRunning) {
@@ -57,12 +57,12 @@ public class SimpleFuture<V> implements SettableFuture<V> {
 
     return cancelled;
   }
- 
+
   /** {@inheritDoc} */
   public boolean isCancelled() {
     return cancelled;
   }
-  
+
   /** {@inheritDoc} */
   public boolean isDone() {
     return cancelled || done.getCount() == 0;
@@ -79,7 +79,7 @@ public class SimpleFuture<V> implements SettableFuture<V> {
     result = r;
     done.countDown();
   }
- 
+
   /** {@inheritDoc} */
   public V get() throws CancellationException,
                         ExecutionException,

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 @RunWith(JMock.class)
 public class TileProgressPumpTest {
   protected final Mockery context = new JUnit4Mockery();
- 
+
   protected static class TPP extends TileProgressPump {
     public TPP() {
       super(null, null, new DummyEventListener<IOException>());
@@ -67,10 +67,10 @@ public class TileProgressPumpTest {
     final TileProgressPump p = new TPP();
     p.run();
 
-    final InputStream in = new ClosedInputStream();    
+    final InputStream in = new ClosedInputStream();
     p.setInputStream(in);
   }
- 
+
   @Test
   @SuppressWarnings("unchecked")
   public void testRunOk() {
@@ -133,7 +133,7 @@ public class TileProgressPumpTest {
   @SuppressWarnings("unchecked")
   public void testPumpInClosed() {
     final InputStream in = new ClosedInputStream();
-  
+
     final EventListener<String> nl = context.mock(EventListener.class, "nl");
     final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
     final EventListener<IOException> el =

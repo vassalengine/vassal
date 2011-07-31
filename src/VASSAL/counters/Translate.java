@@ -185,15 +185,15 @@ public class Translate extends Decorator implements TranslatablePiece {
     // need to use the endpoint of any existing moves as our
     // starting point.
     Point p = mover.getUpdatedPosition(target);
-    
+
     // First move, so use the current location.
     if (p == null) {
       p = new Point(getPosition());
     }
-    
+
     // Perform the move fixed distance
     translate(p);
-    
+
     // Handle rotation of the piece
     FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
     if (myRotation != null) {
@@ -202,12 +202,12 @@ public class Translate extends Decorator implements TranslatablePiece {
       p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) p2d.getX(), (int) p2d.getY());
     }
-    
+
     // And snap to the grid if required.
     if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
       p = getMap().snapTo(p);
     }
-    
+
     // Add to the list of scheduled moves
     mover.add(target.getMap(), target, p);
     return null;
@@ -218,7 +218,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     int y = 0;
     final GamePiece outer = Decorator.getOutermost(this);
     final Board b = outer.getMap().findBoard(p);
-    
+
     final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this);
     final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this);
     final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this);
@@ -227,7 +227,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (b != null) {
       x = (int)Math.round(b.getMagnification()*x);
     }
-    
+
     final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this);
     final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this);
     final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this);
@@ -236,10 +236,10 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (b != null) {
       y = (int)Math.round(b.getMagnification()*y);
     }
-        
+
     p.translate(x, -y);
   }
-  
+
   protected GamePiece findTarget(KeyStroke stroke) {
     final GamePiece outer = Decorator.getOutermost(this);
     GamePiece target = outer;
@@ -284,11 +284,11 @@ public class Translate extends Decorator implements TranslatablePiece {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Translate.htm");
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, "Move Fixed Distance command"));
   }
-  
+
 
   public static class Editor implements PieceEditor {
     private FormattedExpressionConfigurer xDist;
@@ -320,28 +320,28 @@ public class Translate extends Decorator implements TranslatablePiece {
       moveStack = new BooleanConfigurer(null, "Move entire stack?",
                                         Boolean.valueOf(t.moveStack));
       controls.add(moveStack.getControls());
-      
+
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           updateAdvancedVisibility();
         }});
       controls.add(advancedInput.getControls());
-      
+
       Box b = Box.createHorizontalBox();
       xIndexInput = new FormattedExpressionConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat(), t);
       b.add(xIndexInput.getControls());
       xOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.xOffset.getFormat(), t);
       b.add(xOffsetInput.getControls());
       controls.add(b);
-      
+
       b = Box.createHorizontalBox();
       yIndexInput = new FormattedExpressionConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat(), t);
       b.add(yIndexInput.getControls());
       yOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.yOffset.getFormat(), t);
       b.add(yOffsetInput.getControls());
       controls.add(b);
-      
+
       updateAdvancedVisibility();
     }
 
@@ -356,7 +356,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         w.pack();
       }
     }
-    
+
     public Component getControls() {
       return controls;
     }
@@ -440,7 +440,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         move.map.repaint();
       }
       MovementReporter r = new MovementReporter(comm);
-      if (GlobalOptions.getInstance().autoReportEnabled()) {        
+      if (GlobalOptions.getInstance().autoReportEnabled()) {
         Command reportCommand = r.getReportCommand();
         if (reportCommand != null) {
           reportCommand.execute();
@@ -469,10 +469,10 @@ public class Translate extends Decorator implements TranslatablePiece {
       this.stroke = stroke;
     }
 
-    /** 
+    /**
      * Return the updated position of a piece that has a move
      * calculation recorded
-     * 
+     *
      * @param target piece to check
      * @return updated position
      */
@@ -485,7 +485,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
       return p;
     }
-    
+
     private static class Move {
       private Map map;
       private GamePiece piece;

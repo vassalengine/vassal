@@ -2,7 +2,7 @@
  * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -219,21 +219,21 @@ public class Footprint extends MovementMarkable {
   public Object getLocalizedProperty(Object key) {
     if (Properties.MOVED.equals(key)) {
       final Object value = piece.getProperty(key);
-      return value == null ? super.getProperty(key) : value;    
+      return value == null ? super.getProperty(key) : value;
     }
-    return super.getLocalizedProperty(key);    
+    return super.getLocalizedProperty(key);
   }
-  
+
   public Object getProperty(Object key) {
     // If this piece has a real MovementMarkable trait,
     // use it to store the MOVED status
     if (Properties.MOVED.equals(key)) {
       final Object value = piece.getProperty(key);
-      return value == null ? super.getProperty(key) : value;    
+      return value == null ? super.getProperty(key) : value;
     }
     return super.getProperty(key);
   }
-  
+
   /**
    * setMoved is called with an argument of true each time the piece is moved.
    * The argument is false when the unit is marked as not moved.
@@ -341,7 +341,7 @@ public class Footprint extends MovementMarkable {
     if (this.getMap() != null) {
       mapZoom = this.getMap().getZoom();
     }
-    
+
     if (zoom != mapZoom) {
       return;
     }
@@ -615,7 +615,7 @@ public class Footprint extends MovementMarkable {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     final PieceI18nData data = super.getI18nData();
     data.add(menuCommand, "Show Movement Trail command");

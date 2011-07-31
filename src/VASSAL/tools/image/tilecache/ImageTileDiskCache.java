@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -36,7 +36,7 @@ import VASSAL.tools.io.FileStore;
  * An on-disk {@link ImageTileSource} and {@link FileStore} for image tiles.
  *
  * @since 3.2.0
- * @author Joel Uckelman 
+ * @author Joel Uckelman
  */
 public class ImageTileDiskCache implements ImageTileSource, FileStore {
 
@@ -111,7 +111,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     final List<String> names = new ArrayList<String>(files.length);
 
     for (File f : files) names.add(f.getPath());
-    
+
     return names;
   }
 
@@ -132,7 +132,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
 
   /** {@inheritDoc} */
   public boolean isClosed() {
-    return false; 
+    return false;
   }
 
   /** {@inheritDoc} */

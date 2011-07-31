@@ -145,7 +145,7 @@ public abstract class SocketHandler {
       // FIXME: review error message
       catch (IOException ignore) {
       }
-      
+
       close();
       isOpen = false;
       handler.socketClosed(this);

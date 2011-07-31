@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -91,7 +91,7 @@ public class ImageToTiles {
         ipath, in, BufferedImage.TYPE_INT_RGB,
         BufferedImage.TYPE_INT_ARGB_PRE, false
       );
-      in.close(); 
+      in.close();
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -110,4 +110,4 @@ public class ImageToTiles {
     exec.shutdown();
     System.out.println("");
   }
-} 
+}

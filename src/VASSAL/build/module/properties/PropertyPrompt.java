@@ -23,9 +23,9 @@ import javax.swing.JOptionPane;
 
 /**
  * Prompts user for a new value
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class PropertyPrompt implements PropertyChanger {
   protected String promptText;
@@ -44,7 +44,7 @@ public class PropertyPrompt implements PropertyChanger {
     else {
       newValue = (String) JOptionPane.showInputDialog(constraints.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
     }
-    
+
     return newValue == null ? oldValue : newValue;
   }
 

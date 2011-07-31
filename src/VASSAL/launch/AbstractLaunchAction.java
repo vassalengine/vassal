@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -93,19 +93,19 @@ import VASSAL.tools.ipc.SimpleIPCMessage;
 import VASSAL.tools.lang.MemoryUtils;
 
 /**
- * 
+ *
  * The base class for {@link Action}s which launch processes from the
  * {@link ModuleManagerWindow}.
  *
  * @author Joel Uckelman
- * @since 3.1.0 
+ * @since 3.1.0
  */
 public abstract class AbstractLaunchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
   private static final Logger logger =
     LoggerFactory.getLogger(AbstractLaunchAction.class);
- 
+
   //
   // memory-related constants
   //
@@ -121,7 +121,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     PHYS_MEMORY = physMemoryBytes < 0 ? -1 : (int)(physMemoryBytes >> 20);
   }
 
-  protected final Window window; 
+  protected final Window window;
   protected final String entryPoint;
   protected final LaunchRequest lr;
 
@@ -136,14 +136,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 */
 
   protected static final List<IPCMessenger> children =
-    Collections.synchronizedList(new ArrayList<IPCMessenger>()); 
+    Collections.synchronizedList(new ArrayList<IPCMessenger>());
 
   protected static final AtomicInteger nextId = new AtomicInteger(1);
-  
+
   public AbstractLaunchAction(String name, Window window,
                               String entryPoint, LaunchRequest lr) {
     super(name);
-      
+
     this.window = window;
     this.entryPoint = entryPoint;
     this.lr = lr;
@@ -156,7 +156,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   public static boolean isInUse(File file) {
     return using.containsKey(file);
   }
-  
+
   /**
    * @param file the file to check
    * @return <code>true</code> iff the file is being edited
@@ -184,7 +184,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
         catch (IOException e) {
 // FIXME
-e.printStackTrace(); 
+e.printStackTrace();
         }
       }
     }
@@ -198,23 +198,23 @@ System.out.println("rejected!");
         }
       }
       catch (ExecutionException e) {
-e.printStackTrace(); 
+e.printStackTrace();
       }
       catch (InterruptedException e) {
-e.printStackTrace(); 
+e.printStackTrace();
       }
     }
 
     return true;
   }
 
-  /** {@inheritDoc} */  
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     ModuleManagerWindow.getInstance().setWaitCursor(true);
     getLaunchTask().execute();
   }
 
-  protected abstract LaunchTask getLaunchTask(); 
+  protected abstract LaunchTask getLaunchTask();
 
   protected File promptForFile() {
     // prompt the user to pick a file
@@ -261,12 +261,12 @@ e.printStackTrace();
 
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
-      new LaunchRequest(AbstractLaunchAction.this.lr); 
+      new LaunchRequest(AbstractLaunchAction.this.lr);
 
     protected ServerSocket serverSocket = null;
     protected Socket clientSocket = null;
 
-    protected IPCMessenger ipc = null; 
+    protected IPCMessenger ipc = null;
 
     @Override
     public Void doInBackground() throws InterruptedException,
@@ -288,8 +288,8 @@ e.printStackTrace();
         final File cdir = new File(Info.getConfDir(), "tiles/" + hstr);
 
         final TilingHandler th = new TilingHandler(
-          aname, 
-          cdir, 
+          aname,
+          cdir,
           new Dimension(256, 256),
           nextId.getAndIncrement()
         );
@@ -326,14 +326,14 @@ e.printStackTrace();
       // find module-specific heap settings, if any
       if (lr.module != null) {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
-        
+
         if (data == null) {
           ErrorDialog.show(
             "Error.invalid_vassal_file", lr.module.getAbsolutePath());
           ModuleManagerWindow.getInstance().setWaitCursor(false);
           return null;
         }
-        
+
         if (data instanceof ModuleMetaData) {
           moduleName = ((ModuleMetaData) data).getName();
 
@@ -449,7 +449,7 @@ e.printStackTrace();
       // build the argument list
       final ArrayList<String> al = new ArrayList<String>();
       al.add(Info.javaBinPath);
-      al.add("");   // reserved for initial heap 
+      al.add("");   // reserved for initial heap
       al.add("");   // reserved for maximum heap
       al.add("-DVASSAL.id=" + id);  // instance id
       al.add("-DVASSAL.port=" + port); // MM socket port
@@ -478,10 +478,10 @@ e.printStackTrace();
         al.add("-Xdock:icon=" + d_icon);
 
         // Quartz can cause font rendering problems; turn it off?
-        final Boolean disableQuartz = 
+        final Boolean disableQuartz =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_QUARTZ);
 
-        al.add("-Dapple.awt.graphics.UseQuartz=" + 
+        al.add("-Dapple.awt.graphics.UseQuartz=" +
           (Boolean.TRUE.equals(disableQuartz) ? "false" : "true")
         );
       }
@@ -493,13 +493,13 @@ e.printStackTrace();
           al.add("-Dsun.java2d.d3d=false");
         }
       }
-      
+
       al.add(entryPoint);
 
       al.addAll(Arrays.asList(lr.toArgs()));
 
       final String[] args = al.toArray(new String[al.size()]);
-   
+
       // try to start a child process with the given heap sizes
       args[1] = "-Xms" + initialHeap + "M";
       args[2] = "-Xmx" + maximumHeap + "M";
@@ -576,9 +576,9 @@ e.printStackTrace();
         new NotifySaveFileOkListener()
       );
 
-      ipc.start(); 
+      ipc.start();
 
-      children.add(ipc); 
+      children.add(ipc);
 
       // block until the process ends
       try {
@@ -600,7 +600,7 @@ e.printStackTrace();
         return Integer.parseInt(val);
       }
       catch (NumberFormatException ex) {
-        return -1;  
+        return -1;
       }
     }
 
@@ -613,7 +613,7 @@ e.printStackTrace();
         return Integer.parseInt(val.toString());
       }
       catch (NumberFormatException ex) {
-        return -1;  
+        return -1;
       }
     }
 
@@ -633,7 +633,7 @@ e.printStackTrace();
         final Throwable c = e.getCause();
         if (c instanceof IOException) {
           ErrorDialog.showDetails(
-            e, 
+            e,
             ThrowableUtils.getStackTrace(e),
             "Error.socket_error"
           );
@@ -646,7 +646,7 @@ e.printStackTrace();
         IOUtils.closeQuietly(clientSocket);
         IOUtils.closeQuietly(serverSocket);
         children.remove(ipc);
-      }    
+      }
     }
   }
 
@@ -715,7 +715,7 @@ e.printStackTrace();
   protected static class NotifyOpenModuleOkListener
                                  implements EventListener<NotifyOpenModuleOk> {
     public void receive(Object src, final NotifyOpenModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() { 
+      SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
           mmw.addModule(msg.lr.module);

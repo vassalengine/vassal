@@ -59,7 +59,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
   public RotateScaleOpBitmapImpl(ImageOp sop, double angle, double scale) {
     this(sop, angle, scale, ImageUtils.getDefaultHints());
   }
-  
+
   /**
    * Constructs an <code>ImageOp</code> which will rotate and scale
    * the image produced by its source <code>ImageOp</code>.
@@ -137,8 +137,8 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final RotateScaleOpBitmapImpl op = (RotateScaleOpBitmapImpl) o;
-    return scale == op.getScale() && 
-           angle == op.getAngle() && 
+    return scale == op.getScale() &&
+           angle == op.getAngle() &&
            hints.equals(op.getHints()) &&
            sop.equals(op.sop);
   }

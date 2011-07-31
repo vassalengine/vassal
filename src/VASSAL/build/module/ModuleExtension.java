@@ -78,11 +78,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public static final String VERSION = "version"; //$NON-NLS-1$
   public static final String VASSAL_VERSION_CREATED = "vassalVersion"; //$NON-NLS-1$
   // NB The following key MUST sort before the other keys for universal modules to load
-  public static final String UNIVERSAL = "anyModule"; //$NON-NLS-1$ 
-  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //$NON-NLS-1$ 
-  public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$ 
+  public static final String UNIVERSAL = "anyModule"; //$NON-NLS-1$
+  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //$NON-NLS-1$
+  public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$
   public static final String DESCRIPTION = "description";
-  
+
   private DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
   protected boolean universal = false;
@@ -90,7 +90,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   private String lastSave;
   private String vassalVersionCreated;
   private AbstractAction editAction;
-  
+
   protected int nextGpId = 0;
   protected String extensionId = "";
   protected JTextField idDisplay;
@@ -109,17 +109,17 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public String getDescription() {
-    return description;    
+    return description;
   }
-  
+
   public boolean getUniversal() {
     return universal;
   }
-  
+
   private HashMap<String, PieceSlot> slots = new HashMap<String, PieceSlot>(0);
   private ArrayList<PieceSlot> duplicates = new ArrayList<PieceSlot>(0);
   private int maxId = 0;
-  
+
   public void build() {
     final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
 
@@ -162,34 +162,34 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       // Has an Extension Id been allocated yet?
       if (extensionId.length() == 0) {
         final String id = UUID.randomUUID().toString();
-        extensionId = id.substring(id.length()-3); 
+        extensionId = id.substring(id.length()-3);
       }
-      
+
       // Run through the extension and identify all existing gpid's.
       // Determine the maximum. Keep a list of of any PieceSlots that need
       // a new Id generated.
-      
+
       for (Buildable b : getBuildables()) {
-        checkGpIds(b); 
-      }   
-              
+        checkGpIds(b);
+      }
+
       // Update the nextgpid if necessary
       if (nextGpId < maxId) {
         nextGpId = maxId+1;
       }
-      
+
       // Generate new gpid's for slots that need them.
       for (PieceSlot pieceSlot : duplicates) {
         pieceSlot.updateGpId();
       }
     }
-    
+
     // Deallocate the temporary storage
     slots = null;
     duplicates = null;
-    
+
   }
-  
+
   protected void checkGpIds(Buildable b) {
     if (b instanceof PieceSlot) {
       final PieceSlot pieceSlot = (PieceSlot) b;
@@ -227,19 +227,19 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         checkGpIds(buildable);
       }
-    }      
+    }
   }
-  
+
   protected void updateGpIds() {
     for (Buildable b : getBuildables()) {
-      updateGpIds(b); 
-    }   
+      updateGpIds(b);
+    }
   }
-  
+
   /**
    * Allocate new gpid's to all PieceSlots defined in a Buildable and
    * all of it's children
-   * 
+   *
    * @param b Buildable
    */
   protected void updateGpIds(Buildable b) {
@@ -253,9 +253,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         updateGpIds(buildable);
       }
-    }      
+    }
   }
-  
+
   public Command getRestoreCommand() {
     return new RegCmd(getName(), version);
   }
@@ -353,8 +353,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       String version = (String) value;
       if (!universal && Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
-            Resources.getString("ModuleExtension.wrong_module_version", 
-                getName(), version, GameModule.getGameModule().getGameVersion(), 
+            Resources.getString("ModuleExtension.wrong_module_version",
+                getName(), version, GameModule.getGameModule().getGameVersion(),
                                GameModule.getGameModule().getGameName()));
       }
     }
@@ -362,7 +362,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$ 
+        GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
             getName(), (String) value, runningVersion ));
       }
     }
@@ -384,19 +384,19 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
     }
     else if (EXTENSION_ID.equals(key)) {
-      extensionId = (String) value;      
+      extensionId = (String) value;
     }
     else if (DESCRIPTION.equals(key)) {
-      description = (String) value; 
+      description = (String) value;
     }
   }
-  
+
   public String getExtensionId() {
     return extensionId;
   }
-  
+
   /**
-   * Generate a new Unique GamePiece Id 
+   * Generate a new Unique GamePiece Id
    */
   public String generateGpId() {
     return extensionId + ":" + nextGpId++;
@@ -444,7 +444,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       w.addFile(GameModule.BUILDFILE,
                 new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
 
-      if (saveAs) w.saveAs(true); 
+      if (saveAs) w.saveAs(true);
       else w.save(true);
 
       lastSave = save;
@@ -472,10 +472,10 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
       d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.add(config.getControls());
-      
+
       final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, "Description:  ", description);
       d.add(dconfig.getControls());
-      
+
       /*
        * The Extension id should not normally be changed once saved games
        * have been created. Display a dialog with warnings.
@@ -506,10 +506,10 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       });
       idBox.add(change);
       d.add(idBox);
-      
+
       final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "Allow loading with any module?", universal);
       d.add(uconfig.getControls());
-      
+
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton("Save");
       ok.addActionListener(new ActionListener() {
@@ -586,14 +586,14 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         GameModule.getGameModule().warn(getNotLoadedMsg());
       }
     }
-    
+
     protected String getVersionErrorMsg(String v) {
       return Resources.getString("ModuleExtension.wrong_extension_version", //$NON-NLS-1$
           version, name, v);
     }
-    
+
     protected String getNotLoadedMsg() {
-      return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory(false)); //$NON-NLS-1$ 
+      return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory(false)); //$NON-NLS-1$
     }
 
     protected Command myUndoCommand() {

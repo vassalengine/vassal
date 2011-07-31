@@ -49,7 +49,7 @@ public class GeneralFilterTest {
     final Graphics2D g = tmp.createGraphics();
     g.drawImage(src, 0, 0, null);
     g.dispose();
- 
+
     src = tmp;
 
     for (long t : run(src, dw, dh, 100)) {

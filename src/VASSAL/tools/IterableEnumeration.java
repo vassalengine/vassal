@@ -70,7 +70,7 @@ public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
   /**
    * A static convenience method for making an <code>Enumeration<code>
    * into an <code>Iterable</code>.
-   * 
+   *
    * @param e the <code>Enumeration</code>
    * @return an <code>Iterable</code> wrapping <code>e</code>
    */

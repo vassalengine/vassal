@@ -63,9 +63,9 @@ public class SplashScreen extends JWindow {
       s.toBack();
     }
   }
-  
+
   public static void disposeAll() {
-    for (SplashScreen s : instances) { 
+    for (SplashScreen s : instances) {
       s.dispose();
     }
   }

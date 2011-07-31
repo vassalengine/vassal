@@ -43,7 +43,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.tools.ScrollPane;
 
 /**
- * Controls for configuring an individual ItemInstance  
+ * Controls for configuring an individual ItemInstance
  */
 public class InstanceConfigurer extends Configurer {
 
@@ -70,13 +70,13 @@ public class InstanceConfigurer extends Configurer {
   public String getValueString() {
     return PropertiesToString(getValueList());
   }
- 
+
   public List<ItemInstance> getValueList() {
     return (List<ItemInstance>) getValue();
   }
 
   /** @deprecated Use {@link #getValueList()} instead. */
-  @Deprecated 
+  @Deprecated
   public ArrayList<ItemInstance> getValueArrayList() {
     return (ArrayList<ItemInstance>) getValue();
   }
@@ -87,7 +87,7 @@ public class InstanceConfigurer extends Configurer {
       symbolPanel.reset();
     }
   }
-  
+
   public Component getControls() {
     if (panel == null) {
 
@@ -112,7 +112,7 @@ public class InstanceConfigurer extends Configurer {
       panel.add(symbolPanel);
 
     }
-    
+
     return panel;
   }
 
@@ -124,7 +124,7 @@ public class InstanceConfigurer extends Configurer {
     }
     return StringArrayConfigurer.arrayToString(p);
   }
-  
+
   public static List<ItemInstance> StringToProperties(String s,
                                                       GamePieceImage defn) {
     ArrayList<ItemInstance> props = new ArrayList<ItemInstance>();
@@ -148,16 +148,16 @@ public class InstanceConfigurer extends Configurer {
     }
     return props;
   }
-  
+
   public void refresh() {
     if (symbolPanel != null) {
       symbolPanel.refresh();
     }
     visualizer.rebuild();
   }
-  
+
   protected class SymbolPanel extends JPanel {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     protected JTable table;
     protected AbstractTableModel model;
@@ -173,7 +173,7 @@ public class InstanceConfigurer extends Configurer {
     protected static final int TYPE_COL = 1;
     protected static final int LOC_COL = 2;
     protected static final int MAX_COL = 2;
-    
+
     public SymbolPanel() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -206,20 +206,20 @@ public class InstanceConfigurer extends Configurer {
           }
         }
       });
-      
+
       scrollPane = new ScrollPane(table);
       table.setPreferredScrollableViewportSize(new Dimension(300, 100));
       mainPanel.add(scrollPane);
-      
+
       detailPanel = new JPanel();
       mainPanel.add(new ScrollPane(detailPanel));
 
       add(mainPanel);
-      
+
       showItem(0);
 
     }
-    
+
     protected void showItem(int itemNo) {
 
       if (detailControls != null) {
@@ -229,7 +229,7 @@ public class InstanceConfigurer extends Configurer {
       }
 
       int count = getValueList().size();
-      
+
       if (itemNo != NO_CURRENT_ITEM && count > 0 && itemNo < count) {
         final ItemInstance instance = getValueList().get(itemNo);
         instance.setConfig(me);
@@ -245,7 +245,7 @@ public class InstanceConfigurer extends Configurer {
     public void reset() {
       showItem(currentDetail);
     }
-    
+
     public void reshow() {
 
       repack();
@@ -257,7 +257,7 @@ public class InstanceConfigurer extends Configurer {
       showItem(currentDetail);
       reshow();
     }
-    
+
     protected void repack() {
 
       Window w = SwingUtilities.getWindowAncestor(panel);
@@ -265,7 +265,7 @@ public class InstanceConfigurer extends Configurer {
         w.pack();
       }
     }
-    
+
     class SymbolTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
@@ -321,15 +321,15 @@ public class InstanceConfigurer extends Configurer {
       visualizer.rebuild();
     }
   }
-  
+
   public void repack() {
-    if (panel != null) { 
+    if (panel != null) {
       Window w = SwingUtilities.getWindowAncestor(panel);
       if (w != null) {
         w.pack();
       }
     }
-    rebuildViz();    
+    rebuildViz();
   }
 
 }

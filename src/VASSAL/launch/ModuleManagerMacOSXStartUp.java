@@ -42,7 +42,7 @@ public class ModuleManagerMacOSXStartUp extends MacOSXStartUp {
           lr.mode = LaunchRequest.Mode.LOAD;
           lr.module = new File(filename);
           ModuleManager.getInstance().execute(lr);
-          e.setHandled(true); 
+          e.setHandled(true);
         }
         else {
           e.setHandled(false);

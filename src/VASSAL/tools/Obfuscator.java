@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools;
@@ -30,7 +30,7 @@ import VASSAL.tools.io.IOUtils;
 /**
  * Utility class that handles simple obfuscation of a file's contents,
  * to prevent the casual cheat of hand-editing a logfile.
- * 
+ *
  * @author rkinney
  * @deprecated Use {@link ObfuscatingOutputStream} instead.
  */
@@ -50,7 +50,7 @@ public class Obfuscator {
     }
     encrypted = buffer.toString();
   }
-  
+
   private void appendAsHex(StringBuilder buffer, byte b) {
     buffer.append(Integer.toHexString((b & 0xf0) >>> 4).charAt(0));
     buffer.append(Integer.toHexString(b & 0x0f).charAt(0));

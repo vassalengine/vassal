@@ -153,7 +153,7 @@ public class LaunchButton extends JButton {
     if (keyListener.getKeyStroke() != null) {
       text = (text == null ? "" : text + " "); //$NON-NLS-1$ //$NON-NLS-2$
       if (!keyListener.getNamedKeyStroke().isNamed()) {
-        text += "[" + NamedHotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$      
+        text += "[" + NamedHotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     super.setToolTipText(text);

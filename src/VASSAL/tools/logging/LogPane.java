@@ -32,7 +32,7 @@ import VASSAL.tools.io.Tailer;
 
 public class LogPane extends JTextArea {
   private static final long serialVersionUID = 1L;
-  
+
   protected final Tailer tailer;
 
   public LogPane(File file) {
@@ -66,7 +66,7 @@ public class LogPane extends JTextArea {
         }
       }
 
-      public void ancestorMoved(AncestorEvent e) {} 
+      public void ancestorMoved(AncestorEvent e) {}
     });
   }
 }

@@ -210,7 +210,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   public Shape getShape() {
     return getInner().getShape();
   }
-  
+
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -218,8 +218,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Pivot command");
   }
-  
-  
+
+
   public static class Ed implements PieceEditor {
     private StringConfigurer command;
     private NamedHotKeyConfigurer key;

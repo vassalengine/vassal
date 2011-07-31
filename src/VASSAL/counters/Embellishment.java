@@ -74,7 +74,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  * The "Layer" trait. Contains a list of images that the user may cycle through.
  * The current image is superimposed over the inner piece. The entire layer may
  * be activated or deactivated.
- * 
+ *
  * Changes to support NamedKeyStrokes:
  *  - Random and reset command changed directly to Name Key Strokes.
  *  - Disentangle alwaysActive flag from length of activateKey field. Make a
@@ -99,11 +99,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected FormattedString resetLevel = new FormattedString("1");
   protected boolean loopLevels;
   protected NamedKeyStroke resetKey;
-  
+
   protected boolean followProperty;
   protected String propertyName = "";
   protected int firstLevelValue;
-  
+
   // random layers
   // protected KeyCommand rndCommand;
   protected NamedKeyStroke rndKey;
@@ -127,7 +127,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyCommand up = null;
   protected KeyCommand down = null;
-  
+
   // Shape cache
   protected Rectangle lastBounds = null;
   protected Area lastShape = null;
@@ -138,14 +138,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected static final int BASE_VERSION = 0;
   protected static final int CURRENT_VERSION = 1;
   protected int version;
-  
+
   // NamedKeyStroke support
   protected boolean alwaysActive;
   protected boolean activated;
   protected NamedKeyStroke activateKeyStroke;
   protected NamedKeyStroke increaseKeyStroke;
   protected NamedKeyStroke decreaseKeyStroke;
-  
+
   public Embellishment() {
     this(ID + "Activate", null);
   }
@@ -169,7 +169,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   /**
    * Set the current level - First level = 0 Does not change the active status
-   * 
+   *
    * @param val
    */
   public void setValue(int val) {
@@ -215,17 +215,17 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       followProperty = st.nextBoolean(false);
       propertyName = st.nextToken("");
       firstLevelValue = st.nextInt(1);
-      
+
       version = st.nextInt(0);
       alwaysActive = st.nextBoolean(false);
       activateKeyStroke = st.nextNamedKeyStroke('A');
       increaseKeyStroke = st.nextNamedKeyStroke(']');
       decreaseKeyStroke = st.nextNamedKeyStroke('[');
-      
+
       // Conversion?
       if (version == BASE_VERSION) {
         alwaysActive = activateKey.length() == 0;
-        
+
         // Cannot convert if activate, up or down has more than 1 char specified
         if (activateKey.length() <= 1 && upKey.length() <= 1 && downKey.length() <= 1) {
           if (activateKey.length() == 0) {
@@ -234,14 +234,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           else {
             activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
           }
-          
+
           if (upKey.length() == 0) {
             increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
           }
           else {
             increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
-          }    
-          
+          }
+
           if (downKey.length() == 0) {
             decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
           }
@@ -251,7 +251,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           version = CURRENT_VERSION;
         }
       }
-      
+
       value = activateKey.length() > 0 ? -1 : 1;
       nValues = imageName.length;
       size = new Rectangle[imageName.length];
@@ -269,7 +269,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   /**
    * This original way of representing the type causes problems because it's not
    * extensible
-   * 
+   *
    * @param s
    */
   private void originalSetType(String s) {
@@ -334,15 +334,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     loopLevels = true;
   }
-  
+
   public String getLocalizedName() {
     return getName(true);
   }
-  
+
   public String getName() {
     return getName(false);
   }
-  
+
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
     String name = null;
@@ -373,7 +373,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     return name;
   }
- 
+
   /**
    * Return raw Embellishment name
    * @return Embellishment name
@@ -381,7 +381,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public String getLayerName() {
     return name == null ? "" : name;
   }
-  
+
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(1);
@@ -463,9 +463,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-    
+
     checkPropertyLevel();
-    
+
     if (!isActive()) {
       return;
     }
@@ -506,12 +506,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     return;
   }
-  
+
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       final GamePiece outer = Decorator.getOutermost(this);
-      
+
       if (activateCommand.length() > 0 && !alwaysActive) {
         KeyCommand k;
         if (version == BASE_VERSION) {
@@ -523,7 +523,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           k = new KeyCommand(activateCommand, activateKeyStroke, outer, this);
         }
         k.setEnabled(nValues > 0);
-        l.add(k);        
+        l.add(k);
       }
 
       if (version == BASE_VERSION) {
@@ -545,7 +545,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           l.add(up);
         }
       }
-      
+
       if (version == BASE_VERSION) {
         if (downCommand.length() > 0 &&
             downKey.length() > 0 &&
@@ -565,7 +565,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           l.add(down);
         }
       }
-      
+
       if (resetKey != null && (! rndKey.isNull()) && resetCommand.length() > 0 && !followProperty) {
         l.add(new KeyCommand(resetCommand, resetKey, outer, this));
       }
@@ -586,9 +586,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
-    
+
     ChangeTracker tracker = null;
-    
+
     if (version == BASE_VERSION) {
       final char strokeChar = getMatchingActivationChar(stroke);
       if (strokeChar != 0 && nValues > 0) {  // Do not Activate if no levels defined
@@ -607,7 +607,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
         else {
           value = -Math.abs(value);
-        }      
+        }
       }
     }
     else {
@@ -619,19 +619,19 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
         else {
           value = -Math.abs(value);
-        } 
+        }
       }
-    }    
-    
+    }
+
     if (!followProperty) {
-      
+
       if (version == BASE_VERSION) {
         for (int i = 0; i < upKey.length(); ++i) {
           if (KeyStroke.getKeyStroke(upKey.charAt(i), upModifiers).equals(stroke)) {
             doIncrease(tracker);
           }
         }
-      
+
         for (int i = 0; i < downKey.length(); ++i) {
           if (KeyStroke.getKeyStroke(downKey.charAt(i), downModifiers).equals(stroke)) {
             doDecrease(tracker);
@@ -646,7 +646,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           doDecrease(tracker);
         }
       }
-      
+
       if (resetKey != null && resetKey.equals(stroke)) {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
@@ -696,7 +696,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     value = value > 0 ? val : -val;
     return;
   }
-  
+
   protected void doDecrease(ChangeTracker tracker) {
     if (tracker == null) {
       tracker = new ChangeTracker(this);
@@ -708,7 +708,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     value = value > 0 ? val : -val;
     return;
   }
-  
+
   /** @deprecated Use {@link ImageOp.getImage} instead. */
   @Deprecated
   protected Image getCurrentImage() throws java.io.IOException {
@@ -719,7 +719,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         imageName[value-1].length() == 0 ||
         imagePainter[value-1] == null ||
         imagePainter[value-1].getSource() == null) return null;
-    
+
     return imagePainter[value-1].getSource().getImage();
   }
 
@@ -733,11 +733,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (value > 0) {
       final int i = value - 1;
 
-      if (i >= size.length) { 
+      if (i >= size.length) {
         // Occurs when adding a layer with a name, but no image
         return new Rectangle();
       }
-      
+
       if (size[i] == null) {
         if (imagePainter[i] != null) {
           size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
@@ -747,24 +747,24 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           size[i] = new Rectangle();
         }
       }
- 
+
       return size[i];
     }
     else {
       return new Rectangle();
     }
   }
-  
+
   /**
    * Return the Shape of the counter by adding the shape of this layer to the shape of all inner traits.
-   * Minimize generation of new Area objects. 
+   * Minimize generation of new Area objects.
    */
   public Shape getShape() {
     final Shape innerShape = piece.getShape();
-    
+
     if (value > 0 && !drawUnderneathWhenSelected) {
       final Rectangle r = getCurrentImageBounds();
-      
+
       // If the label is completely enclosed in the current counter shape, then we can just return
       // the current shape
       if (innerShape.contains(r.x, r.y, r.width, r.height)) {
@@ -772,13 +772,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       else {
         final Area a = new Area(innerShape);
-        
+
         // Cache the Area object generated. Only recreate if the layer position or size has changed
         if (!r.equals(lastBounds)) {
           lastShape = new Area(r);
-          lastBounds = new Rectangle(r);          
+          lastBounds = new Rectangle(r);
         }
-        
+
         a.add(lastShape);
         return a;
       }
@@ -847,9 +847,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return getProperty(key);
     }
     else if (key.equals(name + NAME)) {
-      
+
       checkPropertyLevel();
-      if (value > 0) {      
+      if (value > 0) {
         return strip(getLocalizedCommonName(Math.abs(value) - 1));
       }
       else
@@ -857,7 +857,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     return super.getLocalizedProperty(key);
   }
-  
+
   protected String strip (String s) {
     if (s == null) {
       return null;
@@ -870,12 +870,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     return s;
   }
-  
+
   /** Get the name of this level (alone) */
   protected String getCommonName(boolean localized, int i) {
     return localized ? getLocalizedCommonName(i) : commonName[i];
   }
-  
+
   /** Get the localized name of this level (alone) */
   protected String getLocalizedCommonName(int i) {
     final String name = commonName[i];
@@ -889,7 +889,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     return translation;
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Layer.htm");
   }
@@ -924,7 +924,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public static Embellishment getLayerWithMatchingActivateCommand(GamePiece piece, NamedKeyStroke stroke, boolean active) {
     return getLayerWithMatchingActivateCommand(piece, stroke.getKeyStroke(), active);
   }
-  
+
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<String>();
     l.add(name + IMAGE);
@@ -933,7 +933,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     l.add(name + NAME);
     return l;
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */
@@ -986,12 +986,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private NamedHotKeyConfigurer activateConfig;
     private NamedHotKeyConfigurer increaseConfig;
     private NamedHotKeyConfigurer decreaseConfig;
-    
-    
+
+
     public Ed(Embellishment e) {
       Box box;
       version = e.version;
-      
+
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
@@ -1005,9 +1005,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.activateKeyStroke);
       increaseConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.increaseKeyStroke);
       decreaseConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.decreaseKeyStroke);
-      
+
       p.add(resetKey.getControls());
-      
+
       activateCommand.setMaximumSize(activateCommand.getPreferredSize());
       p.add(activateCommand);
       if (version == BASE_VERSION) {
@@ -1018,7 +1018,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         p.add(activateConfig.getControls());
         p.add(new JLabel());
       }
-      
+
       upCommand.setMaximumSize(upCommand.getPreferredSize());
       p.add(upCommand);
       if (version == BASE_VERSION) {
@@ -1029,7 +1029,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         p.add(increaseConfig.getControls());
         p.add(new JLabel());
       }
-      
+
       downCommand.setMaximumSize(downCommand.getPreferredSize());
       p.add(downCommand);
       if (version == BASE_VERSION) {
@@ -1069,8 +1069,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       alwaysActiveConfig = new BooleanConfigurer(null, "Always active?", e.alwaysActive);
       alwaysActiveConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          updateFields();          
-        }     
+          updateFields();
+        }
       });
 
       final JPanel checkBoxes = new JPanel();
@@ -1094,7 +1094,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       followConfig = new BooleanConfigurer(null, "Levels follow Property Value?");
       checkBoxes.add(followConfig.getControls());
-      
+
       final Box levelBox = Box.createHorizontalBox();
       propertyConfig = new StringConfigurer(null, "Property Name:  ");
       levelBox.add(propertyConfig.getControls());
@@ -1114,31 +1114,31 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       images = getImagePicker();
       images.addListSelectionListener(new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
-          setUpDownEnabled();          
+          setUpDownEnabled();
         }});
       pickerPanel.add(images, BorderLayout.CENTER);
-         
+
       up = new JButton(IconFactory.getIcon("go-up", IconFamily.XSMALL));
       up.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          moveSelectedUp();        
+          moveSelectedUp();
         }});
-      
+
       down = new JButton(IconFactory.getIcon("go-down", IconFamily.XSMALL));
       down.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          moveSelectedDown();        
+          moveSelectedDown();
         }});
-      
+
       final Box upDownPanel = Box.createVerticalBox();
       upDownPanel.add(Box.createVerticalGlue());
       upDownPanel.add(up);
       upDownPanel.add(down);
       upDownPanel.add(Box.createVerticalGlue());
       pickerPanel.add(upDownPanel, BorderLayout.EAST);
-        
+
       controls.add(pickerPanel);
-      
+
       final JPanel p2 = new JPanel();
       p2.setLayout(new GridLayout(2, 2));
 
@@ -1205,7 +1205,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       });
 
       updateFields();
-      
+
       reset(e);
     }
 
@@ -1225,7 +1225,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         activateConfig.setEnabled(true);
       }
     }
-    
+
     protected void moveSelectedUp() {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
@@ -1233,7 +1233,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         swap(selected, selected-1);
       }
     }
-    
+
     protected void moveSelectedDown() {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
@@ -1241,27 +1241,27 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         swap(selected, selected+1);
       }
     }
-    
+
     protected void swap(int index1, int index2) {
-      
+
       final String name = names.get(index1);
       names.set(index1, names.get(index2));
       names.set(index2, name);
-      
+
       final Integer prefix = isPrefix.get(index1);
       isPrefix.set(index1, isPrefix.get(index2));
       isPrefix.set(index2, prefix);
-      
+
       images.swap (index1, index2);
     }
-    
+
     protected void  setUpDownEnabled() {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
       up.setEnabled(count > 1 && selected > 0);
       down.setEnabled(count > 1 && selected < (count-1));
     }
-    
+
     /*
      * Change visibility of fields depending on the Follow Property setting
      */
@@ -1320,7 +1320,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     protected MultiImagePicker getImagePicker() {
       return new MultiImagePicker();
     }
-    
+
     public String getState() {
       return alwaysActiveConfig.getValueBoolean() ? "1" : "-1";
     }

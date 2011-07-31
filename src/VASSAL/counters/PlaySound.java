@@ -46,9 +46,9 @@ import VASSAL.tools.SequenceEncoder;
 
 /**
  * A trait that plays a sound clip
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class PlaySound extends Decorator implements TranslatablePiece {
   public static final String ID = "playSound;";
@@ -155,7 +155,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(menuText, "Play Sound command");
   }

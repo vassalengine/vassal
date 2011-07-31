@@ -45,8 +45,8 @@ public class AssertImage {
     assertEquals(expected.getHeight(), actual.getHeight());
 
     final int w = expected.getWidth();
-    final int h = expected.getHeight();   
- 
+    final int h = expected.getHeight();
+
     assertArrayEquals(expected.getRGB(0, 0, w, h, null, 0, w),
                         actual.getRGB(0, 0, w, h, null, 0, w));
   }

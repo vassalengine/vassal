@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -44,7 +44,7 @@ import VASSAL.tools.lang.Reference;
  * @author Joel Uckelman
  */
 public class FileImageTypeConverter implements ImageTypeConverter {
-  
+
   protected final TemporaryFileFactory tfactory;
 
   /**
@@ -63,7 +63,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
    * <b>WARNING: When this method is called, the sole reference to the image
    * must be the one held by <code>ref</code> in order to allow the source
    * image to be garbage collected after the image data is written to disk.</b>
-   */ 
+   */
   public BufferedImage convert(Reference<BufferedImage> ref, int type)
                                                       throws ImageIOException {
     if (ref == null) throw new IllegalArgumentException();
@@ -111,10 +111,10 @@ public class FileImageTypeConverter implements ImageTypeConverter {
       finally {
         IOUtils.closeQuietly(out);
       }
- 
+
       final int w = src.getWidth();
       final int h = src.getHeight();
- 
+
       // ensure that src can be gc'd before we create dst
       src = null;
 
@@ -140,7 +140,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     finally {
       // clean up the temporary file
       if (!tmp.delete()) {
-        throw new ImageIOException(tmp, "failed to delete"); 
+        throw new ImageIOException(tmp, "failed to delete");
       }
     }
   }
@@ -150,7 +150,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     final int w = src.getWidth();
     final int h = src.getHeight();
 
-    final ByteBuffer bb = ByteBuffer.allocate(4*w); 
+    final ByteBuffer bb = ByteBuffer.allocate(4*w);
     final int[] row = new int[w];
 
     for (int y = 0; y < h; ++y) {

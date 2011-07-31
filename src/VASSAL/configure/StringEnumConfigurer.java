@@ -82,7 +82,7 @@ public class StringEnumConfigurer extends Configurer {
   public void setEditable(boolean enabled) {
     box.setEditable(enabled);
   }
-  
+
   public boolean isValidValue(Object o) {
     for (int i = 0; i < validValues.length; ++i) {
       if (validValues[i].equals(o)) {
@@ -103,7 +103,7 @@ public class StringEnumConfigurer extends Configurer {
     }
   box.setModel(new DefaultComboBoxModel(validValues));
   }
-  
+
   public void setValue(Object o) {
     if (validValues == null
         || isValidValue(o)) {

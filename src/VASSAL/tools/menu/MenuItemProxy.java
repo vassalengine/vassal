@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -56,7 +56,7 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   @Override
   public JMenuItem createPeer() {
     final JMenuItem item = new JMenuItem(action);
-  
+
     peers.add(new WeakReference<JMenuItem>(item, queue));
     return item;
   }

@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-/** 
+/**
  * Class tht implements a named Color Swatch
  */
 
@@ -35,12 +35,12 @@ public class ColorSwatch extends AbstractConfigurable
 
   protected static final String NAME = "name"; //$NON-NLS-1$
   protected static final String COLOR = "color"; //$NON-NLS-1$
-  
+
   public static final String BLACK = "BLACK"; //$NON-NLS-1$
   public static final String WHITE = "WHITE"; //$NON-NLS-1$
   public static final String CLEAR = "CLEAR"; //$NON-NLS-1$
   public static final String RED = "RED"; //$NON-NLS-1$
-  
+
   protected Color color;
 
   public ColorSwatch() {
@@ -48,26 +48,26 @@ public class ColorSwatch extends AbstractConfigurable
     name = ""; //$NON-NLS-1$
     color = null;
   }
-  
+
   public ColorSwatch(String n, Color c) {
     this();
     name = n;
     color = c;
   }
-  
+
   public ColorSwatch(String code) {
     this();
     decode(code);
   }
-  
+
   public Color getColor() {
     return color;
   }
-  
+
   public void setColor(Color c) {
     color = c;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Color Name:  ",
@@ -81,7 +81,7 @@ public class ColorSwatch extends AbstractConfigurable
       Color.class
     };
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -114,7 +114,7 @@ public class ColorSwatch extends AbstractConfigurable
   }
 
   public void removeFrom(Buildable parent) {
-  
+
   }
 
   public HelpFile getHelpFile() {
@@ -124,7 +124,7 @@ public class ColorSwatch extends AbstractConfigurable
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-  
+
   public static String getConfigureTypeName() {
     return "Named Color";
   }
@@ -132,11 +132,11 @@ public class ColorSwatch extends AbstractConfigurable
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }
-  
+
   public static ColorSwatch getBlack() {
     return new ColorSwatch(BLACK, Color.BLACK);
   }
-  
+
   public static ColorSwatch getWhite() {
     return new ColorSwatch(WHITE, Color.WHITE);
   }
@@ -144,15 +144,15 @@ public class ColorSwatch extends AbstractConfigurable
   public static ColorSwatch getRed() {
     return new ColorSwatch(RED, Color.RED);
   }
-  
+
   public static ColorSwatch getClear() {
     return new ColorSwatch(CLEAR, null);
   }
-  
+
   public String encode() {
     return getConfigureName();
   }
-  
+
   public void decode(String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     setConfigureName(sd.nextToken());
@@ -162,7 +162,7 @@ public class ColorSwatch extends AbstractConfigurable
     }
     setColor(c);
   }
-  
+
   public static ColorSwatch getDefaultSwatch() {
     return ColorManager.getColorManager().getColorSwatch(ColorManager.DEFAULT_COLOR);
   }

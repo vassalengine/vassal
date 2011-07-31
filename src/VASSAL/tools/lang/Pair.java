@@ -47,15 +47,15 @@ public final class Pair<A,B> {
   @Override
   public int hashCode() {
     return (first  == null ? 0 : first.hashCode() * 31) +
-           (second == null ? 0 : second.hashCode()); 
+           (second == null ? 0 : second.hashCode());
   }
-  
+
   /** {@inheritDoc} */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
-      
+
     final Pair<?,?> p = (Pair<?,?>) o;
     return (first  == p.first  || (first  != null && first.equals(p.first))) &&
            (second == p.second || (second != null && second.equals(p.second)));

@@ -8,9 +8,9 @@ import org.junit.Test;
 
 
 public class ResourcesTest {
-	@Test
-	public void canSetLocale() {
-		Locale locale = Resources.getLocale();
-		assertNotNull(locale);
-	}
+  @Test
+  public void canSetLocale() {
+    Locale locale = Resources.getLocale();
+    assertNotNull(locale);
+  }
 }

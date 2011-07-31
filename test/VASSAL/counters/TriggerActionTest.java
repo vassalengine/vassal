@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -49,7 +49,7 @@ public class TriggerActionTest {
   final static String FALSE_EXPRESSION = "BasicName=xyzzy";
   final static Map MAP = mock(Map.class);
   static TriggerAction trigger;
-  
+
   String propertyExpression;
   Map map;
   boolean result;
@@ -61,12 +61,12 @@ public class TriggerActionTest {
     this.result = result;
     this.message = message;
   }
-  
+
   @Parameters
   // Test Parameters:
   //  Property - Property Expression, either empty, or a known True or False expression
   //  Map - Either null, or a mocked Map object.
-  //  Result - Expected Enabled state of the Trigger KeyCommand. 
+  //  Result - Expected Enabled state of the Trigger KeyCommand.
   //  Message - Test description/failure message
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
@@ -77,9 +77,9 @@ public class TriggerActionTest {
         { FALSE_EXPRESSION, MAP,  false,  "Match expression false, unit on map, KeyCommand should be disabled" },
         { TRUE_EXPRESSION,  null, false,  "Match expression true, Unit not on map, KeyCommand should be disabled" },
         { TRUE_EXPRESSION,  MAP,  true,   "Match expression true, Unit on map, KeyCommand should be enabled" }
-    });  
+    });
   }
-  
+
   @Before
   // Create a standard Trigger
   public void setup() {
@@ -87,8 +87,8 @@ public class TriggerActionTest {
     trigger.setInner(new BasicPiece());
     trigger.setCommandName("Trigger");
     trigger.setKey(NamedKeyStroke.getNamedKeyStroke('T', KeyEvent.CTRL_MASK));
-  }  
-  
+  }
+
   @Test
   // Set the property expression and map and check the enabled state of the generated KeyCommand.
   public void testBugRegression_2900930() {
@@ -97,5 +97,5 @@ public class TriggerActionTest {
     final boolean enabled = trigger.myGetKeyCommands()[0].isEnabled();
     assertEquals(message, result, enabled);
   }
- 
+
 }

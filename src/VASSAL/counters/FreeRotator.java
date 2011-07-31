@@ -77,7 +77,7 @@ public class FreeRotator extends Decorator
                                     Drawable,
                                     TranslatablePiece {
   public static final String ID = "rotate;";
-  
+
   public static final String FACING = "_Facing";
 
   public static final String DEGREES = "_Degrees";
@@ -119,7 +119,7 @@ public class FreeRotator extends Decorator
   protected double tempAngle, startAngle;
   protected Point pivot;
   protected boolean drawGhost;
-  
+
   protected Map startMap;
   protected Point startPosition;
 
@@ -141,7 +141,7 @@ public class FreeRotator extends Decorator
     // The GamePiece stack can be in an invalid state during a setInner()
     // call, so cannot regenerate gpOp now.
     gpOp = null;
-    super.setInner(p);    
+    super.setInner(p);
   }
 
   private double centerX() {
@@ -182,14 +182,14 @@ public class FreeRotator extends Decorator
         gpOp = Op.piece(getInner());
       }
     }
-    return gpOp; 
+    return gpOp;
   }
-  
+
   public double getAngle() {
     return useUnrotatedShape ? 0.0 : validAngles[angleIndex];
   }
-  
-  public double getCumulativeAngle() {  
+
+  public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
     FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
@@ -198,7 +198,7 @@ public class FreeRotator extends Decorator
     }
     return angle;
   }
-  
+
   public double getCumulativeAngleInRadians() {
     return -PI_180 * getCumulativeAngle();
   }
@@ -287,7 +287,7 @@ public class FreeRotator extends Decorator
         gpOp = Op.piece(piece);
         bounds.clear();
         rotOp.clear();
-        op = Op.rotateScale(gpOp, angle, zoom);        
+        op = Op.rotateScale(gpOp, angle, zoom);
         rotOp.put(angle, op);
       }
       else {
@@ -332,7 +332,7 @@ public class FreeRotator extends Decorator
   }
 
   private Point getGhostPosition() {
-    final AffineTransform t = 
+    final AffineTransform t =
       AffineTransform.getRotateInstance(-PI_180 * (tempAngle - getAngle()),
                                         pivot.x + centerX(),
                                         pivot.y + centerY());
@@ -379,7 +379,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.valueOf(state).doubleValue();
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);        
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);
       }
     }
     else {
@@ -387,7 +387,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);        
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);
       }
     }
   }
@@ -477,7 +477,7 @@ public class FreeRotator extends Decorator
     // end random rotation
     return c;
   }
- 
+
   public void beginInteractiveRotate() {
     startPosition = getPosition();
     startMap = getMap();
@@ -492,7 +492,7 @@ public class FreeRotator extends Decorator
 
     pivot = getPosition();
   }
-  
+
   public void endInteractiveRotate() {
     startMap.getView().setCursor(null);
     startMap.removeDrawComponent(this);
@@ -503,7 +503,7 @@ public class FreeRotator extends Decorator
   }
 
   /**
-   * Has the piece been moved by a Global key command since interactive 
+   * Has the piece been moved by a Global key command since interactive
    * rotate mode was turned on?
    */
   public boolean hasPieceMoved() {
@@ -511,7 +511,7 @@ public class FreeRotator extends Decorator
     final Point p = getPosition();
     return m == null || m != startMap || p == null || !p.equals(startPosition);
   }
-  
+
   /** The point around which the piece will pivot while rotating interactively */
   public void setPivot(int x, int y) {
     pivot = new Point(x, y);
@@ -540,7 +540,7 @@ public class FreeRotator extends Decorator
       endInteractiveRotate();
       return;
     }
-    
+
     final Map m = getMap();
 
     try {
@@ -573,19 +573,19 @@ public class FreeRotator extends Decorator
   public Object getLocalizedProperty(Object key) {
     if ((name + FACING).equals(key)) {
       return String.valueOf(angleIndex + 1);
-    } 
+    }
     else if ((name + DEGREES).equals(key)) {
       return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
     }
     else {
       return super.getLocalizedProperty(key);
-    }    
+    }
   }
-  
+
   public Object getProperty(Object key) {
     if ((name + FACING).equals(key)) {
       return String.valueOf(angleIndex + 1);
-    } 
+    }
     else if ((name + DEGREES).equals(key)) {
       return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
     }
@@ -593,7 +593,7 @@ public class FreeRotator extends Decorator
       return super.getProperty(key);
     }
   }
-  
+
   public void mouseDragged(MouseEvent e) {
     if (drawGhost) {
       final Point mousePos = getMap().mapCoordinates(e.getPoint());
@@ -627,7 +627,7 @@ public class FreeRotator extends Decorator
   /**
    * Return a full-scale cached image of this piece, rotated to the appropriate
    * angle.
-   * 
+   *
    * @param angle
    * @param obs
    * @return
@@ -657,9 +657,9 @@ public class FreeRotator extends Decorator
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
-    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText}, 
+    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
                        new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
   }
 
@@ -672,7 +672,7 @@ public class FreeRotator extends Decorator
     l.add(name + DEGREES);
     return l;
   }
-  
+
   private static class Ed implements PieceEditor, PropertyChangeListener {
     private BooleanConfigurer anyConfig;
     private NamedHotKeyConfigurer anyKeyConfig;
@@ -683,7 +683,7 @@ public class FreeRotator extends Decorator
     private NamedHotKeyConfigurer rndKeyConfig;
     // end random rotate
     private StringConfigurer nameConfig;
-    
+
     private JTextField anyCommand;
     private JTextField cwCommand;
     private JTextField ccwCommand;

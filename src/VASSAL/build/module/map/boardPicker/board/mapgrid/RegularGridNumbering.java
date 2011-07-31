@@ -404,14 +404,14 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   // coordinates (as long as both coordinates don't use the same letter).
   // AAFF is not ambiguous, but AAAA is.  Coordinates like 04AB will fail.
   static final String ALPHABETIC_MATCH = "-?(?:A+|B+|C+|D+|E+|F+|G+|H+|I+|J+|K+|L+|M+|N+|O+|P+|Q+|R+|S+|T+|U+|V+|W+|X+|Y+|Z+)";
-  
+
   protected String getMatchingPattern(char type, int leading) {
     if (type == 'A')
       return ALPHABETIC_MATCH;
     else
       return "-?[0-9]{" + (leading+1) + ",}";
   }
-  
+
   public Point getLocation(String location) throws BadCoords {
 
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
@@ -457,7 +457,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
     if (regex.length() == 0 || colGroup == 0 || rowGroup == 0)
       throw new BadCoords();
-    
+
     Pattern pattern = Pattern.compile(regex.toString());
     Matcher matcher = pattern.matcher(location);
     if (!matcher.matches()) {
@@ -465,12 +465,12 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       throw new BadCoords();
     }
     assert(matcher.groupCount() == groupCount && groupCount >= 2);
-    
+
     String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
     String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
     int row = parseName(rowName, vType);
     int col = parseName(colName, hType);
-    
+
     return getCenterPoint(col-hOff, row-vOff);
   }
 
@@ -485,7 +485,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     format.setProperty(COLUMN, getName(col+hOff, hType, hLeading));
     return format.getLocalizedText();
   }
-  
+
   public String localizedLocationName(Point pt) {
     return locationName(pt);
   }
@@ -500,8 +500,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       boolean negative = false;
       if (name.startsWith("-")) {
         negative = true;
-        ++index;    
-      }    
+        ++index;
+      }
       while (index < name.length() && Character.isUpperCase(name.charAt(index))) {
         if (index < name.length()-1)
           value += 26;
@@ -515,10 +515,10 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     default: // Numeric
       value = Integer.parseInt(name);
     }
-    
+
     return value;
   }
-  
+
   protected String getName(int rowOrColumn, char type, int leading) {
     String val = rowOrColumn < 0 ? "-" : "";
     rowOrColumn = Math.abs(rowOrColumn);

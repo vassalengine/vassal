@@ -52,7 +52,7 @@ public class PolygonEditor extends JPanel {
     polygon = p;
     reset();
   }
-  
+
   protected void reset() {
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
@@ -65,7 +65,7 @@ public class PolygonEditor extends JPanel {
   public Polygon getPolygon() {
     return polygon;
   }
-  
+
   public Polygon clonePolygon() {
     return new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
   }
@@ -77,7 +77,7 @@ public class PolygonEditor extends JPanel {
   public void setScroll(JScrollPane scroll) {
     myScroll = scroll;
   }
-  
+
   private void setupForCreate() {
     DefineRectangle dr = new DefineRectangle();
     addMouseListener(dr);
@@ -119,7 +119,7 @@ public class PolygonEditor extends JPanel {
     if (y < 0) y = 0;
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
   }
-  
+
   public static void reset(Polygon p, String path) {
     p.reset();
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(path, ';');
@@ -228,7 +228,7 @@ public class PolygonEditor extends JPanel {
     }
 
     public void scrollAtEdge(Point evtPt, int dist) {
-      
+
       Point p = new Point(evtPt.x - myScroll.getViewport().getViewPosition().x,
           evtPt.y - myScroll.getViewport().getViewPosition().y);
       int dx = 0, dy = 0;

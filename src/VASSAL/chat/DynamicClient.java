@@ -35,9 +35,9 @@ import VASSAL.tools.ThrowableUtils;
 /**
  * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
  * every time the user attempts to connect
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class DynamicClient extends HybridClient {
   private static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$

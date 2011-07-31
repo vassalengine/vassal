@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools;
@@ -26,18 +26,18 @@ package VASSAL.tools;
 public class RecursionLimiter {
   protected static final int RECURSION_LIMIT = 50;
   protected static int recursionDepth = 0;
-  
+
   public static void startExecution(Loopable looper)
                                               throws RecursionLimitException {
     if (++recursionDepth > RECURSION_LIMIT) {
       throw new RecursionLimitException(looper);
     }
   }
-  
+
   public static void endExecution() {
     --recursionDepth;
   }
-  
+
   /**
    * Report an Infinite Loop
    * @param e
@@ -49,9 +49,9 @@ public class RecursionLimiter {
       "Error.infinite_loop",
       e.getComponentTypeName(),
       e.getComponentName()
-    );  
+    );
   }
-  
+
   public static interface Loopable {
     public String getComponentTypeName();
     public String getComponentName();

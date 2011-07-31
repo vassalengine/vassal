@@ -56,7 +56,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     this(key, name, val);
     setWordWrap(wrap);
   }
-  
+
   public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
     this.key = key;
     this.name = name;
@@ -70,10 +70,10 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
   public void setWordWrap(boolean b) {
     wordWrap = b;
   }
-  
+
   /**
    * Encodes a string by replacing newlines with '|' characters
-   * 
+   *
    * @param s
    * @return
    */
@@ -114,7 +114,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
 
   /**
    * Restores a string by replacing '|' with newlines
-   * 
+   *
    * @param s
    * @return
    */

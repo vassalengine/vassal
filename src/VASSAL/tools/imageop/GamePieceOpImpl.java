@@ -36,7 +36,7 @@ import VASSAL.tools.opcache.OpObserver;
 
 /**
  * An {@link ImageOp} which uses a {@link GamePiece} as its source.
- * 
+ *
  * @since 3.1.0
  * @author Joel Uckelman
  */

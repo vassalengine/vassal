@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010, 2011 by Joel Uckelman 
+ * Copyright (c) 2010, 2011 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -52,7 +52,7 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.*;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public class ZipFileImageTiler {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipFileImageTiler.class);
@@ -126,14 +126,14 @@ public class ZipFileImageTiler {
           public void receive(Void obj) throws IOException {
             out.writeByte(TILE_WRITTEN);
             out.flush();
-          } 
+          }
         };
 
         final Callback<Void> doneL = new Callback<Void>() {
           public void receive(Void obj) throws IOException {
             out.writeByte(TILING_FINISHED);
             out.flush();
-          } 
+          }
         };
 
         FileArchive fa = null;

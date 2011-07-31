@@ -16,14 +16,14 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build;
 
 /**
  * A component that exposes properties
  */
 public interface PropertyProducer {
-  
+
   public Object getProperty(Object key);
-  
+
 }

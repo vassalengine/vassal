@@ -47,7 +47,7 @@ public class EventLog extends AbstractBuildable
     savedEvents = new ArrayList<Event>();
 
     for (Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
-      myEvents.add(e); 
+      myEvents.add(e);
   }
 
   public void clearSaved() {
@@ -93,7 +93,7 @@ public class EventLog extends AbstractBuildable
   public Command getRestoreCommand() {
     return new StoreEvents(this, encodedEvents(savedEvents));
   }
-  
+
   /**
    * Decodes a <code>String</code> into a sequence of <code>Event</code>s.
    *
@@ -110,14 +110,14 @@ public class EventLog extends AbstractBuildable
           public boolean hasNext() {
             return se.hasMoreTokens();
           }
-  
+
           public Event next() {
             final SequenceEncoder.Decoder sub =
               new SequenceEncoder.Decoder(se.nextToken(), ',');
             return new Event(Long.parseLong(sub.nextToken()),
                              sub.nextToken(), sub.nextToken());
           }
-      
+
           public void remove() {
             throw new UnsupportedOperationException();
           }

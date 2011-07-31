@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -97,7 +97,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return piece.getProperty(key);
     }
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getProperty(key);
@@ -134,7 +134,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public Decorator getOuter() {
     return dec;
   }
-  
+
   public void setPosition(Point p) {
     piece.setPosition(p);
   }
@@ -310,7 +310,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public PieceEditor getEditor() {
     return new SimplePieceEditor(this);
   }
-  
+
   public String toString() {
     if (piece == null) {
       return super.toString();
@@ -319,7 +319,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return super.toString()+"[name="+getName()+",type="+getType()+",state="+getState()+"]";
     }
   }
-  
+
   /**
    * Return the translated name for this piece. Most pieces do not have
    * translatable elements, so just return the standard name
@@ -327,7 +327,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public String getLocalizedName() {
     return piece.getLocalizedName();
   }
-  
+
   /**
    * Return I18n data for this piece
    * @return
@@ -335,13 +335,13 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public PieceI18nData getI18nData() {
     return new PieceI18nData(this);
   }
-  
+
   protected PieceI18nData getI18nData(String command, String description) {
     PieceI18nData data = new PieceI18nData(this);
     data.add(command, description);
     return data;
   }
-  
+
   protected PieceI18nData getI18nData(String[] commands, String[] descriptions) {
     PieceI18nData data = new PieceI18nData(this);
     for (int i = 0; i < commands.length; i++) {
@@ -349,7 +349,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return data;
   }
-  
+
   protected String getCommandDescription(String description, String command) {
     String s = "";
     if (description != null && description.length() > 0) {
@@ -357,34 +357,34 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return s + command;
   }
-  
+
   protected String getTranslation(String key) {
     String fullKey = TranslatablePiece.PREFIX + key;
     return Localization.getInstance().translate(fullKey, key);
   }
-  
+
   /**
    * Report a Data Error detected by a trait
    */
   protected static void reportDataError(EditablePiece piece, String message, String data, Throwable e) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data, e));  
+    ErrorDialog.dataError(new BadDataReport(piece, message, data, e));
   }
 
   protected static void reportDataError(EditablePiece piece, String message, String data) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data));  
+    ErrorDialog.dataError(new BadDataReport(piece, message, data));
   }
 
   protected static void reportDataError(EditablePiece piece, String message) {
-    ErrorDialog.dataError(new BadDataReport(piece, message));  
+    ErrorDialog.dataError(new BadDataReport(piece, message));
   }
-  
+
   /**
    * Default Property Name Source
    */
   public List<String> getPropertyNames() {
     return new ArrayList<String>(0);
   }
-  
+
   /**
    * Set the Oldxxxx properties related to movement
    * @param p
@@ -396,7 +396,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     String locationName = ""; //$NON-NLS-1$
     final Map m = p.getMap();
     final Point pos = p.getPosition();
-    
+
     if (m != null) {
       mapName = m.getConfigureName();
       final Board b = m.findBoard(pos);
@@ -409,15 +409,15 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       }
       locationName = m.locationName(pos);
     }
-    
+
     p.setProperty(BasicPiece.OLD_X, String.valueOf(pos.x));
     p.setProperty(BasicPiece.OLD_Y, String.valueOf(pos.y));
     p.setProperty(BasicPiece.OLD_MAP, mapName);
     p.setProperty(BasicPiece.OLD_BOARD, boardName);
     p.setProperty(BasicPiece.OLD_ZONE, zoneName);
-    p.setProperty(BasicPiece.OLD_LOCATION_NAME, locationName);    
+    p.setProperty(BasicPiece.OLD_LOCATION_NAME, locationName);
   }
-  
+
   public void setOldProperties() {
     setOldProperties(this);
   }

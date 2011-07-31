@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.documentation;
@@ -90,7 +90,7 @@ public class AboutScreen extends AbstractConfigurable {
         Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
           ext.getName(), ext.getVersion()));
     }
-   
+
     sb.append("<br/>").append(
       Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
         Info.getVersion()));
@@ -156,7 +156,7 @@ public class AboutScreen extends AbstractConfigurable {
       // don't permit "About VASSAL"
       if (title != null && title.equals(Resources.getString("AboutScreen.about_vassal"))) {
         title = Resources.getString("Documentation.about_module");
-      } 
+      }
 
       setConfigureName(title);
       launch.putValue(Action.NAME, title);
@@ -174,7 +174,7 @@ public class AboutScreen extends AbstractConfigurable {
           op = Op.load(fileName);
 
           final Image img = op.getImage();
-          if (img != null) {         
+          if (img != null) {
             GameModule.getGameModule()
                       .getWizardSupport()
                       .setBackgroundImage(op.getImage());

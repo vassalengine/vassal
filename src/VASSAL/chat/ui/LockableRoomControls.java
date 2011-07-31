@@ -31,12 +31,12 @@ import VASSAL.chat.Room;
  */
 public abstract class LockableRoomControls extends RoomInteractionControlsInitializer {
 
-  protected JoinRoomAction joinAction; 
-  
+  protected JoinRoomAction joinAction;
+
   public LockableRoomControls(ChatServerConnection client) {
     super(client);
   }
-  
+
   public void doubleClickRoom(Room room, JTree tree) {
     if (!(room instanceof LockableRoom)
         || !((LockableRoom) room).isLocked()) {
@@ -50,7 +50,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
     addLockRoomAction(popup, target);
     return popup;
   }
-  
+
   protected void addJoinRoomAction(JPopupMenu popup, Room target) {
     joinAction = new JoinRoomAction(target, client);
     popup.add(joinAction);
@@ -61,7 +61,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
       }
     }
   }
-    
+
   protected abstract void addLockRoomAction(JPopupMenu popup, Room target);
-   
+
 }

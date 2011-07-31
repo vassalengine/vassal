@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -49,13 +49,13 @@ public interface PropertySupport {
    * @return {@code true} if there are listeners
    */
   public boolean hasListeners();
- 
+
   /**
    * Returns a list of {@link PropertyListener}s listening to all changes.
    *
    * @return a list of listeners
    */
-  public List<PropertyListener<Object>> getPropertyListeners(); 
+  public List<PropertyListener<Object>> getPropertyListeners();
 
   /**
    * Adds a listener for a specific {@link Property}.
@@ -97,7 +97,7 @@ public interface PropertySupport {
    * Notifies listeners of a property change.
    *
    * @param src the source of the change
-   * @param prop the changed {@link Property} 
+   * @param prop the changed {@link Property}
    * @param oldVal the old value of the {@link Property}
    * @param newVal the new value of the {@link Property}
    */

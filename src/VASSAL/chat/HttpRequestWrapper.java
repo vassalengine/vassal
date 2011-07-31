@@ -1,4 +1,4 @@
-/* 
+/*
  * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
@@ -56,7 +56,7 @@ public class HttpRequestWrapper {
       String line;
       while ((line = in.readLine()) != null) l.add(line);
 
-      return l; 
+      return l;
     }
     finally {
       IOUtils.closeQuietly(in);

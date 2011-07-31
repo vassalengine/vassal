@@ -63,7 +63,7 @@ public class KeyStrokeListener {
   public KeyStroke getKeyStroke() {
     return key;
   }
-  
+
   public void keyPressed(KeyStroke stroke) {
     if (stroke != null && stroke.equals(key)) {
       l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));

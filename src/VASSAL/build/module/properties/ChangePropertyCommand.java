@@ -1,6 +1,6 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2000-2008 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -22,9 +22,9 @@ import VASSAL.command.Command;
 
 /**
  * Command to change the value of a {@link MutableProperty}
- * 
+ *
  * @author rodneykinney
- * 
+ *
  */
 public class ChangePropertyCommand extends Command {
   private MutableProperty property;

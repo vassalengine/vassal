@@ -34,10 +34,10 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * Builds HTTP POST requests conveniently.
- * 
+ *
  * @author Joel Uckelman
  * @since 3.1.0
- */ 
+ */
 public class HTTPPostBuilder {
   private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
   private final BufferedWriter bw =
@@ -179,7 +179,7 @@ public class HTTPPostBuilder {
    * @throws IOException in case of failure
    */
   public InputStream post(URL url) throws IOException {
-    writeEnd(); 
+    writeEnd();
 
     OutputStream out = null;
     try {

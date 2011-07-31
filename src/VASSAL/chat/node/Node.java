@@ -67,7 +67,7 @@ public class Node implements MsgSender {
       return null;
     }
   }
-  
+
   public void setInfo(String info) {
     this.info = info;
   }
@@ -108,7 +108,7 @@ public class Node implements MsgSender {
   public int hashCode() {
     return (id != null ? id.hashCode() : 0);
   }
-  
+
   public String toString() {
     return super.toString()+"[id="+id+"]"; //$NON-NLS-1$ //$NON-NLS-2$
   }

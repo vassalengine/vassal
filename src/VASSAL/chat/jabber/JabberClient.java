@@ -104,16 +104,16 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.swing.Dialogs;
 
 public class JabberClient implements LockableChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
-  private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms"; //$NON-NLS-1$  
+  private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms"; //$NON-NLS-1$
   private static final String QUERY_USER = "http://jabber.org/protocol/muc#user"; //$NON-NLS-1$
-  private static final String INVITE = "Invite"; //$NON-NLS-1$  
-  private static final String REAL_NAME = "realName"; //$NON-NLS-1$  
-  public static final String JID_RESOURCE = "/VASSAL"; //$NON-NLS-1$  
+  private static final String INVITE = "Invite"; //$NON-NLS-1$
+  private static final String REAL_NAME = "realName"; //$NON-NLS-1$
+  public static final String JID_RESOURCE = "/VASSAL"; //$NON-NLS-1$
   public static final String ROOM_CONFIG = "roomConfig"; //$NON-NLS-1$
   public static final String ROOM_JID = "roomJid"; //$NON-NLS-1$
-  public static final String ROOM_NAME = "roomName"; //$NON-NLS-1$  
-  public static final String OWNER = "owner"; //$NON-NLS-1$  
-  
+  public static final String ROOM_NAME = "roomName"; //$NON-NLS-1$
+  public static final String OWNER = "owner"; //$NON-NLS-1$
+
   private MessageBoard msgSvr;
   private XMPPConnection conn;
   private String host;
@@ -161,7 +161,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     synchEncoder = new SynchEncoder(this,this);
     soundEncoder = new SoundEncoder(this);
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
-    
+
     // Listen for changes to our name via VASSAL preferences
     idChangeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -177,7 +177,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         }
       }
     };
-      
+
     // Listen for someone kicking us from the current room
     kickListener = new DefaultUserStatusListener() {
       public void kicked(String kicker, String reason) {
@@ -185,7 +185,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         setRoom(defaultRoom);
       }
     };
-    
+
     // Listen for someone inviting us to another room
     inviteListener = new InvitationListener() {
       public void invitationReceived(XMPPConnection conn, String room,
@@ -210,7 +210,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           }
         }
       }};
-      
+
     // Listen for other clients leaving a room I own and revoke their membership
     userListener = new DefaultParticipantStatusListener() {
       public void kicked(String participant, String arg1, String arg2) {
@@ -232,7 +232,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           }
         }
       }
-    };  
+    };
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
@@ -271,19 +271,19 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           String username = account.getUserName();
           String password = account.getPassword();
           me = playerMgr.getPlayerByLogin(this, account.getUserName());
-          
+
           final GameModule g = GameModule.getGameModule();
           final SimpleStatus s = (SimpleStatus) me.getStatus();
           s.updateStatus();
           me.setStatus(s);
           me.setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
-          
+
           ConnectionConfiguration config = new ConnectionConfiguration(host, port);
           config.setCompressionEnabled(true);
           config.setDebuggerEnabled(XMPPConnection.DEBUG_ENABLED);
           config.setReconnectionAllowed(true);
-          
-          conn = new XMPPConnection(config);          
+
+          conn = new XMPPConnection(config);
           conn.connect();
           conn.addConnectionListener(new ConnectionListener());
           try {
@@ -310,12 +310,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
                 throw createAccountError;
               }
             }
-            
-            // ejabberd servers require a reconnection after an account creation before 
+
+            // ejabberd servers require a reconnection after an account creation before
             // they will allow the user to login
             conn.disconnect();
             conn.connect();
-            
+
             // Retry the login
             try {
               conn.login(username, password, "VASSAL"); //$NON-NLS-1$
@@ -354,7 +354,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         }
         conn.disconnect();
         tidyConnection();
-      }      
+      }
     }
   }
 
@@ -367,7 +367,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     roomMgr.clear();
     fireStatus(Resources.getString("Server.disconnected", host + ":" + port)); //$NON-NLS-1$ //$NON-NLS-2$
   }
-  
+
   private void leaveCurrentRoom() {
     if (currentChat != null) {
       currentChat.leave();
@@ -405,7 +405,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       propSupport.firePropertyChange(INCOMING_MSG, null, decodeMessage(m.getBody()));
     }
   }
-  
+
   public void processServerMessage(String subject, String message) {
     final GameModule g = GameModule.getGameModule();
     g.warn("##### " + Resources.getString("JabberClient.message_from_admin", host+":"+port)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -419,7 +419,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public Room getRoom() {
     return monitor.getCurrentRoom();
   }
-  
+
   public JabberRoom getRoomByName(String name) {
     return roomMgr.getRoomByName(this, name);
   }
@@ -427,7 +427,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public String getCurrentRoomJID() {
     return currentChat == null ? null : currentChat.getRoom();
   }
-  
+
   public LockableRoom getCurrentRoom() {
     return monitor.getCurrentRoom();
   }
@@ -435,7 +435,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public void setRoom(String roomName) {
     setRoom(roomMgr.getRoomByName(this, roomName));
   }
-  
+
   public void setRoom(Room r) {
     JabberRoom newRoom = null;
     try {
@@ -479,7 +479,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           mess = Resources.getString("Chat.not_a_member"); //$NON-NLS-1$
         }
         else {
-          mess = e.getXMPPError().getMessage();        
+          mess = e.getXMPPError().getMessage();
           if (mess == null) {
             mess = e.getXMPPError().getCondition();
           }
@@ -514,15 +514,15 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       monitor.sendStatus((JabberPlayer) p);
     }
   }
-  
+
   public String getDefaultRoomName() {
     return defaultRoom.getName();
   }
-  
+
   public boolean isDefaultRoom(Room r) {
     return r == null ? false : r.getName().equals(getDefaultRoomName());
   }
-  
+
   public void sendTo(Player recipient, Command c) {
     Chat chat = conn.getChatManager().createChat(((JabberPlayer) recipient).getJid(), null);
     try {
@@ -566,7 +566,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public void doInvite(String playerId, String roomName) {
     setRoom(roomName);
   }
-  
+
   /** Is a player kickable from this room? */
   public boolean isKickable(Player kickee) {
     // kickee is not me
@@ -590,7 +590,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
     catch (XMPPException e) {
       // TODO Error - unable to kick, I must not be owner???
-      e.printStackTrace();      
+      e.printStackTrace();
     }
   }
 
@@ -621,19 +621,19 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public static String unescapeNode(String node) {
     return StringUtils.unescapeNode(node);
   }
-  
-  /** 
+
+  /**
    * Messages must be encoded to pass through Jabber:
    * 1. To remove Escape characters (Vassal sub-command separator)
    * 2. To hide the raw Vassal commands from observers on the chat room using a Jabber Client.
-   * 
+   *
    * @param clearText
    * @return encoded text
    */
   protected String encodeMessage(String clearText) {
     ObfuscatingOutputStream out = null;
     final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-    
+
     try {
       out = new ObfuscatingOutputStream(ba);
       out.write(clearText.getBytes("UTF-8")); //$NON-NLS-1$
@@ -651,10 +651,10 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     IOUtils.closeQuietly(ba);
     return encodedText;
   }
-  
+
   /**
    * Encode text encoded by encodeMessage
-   * 
+   *
    * @param encodedMessage
    * @return decoded text
    */
@@ -662,7 +662,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     final ByteArrayInputStream ba = new ByteArrayInputStream(encodedMessage.getBytes());
     DeobfuscatingInputStream in = null;
     String clearText = "";
-    
+
     try {
       in = new DeobfuscatingInputStream(ba);
       clearText = IOUtils.toString(in, "UTF-8"); //$NON-NLS-1$
@@ -674,10 +674,10 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       IOUtils.closeQuietly(ba);
       IOUtils.closeQuietly(in);
     }
-    
+
     return clearText;
   }
-  
+
   /**
    * Toggle the lock state on the room.
    */
@@ -693,13 +693,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       }
     }
   }
-  
+
   /**
    * VASSAL clients join a common room, named for the module, from which they communicate information about which
    * players have joined which rooms, etc.
-   * 
+   *
    * @author rodneykinney
-   * 
+   *
    */
   private class MonitorRooms implements PacketListener, ParticipantStatusListener {
     private static final String ROOM_CHANGE_ACTION = "changedRoom"; //$NON-NLS-1$
@@ -746,11 +746,11 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     protected void sendStatus(JabberPlayer p) {
       sendStatus(p, null, p.getJoinedRoom());
     }
-    
+
     protected void sendStatus(JabberPlayer player, JabberRoom room) {
       sendStatus(player, null, room);
     }
-    
+
     protected void sendStatus(JabberPlayer player, String recipient, JabberRoom room) {
       final SimpleStatus s = (SimpleStatus) player.getStatus();
       final Presence p = new Presence(Presence.Type.available);
@@ -817,7 +817,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     /**
      * Take the room-local JID for a player (room@conference.server/nick) and change it into an absolute address for
      * that player (login@server/VASSAL)
-     * 
+     *
      * @param jid
      * @return
      */
@@ -908,7 +908,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           }
           return accept;
         }};
-        
+
       public TrackStatus(String prefix) {
         this.prefix = prefix;
       }
@@ -920,7 +920,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       public void process(Packet packet) {
         // Process a change of status by another user
         if (changeStatusFilter.accept(packet)) {
-          
+
           final Presence p = (Presence) packet;
           final JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(p
               .getFrom()));
@@ -956,7 +956,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
                 roomJid = StringUtils.parseName(p.getFrom()) + "@" + getConferenceService(); //$NON-NLS-1$
               }
               room = roomMgr.getRoomByJID(JabberClient.this, roomJid, roomName);
-              
+
               if (room != null) {
                 if (OWNER.equals(affiliation)) {
                   room.addOwner(jid);
@@ -965,16 +965,16 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
                   room.removeOwner(jid);
                 }
               }
-              
+
               if (roomConfig != null && room != null) {
                 room.decodeConfig(roomConfig);
               }
             }
-          }          
+          }
         }
       }
     }
-    
+
     /**
      * Track available rooms
      *
@@ -1023,16 +1023,16 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         return accept;
       }
     }
-    
-    /** 
-     * Listen for any Private chat and pass it on to 
+
+    /**
+     * Listen for any Private chat and pass it on to
      * the client. (Also Synch's, private messages and wake ups).
      */
     private class ListenForChat extends PacketProcessor {
 
       private PacketFilter chatFilter = new MessageTypeFilter(Message.Type.chat);
       private PacketFilter serverMessageFilter = new MessageTypeFilter(Message.Type.normal);
-      
+
       protected boolean acceptPacket(Packet packet) {
         if (chatFilter.accept(packet)) {
           return true;
@@ -1050,8 +1050,8 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         else {
           final Message m = ((Message) packet);
           JabberClient.this.processServerMessage(m.getSubject(), m.getBody());
-        }        
-      }      
+        }
+      }
     }
   }
 
@@ -1179,11 +1179,11 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
   public static String testConnection(String host, String port, String login, String passwd) {
     final StringBuffer text = new StringBuffer(Resources.getString("JabberClient.testing_connection")+host+":"+port+" "+login+"/"+passwd).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    
+
     if (host.length() == 0) {
       return text.append(Resources.getString("JabberClient.error_no_host")).toString(); //$NON-NLS-1$
     }
-    
+
     int portNo = 0;
     try {
       portNo = Integer.parseInt(port);
@@ -1191,13 +1191,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     catch (NumberFormatException e) {
       return text.append(Resources.getString("JabberClient.error_port_number")).toString();       //$NON-NLS-1$
     }
-    
+
     final ConnectionConfiguration config = new ConnectionConfiguration(host, portNo);
     config.setCompressionEnabled(true);
     config.setDebuggerEnabled(XMPPConnection.DEBUG_ENABLED);
     config.setReconnectionAllowed(true);
     final XMPPConnection conn = new XMPPConnection(config);
-    
+
     try {
       text.append(Resources.getString("JabberClient.attempting_to_connect")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
       conn.connect();
@@ -1227,7 +1227,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
             text.append(formatXMPPError(ex));
           }
         }
-      }      
+      }
     }
     catch (XMPPException e) {
       text.append(Resources.getString("JabberClient.failed")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1238,7 +1238,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
     return text.toString();
   }
-  
+
   private static String formatXMPPError(XMPPException e) {
     final XMPPError error = e.getXMPPError();
     if (error == null) {

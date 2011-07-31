@@ -28,10 +28,10 @@ import VASSAL.configure.TextConfigurer;
  * A multi-line textbox Module Preference.
  */
 public class TextPreference extends BasicPreference {
-  
+
   protected String defaultValue = "";
   protected TextConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "Text Box Preference";
   }
@@ -53,7 +53,7 @@ public class TextPreference extends BasicPreference {
       config = new TextConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }});
     }
     return config;

@@ -67,7 +67,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
   public RotateScaleOpSVGImpl(SVGOp sop, double angle, double scale) {
     this(sop, angle, scale, ImageUtils.getDefaultHints());
   }
-  
+
   /**
    * Constructs an <code>ImageOp</code> which will rotate and scale
    * the image produced by its source <code>ImageOp</code>.
@@ -167,8 +167,8 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final RotateScaleOpSVGImpl op = (RotateScaleOpSVGImpl) o;
-    return scale == op.getScale() && 
-           angle == op.getAngle() && 
+    return scale == op.getScale() &&
+           angle == op.getAngle() &&
            hints.equals(op.getHints()) &&
            sop.equals(op.sop);
   }

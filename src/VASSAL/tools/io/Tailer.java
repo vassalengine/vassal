@@ -41,10 +41,10 @@ import VASSAL.tools.concurrent.listener.EventListenerSupport;
  * @author Joel Uckelman
  * @since 3.2.0
  */
-public class Tailer { 
+public class Tailer {
   private static final Logger logger = LoggerFactory.getLogger(Tailer.class);
 
-  protected static final long DEFAULT_POLL_INTERVAL = 1000L;  
+  protected static final long DEFAULT_POLL_INTERVAL = 1000L;
 
   protected final File file;
   protected final long poll_interval;
@@ -58,7 +58,7 @@ public class Tailer {
    * Creates a file tailer with the default polling interval.
    *
    * @param file the file to tail
-   */ 
+   */
   public Tailer(File file) {
     this(file, DEFAULT_POLL_INTERVAL);
   }
@@ -68,7 +68,7 @@ public class Tailer {
    *
    * @param file the file to tail
    * @param poll_interval the polling interval, in milliseconds
-   */ 
+   */
   public Tailer(File file, long poll_interval) {
     if (file == null) throw new IllegalArgumentException("file == null");
 
@@ -116,7 +116,7 @@ public class Tailer {
 
   /**
    * Stops tailing the file.
-   */ 
+   */
   public void stop() {
     tailing = false;
   }
@@ -125,7 +125,7 @@ public class Tailer {
    * Checks whether the tailer is running.
    *
    * @return <code>true</code> if the tailer is running
-   */ 
+   */
   public boolean isTailing() {
     return tailing;
   }
@@ -185,14 +185,14 @@ public class Tailer {
         // read until we're told to stop
         while (tailing) {
           final long length = raf.length();
-         
+
           if (length < position) {
             // file has been truncated, reopen it
             raf = new RandomAccessFile(file, "r");
             position = 0L;
           }
           else if (length > position) {
-            // new lines have been written, read them 
+            // new lines have been written, read them
             raf.seek(position);
 
             String line;

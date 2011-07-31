@@ -40,7 +40,7 @@ public class WriteErrorDialog {
       ThrowableUtils.getStackTrace(e),
       "Error.file_write_error",
       filename
-    ); 
+    );
   }
 
   /**

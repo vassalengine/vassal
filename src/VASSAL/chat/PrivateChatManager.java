@@ -55,7 +55,7 @@ public class PrivateChatManager {
     if (chat == null) {
       chat = new PrivateChatter(sender, client);
       chatters.add(new Entry(sender, chat));
-      
+
       final JFrame f = new JFrame();
       f.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {

@@ -67,7 +67,7 @@ public class ErrorDialog {
         public void run() {
           new BugDialog(frame, thrown).setVisible(true);
         }
-      }); 
+      });
     }
   }
 
@@ -198,7 +198,7 @@ public class ErrorDialog {
       JOptionPane.ERROR_MESSAGE, parent, details, messageKey, args
     );
   }
-  
+
   public static Future<?> showDetails(
     Throwable thrown,
     String details,
@@ -258,7 +258,7 @@ public class ErrorDialog {
       JOptionPane.ERROR_MESSAGE, parent, details, key, messageKey, args
     );
   }
-  
+
   public static Future<?> showDetailsDisableable(
     Throwable thrown,
     String details,
@@ -328,6 +328,6 @@ public class ErrorDialog {
       Thread.sleep(1000);
     }
 
-    System.exit(0); 
+    System.exit(0);
   }
 }

@@ -70,7 +70,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   public Object getValue() {
     return super.getValue();
   }
-  
+
   public String getValueString() {
     return encode((NamedKeyStroke) getValue());
   }
@@ -78,7 +78,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   public NamedKeyStroke getValueNamedKeyStroke() {
     return (NamedKeyStroke) value;
   }
-   
+
   public void setValue(String s) {
     setValue(s == null ? null : decode(s));
   }
@@ -87,7 +87,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     tf.setEnabled(b);
     keyName.setEnabled(b);
   }
-  
+
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -97,7 +97,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
       tf.addKeyListener(this);
       p.add(new JLabel(getName()));
       p.add(tf);
-      
+
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width,keyName.getPreferredSize().height));
       keyName.addKeyListener(new KeyListener() {
@@ -127,9 +127,9 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
               }
           }
         }
-        public void keyPressed(KeyEvent e) {          
+        public void keyPressed(KeyEvent e) {
         }
-        public void keyTyped(KeyEvent e) {          
+        public void keyTyped(KeyEvent e) {
         }
       });
       p.add(keyName);
@@ -137,7 +137,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     }
     return p;
   }
-  
+
   protected void updateVisibility() {
     tf.setVisible(!isNamed());
     keyName.setVisible(isNamed());
@@ -147,7 +147,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
       w.pack();
     }
   }
-  
+
   public boolean isNamed() {
     return named;
   }
@@ -178,7 +178,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
             setValue(new NamedKeyStroke(name));
             updateVisibility();
             keyName.requestFocus();
-            break;            
+            break;
           }
         }
         setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
@@ -194,11 +194,11 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   protected boolean isPrintableAscii (char c) {
     return isPrintableAscii((int) c);
   }
-  
+
   protected boolean isPrintableAscii(int i) {
     return i >= ' ' && i <= '~';
   }
-  
+
   /**
    * A plain text representation of a KeyStroke.  Doesn't differ much
    * from {@link KeyEvent#getKeyText}
@@ -214,8 +214,8 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     }
     return s;
   }
-  
-  public static String getString(KeyStroke k) {  
+
+  public static String getString(KeyStroke k) {
     return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
@@ -230,7 +230,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     if (parts.length < 2) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
-    
+
     try {
       KeyStroke stroke = KeyStroke.getKeyStroke
           (Integer.parseInt(parts[0]),

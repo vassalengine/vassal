@@ -128,7 +128,7 @@ public class DrawPile extends SetupStack {
   public void removeGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
     dummy.removeGlobalKeyCommand(globalCommand);
   }
-  
+
   /**
    * Return the DrawPile instance with the matching id or name
    * @param id the Id or ConfigureName of the target DrawPile
@@ -172,10 +172,10 @@ public class DrawPile extends SetupStack {
   public static final String REPORT_FORMAT = "reportFormat";
   public static final String CAN_SAVE = "canSave";
   public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty";
-  public static final String EMPTY_HOTKEY = "emptyHotkey"; 
+  public static final String EMPTY_HOTKEY = "emptyHotkey";
   public static final String RESTRICT_OPTION = "restrictOption";
   public static final String RESTRICT_EXPRESSION = "restrictExpression";
-  
+
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
@@ -261,42 +261,42 @@ public class DrawPile extends SetupStack {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString(Resources.NAME_LABEL),  
-    		Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.xposition"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.yposition"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.width"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.height"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
-    		Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+        Resources.getString(Resources.NAME_LABEL),
+        Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.xposition"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.yposition"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.width"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.height"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
     };
   }
 
@@ -448,7 +448,7 @@ public class DrawPile extends SetupStack {
       return String.valueOf(dummy.isRestrictOption());
     }
     else if (RESTRICT_EXPRESSION.equals(key)) {
-      return dummy.getRestrictExpression().getExpression(); 
+      return dummy.getRestrictExpression().getExpression();
     }
     else {
       return super.getAttributeValueString(key);
@@ -543,7 +543,7 @@ public class DrawPile extends SetupStack {
         value = Integer.valueOf((String) value);
       }
       dummy.setMaxStack(((Integer) value).intValue());
-    }    
+    }
     if (EXPRESSIONCOUNTING.equals(key)) {
       if (value instanceof Boolean) {
         dummy.setExpressionCounting(Boolean.TRUE.equals(value));
@@ -551,13 +551,13 @@ public class DrawPile extends SetupStack {
       else {
         dummy.setExpressionCounting("true".equals(value));
       }
-    }    
+    }
     if (COUNTEXPRESSIONS.equals(key)) {
       if (value instanceof String) {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
       dummy.setCountExpressions((String[]) value);
-    }    
+    }
     else if (RESHUFFLABLE.equals(key)) {
       reshufflable = "true".equals(value) || Boolean.TRUE.equals(value);
       if (!reshufflable) {
@@ -657,7 +657,7 @@ public class DrawPile extends SetupStack {
     else if (FACE_DOWN_REPORT_FORMAT.equals(name)) {
       return faceDownFormatVisibleCondition;
     }
-    else if (SHUFFLE_REPORT_FORMAT.equals(name) 
+    else if (SHUFFLE_REPORT_FORMAT.equals(name)
         || SHUFFLE_HOTKEY.equals(name)
         || SHUFFLE_COMMAND.equals(name)) {
       return shuffleFormatVisibleCondition;
@@ -731,7 +731,7 @@ public class DrawPile extends SetupStack {
   protected String getDeckType() {
     return dummy.getType();
   }
-  
+
   public Dimension getSize() {
     return dummy.getSize();
   }
@@ -743,7 +743,7 @@ public class DrawPile extends SetupStack {
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DrawPile.deck"); //$NON-NLS-1$
   }
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(SELECT_DISPLAY_PROPERTY, false);

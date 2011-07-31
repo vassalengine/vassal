@@ -13,20 +13,20 @@ import VASSAL.tools.image.ImageUtils;
 
 public class IconButton extends JButton {
   private static final long serialVersionUID = 1L;
-  
+
   public static final int PLUS_ICON = 0;
   public static final int MINUS_ICON = 1;
   public static final int TICK_ICON = 2;
   public static final int CROSS_ICON = 3;
-  
+
   public IconButton(int type) {
     this(type, 22);
   }
-  
+
   public IconButton(int type, int size) {
     this(type, size, getDefaultColor(type), 2.0f);
   }
-  
+
   public static Color getDefaultColor(int type) {
     switch (type) {
     case TICK_ICON:
@@ -40,7 +40,7 @@ public class IconButton extends JButton {
 
   public IconButton(int type, int size, Color color, float width) {
     super();
-    
+
     setMinimumSize(new Dimension(size, size));
     setPreferredSize(new Dimension(size, size));
 

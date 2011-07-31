@@ -41,7 +41,7 @@ public class CountingReadWriteLock implements ReadWriteLock {
 
   /** {@inheritDoc} */
   public Lock writeLock() { return w; }
-    
+
   protected final ReadLock r  = new ReadLock();
   protected final WriteLock w = new WriteLock();
 
@@ -82,7 +82,7 @@ public class CountingReadWriteLock implements ReadWriteLock {
   }
 
   // Read states are positive, the write state is -1.
-  // State 0 means that no locks are held. 
+  // State 0 means that no locks are held.
 
   protected static class Sync extends AbstractQueuedSynchronizer {
     private static final long serialVersionUID = 1L;

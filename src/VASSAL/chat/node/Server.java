@@ -102,7 +102,7 @@ public class Server extends Thread {
               public void handleMessage(String msg) {
                 System.err.println(msg);
               }
-  
+
               public void socketClosed(SocketHandler handler) {
               }
             });

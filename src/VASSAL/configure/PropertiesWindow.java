@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -116,7 +116,7 @@ public class PropertiesWindow extends JDialog {
 
     if (target.getHelpFile() != null) {
       final Action helpAction =
-        new ShowHelpAction(target.getHelpFile().getContents(), null); 
+        new ShowHelpAction(target.getHelpFile().getContents(), null);
       final JButton helpButton = new JButton(helpAction);
       buttonBox.add(helpButton);
       pack();

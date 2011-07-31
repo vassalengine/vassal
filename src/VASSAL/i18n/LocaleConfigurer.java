@@ -34,7 +34,7 @@ import VASSAL.tools.SequenceEncoder;
 
 /**
  * Configure a Locale Value using full, localized Language and Country names
- * 
+ *
  * @author Brent Easton
  *
  */
@@ -58,7 +58,7 @@ public class LocaleConfigurer extends Configurer {
     super(key, name);
     setValue(locale);
   }
-  
+
   public LocaleConfigurer(String key, String name, String val) {
     super(key, name, val);
     setValue(val);
@@ -71,11 +71,11 @@ public class LocaleConfigurer extends Configurer {
   public Locale getValueLocale() {
       return stringToLocale((String) value);
   }
-  
+
   public void setValue(Locale l) {
     setValue(localeToString(l));
   }
-  
+
   public void setValue(String s) {
     getControls();
     if (!noUpdate && langBox != null && countryBox != null) {
@@ -109,16 +109,16 @@ public class LocaleConfigurer extends Configurer {
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
       langBox.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          updateValue();      
+          updateValue();
         }});
       panel.add(new JLabel("Language:  "));
       panel.add(langBox);
- 
+
       countryBox = new JComboBox(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
       countryBox.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          updateValue();      
+          updateValue();
         }});
       panel.add(new JLabel("  Country:  "));
       panel.add(countryBox);
@@ -126,14 +126,14 @@ public class LocaleConfigurer extends Configurer {
     }
     return panel;
   }
-  
+
   protected void updateValue() {
     String language = languages.get(langBox.getSelectedItem());
     String country = countries.get(countryBox.getSelectedItem());
-    
+
     setValue(language + "," + country);
   }
-  
+
    protected String[] getLanguageList() {
     if (languageList == null) {
       String[] langs = Locale.getISOLanguages();
@@ -168,12 +168,12 @@ public class LocaleConfigurer extends Configurer {
     }
     return countryList;
   }
-  
+
   public static Locale stringToLocale(String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     return new Locale(sd.nextToken(""), sd.nextToken(""));
   }
-  
+
   public static String localeToString(Locale l) {
     return l.getLanguage() + "," + l.getCountry();
   }

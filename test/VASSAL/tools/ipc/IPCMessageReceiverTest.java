@@ -66,7 +66,7 @@ public class IPCMessageReceiverTest {
         exactly(2).of(in).close();
       }
     });
-  
+
     final IPCMessageReceiver rec = new IPCMessageReceiver(in, lsup);
     rec.run();
   }

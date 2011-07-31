@@ -285,7 +285,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     private final Color color;
     private final String pattern;
     private final int hash;
-    
+
     public PatternOp(Color color, String pattern) {
       if (color == null || pattern == null)
         throw new IllegalArgumentException();
@@ -320,12 +320,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
 
     protected void fixSize() { }
-    
+
     @Override
     public Dimension getSize() {
       return new Dimension(2,2);
     }
-  
+
     @Override
     public int getWidth() {
       return 2;
@@ -381,7 +381,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     return texture;
   }
-  
+
   protected TexturePaint getTexture(double zoom) {
     if (zoom == 1.0) {
       return getTexture();

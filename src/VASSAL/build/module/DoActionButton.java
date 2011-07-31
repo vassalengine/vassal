@@ -83,7 +83,7 @@ public class DoActionButton extends AbstractConfigurable
   public static final String INDEX_PROPERTY = "indexProperty"; //$NON-NLS-1$
   public static final String INDEX_START = "indexStart"; //$NON-NLS-1$
   public static final String INDEX_STEP = "indexStep"; //$NON-NLS-1$
- 
+
   protected LaunchButton launch;
   protected boolean doReport = false;
   protected FormattedString reportFormat =
@@ -104,10 +104,10 @@ public class DoActionButton extends AbstractConfigurable
   protected int indexStart = 1;
   protected int indexStep = 1;
   protected int indexValue;
-  
+
   protected MutableProperty.Impl loopIndexProperty = new MutableProperty.Impl("",this);
   protected boolean loopPropertyRegistered = false;
-  
+
   public DoActionButton() {
     ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -116,11 +116,11 @@ public class DoActionButton extends AbstractConfigurable
         }
         catch (RecursionLimitException ex) {
           RecursionLimiter.infiniteLoop(ex);
-        }        
+        }
       }
     };
 
-    final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$ 
+    final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
     launch = new LaunchButton(
       description, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     setAttribute(NAME, description);
@@ -188,28 +188,28 @@ public class DoActionButton extends AbstractConfigurable
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, null); 
+      return new IconConfigurer(key, name, null);
     }
   }
-  
+
   public static class SoundConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new AudioClipConfigurer(key, name, GameModule.getGameModule().getArchiveWriter());
     }
   }
-  
+
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
     }
   }
-  
+
   public static class HotkeyConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new NamedHotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
     }
   }
-  
+
   public static class NamedHotkeyListConfigurer extends ListConfigurer {
 
     public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
@@ -219,15 +219,15 @@ public class DoActionButton extends AbstractConfigurable
     protected Configurer buildChildConfigurer() {
       return new NamedHotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
-    
+
   }
 
   public static class LoopConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new LoopTypeConfig(key, name, ((DoActionButton) c).loopType);
     }
-  } 
-  
+  }
+
   public static class LoopTypeConfig extends StringEnumConfigurer {
     public LoopTypeConfig(String key, String name, String loopType) {
       super(key, name, LoopControl.LOOP_TYPE_DESCS);
@@ -237,18 +237,18 @@ public class DoActionButton extends AbstractConfigurable
     public String[] getValidValues(AutoConfigurable target) {
       return LoopControl.LOOP_TYPE_DESCS;
     }
-    
+
     public String getValueString() {
       return LoopControl.loopDescToType(super.getValueString());
     }
   }
-  
+
   public static class LoopCountConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedExpressionConfigurer(key, name, ((DoActionButton) c).loopCount);
     }
-  } 
-  
+  }
+
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -426,7 +426,7 @@ public class DoActionButton extends AbstractConfigurable
       return NamedHotKeyConfigurer.encode(preLoopKey);
     }
     else if (POST_LOOP_HOTKEY.equals(key)) {
-      return NamedHotKeyConfigurer.encode(postLoopKey);    
+      return NamedHotKeyConfigurer.encode(postLoopKey);
     }
     else if (INDEX.equals(key)) {
       return String.valueOf(hadIndex);
@@ -439,12 +439,12 @@ public class DoActionButton extends AbstractConfigurable
     }
     else if (INDEX_STEP.equals(key)) {
       return String.valueOf(indexStep);
-    }    
+    }
     else {
       return launch.getAttributeValueString(key);
     }
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
@@ -498,7 +498,7 @@ public class DoActionButton extends AbstractConfigurable
       return null;
     }
   }
-  
+
   protected String encodeHotkeys() {
     final SequenceEncoder se = new SequenceEncoder(',');
     for (NamedKeyStroke key : hotkeys) {
@@ -516,9 +516,9 @@ public class DoActionButton extends AbstractConfigurable
       NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
       list.add(key);
     }
-    return list;    
+    return list;
   }
-  
+
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
@@ -531,7 +531,7 @@ public class DoActionButton extends AbstractConfigurable
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("MessageButton.htm"); //$NON-NLS-1$
   }
-  
+
   /**
    * Register/Deregister the Global Property exposing the index property. It
    * is only visible if looping is turned on and an Index Property is specified
@@ -551,43 +551,43 @@ public class DoActionButton extends AbstractConfigurable
   protected void setIndexPropertyValue() {
     loopIndexProperty.setPropertyValue(String.valueOf(indexValue));
   }
-  
+
   protected void doActions() throws RecursionLimitException {
     final Command c = new NullCommand();
     final GameModule mod = GameModule.getGameModule();
     RecursionLimitException loopException = null;
-    
+
     // Non looping case
     if (! doLoop) {
       executeActions(c);
       mod.sendAndLog(c);
       return;
     }
-    
+
     // Set up Index Property
     indexValue = indexStart;
     setIndexPropertyValue();
-    
+
     // Issue the Pre-loop key
     doHotKey(c, preLoopKey);
-    
+
     // Set up counters for a counted loop
     int loopCounter = 0;
     int loopCountLimit = 0;
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
       loopCountLimit = loopCount.getTextAsInt(mod, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
-    
+
     for (;;) {
-      
+
       // While loop - test condition is still true before actions
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
         if (!whileExpression.isTrue(mod)) {
           break;
         }
       }
-      
-      // Execute the actions and catch and looping. Save any 
+
+      // Execute the actions and catch and looping. Save any
       // loop Exception to be thrown after the post-loop code
      // to ensure post-loop key is executed.
       try {
@@ -597,7 +597,7 @@ public class DoActionButton extends AbstractConfigurable
         loopException = ex;
         break;
       }
-      
+
       // Until loop - test condition is not false after loop
       if (LoopControl.LOOP_UNTIL.equals(loopType)) {
         if (untilExpression.isTrue(mod)) {
@@ -619,41 +619,41 @@ public class DoActionButton extends AbstractConfigurable
           break;
         }
       }
-    
+
       // Increment the Index Variable
-      indexValue += indexStep;  
+      indexValue += indexStep;
       setIndexPropertyValue();
     }
-    
+
     // Issue the Post-loop key
     doHotKey(c, postLoopKey);
-    
+
     // Send the accumulated commands to the log
     mod.sendAndLog(c);
-    
+
     // If the loop ended due to excessive looping, throw the
-    // Exception out to the caller. 
+    // Exception out to the caller.
     if (loopException != null) {
       throw loopException;
     }
-    
+
     return;
   }
-  
+
   /**
    * Execute the set of actions that make up this button and
    * return the set of Commands generated.
-   * 
+   *
    * @param command
    * @throws RecursionLimitException
    */
   protected void executeActions(Command command) throws RecursionLimitException {
     final GameModule mod = GameModule.getGameModule();
-    
+
     // GameModule.pauseLogging() returns false if logging is already paused by
     // a higher level component.
     final boolean loggingPaused = mod.pauseLogging();
-    
+
     try {
       RecursionLimiter.startExecution(this);
       if (doReport) {
@@ -672,15 +672,15 @@ public class DoActionButton extends AbstractConfigurable
 
       // Send the hotkeys. Individual hotkeys have already executed
       // the commands they generated.
-      if (doHotkey) {    
+      if (doHotkey) {
         for (NamedKeyStroke key : hotkeys) {
           mod.fireKeyStroke(key);
-        }      
+        }
       }
     }
     finally {
       RecursionLimiter.endExecution();
-      // If we paused the log, then retrieve the accumulated commands 
+      // If we paused the log, then retrieve the accumulated commands
       // generated by all actions and restart logging.
       if (loggingPaused) {
         command.append(mod.resumeLogging());
@@ -705,12 +705,12 @@ public class DoActionButton extends AbstractConfigurable
     }
     return;
   }
-  
+
   // Implement Loopable
   public String getComponentTypeName () {
     return getConfigureTypeName();
   }
-  
+
   public String getComponentName() {
     return getConfigureName();
   }

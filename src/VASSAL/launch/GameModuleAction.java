@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility base class for {@link GameModule}-related actions, with auxilliary
  * actions and error reporting.
- * 
+ *
  * @author rodneykinney
- * 
+ *
  */
 public abstract class GameModuleAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
@@ -81,7 +81,7 @@ public abstract class GameModuleAction extends AbstractAction {
   /**
    * Add an auxilliary action to be performed after the core action. For example, closing a window after a module has
    * been loaded
-   * 
+   *
    * @param r
    */
   public void addAction(Runnable r) {

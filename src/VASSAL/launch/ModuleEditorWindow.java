@@ -36,12 +36,12 @@ public class ModuleEditorWindow extends EditorWindow {
     super();
     tree = new ConfigureTree(mod, helpWindow, this);
     treeStateChanged(false);
-    scrollPane.setViewportView(tree);    
-    
+    scrollPane.setViewportView(tree);
+
     final MenuManager mm = MenuManager.getInstance();
 
     tree.populateEditMenu(this);
- 
+
     mm.addAction("Editor.ModuleEditor.reference_manual", tree.getHelpAction());
 
     updateSavedGame = new AbstractAction(Resources.getString(
@@ -53,7 +53,7 @@ public class ModuleEditorWindow extends EditorWindow {
       }
     };
     mm.addAction("Editor.ModuleEditor.update_saved", updateSavedGame);
-   
+
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     createUpdater.setEnabled(true);
@@ -99,7 +99,7 @@ public class ModuleEditorWindow extends EditorWindow {
       public void run() {
         GameModule.getGameModule().save();
       }
-    });    
+    });
   }
 
   protected void saveAs() {
@@ -107,6 +107,6 @@ public class ModuleEditorWindow extends EditorWindow {
       public void run() {
         GameModule.getGameModule().saveAs();
       }
-    }); 
+    });
   }
 }

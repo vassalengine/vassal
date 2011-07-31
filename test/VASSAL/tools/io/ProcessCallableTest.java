@@ -32,7 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ProcessCallableTest {
- 
+
   @Test
   public void testNormal() throws Exception {
     final byte[] eout = "Jackdaws love my big sphinx of quartz.\n".getBytes();
@@ -49,14 +49,14 @@ public class ProcessCallableTest {
 
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final ByteArrayOutputStream err = new ByteArrayOutputStream();
-  
+
     final ExecutorService exec = Executors.newCachedThreadPool();
 
     final InputOutputStreamPump outPump = new InputOutputStreamPump(null, out);
     final InputOutputStreamPump errPump = new InputOutputStreamPump(null, err);
 
     final ProcessCallable c = new ProcessCallable(proc, outPump, errPump, exec);
-    final Future<Integer> f = exec.submit(c);    
+    final Future<Integer> f = exec.submit(c);
 
     final OutputStream pin = proc.getOutputStream();
 

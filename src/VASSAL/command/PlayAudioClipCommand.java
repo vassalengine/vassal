@@ -24,7 +24,7 @@ import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
 
 public class PlayAudioClipCommand extends Command {
-  public static final String COMMAND_PREFIX="AUDIO\t"; 
+  public static final String COMMAND_PREFIX="AUDIO\t";
   private String clipName;
 
   public PlayAudioClipCommand(String clipName) {
@@ -46,7 +46,7 @@ public class PlayAudioClipCommand extends Command {
   protected Command myUndoCommand() {
     return null;
   }
-  
+
   public static PlayAudioClipCommand decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       return new PlayAudioClipCommand(s.substring(COMMAND_PREFIX.length()));
@@ -55,7 +55,7 @@ public class PlayAudioClipCommand extends Command {
       return null;
     }
   }
-  
+
   public String encode() {
     return COMMAND_PREFIX + clipName;
   }

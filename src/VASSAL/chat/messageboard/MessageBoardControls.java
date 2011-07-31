@@ -98,7 +98,7 @@ public class MessageBoardControls {
           protected void done() {
             try {
               showMessages(get());
-            }          
+            }
             catch (InterruptedException e) {
               ErrorDialog.bug(e);
             }
@@ -117,7 +117,7 @@ public class MessageBoardControls {
     });
     box.add(refresh);
 
-    final JButton b = new JButton(Resources.getString(Resources.CLOSE)); 
+    final JButton b = new JButton(Resources.getString(Resources.CLOSE));
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         msgFrame.setVisible(false);
@@ -145,7 +145,7 @@ public class MessageBoardControls {
           protected void done() {
             try {
               showMessages(get());
-            }          
+            }
             catch (InterruptedException e) {
               ErrorDialog.bug(e);
             }
@@ -156,7 +156,7 @@ public class MessageBoardControls {
             msgFrame.setTitle(serverName != null ?
               Resources.getString("Chat.message_board_title", serverName) :
               Resources.getString("Chat.message_board"));   //$NON-NLS-1$
-        
+
             msgFrame.setVisible(true);
             setEnabled(true);
           }

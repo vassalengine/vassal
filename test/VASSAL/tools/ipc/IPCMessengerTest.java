@@ -60,13 +60,13 @@ public class IPCMessengerTest {
         }
         catch (Throwable e) {
           fail(ThrowableUtils.getStackTrace(e));
-        }        
+        }
       }
     }).start();
 
-    final ObjectOutputStream out = new ObjectOutputStream(out2); 
+    final ObjectOutputStream out = new ObjectOutputStream(out2);
     final ObjectInputStream in = new ObjectInputStream(in2);
-    
+
     Object o;
 
     // test message sending
@@ -121,13 +121,13 @@ public class IPCMessengerTest {
         }
         catch (Throwable e) {
           fail(ThrowableUtils.getStackTrace(e));
-        }        
+        }
       }
     }).start();
 
-    final ObjectOutputStream out = new ObjectOutputStream(out2); 
+    final ObjectOutputStream out = new ObjectOutputStream(out2);
     final ObjectInputStream in = new ObjectInputStream(in2);
-    
+
     Object o;
 
     // test message sending
@@ -171,7 +171,7 @@ public class IPCMessengerTest {
       public void run() {
         try {
           final IPCMessenger ipc = new IPCMessenger(in, out);
-  
+
           ipc.addEventListener(Msg.class, new EventListener<Msg>() {
             public void receive(Object src, Msg msg) {
               try {
@@ -192,7 +192,7 @@ public class IPCMessengerTest {
         }
         catch (Throwable e) {
           fail(ThrowableUtils.getStackTrace(e));
-        }        
+        }
       }
     }, threadName).start();
 

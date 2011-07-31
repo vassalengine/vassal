@@ -139,7 +139,7 @@ public class DragBuffer {
   public PieceIterator getIterator() {
     return new PieceIterator(pieces.iterator());
   }
-  
+
   public boolean isEmpty() {
     return pieces.isEmpty();
   }
@@ -196,7 +196,7 @@ public class DragBuffer {
 
   /**
    * @deprecated Use {@link #sort(Comparator)} instead.
-   */ 
+   */
   @Deprecated
   @SuppressWarnings("unchecked")
   public void sort(VASSAL.tools.Sort.Comparator comp) {

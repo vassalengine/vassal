@@ -29,13 +29,13 @@ import VASSAL.tools.ArrayUtils;
  * A Drop-down list preference.
  */
 public class EnumPreference extends BasicPreference {
-  
+
   public static final String LIST = "list";
-  
+
   protected String defaultValue = "";
   protected String[] options = new String[0];
   protected StringEnumConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "Drop-down List Preference";
   }
@@ -51,7 +51,7 @@ public class EnumPreference extends BasicPreference {
   public void setDefaultValue(Object value) {
     defaultValue = (String) value;
   }
-  
+
   public String[] getAttributeNames() {
     return ArrayUtils.append(
       super.getAttributeNames(),
@@ -65,14 +65,14 @@ public class EnumPreference extends BasicPreference {
       "List Values:  "
     );
   }
-  
+
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.append(
       super.getAttributeTypes(),
       String[].class
     );
   }
-  
+
   public void setAttribute(String key, Object value) {
     if (LIST.equals(key)) {
       if (value instanceof String) {
@@ -86,7 +86,7 @@ public class EnumPreference extends BasicPreference {
     else
       super.setAttribute(key, value);
   }
-  
+
   public String getAttributeValueString(String key) {
     if (LIST.equals(key)) {
       return StringArrayConfigurer.arrayToString(options);
@@ -94,14 +94,14 @@ public class EnumPreference extends BasicPreference {
     else
       return super.getAttributeValueString(key);
   }
-  
+
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new StringEnumConfigurer(getVariableName(), getDescription(), options);
       config.setValue(defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }});
     }
     return config;

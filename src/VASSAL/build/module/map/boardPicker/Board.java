@@ -100,7 +100,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public Board() {
   }
 
-  /** 
+  /**
    * @return this <code>Board</code>'s {@link Map}.
    * Until a game is started that is using this board, the map will be null.
    */
@@ -116,7 +116,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     final String s = getLocalizedConfigureName();
     return s != null ? s : "";
   }
-  
+
   public String getName() {
     final String s = getConfigureName();
     return s != null ? s : "";
@@ -142,15 +142,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    		Resources.getString(Resources.NAME_LABEL),
-    		Resources.getString("Editor.Board.image"), //$NON-NLS-1$
-    		Resources.getString("Editor.Board.reverse"), //$NON-NLS-1$
-    		Resources.getString("Editor.Board.width"), //$NON-NLS-1$
-    		Resources.getString("Editor.Board.height"), //$NON-NLS-1$
-    		Resources.getString(Resources.COLOR_LABEL),
+        Resources.getString(Resources.NAME_LABEL),
+        Resources.getString("Editor.Board.image"), //$NON-NLS-1$
+        Resources.getString("Editor.Board.reverse"), //$NON-NLS-1$
+        Resources.getString("Editor.Board.width"), //$NON-NLS-1$
+        Resources.getString("Editor.Board.height"), //$NON-NLS-1$
+        Resources.getString(Resources.COLOR_LABEL),
     };
   }
-  
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Board.component_type"); //$NON-NLS-1$
   }
@@ -291,11 +291,11 @@ public class Board extends AbstractConfigurable implements GridContainer {
       g.drawImage(fim.get(), tx, ty, obs);
     }
     catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
+      // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
     catch (InterruptedException e) {
-      // This happens if taking a snapshot of the map is cancelled. 
+      // This happens if taking a snapshot of the map is cancelled.
 
       // FIXME: Can we handle this in ImageSaver instead?
     }
@@ -346,7 +346,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
           // find actual tile size
           final int tw = Math.min(ow, location.x+bounds.width-tx);
           final int th = Math.min(oh, location.y+bounds.height-ty);
-          
+
           final Repainter rep = obs == null ? null :
             new Repainter(obs, tx, ty, tw, th);
 
@@ -367,17 +367,17 @@ public class Board extends AbstractConfigurable implements GridContainer {
                   if (requested.containsKey(tile)) {
                     requested.remove(tile);
                     final Point t = tile;
-  
+
                     final Animator a = new Animator(100,
                       new TimingTargetAdapter() {
                         @Override
                         public void timingEvent(float fraction) {
                           alpha.put(t, fraction);
-                          obs.repaint(tx, ty, tw, th); 
+                          obs.repaint(tx, ty, tw, th);
                         }
                       }
                     );
-  
+
                     a.setResolution(20);
                     a.start();
                   }
@@ -392,9 +392,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
                       g2d.setComposite(oldComp);
                     }
                     else {
-                      alpha.remove(tile);                   
+                      alpha.remove(tile);
                       drawTile(g, fim, tx, ty, obs);
-                    } 
+                    }
                   }
                 }
                 else {
@@ -587,7 +587,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public String localizedLocationName(Point p) {
     return grid == null ? null : grid.localizedLocationName(localCoordinates(p));
   }
-  
+
   public Point snapTo(Point p) {
     return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p)));
   }
@@ -629,14 +629,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * @deprecated Bounds are now fixed automagically by {@link ImageOp}s. 
+   * @deprecated Bounds are now fixed automagically by {@link ImageOp}s.
    */
   @Deprecated
   protected void fixBounds() { }
 
   /**
    * Translate the location of the board by the given number of pixels
-   * 
+   *
    * @see #bounds()
    */
   public void translate(int x, int y) {
@@ -645,7 +645,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   /**
    * Set the location of this board
-   * 
+   *
    * @see #bounds()
    */
   public void setLocation(int x, int y) {
@@ -676,7 +676,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * Cleans up {@link Board}s (by invoking {@link Board#cleanUp}) when a
    * game is closed
    * @deprecated Only used to cleanup <code>Board</code> images, which
-   * is now handled automatically by the cache. 
+   * is now handled automatically by the cache.
    */
   @Deprecated
   public static class Cleanup implements GameComponent {
@@ -700,7 +700,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
     /**
      * Mark this board as needing to be cleaned up when the game is closed
-     * 
+     *
      * @param b
      */
     public void addBoard(Board b) {

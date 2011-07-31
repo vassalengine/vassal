@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build;
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * A Buildable instance can be initialized from a configuration file.
  * The configuration file is an XML file in which each XML element
  * represents an object.  The Buildable objects are built into an
- * containment hierarchy that mirrors the XML structure.  
+ * containment hierarchy that mirrors the XML structure.
  */
 public interface Buildable {
   /**

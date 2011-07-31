@@ -92,10 +92,10 @@ public class PositionOption extends VASSAL.configure.Configurer
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken())));
-    }    
+    }
     catch (NumberFormatException e) {
       // This can happen if a VisibilityOption has the same name
-      // as a PositionOption, either currently, or due to editing. 
+      // as a PositionOption, either currently, or due to editing.
       // Don't throw a bug, just log it.
       if (in.indexOf('\t') > 0) {
         ErrorDialog.dataError(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
@@ -132,8 +132,8 @@ public class PositionOption extends VASSAL.configure.Configurer
     if (theFrame.isShowing()) {
       // A resize when the window is already maximised only happens when
       // a window is first resized. Record the pre-maximised bounds.
-      if (theFrame instanceof Frame && 
-          previousBounds != null && 
+      if (theFrame instanceof Frame &&
+          previousBounds != null &&
           ((((Frame) theFrame).getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)) {
         bounds.setBounds(previousBounds);
       }
@@ -150,34 +150,34 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-     final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( ); 
-    
+     final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( );
+
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
       theFrame.setSize(new Dimension(Math.abs(bounds.width),Math.abs(bounds.height)));
     }
     theFrame.setLocation(bounds.getLocation());
-    
+
     // Reduce size to fit on desktop
     int width = theFrame.getSize().width > desktopBounds.width ? desktopBounds.width : theFrame.getSize().width;
     int height = theFrame.getSize().height > desktopBounds.height ? desktopBounds.height : theFrame.getSize().height;
     if (width != theFrame.getSize().width || height != theFrame.getSize().height) {
       theFrame.setSize(width, height);
     }
-    
+
     // Slide whole window onto desktop if any part off desktop
     int x = theFrame.getLocation().x;
     int y = theFrame.getLocation().y;
-    
+
     if (x < desktopBounds.x) x = desktopBounds.x;
     if (y < desktopBounds.y) y = desktopBounds.y;
-    
+
     if (x + theFrame.getSize().width > desktopBounds.x + desktopBounds.width) {
       x = (desktopBounds.x + desktopBounds.width) - theFrame.getSize().width;
     }
     if (y + theFrame.getSize().height > desktopBounds.y + desktopBounds.height) {
       y = (desktopBounds.y + desktopBounds.height) - theFrame.getSize().height;
-    }    
+    }
     if (x != theFrame.getLocation().x || y != theFrame.getLocation().y) {
       theFrame.setLocation(x, y);
     }

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -58,14 +58,14 @@ public class BonesDiceServer extends DieServer {
       query.append("{{")
           .append(rolls[i].getNumDice())
           .append("D")
-          .append(rolls[i].getNumSides());  
+          .append(rolls[i].getNumSides());
 
       if (rolls[i].getPlus() != 0) {
         query.append("+").append(rolls[i].getPlus());
       }
 
       query.append("}}\n");
-    }    
+    }
 
     try {
       return new String[] { new URI("http",
@@ -97,7 +97,7 @@ public class BonesDiceServer extends DieServer {
       for (int j = 0; j < rollSet.dieRolls[i].getNumDice(); ++j) {
         rollSet.dieRolls[i].setResult(j, Integer.parseInt(st.nextToken()));
       }
-    }   
+    }
   }
 
   public void roll(RollSet mr, FormattedString format) {

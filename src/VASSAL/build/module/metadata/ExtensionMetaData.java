@@ -52,7 +52,7 @@ public class ExtensionMetaData extends AbstractMetaData {
 
   /**
    * Build an ExtensionMetaData for the given extension
-   * 
+   *
    * @param ext
    *          Extension
    */
@@ -66,7 +66,7 @@ public class ExtensionMetaData extends AbstractMetaData {
 
   /**
    * Read Extension metadata from specified zip archive
-   * 
+   *
    * @param zip the archive
    */
   public ExtensionMetaData(ZipFile zip) {
@@ -76,7 +76,7 @@ public class ExtensionMetaData extends AbstractMetaData {
   public String getModuleName() {
     return moduleData == null ? "" : moduleData.getName();
   }
-  
+
   public String getModuleVersion() {
     return moduleData == null ? "" : moduleData.getVersion();
   }
@@ -84,11 +84,11 @@ public class ExtensionMetaData extends AbstractMetaData {
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
-  
+
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
-  
+
   /**
    * Write Extension metadata to the specified Archive
    * @param archive Save game Archive
@@ -96,16 +96,16 @@ public class ExtensionMetaData extends AbstractMetaData {
    */
   public void save(ArchiveWriter archive) throws IOException {
     super.save(archive);
-    
+
     // Also save a copy of the current module metadata in the save file. Copy
     // module metadata from the module archive as it will contain full i18n
     // information.
     copyModuleMetadata(archive);
   }
- 
+
   /**
-   * Add elements specific to an ExtensionMetaData 
-   * 
+   * Add elements specific to an ExtensionMetaData
+   *
    * @param doc Document
    * @param root Root element
    */
@@ -114,12 +114,12 @@ public class ExtensionMetaData extends AbstractMetaData {
     e.appendChild(doc.createTextNode(String.valueOf(universal)));
     root.appendChild(e);
   }
-  
+
   /**
    * Read and validate an Extension file.
    *  - Check it has a Zip Entry named buildfile
    *  - If it has a metadata file, read and parse it.
-   *  
+   *
    * @param file Module File
    */
   public void read(ZipFile zip) {
@@ -150,7 +150,7 @@ public class ExtensionMetaData extends AbstractMetaData {
           parser.setErrorHandler(handler);
           parser.parse(new InputSource(in));
         }
-        
+
         in.close();
       }
       finally {
@@ -161,7 +161,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       // built when reading the buildFile, overwrite if we find a real
       // module metadata file
       final ModuleMetaData buildFileModuleData = moduleData;
-      moduleData = new ModuleMetaData(zip); 
+      moduleData = new ModuleMetaData(zip);
       if (moduleData == null) {
         moduleData = buildFileModuleData;
       }
@@ -181,12 +181,12 @@ public class ExtensionMetaData extends AbstractMetaData {
       IOUtils.closeQuietly(zip);
     }
   }
-  
+
   /**
    * XML Handler for parsing an Extension metadata file
    */
   private class MetadataXMLHandler extends XMLHandler {
-    
+
     @Override
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
@@ -198,16 +198,16 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
     }
   }
-  
+
   /**
    * XML Handle for parsing an extension buildFile. Used to read minimal data from
-   * extensions saved prior to 3.1.0. 
+   * extensions saved prior to 3.1.0.
    */
   private class ExtensionBuildFileXMLHandler extends BuildFileXMLHandler {
 
     @Override
     public void startElement(String uri, String localName,
-                             String qName, Attributes attrs) 
+                             String qName, Attributes attrs)
         throws SAXEndException {
       super.startElement(uri, localName, qName, attrs);
 

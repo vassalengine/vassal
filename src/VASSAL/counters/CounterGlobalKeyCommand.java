@@ -197,7 +197,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
     return c;
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, "Command name"));
   }
@@ -217,30 +217,30 @@ public class CounterGlobalKeyCommand extends Decorator
     protected JPanel controls;
 
     public Ed(CounterGlobalKeyCommand p) {
-      
+
       PropertyChangeListener pl = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          
+
           boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
           boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
-          
+
           range.getControls().setVisible(isRange && isFixed);
           fixedRange.getControls().setVisible(isRange);
           rangeProperty.getControls().setVisible(isRange && !isFixed);
-          
+
           Window w = SwingUtilities.getWindowAncestor(range.getControls());
           if (w != null) {
             w.pack();
           }
         }
       };
-      
+
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
       descInput = new StringConfigurer(null, "Description:  ", p.description);
       controls.add(descInput.getControls());
-      
+
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
@@ -252,7 +252,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
       propertyMatch = new PropertyExpressionConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
       controls.add(propertyMatch.getControls());
-      
+
       deckPolicy = new MassKeyCommand.DeckPolicyConfig();
       deckPolicy.setValue(p.globalCommand.getSelectFromDeck());
       controls.add(deckPolicy.getControls());
@@ -260,20 +260,20 @@ public class CounterGlobalKeyCommand extends Decorator
       restrictRange = new BooleanConfigurer(null, "Restrict Range?", p.restrictRange);
       controls.add(restrictRange.getControls());
       restrictRange.addPropertyChangeListener(pl);
-      
+
       fixedRange = new BooleanConfigurer(null, "Fixed Range?", p.fixedRange);
       controls.add(fixedRange.getControls());
       fixedRange.addPropertyChangeListener(pl);
-      
+
       range = new IntConfigurer(null, "Range:  ", p.range);
       controls.add(range.getControls());
 
       rangeProperty = new StringConfigurer(null, "Range Property:  ", p.rangeProperty);
       controls.add(rangeProperty.getControls());
-            
+
       suppress = new BooleanConfigurer(null, "Suppress individual reports?", p.globalCommand.isReportSingle());
       controls.add(suppress.getControls());
-      
+
       pl.propertyChange(null);
     }
 

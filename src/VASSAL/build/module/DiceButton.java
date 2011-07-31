@@ -81,7 +81,7 @@ public class DiceButton extends AbstractConfigurable {
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
   public static final String REPORT_NAME = "name"; //$NON-NLS-1$
-  
+
   public DiceButton() {
     initLaunchButton();
   }
@@ -95,7 +95,7 @@ public class DiceButton extends AbstractConfigurable {
               launch = new LaunchButton(null,BUTTON_TEXT,HOTKEY,null);
             }
           };
-          
+
           final List<String> keepAttributes =
             Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
 
@@ -162,11 +162,11 @@ public class DiceButton extends AbstractConfigurable {
     StringBuilder val = new StringBuilder();
     int total = addToTotal;
     int[] dice = null; // stays null if no sorting
-    
+
     if (!reportTotal && nDice > 1 && sortDice) {
       dice = new int[nDice];
     }
-    
+
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1) + plus;
       if (dice != null) {
@@ -242,19 +242,19 @@ public class DiceButton extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString(Resources.NAME_LABEL),
-    	Resources.getString(Resources.BUTTON_TEXT),
-    	Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
         Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
         Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
         Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
         Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
         Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
-      	Resources.getString(Resources.HOTKEY_LABEL),
-      	Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
-      	Resources.getString("Editor.report_format"), //$NON-NLS-1$
-      	Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
+        Resources.getString("Editor.report_format"), //$NON-NLS-1$
+        Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
     };
   }
 
@@ -293,7 +293,7 @@ public class DiceButton extends AbstractConfigurable {
       return !promptAlways;
     }
   };
-  
+
   private final VisibilityCondition canSort = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return !reportTotal;
@@ -416,22 +416,22 @@ public class DiceButton extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (N_DICE.equals(key)) {
-      return String.valueOf(nDice); 
+      return String.valueOf(nDice);
     }
     else if (N_SIDES.equals(key)) {
       return String.valueOf(nSides);
     }
     else if (PLUS.equals(key)) {
-      return String.valueOf(plus); 
+      return String.valueOf(plus);
     }
     else if (ADD_TO_TOTAL.equals(key)) {
-      return String.valueOf(addToTotal); 
+      return String.valueOf(addToTotal);
     }
     else if (REPORT_TOTAL.equals(key)) {
       return String.valueOf(reportTotal);
     }
     else if (PROMPT_ALWAYS.equals(key)) {
-      return String.valueOf(promptAlways); 
+      return String.valueOf(promptAlways);
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();

@@ -68,7 +68,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected String imageName;
   protected String obscuredToOthersImage;
   protected String obscuredBy;
-  protected ObscurableOptions obscuredOptions; 
+  protected ObscurableOptions obscuredOptions;
   protected String hideCommand = "Mask";
   protected String peekCommand = "Peek";
   protected GamePiece obscuredToMeView;
@@ -82,7 +82,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commandsWithoutPeek;
   protected KeyCommand hide;
   protected KeyCommand peek;
-  
+
   public Obscurable() {
     this(ID + "M;", null);
   }
@@ -94,10 +94,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public void mySetState(String in) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(in, ';');
-    String token = sd.nextToken("null");    
+    String token = sd.nextToken("null");
     obscuredBy = "null".equals(token) ? null : token;
     token = sd.nextToken("");
-    obscuredOptions = (obscuredBy == null ? null : new ObscurableOptions(token)); 
+    obscuredOptions = (obscuredBy == null ? null : new ObscurableOptions(token));
   }
 
   public void mySetType(String in) {
@@ -270,7 +270,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState()+isPeeking()+piece.getProperty(key);
     }
-    // FIXME: Access to Obscured properties 
+    // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
     // traits between this one and the innermost BasicPiece. Return directly
     // any properties normally handled by Decorator.getproperty()
@@ -303,22 +303,22 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (Properties.OBSCURED_TO_ME.equals(key)) {
-    	return Boolean.valueOf(obscuredToMe());
+      return Boolean.valueOf(obscuredToMe());
     }
     else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
-    	return Boolean.valueOf(obscuredToOthers());
+      return Boolean.valueOf(obscuredToOthers());
     }
     else if (ID.equals(key)) {
-    	return obscuredBy;
+      return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-    	return myGetState()+isPeeking()+piece.getProperty(key);
+      return myGetState()+isPeeking()+piece.getProperty(key);
     }
     else {
       return super.getLocalizedProperty(key);
     }
   }
-  
+
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (obscuredToMe()) {
       drawObscuredToMe(g, x, y, obs, zoom);
@@ -395,12 +395,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     maskedName = getTranslation(maskedName);
     return getName(maskedName, true);
   }
-  
+
   public String getName() {
     String maskedName = maskName == null ? "?" : maskName;
     return getName(maskedName, false);
   }
-  
+
   protected String getName(String maskedName, boolean localized) {
     if (obscuredToMe()) {
       return maskedName;
@@ -420,7 +420,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
-      else return ArrayUtils.append(KeyCommand[].class, myC, c); 
+      else return ArrayUtils.append(KeyCommand[].class, myC, c);
     }
     else {
       return super.getKeyCommands();
@@ -430,27 +430,27 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   public KeyCommand[] myGetKeyCommands() {
     ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
     GamePiece outer = Decorator.getOutermost(this);
-      
+
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
       keyCommand = NamedKeyStroke.getNamedKeyStroke(obscureKey, InputEvent.CTRL_MASK);
     }
-      
+
     hide = new KeyCommand(hideCommand, keyCommand, outer, this);
     if (hideCommand.length() > 0 && isMaskable()) {
       l.add(hide);
-      commandsWithoutPeek = new KeyCommand[] {hide};        
+      commandsWithoutPeek = new KeyCommand[] {hide};
     }
     else {
       commandsWithoutPeek = new KeyCommand[0];
     }
-      
+
     // Peek Command
     peek = new KeyCommand(peekCommand, peekKey, outer, this);
     if (displayStyle == PEEK && peekKey != null) {
       l.add(peek);
     }
-      
+
     commandsWithPeek = l.toArray(new KeyCommand[l.size()]);
 
     return obscuredToOthers() &&
@@ -460,17 +460,17 @@ public class Obscurable extends Decorator implements TranslatablePiece {
            commandsWithPeek : commandsWithoutPeek;
   }
 
-  /** 
-   * Return true if this piece can be masked/unmasked by the current player 
+  /**
+   * Return true if this piece can be masked/unmasked by the current player
    * @param id ignored
-   * @deprecated 
+   * @deprecated
    */
   @Deprecated public boolean isMaskableBy(String id) {
     return isMaskable();
   }
 
-  /** 
-   * Return true if this piece can be masked/unmasked by the current player 
+  /**
+   * Return true if this piece can be masked/unmasked by the current player
    */
   public boolean isMaskable() {
     // Check if piece is owned by us. Returns true if we own the piece, or if it
@@ -478,16 +478,16 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (access.currentPlayerCanModify(obscuredBy)) {
       return true;
     }
-    
-    // Check ObscurableOptions in play when piece was Obscured 
+
+    // Check ObscurableOptions in play when piece was Obscured
     if (obscuredOptions != null) {
       return obscuredOptions.isUnmaskable(obscuredBy);
     }
-    
+
     // Fall-back, use current global ObscurableOptions
     return ObscurableOptions.getInstance().isUnmaskable(obscuredBy);
   }
-  
+
   public Command keyEvent(KeyStroke stroke) {
     if (!obscuredToMe()) {
       return super.keyEvent(stroke);
@@ -526,7 +526,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
     // For the "peek" display style with no key command (i.e. appears
     // face-up whenever selected).
-    // 
+    //
     // It looks funny if we turn something face down but we can still see it.
     // Therefore, un-select the piece if turning it face down
     if (retVal != null && PEEK == displayStyle &&
@@ -572,17 +572,17 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {hideCommand, maskName, peekCommand}, new String[] {"Mask command", "Name when masked", "Peek command"});
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<String>();
     l.add(Properties.OBSCURED_TO_OTHERS);
-    l.add(Properties.OBSCURED_TO_ME);    
+    l.add(Properties.OBSCURED_TO_ME);
     return l;
   }
-  
+
   private static class Ed implements PieceEditor {
     private ImagePicker picker;
     private NamedHotKeyConfigurer obscureKeyInput;
@@ -604,7 +604,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       obscureKeyInput = new NamedHotKeyConfigurer(null,"  Keyboard Command:  ",p.keyCommand);
       box.add(obscureKeyInput.getControls());
       controls.add(box);
-      
+
       accessConfig = new PieceAccessConfigurer(null,"Can be masked by:  ",p.access);
       controls.add(accessConfig.getControls());
 

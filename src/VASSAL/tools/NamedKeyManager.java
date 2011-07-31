@@ -24,33 +24,33 @@ import java.util.HashMap;
 import javax.swing.KeyStroke;
 
 public class NamedKeyManager {
-  
+
   protected static NamedKeyManager instance;
-  
+
   /*
-   * Named Keys are allocated real Keystrokes 
-   * in the sequence from '\uE000' to '\uF8FE'. 
+   * Named Keys are allocated real Keystrokes
+   * in the sequence from '\uE000' to '\uF8FE'.
    * The value '\uF8FF' is used as a place marker to
    * indicate a real KeyStroke has not been allocated yet.
    */
   protected static final int NAMED_START = '\uE000';
   protected static final int NAMED_END = '\uF8FE';
-  protected static final int NAMED_MARKER = '\uF8FF'; 
-  
+  protected static final int NAMED_MARKER = '\uF8FF';
+
   protected static int nextNamedKey = NAMED_START;
   protected static HashMap<String, KeyStroke> strokes =
     new HashMap<String, KeyStroke>();
-  
+
   public NamedKeyManager() {
   }
-  
+
   public static NamedKeyManager getInstance() {
     if (instance == null) {
       instance = new NamedKeyManager();
     }
     return instance;
   }
-  
+
   /**
    * Return true if the supplied KeyStroke is in the range allocated
    * to NamedKeyStrokes
@@ -64,15 +64,15 @@ public class NamedKeyManager {
     int code = k.getKeyCode();
     return code == NAMED_MARKER || (code >= NAMED_START && code <= NAMED_END);
   }
-  
+
   /**
-   * Return a generic marker KeyStroke 
+   * Return a generic marker KeyStroke
    * @return
    */
   public static KeyStroke getMarkerKeyStroke() {
     return KeyStroke.getKeyStroke(NAMED_MARKER, 0);
   }
-  
+
   /**
    * Return the generated KeyStroke associated with the NamedKeyStroke
    * @param vkey
@@ -83,7 +83,7 @@ public class NamedKeyManager {
     if (!vkey.isNamed()) {
       return vkey.getStroke();
     }
-    
+
     // Look up the name in the cache and allocate the next
     // available KeyStroke if required.
     KeyStroke stroke = strokes.get(vkey.getName());
@@ -91,10 +91,10 @@ public class NamedKeyManager {
       stroke = KeyStroke.getKeyStroke(getNextStroke(), 0);
       strokes.put(vkey.getName(), stroke);
     }
-    
+
     return stroke;
   }
-  
+
   /**
    * Return the next KeyStroke from the pool
    * @return KeyStroke Id

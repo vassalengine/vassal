@@ -19,9 +19,9 @@ import VASSAL.tools.NamedKeyStroke;
 
 /**
  * Adds a button to the toolbar to manipulate Game Piece Layers
- * 
+ *
  * @author Brent Easton
- *  
+ *
  */
 public class LayerControl extends AbstractConfigurable {
 
@@ -65,7 +65,7 @@ public class LayerControl extends AbstractConfigurable {
       pieceCollection.rotate(true, skip);
     }
     else if (command.equals(CMD_ROTATE_DN)) {
-      pieceCollection.rotate(false, skip); 
+      pieceCollection.rotate(false, skip);
     }
     else if (command.equals(CMD_ENABLE)) {
       for (int i = 0; i < layers.length; i++) {
@@ -115,13 +115,13 @@ public class LayerControl extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    		Resources.getString(Resources.BUTTON_TEXT),
-    		Resources.getString(Resources.TOOLTIP_TEXT),
-    		Resources.getString(Resources.BUTTON_ICON),
-    		Resources.getString(Resources.HOTKEY_LABEL),
-    		Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
-    		Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
-    		Resources.getString("Editor.LayerControl.affect_layer"), //$NON-NLS-1$
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
+        Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
+        Resources.getString("Editor.LayerControl.affect_layer"), //$NON-NLS-1$
     };
   }
 
@@ -142,7 +142,7 @@ public class LayerControl extends AbstractConfigurable {
       return COMMANDS;
     }
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, COMMAND, SKIP, LAYERS};
   }
@@ -211,7 +211,7 @@ public class LayerControl extends AbstractConfigurable {
       return null;
     }
   }
-  
+
   public void addTo(Buildable parent) {
     pieceLayers = (LayeredPieceCollection) parent;
     pieceLayers.getToolBar().add(launch);

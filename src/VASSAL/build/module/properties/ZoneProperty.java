@@ -25,29 +25,29 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 
 /**
- * 
+ *
  * @author Brent Easton
- * 
+ *
  * A class implementing a cut-down Global property at the Zone level. Zone Properties
  * do not have Toolbar butttons, but are controlled by SetGlobalProperty traits in
  * counters.
  */
 public class ZoneProperty extends GlobalProperty {
-  
+
   protected Zone parentZone;
-  
+
   public ZoneProperty() {
     super();
   }
-  
+
   public static String getConfigureTypeName() {
     return "Global Property";
   }
-  
+
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-  
+
   protected String getPropertyId() {
     String zoneName = parentZone == null ? null : parentZone.getName();
     Board board = parentZone == null ? null : parentZone.getBoard();
@@ -64,5 +64,5 @@ public class ZoneProperty extends GlobalProperty {
     propertySource = (PropertySource) parent;
     parentZone = (Zone) parent;
   }
-    
+
 }

@@ -238,7 +238,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       catch (NumberFormatException e) {
         cycleIndex = -1;
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);             
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);
       }
     }
     else {
@@ -308,7 +308,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     }
     return getI18nData(formats, descriptions);
   }
-  
+
   public static final String OLD_UNIT_NAME = "oldPieceName";
   public static final String NEW_UNIT_NAME = "newPieceName";
   public static final String MAP_NAME = "mapName";
@@ -386,10 +386,10 @@ public class ReportState extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
   }
-  
+
   /**
    * Looks in both the new and old piece for property values.
-   * Any properties with names of the format "oldXyz" are changed 
+   * Any properties with names of the format "oldXyz" are changed
    * to "xyz" and applied to the old piece.
    * @author rkinney
    *
@@ -416,10 +416,10 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       return value;
     }
-    
+
     public Object getLocalizedProperty(Object key) {
       return getProperty(key);
     }
-    
+
   }
 }

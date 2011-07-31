@@ -177,7 +177,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p = getMap().snapTo(p);
     }
 
-    if (m.getStackMetrics().isStackingEnabled() &&  
+    if (m.getStackMetrics().isStackingEnabled() &&
         !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
         !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
         m.getPieceCollection().canMerge(outer, marker)) {
@@ -213,10 +213,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
                          PieceCloner.getInstance().clonePiece(marker));
       c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
     }
-      
+
     if (getProperty(Properties.SELECTED) == Boolean.TRUE)
-    	selectMarker(marker);
-    
+      selectMarker(marker);
+
     if (markerText != null) {
       if (!Boolean.TRUE.equals(
             outer.getProperty(Properties.OBSCURED_TO_OTHERS)) &&
@@ -249,7 +249,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   /**
    * The marker, with prototypes fully expanded
-   * 
+   *
    * @return
    */
   public GamePiece createMarker() {
@@ -267,7 +267,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   /**
    * The marker, with prototypes unexpanded
-   * 
+   *
    * @return
    */
   public GamePiece createBaseMarker() {
@@ -365,24 +365,24 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, "Place Marker command"));
   }
-  
+
   public String getGpId() {
     return gpId;
   }
-  
+
   public void setGpId(String s) {
     gpId = s;
   }
-  
+
   public void updateGpId(GpIdSupport s) {
     gpidSupport = s;
     updateGpId();
   }
-  
+
   public void updateGpId() {
     setGpId(gpidSupport.generateGpId());
   }
-  
+
   protected static class Ed implements PieceEditor {
     private NamedHotKeyConfigurer keyInput;
     private StringConfigurer commandInput;
@@ -473,7 +473,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected BooleanConfigurer createMatchRotationConfig() {
       return new BooleanConfigurer(null, "Match Rotation?");
     }
-    
+
     protected BooleanConfigurer createAboveConfig() {
       return null;
     }

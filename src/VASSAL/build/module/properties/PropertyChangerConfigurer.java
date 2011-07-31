@@ -38,9 +38,9 @@ import VASSAL.tools.SequenceEncoder;
  * Configurer instance that allows a module editor to specify a
  * PropertyChanger, i.e. the way in which a dynamic property will be
  * updated by a player during a game
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class PropertyChangerConfigurer extends Configurer {
   protected static final String PLAIN_TYPE = "Set value directly";

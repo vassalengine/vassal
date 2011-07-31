@@ -44,7 +44,7 @@ public class Version implements Comparable<Version> {
   public Version(String v) {
     this(v, new SimpleVersionTokenizer(v));
   }
-  
+
   protected Version(String v, VersionTokenizer tok) {
     vstring = v;
 
@@ -61,7 +61,7 @@ public class Version implements Comparable<Version> {
   }
 
   public boolean isValid() {
-    return valid; 
+    return valid;
   }
 
   /**
@@ -79,11 +79,11 @@ public class Version implements Comparable<Version> {
     while (i.hasNext() && j.hasNext()) {
       final int a = i.next();
       final int b = j.next();
-      
+
       if (a != b) return a - b;
     }
 
-    // versions which match up to the point of invalidity are equal 
+    // versions which match up to the point of invalidity are equal
     if (!this.isValid() || !v.isValid()) return 0;
 
     // otherwise, the shorter one is earlier; or they're the same
@@ -91,6 +91,6 @@ public class Version implements Comparable<Version> {
   }
 
   public String toString() {
-    return vstring; 
-  } 
+    return vstring;
+  }
 }

@@ -31,7 +31,7 @@ public class NullExpression extends Expression {
   public NullExpression() {
     setExpression("");
   }
-  
+
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     return "";

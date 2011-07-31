@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -51,7 +51,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
         new PushbackInputStream(in, header.length);
       pin.unread(header);
       this.in = pin;
-    }   
+    }
   }
 
   /**
@@ -69,7 +69,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     int n = 0;
     while (n < len) {
       count = in.read(bytes, off + n, len - n);
-      if (count < 0) break; 
+      if (count < 0) break;
       n += count;
     }
 

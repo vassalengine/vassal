@@ -46,12 +46,12 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
 
 public class TextSaver extends AbstractConfigurable {
-  
+
   protected static final String HOTKEY = "hotkey";
   protected static final String BUTTON_TEXT = "buttonText";
   protected static final String TOOLTIP = "tooltip";
   protected static final String ICON_NAME = "icon";
-  
+
   protected Map map;
   protected LaunchButton launch;
 
@@ -66,7 +66,7 @@ public class TextSaver extends AbstractConfigurable {
                               HOTKEY, ICON_NAME, al);
     launch.setAttribute(TOOLTIP, "Save map contents as plain text file");
   }
-  
+
 
   public String[] getAttributeNames() {
     return new String[] {
@@ -79,10 +79,10 @@ public class TextSaver extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    		Resources.getString(Resources.BUTTON_TEXT),
-    		Resources.getString(Resources.TOOLTIP_TEXT),
-    		Resources.getString(Resources.BUTTON_ICON),
-    		Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
     };
   }
 
@@ -100,7 +100,7 @@ public class TextSaver extends AbstractConfigurable {
       return new IconConfigurer(key, name, ((TextSaver) c).launch.getAttributeValueString(ICON_NAME));
     }
   }
-  
+
   public void setAttribute(String key, Object value) {
     launch.setAttribute(key, value);
   }
@@ -108,7 +108,7 @@ public class TextSaver extends AbstractConfigurable {
   public String getAttributeValueString(String key) {
     return launch.getAttributeValueString(key);
   }
-  
+
   public void addTo(Buildable b) {
     map = (Map) b;
     map.getToolBar().add(launch);
@@ -144,18 +144,18 @@ public class TextSaver extends AbstractConfigurable {
     PrintWriter p = null;
     try {
       p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-      
+
       for (GamePiece gp : map.getPieces()) {
         final String s = gp.getName();
         if (s.length() > 0) {
           p.println(map.locationName(gp.getPosition()) + ": " + s);
         }
       }
-  
+
       p.close();
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, file);  
+      WriteErrorDialog.error(e, file);
     }
     finally {
       IOUtils.closeQuietly(p);
@@ -170,7 +170,7 @@ public class TextSaver extends AbstractConfigurable {
     return Resources.getString("Editor.TextCapture.component_type"); //$NON-NLS-1$
   }
 
-  /** 
+  /**
    * @return an array of Configurer objects representing
    * all possible classes of Buildable children of this Configurable object
    */

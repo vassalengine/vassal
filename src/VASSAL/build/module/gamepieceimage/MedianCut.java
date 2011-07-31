@@ -16,7 +16,7 @@ import java.awt.image.WritableRaster;
    @deprecated
 */
 @Deprecated public class MedianCut {
-   
+
    static final int MAXCOLORS = 256;   // maximum # of output colors
    static final int HSIZE = 32768;     // size of image histogram
    private int[] hist;                 // RGB histogram and reverse color lookup table
@@ -24,15 +24,15 @@ import java.awt.image.WritableRaster;
    private Cube[] list;                // list of cubes
    private int[] pixels32;
    private int width, height;
-   private IndexColorModel cm; 
+   private IndexColorModel cm;
 
    public MedianCut(BufferedImage image) {
      int color16;
-     
+
      width = image.getWidth();
      height = image.getHeight();
      pixels32 = image.getRGB(0, 0, width, height, null, 0, width);
-     
+
      //build 32x32x32 RGB histogram
      hist = new int[HSIZE];
      for (int i=0; i<width*height; i++) {
@@ -40,14 +40,14 @@ import java.awt.image.WritableRaster;
          hist[color16]++;
      }
    }
-   
+
    int getColorCount() {
        int count = 0;
        for (int i=0; i<HSIZE; i++)
            if (hist[i]>0) count++;
        return count;
    }
-   
+
 
    Color getModalColor() {
        int max=0;
@@ -59,7 +59,7 @@ import java.awt.image.WritableRaster;
            }
        return new Color(red(c), green(c), blue(c));
    }
-   
+
 
    // Convert from 24-bit to 15-bit color
    private final int rgb(int c) {
@@ -68,17 +68,17 @@ import java.awt.image.WritableRaster;
        int b = (c&0xf8)<<7;
        return b | g | r;
    }
-   
+
    // Get red component of a 15-bit color
    private final int red(int x) {
        return (x&31)<<3;
    }
-   
+
    // Get green component of a 15-bit color
    private final int green(int x) {
        return (x>>2)&0xf8;
    }
-   
+
    // Get blue component of a 15-bit color
    private final int blue(int x) {
        return (x>>7)&0xf8;
@@ -92,7 +92,7 @@ import java.awt.image.WritableRaster;
    public BufferedImage convert(int maxcubes) {
        return convertToByte(maxcubes);
    }
-   
+
    public IndexColorModel buildColorModel(int maxcubes) {
      convertToByte(maxcubes);
      return cm;
@@ -106,7 +106,7 @@ import java.awt.image.WritableRaster;
        int k, level, ncubes, splitpos;
        int longdim=0;  //longest dimension of cube
        Cube cube, cubeA, cubeB;
-       
+
        // Create initial cube
        list = new Cube[MAXCOLORS];
        histPtr = new int[HSIZE];
@@ -124,12 +124,12 @@ import java.awt.image.WritableRaster;
        list[ncubes++] = cube;
 
        //Main loop
-       while (ncubes < maxcubes) { 
+       while (ncubes < maxcubes) {
 
            // Search the list of cubes for next cube to split, the lowest level cube
-           level = 255; splitpos = -1; 
+           level = 255; splitpos = -1;
            for (k=0; k<=ncubes-1; k++) {
-               if (list[k].lower == list[k].upper)  
+               if (list[k].lower == list[k].upper)
                    ;   // single color; cannot be split
                else if (list[k].level < level) {
                    level = list[k].level;
@@ -147,7 +147,7 @@ import java.awt.image.WritableRaster;
            if (lr >= lg && lr >= lb) longdim = 0;
            if (lg >= lr && lg >= lb) longdim = 1;
            if (lb >= lr && lb >= lg) longdim = 2;
-           
+
            // Sort along "longdim"
            reorderColors(histPtr, cube.lower, cube.upper, longdim);
            quickSort(histPtr, cube.lower, cube.upper);
@@ -165,7 +165,7 @@ import java.awt.image.WritableRaster;
            // Now split "cube" at the median and add the two new
            // cubes to the list of cubes.
            cubeA = new Cube();
-           cubeA.lower = cube.lower; 
+           cubeA.lower = cube.lower;
            cubeA.upper = median-1;
            cubeA.count = count;
            cubeA.level = cube.level + 1;
@@ -173,8 +173,8 @@ import java.awt.image.WritableRaster;
            list[splitpos] = cubeA;             // add in old slot
 
            cubeB = new Cube();
-           cubeB.lower = median; 
-           cubeB.upper = cube.upper; 
+           cubeB.lower = median;
+           cubeB.upper = cube.upper;
            cubeB.count = cube.count - count;
            cubeB.level = cube.level + 1;
            Shrink(cubeB);
@@ -187,7 +187,7 @@ import java.awt.image.WritableRaster;
        makeInverseMap(hist, ncubes);
        return makeImage();
    }
-   
+
    void Shrink(Cube cube) {
    // Encloses "cube" with a tight-fitting cube by updating the
    // (rmin,gmin,bmin) and (rmax,gmax,bmax) members of "cube".
@@ -255,8 +255,8 @@ import java.awt.image.WritableRaster;
            bLUT[k] = (byte)b;
        }
        cm = new IndexColorModel(8, ncubes, rLUT, gLUT, bLUT);
-       
-       // For each color in each cube, load the corre- 
+
+       // For each color in each cube, load the corre-
        // sponding slot in "hist" with the centroid of the cube.
        for (int k=0; k<=ncubes-1; k++) {
            cube = list[k];
@@ -266,12 +266,12 @@ import java.awt.image.WritableRaster;
            }
        }
    }
-   
+
 
    void reorderColors(int[] a, int lo, int hi, int longDim) {
    // Change the ordering of the 5-bit colors in each word of int[]
    // so we can sort on the 'longDim' color
-   
+
        int c, r, g, b;
        switch (longDim) {
            case 0: //red
@@ -294,11 +294,11 @@ import java.awt.image.WritableRaster;
                break;
        }
    }
-   
+
 
    void restoreColorOrder(int[] a, int lo, int hi, int longDim) {
    // Restore the 5-bit colors to the original order
-   
+
        int c, r, g, b;
        switch (longDim){
            case 0: //red
@@ -321,11 +321,11 @@ import java.awt.image.WritableRaster;
                break;
        }
    }
-   
-   
+
+
    void quickSort(int a[], int lo0, int hi0) {
   // Based on the QuickSort method by James Gosling from Sun's SortDemo applet
-  
+
      int lo = lo0;
      int hi = hi0;
      int mid, t;
@@ -338,7 +338,7 @@ import java.awt.image.WritableRaster;
            while( ( hi > lo0 ) && ( a[hi] > mid ) )
               --hi;
            if( lo <= hi ) {
-             t = a[lo]; 
+             t = a[lo];
              a[lo] = a[hi];
              a[hi] = t;
               ++lo;
@@ -356,25 +356,25 @@ import java.awt.image.WritableRaster;
 
    BufferedImage makeImage() {
    // Generate 8-bit image
-   
+
        //Image img8;
        byte[] pixels8;
        int color16;
-       
+
        pixels8 = new byte[width*height];
        for (int i=0; i<width*height; i++) {
            color16 = rgb(pixels32[i]);
            pixels8[i] = (byte)hist[color16];
        }
 
-       SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[] {0}); 
+       SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[] {0});
        DataBufferByte Buffer = new DataBufferByte(pixels8, pixels8.length);
        WritableRaster raster = Raster.createWritableRaster(sampleModel, Buffer, null);
 
        return new BufferedImage(cm, raster, false, null);
    }
-   
-   
+
+
 } //class MedianCut
 
 
@@ -386,10 +386,10 @@ class Cube {            // structure for a cube in color space
    int  rmin, rmax;
    int  gmin, gmax;
    int  bmin, bmax;
-   
+
    Cube() {
        count = 0;
-   }   
+   }
 
    public String toString() {
        String s = "lower=" + lower + " upper=" + upper; //$NON-NLS-1$ //$NON-NLS-2$
@@ -399,6 +399,6 @@ class Cube {            // structure for a cube in color space
        s = s + " bmin=" + bmin + " bmax=" + bmax; //$NON-NLS-1$ //$NON-NLS-2$
        return s;
    }
-   
+
 }
- 
+

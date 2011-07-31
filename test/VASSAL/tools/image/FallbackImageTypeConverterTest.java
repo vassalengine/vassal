@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -65,9 +65,9 @@ public class FallbackImageTypeConverterTest {
   public void testLoadMemory() throws IOException {
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
     final File tmpFile = new File(tmp);
-  
+
     BufferedImage dst = null;
-    try { 
+    try {
       final FallbackImageTypeConverter c = new FallbackImageTypeConverter(tf);
       dst = c.convert(ref, BufferedImage.TYPE_INT_ARGB_PRE);
 
@@ -86,7 +86,7 @@ public class FallbackImageTypeConverterTest {
   public void testLoadFile() throws IOException {
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
     final File tmpFile = new File(tmp);
-  
+
     final ImageTypeConverter mock = context.mock(ImageTypeConverter.class);
 
     context.checking(new Expectations() {
@@ -99,7 +99,7 @@ public class FallbackImageTypeConverterTest {
     });
 
     BufferedImage dst = null;
-    try { 
+    try {
       final FallbackImageTypeConverter c = new FallbackImageTypeConverter(
         tf, mock, new FileImageTypeConverter(tf)
       );

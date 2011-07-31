@@ -23,7 +23,7 @@ import VASSAL.counters.EditablePiece;
 /**
  * Decorators that contain localizable elements must implement
  * this interface
- * 
+ *
  * @author Brent Easton
  *
  */
@@ -35,5 +35,5 @@ public interface TranslatablePiece extends EditablePiece {
    * Return a PieceI18nData object returning the I18n data about this GamePiece.
    */
   public PieceI18nData getI18nData();
-  
+
 }

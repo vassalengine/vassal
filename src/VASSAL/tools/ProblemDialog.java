@@ -37,7 +37,7 @@ import VASSAL.tools.swing.DetailsDialog;
  */
 public class ProblemDialog {
   private ProblemDialog() {}
-  
+
   private static final Logger logger =
     LoggerFactory.getLogger(ProblemDialog.class);
 
@@ -103,8 +103,8 @@ public class ProblemDialog {
         );
       }
     });
-  } 
- 
+  }
+
   public static Future<?> showDisableable(
     int messageType,
     Object key,
@@ -125,7 +125,7 @@ public class ProblemDialog {
   {
     return showDisableable(messageType, parent, null, key, messageKey, args);
   }
-  
+
   public static Future<?> showDisableable(
     int messageType,
     Throwable thrown,
@@ -172,9 +172,9 @@ public class ProblemDialog {
           title,
           heading,
           message,
-          messageType, 
+          messageType,
           key,
-          Resources.getString("Dialogs.disable") 
+          Resources.getString("Dialogs.disable")
         );
       }
     });
@@ -200,7 +200,7 @@ public class ProblemDialog {
   {
     return showDetails(messageType, parent, null, details, messageKey, args);
   }
-  
+
   public static Future<?> showDetails(
     int messageType,
     Throwable thrown,
@@ -251,8 +251,8 @@ public class ProblemDialog {
           Resources.getString("Dialogs.disable"),
           Resources.getString("Dialogs.show_details"),
           Resources.getString("Dialogs.hide_details"),
-          messageType, 
-          null 
+          messageType,
+          null
         );
       }
     });
@@ -282,7 +282,7 @@ public class ProblemDialog {
       messageType, parent, null, details, key, messageKey, args
     );
   }
-  
+
   public static Future<?> showDetailsDisableable(
     int messageType,
     Throwable thrown,
@@ -335,9 +335,9 @@ public class ProblemDialog {
           details,
           Resources.getString("Dialogs.disable"),
           Resources.getString("Dialogs.show_details"),
-          Resources.getString("Dialogs.hide_details"), 
-          messageType, 
-          key 
+          Resources.getString("Dialogs.hide_details"),
+          messageType,
+          key
         );
       }
     });

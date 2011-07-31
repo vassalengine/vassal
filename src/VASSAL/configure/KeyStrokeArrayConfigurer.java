@@ -57,7 +57,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     if (panel == null) {
       panel = new JPanel(new BorderLayout());
       controls = Box.createVerticalBox();
-      final JScrollPane scroll = new JScrollPane(controls); 
+      final JScrollPane scroll = new JScrollPane(controls);
       Box b = Box.createHorizontalBox();
       controls.add(b);
       JLabel l = new JLabel(getName());
@@ -68,17 +68,17 @@ public class KeyStrokeArrayConfigurer extends Configurer {
         public void actionPerformed(ActionEvent e) {
           addKey(null);
         }
-      }); 
-  
+      });
+
       panel.add(scroll, BorderLayout.CENTER);
-      
+
       KeyStroke[] keyStrokes = (KeyStroke[]) value;
       if (keyStrokes != null) {
         for (int i = 0; i < keyStrokes.length; i++) {
           addKey(keyStrokes[i]);
         }
       }
-      addKey(null);   
+      addKey(null);
     }
     return panel;
   }

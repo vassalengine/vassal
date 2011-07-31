@@ -74,7 +74,7 @@ import VASSAL.tools.swing.Dialogs;
 
 /**
  * Class to load a directory full of images and create counters
- * 
+ *
  */
 public class MassPieceLoader {
 
@@ -84,7 +84,7 @@ public class MassPieceLoader {
   protected static final int SKIP_COL = 3;
   protected static final int COPIES_COL = 4;
   protected static final int COLUMN_COUNT = 5;
-  
+
   protected Configurable target;
   protected ConfigureTree configureTree;
   protected ArrayList<String> imageNames = new ArrayList<String>();
@@ -190,7 +190,7 @@ public class MassPieceLoader {
       buttonBox.add(cancelButton);
 
       // FIXME: Needs a Help button
-      
+
       add(buttonBox);
       pack();
       setLocationRelativeTo(getParent());
@@ -252,14 +252,14 @@ public class MassPieceLoader {
      * Build a tree representing the Game Pieces, Layers, Levels and images to
      * be loaded. This tree is used as a model for the JxTreeTable, and also as
      * the guide to load the counters.
-     * 
+     *
      * @param dir
      *          Directory containing images
      */
     protected void buildTree(File dir) {
 
       loadDirectory = dir;
-      
+
       // Make a list of the Layer traits in the template
       layers.clear();
       GamePiece piece = definer.getPiece();
@@ -351,10 +351,10 @@ public class MassPieceLoader {
         return c;
       }
     }
-    
+
     class CopiesRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
-    
+
       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel renderedLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         final BasicNode node = (BasicNode) tree.getPathForRow(row).getLastPathComponent();
@@ -393,7 +393,7 @@ public class MassPieceLoader {
       public Component getTableCellEditorComponent(JTable table, Object value,
           boolean isSelected, int row, int column) {
         Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        c.setForeground(Color.blue);  
+        c.setForeground(Color.blue);
         return c;
       }
     }
@@ -414,7 +414,7 @@ public class MassPieceLoader {
 
     /**
      * Load all image names in the target directory
-     * 
+     *
      * @param dir
      */
     protected void loadImageNames(File dir) {
@@ -451,7 +451,7 @@ public class MassPieceLoader {
 
     /**
      * Load a specific piece and and all referenced images.
-     * 
+     *
      * @param pieceNode
      *          Sub-tree representing piece
      */
@@ -531,7 +531,7 @@ public class MassPieceLoader {
 
   /**
    * Add the named image to the module
-   * 
+   *
    * @param name
    *          Image name
    */
@@ -551,7 +551,7 @@ public class MassPieceLoader {
   /**
    * Maintain a record of all names changed by the user for image basenames.
    * Default name is image name with image suffix stripped.
-   * 
+   *
    * @param baseName
    *          Image name
    * @return user modified name
@@ -563,9 +563,9 @@ public class MassPieceLoader {
   }
 
   /**
-   * 
+   *
    * A custom piece definer based on the Prototype piece definer
-   * 
+   *
    */
   static class MassPieceDefiner extends PrototypeDefinition.Config.Definer {
     private static final long serialVersionUID = 1L;
@@ -597,10 +597,10 @@ public class MassPieceLoader {
   }
 
   /**
-   * 
+   *
    * Dialog to hold the PieceDefiner used to specify the multi-load piece
    * template.
-   * 
+   *
    */
   class DefineDialog extends JDialog {
     private static final long serialVersionUID = 1L;
@@ -743,7 +743,7 @@ public class MassPieceLoader {
   /**
    * Custom implementation of JXTreeTable Fix for bug on startup generating
    * illegal column numbers
-   * 
+   *
    */
   class MyTreeTable extends JXTreeTable {
 
@@ -830,11 +830,11 @@ public class MassPieceLoader {
     public void setCopies(int i) {
       copies = i;
     }
-    
+
     public int getCopies() {
       return copies;
     }
-    
+
     public String getDescription() {
       return "Root";
     }
@@ -860,7 +860,7 @@ public class MassPieceLoader {
   /**
    * Node representing a GamePiece to be loaded. imageName is the name of the
    * Basic Piece image
-   * 
+   *
    */
   class PieceNode extends BasicNode {
 
@@ -923,7 +923,7 @@ public class MassPieceLoader {
 
   /**
    * Node representing an individual Image Level within a Layer trait
-   * 
+   *
    */
   class LevelNode extends BasicNode {
     int levelNumber;
@@ -946,7 +946,7 @@ public class MassPieceLoader {
   /**
    * Utility class to hold user changes about pieces - Updated piece name - Skip
    * load flag
-   * 
+   *
    */
   class PieceInfo {
     protected String name;
@@ -1038,7 +1038,7 @@ public class MassPieceLoader {
     /**
      * Set the actual layer images based on a base image and the layer image
      * template specification.
-     * 
+     *
      * @param baseImage
      *          base Image name
      * @param levelImages

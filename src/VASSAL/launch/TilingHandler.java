@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010, 2011 by Joel Uckelman 
+ * Copyright (c) 2010, 2011 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -125,10 +125,10 @@ public class TilingHandler {
 
   protected Pair<Integer,Integer> findImages(
     DataArchive archive,
-    FileStore tcache, 
+    FileStore tcache,
     List<String> multi,
     List<Pair<String,IOException>> failed) throws IOException
-  { 
+  {
     // build a list of all multi-tile images and count tiles
     final Set<String> images = archive.getImageNameSet();
 
@@ -138,9 +138,9 @@ public class TilingHandler {
     for (String iname : images) {
       // skip images with fresh tiles
       if (isFresh(archive, tcache, iname)) continue;
-    
+
       final Dimension idim;
-      try { 
+      try {
         idim = getImageSize(archive, iname);
       }
       catch (IOException e) {
@@ -150,17 +150,17 @@ public class TilingHandler {
       }
 
       // count the tiles at all sizes if we have more than one tile at 1:1
-      final int t = TileUtils.tileCountAtScale(idim, tdim, 1) > 1 ? 
+      final int t = TileUtils.tileCountAtScale(idim, tdim, 1) > 1 ?
                     TileUtils.tileCount(idim, tdim) : 0;
-     
+
       if (t == 0) continue;
- 
+
       tcount += t;
       multi.add("images/" + iname);
 
       // check whether this image has the most pixels
       if (idim.width * idim.height > maxpix) {
-        maxpix = idim.width * idim.height; 
+        maxpix = idim.width * idim.height;
       }
     }
 
@@ -168,7 +168,7 @@ public class TilingHandler {
   }
 
   protected void runSlicer(List<String> multi, final int tcount, int maxsize)
-                                   throws CancellationException, IOException { 
+                                   throws CancellationException, IOException {
 
     final InetAddress lo = InetAddress.getByName(null);
     final ServerSocket ssock = new ServerSocket(0, 0, lo);
@@ -178,7 +178,7 @@ public class TilingHandler {
 // TODO: do something to determine the right max heap size based on the
 // size of the largest image to be tiled
     final List<String> args = new ArrayList<String>();
-    args.addAll(Arrays.asList(new String[] { 
+    args.addAll(Arrays.asList(new String[] {
       Info.javaBinPath,
       "-classpath",
       System.getProperty("java.class.path"),
@@ -245,11 +245,11 @@ public class TilingHandler {
       byte type;
       while (!done) {
         type = in.readByte();
-  
+
         switch (type) {
         case STARTING_IMAGE:
           final String ipath = in.readUTF();
-  
+
           EDT.execute(new Runnable() {
             public void run() {
               pd.setLabel("Tiling " + ipath);
@@ -260,16 +260,16 @@ public class TilingHandler {
 
         case TILE_WRITTEN:
           progressor.increment();
-  
+
           if (progressor.get() >= tcount) {
             pd.setVisible(false);
-          } 
+          }
           break;
-  
+
         case TILING_FINISHED:
           done = true;
           break;
-  
+
         default:
           throw new IllegalStateException("bad type: " + type);
         }
@@ -280,7 +280,7 @@ public class TilingHandler {
       ssock.close();
     }
     catch (IOException e) {
-      
+
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -324,7 +324,7 @@ public class TilingHandler {
    * @throws IOException if one occurs
    */
   public void sliceTiles() throws CancellationException, IOException {
-    final DataArchive archive = new DataArchive(aname); 
+    final DataArchive archive = new DataArchive(aname);
     final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
 
     final List<String> multi = new ArrayList<String>();

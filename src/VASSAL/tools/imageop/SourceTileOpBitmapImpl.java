@@ -40,14 +40,14 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
   private final ImageOp sop;
   private final int x0, y0, x1, y1;
   private final int hash;
- 
+
   public SourceTileOpBitmapImpl(ImageOp sop, int tileX, int tileY) {
     if (sop == null) throw new IllegalArgumentException();
 
     if (tileX < 0 || tileX >= sop.getNumXTiles() ||
         tileY < 0 || tileY >= sop.getNumYTiles())
-      throw new IndexOutOfBoundsException(); 
-  
+      throw new IndexOutOfBoundsException();
+
     this.sop = sop;
 
     final int tw = sop.getTileWidth();
@@ -98,7 +98,7 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     return x0 == op.x0 &&
            y0 == op.y0 &&
            x1 == op.x1 &&
-           y1 == op.y1 && 
+           y1 == op.y1 &&
            sop.equals(op.sop);
   }
 

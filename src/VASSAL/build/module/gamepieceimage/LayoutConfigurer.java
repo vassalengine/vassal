@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -214,7 +214,7 @@ public class LayoutConfigurer extends Configurer {
       addShapeBtn.addActionListener(this);
       box.add(addShapeBtn);
       mainPanel.add(box);
-      
+
       box = Box.createHorizontalBox();
       remBtn = new JButton(REMOVE);
       remBtn.setToolTipText("Remove the selected Item");
@@ -288,26 +288,26 @@ public class LayoutConfigurer extends Configurer {
         if (sel < pos-1) {
           moveItem(sel, sel+1);
         }
-        
+
       }
-      
+
       rebuildViz();
     }
-    
+
     protected void addItem(Item item) {
       layout.addItem(item);
       int pos = layout.getItemCount() - 1;
       model.fireTableRowsInserted(pos, pos);
       table.getSelectionModel().setSelectionInterval(pos, pos);
     }
-    
+
     protected void moveItem(int from, int to) {
       layout.moveItem(from, to);
       model.fireTableRowsUpdated(from, to);
       table.getSelectionModel().setSelectionInterval(to, to);
       rebuildViz();
     }
-    
+
     protected void rebuildViz() {
       layout.setImageDefn(new GamePieceImage(layout));
       visualizer.rebuild();

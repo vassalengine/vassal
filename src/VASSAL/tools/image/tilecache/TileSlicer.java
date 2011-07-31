@@ -2,9 +2,9 @@
  * $Id$
  *
 <<<<<<< HEAD
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
 =======
- * Copyright (c) 2010, 2011 by Joel Uckelman 
+ * Copyright (c) 2010, 2011 by Joel Uckelman
 >>>>>>> uckelman-working2
  *
  * This library is free software; you can redistribute it and/or
@@ -34,11 +34,11 @@ import VASSAL.tools.lang.Callback;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public interface TileSlicer {
   /**
    * Slices an image into tiles.
-   * 
+   *
    * @param src the source image
    * @param iname the basename for the tiles
    * @param tpath the path for the tiles

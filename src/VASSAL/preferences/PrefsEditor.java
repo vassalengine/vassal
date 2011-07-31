@@ -105,7 +105,7 @@ public class PrefsEditor {
       });
 
       dialog.setLayout(new MigLayout("insets dialog"));
-      dialog.add(optionsTab, "push, grow, wrap unrelated");     
+      dialog.add(optionsTab, "push, grow, wrap unrelated");
       dialog.add(ok, "tag ok, split");
       dialog.add(cancel, "tag cancel");
     }

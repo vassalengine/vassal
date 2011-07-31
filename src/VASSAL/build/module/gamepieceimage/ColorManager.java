@@ -47,10 +47,10 @@ public class ColorManager extends AbstractConfigurable {
   public static ColorManager getColorManager() {
     return instance;
   }
-  
+
   public static final Color DEFAULT_COLOR = Color.WHITE;
   public static final String SELECT_COLOR = "Select...";
-  
+
   protected static Color[] standardColors = new Color[] {
       Color.WHITE,
       Color.GRAY,
@@ -63,11 +63,11 @@ public class ColorManager extends AbstractConfigurable {
       Color.PINK,
       Color.CYAN,
       Color.MAGENTA,
-      Color.YELLOW,      
+      Color.YELLOW,
       Color.LIGHT_GRAY,
       Color.DARK_GRAY,
   };
-  
+
   protected static String[] standardColorNames = new String[] {
       "WHITE",
       "GRAY",
@@ -84,7 +84,7 @@ public class ColorManager extends AbstractConfigurable {
       "LIGHT GRAY",
       "DARK GRAY"
   };
-  
+
   protected static String getStandardColorName(Color c) {
     for (int i = 0; i < standardColors.length; i++) {
       if (standardColors[i].equals(c)) {
@@ -93,7 +93,7 @@ public class ColorManager extends AbstractConfigurable {
     }
     return null;
   }
-  
+
   protected static Color getStandardColor(String name) {
     for (int i = 0; i < standardColors.length; i++) {
       if (standardColorNames[i].equals(name)) {
@@ -102,17 +102,17 @@ public class ColorManager extends AbstractConfigurable {
     }
     return null;
   }
-  
+
   /**
    * User defined Colors
    */
   protected Map<String,ColorSwatch> userColors =
     new HashMap<String,ColorSwatch>();
-  
+
   public ColorManager() {
     instance = this;
   }
-  
+
   public ColorSwatch getColorSwatch(String name) {
     ColorSwatch c = userColors.get(name);
     if (c == null) {
@@ -125,7 +125,7 @@ public class ColorManager extends AbstractConfigurable {
     if (color == null) {
       return new ColorSwatch("CLEAR", null);
     }
-   
+
     ColorSwatch swatch = null;
     for (ColorSwatch cs : userColors.values()) {
       if (cs.getColor().equals(color)) {
@@ -141,14 +141,14 @@ public class ColorManager extends AbstractConfigurable {
         }
       }
     }
-    
+
     if (swatch == null) {
       swatch = new ColorSwatch(SELECT_COLOR, color);
     }
-    
+
     return swatch;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -226,14 +226,14 @@ public class ColorManager extends AbstractConfigurable {
     }
     return DEFAULT_COLOR;
   }
-  
+
   public String[] getColorNames() {
     ArrayList<ColorSwatch> a = new ArrayList<ColorSwatch>(userColors.values());
     Collections.sort(a);
 
     ArrayList<String> names =
       new ArrayList<String>(a.size() + standardColors.length);
-    
+
     for (ColorSwatch cs : a) {
       names.add(cs.getConfigureName());
     }

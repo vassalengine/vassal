@@ -50,7 +50,7 @@ public class PieceAccessConfigurer extends Configurer {
   public PieceAccessConfigurer(String key, String name, PieceAccess value) {
     super(key, name, value);
   }
-  
+
   public void setValue(Object o) {
     super.setValue(o);
     updateControls();

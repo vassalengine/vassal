@@ -46,7 +46,7 @@ public class SendSoundAction extends AbstractAction {
   private static Room lastRoom;
   private static Player lastPlayer;
   private static long lastSound = System.currentTimeMillis();
-  
+
   private ChatServerConnection client;
   private Player target;
   private String soundKey;
@@ -56,7 +56,7 @@ public class SendSoundAction extends AbstractAction {
     this.client = client;
     this.soundKey = soundKey;
     this.target = target;
-    
+
     // Find which room our target player is in
     Room targetRoom = null;
     for (Room room : client.getAvailableRooms()) {
@@ -64,7 +64,7 @@ public class SendSoundAction extends AbstractAction {
         targetRoom = room;
       }
     }
-    
+
     if (target != null
         && GameModule.getGameModule() != null
         && !target.equals(client.getUserInfo())
@@ -94,7 +94,7 @@ public class SendSoundAction extends AbstractAction {
       public Action getAction(SimplePlayer p, JTree tree) {
         final Room r = client.getRoom();
         if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null; 
+          return null;
         }
         return new SendSoundAction(name, client, soundKey, p);
       }

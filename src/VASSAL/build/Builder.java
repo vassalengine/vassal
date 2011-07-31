@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build;
@@ -115,17 +115,17 @@ public abstract class Builder {
           t instanceof InvocationTargetException ||
           t instanceof NoSuchMethodException ||
           t instanceof SecurityException ||
-          t instanceof ExceptionInInitializerError || 
+          t instanceof ExceptionInInitializerError ||
           t instanceof LinkageError) {
         // one of the standard classloading problems occured
         throw new IllegalBuildException(t);
       }
       else if (t instanceof Error) {
-        // some unusual problem occurred    
+        // some unusual problem occurred
         throw (Error) t;
       }
       else if (t instanceof RuntimeException) {
-        // some unusual problem occurred    
+        // some unusual problem occurred
         throw (RuntimeException) t;
       }
       else {
@@ -217,7 +217,7 @@ public abstract class Builder {
   }
 
   /**
-   * @return a String representation of an XML document 
+   * @return a String representation of an XML document
    */
   public static String toString(Document doc) {
     final StringWriter w = new StringWriter();

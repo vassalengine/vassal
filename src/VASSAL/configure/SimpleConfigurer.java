@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -27,9 +27,9 @@ import javax.swing.JPanel;
 import VASSAL.build.Configurable;
 
 /**
- * A {@link Configurer} for configuring {@link Configurable} components 
+ * A {@link Configurer} for configuring {@link Configurable} components
  * (Is that as redundant as it sounds?)
- * The invoking class must provide an array of Configurers, 
+ * The invoking class must provide an array of Configurers,
  * one for each attribute of the target Configurable object.
  * It is usually easier for the target to implement AutoConfigurable
  * and use the AutoConfigurer class.
@@ -54,16 +54,16 @@ public class SimpleConfigurer extends Configurer
       }
     });
   }
-  
+
   public String getValueString() {
     return target.getConfigureName();
   }
-  
+
   public void setValue(String s) {
     throw new UnsupportedOperationException(
       "Can't set Configurable from String");
   }
-  
+
   public Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -75,7 +75,7 @@ public class SimpleConfigurer extends Configurer
     }
     return p;
   }
-  
+
   public void propertyChange(final PropertyChangeEvent p1) {
     for (int i = 0; i < attConfig.length; ++i) {
       // System.err.println(attConfig[i].getName()+" = "+attConfig[i].getValue());

@@ -31,23 +31,23 @@ import VASSAL.tools.FormattedString;
 public class PropertyMatchExpression extends Expression {
 
   protected PieceFilter filter;
-  
+
   public PropertyMatchExpression (String s) {
     setExpression(s);
   }
-  
+
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     return null;
   }
-  
+
   public PieceFilter getFilter(PropertySource ps) {
     if (filter == null || isDynamic()) {
-      filter = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps)); 
+      filter = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps));
     }
     return filter;
   }
-  
+
   protected boolean isDynamic() {
     return getExpression() != null && getExpression().indexOf('$') >= 0;
   }

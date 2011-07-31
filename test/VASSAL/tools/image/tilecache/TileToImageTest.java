@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import VASSAL.tools.io.IOUtils; 
+import VASSAL.tools.io.IOUtils;
 
 import org.junit.After;
 import org.junit.Test;
@@ -39,12 +39,12 @@ public class TileToImageTest {
     final String tile = dir + "/in.tile";
     final String out_actual = dir + "/out.png";
     final String out_expected = dir + "/in.png";
-    
+
     TileToImage.main(new String[] { tile, out_actual });
 
-    final FileInputStream expected = new FileInputStream(out_expected); 
-    final FileInputStream actual = new FileInputStream(out_actual); 
-    assertTrue(IOUtils.contentEquals(expected, actual)); 
+    final FileInputStream expected = new FileInputStream(out_expected);
+    final FileInputStream actual = new FileInputStream(out_actual);
+    assertTrue(IOUtils.contentEquals(expected, actual));
   }
 
   @After

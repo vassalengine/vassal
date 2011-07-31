@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
@@ -25,18 +25,18 @@ public class OutlineFont extends Font {
   private static final long serialVersionUID = 1L;
 
   protected boolean outline;
-  
+
   public OutlineFont(String name, int style, int size) {
     super(name, style, size);
   }
-  
+
   public OutlineFont(String name, int style, int size, boolean outline) {
     super(name, style, size);
     this.outline = outline;
   }
-  
+
   public boolean isOutline() {
     return outline;
   }
-  
+
 }

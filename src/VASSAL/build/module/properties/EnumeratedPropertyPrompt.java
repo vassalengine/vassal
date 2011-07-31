@@ -43,8 +43,8 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   public String[] getValidValues() {
     return validValues;
   }
-  
-  
-  
+
+
+
 
 }

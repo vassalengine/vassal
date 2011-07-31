@@ -21,7 +21,7 @@ package VASSAL.tools.filechooser;
 /**
  * A FileFilter for AIFF, AU, and WAV files. Used by file choosers to
  * filter out files which aren't audio files.
- * 
+ *
  * @author Joel Uckelman
  */
 public class AudioFileFilter extends ExtensionFileFilter {
@@ -31,5 +31,5 @@ public class AudioFileFilter extends ExtensionFileFilter {
 
   public AudioFileFilter() {
     super("Audio files", types);
-  }  
+  }
 }

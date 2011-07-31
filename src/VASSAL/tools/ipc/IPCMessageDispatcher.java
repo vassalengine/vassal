@@ -10,7 +10,7 @@ public class IPCMessageDispatcher implements Runnable {
 
   protected final BlockingQueue<IPCMessage> queue;
   protected final ObjectOutput out;
-  
+
   public IPCMessageDispatcher(BlockingQueue<IPCMessage> queue,
                               ObjectOutput out) {
     this.queue = queue;

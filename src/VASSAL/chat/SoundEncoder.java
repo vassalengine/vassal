@@ -38,11 +38,11 @@ import VASSAL.tools.SequenceEncoder;
 public class SoundEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "PLAY\t"; //$NON-NLS-1$
   private PlayerEncoder playerEncoder;
-  
+
   public SoundEncoder(PlayerEncoder p) {
     playerEncoder = p;
   }
-  
+
   public Command decode(String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
@@ -76,7 +76,7 @@ public class SoundEncoder implements CommandEncoder {
     private static int sendCount;
     private static ArrayList<Player> banned = new ArrayList<Player>();
     private static boolean updating = false;
-    
+
     private String soundKey;
     private Player sender;
 
@@ -95,9 +95,9 @@ public class SoundEncoder implements CommandEncoder {
         updating = false;
         return;
       }
-      
+
       updating = true;
-      lastTime = now;      
+      lastTime = now;
       final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption(soundKey);
       if (c != null) {
         c.play();
@@ -115,7 +115,7 @@ public class SoundEncoder implements CommandEncoder {
           else {
             sendCount = 1;
           }
-        }        
+        }
       }
       else {
         lastSender = sender;
@@ -127,7 +127,7 @@ public class SoundEncoder implements CommandEncoder {
     protected Command myUndoCommand() {
       return null;
     }
-    
+
     public Player getSender() {
       return sender;
     }

@@ -33,7 +33,7 @@ import VASSAL.tools.opcache.OpObserver;
  *
  * <p>The most common implementaion of this interface is {@link Repainter},
  * which can be used to repaint portions of {@link java.awt.Component}s
- * which are waiting for images to be computed.</p>  
+ * which are waiting for images to be computed.</p>
  *
  * @since 3.1.0
  * @author Joel Uckelman

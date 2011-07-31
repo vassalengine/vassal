@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -29,7 +29,7 @@ import VASSAL.tools.lang.Reference;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public class MemoryImageTypeConverter implements ImageTypeConverter {
 
   /** {@inheritDoc} */
@@ -39,7 +39,7 @@ public class MemoryImageTypeConverter implements ImageTypeConverter {
 
     // NB: We don't bother clearing the ref because this method requires
     // that the source and destination images exist simultaneously.
-    
+
     final BufferedImage src = ref.obj;
 
     // we can't create images of TYPE_CUSTOM

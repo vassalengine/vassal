@@ -34,7 +34,7 @@ public interface EventListenerSupport<T> {
    *
    * @param l the listener to add
    */
-  public void addEventListener(EventListener<? super T> l); 
+  public void addEventListener(EventListener<? super T> l);
 
   /**
    * Removes an {@link EventListener}.
@@ -49,7 +49,7 @@ public interface EventListenerSupport<T> {
    * @return <code>true</code> if there are any listeners
    */
   public boolean hasEventListeners();
- 
+
   /**
    * Gets the list of listerners.
    *

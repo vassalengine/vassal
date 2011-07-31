@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 /*
@@ -112,7 +112,7 @@ public class Restricted extends Decorator implements EditablePiece {
     if (restrictByPlayer) {
       restricted = owningPlayer.length() > 0 && !GameModule.getUserId().equals(owningPlayer);
     }
-    if ((restricted || !restrictByPlayer) 
+    if ((restricted || !restrictByPlayer)
         && PlayerRoster.isActive()
         && GameModule.getGameModule().getGameState().isGameStarted()) {
       restricted = true;
@@ -125,7 +125,7 @@ public class Restricted extends Decorator implements EditablePiece {
     }
     return restricted;
   }
-  
+
 /*  @Override
   public void setMap(Map m) {
     if (m != null && restrictByPlayer && owningPlayer.length() == 0) {
@@ -133,7 +133,7 @@ public class Restricted extends Decorator implements EditablePiece {
     }
     super.setMap(m);
   }
-*/  
+*/
   @Override
   public void setProperty(Object key, Object val) {
     if (Properties.SELECTED.equals(key) && Boolean.TRUE.equals(val) && restrictByPlayer && owningPlayer.length() == 0) {
@@ -166,9 +166,9 @@ public class Restricted extends Decorator implements EditablePiece {
     }
     else {
       return super.getLocalizedProperty(key);
-    }    
+    }
   }
-  
+
   public Object getProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
       return Boolean.valueOf(isRestricted());
@@ -265,7 +265,7 @@ public class Restricted extends Decorator implements EditablePiece {
       if (r != null
           && r.restrictByPlayer
           && GameModule.getUserId().equals(r.owningPlayer)) {
-        
+
         ChangeTracker t = new ChangeTracker(p);
         r.owningPlayer = "";
         return t.getChangeCommand();
@@ -280,6 +280,6 @@ public class Restricted extends Decorator implements EditablePiece {
       }
       return c;
     }
-    
+
   }
 }

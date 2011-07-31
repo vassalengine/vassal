@@ -50,7 +50,7 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * ADC2 game piece and terrain symbols.
- * 
+ *
  * @author Michael Kiefte
  *
  */
@@ -69,28 +69,28 @@ public class SymbolSet extends Importer{
    * Contains all of the information for a single game piece or terrain icon
    */
   class SymbolData {
-    
+
     /**
      * Shared bitmap of all symbols in either the terrain or game piece set.
      * Cannot be static as there are three different possible shared images
      * corresponding to game pieces, terrain features, and bitmasks.
-     */ 
+     */
     private final BufferedImage bitmap;
 
-    /** 
-     * Actual name of image file for this symbol in archive. May not be the same as the name 
+    /**
+     * Actual name of image file for this symbol in archive. May not be the same as the name
      * provided in the configuration file if duplicates exist.
      */
     private String fileName;
 
-    /** 
+    /**
      * Actual image which is lazily generated on request.
      */
     private BufferedImage img;
 
     /**
      * Prevents infinite loops when applying masks to symbol images.
-     */ 
+     */
     private final boolean isMask;
 
     /**
@@ -101,7 +101,7 @@ public class SymbolSet extends Importer{
     /**
      * Actual name given in the configuration file--not the archive file name
      * as duplicates are permitted in ADC2.
-     */ 
+     */
     private String name;
 
     /**
@@ -111,10 +111,10 @@ public class SymbolSet extends Importer{
 
     /**
      * <code>Boolean.TRUE</code> if the image is completely transparent (invisible)
-     * and <code>null</code> if it has not yet been checked. 
+     * and <code>null</code> if it has not yet been checked.
      */
     private Boolean transparent;
-    
+
     SymbolData(BufferedImage bitmap, boolean isMask) {
       this.bitmap = bitmap;
       this.isMask = isMask;
@@ -136,8 +136,8 @@ public class SymbolSet extends Importer{
 
     /**
      * Read symbol data from configuration file.
-     * 
-     * @return   <code>this</code>, so that methods may be chained in series 
+     *
+     * @return   <code>this</code>, so that methods may be chained in series
      *           following <code>read</code>.
      */
     protected SymbolData read(DataInputStream in) throws IOException {
@@ -151,7 +151,7 @@ public class SymbolSet extends Importer{
         mapBoardSymbolSize = new int[3];
         readAllZoomLevels = true;
       }
-      
+
       // Alternate indexing style (to be implemented):
       // if (header == -3)
       //    pict.maskIndex = in.readUnsignedByte();
@@ -176,7 +176,7 @@ public class SymbolSet extends Importer{
      * Returns the archive file name corresponding to the image for this
      * symbol. If called, will actually write the image to the archive in
      * order to get the file name itself.
-     * 
+     *
      * @throws IOException if unable to read the image files for this symbol.
      */
     String getFileName() throws IOException {
@@ -201,11 +201,11 @@ public class SymbolSet extends Importer{
               }
             }
           }
-        
+
       }
       return transparent.booleanValue();
     }
-    
+
     /**
      * Get image corresponding to this symbol. Generates the image and applies
      * optional mask if not already done so.
@@ -213,8 +213,8 @@ public class SymbolSet extends Importer{
      */
     private BufferedImage getImage(Rectangle rect2) {
       if (img == null) {
-        if ( isMask && (rect.width <= 0 || rect.height <= 0 
-            || rect.width+rect.x > bitmap.getWidth() 
+        if ( isMask && (rect.width <= 0 || rect.height <= 0
+            || rect.width+rect.x > bitmap.getWidth()
             || rect.height+rect.y > bitmap.getHeight() )) {
           // Images with invalid masks appear to be completely transparent.
           // This is a hassle generating new ones all the time, but there's nothing
@@ -235,7 +235,7 @@ public class SymbolSet extends Importer{
       }
       return img;
     }
-    
+
     BufferedImage getImage() {
       return getImage(rect);
     }
@@ -259,16 +259,16 @@ public class SymbolSet extends Importer{
   // Permute negative of red band (doesn't matter which colour) to alpha band.
   // masks are originally black where alpha should be 1.0 and white where
   // alpha should be 0.0.
-  private final static float[][] THREE_BAND_MATRIX = { 
+  private final static float[][] THREE_BAND_MATRIX = {
       { 0.0f, 0.0f, 0.0f, 0.0f },
-      { 0.0f, 0.0f, 0.0f, 0.0f }, 
+      { 0.0f, 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f, 0.0f },
       { -1.0f, 0.0f, 0.0f, 255.0f }};
-  
-  private final static float[][] ONE_BAND_MATRIX = { 
-      { 0.0f, 0.0f }, 
+
+  private final static float[][] ONE_BAND_MATRIX = {
       { 0.0f, 0.0f },
-      { 0.0f, 0.0f }, 
+      { 0.0f, 0.0f },
+      { 0.0f, 0.0f },
       { -255.0f, 255.0f }};
 
   /**
@@ -300,7 +300,7 @@ public class SymbolSet extends Importer{
    */
   private int[] mapBoardSymbolSize;
 
-  /** 
+  /**
    * Mask symbols. Only used by SymbolData when requesting a mask index.
    * Doesn't get used at all in Version I sets (where <code>ignoreMask</code> is true).
    */
@@ -311,7 +311,7 @@ public class SymbolSet extends Importer{
    */
   private Shape symbolShape;
 
-  /** 
+  /**
    * Zoom level to import
    */
   private static final int zoomLevel = 2;
@@ -331,7 +331,7 @@ public class SymbolSet extends Importer{
    * Read symbol images based on basename and suffix. Bitmap filenames are of the form
    * <tt>name + "-CN.bmp"</tt> where C is the specified suffix ('M' for masks; 'U' for
    * game pieces; 'T' for terrain symbols) and N is the base-1 zoom level.
-   * 
+   *
    * @param filename base file name. Should be the same as the base file name of the
    *                 symbol set file.
    * @param suffix   single character suffix
@@ -353,14 +353,14 @@ public class SymbolSet extends Importer{
       return ImageIO.read(f);
     }
   }
-  
+
   BufferedImage loadSymbolImage(String filename, char suffix) throws IOException {
-	  return loadSymbolImage(filename, suffix, true);
+    return loadSymbolImage(filename, suffix, true);
   }
 
   /**
    * Read dimensions from input file. The dimensions must occur in triplets in the
-   * configuration file--each one corresponding to a zoom level. 
+   * configuration file--each one corresponding to a zoom level.
    * Only the third dimension, corresponding to zoom level 3, is returned.
    */
   Dimension readDimension(DataInputStream in) throws IOException {
@@ -377,7 +377,7 @@ public class SymbolSet extends Importer{
   /**
    * Returns the <code>SymbolData</code> corresponding to the game piece at
    * the specified index.
-   * 
+   *
    * @return      <code>null</code> if the index is out of bounds.
    */
   SymbolData getGamePiece(int index) {
@@ -386,11 +386,11 @@ public class SymbolSet extends Importer{
     else
       return null;
   }
-  
+
   /**
    * Returns the <code>SymbolData</code> corresponding to the terrain symbol at
    * the specified index.
-   * 
+   *
    * @return      <code>null</code> if the index is out of bounds.
    */
   SymbolData getMapBoardSymbol(int index) {
@@ -412,11 +412,11 @@ public class SymbolSet extends Importer{
     }
     return max;
   }
-  
+
   public Dimension getMaxSize() {
     return getMaxSize(null);
   }
-  
+
   /**
    * @return The most frequently occuring dimension for game pieces in this module.
    */
@@ -438,7 +438,7 @@ public class SymbolSet extends Importer{
       final int n = e.getValue();
 
       if (n > max) {
-        max = n;          
+        max = n;
         maxDim.height = d.height;
         maxDim.width = d.width;
       }
@@ -470,26 +470,26 @@ public class SymbolSet extends Importer{
 
   /**
    * Read a card set from the specified file.
-   * @throws IOException 
+   * @throws IOException
    */
   void importCardSet(ImportAction a, File f) throws IOException {
     isCardSet = true;
     importFile(a, f);
   }
-  
+
   /**
    * Read a symbol set from the specified file.
    */
   protected void load(File f) throws IOException {
     super.load(f);
     DataInputStream in = null;
-    
+
     try {
       in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
       // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
       // the header is anything else greater than 0xFA, then mask indeces are base-250
-      // two-byte words. 
+      // two-byte words.
       header = in.readUnsignedByte();
       if (header < 0xFA)
         throw new FileFormatException("Invalid Symbol Set Header");
@@ -497,13 +497,13 @@ public class SymbolSet extends Importer{
       // comletely overridden by the map file
       /* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid
 
-      int mapStyle = in.readByte(); // 0=grid; all other values=hex    
+      int mapStyle = in.readByte(); // 0=grid; all other values=hex
       switch (mapStyle) {
       case 1:
         symbolShape = Shape.HEX;
         break;
       default:
-        symbolShape = Shape.SQUARE;  
+        symbolShape = Shape.SQUARE;
       }
 
       int symSetVersion = in.readByte(); // 1=version 1
@@ -571,14 +571,14 @@ public class SymbolSet extends Importer{
       }
 
       in.close();
-      
+
       /* See if there is a single-image underlay for the map. */
       underlay = loadSymbolImage(baseName, 'z', false);
     }
     finally {
       IOUtils.closeQuietly(in);
     }
-      
+
     readPermutationFile(f);
   }
 
@@ -587,9 +587,9 @@ public class SymbolSet extends Importer{
   }
 
   /**
-   * Read an SDX file if one exists. This is a list of image indeces starting with terrain 
+   * Read an SDX file if one exists. This is a list of image indeces starting with terrain
    * separated by newlines. Only piece images are actually permuted.
-   * 
+   *
    * @param f - Set file.
    * @throws IOException
    */
@@ -598,13 +598,13 @@ public class SymbolSet extends Importer{
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
       BufferedReader input = null;
-      
+
       try {
         input = new BufferedReader(new FileReader(sdx));
 
         final SymbolData[] pieces = ArrayUtils.copyOf(gamePieceData);
 
-        String line = null;      
+        String line = null;
         try {
           for (int i = 0; i < mapBoardData.length; ++i) {
             line = input.readLine();
@@ -625,7 +625,7 @@ public class SymbolSet extends Importer{
         finally {
           gamePieceData = pieces;
         }
-        
+
         input.close();
       }
       finally {

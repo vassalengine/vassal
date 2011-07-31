@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -36,9 +36,9 @@ import static VASSAL.tools.image.AssertImage.*;
 
 public class ImageIOImageLoaderTest {
   protected static final String jpg = "test/VASSAL/tools/image/rainbow.jpg";
- 
+
   protected static BufferedImage src;
- 
+
   @BeforeClass
   public static void setup() throws IOException {
     src = ImageIO.read(new File(jpg));
@@ -67,7 +67,7 @@ public class ImageIOImageLoaderTest {
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
     final BufferedImage actual = read(loader, jpg);
-    
+
     assertEquals(BufferedImage.TYPE_INT_RGB, actual.getType());
     assertImageContentEquals(src, actual);
   }
@@ -118,12 +118,12 @@ public class ImageIOImageLoaderTest {
 
     assertEquals(BufferedImage.TYPE_INT_ARGB, actual.getType());
     assertImageContentEquals(expected, actual);
-  } 
+  }
 
   @Test(expected=BrokenImageException.class)
   public void testLoadRGB_JPEG_NonRGB_Color_Profile() throws IOException {
     final String afile = "test/VASSAL/tools/image/WatervilleDuelpark.jpg";
-    
+
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
@@ -133,7 +133,7 @@ public class ImageIOImageLoaderTest {
   @Test(expected=BrokenImageException.class)
   public void testLoadLCMS_Error() throws IOException {
     final String afile = "test/VASSAL/tools/image/09.jpg";
-    
+
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
@@ -177,7 +177,7 @@ public class ImageIOImageLoaderTest {
   @Test(expected=BrokenImageException.class)
   public void testSizeLCMS_Error() throws IOException {
     final String afile = "test/VASSAL/tools/image/09.jpg";
-    
+
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 

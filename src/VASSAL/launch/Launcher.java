@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -69,7 +69,7 @@ public abstract class Launcher {
 
     LaunchRequest lreq = null;
     try {
-      lreq = LaunchRequest.parseArgs(args); 
+      lreq = LaunchRequest.parseArgs(args);
     }
     catch (LaunchRequestException e) {
       System.err.println("VASSAL: " + e.getMessage());
@@ -87,7 +87,7 @@ public abstract class Launcher {
 /*
     // parse the command line args now if we're standalone, since they
     // could be messed up and so we'll bail before setup
-    LaunchRequest lr = null; 
+    LaunchRequest lr = null;
     if (standalone) {
       // Note: We could do more sanity checking of the launch request
       // in standalone mode, but we don't bother because this is meant
@@ -116,9 +116,9 @@ public abstract class Launcher {
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
     start.initSystemProperties();
 
-    // if we're not standalone, contact the module manager for instructions 
+    // if we're not standalone, contact the module manager for instructions
     if (!standalone) {
-      try { 
+      try {
         final int port = Integer.parseInt(System.getProperty("VASSAL.port"));
 
         final InetAddress lo = InetAddress.getByName(null);
@@ -136,9 +136,9 @@ public abstract class Launcher {
         // What we've got here is failure to communicate.
         ErrorDialog.show(
           e,
-          "Error.communication_error", 
+          "Error.communication_error",
           Resources.getString(getClass().getSimpleName() + ".app_name")
-        );         
+        );
         System.exit(1);
       }
     }
@@ -157,7 +157,7 @@ public abstract class Launcher {
           warn(e1);
         }
       }
-      
+
       private void warn (Exception e1) {
         if (ipc == null) {
           // we are standalone, so warn the user directly
@@ -174,7 +174,7 @@ public abstract class Launcher {
             ipc.send(new AbstractLaunchAction.NotifyOpenModuleFailed(lr, e1));
           }
           catch (IOException e2) {
-            // warn the user directly as a last resort 
+            // warn the user directly as a last resort
             ErrorDialog.showDetails(
               e1,
               ThrowableUtils.getStackTrace(e1),
@@ -229,7 +229,7 @@ public abstract class Launcher {
     public final long pid;
 
     public StartedNotice(long pid) {
-      this.pid = pid; 
+      this.pid = pid;
     }
   }
 
@@ -276,7 +276,7 @@ e.printStackTrace();
           catch (IOException e) {
 e.printStackTrace();
           }
-        }        
+        }
       }
     }
   }

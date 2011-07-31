@@ -174,7 +174,7 @@ import org.jdesktop.swinghelper.layer.demo.DebugPainter;
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
  * a Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
  * supported in a single game, with dragging between windows allowed.
- * 
+ *
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
  * contained in the <code>VASSAL.build.module.map</code> package
  */
@@ -234,7 +234,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   };
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
- 
+
   public Map() {
     getView();
     theMap.addMouseListener(this);
@@ -242,16 +242,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
-   
+
   // Global Change Reporting control
   public static void setChangeReportingEnabled(boolean b) {
     changeReportingEnabled = b;
   }
-  
+
   public static boolean isChangeReportingEnabled() {
     return changeReportingEnabled;
   }
-  
+
   public static final String NAME = "mapName"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String MARK_UNMOVED_ICON = "markUnmovedIcon"; //$NON-NLS-1$
@@ -540,7 +540,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Every map must include a {@link BoardPicker} as one of its build components
-   * 
+   *
    * @return the BoardPicker for this map
    */
   public BoardPicker getBoardPicker() {
@@ -562,7 +562,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * A map may include a {@link Zoomer} as one of its build components
-   * 
+   *
    * @return the Zoomer for this map
    */
   public Zoomer getZoomer() {
@@ -580,7 +580,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Every map must include a {@link StackMetrics} as one of its build
    * components, which governs the stacking behavior of GamePieces on the map
-   * 
+   *
    * @return the StackMetrics for this map
    */
   public StackMetrics getStackMetrics() {
@@ -610,7 +610,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Add a {@link Drawable} component to this map
-   * 
+   *
    * @see #paint
    */
   public void addDrawComponent(Drawable theComponent) {
@@ -619,7 +619,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Remove a {@link Drawable} component from this map
-   * 
+   *
    * @see #paint
    */
   public void removeDrawComponent(Drawable theComponent) {
@@ -631,7 +631,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * this Map. Registers itself as {@link KeyStrokeSource}. Registers itself
    * as a {@link GameComponent}. Registers itself as a drop target and drag
    * source.
-   * 
+   *
    * @see #getId
    * @see DragBuffer
    */
@@ -720,7 +720,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public void setPieceMover(PieceMover mover) {
     pieceMover = mover;
   }
-  
+
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     Window w = SwingUtilities.getWindowAncestor(theMap);
@@ -780,7 +780,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   /**
-   * 
+   *
    * @return the {@link Zone} on this map containing the argument point
    */
   public Zone findZone(Point p) {
@@ -795,7 +795,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return null;
   }
-  
+
   /**
    * Search on all boards for a Zone with the given name
    * @param Zone name
@@ -832,13 +832,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Return the board with the given name
-   * 
+   *
    * @param name
    * @return null if no such board found
    */
   public Board getBoardByName(String name) {
     if (name != null) {
-      for (Board b : boards) {    
+      for (Board b : boards) {
         if (name.equals(b.getName())) {
           return b;
         }
@@ -847,7 +847,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return null;
   }
 
-  public Dimension getPreferredSize() {   
+  public Dimension getPreferredSize() {
     final Dimension size = mapSize();
     size.width *= getZoom();
     size.height *= getZoom();
@@ -887,7 +887,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * @return the nearest allowable point according to the {@link VASSAL.build.module.map.boardPicker.board.MapGrid} on
    *         the {@link Board} at this point
-   * 
+   *
    * @see Board#snapTo
    * @see VASSAL.build.module.map.boardPicker.board.MapGrid#snapTo
    */
@@ -935,7 +935,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Translate a point from component coordinates (i.e., x,y position on
    * the JPanel) to map coordinates (i.e., accounting for zoom factor).
-   * 
+   *
    * @see #componentCoordinates
    */
   public Point mapCoordinates(Point p) {
@@ -956,7 +956,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Translate a point from map coordinates to component coordinates
-   * 
+   *
    * @see #mapCoordinates
    */
   public Point componentCoordinates(Point p) {
@@ -977,7 +977,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * @return a String name for the given location on the map
-   * 
+   *
    * @see Board#locationName
    */
   public String locationName(Point p) {
@@ -993,7 +993,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return loc;
   }
-  
+
   public String localizedLocationName(Point p) {
     String loc = getLocalizedDeckNameAt(p);
     if (loc == null) {
@@ -1063,7 +1063,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Return the name of the deck whose position is p
-   * 
+   *
    * @param p
    * @return
    */
@@ -1079,7 +1079,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return deck;
   }
-  
+
   public String getLocalizedDeckNameAt(Point p) {
     String deck = null;
     if (p != null) {
@@ -1102,9 +1102,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public void addLocalMouseListener(MouseListener l) {
     multicaster = AWTEventMulticaster.add(multicaster, l);
   }
-  
+
   public void addLocalMouseListenerFirst(MouseListener l) {
-    multicaster = AWTEventMulticaster.add(l, multicaster); 
+    multicaster = AWTEventMulticaster.add(l, multicaster);
   }
 
   public void removeLocalMouseListener(MouseListener l) {
@@ -1136,7 +1136,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
    * stack, if any, otherwise forwarded to all LocalMouseListeners
-   * 
+   *
    * @see #pushMouseListener
    * @see #popMouseListener
    * @see #addLocalMouseListener
@@ -1157,12 +1157,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
    * stack, if any, otherwise forwarded to all LocalMouseListeners
-   * 
+   *
    * @see #pushMouseListener
    * @see #popMouseListener
    * @see #addLocalMouseListener
    */
-  
+
   public static Map activeMap = null;
   public static void clearActiveMap() {
     if (activeMap != null) {
@@ -1170,9 +1170,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       activeMap = null;
     }
   }
-  
+
   public void mousePressed(MouseEvent e) {
-    
+
     // Deselect any counters on the last Map with focus
     if (!this.equals(activeMap)) {
       boolean dirty = false;
@@ -1192,10 +1192,10 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
       if (dirty && activeMap != null) {
         activeMap.repaint();
-      }      
+      }
     }
     activeMap = this;
-  
+
     if (!mouseListenerStack.isEmpty()) {
       final Point p = mapCoordinates(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
@@ -1212,7 +1212,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Mouse events are first translated into map coordinates.
    * Then the event is forwarded to the top MouseListener in the
    * stack, if any, otherwise forwarded to all LocalMouseListeners.
-   * 
+   *
    * @see #pushMouseListener
    * @see #popMouseListener
    * @see #addLocalMouseListener
@@ -1242,7 +1242,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Save all current Key Listeners and remove them from the
-   * map. Used by Traits that need to prevent Key Commands 
+   * map. Used by Traits that need to prevent Key Commands
    * at certain times.
    */
   public void enableKeyListeners() {
@@ -1260,7 +1260,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void disableKeyListeners() {
     if (saveKeyListeners != null) return;
-    
+
     saveKeyListeners = theMap.getKeyListeners();
     for (KeyListener kl : saveKeyListeners) {
       theMap.removeKeyListener(kl);
@@ -1269,7 +1269,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * This listener will be notified when a drag event is initiated, assuming that no MouseListeners are on the stack.
-   * 
+   *
    * @see #pushMouseListener
    * @param dragGestureListener
    */
@@ -1305,7 +1305,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         theMap,
         MouseEvent.MOUSE_RELEASED,
         System.currentTimeMillis(),
-        0, 
+        0,
         dtde.getLocation().x,
         dtde.getLocation().y,
         1,
@@ -1327,7 +1327,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Mouse motion events are not forwarded to LocalMouseListeners or to
    * listeners on the stack.
-   * 
+   *
    * The map scrolls when dragging the mouse near the edge.
    */
   public void mouseDragged(MouseEvent e) {
@@ -1358,7 +1358,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Begin autoscrolling the map if the given point is within the given
    * distance from a viewport edge.
-   * 
+   *
    * @param evtPt
    * @param dist
    */
@@ -1369,7 +1369,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     final int py = evtPt.y - vrect.y;
 
     // determine scroll vector
-    sx = 0;    
+    sx = 0;
     if (px < dist && px >= 0) {
       sx = -1;
       dx = dist - px;
@@ -1379,7 +1379,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       dx = dist - (vrect.width - px);
     }
 
-    sy = 0;    
+    sy = 0;
     if (py < dist && py >= 0) {
       sy = -1;
       dy = dist - py;
@@ -1411,7 +1411,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     new TimingTargetAdapter() {
 
       private long t0;
-      
+
       @Override
       public void timingEvent(float fraction) {
         // Constant velocity along each axis, 0.5px/ms
@@ -1420,7 +1420,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         t0 = t1;
 
         scroll(sx*dt, sy*dt);
-        
+
         // Check whether we have hit an edge
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
@@ -1439,18 +1439,18 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         t0 = System.currentTimeMillis();
       }
     }
-  ); 
+  );
 
   public void repaint(boolean cf) {
     clearFirst = cf;
     theMap.repaint();
   }
 
-  
+
   /**
    * Painting the map is done in three steps: 1) draw each of the {@link Board}s on the map. 2) draw all of the
    * counters on the map. 3) draw all of the {@link Drawable} components on the map
-   * 
+   *
    * @see #addDrawComponent
    * @see #setBoards
    * @see #addPiece
@@ -1559,15 +1559,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public void setHighlighter(Highlighter h) {
     highlighter = h;
   }
-  
+
   public void addHighlighter(Highlighter h) {
     highlighters.add(h);
   }
-  
+
   public void removeHighlighter(Highlighter h) {
     highlighters.remove(h);
   }
-  
+
   public Iterator<Highlighter> getHighlighters() {
     return highlighters.iterator();
   }
@@ -1595,7 +1595,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Returns the boundingBox of a GamePiece accounting for the offset of a piece within its parent stack. Return null if
    * this piece is not on the map
-   * 
+   *
    * @see GamePiece#boundingBox
    */
   public Rectangle boundingBoxOf(GamePiece p) {
@@ -1622,7 +1622,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Returns the selection bounding box of a GamePiece accounting for the offset of a piece within a stack
-   * 
+   *
    * @see GamePiece#getShape
    */
   public Rectangle selectionBoundsOf(GamePiece p) {
@@ -1804,7 +1804,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return value;
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     Object value = null;
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
@@ -1816,7 +1816,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return value;
   }
-  
+
 
   /**
    * Return the auto-move key. It may be named, so just return
@@ -1866,7 +1866,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * When a game is started, create a top-level window, if none exists.
    * When a game is ended, remove all boards from the map.
-   * 
+   *
    * @see GameComponent
    */
   public void setup(boolean show) {
@@ -1908,7 +1908,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         theMap.getTopLevelAncestor().setVisible(!useLaunchButton);
         theMap.revalidate();
       }
-      
+
     }
     else {
       pieces.clear();
@@ -1986,7 +1986,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Place a piece at the destination point. If necessary, remove the piece from its parent Stack or Map
-   * 
+   *
    * @return a {@link Command} that reproduces this action
    */
   public Command placeAt(GamePiece piece, Point pt) {
@@ -2009,9 +2009,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Apply the provided {@link PieceVisitorDispatcher} to all pieces on this map. Returns the first non-null
    * {@link Command} returned by <code>commandFactory</code>
-   * 
+   *
    * @param commandFactory
-   * 
+   *
    */
   public Command apply(PieceVisitorDispatcher commandFactory) {
     GamePiece[] stack = pieces.getPieces();
@@ -2025,7 +2025,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /**
    * Move a piece to the destination point. If a piece is at the point (i.e. has a location exactly equal to it), merge
    * with the piece by forwarding to {@link StackMetrics#merge}. Otherwise, place by forwarding to placeAt()
-   * 
+   *
    * @see StackMetrics#merge
    */
   public Command placeOrMerge(final GamePiece p, final Point pt) {
@@ -2057,7 +2057,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Reorder the argument GamePiece to the new index. When painting the map, pieces are drawn in order of index
-   * 
+   *
    * @deprecated use {@link PieceCollection#moveToFront}
    */
   @Deprecated public void reposition(GamePiece s, int pos) {
@@ -2121,7 +2121,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Scrolls the map in the containing JScrollPane.
-   * 
+   *
    * @param dx number of pixels to scroll horizontally
    * @param dy number of pixels to scroll vertically
    */
@@ -2143,7 +2143,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public String getLocalizedMapName() {
     return getLocalizedConfigureName();
   }
-  
+
   public void setMapName(String s) {
     mapName = s;
     setConfigureName(mapName);
@@ -2183,7 +2183,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public String[] getAttributeNames() {
-    return new String[] { 
+    return new String[] {
       NAME,
       MARK_MOVED,
       MARK_UNMOVED_TEXT,
@@ -2223,7 +2223,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       Integer.class,
       Boolean.class,
       String.class,
-      String.class, 
+      String.class,
       IconConfig.class,
       NamedKeyStroke.class,
       MoveWithinFormatConfig.class,
@@ -2382,10 +2382,10 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
     return l;
   }
-  
+
   /**
    * Utility method to return a list of all map components in the module
-   * 
+   *
    * @return Iterator over all maps
    * @deprecated Use {@link #getMapList()} instead.
    */
@@ -2400,7 +2400,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
-  
+
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
@@ -2416,7 +2416,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Each Map must have a unique String id
-   * 
+   *
    * @return the id for this map
    */
   public String getId() {
@@ -2427,7 +2427,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Make a best gues for a unique identifier for the target. Use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName} if non-null, otherwise use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId}
-   * 
+   *
    * @return
    */
   public String getIdentifier() {
@@ -2563,7 +2563,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     public void paint(Graphics g) {
       // Don't draw the map until the game is updated.
       if (GameModule.getGameModule().getGameState().isUpdating()) {
-    	  return;
+        return;
       }
       Rectangle r = getVisibleRect();
       g.setColor(map.bgColor);

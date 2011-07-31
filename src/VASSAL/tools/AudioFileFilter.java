@@ -21,7 +21,7 @@ package VASSAL.tools;
 /**
  * A FileFilter for AIFF, AU, and WAV files. Used by file choosers to
  * filter out files which aren't audio files.
- * 
+ *
  * @author Joel Uckelman
  * @deprecated Moved to {@link VASSAL.tools.filechooser.AudioFileFilter}.
  */

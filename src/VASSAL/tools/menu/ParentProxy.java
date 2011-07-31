@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,7 +31,7 @@ public interface ParentProxy {
   public void remove(ChildProxy<?> child);
 
   public void remove(int pos);
-  
+
   public int getChildCount();
 
   public ChildProxy<?>[] getChildren();

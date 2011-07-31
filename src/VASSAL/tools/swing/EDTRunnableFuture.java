@@ -32,7 +32,7 @@ public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
   /**
    * Creates a {@link RunnableFuture} which will be run on the Event Dispatch
    * Thread.
-   */ 
+   */
   public EDTRunnableFuture() { }
 
   /**
@@ -40,9 +40,9 @@ public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
    * Thread.
    *
    * @param result the result to return
-   */ 
+   */
   public EDTRunnableFuture(V result) {
-    this.result = result;  
+    this.result = result;
   }
 
   /**

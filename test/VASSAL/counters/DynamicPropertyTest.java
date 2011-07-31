@@ -32,12 +32,12 @@ public class DynamicPropertyTest {
     final String pieceName = "Test Piece";
     final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;" + pieceName + ";");
     final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID, piece);
-    
+
     dp.mySetState("$" + BasicPiece.PIECE_NAME + "$");
-    
+
     assertEquals(pieceName, dp.getValue());
   }
-  
+
   @Test
   public void testNonStringSetPropertyBug3479() {
     // If a dynamic property has a name of "Moved" then setProperty can be
@@ -50,16 +50,16 @@ public class DynamicPropertyTest {
 
     assertEquals(Boolean.TRUE.toString(), dp.getProperty(propName));
   }
- 
+
   @Test
   public void testNullSetProperty() {
     // setProperty of null should result in getProperty of empty string
     final String propName = "Name";
     final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
     final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
-    
+
     dp.setProperty(propName, null);
-    
+
     assertEquals("", dp.getProperty(propName));
   }
 }

@@ -64,7 +64,7 @@ public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
   /**
    * A static convenience method for making an <code>Iterator<code>
    * into an <code>Iterable</code>.
-   * 
+   *
    * @param i the <code>Iterator</code>
    * @return an <code>Iterable</code> wrapping <code>i</code>
    */

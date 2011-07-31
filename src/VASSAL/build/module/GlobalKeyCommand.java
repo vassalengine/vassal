@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module;
@@ -37,7 +37,7 @@ public class GlobalKeyCommand extends MassKeyCommand {
     GameModule.getGameModule().sendAndLog(
       globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
   }
-  
+
   // Hide 'This Map only' option
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SINGLE_MAP.equals(name)) {

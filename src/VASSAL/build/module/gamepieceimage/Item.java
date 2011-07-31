@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -32,13 +32,13 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * 
- * The base portion of a Counter Layout component.  Contains the draw() method, but may override specific values from an associated (via the name attribute) {@link ItemInstance} 
+ *
+ * The base portion of a Counter Layout component.  Contains the draw() method, but may override specific values from an associated (via the name attribute) {@link ItemInstance}
  */
 public abstract class Item extends AbstractConfigurable {
 
   public static final String TYPE = ""; //$NON-NLS-1$
-  
+
   protected static final String NAME = "name"; //$NON-NLS-1$
   protected static final String LOCATION = "location"; //$NON-NLS-1$
   protected static final String ADVANCED = "advanced"; //$NON-NLS-1$
@@ -59,10 +59,10 @@ public abstract class Item extends AbstractConfigurable {
     super();
     setConfigureName(""); //$NON-NLS-1$
   }
-  
+
   public Item(GamePieceLayout l) {
     this();
-    layout = l;    
+    layout = l;
   }
 
   public Item(String name) {
@@ -74,7 +74,7 @@ public abstract class Item extends AbstractConfigurable {
     return new String[] {
       "Name:  ",
       "Location:  ",
-      "Advanced Options", 
+      "Advanced Options",
       "X Offset:  ",
       "Y Offset:  ",
       "Rotation (Degrees):  ",
@@ -184,7 +184,7 @@ public abstract class Item extends AbstractConfigurable {
       return null;
     }
   }
-  
+
   public void removeFrom(Buildable parent) {
 
   }
@@ -200,7 +200,7 @@ public abstract class Item extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }
-  
+
   private VisibilityCondition advancedCond = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return advanced;
@@ -234,7 +234,7 @@ public abstract class Item extends AbstractConfigurable {
   public int getRotation() {
     return rotation;
   }
-  
+
   public boolean isAntialias() {
     return antialias;
   }
@@ -242,14 +242,14 @@ public abstract class Item extends AbstractConfigurable {
   protected GamePieceLayout getLayout() {
     return layout;
   }
-  
+
   public static Item decode(GamePieceLayout layout, String s) {
     SequenceEncoder.Decoder sd1= new SequenceEncoder.Decoder(s, '|');
     String t1 = sd1.nextToken(""); //$NON-NLS-1$
     String t2 = sd1.nextToken(""); //$NON-NLS-1$
-    
+
     Item item;
-    
+
     if (t1.startsWith(SymbolItem.TYPE)) {
       item = SymbolItem.decode(layout, t1);
     }
@@ -267,7 +267,7 @@ public abstract class Item extends AbstractConfigurable {
     }
     else
       return null;
-    
+
     SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(t2, ';');
     item.setConfigureName(sd2.nextToken());
     item.location = sd2.nextToken();
@@ -275,10 +275,10 @@ public abstract class Item extends AbstractConfigurable {
     item.yoffset = sd2.nextInt(0);
     item.rotation = sd2.nextInt(0);
     item.antialias = sd2.nextBoolean(true);
-    
+
     return item;
   }
-  
+
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getConfigureName());
@@ -289,5 +289,5 @@ public abstract class Item extends AbstractConfigurable {
     se.append(antialias);
     return se.getValue();
   }
-  
+
 }

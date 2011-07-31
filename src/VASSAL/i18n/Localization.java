@@ -41,7 +41,7 @@ public class Localization extends Language {
     LoggerFactory.getLogger(Localization.class);
 
   private static Localization instance;
-  
+
   private Localization() {
     moduleBundle = Resources.MODULE_BUNDLE;
     languageBundle = moduleBundle + "_" + Resources.getLocale().getLanguage(); //$NON-NLS-1$
@@ -69,7 +69,7 @@ public class Localization extends Language {
     new ArrayList<Translation>();
   protected List<Translation> translations =
     new ArrayList<Translation>();
-  
+
   /*
    * Master translation property list
    */
@@ -77,7 +77,7 @@ public class Localization extends Language {
 
   /**
    * Return a list of translations available for editing.
-   * 
+   *
    * @return Array of available translations
    */
   public String[] getTranslationList() {
@@ -92,7 +92,7 @@ public class Localization extends Language {
 
   /**
    * Return a specified translation
-   * 
+   *
    * @param description
    * @return Translation object
    */
@@ -113,7 +113,7 @@ public class Localization extends Language {
 
   /**
    * Record an attribute that may need to be translated.
-   * 
+   *
    * @param component
    *          component to be translated
    * @param name
@@ -136,7 +136,7 @@ public class Localization extends Language {
    * over-rides default. NB - You cannot create a default translation
    * (Module.properties) using the VASSAL editor, but a default file can be
    * placed into a module or extension manually.
-   * 
+   *
    * @throws IOException
    */
   public void translate() throws IOException {
@@ -169,13 +169,13 @@ public class Localization extends Language {
         logger.info("Translated");
       }
       translatableItems.clear();
-      GameModule.getGameModule().initFrameTitle();      
+      GameModule.getGameModule().initFrameTitle();
     }
   }
 
   /**
    * Translate an individual attribute.
-   * 
+   *
    * @param key
    *          Attribute Key
    * @param defaultValue
@@ -216,7 +216,7 @@ public class Localization extends Language {
    * Check if the translation macthes our locale. If so, add it to the list
    * of translations to use. There may multiple matching translations at
    * Country, Language and Module level from different extensions.
-   * 
+   *
    * @param t Translation
    */
   public void addTranslation(Translation t) {

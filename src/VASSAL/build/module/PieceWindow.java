@@ -229,7 +229,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString("Editor.PieceWindow.hidden"), //$NON-NLS-1$
       Resources.getString(Resources.BUTTON_TEXT),
-  	  Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
       Resources.getString("Editor.PieceWindow.show_hide") //$NON-NLS-1$
     };

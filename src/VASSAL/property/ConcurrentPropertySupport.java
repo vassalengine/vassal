@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,21 +39,21 @@ public class ConcurrentPropertySupport implements PropertySupport {
 
   /**
    * {@inheritDoc}
-   * 
-   * @throws IllegalArgumentException if {@code l} is {@code null} 
+   *
+   * @throws IllegalArgumentException if {@code l} is {@code null}
    */
   public void addPropertyListener(PropertyListener<Object> l) {
-    if (l == null) throw new IllegalArgumentException(); 
+    if (l == null) throw new IllegalArgumentException();
     listeners.add(l);
   }
 
   /**
    * {@inheritDoc}
-   * 
-   * @throws IllegalArgumentException if {@code l} is {@code null} 
+   *
+   * @throws IllegalArgumentException if {@code l} is {@code null}
    */
   public void removePropertyListener(PropertyListener<Object> l) {
-    if (l == null) throw new IllegalArgumentException(); 
+    if (l == null) throw new IllegalArgumentException();
     listeners.remove(l);
   }
 
@@ -61,7 +61,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
   public boolean hasListeners() {
     return !listeners.isEmpty();
   }
-  
+
   /** {@inheritDoc} */
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?

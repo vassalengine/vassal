@@ -194,28 +194,28 @@ public class FormattedString {
 
 @Override
 public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result
-			+ ((formatString == null) ? 0 : formatString.hashCode());
-	return result;
+  final int prime = 31;
+  int result = 1;
+  result = prime * result
+      + ((formatString == null) ? 0 : formatString.hashCode());
+  return result;
 }
 
 @Override
 public boolean equals(Object obj) {
-	if (this == obj)
-		return true;
-	if (obj == null)
-		return false;
-	if (getClass() != obj.getClass())
-		return false;
-	FormattedString other = (FormattedString) obj;
-	if (formatString == null) {
-		if (other.formatString != null)
-			return false;
-	} else if (!formatString.equals(other.formatString))
-		return false;
-	return true;
+  if (this == obj)
+    return true;
+  if (obj == null)
+    return false;
+  if (getClass() != obj.getClass())
+    return false;
+  FormattedString other = (FormattedString) obj;
+  if (formatString == null) {
+    if (other.formatString != null)
+      return false;
+  } else if (!formatString.equals(other.formatString))
+    return false;
+  return true;
 }
 
 

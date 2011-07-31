@@ -44,47 +44,47 @@ import VASSAL.configure.ValidityChecker;
 import VASSAL.tools.UniqueIdManager;
 
 /**
- * 
+ *
  *
  */
-public class ActionScript extends AbstractScript 
+public class ActionScript extends AbstractScript
    implements UniqueIdManager.Identifyable, ValidityChecker {
 
-  private static UniqueIdManager idMgr = new UniqueIdManager("Action-"); 
-  
+  private static UniqueIdManager idMgr = new UniqueIdManager("Action-");
+
   public static String getConfigureTypeName() {
     return "Action Script";
   }
-  
+
   public ActionScript() {
     super();
   }
-  
+
   public String evaluate(PropertySource target) {
     return "";
   }
-  
+
   public String getId() {
     return null;
   }
-  
+
   public void setId(String id) {
-    
+
   }
-  
+
   protected String buildHeaderLine() {
     return "void " + getConfigureName() + "() {";
   }
-  
+
   public String getFullScript() {
     return buildHeaderLine() + "\n" + getScript() + "\n}";
   }
-  
+
   public CompileResult compile() {
     final String fullScript = getFullScript();
     return BeanShell.getInstance().compile(new StringReader(fullScript));
   }
-  
+
   public Configurer getConfigurer() {
     return new ScriptConfigurer(this);
   }
@@ -94,17 +94,17 @@ public class ActionScript extends AbstractScript
   }
 
   public void removeFrom(Buildable parent) {
-    idMgr.remove(this);   
+    idMgr.remove(this);
   }
 
   public void addTo(Buildable parent) {
     idMgr.add(this);
   }
-  
+
   public void validate(Buildable target, ValidationReport report) {
     idMgr.validate(this, report);
   }
- 
+
   /**
    * Configure a Script
    */
@@ -114,11 +114,11 @@ public class ActionScript extends AbstractScript
     protected JPanel panel;
     protected JavaNameConfigurer nameConfig;
     protected StringConfigurer descConfig;
-    protected TextConfigurer scriptConfig;  
+    protected TextConfigurer scriptConfig;
     protected JButton compileButton;
     protected JLabel error = new JLabel();
     protected JLabel headerLine = new JLabel();
-    
+
     public ScriptConfigurer(ActionScript s) {
       super(null, s.getConfigureName());
       script = s;
@@ -130,32 +130,32 @@ public class ActionScript extends AbstractScript
           }
         }
       });
-      
+
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.setPreferredSize(new Dimension(800, 600));
-      
+
       nameConfig = new JavaNameConfigurer(NAME, "Name:  ", script.getConfigureName());
       nameConfig.addPropertyChangeListener(new PropertyChangeListener(){
         public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(NAME, e.getNewValue());  
+          script.setAttribute(NAME, e.getNewValue());
           updateHeader();
         }});
-      
+
       descConfig = new StringConfigurer(DESC, "Description:  ", script.getDescription());
       descConfig.addPropertyChangeListener(new PropertyChangeListener(){
         public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(DESC, e.getNewValue());          
+          script.setAttribute(DESC, e.getNewValue());
         }});
-      
+
       headerLine.setText(buildHeaderLine());
-      
+
       scriptConfig = new TextConfigurer(SCRIPT, "Script:  ", script.getScript());
       scriptConfig.addPropertyChangeListener(new PropertyChangeListener(){
         public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(SCRIPT, e.getNewValue());          
+          script.setAttribute(SCRIPT, e.getNewValue());
         }});
-     
+
       panel.add(nameConfig.getControls());
       panel.add(descConfig.getControls());
       panel.add(headerLine);
@@ -167,17 +167,17 @@ public class ActionScript extends AbstractScript
       compileBox.add(compileButton);
       compileBox.add(error);
       panel.add(compileBox);
-      
+
     }
-    
+
     public void updateHeader() {
       headerLine.setText(buildHeaderLine());
     }
-    
+
     public ActionScript getScript() {
       return script;
     }
-    
+
     @Override
     public Component getControls() {
       return panel;
@@ -204,7 +204,7 @@ public class ActionScript extends AbstractScript
       else {
         error.setText(r.getMessage());
       }
-    }    
+    }
   }
-  
+
 }

@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -31,9 +31,9 @@ public class TextBoxItemInstance extends ItemInstance {
 
   protected static final String VALUE = "value"; //$NON-NLS-1$
   protected static final String BG_COLOR = "borderColor"; //$NON-NLS-1$
-  
+
   protected String val = ""; //$NON-NLS-1$
-  
+
   public TextBoxItemInstance() {
     super();
     setFgColor(ColorSwatch.getBlack());
@@ -58,7 +58,7 @@ public class TextBoxItemInstance extends ItemInstance {
   public String getValue() {
     return val;
   }
-  
+
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -95,7 +95,7 @@ public class TextBoxItemInstance extends ItemInstance {
       BgColorSwatchConfig.class
     };
   }
-  
+
   public static class WrappingTextConfigurer implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new TextConfigurer(key, name, ((TextBoxItemInstance) c).val, true);
@@ -142,7 +142,7 @@ public class TextBoxItemInstance extends ItemInstance {
     else
       return null;
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (VALUE.equals(name)) {
       return valueCond;
@@ -151,13 +151,13 @@ public class TextBoxItemInstance extends ItemInstance {
       return super.getAttributeVisibility(name);
     }
   }
-  
+
   private VisibilityCondition valueCond = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return !((TextItem) getItem()).isFixed();
     }
   };
-  
+
   public static class FgColorSwatchConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());

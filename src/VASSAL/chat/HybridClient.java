@@ -31,9 +31,9 @@ import VASSAL.i18n.Resources;
 
 /**
  * Delegates calls to another SvrConnection instance, which can be changed programmatically
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   protected ChatServerConnection delegate;
@@ -148,7 +148,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
       ((ChatControlsInitializer) delegate).uninitializeControls(controls);
     }
   }
-  
+
   public void updateDisplayControls(Icon icon, String text) {
     if (controls != null) {
       controls.updateClientDisplay(icon, text);

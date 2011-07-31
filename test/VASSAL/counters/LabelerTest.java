@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LabelerTest {
-  
+
   @Test
   public void testPieceNameInLabelBug3463() {
     // Putting piece name in label was causing infinite recursion
@@ -32,10 +32,10 @@ public class LabelerTest {
     final String pieceName = "Test Piece";
     final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;" + pieceName + ";");
     final Labeler labeler = new Labeler(Labeler.ID, piece);
-    
+
     labeler.setLabel("$" + BasicPiece.PIECE_NAME + "$");
-    
-    assertEquals(pieceName, labeler.getLabel()); 
+
+    assertEquals(pieceName, labeler.getLabel());
   }
 
 }

@@ -125,7 +125,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   /**
    * For the case when the piece definition is a Message Format, expand the definition using the given properties
-   * 
+   *
    * @param props
    * @return
    */
@@ -176,7 +176,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Prototype.component_type"); //$NON-NLS-1$
   }
-  
+
   public static class Config extends Configurer {
     private Box box;
     private PieceDefiner pieceDefiner;
@@ -218,7 +218,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       public Definer(GpIdSupport s) {
         super(s);
       }
-      
+
       public void setPiece(GamePiece piece) {
         if (piece != null) {
           GamePiece inner = Decorator.getInnermost(piece);
@@ -258,7 +258,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       }
     }
   }
-  
+
   /*
    * Implement Translatable - Since PrototypeDefinition implements its
    * own configurer, methods below here will only ever be called by the
@@ -287,7 +287,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   public String getAttributeValueString(String attr) {
     return getI18nData().getLocalUntranslatedValue(attr);
   }
-  
+
   public ComponentI18nData getI18nData() {
     /*
      * Prototype definition may change due to editing, so no caching

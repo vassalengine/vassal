@@ -30,7 +30,7 @@ public class JarArchive extends DataArchive {
   public JarArchive() {
     this(null);
   }
-  
+
   public JarArchive(String prefix) {
     super();
     this.prefix = prefix;

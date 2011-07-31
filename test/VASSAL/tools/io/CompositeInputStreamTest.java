@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -47,7 +47,7 @@ public class CompositeInputStreamTest {
       final byte[] a = new byte[10];
       Arrays.fill(a, (byte) i);
       ch[i] = new ByteArrayInputStream(a);
-    } 
+    }
     return ch;
   }
 
@@ -84,12 +84,12 @@ public class CompositeInputStreamTest {
     final InputStream[] ch = prepareStreams();
     final InputStream in = new CompositeInputStream(ch);
 
-    final byte[] actual = new byte[100];    
+    final byte[] actual = new byte[100];
     final int count = IOUtils.read(in, actual);
 
     assertEquals(actual.length, count);
     assertEquals(-1, in.read());
-    assertArrayEquals(expected, actual);  
+    assertArrayEquals(expected, actual);
   }
 
   @Test

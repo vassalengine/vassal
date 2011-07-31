@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.documentation;
@@ -43,7 +43,7 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
   private static final long serialVersionUID = 1L;
 
   private JEditorPane pane;
- 
+
   public DialogHelpWindow(String title, URL contents, Dialog parent) {
     super(parent);
     setTitle(title);
@@ -53,15 +53,15 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
     pane = new JEditorPane();
     pane.setEditable(false);
     pane.addHyperlinkListener(this);
-    
+
     /*
-     * Allow <src> tag to display images from the module DataArchive 
+     * Allow <src> tag to display images from the module DataArchive
      * where no pathname included in the image name.
      */
     pane.setContentType("text/html"); //$NON-NLS-1$
     XTMLEditorKit myHTMLEditorKit = new HtmlChart.XTMLEditorKit();
     pane.setEditorKit(myHTMLEditorKit);
-    
+
     JScrollPane scroll = new ScrollPane(pane);
     add(scroll);
     update(contents);

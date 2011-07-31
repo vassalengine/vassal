@@ -69,7 +69,7 @@ public class DefaultEventListenerSupportTest {
     lsup.removeEventListener(dummy);
     assertFalse(lsup.hasEventListeners());
   }
-  
+
 
   @Test
   @SuppressWarnings("unchecked")

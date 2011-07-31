@@ -36,22 +36,22 @@ import VASSAL.tools.SequenceEncoder;
 public class PluginsLoader extends ExtensionsLoader {
 
   public static final String COMMAND_PREFIX = "PLUGIN\t"; //$NON-NLS-1$
-  
+
   private ExtensionsManager extMgr = new ExtensionsManager("plugins");
-  
+
   public void addTo(GameModule mod) {
     mod.addCommandEncoder(this);
     for (File ext : extMgr.getActiveExtensions()) {
       addExtension(ext);
     }
   }
- 
-  @Override 
+
+  @Override
   protected ModuleExtension createExtension(String extname)
                                             throws ZipException, IOException {
     return new ModulePlugin(new DataArchive(extname));
   }
-  
+
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -77,24 +77,24 @@ public class PluginsLoader extends ExtensionsLoader {
     }
     return s;
   }
-  
+
   public static String getPluginDirectory() {
     return new ExtensionsManager("plugins").getExtensionsDirectory(false).getPath();  //$NON-NLS-1$
   }
-  
+
   protected String getLoadedMessage(String name, String version) {
     return Resources.getString("PluginsLoader.plugin_loaded", name, version); //$NON-NLS-1$
   }
-  
+
   protected String getErrorMessage(String name, String msg) {
     return Resources.getString("PluginsLoader.unable_to_load", name , msg);  //$NON-NLS-1$
   }
-  
+
   /**
    * Any components that are added to the module by a Plugin MUST
    * implement PluginElement to prevent them being written to the
    * buildFile when saving the module. Implemented by Plugin and
-   * ModuleExtension. 
+   * ModuleExtension.
    */
   public interface PluginElement {
   }

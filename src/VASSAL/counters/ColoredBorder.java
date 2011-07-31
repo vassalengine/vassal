@@ -33,7 +33,7 @@ import java.util.List;
 public class ColoredBorder implements Highlighter {
   protected Color c;
   protected int thickness;
-  
+
   // Additional Highlighters
   protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
 
@@ -49,11 +49,11 @@ public class ColoredBorder implements Highlighter {
   public void addHighlighter(Highlighter h) {
     highlighters.add(h);
   }
-  
+
   public void removeHighlighter(Highlighter h) {
     highlighters.remove(h);
   }
-  
+
   public void draw(GamePiece p, Graphics g, int x, int y,
                    Component obs, double zoom) {
     if (thickness > 0) {
@@ -83,7 +83,7 @@ public class ColoredBorder implements Highlighter {
         highlightSelectionBounds(p, g, x, y, obs, zoom);
       }
     }
-    
+
     // Draw any additional highlighters
     for (Highlighter h : highlighters) {
       h.draw(p, g, x, y, obs, zoom);

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Joel Uckelman
  * @since 3.2.0
- */ 
+ */
 public interface ImageTileSource {
   /**
    * Gets an image tile.

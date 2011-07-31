@@ -47,11 +47,11 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   public LayeredPieceCollection() {
     this.setAttributeTranslatable(PROPERTY_NAME, false);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString("Editor.GamePieceLayers.property_layer"), //$NON-NLS-1$
-    		Resources.getString("Editor.GamePieceLayers.order_layer"), //$NON-NLS-1$
+        Resources.getString("Editor.GamePieceLayers.property_layer"), //$NON-NLS-1$
+        Resources.getString("Editor.GamePieceLayers.order_layer"), //$NON-NLS-1$
     };
   }
 
@@ -102,7 +102,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       tempToolBar.setDelegate(map);
     }
   }
-  
+
   public JToolBar getToolBar() {
     if (tempToolBar == null) {
       tempToolBar = new TemporaryToolBar();
@@ -131,7 +131,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       lc.removeFrom(this);
     }
   }
-  
+
   public Map getMap() {
     return map;
   }
@@ -172,7 +172,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     public int getLayerForPiece(GamePiece p) {
       return ((Integer)dispatcher.accept(p)).intValue();
     }
-    
+
     public int getLayerForName(String layer) {
       for (int i=0; i < layerOrder.length; i++) {
         if (layer.equals(layerOrder[i])) {
@@ -181,7 +181,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       }
       return -1;
     }
-    
+
     public String getLayerNameForPiece(GamePiece p) {
       int layer = getLayerForPiece(p);
       return layer >= layerOrder.length ? "" : layerOrder[layer];

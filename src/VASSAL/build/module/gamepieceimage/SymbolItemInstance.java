@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build.module.gamepieceimage;
 
 import VASSAL.build.AutoConfigurable;
@@ -30,16 +30,16 @@ public class SymbolItemInstance extends ItemInstance {
   public static final String SIZE_COLOR = "sizeColor"; //$NON-NLS-1$
   public static final String SYMBOL1 = "symbol1"; //$NON-NLS-1$
   public static final String SYMBOL2 = "symbol2"; //$NON-NLS-1$
-  
+
   protected String size;
   protected String symbol1;
   protected String symbol2;
   private ColorSwatch sizeColor = ColorSwatch.getBlack();
-  
+
   public SymbolItemInstance() {
     super();
   }
-  
+
   public SymbolItemInstance(String nam, String typ, String loc, String sz, String s1, String s2) {
     super(nam, typ, loc);
     setSize(sz);
@@ -51,7 +51,7 @@ public class SymbolItemInstance extends ItemInstance {
     super(defn);
     decode(code);
   }
-  
+
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -65,7 +65,7 @@ public class SymbolItemInstance extends ItemInstance {
     se.append(getSizeColor().encode());
     return se.getValue();
   }
-  
+
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     setType(sd.nextToken("")); //$NON-NLS-1$
@@ -78,7 +78,7 @@ public class SymbolItemInstance extends ItemInstance {
     setSymbol2(sd.nextToken("")); //$NON-NLS-1$
     setSizeColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
   }
-  
+
   public void setSize(String size) {
     this.size = size;
   }
@@ -112,7 +112,7 @@ public class SymbolItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { 
+    return new String[] {
       "Unit Size:  ",
       "1st Symbol:  ",
       "2nd Symbol:  ",
@@ -132,7 +132,7 @@ public class SymbolItemInstance extends ItemInstance {
       SizeColorSwatchConfig.class
     };
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] {
       SIZE,
@@ -149,7 +149,7 @@ public class SymbolItemInstance extends ItemInstance {
       size = (String) value;
     }
     else if (SYMBOL1.equals(key)) {
-      symbol1 = (String) value; 
+      symbol1 = (String) value;
     }
     else if (SYMBOL2.equals(key)) {
       symbol2 = (String) value;
@@ -200,13 +200,13 @@ public class SymbolItemInstance extends ItemInstance {
     else
       return null;
   }
-  
+
   public static class SizeConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new SizeConfigurer(key, name);
     }
   }
-  
+
   public static class Symbol1Config implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new SymbolConfigurer(key, name);
@@ -218,19 +218,19 @@ public class SymbolItemInstance extends ItemInstance {
       return new SymbolConfigurer(key, name);
     }
   }
-  
+
   public static class BgColorSwatchConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getBgColor());
     }
   }
-  
+
   public static class FgColorSwatchConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getFgColor());
     }
   }
-  
+
   public static class SizeColorSwatchConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getFgColor());

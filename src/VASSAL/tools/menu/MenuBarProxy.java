@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -53,7 +53,7 @@ public class MenuBarProxy extends AbstractParent<JMenuBar> {
   @Override
   public JMenuBar createPeer() {
     final JMenuBar mb = new JMenuBar();
- 
+
     for (ChildProxy<?> child : children) {
       final JComponent peer = child.createPeer();
       if (peer != null) mb.add(peer);

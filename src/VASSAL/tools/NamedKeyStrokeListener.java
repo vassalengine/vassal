@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
 public class NamedKeyStrokeListener extends KeyStrokeListener {
 
   private NamedKeyStroke namedKeyStroke;
-  
+
   public NamedKeyStrokeListener(ActionListener l) {
     super(l);
   }
@@ -39,17 +39,17 @@ public class NamedKeyStrokeListener extends KeyStrokeListener {
     this(l);
     setKeyStroke(key);
   }
-  
+
   public void setKeyStroke(KeyStroke newKey) {
     super.setKeyStroke(newKey);
     namedKeyStroke = new NamedKeyStroke(newKey);
   }
-  
+
   public void setKeyStroke(NamedKeyStroke newKey) {
     super.setKeyStroke(newKey == null ? null : newKey.getKeyStroke());
     namedKeyStroke = newKey;
   }
-  
+
   public NamedKeyStroke getNamedKeyStroke() {
     return namedKeyStroke;
   }

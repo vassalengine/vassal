@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for extracting strings from a {@link ResourceBundle}.
- * 
+ *
  * @author rodneykinney
  */
 public class BundleHelper {
@@ -48,7 +48,7 @@ public class BundleHelper {
     catch (MissingResourceException e) {
       logger.error("No Translation: " + id);
     }
-        
+
     // fallback: return the key
     return id;
   }
@@ -60,7 +60,7 @@ public class BundleHelper {
     catch (IllegalFormatException e) {
       logger.error("Illegal Message Format: " + id);
     }
-    
+
     // fallback: return the key
     return id;
   }

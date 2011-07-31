@@ -123,6 +123,6 @@ public class BeanShellExpression extends Expression {
 
   @Override
   public boolean equals(Object bse) {
-	  return super.equals(bse);
+    return super.equals(bse);
   }
 }

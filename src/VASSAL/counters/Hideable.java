@@ -92,9 +92,9 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
     else {
       return super.getLocalizedProperty(key);
-    }    
+    }
   }
-  
+
   public Object getProperty(Object key) {
     if (HIDDEN_BY.equals(key)) {
       return hiddenBy;
@@ -253,7 +253,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   /**
    * If true, then all hidden pieces are considered invisible to all players.
    * Used to temporarily draw pieces as they appear to other players
-   * 
+   *
    * @param allHidden
    * @deprecated
    */
@@ -265,11 +265,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
       PieceAccess.GlobalAccess.revertAll();
     }
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Hide command");
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */

@@ -32,18 +32,18 @@ import VASSAL.tools.ArchiveWriter;
 
 /**
  * Abstract parent of all importer classes.
- * 
+ *
  * @author Michael Kiefte
  * @since 3.1.0
  */
 public abstract class Importer {
-  
+
   /*
    * We need this for the getCaseInsensitiveFile method.
    */
   protected ImportAction action;
   protected File file;
-  
+
   static protected void insertComponent(Buildable child, Buildable parent) {
     child.build(null);
     if (child instanceof PieceSlot)
@@ -51,14 +51,14 @@ public abstract class Importer {
     child.addTo(parent);
     parent.add(child);
   }
-  
+
   /**
    * @return The VASSAL Map object corresponding to this imported map.
    */
   protected Map getMainMap() {
     return GameModule.getGameModule().getAllDescendantComponentsOf(Map.class).iterator().next();
   }
-  
+
   protected LayeredPieceCollection getLayeredPieceCollection() {
     final Map map = getMainMap();
     final List<LayeredPieceCollection> l =
@@ -76,30 +76,30 @@ public abstract class Importer {
     }
     return collection;
   }
-  
+
   /**
-   * The method that actually loads the file and creates the classes containing information needed for the archive. 
+   * The method that actually loads the file and creates the classes containing information needed for the archive.
    * The archive is written in <code>writeToArchive</code>.
-   * 
+   *
    * @param f            The base file to be imported.
    * @throws IOException
    */
   protected void load(File f) throws IOException {
     this.file = f;
   }
-  
+
   /**
    * Create the VASSAL module based on the classes created by <code>load</code>. This should not be called directly
    * but rather <code>importFile</code>.
-   * 
+   *
    * @throws IOException
    */
   public abstract void writeToArchive() throws IOException;
-  
+
   /**
    * Two methods are needed to import a file. <code>Importer.importFile</code> initializes the game module
    * and calls <code>load</code> which must be overridden by descendents.
-   * 
+   *
    * @param action       <code>ImportAction</code> which creates the <code>Importer</code>. This is needed for
    *                     file dialogs that may be called by <code>Importer</code> methods.
    * @param f            The base file to be imported.
@@ -107,7 +107,7 @@ public abstract class Importer {
    */
   public void importFile(ImportAction action, File f) throws IOException {
     this.action = action;
-    load(f);    
+    load(f);
   }
 
   /**
@@ -190,12 +190,12 @@ public abstract class Importer {
         t = s + '(' + (++index) + ')';
     }
     catch (IOException e) {
-// FIXME: ????      
+// FIXME: ????
     }
 
     return t + ext;
   }
-  
+
   public static String getUniqueImageFileName(String s) {
     return getUniqueImageFileName(s, ".png");
   }
@@ -237,8 +237,8 @@ public abstract class Importer {
    * Determine whether the file is valid for the given importer.
    * @param f
    * @return <code>true</code> if <code>f</code> is a valid file for this type.
-   * @throws FileNotFoundException 
-   * @throws IOException 
+   * @throws FileNotFoundException
+   * @throws IOException
    */
   public abstract boolean isValidImportFile(File f) throws IOException;
 }

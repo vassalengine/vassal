@@ -32,10 +32,10 @@ import javax.swing.UIManager;
  *
  * @author Joel Uckelman
  * @since 3.1.0
- */ 
+ */
 public class ColorButton extends JButton {
   private static final long serialVersionUID = 1L;
-  
+
   private static Font FONT = new Font("Dialog", 0, 10);
 
   private Color color;
@@ -56,14 +56,14 @@ public class ColorButton extends JButton {
     super();
     color = c;
     setIcon(new SwatchIcon(30,15));
-    setMargin(new Insets(2,2,2,2)); 
+    setMargin(new Insets(2,2,2,2));
   }
 
   /**
    * Set the color of the button.
    *
    * @param c the color to set
-   */ 
+   */
   public void setColor(Color c) {
     color = c;
   }

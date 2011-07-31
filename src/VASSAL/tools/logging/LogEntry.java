@@ -75,7 +75,7 @@ public class LogEntry implements Serializable {
     final DateFormat dateFormat =
       new SimpleDateFormat("dd MMM yyyy HH:mm:ss.SSS", Locale.ENGLISH);
     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    
+
     sb.append(dateFormat.format(timestamp))
       .append(' ')
       .append(pid);

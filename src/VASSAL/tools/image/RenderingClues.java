@@ -60,7 +60,7 @@ public class RenderingClues extends RenderingHints {
   }
 
   /**
-   *  Constructs a collection of <code>RenderingClues</code> from 
+   *  Constructs a collection of <code>RenderingClues</code> from
    *  the given <code>Map</code>.
    *
    *  @param init a map of key/value pairs to initialize the hints

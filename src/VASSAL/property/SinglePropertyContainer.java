@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -85,7 +85,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   @SuppressWarnings("unchecked")
   public <T> T getValue(Property<T> prop) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
-    return (T) value; 
+    return (T) value;
   }
 
   protected final CopyOnWriteArrayList<PropertyListener<Object>> listeners =
@@ -141,7 +141,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   public boolean hasListeners() {
     return !listeners.isEmpty();
   }
- 
+
   /** {@inheritDoc} */
   public <T> boolean hasListeners(Property<T> prop) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();

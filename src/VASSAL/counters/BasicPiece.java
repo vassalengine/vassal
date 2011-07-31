@@ -66,7 +66,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   private static Highlighter highlighter;
   /**
    * Return information about the current location of the piece through getProperty():
-   * 
+   *
    * LocationName - Current Location Name of piece as displayed in Chat Window CurrentX - Current X position CurrentY -
    * Current Y position CurrentMap - Current Map name or "" if not on a map CurrentBoard - Current Board name or "" if
    * not on a map CurrentZone - If the current map has a multi-zoned grid, then return the name of the Zone the piece is
@@ -158,7 +158,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else
         return getPublicProperty(key);
   }
-  
+
   /*
    * Properties visible in a masked unit
    */
@@ -241,7 +241,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       return getLocalizedPublicProperty(key);
     }
   }
-  
+
   /*
    * Properties visible in a masked unit
    */
@@ -710,7 +710,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     data.add(commonName, "Basic piece name");
     return data;
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */

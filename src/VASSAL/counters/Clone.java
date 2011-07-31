@@ -146,7 +146,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, "Clone command");
   }
-   
+
   public static class Ed implements PieceEditor {
     private StringConfigurer nameInput;
     private NamedHotKeyConfigurer keyInput;

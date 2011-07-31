@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 /*
@@ -21,7 +21,7 @@
  * User: rkinney
  * Date: Jul 24, 2002
  * Time: 10:11:51 PM
- * To change template for new class use 
+ * To change template for new class use
  * Code Style | Class Templates options (Tools | IDE Options).
  */
 package VASSAL.configure;

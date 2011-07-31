@@ -77,7 +77,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
    *
    * @param version the version <code>String</code> to parse
    * @throws IllegalArgumentException if <code>version == null</code>.
-   */  
+   */
   public VassalVersionTokenizer(String version) {
     if (version == null) throw new IllegalArgumentException();
     v = version;
@@ -90,7 +90,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
 
   /** {@inheritDoc} */
   public int next() throws VersionFormatException {
-    if (!hasNext()) throw new NoSuchElementException(); 
+    if (!hasNext()) throw new NoSuchElementException();
 
     int n;
 
@@ -123,7 +123,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
           throw new VersionFormatException();
         }
         break;
-      case TAG: // parse the tag 
+      case TAG: // parse the tag
         if (v.startsWith("svn")) {
           // report the svn version
           v = v.substring(3);

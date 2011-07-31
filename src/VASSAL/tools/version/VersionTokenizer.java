@@ -49,5 +49,5 @@ public interface VersionTokenizer {
    * @throws NoSuchElementException if this method is called when
    * {@link hasNext()} would return <code>false</code>.
    */
-  public int next() throws VersionFormatException; 
+  public int next() throws VersionFormatException;
 }

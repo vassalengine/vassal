@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -42,7 +42,7 @@ public class CompositeInputStream extends InputStream {
 
   protected final LinkedList<InputStream> queue;
 
-  protected InputStream in;  
+  protected InputStream in;
 
   /**
    * Creates a <code>CompositeInputStream</code> from the given sequence
@@ -60,7 +60,7 @@ public class CompositeInputStream extends InputStream {
    * of <code>InputStream</code>s.
    *
    * @param streams the <code>InputStream</code>s to be concatenated
-   */  
+   */
   public CompositeInputStream(InputStream... streams) {
     this(Arrays.asList(streams));
   }
@@ -73,7 +73,7 @@ public class CompositeInputStream extends InputStream {
   }
 
   /** {@inheritDoc} */
-  @Override 
+  @Override
   public int available() throws IOException {
     int bytes = in != null ? in.available() : 0;
     for (InputStream ch : queue) {
@@ -86,7 +86,7 @@ public class CompositeInputStream extends InputStream {
   @Override
   public int read() throws IOException {
     if (in == null) return -1;
-    
+
     final int c = in.read();
     if (c != -1) return c;
 
@@ -99,11 +99,11 @@ public class CompositeInputStream extends InputStream {
   public int read(byte b[], int off, int len) throws IOException {
     if (in == null) return -1;
     if (len == 0) return 0;
-   
+
     final int count = in.read(b, off, len);
     if (count > 0) return count;
 
-    nextStream(); 
+    nextStream();
     return read(b, off, len);
   }
 

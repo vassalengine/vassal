@@ -38,7 +38,7 @@ import VASSAL.chat.Room;
  * Change Owners name to display Red
  */
 public class LockableRoomTreeRenderer extends RoomTreeRenderer {
-  private static final long serialVersionUID = 1L; 
+  private static final long serialVersionUID = 1L;
   private Icon lockedIcon;
   private Font nonOwnerFont = null;
   private Font ownerFont = null;
@@ -56,25 +56,25 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
                                                 boolean hasFocus) {
     JLabel l =  (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
     Object item = ((DefaultMutableTreeNode) value).getUserObject();
-    
+
     if (item instanceof LockableRoom) {
       if (lockedIcon != null && ((LockableRoom)item).isLocked()) {
         l.setIcon(lockedIcon);
-      }   
+      }
     }
     else if (item instanceof Player) {
       final DefaultMutableTreeNode roomNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) value).getParent();
       final Object room = roomNode.getUserObject();
       if (room instanceof LockableRoom) {
          if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
-           if (ownerFont == null) {             
+           if (ownerFont == null) {
              nonOwnerFont = this.getFont();
              ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle()+Font.BOLD, nonOwnerFont.getSize());
            }
            setFont(ownerFont);
            return l;
          }
-      } 
+      }
     }
     setFont(nonOwnerFont);
     return l;

@@ -41,9 +41,9 @@ import VASSAL.tools.NamedKeyStroke;
 
 /**
  * Adds a toolbar button that changes the value of a global property
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class ChangePropertyButton extends AbstractConfigurable implements PropertyChangerConfigurer.Constraints {
   public static final String BUTTON_TEXT = "text";
@@ -217,7 +217,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   public Object getProperty(Object key) {
     return property.getProperty(key);
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     return property.getLocalizedProperty(key);
   }

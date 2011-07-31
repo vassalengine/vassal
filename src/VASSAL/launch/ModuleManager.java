@@ -67,9 +67,9 @@ import VASSAL.tools.menu.MenuManager;
 //import VASSAL.tools.signal.SignalSender;
 
 /**
- * Tracks recently-used modules and builds the main GUI window for 
+ * Tracks recently-used modules and builds the main GUI window for
  * interacting with modules.
- * 
+ *
  * @author rodneykinney
  * @since 3.1.0
  */
@@ -127,7 +127,7 @@ public class ModuleManager {
     // Finally, we unlock ~/VASSAL/key and proceed to act as a client,
     // sending requests over localhost:port using the security key.
     //
-    // The advantages of this method are: 
+    // The advantages of this method are:
     //
     // (1) No race conditions between processes started at the same time.
     // (2) No port collisions, because we don't use a predetermined port.
@@ -144,14 +144,14 @@ public class ModuleManager {
     try {
       // acquire an exclusive lock on the key file
       kraf = new RandomAccessFile(keyfile, "rw");
-      
+
       try {
         klock = kraf.getChannel().lock();
       }
       catch (OverlappingFileLockException e) {
         throw (IOException) new IOException().initCause(e);
       }
-      
+
       // determine whether we are the server or a client
 
       // Note: We purposely keep lout open in the case where we are the
@@ -171,9 +171,9 @@ public class ModuleManager {
         // bind to an available port on the loopback device
         final ServerSocket serverSocket =
           new ServerSocket(0, 0, InetAddress.getByName(null));
-    
+
         // write the port number where we listen to the key file
-        port = serverSocket.getLocalPort(); 
+        port = serverSocket.getLocalPort();
         kraf.writeInt(port);
 
         // create new security key and write it to the key file
@@ -208,7 +208,7 @@ public class ModuleManager {
     }
 
     lr.key = key;
-    
+
     // pass launch parameters on to the ModuleManager via the socket
     Socket clientSocket = null;
     ObjectOutputStream out = null;
@@ -313,7 +313,7 @@ public class ModuleManager {
     if (nextVersionCheck == -1L) {
       // this was our first check; randomly check after 0-10 days to
       // to spread version checks evenly over a 10-day period
-      nextVersionCheck = System.currentTimeMillis() + 
+      nextVersionCheck = System.currentTimeMillis() +
                          (long) (Math.random() * 10 * 86400000);
     }
     else {
@@ -349,7 +349,7 @@ public class ModuleManager {
     signalServerSocket = new ServerSocket(0, 0, lo);
 
     final MultiplexedSignalSource mss = new DefaultMultiplexedSignalSource();
-    final SignalDispatcher sd = new SignalDispatcher(mss);   
+    final SignalDispatcher sd = new SignalDispatcher(mss);
 
     sd.addEventListener(
       AbstractLaunchAction.NotifyOpenModuleOk.class,
@@ -377,7 +377,7 @@ public class ModuleManager {
     );
 
     final SignalSender ss = new SignalSender();
- 
+
     signalServer = new SignalServer(signalServerSocket, mss, sd, ss);
     new Thread(signalServer, "comm server").start();
 */
@@ -387,7 +387,7 @@ public class ModuleManager {
   public SignalServer getSignalServer() {
     return signalServer;
   }
-*/ 
+*/
 
   private class SocketListener implements Runnable {
     private final ServerSocket serverSocket;
@@ -406,13 +406,13 @@ public class ModuleManager {
             clientSocket = serverSocket.accept();
             in = new ObjectInputStream(
                   new BufferedInputStream(clientSocket.getInputStream()));
-            
+
             final String message = execute(in.readObject());
             in.close();
             clientSocket.close();
 
             if (message == null || clientSocket.isClosed()) continue;
-           
+
             out = new PrintStream(
                     new BufferedOutputStream(clientSocket.getOutputStream()));
             out.println(message);
@@ -453,7 +453,7 @@ public class ModuleManager {
   }
 
   protected String execute(Object req) {
-    if (req instanceof LaunchRequest) { 
+    if (req instanceof LaunchRequest) {
       final LaunchRequest lr = (LaunchRequest) req;
 
       if (lr.key != key) {
@@ -466,13 +466,13 @@ public class ModuleManager {
         SwingUtilities.invokeAndWait(handler);
       }
       catch (InterruptedException e) {
-        return "interrupted";   // FIXME 
+        return "interrupted";   // FIXME
       }
       catch (InvocationTargetException e) {
         ErrorDialog.bug(e);
         return null;
       }
-  
+
       return handler.getResult();
     }
     else {
@@ -486,11 +486,11 @@ public class ModuleManager {
 
     public LaunchRequestHandler(LaunchRequest lr) {
       this.lr = lr;
-    }   
-  
+    }
+
     public void run() {
       result = handle();
-    } 
+    }
 
     public String getResult() {
       return result;
@@ -500,13 +500,13 @@ public class ModuleManager {
       final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 
       switch (lr.mode) {
-      case MANAGE:  
+      case MANAGE:
         window.toFront();
         break;
       case LOAD:
         if (Player.LaunchAction.isEditing(lr.module))
           return "module open for editing";   // FIXME
-    
+
         if (lr.module == null && lr.game != null) {
           // attempt to find the module for the saved game or log
           final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.game);
@@ -514,7 +514,7 @@ public class ModuleManager {
             // we found save metadata
             final String moduleName = ((SaveMetaData) data).getModuleName();
             if (moduleName != null && moduleName.length() > 0) {
-              // get the module file by module name 
+              // get the module file by module name
               lr.module = window.getModuleByName(moduleName);
             }
             else {
@@ -532,7 +532,7 @@ public class ModuleManager {
         else if (lr.game == null) {
           new Player.LaunchAction(window, lr.module).actionPerformed(null);
         }
-        else { 
+        else {
           new Player.LaunchAction(
             window, lr.module, lr.game).actionPerformed(null);
         }
@@ -542,7 +542,7 @@ public class ModuleManager {
           return "module open for play";      // FIXME
         if (Editor.LaunchAction.isEditing(lr.module))
           return "module open for editing";   // FIXME
-  
+
         new Editor.LaunchAction(window, lr.module).actionPerformed(null);
         break;
       case IMPORT:

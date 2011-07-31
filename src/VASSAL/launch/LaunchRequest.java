@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2010 by Joel Uckelman 
+ * Copyright (c) 2008-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -101,9 +101,9 @@ public class LaunchRequest implements Serializable {
     this.importFile = lr.importFile;
 
     this.standalone = lr.standalone;
-    
+
     this.builtInModule = lr.builtInModule;
-    
+
     if (lr.autoext != null) this.autoext = new ArrayList<String>(lr.autoext);
   }
 
@@ -181,11 +181,11 @@ public class LaunchRequest implements Serializable {
 
   /**
    * Parse an argument array to a <code>LaunchRequest</code>.
-   * 
+   *
    * @param args an array of command-line arguments
    * @return a <code>LaunchRequest</code> equivalent to <code>args</code>
    * @throws LaunchRequestException when parsing fails
-   */ 
+   */
   public static LaunchRequest parseArgs(String[] args)
                                                 throws LaunchRequestException {
     final LaunchRequest lr = new LaunchRequest();
@@ -277,21 +277,21 @@ public class LaunchRequest implements Serializable {
         lr.standalone = true;
         break;
       case ':':
-        die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 
+        die("LaunchRequest.missing_argument", args[g.getOptind()-1]);
         break;
       case '?':
         // NB: getOptind() is not advanced if the unrecognized option
         // is short and bundled, so we must handle unrecognized long
-        // options separately from unrecognized short options. 
+        // options separately from unrecognized short options.
         die(
-          "LaunchRequest.unrecognized_option", 
+          "LaunchRequest.unrecognized_option",
           g.getOptopt() == 0 ?
             args[g.getOptind()-1] : '-' + String.valueOf((char) g.getOptopt())
         );
         break;
       default:
         // should never happen
-        throw new IllegalStateException();  
+        throw new IllegalStateException();
       }
     }
 
@@ -345,7 +345,7 @@ public class LaunchRequest implements Serializable {
     case NEW_EXT:
       if (i < args.length) {
         final File file = new File(args[i++]);
-        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);        
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           lr.module = file;
         }
@@ -364,7 +364,7 @@ public class LaunchRequest implements Serializable {
     case EDIT_EXT:
       while (i < args.length) {
         final File file = new File(args[i++]);
-        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);        
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
             die("LaunchRequest.only_one", "module");
@@ -384,7 +384,7 @@ public class LaunchRequest implements Serializable {
       if (lr.module == null) {
         die("LaunchRequest.missing_module");
       }
-      
+
       if (lr.extension == null) {
         die("LaunchRequest.missing_extension");
       }
@@ -396,24 +396,24 @@ public class LaunchRequest implements Serializable {
 
     if (i < args.length) {
       die("LaunchRequest.excess_args", args[i]);
-    }   
- 
+    }
+
     // other consistency checks
     if (lr.builtInModule) {
       if (lr.mode != Mode.LOAD) {
         die("LaunchRequest.only_in_mode", "--auto", Mode.LOAD.toString());
-      }      
+      }
 
       if (lr.module != null) {
         die("LaunchRequest.excess_args", args[i]);
       }
-    }  
+    }
 
     if (lr.autoext != null) {
       if (lr.mode != Mode.LOAD) {
         die("LaunchRequest.only_in_mode",
             "--auto-extensions", Mode.LOAD.toString());
-      }      
+      }
 
       if (lr.module != null) {
         die("LaunchRequest.excess_args", args[i]);
@@ -426,10 +426,10 @@ public class LaunchRequest implements Serializable {
   protected static void setMode(LaunchRequest lr, Mode mode)
                                                 throws LaunchRequestException {
     if (lr.mode != null) die("LaunchRequest.only_one", "mode");
-    lr.mode = mode; 
+    lr.mode = mode;
   }
 
-  /** 
+  /**
    * Throws a {@link LaunchRequestException}.
    *
    * @param key {@link Resources} key

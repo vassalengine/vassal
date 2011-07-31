@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build;
@@ -54,12 +54,12 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
       for (int i = 0; i < n.getLength(); ++i) {
         Attr att = (Attr) n.item(i);
         setAttribute(att.getName(), att.getValue());
-        
+
         /*
          * Save a record of all Attributes for later translation. Need to save
          * all attributes, not just translatable ones as the current component
          * has not been completely built yet and a ComponentI18nData object
-         * cannot be built. 
+         * cannot be built.
          */
         if (this instanceof Translatable) {
           Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
@@ -83,7 +83,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
    * {@link AbstractConfigurable}, then <code>value</code> will be an
    * instance of the corresponding Class listed in
    * {@link AbstractConfigurable#getAttributeTypes}
-   * 
+   *
    * @param key
    *            the name of the attribute. Will be one of those listed in
    *            {@link #getAttributeNames}
@@ -94,7 +94,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
    * Return a String representation of the attribute with the given name. When
    * initializing a module, this String value will be passed to
    * {@link #setAttribute}.
-   * 
+   *
    * @param key
    *            the name of the attribute. Will be one of those listed in
    *            {@link #getAttributeNames}
@@ -122,11 +122,11 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
     }
     return l;
   }
- 
+
   /**
    * Recursively descend the build tree and return an enumeration of all
    * components that are instances of the given class
-   * 
+   *
    * @param target
    * @return
    * @deprecated Use {@link #getAllDescendantComponentsOf(Class<T>)} instead.
@@ -139,7 +139,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
   /**
    * Recursively descend the build tree and return a {@link List} of all
    * components that are instances of the given class
-   * 
+   *
    * @param target
    * @return
    */

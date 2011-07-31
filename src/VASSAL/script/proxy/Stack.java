@@ -24,46 +24,46 @@ import java.util.List;
 
 /**
  * BeanShell proxy for the Vassal GamePiece object
- * 
+ *
  * BeanShell proxies control access to Vassal components and expose
- * a consistent API to BeanShell Scripts. 
+ * a consistent API to BeanShell Scripts.
  *
  * PLEASE NOTE
  * New methods may be added, but DO NOT remove or change the
  * call signature of any existing methods
- * 
+ *
  */
 
 public class Stack extends GamePiece {
-  
+
   public Stack(VASSAL.counters.Stack s) {
     super(s);
   }
-  
+
   public Stack getParent() {
     return null;
   }
-  
+
   private VASSAL.counters.Stack getVassalStack() {
     return (VASSAL.counters.Stack) getVassalGamePiece();
   }
-  
+
   public GamePiece topPiece() {
     return new GamePiece(getVassalStack().topPiece());
   }
-  
+
   public GamePiece bottomPiece() {
     return new GamePiece(getVassalStack().bottomPiece());
   }
-  
+
   public int getPieceCount() {
     return getVassalStack().getPieceCount();
   }
-  
+
   public GamePiece getPieceAt(int i) {
     return new GamePiece(getVassalStack().getPieceAt(i));
   }
-  
+
   public List<GamePiece> getPieces() {
     ArrayList<GamePiece> list = new ArrayList<GamePiece>(getPieceCount());
     for (int i = 0; i < getPieceCount(); i++) {

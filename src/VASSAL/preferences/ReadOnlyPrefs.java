@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -57,14 +57,14 @@ public class ReadOnlyPrefs {
       if (entry == null)
         throw new FileNotFoundException(name + " does not exist");
 
-      in = new BufferedInputStream(zip.getInputStream(entry)); 
+      in = new BufferedInputStream(zip.getInputStream(entry));
       storedValues.load(in);
       in.close();
       zip.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
-    }  
+    }
     catch (IOException e) {
       ReadErrorDialog.error(e, zipfile.getPath() + "/!" + name);
     }
@@ -76,7 +76,7 @@ public class ReadOnlyPrefs {
 
   /**
    * Return the value of a given preference.
-   * 
+   *
    * @param key the name of the preference to retrieve
    * @return the value of this option in the Preferences file, or
    * <code>null</code> if undefined

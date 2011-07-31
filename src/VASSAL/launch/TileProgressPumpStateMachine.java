@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,15 +26,15 @@ import VASSAL.tools.concurrent.listener.EventListener;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 class TileProgressPumpStateMachine {
-  
+
   protected final EventListener<String> nameListener;
   protected final EventListener<Integer> progListener;
 
   /**
    * Creates a <code>TileProgressPumpStateMachine</code>.
-   * 
+   *
    * @param nameListener the listener for new filename events
    * @param progListener the listener for progress events
    */
@@ -67,7 +67,7 @@ class TileProgressPumpStateMachine {
   protected void sendProgress(int prog) {
     progListener.receive(this, prog);
   }
-  
+
   protected int[] runName(byte[] buf, int beg, int end, StringBuilder sb) {
     // look for end of line
     for (int pos = beg; pos < end; ++pos) {
@@ -78,13 +78,13 @@ class TileProgressPumpStateMachine {
         if (pos == beg && !hasName(sb)) {
           return new int[] { DONE, end };
         }
-        
+
         // otherwise, send the buffer up to this position as the filename
         appendName(sb, buf, beg, pos);
         sendName(sb);
-            
+
         // found a carriage return
-        if (buf[pos] == '\r') {  
+        if (buf[pos] == '\r') {
           // now look for a linefeed
           return new int[] { NAME_LF, pos+1 };
         }
@@ -131,9 +131,9 @@ class TileProgressPumpStateMachine {
 
           // send the buffer up to this position as the progress
           sendProgress(pos-beg);
-            
+
           // found a carriage return
-          if (buf[pos] == '\r') {  
+          if (buf[pos] == '\r') {
             // now look for a linefeed
             return new int[] { DOTS_LF, pos+1 };
           }
@@ -208,7 +208,7 @@ class TileProgressPumpStateMachine {
           // should never happen
           throw new IllegalStateException("state == " + state);
       }
-  
+
       state = result[0];
       beg = result[1];
     }

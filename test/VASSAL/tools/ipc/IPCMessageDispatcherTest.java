@@ -33,7 +33,7 @@ public class IPCMessageDispatcherTest {
     final Fin fin = new Fin();
     fin.setId(msg.length);
     queue.put(fin);
- 
+
     final ObjectOutput out = context.mock(ObjectOutput.class);
 
     context.checking(new Expectations() {
@@ -48,7 +48,7 @@ public class IPCMessageDispatcherTest {
         exactly(2).of(out).close();
       }
     });
-    
+
     final IPCMessageDispatcher md = new IPCMessageDispatcher(queue, out);
     md.run();
   }

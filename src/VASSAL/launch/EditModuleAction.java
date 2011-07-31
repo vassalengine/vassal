@@ -33,7 +33,7 @@ import VASSAL.tools.io.ZipArchive;
 
 public class EditModuleAction extends LoadModuleAction {
   private static final long serialVersionUID = 1L;
-  
+
   public EditModuleAction(Component comp) {
     super(comp);
     putValue(NAME, Resources.getString("Main.edit_module"));

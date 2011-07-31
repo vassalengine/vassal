@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -30,9 +30,9 @@ import VASSAL.i18n.Resources;
  */
 public abstract class SaveAsAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
-  
+
   protected String parentType = "";
-  
+
   public SaveAsAction() {
     final URL iconURL = getClass().getResource("/images/SaveAs16.gif");
     if (iconURL != null) {
@@ -42,7 +42,7 @@ public abstract class SaveAsAction extends AbstractAction {
     putValue(Action.NAME, Resources.getString("Editor.save_as", parentType));
     putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.save_as", parentType));
   }
-  
+
   public void setParent(String p) {
     parentType = p;
   }

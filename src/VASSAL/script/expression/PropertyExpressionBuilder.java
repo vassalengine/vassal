@@ -26,11 +26,11 @@ import VASSAL.counters.PropertiesPieceFilter;
 
 public class PropertyExpressionBuilder extends ExpressionBuilder {
   private static final long serialVersionUID = 1L;
-  
+
   public PropertyExpressionBuilder(Configurer c, JDialog parent) {
     super(c, parent);
   }
-  
+
   public PropertyExpressionBuilder(Configurer c, JDialog parent, EditablePiece piece) {
     super(c, parent, piece);
   }
@@ -40,8 +40,8 @@ public class PropertyExpressionBuilder extends ExpressionBuilder {
    * @param s Old-style string
    * @return expression
    */
-  public String convert(String s) {    
+  public String convert(String s) {
     return PropertiesPieceFilter.toBeanShellString(s);
   }
-  
+
 }

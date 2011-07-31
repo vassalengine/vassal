@@ -1,4 +1,4 @@
-/* 
+/*
  * $Id$
  *
  * Copyright (c) 2000-2006 by Rodney Kinney
@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.command;
@@ -67,7 +67,7 @@ public class ConditionalCommand extends Command {
   public static abstract class Condition {
     public abstract boolean isSatisfied();
   }
-  
+
   public static class Eq extends Condition {
     /** The property to be checked */
     private String property;
@@ -77,7 +77,7 @@ public class ConditionalCommand extends Command {
 
     public Eq(String property, List<String> allowed) {
       this.property = property;
-      this.allowed = allowed;      
+      this.allowed = allowed;
     }
 
     @Deprecated

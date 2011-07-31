@@ -63,7 +63,7 @@ import VASSAL.tools.menu.MenuProxy;
 /**
  * EditorWindow is the base class for the three top-level component
  * editors :- ModuleEditorWindow, ExtensionEditorWindow, PluginEditorWindow
- * 
+ *
  * @author Brent Easton
  */
 public abstract class EditorWindow extends JFrame {
@@ -80,15 +80,15 @@ public abstract class EditorWindow extends JFrame {
   );
 
   protected ConfigureTree tree;
-  
+
   public abstract String getEditorType();
 
   protected final JToolBar toolBar = new JToolBar();
 
   protected final JScrollPane scrollPane;
-  
+
   protected EditorWindow() {
-    setTitle("VASSAL " + getEditorType() + " Editor");    
+    setTitle("VASSAL " + getEditorType() + " Editor");
     setLayout(new BorderLayout());
 
     ApplicationIcons.setFor(this);
@@ -117,7 +117,7 @@ public abstract class EditorWindow extends JFrame {
         new MenuProxy(Resources.getString("General.file"));
 
       // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages   
+      // some languages
       fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
 
       fileMenu.add(mm.addKey("Editor.save"));
@@ -131,7 +131,7 @@ public abstract class EditorWindow extends JFrame {
     final MenuProxy editMenu =
       new MenuProxy(Resources.getString("General.edit"));
     editMenu.setMnemonic(Resources.getString("General.edit.shortcut").charAt(0));
-    
+
     editMenu.add(mm.addKey("Editor.cut"));
     editMenu.add(mm.addKey("Editor.copy"));
     editMenu.add(mm.addKey("Editor.paste"));
@@ -139,7 +139,7 @@ public abstract class EditorWindow extends JFrame {
     editMenu.addSeparator();
     editMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
-    
+
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
@@ -167,7 +167,7 @@ public abstract class EditorWindow extends JFrame {
         new MenuProxy(Resources.getString("General.help"));
 
       // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages   
+      // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
       helpMenu.add(mm.addKey("General.help"));
@@ -222,7 +222,7 @@ public abstract class EditorWindow extends JFrame {
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
 
-    URL url = null; 
+    URL url = null;
     try {
       url = new File(Documentation.getDocumentationBaseDir(),
                      "README.html").toURI().toURL();
@@ -249,9 +249,9 @@ public abstract class EditorWindow extends JFrame {
 
     mm.addAction("Editor.ModuleEditor.reference_manual", helpAction);
     toolBar.add(helpAction);
-  
+
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
- 
+
     setJMenuBar(mm.getMenuBarFor(this));
 
     // the presence of the panel prevents a NullPointerException on packing
@@ -262,11 +262,11 @@ public abstract class EditorWindow extends JFrame {
       panel,
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    
+
     add(scrollPane, BorderLayout.CENTER);
     pack();
   }
- 
+
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
     for (ChildProxy<?> c : mb.getChildren()) {
       if (c instanceof MenuProxy) {
@@ -284,9 +284,9 @@ public abstract class EditorWindow extends JFrame {
   protected abstract void saveAs();
 
   protected void close() {
-    GameModule.getGameModule().quit();  
+    GameModule.getGameModule().quit();
   }
- 
+
   protected void saver(final Runnable save) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
@@ -299,19 +299,19 @@ public abstract class EditorWindow extends JFrame {
           public void ok() {
             save.run();
           }
-  
+
           public void cancel() {
           }
         }
       ).setVisible(true);
     }
   }
-  
+
   /**
    * Called by the enclosed ConfigureTree or ExtensionTree when it's dirty
    * state is changed. The implementing class should override this if they
    * need to take action like changing menu availability.
-   * 
+   *
    * @param changed true if the tree is in a changed (dirty) state
    */
   public void treeStateChanged(boolean changed) { }

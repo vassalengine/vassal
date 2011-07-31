@@ -2,7 +2,7 @@
  * $Id$
  *
  * Copyright (c) 2006 Rodney Kinney
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module;
@@ -54,9 +54,9 @@ import VASSAL.tools.ToolBarComponent;
 /**
  * Takes buttons from the toolbar of a Map or the main module and places
  * them into a popup menu
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class ToolbarMenu extends AbstractConfigurable
                          implements ContainerListener,
@@ -97,10 +97,10 @@ public class ToolbarMenu extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.DESCRIPTION),
-        Resources.getString(Resources.BUTTON_TEXT), 
-        Resources.getString(Resources.TOOLTIP_TEXT), 
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL), 
+        Resources.getString(Resources.HOTKEY_LABEL),
         Resources.getString("Editor.ToolbarMenu.menu_entries")}; //$NON-NLS-1$
   }
 
@@ -208,7 +208,7 @@ public class ToolbarMenu extends AbstractConfigurable
         }
       }
     }
-    
+
     for (String item : menuItems) {
       final JButton b = nameToButton.get(item);
       if (b != null) {

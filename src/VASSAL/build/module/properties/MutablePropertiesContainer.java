@@ -24,9 +24,9 @@ import java.util.Map;
 
 /**
  * A component that can contain mutable (updateable) properties
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public interface MutablePropertiesContainer {
   /**
@@ -35,7 +35,7 @@ public interface MutablePropertiesContainer {
    * @param p
    */
   void addMutableProperty(String key, MutableProperty p);
-  
+
   /**
    * Remove the property with the given key
    * @param key
@@ -44,7 +44,7 @@ public interface MutablePropertiesContainer {
 
   /** Find a GlobalProperty object with the given name */
   MutableProperty getMutableProperty(String propertyName);
-  
+
   /**
    * Simple implementation of {@link MutablePropertiesContainer}
    * @author rkinney

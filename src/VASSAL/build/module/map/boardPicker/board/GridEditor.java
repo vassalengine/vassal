@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -53,28 +53,28 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
   private static final long serialVersionUID = 1L;
-  
+
   protected static final String SET = Resources.getString("Editor.GridEditor.set_grid_shape"); //$NON-NLS-1$
   protected static final String CANCEL = Resources.getString(Resources.CANCEL);
   protected static final String CANCEL_SET = Resources.getString("Editor.GridEditor.cancel_set"); //$NON-NLS-1$
-  protected static final String OK = Resources.getString(Resources.SAVE); 
+  protected static final String OK = Resources.getString(Resources.SAVE);
   protected static final String NUMBERING = Resources.getString("Editor.GridEditor.numbering"); //$NON-NLS-1$
-  
+
   protected EditableGrid grid;
   protected Board board;
 
   protected JPanel view;
   protected JScrollPane scroll;
-  
+
   protected boolean setMode;
   protected Point hp1, hp2, hp3;
-  
+
   protected JButton okButton, canSetButton, setButton, numberingButton;
-  
+
   protected boolean saveGridVisible, saveNumberingVisible;
   protected double saveDx, saveDy;
   protected Point saveOrigin;
-  
+
   public GridEditor(EditableGrid grid) {
     super();
     setTitle(Resources.getString("Editor.ModuleEditor.edit", grid.getGridName())); //$NON-NLS-1$
@@ -91,14 +91,14 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       //  ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, Boolean.FALSE);
       // }
     }
-    
+
     saveDx = grid.getDx();
     saveDy = grid.getDy();
     saveOrigin = grid.getOrigin();
-    
+
     initComponents();
   }
-  
+
   protected void initComponents() {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -125,9 +125,9 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
-    
+
     JPanel buttonPanel = new JPanel();
-    
+
     okButton = new JButton(OK);
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -140,7 +140,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     });
     buttonPanel.add(okButton);
-    
+
     JButton canButton = new JButton(CANCEL);
     canButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -148,7 +148,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     });
     buttonPanel.add(canButton);
-    
+
     setButton = new JButton(SET);
     setButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -180,18 +180,18 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     numberingButton.setVisible(true);
     numberingButton.setRequestFocusEnabled(false);
     buttonPanel.add(numberingButton);
-    
+
     Box controlPanel = Box.createVerticalBox();
     controlPanel.add(textPanel);
     controlPanel.add(buttonPanel);
-    
+
     add(controlPanel, BorderLayout.SOUTH);
 
     scroll.revalidate();
     pack();
     repaint();
   }
- 
+
   protected void cancel() {
     cancelSetMode();
     grid.setDx(saveDx);
@@ -199,7 +199,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     grid.setOrigin(saveOrigin);
     setVisible(false);
   }
- 
+
   protected void cancelSetMode() {
     canSetButton.setVisible(false);
     setButton.setVisible(true);
@@ -226,13 +226,13 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     repaint();
   }
 
-  public void keyPressed(KeyEvent e) {  
+  public void keyPressed(KeyEvent e) {
     if (setMode) {
       return;
     }
-    
+
     boolean sideways = grid.isSideways();
-    
+
     switch (e.getKeyCode()) {
       case KeyEvent.VK_UP:
         if (e.isControlDown()) {
@@ -309,7 +309,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       default :
         return;
     }
-    
+
 
     repaint();
     e.consume();
@@ -317,17 +317,17 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   public void rebuild() {
-    
+
   }
-  
-  public void keyReleased(KeyEvent e) {    
+
+  public void keyReleased(KeyEvent e) {
     rebuild();
   }
 
-  public void keyTyped(KeyEvent e) {    
+  public void keyTyped(KeyEvent e) {
   }
 
-  public void mouseClicked(MouseEvent e) {   
+  public void mouseClicked(MouseEvent e) {
     if (setMode) {
       if (hp1 == null) {
         hp1 = e.getPoint();
@@ -343,25 +343,25 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       repaint();
     }
   }
-  
-  public void mouseEntered(MouseEvent e) {    
+
+  public void mouseEntered(MouseEvent e) {
   }
 
   public void mouseExited(MouseEvent e) {
   }
 
-  public void mousePressed(MouseEvent e) {    
+  public void mousePressed(MouseEvent e) {
   }
 
   public void mouseReleased(MouseEvent e) {
-    
+
   }
-  
+
   protected static final int DELTA = 1;
   protected static final double DDELTA = 0.1;
   protected static final int FAST = 5;
   protected static final int ERROR_MARGIN = 5;
-  
+
   protected void adjustX0(int direction, KeyEvent e) {
     int delta = direction * DELTA;
     if (e.isShiftDown()) {
@@ -370,7 +370,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x + delta, p.y));
   }
-  
+
   protected void adjustY0(int direction, KeyEvent e) {
     int delta = direction * DELTA;
     if (e.isShiftDown()) {
@@ -379,7 +379,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x, p.y + delta));
   }
-  
+
   protected void adjustDx(int direction, KeyEvent e) {
     double delta = direction * DDELTA;
     if (e.isShiftDown()) {
@@ -387,7 +387,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     }
     grid.setDx(grid.getDx() + delta);
   }
-  
+
   protected void adjustDy(int direction, KeyEvent e) {
     double delta = direction * DDELTA;
     if (e.isShiftDown()) {
@@ -395,29 +395,29 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     }
     grid.setDy(grid.getDy() + delta);
   }
-  
+
   protected void setNewOrigin(Point p) {
-    
+
     int width = (int) Math.round(grid.getDx());
     int height = (int) Math.round(grid.getDy());
-    
+
     if (p.x < (-width)) {
       p.x += width;
     }
     else if (p.x > width) {
       p.x -= width;
     }
-    
+
     if (p.y < (-height)) {
       p.y += height;
     }
     else if (p.y > height) {
       p.y -= height;
     }
-    
+
     grid.setOrigin(p);
   }
-  
+
   protected boolean isHorizontal(Point p1, Point p2) {
     return Math.abs(p2.y - p1.y) <= ERROR_MARGIN;
   }
@@ -425,11 +425,11 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   protected boolean isVertical(Point p1, Point p2) {
     return Math.abs(p2.x - p1.x) <= ERROR_MARGIN;
   }
-  
+
   protected boolean isPerpendicular(Point p1, Point p2) {
     return isHorizontal(p1, p2) || isVertical(p1, p2);
   }
-  
+
   protected void reportShapeError() {
     JOptionPane.showMessageDialog(null,
         Resources.getString("Editor.GridEditor.does_not_look", grid.getGridName()), //$NON-NLS-1$
@@ -437,13 +437,13 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         JOptionPane.ERROR_MESSAGE);
 
   }
-  
+
   /*
    * Calculate and set the Origin and size of the grid
    * based on the the 3 selected points.
    */
   public abstract void calculate();
-  
+
   /*
    * Panel to display the Grid Editor
    */
@@ -456,7 +456,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       super();
       setFocusTraversalKeysEnabled(false);
     }
-    
+
     public GridPanel(Board b) {
       this();
       setBoard(b);
@@ -491,14 +491,14 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     protected void highlight(Graphics g, Point p) {
       final int r1 = 3;
       final int r2 = 10;
-      
+
       if (p != null) {
         g.setColor(Color.red);
         g.fillOval(p.x-r1/2, p.y-r1/2, r1, r1);
         g.drawOval(p.x-r2/2, p.y-r2/2, r2, r2);
       }
     }
-    
+
     public boolean isFocusable() {
       return true;
     }
@@ -513,23 +513,23 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     public double getDx();
     public double getDy();
     public Point getOrigin();
-    
+
     public void setDx(double dx);
     public void setDy(double dy);
     public void setOrigin(Point p);
-    
+
     public boolean isSideways();
-    public void setSideways(boolean sideways);  
-    
+    public void setSideways(boolean sideways);
+
     public GridContainer getContainer();
     public GridNumbering getGridNumbering();
-    
+
     public boolean isVisible();
     public void setVisible(boolean b);
-    
+
     public String getGridName();
   }
 
 
-  
+
 }

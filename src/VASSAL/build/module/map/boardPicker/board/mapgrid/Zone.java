@@ -128,7 +128,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public String getLocalizedName() {
     return getLocalizedConfigureName();
   }
-  
+
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -281,7 +281,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     boolean isProperty = true;
     final StringBuilder regex = new StringBuilder();
     int groupCount = 0;
-    
+
     while (se.hasMoreTokens()) {
       String token = se.nextToken();
       isProperty = !isProperty;
@@ -296,7 +296,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       }
     }
-    
+
     if (regex.length() == 0)
       throw new BadCoords(); // nothing to match!
     Pattern pattern = Pattern.compile(regex.toString());
@@ -305,10 +305,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       throw new BadCoords();
     }
     assert(matcher.groupCount() == groupCount);
-    
+
     Point p = null;
     if (groupCount > 0) {
-      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));    
+      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
       p = getGrid().getLocation(locationName);
       if (p == null || !contains(p)) {
         throw new BadCoords();
@@ -317,7 +317,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         return p;
       }
     }
-    else { 
+    else {
       // no grid to match against
       // try the geographic mean
       p = new Point(0, 0);
@@ -347,7 +347,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     format.setProperty(GRID_LOCATION, gridLocation);
     return format.getText();
   }
-  
+
   public String localizedLocationName(Point p) {
     format.setFormat(locationFormat);
     format.setProperty(NAME, getLocalizedConfigureName());
@@ -410,7 +410,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public boolean isUseParentGrid() {
     return useParentGrid;
   }
-  
+
   public Shape getShape() {
     return myPolygon;
   }
@@ -483,7 +483,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   /*
    * Get the value of a property. Pass the call up to the enclosing map if the zone doesn't know about it.
-   * 
+   *
    * @see VASSAL.build.module.properties.PropertySource#getProperty(java.lang.Object)
    */
   public Object getProperty(Object key) {
@@ -514,7 +514,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   /*
    * Return a named Global Property
-   * 
+   *
    * @see VASSAL.build.module.properties.GlobalPropertiesContainer#getGlobalProperty(java.lang.String)
    */
   public MutableProperty getMutableProperty(String name) {
@@ -603,11 +603,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       labels.add(new JLabel("Left-click to move points"));
       labels.add(new JLabel("DEL to remove point"));
       warning.setForeground(Color.red);
-      warning.setVisible(false);      
+      warning.setVisible(false);
       labels.add(warning);
       labels.setAlignmentX(0.0f);
       frame.add(labels);
-      
+
       final JButton direct = new JButton("Set Coordinates directly");
       direct.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -629,13 +629,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       });
       direct.setAlignmentX(0.0f);
-      frame.add(direct);     
-      
+      frame.add(direct);
+
       scroll = new AdjustableSpeedScrollPane(editor);
       editor.setScroll(scroll);
       frame.add(scroll);
       final JPanel buttonPanel = new JPanel();
-      
+
       final JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -643,7 +643,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           frame.setVisible(false);
         }
       });
-      
+
       final JButton canButton = new JButton("Cancel");
       canButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -652,12 +652,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           frame.setVisible(false);
         }
       });
-      
+
       buttonPanel.add(closeButton);
       buttonPanel.add(canButton);
       frame.add(buttonPanel);
     }
-    
+
     private void init(Zone zone) {
       board = zone.getBoard();
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);

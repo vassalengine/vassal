@@ -79,7 +79,7 @@ public class ExtensionTree extends ConfigureTree {
     }
     return path;
   }
-  
+
   public void externalInsert(Configurable parent, Configurable child) {
     super.externalInsert(parent, child);
     if (!isEditable(parent)) {
@@ -98,7 +98,7 @@ public class ExtensionTree extends ConfigureTree {
         }
         catch (Throwable t) {
           ReflectionUtils.handleNewInstanceFailure(t, newConfig);
-        }  
+        }
 
         if (ch != null) {
           final Configurable child = ch;
@@ -250,7 +250,7 @@ public class ExtensionTree extends ConfigureTree {
     }
     return a;
   }
-  
+
   protected boolean isValidPasteTarget(Configurable target) {
     return
       (cutData != null &&
@@ -262,7 +262,7 @@ public class ExtensionTree extends ConfigureTree {
 
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components
-   * 
+   *
    * @param c Configurable to update
    */
   public void updateGpIds(Configurable c) {
@@ -273,7 +273,7 @@ public class ExtensionTree extends ConfigureTree {
       for (Configurable conf : c.getConfigureComponents()) updateGpIds(conf);
     }
   }
-  
+
   protected Action buildMoveAction(Configurable target) {
     return isEditable((DefaultMutableTreeNode) getTreeNode(target).getParent()) ? super.buildMoveAction(target) : null;
   }
@@ -363,7 +363,7 @@ public class ExtensionTree extends ConfigureTree {
   protected boolean isValidParent(Configurable parent, Configurable child) {
     return super.isValidParent(parent, child) && isEditable(parent);
   }
-  
+
   protected void updateEditMenu() {
     super.updateEditMenu();
     deleteAction.setEnabled(selected != null && isEditable(selected));
@@ -371,7 +371,7 @@ public class ExtensionTree extends ConfigureTree {
 //    cutAction.setEnabled(selected != null && isEditable(selected));
     propertiesAction.setEnabled(selected != null && isEditable(selected) && selected.getConfigurer() != null);
   }
-  
+
   /**
    * Change color of component names based on editable status
    */

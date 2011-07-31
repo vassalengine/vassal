@@ -123,14 +123,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected String id;
   public static final String NAME = "name";
   protected static NewGameIndicator indicator;
-  
+
   protected StackConfigurer stackConfigurer;
   protected JButton configureButton;
   protected String location;
   protected boolean useGridLocation;
   public static final String LOCATION = "location";
   public static final String USE_GRID_LOCATION = "useGridLocation";
- 
+
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_GRID_LOCATION.equals(name)) {
@@ -148,7 +148,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return isUseGridLocation();
-        }        
+        }
       };
     }
     else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
@@ -175,7 +175,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     else
       return true;
   }
-  
+
   // only update the position if we're using the location name
   protected void updatePosition() {
     if (isUseGridLocation() && location != null && !location.equals("")) {
@@ -187,7 +187,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
     }
   }
-  
+
   @Override
   public void validate(Buildable target, ValidationReport report) {
     if (isUseGridLocation()) {
@@ -206,7 +206,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       }
     }
-    
+
     super.validate(target, report);
   }
 
@@ -252,12 +252,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString(Resources.NAME_LABEL),
-    	Resources.getString("Editor.StartStack.board"), //$NON-NLS-1$
-    	Resources.getString("Editor.StartStack.grid"), //$NON-NLS-1$
-    	Resources.getString("Editor.StartStack.location"), //$NON-NLS-1$
-    	Resources.getString("Editor.StartStack.position_x"), //$NON-NLS-1$
-    	Resources.getString("Editor.StartStack.position_y"), //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.StartStack.board"), //$NON-NLS-1$
+      Resources.getString("Editor.StartStack.grid"), //$NON-NLS-1$
+      Resources.getString("Editor.StartStack.location"), //$NON-NLS-1$
+      Resources.getString("Editor.StartStack.position_x"), //$NON-NLS-1$
+      Resources.getString("Editor.StartStack.position_y"), //$NON-NLS-1$
     };
   }
 
@@ -347,7 +347,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     super.add(child);
     updateConfigureButton();
   }
-  
+
   public void addTo(Buildable parent) {
     if (indicator == null) {
       indicator = new NewGameIndicator(COMMAND_PREFIX);
@@ -419,8 +419,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 //    public static final String NONE = "<none>";
 //    public static final String ZONE = "(Zone)";
 //    public static final String BOARD = "(Board)";
-//    
-//    public GridPrompt() {      
+//
+//    public GridPrompt() {
 //    }
 //
 //  @Override
@@ -440,7 +440,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 //          if (grid instanceof ZonedGrid) {
 //            ZonedGrid zg = (ZonedGrid) grid;
 //            for (Iterator i = zg.getZones(); i.hasNext(); ) {
-//              Zone z = (Zone) i.next();            
+//              Zone z = (Zone) i.next();
 //              if (!z.isUseParentGrid() && z.getGrid() != null && z.getGrid().getGridNumbering() != null)
 //                values.add(ZONE + " " + z.getName());
 //            }
@@ -451,7 +451,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 //    return values.toArray(new String[values.size()]);
 //  }
 //  }
-//  
+//
   public static class OwningBoardPrompt extends StringEnum {
     public static final String ANY = "<any>";
 
@@ -485,9 +485,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   /*
    *  GUI Stack Placement Configurer
-   */  
+   */
   protected Configurer xConfig, yConfig, locationConfig;
-  
+
   public Configurer getConfigurer() {
     config = null; // Don't cache the Configurer so that the list of available boards won't go stale
     Configurer c = super.getConfigurer();
@@ -496,10 +496,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     locationConfig = ((AutoConfigurer) c).getConfigurer(LOCATION);
     updateConfigureButton();
     ((Container) c.getControls()).add(configureButton);
-    
+
     return c;
   }
-  
+
   protected void updateConfigureButton() {
     if (configureButton == null) {
       configureButton = new JButton("Reposition Stack");
@@ -517,31 +517,31 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     stackConfigurer.init();
     stackConfigurer.setVisible(true);
   }
- 
+
   protected PieceSlot getTopPiece() {
     Iterator<PieceSlot> i =
       getAllDescendantComponentsOf(PieceSlot.class).iterator();
     return i.hasNext() ? i.next() : null;
   }
-  
-  /* 
+
+  /*
    * Return a board to configure the stack on.
    */
   protected Board getConfigureBoard() {
-    
+
     Board board = null;
 
     if (map != null && !OwningBoardPrompt.ANY.equals(owningBoardName)) {
       board = map.getBoardPicker().getBoard(owningBoardName);
     }
-      
+
     if (board == null && map != null) {
       String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
       if (allBoards.length > 0) {
         board = map.getBoardPicker().getBoard(allBoards[0]);
       }
     }
-    
+
     return board;
   }
 
@@ -550,14 +550,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected static final int FAST = 10;
   protected static final int FASTER = 5;
   protected static final int DEFAULT_DUMMY_SIZE = 50;
-  
+
   public class StackConfigurer extends JFrame implements ActionListener, KeyListener, MouseListener {
 
     private static final long serialVersionUID = 1L;
 
     protected Board board;
     protected View view;
-    protected JScrollPane scroll;  
+    protected JScrollPane scroll;
     protected SetupStack myStack;
     protected PieceSlot mySlot;
     protected GamePiece myPiece;
@@ -567,7 +567,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     public StackConfigurer(SetupStack stack) {
       super("Adjust At-Start Stack");
-      setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));  
+      setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
 
       myStack = stack;
       mySlot = stack.getTopPiece();
@@ -596,14 +596,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected void init() {
 
       board = getConfigureBoard();
-      
+
       view = new View(board, myStack);
-      
+
       view.addKeyListener(this);
       view.addMouseListener(this);
       view.setFocusable(true);
-    
-      
+
+
       scroll =
           new AdjustableSpeedScrollPane(
               view,
@@ -617,9 +617,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       Box textPanel = Box.createVerticalBox();
       textPanel.add(new JLabel("Arrow Keys - Move Stack"));
       textPanel.add(new JLabel("Ctrl/Shift Keys - Move Stack Faster  "));
-      
+
       Box displayPanel = Box.createHorizontalBox();
-      
+
       Box buttonPanel = Box.createHorizontalBox();
       JButton snapButton = new JButton("Snap to grid");
       snapButton.addActionListener(new ActionListener() {
@@ -628,8 +628,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           view.grabFocus();
         }
       });
-      buttonPanel.add(snapButton);    
-      
+      buttonPanel.add(snapButton);
+
       JButton okButton = new JButton("Ok");
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -645,7 +645,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       });
       JPanel okPanel = new JPanel();
       okPanel.add(okButton);
-      
+
       JButton canButton = new JButton("Cancel");
       canButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -654,16 +654,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       });
       okPanel.add(canButton);
-   
+
       Box controlPanel = Box.createHorizontalBox();
       controlPanel.add(textPanel);
       controlPanel.add(displayPanel);
       controlPanel.add(buttonPanel);
-      
+
       Box mainPanel = Box.createVerticalBox();
       mainPanel.add(controlPanel);
       mainPanel.add(okPanel);
-      
+
       add(mainPanel, BorderLayout.SOUTH);
 
       scroll.revalidate();
@@ -676,13 +676,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       myStack.pos.x = savePosition.x;
       myStack.pos.y = savePosition.y;
     }
-    
+
     public void updateDisplay() {
       if (!view.getVisibleRect().contains(myStack.pos)) {
         view.center(new Point(myStack.pos.x, myStack.pos.y));
       }
     }
-    
+
     protected void snap() {
       MapGrid grid = board.getGrid();
       if (grid != null) {
@@ -693,12 +693,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         repaint();
       }
     }
-    
+
     public JScrollPane getScroll() {
       return scroll;
     }
-    
-    /* 
+
+    /*
      * If the piece to be displayed does not have an Image, then we
      * need to supply a dummy one.
      */
@@ -715,16 +715,16 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       return dummyImage;
     }
-    
+
     public void drawDummyImage(Graphics g, int x, int y) {
       drawDummyImage(g, x-dummySize.width/2, y-dummySize.height/2, null, 1.0);
     }
-    
+
     public void drawDummyImage(Graphics g, int x, int y, Component obs, double zoom) {
       g.drawImage(getDummyImage(), x, y, obs);
     }
-    
-    public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {      
+
+    public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {
       Rectangle r = myPiece == null ? null : myPiece.boundingBox();
       if (r == null || r.width == 0 || r.height == 0) {
         drawDummyImage(g, x, y);
@@ -732,9 +732,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       else {
         myPiece.draw(g, x, y, obs, zoom);
       }
-        
+
     }
-    
+
     public Rectangle getPieceBoundingBox() {
       Rectangle r = myPiece == null ? new Rectangle() : myPiece.getShape().getBounds();
       if (r == null || r.width == 0 || r.height == 0) {
@@ -745,13 +745,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       return r;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
-      
+
     }
 
     public void keyPressed(KeyEvent e) {
-      
+
       switch (e.getKeyCode()) {
       case KeyEvent.VK_UP:
         adjustY(-1, e);
@@ -788,9 +788,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (newX < 0) newX = 0;
       if (newX >= board.getSize().getWidth()) newX = (int) board.getSize().getWidth() - 1;
       myStack.pos.x = newX;
-      
+
     }
-    
+
     protected void adjustY(int direction, KeyEvent e) {
       int delta = direction * DELTA;
       if (e.isShiftDown()) {
@@ -804,25 +804,25 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (newY >= board.getSize().getHeight()) newY = (int) board.getSize().getHeight() - 1;
       myStack.pos.y = newY;
     }
-    
+
     public void keyReleased(KeyEvent e) {
-      
+
     }
 
     public void keyTyped(KeyEvent e) {
-      
+
     }
 
     public void mouseClicked(MouseEvent e) {
-      
+
     }
 
     public void mouseEntered(MouseEvent e) {
-      
+
     }
 
     public void mouseExited(MouseEvent e) {
-      
+
     }
 
     public void mousePressed(MouseEvent e) {
@@ -852,17 +852,17 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
   }
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(LOCATION, false);
     return myI18nData;
   }
-   
+
 // FIXME: check for duplication with PieceMover
- 
+
   public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
-      
+
     private static final long serialVersionUID = 1L;
     protected static final int CURSOR_ALPHA = 127;
     protected static final int EXTRA_BORDER = 4;
@@ -873,7 +873,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected PieceSlot slot;
     protected DragSource ds = DragSource.getDefaultDragSource();
     protected boolean isDragging = false;
-    protected JLabel dragCursor; 
+    protected JLabel dragCursor;
     protected JLayeredPane drawWin;
     protected Point drawOffset = new Point();
     protected Rectangle boundingBox;
@@ -907,7 +907,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       int y = myStack.pos.y;
       myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
     }
-    
+
     public void update(Graphics g) {
       // To avoid flicker, don't clear the display first *
       paint(g);
@@ -918,7 +918,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           myBoard.bounds().width,
           myBoard.bounds().height);
     }
-    
+
     public void center(Point p) {
       Rectangle r = this.getVisibleRect();
       if (r.width == 0) {
@@ -934,7 +934,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     public void dragEnter(DropTargetDragEvent arg0) {
       return;
-      
+
     }
 
     public void dragOver(DropTargetDragEvent e) {
@@ -943,7 +943,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     public void scrollAtEdge(Point evtPt, int dist) {
       JScrollPane scroll = myStack.stackConfigurer.getScroll();
-      
+
       Point p = new Point(evtPt.x - scroll.getViewport().getViewPosition().x,
           evtPt.y - scroll.getViewport().getViewPosition().y);
       int dx = 0, dy = 0;
@@ -965,10 +965,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         scrollRectToVisible(r);
       }
     }
-    
+
     public void dropActionChanged(DropTargetDragEvent arg0) {
       return;
-      
+
     }
 
     public void drop(DropTargetDropEvent event) {
@@ -980,47 +980,47 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       myStack.stackConfigurer.updateDisplay();
       repaint();
       return;
-      
+
     }
 
     public void dragExit(DropTargetEvent arg0) {
       return;
-      
+
     }
 
     public void dragEnter(DragSourceDragEvent arg0) {
       return;
-      
+
     }
 
     public void dragOver(DragSourceDragEvent arg0) {
       return;
-      
+
     }
 
     public void dropActionChanged(DragSourceDragEvent arg0) {
       return;
-      
+
     }
 
     public void dragDropEnd(DragSourceDropEvent arg0) {
       removeDragCursor();
       return;
-      
+
     }
 
     public void dragExit(DragSourceEvent arg0) {
       return;
-      
+
     }
 
     public void dragGestureRecognized(DragGestureEvent dge) {
-      
+
       Point mousePosition = dge.getDragOrigin();
       Point piecePosition = new Point(myStack.pos);
-      
+
       // Check drag starts inside piece
-      Rectangle r = myStack.stackConfigurer.getPieceBoundingBox();  
+      Rectangle r = myStack.stackConfigurer.getPieceBoundingBox();
       r.translate(piecePosition.x, piecePosition.y);
       if (!r.contains(mousePosition)) {
         return;
@@ -1028,12 +1028,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       originalPieceOffsetX = piecePosition.x - mousePosition.x;
       originalPieceOffsetY = piecePosition.y - mousePosition.y;
-        
+
       drawWin = null;
-      
+
       makeDragCursor();
       setDragCursor();
-      
+
       SwingUtilities.convertPointToScreen(mousePosition, drawWin);
       moveDragCursor(mousePosition.x, mousePosition.y);
 
@@ -1062,14 +1062,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
       }
     }
-    
+
     /** Moves the drag cursor on the current draw window */
     protected void moveDragCursor(int dragX, int dragY) {
       if (drawWin != null) {
         dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
       }
     }
-    
+
     private void removeDragCursor() {
       if (drawWin != null) {
         if (dragCursor != null) {
@@ -1079,7 +1079,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         drawWin = null;
       }
     }
-    
+
     /** calculates the offset between cursor dragCursor positions */
     private void calcDrawOffset() {
       if (drawWin != null) {
@@ -1106,7 +1106,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       // paint the rectangle occupied by the piece at specified alpha
       g.setColor(new Color(0xff, 0xff, 0xff, CURSOR_ALPHA));
       g.fillRect(0, 0, w, h);
-    
+
       // feather outwards
       for (int f = 0; f < b; ++f) {
         final int alpha = CURSOR_ALPHA * (f + 1) / b;
@@ -1121,7 +1121,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       return dst;
     }
-    
+
     private void makeDragCursor() {
       //double zoom = 1.0;
       // create the cursor if necessary
@@ -1144,7 +1144,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       BufferedImage cursorImage =
         ImageUtils.createCompatibleTranslucentImage(w, h);
       final Graphics2D g = cursorImage.createGraphics();
- 
+
       myStack.stackConfigurer.drawImage(
         g,
         EXTRA_BORDER - boundingBox.x,

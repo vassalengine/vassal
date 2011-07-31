@@ -189,7 +189,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
       row = getMaxRows() - row;
     if (hDescending)
       col = getMaxColumns() - col;
-    
+
     // TODO: invoke grid.snapTo
     return new Point((int) (col * grid.getDx() + grid.getOrigin().x),
         (int) (row * grid.getDy() + grid.getOrigin().y));

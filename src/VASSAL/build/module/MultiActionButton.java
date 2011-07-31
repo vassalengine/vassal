@@ -14,9 +14,9 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 /**
  * Combines multiple buttons from the toolbar into a single button. Pushing the single button is equivalent to pushing
  * the other buttons in order.
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class MultiActionButton extends ToolbarMenu implements Loopable {
 
@@ -26,11 +26,11 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     setAttribute(TOOLTIP, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
     launch.putClientProperty(MENU_PROPERTY, null);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.DESCRIPTION),
-    		Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
         Resources.getString(Resources.HOTKEY_LABEL),
@@ -43,10 +43,10 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     // separate toolbar buttons.
     final GameModule mod = GameModule.getGameModule();
     final boolean loggingPaused = mod.pauseLogging();
-    
+
     try {
       RecursionLimiter.startExecution(this);
-    
+
       for (int i=0,n=menu.getComponentCount();i<n;++i) {
         Component c = menu.getComponent(i);
         if (c instanceof JMenuItem) {
@@ -64,13 +64,13 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
       if (loggingPaused) {
         mod.sendAndLog(mod.resumeLogging());
       }
-    } 
+    }
   }
-  
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.MultiActionButton.component_type"); //$NON-NLS-1$
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("MultiActionButton.htm"); //$NON-NLS-1$
   }
@@ -83,5 +83,5 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
   public String getComponentTypeName() {
     return getConfigureTypeName();
   }
-  
+
 }

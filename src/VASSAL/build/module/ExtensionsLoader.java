@@ -49,7 +49,7 @@ public class ExtensionsLoader implements CommandEncoder {
 
   protected Set<String> loadedExtensions = new HashSet<String>();
   protected HashMap<String,String> loadedIds = new HashMap<String,String>();
-  
+
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;
 
@@ -97,23 +97,23 @@ public class ExtensionsLoader implements CommandEncoder {
       try {
         final ModuleExtension ext = createExtension(extname);
         ext.build();
-        
+
         final String id = ext.getExtensionId();
         String idMsg = "";
         if (id.length() > 0) {
           for (String loadedId : loadedIds.keySet()) {
             if (loadedId.equals(id)) {
-              idMsg = Resources.getString("ExtensionsLoader.id_conflict", extension.getName(), id, loadedIds.get(id));              
+              idMsg = Resources.getString("ExtensionsLoader.id_conflict", extension.getName(), id, loadedIds.get(id));
             }
           }
           loadedIds.put(id, extname);
         }
-        
-        final String msg = getLoadedMessage(ext.getName(), ext.getVersion());        
-        loadedExtensions.add(extname);        
+
+        final String msg = getLoadedMessage(ext.getName(), ext.getVersion());
+        loadedExtensions.add(extname);
         GameModule.getGameModule().warn(msg);
         System.err.println("-- "+msg);
-        
+
         if (idMsg.length() > 0) {
           GameModule.getGameModule().warn(idMsg);
           System.err.println(idMsg);
@@ -132,7 +132,7 @@ public class ExtensionsLoader implements CommandEncoder {
     }
     return success;
   }
-  
+
   protected ModuleExtension createExtension(String extname)
                                             throws ZipException, IOException {
     return new ModuleExtension(new DataArchive(extname));
@@ -141,7 +141,7 @@ public class ExtensionsLoader implements CommandEncoder {
   protected String getLoadedMessage(String name, String version) {
     return Resources.getString("ExtensionsLoader.extension_loaded", name, version); //$NON-NLS-1$
   }
-  
+
   private void reportBuildError(Exception e, String name) {
     String msg = e.getMessage();
     if (msg == null || msg.length() == 0) {
@@ -174,7 +174,7 @@ public class ExtensionsLoader implements CommandEncoder {
     }
     return s;
   }
-  
+
   public static class LoadExtensionException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

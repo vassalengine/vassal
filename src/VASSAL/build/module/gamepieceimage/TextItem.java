@@ -199,7 +199,7 @@ public class TextItem extends Item {
     if (fg == null && bg == null) {
       return;
     }
-    
+
     boolean outline = ti.isOutline();
     Color ol = ti.getOutlineColor().getColor();
 
@@ -258,7 +258,7 @@ public class TextItem extends Item {
   public String getType() {
     return TYPE;
   }
-  
+
   public String getDisplayName() {
     return "Label";
   }
@@ -273,7 +273,7 @@ public class TextItem extends Item {
     decode(item, s);
     return item;
   }
-  
+
   public static void decode(TextItem item, String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 

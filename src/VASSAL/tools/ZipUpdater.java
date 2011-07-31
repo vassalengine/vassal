@@ -198,7 +198,7 @@ public class ZipUpdater implements Runnable {
         catch (IOException e) {
           logger.error("", e);
         }
-      } 
+      }
     }
     finally {
       oldZipFile.close();
@@ -309,7 +309,7 @@ public class ZipUpdater implements Runnable {
           classEntry.setMethod(ZipEntry.DEFLATED);
 
           final InputStream is =
-            getClass().getResourceAsStream("/" + className); 
+            getClass().getResourceAsStream("/" + className);
           if (is == null)
             throw new IOException("Resource not found: " + className);
 
@@ -328,7 +328,7 @@ public class ZipUpdater implements Runnable {
         finally {
           IOUtils.closeQuietly(out);
         }
-  
+
         goal.close();
       }
       finally {

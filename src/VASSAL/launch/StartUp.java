@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,7 +45,7 @@ public class StartUp {
     final String httpProxyHost = "http.proxyHost";  //$NON-NLS-1$
     final String proxyHost = "proxyHost";           //$NON-NLS-1$
 
-    if (System.getProperty(httpProxyHost) == null && 
+    if (System.getProperty(httpProxyHost) == null &&
         System.getProperty(proxyHost) != null) {
       System.setProperty(httpProxyHost, System.getProperty(proxyHost));
     }
@@ -80,7 +80,7 @@ public class StartUp {
     }
     catch (UnsupportedLookAndFeelException e) {
       ErrorDialog.bug(e);
-    } 
+    }
   }
 
   protected void initSystemSpecificProperties() {}

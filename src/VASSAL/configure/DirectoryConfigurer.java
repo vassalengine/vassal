@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -32,7 +32,7 @@ public class DirectoryConfigurer extends FileConfigurer {
   public DirectoryConfigurer(String key, String name) {
     super(key, name);
   }
-  
+
   protected FileChooser initFileChooser() {
     FileChooser fc = FileChooser.createFileChooser(null, startingDirectory, FileChooser.DIRECTORIES_ONLY);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
@@ -48,7 +48,7 @@ public class DirectoryConfigurer extends FileConfigurer {
     }
     super.setValue(f);
   }
-  
+
   protected void addToArchive(File f) {
   }
 

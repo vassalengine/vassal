@@ -45,14 +45,14 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
    * Handles uncaught exceptions.
    *
    * @param thrown the <code>Throwable</code> which was not caught.
-   */ 
+   */
   public void handle(Throwable thrown) {
     ErrorDialog.bug(thrown);
   }
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * This method is part of the {@link Thread.UncaughtExceptionHandler}
    * interface. Do not call this method directly.
    *

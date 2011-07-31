@@ -4,22 +4,22 @@
  *            original C code by Makoto Matsumoto and Takuji Nishimura.
  * Author   : David Beaumont
  * Email    : mersenne-at-www.goui.net
- * 
+ *
  * For the original C code, see:
  *     http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
  *
  * This version, Copyright (C) 2005, David Beaumont.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -57,17 +57,17 @@ import java.util.Random;
  * <a href="http://creativecommons.org/licenses/LGPL/2.1/"><img alt="CC-GNU LGPL" border="0" src="http://creativecommons.org/images/public/cc-LGPL-a.png" /></a><br />
  * This software is licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a>.
  * <!-- /Creative Commons License -->
- * 
+ *
  * <!--
  * <rdf:RDF xmlns="http://web.resource.org/cc/"
  *     xmlns:dc="http://purl.org/dc/elements/1.1/"
  *     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
- *     
+ *
  * <Work rdf:about="">
  *    <license rdf:resource="http://creativecommons.org/licenses/LGPL/2.1/" />
  *    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Software" />
  * </Work>
- * 
+ *
  * <License rdf:about="http://creativecommons.org/licenses/LGPL/2.1/">
  *    <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
  *    <permits rdf:resource="http://web.resource.org/cc/Distribution" />
@@ -76,10 +76,10 @@ import java.util.Random;
  *    <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
  *    <requires rdf:resource="http://web.resource.org/cc/SourceCode" />
  * </License>
- * 
+ *
  * </rdf:RDF>
  * -->
- * 
+ *
  */
 public class MTRandom extends Random {
 
@@ -119,7 +119,7 @@ public class MTRandom extends Random {
    * the no-argument constructor for java.util.Random which will result
    * in the class being initialised with a seed value obtained by calling
    * System.currentTimeMillis().
-   */ 
+   */
   public MTRandom() { }
 
   /**
@@ -138,7 +138,7 @@ public class MTRandom extends Random {
    * Whilst useful for ensuring backwards compatibility, it is advised
    * that this feature not be used unless specifically required, due to
    * the reduction in strength of the seed value.
-   * 
+   *
    * @param compatible Compatibility flag for replicating original
    * behaviour.
    */
@@ -152,7 +152,7 @@ public class MTRandom extends Random {
    * This version of the constructor simply initialises the class with
    * the given 64 bit seed value.  For a better random number sequence
    * this seed value should contain as much entropy as possible.
-   * 
+   *
    * @param seed The seed value with which to initialise this class.
    */
   public MTRandom(long seed) {
@@ -163,7 +163,7 @@ public class MTRandom extends Random {
    * This version of the constructor initialises the class with the
    * given byte array.  All the data will be used to initialise this
    * instance.
-   * 
+   *
    * @param buf The non-empty byte array of seed information.
    * @throws NullPointerException if the buffer is null.
    * @throws IllegalArgumentException if the buffer has zero length.
@@ -177,7 +177,7 @@ public class MTRandom extends Random {
    * This version of the constructor initialises the class with the
    * given integer array.  All the data will be used to initialise
    * this instance.
-   * 
+   *
    * @param buf The non-empty integer array of seed information.
    * @throws NullPointerException if the buffer is null.
    * @throws IllegalArgumentException if the buffer has zero length.
@@ -218,9 +218,9 @@ public class MTRandom extends Random {
    * this method will only use the lower 32 bits of any seed value
    * passed in and will match the behaviour of the original C code
    * exactly with respect to state initialisation.
-   * 
+   *
    * @param seed The 64 bit value used to initialise the random
-   * number generator state. 
+   * number generator state.
    */
   public final synchronized void setSeed(long seed) {
     if (compat) {
@@ -264,7 +264,7 @@ public class MTRandom extends Random {
    * This method resets the state of this instance using the integer
    * array of seed data provided.  This is the canonical way of
    * resetting the pseudo random number sequence.
-   * 
+   *
    * @param buf The non-empty integer array of seed information.
    * @throws NullPointerException if the buffer is null.
    * @throws IllegalArgumentException if the buffer has zero length.
@@ -307,7 +307,7 @@ public class MTRandom extends Random {
    * <pre>
    * mt.setSeed(12345);
    * int foo = mt.nextInt(32);</pre>
-   * 
+   *
    * @param bits The number of significant bits desired in the output.
    * @return The next value in the pseudo random sequence with the
    * specified number of bits in the lower part of the integer.
@@ -324,7 +324,7 @@ public class MTRandom extends Random {
       // Java instance must result in initialisation occurring
       // Use the constructor MTRandom(true) to enable backwards
       // compatible behaviour.
-      
+
       for (kk = 0; kk < N-M; kk++) {
         y = (mt[kk] & UPPER_MASK) | (mt[kk+1] & LOWER_MASK);
         mt[kk] = mt[kk+M] ^ (y >>> 1) ^ MAGIC[y & 0x1];
@@ -338,7 +338,7 @@ public class MTRandom extends Random {
 
       mti = 0;
     }
-  
+
     y = mt[mti++];
 
     // Tempering
@@ -351,7 +351,7 @@ public class MTRandom extends Random {
   }
 
   // This is a fairly obscure little code section to pack a
-  // byte[] into an int[] in little endian ordering.  
+  // byte[] into an int[] in little endian ordering.
 
   /**
    * This simply utility method can be used in cases where a byte
@@ -371,7 +371,7 @@ public class MTRandom extends Random {
    * is empty and will produce an empty integer array, but the
    * setSeed() method will throw an exception if the empty integer
    * array is passed to it.
-   * 
+   *
    * @param buf The non-null byte array to be packed.
    * @return A non-null integer array of the packed bytes.
    * @throws NullPointerException if the given byte array is null.

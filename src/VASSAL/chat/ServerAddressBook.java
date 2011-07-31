@@ -1,5 +1,5 @@
-/* 
- * $Id: 
+/*
+ * $Id:
  *
  * Copyright (c) 2009 by Brent Easton
  *
@@ -102,15 +102,15 @@ public class ServerAddressBook {
   public static ServerAddressBook getInstance() {
     return instance;
   }
-  
+
   public static void editCurrentServer(boolean connected) {
     instance.editCurrent(connected);
   }
-  
+
   public static void changeServerPopup(JComponent source) {
     instance.showPopup(source);
   }
-  
+
   public static String getLocalAddress() {
     if (localIPAddress == null) {
       try {
@@ -122,11 +122,11 @@ public class ServerAddressBook {
     }
     return localIPAddress;
   }
-  
+
   public static String getExternalAddress() {
     return getExternalAddress("?"); //$NON-NLS-1$
   }
-  
+
   public static String getExternalAddress(String dflt) {
     if (externalIPAddress == null) {
       externalIPAddress = dflt;
@@ -139,7 +139,7 @@ public class ServerAddressBook {
     }
     return externalIPAddress;
   }
-  
+
   private static String discoverMyIpAddressFromRemote() throws IOException {
     String theIp = null;
     HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
@@ -152,11 +152,11 @@ public class ServerAddressBook {
     }
     return theIp;
   }
-  
+
   public ServerAddressBook() {
     instance = this;
   }
-  
+
   public JComponent getControls() {
     if (controls == null) {
 
@@ -181,7 +181,7 @@ public class ServerAddressBook {
              }
         }
       });
-      
+
 
       final JScrollPane scroll = new JScrollPane(myList);
       myList.repaint();
@@ -299,7 +299,7 @@ public class ServerAddressBook {
   private void setCurrentServer(AddressBookEntry e) {
     setCurrentServer(addressBook.indexOf(e));
   }
-  
+
   private void setCurrentServer(int index) {
     final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
     if (currentEntry != null) {
@@ -314,7 +314,7 @@ public class ServerAddressBook {
     updateButtonVisibility();
     myList.repaint();
   }
-  
+
 
   public void showPopup(JComponent source) {
     final JPopupMenu popup = new JPopupMenu();
@@ -333,16 +333,16 @@ public class ServerAddressBook {
   private class MenuAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     private AddressBookEntry entry;
-    
+
     public MenuAction (AddressBookEntry e) {
       super(e.toString());
       entry = e;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
       ServerAddressBook.getInstance().setCurrentServer(entry);
     }
-    
+
   }
   public void addPropertyChangeListener(PropertyChangeListener l) {
     changeSupport.addPropertyChangeListener(l);
@@ -365,11 +365,11 @@ public class ServerAddressBook {
       editServer(addressBook.indexOf(currentEntry), connected);
     }
   }
-  
+
   private void editServer(int index) {
     editServer(index, true);
   }
-  
+
   private void editServer(int index, boolean enabled) {
     final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
     final boolean current = e.equals(currentEntry);
@@ -493,7 +493,7 @@ public class ServerAddressBook {
   /**
    * Return an appropriately typed Entry, depending on the Server Properties
    * passed
-   * 
+   *
    * @param s
    *          Encoded Server Properties
    * @return Entry
@@ -537,7 +537,7 @@ public class ServerAddressBook {
 
   /**
    * Base class for an Address Book Entry
-   * 
+   *
    */
   private abstract class AddressBookEntry implements Comparable<AddressBookEntry> {
     protected Properties properties = new Properties();
@@ -623,7 +623,7 @@ public class ServerAddressBook {
     public boolean edit() {
       return edit(true);
     }
-    
+
     public boolean edit(boolean enabled) {
       if (isEditable()) {
         final ServerConfig config = getEditor(getProperties(), enabled);
@@ -656,7 +656,7 @@ public class ServerAddressBook {
       protected JTextField description = new JTextField();
       protected AddressBookEntry entry;
       boolean enabled;
-      
+
       public ServerConfig() {
       }
 
@@ -671,7 +671,7 @@ public class ServerAddressBook {
       protected boolean isEnabled() {
         return enabled;
       }
-      
+
       public JComponent getControls() {
         if (configControls == null) {
           configControls = new JPanel();
@@ -698,7 +698,7 @@ public class ServerAddressBook {
 
   /**
    * Address Book entry for a user defined Jabber Server
-   * 
+   *
    */
   private class JabberEntry extends AddressBookEntry {
 
@@ -711,8 +711,8 @@ public class ServerAddressBook {
     public JabberEntry() {
       this(new Properties());
       setType(JABBER_TYPE);
-      setDescription(""); //$NON-NLS-1$   
-      setProperty(JabberClientFactory.JABBER_PORT, "5222"); //$NON-NLS-1$   
+      setDescription(""); //$NON-NLS-1$
+      setProperty(JabberClientFactory.JABBER_PORT, "5222"); //$NON-NLS-1$
     }
 
     public JabberEntry(Properties props) {
@@ -756,7 +756,7 @@ public class ServerAddressBook {
       jabberUser.setEditable(enabled);
       jabberPw.setEditable(enabled);
       c.add(new JLabel(Resources.getString("ServerAddressBook.jabber_host"))); //$NON-NLS-1$
-      c.add(jabberHost, "wrap, grow, push"); //$NON-NLS-1$      
+      c.add(jabberHost, "wrap, grow, push"); //$NON-NLS-1$
       c.add(new JLabel(Resources.getString("ServerAddressBook.port"))); //$NON-NLS-1$
       c.add(jabberPort, "wrap, grow, push"); //$NON-NLS-1$
       c.add(new JLabel(Resources.getString("ServerAddressBook.user_name"))); //$NON-NLS-1$
@@ -791,7 +791,7 @@ public class ServerAddressBook {
 
   /**
    * Address Book entry for the VASSAL Jabber server
-   * 
+   *
    */
   private class VassalJabberEntry extends AddressBookEntry {
 
@@ -864,7 +864,7 @@ public class ServerAddressBook {
 
   /**
    * Address Book entry for the VASSAL legacy server
-   * 
+   *
    */
   private class LegacyEntry extends AddressBookEntry {
 
@@ -900,22 +900,22 @@ public class ServerAddressBook {
     }
 
     protected void addAdditionalControls(JComponent c, boolean enabled) {
-      
+
     }
 
     protected void getAdditionalProperties(Properties props) {
-      
+
     }
 
     protected void setAdditionalProperties(Properties props) {
-      
+
     }
 
   }
 
   /**
    * Address Book Entry for a Peer to Peer connection in Server Mode
-   * 
+   *
    */
   private class PeerServerEntry extends AddressBookEntry {
 
@@ -931,7 +931,7 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return getDescription(); 
+      return getDescription();
     }
 
     public boolean isRemovable() {
@@ -961,10 +961,10 @@ public class ServerAddressBook {
     }
 
   }
-  
+
   /**
    * Address Book Entry for a Peer to Peer connection in Client Mode
-   * 
+   *
    */
   private class PeerClientEntry extends AddressBookEntry {
 
@@ -983,7 +983,7 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return getDescription(); 
+      return getDescription();
     }
 
     public boolean isRemovable() {
@@ -1019,7 +1019,7 @@ public class ServerAddressBook {
       final JTextField externalIP = new JTextField(getExternalAddress());
       externalIP.setEditable(false);
       c.add(externalIP, "wrap, growx, push"); //$NON-NLS-1$
-      
+
       if (!getLocalAddress().equals(getExternalAddress())) {
         c.add(new JLabel(Resources.getString("Peer2Peer.local_address"))); //$NON-NLS-1$
         final JTextField localIP = new JTextField(getLocalAddress());
@@ -1033,7 +1033,7 @@ public class ServerAddressBook {
   /**
    * Customised List Cell Renderer for the JList display: - Display the Icon
    * appropriate to the Server Entry - Highlight the currently selected server
-   * 
+   *
    */
   private class MyRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;

@@ -61,7 +61,7 @@ public class SVGImageUtils {
 
   /**
    * Returns the default dimensions of the SVG image.
-   * 
+   *
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
@@ -88,7 +88,7 @@ public class SVGImageUtils {
 
   /**
    * Returns the default dimensions of the SVG image.
-   * 
+   *
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
@@ -123,8 +123,8 @@ public class SVGImageUtils {
   /**
    * Conducts a recursive depth-first search for external references
    * in the given SVG file.
-   * 
-   * @param path the path of the file to check for external references 
+   *
+   * @param path the path of the file to check for external references
    */
   public static List<String> getExternalReferences(String path) {
     final ArrayList<String> reflist = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class SVGImageUtils {
       final URL here = new URL("file", null, new File(path).getCanonicalPath());
       final Document doc = factory.createDocument(here.toString());
       final NodeList usenodes = doc.getElementsByTagName("use");
-      for (int i = 0; i < usenodes.getLength(); ++i) { 
+      for (int i = 0; i < usenodes.getLength(); ++i) {
         final Element e = (Element) usenodes.item(i);
         final URL url = new URL(new URL(e.getBaseURI()),
                                 XLinkSupport.getXLinkHref(e));
@@ -172,7 +172,7 @@ public class SVGImageUtils {
 
     for (String s : follow) {
       known.addAll(getExternalReferences(s, known));
-    }      
+    }
 
     return known;
   }
@@ -189,7 +189,7 @@ public class SVGImageUtils {
     final SAXDocumentFactory fac = new SAXDocumentFactory(
       new GenericDOMImplementation(),
       XMLResourceDescriptor.getXMLParserClassName());
-   
+
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
     final Document doc = fac.createDocument(here.toString());
     relativizeElement(doc.getDocumentElement());
@@ -223,7 +223,7 @@ public class SVGImageUtils {
 //        ErrorLog.warn(ex);
       }
     }
-    
+
     // remove xml:base attribute if there is one
     e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base");
   }

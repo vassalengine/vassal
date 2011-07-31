@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,7 +33,7 @@ public abstract class AbstractPropertyContainer implements PropertyContainer {
   public AbstractPropertyContainer() {
     this(new ConcurrentPropertySupport());
   }
-  
+
   /**
    * Creates an <code>AbstractPropertyContainer</code>.
    *
@@ -82,7 +82,7 @@ public abstract class AbstractPropertyContainer implements PropertyContainer {
   public boolean hasListeners() {
     return ps.hasListeners();
   }
-  
+
   /** {@inheritDoc} */
   public <T> boolean hasListeners(Property<T> prop) {
     return ps.hasListeners(prop);
@@ -90,6 +90,6 @@ public abstract class AbstractPropertyContainer implements PropertyContainer {
 
   /** {@inheritDoc} */
   protected <T> void fireChanged(Property<T> prop, T oldVal, T newVal) {
-    ps.fireChanged(this, prop, oldVal, newVal); 
+    ps.fireChanged(this, prop, oldVal, newVal);
   }
 }

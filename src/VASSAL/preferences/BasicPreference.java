@@ -44,17 +44,17 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public static final String TAB = "tab";
   public static final String DESC = "desc";
   public static final String DEFAULT = "default";
-  
+
   protected String tabName = "";
-  protected String variableName = "";  
+  protected String variableName = "";
   protected MutableProperty.Impl property = new MutableProperty.Impl("",this);
-  
+
   public BasicPreference() {
-    tabName = GameModule.getGameModule().getConfigureName();  
+    tabName = GameModule.getGameModule().getConfigureName();
     setAttributeTranslatable(NAME, false);
     setAttributeTranslatable(DEFAULT, false);
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] {"note", TAB, DESC, NAME, DEFAULT};
   }
@@ -72,7 +72,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
       getDefaultClass()
     };
   }
-  
+
   public static class NoteConfig implements ConfigurerFactory {
 
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -87,9 +87,9 @@ public abstract class BasicPreference extends AbstractConfigurable {
         }
       };
     }
-    
+
   }
-   
+
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       variableName = (String) value;
@@ -100,7 +100,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
     }
     else if (DESC.equals(key)) {
       setConfigureName((String) value);
-    } 
+    }
     else if (DEFAULT.equals(key)) {
       setDefaultValue(value);
     }
@@ -119,15 +119,15 @@ public abstract class BasicPreference extends AbstractConfigurable {
     else if (DEFAULT.equals(key)) {
       return getDefaultValue();
     }
-    else 
+    else
       return null;
   }
-  
+
   public abstract Class<?> getDefaultClass();
   public abstract String getDefaultValue();
   public abstract void setDefaultValue(Object value);
   public abstract Configurer getPreferenceConfigurer();
-  
+
   public void addTo(Buildable b) {
     final GameModule g = GameModule.getGameModule();
 
@@ -157,13 +157,13 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
-  
+
   public String getDescription() {
     return getConfigureName();
   }
-  
+
   public String getVariableName() {
     return variableName;
   }
-  
+
 }

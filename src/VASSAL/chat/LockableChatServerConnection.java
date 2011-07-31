@@ -21,25 +21,25 @@ public interface LockableChatServerConnection extends ChatServerConnection {
 
   /** Lock/Unlock the given room */
   void lockRoom(LockableRoom r);
-  
+
   /** Can a player be invited to this room by me? */
   boolean isInvitable(Player invitee);
-  
+
   /** Invite a player to this room */
   void sendInvite(Player p);
-  
+
   /** Process Invitation */
   void doInvite(String playerId, String roomName);
-  
+
   /** Can a player be kicked from this room by me? */
   boolean isKickable(Player kickee);
-  
+
   /** Kick a player from this room */
   void doKick (Player p);
-  
+
   /** Return the name of the default room */
   String getDefaultRoomName();
-  
+
   /** Is specified room the default room? */
   boolean isDefaultRoom(Room r);
 }

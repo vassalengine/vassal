@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -102,7 +102,7 @@ public abstract class TurnLevel extends TurnComponent {
     turnFormat.setProperty(LEVEL_VALUE, getLongestValueName());
     return turnFormat.getText();
   }
-  
+
   protected boolean hasSubLevelRolledOver() {
     return subLevelRolledOver;
   }
@@ -110,7 +110,7 @@ public abstract class TurnLevel extends TurnComponent {
   protected boolean isActive() {
     return true;
   }
-  
+
   protected void reset() {
     for (int i = 0; i < getTurnLevelCount(); i++) {
       getTurnLevel(i).reset();
@@ -157,7 +157,7 @@ public abstract class TurnLevel extends TurnComponent {
     turnFormat.setProperty(LEVEL_VALUE, getValueString());
     return turnFormat.getText();
   }
-  
+
   public List<TurnLevel> getActiveChildLevels() {
     ArrayList<TurnLevel> children = new ArrayList<TurnLevel>();
     if (getTurnLevelCount() > 0) {
@@ -167,7 +167,7 @@ public abstract class TurnLevel extends TurnComponent {
     }
     return children;
   }
-  
+
   protected void buildConfigMenu(JMenu menu) {
     JMenu m = getConfigMenu();
     if (m != null) {
@@ -351,7 +351,7 @@ public abstract class TurnLevel extends TurnComponent {
       myValue = existingValue;
     }
   }
-  
+
   public void removeFrom(Buildable parent) {
     ((TurnComponent) parent).removeLevel(this);
     myValue.removeFromContainer();

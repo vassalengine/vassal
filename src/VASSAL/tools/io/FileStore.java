@@ -60,9 +60,9 @@ public interface FileStore extends Closeable {
    *
    * @throws FileNotFoundException if <code>path</code> is not in the store
    * @throws IOException
-   */ 
+   */
   public long getSize(String path) throws IOException;
- 
+
   /**
    * Gets the modification time of a file in the store, in milliseconds
    * since the epoch.

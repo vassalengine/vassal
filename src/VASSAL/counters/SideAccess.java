@@ -23,9 +23,9 @@ import VASSAL.build.module.PlayerRoster;
 /**
  * Access is granted if {@link VASSAL.build.module.PlayerRoster#getMySide()}
  * matches
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class SideAccess implements PieceAccess {
   private static SideAccess instance;

@@ -92,7 +92,7 @@ public class RandomTextButton extends DiceButton {
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
     setAttributeTranslatable(FACES, true);
   }
-  
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.RandomTextButton.component_type"); //$NON-NLS-1$
   }

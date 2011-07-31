@@ -22,11 +22,11 @@ import VASSAL.build.module.Plugin;
 import VASSAL.counters.CalculatedProperty;
 
 public class BshPlugin extends Plugin {
-  
+
   public BshPlugin() {
     super();
   }
-  
+
   public void init() {
     registerGamePiece(new CalculatedProperty());
     registerCommandEncoder(new BshCommandEncoder());

@@ -137,7 +137,7 @@ public class WarningDialog {
       JOptionPane.WARNING_MESSAGE, parent, details, messageKey, args
     );
   }
-  
+
   public static Future<?> showDetails(
     Throwable thrown,
     String details,
@@ -197,7 +197,7 @@ public class WarningDialog {
       JOptionPane.WARNING_MESSAGE, parent, details, key, messageKey, args
     );
   }
-  
+
   public static Future<?> showDetailsDisableable(
     Throwable thrown,
     String details,

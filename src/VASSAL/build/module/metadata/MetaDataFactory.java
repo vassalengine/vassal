@@ -45,7 +45,7 @@ public class MetaDataFactory {
    * Factory method to build and return an appropriate MetaData class based on
    * the contents of the file. Return null if the file is not a Zip archive, or
    * it is not a VASSAL Module, Extension or Save Game.
-   * 
+   *
    * @param file
    *          metadata file
    * @return MetaData object

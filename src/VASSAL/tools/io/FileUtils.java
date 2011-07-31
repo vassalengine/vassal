@@ -29,11 +29,11 @@ import java.util.List;
 
 /**
  * Some general purpose file manipulation utilities.
- * 
+ *
  * @author Joel Uckelman
  * @since 3.1.0
  * @deprecated Use {@link org.apache.commons.io.FileUtils} instead.
- */ 
+ */
 @Deprecated
 public class FileUtils {
   private FileUtils() {}
@@ -43,7 +43,7 @@ public class FileUtils {
    *
    * @param file the file to delete
    * @throws IOException if the file cannot be deleted
-   */    
+   */
   public static void delete(File file) throws IOException {
     if (!file.delete())
       throw new IOException("Failed to delete " + file.getAbsolutePath());
@@ -54,7 +54,7 @@ public class FileUtils {
    *
    * @param dir the path to create
    * @throws IOException if the path cannot be created
-   */ 
+   */
   public static void mkdirs(File dir) throws IOException {
     if (!dir.mkdirs()) throw new IOException(
       "Failed to create directory " + dir.getAbsolutePath());
@@ -65,7 +65,7 @@ public class FileUtils {
    *
    * @param base the root to delete
    * @throws IOException if some file cannot be deleted
-   */ 
+   */
   public static void recursiveDelete(File base) throws IOException {
     // we delete as many files as we can
     final List<File> failed = new ArrayList<File>();

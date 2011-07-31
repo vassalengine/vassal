@@ -1,4 +1,4 @@
-/* 
+/*
  * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
@@ -39,7 +39,7 @@ import VASSAL.tools.io.IOUtils;
 /**
  * Improved version of ServerConfigurer that includes an Address Book of
  * commonly visited Jabber servers and P2P clients.
- * 
+ *
  */
 public class AddressBookServerConfigurer extends Configurer {
   private static final String CONNECTED = Resources.getString("Server.please_disconnect"); //$NON-NLS-1$
@@ -65,7 +65,7 @@ public class AddressBookServerConfigurer extends Configurer {
 
   public Component getControls() {
 
-    if (controls == null) {      
+    if (controls == null) {
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
       controls.add(header, "wrap"); //$NON-NLS-1$
@@ -83,7 +83,7 @@ public class AddressBookServerConfigurer extends Configurer {
 
     return controls;
   }
-  
+
   private void enableControls(boolean connected) {
     addressBook.setEnabled(!connected);
     header.setText(connected ? CONNECTED : DISCONNECTED);
@@ -99,7 +99,7 @@ public class AddressBookServerConfigurer extends Configurer {
       client.updateDisplayControls(addressBook.getCurrentIcon(), addressBook.getCurrentDescription());
     }
   }
-  
+
   private Properties getServerInfo() {
     Properties p = (Properties) getValue();
     if (p == null) {
@@ -107,7 +107,7 @@ public class AddressBookServerConfigurer extends Configurer {
     }
     return p;
   }
-  
+
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();

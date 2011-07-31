@@ -73,7 +73,7 @@ public class PlayerWindow extends JFrame {
 
     fileMenu.add(mm.addMarker("PredefinedSetup.start"));
     fileMenu.add(mm.addMarker("PredefinedSetup.end"));
- 
+
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game"));
     fileMenu.add(mm.addKey("GameState.save_game"));
@@ -86,7 +86,7 @@ public class PlayerWindow extends JFrame {
       fileMenu.add(mm.addMarker("Editor.File.start"));
       fileMenu.add(mm.addMarker("Editor.File.end"));
     }
-    else { 
+    else {
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
       fileMenu.addSeparator();
@@ -100,9 +100,9 @@ public class PlayerWindow extends JFrame {
       new MenuProxy(Resources.getString("General.help"));
 
     // FIMXE: setting mnemonic from first letter could cause collisions in
-    // some languages   
+    // some languages
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
-   
+
     helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));
@@ -116,15 +116,15 @@ public class PlayerWindow extends JFrame {
     if (!SystemUtils.IS_OS_MAC_OSX) {
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
-    
+
     // Tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
-    
+
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
 
-    URL url = null; 
+    URL url = null;
     try {
       url = new File(Documentation.getDocumentationBaseDir(),
                      "README.html").toURI().toURL();
@@ -135,12 +135,12 @@ public class PlayerWindow extends JFrame {
     mm.addAction("General.help", new ShowHelpAction(url, null));
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
-       
+
     mb.add(fileMenu);
     mb.add(toolsMenu);
     mb.add(mm.addMarker("Editor.MenuBar.start"));
     mb.add(mm.addMarker("Editor.MenuBar.end"));
-    mb.add(helpMenu);    
+    mb.add(helpMenu);
 
     setJMenuBar(mm.getMenuBarFor(this));
 

@@ -63,10 +63,10 @@ import VASSAL.tools.version.VersionUtils;
 /**
  * @since 3.1.0
  * @author Joel Uckelman
- */ 
+ */
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
- 
+
   private Throwable thrown;
   private String errorLog;
 
@@ -106,10 +106,10 @@ public class BugDialog extends JDialog {
 
     addWindowListener(new WindowAdapter() {
       public void windowClosed(WindowEvent e) {
-        if (checkRequest != null) 
+        if (checkRequest != null)
           checkRequest.cancel(true);
-       
-        if (sendRequest != null) 
+
+        if (sendRequest != null)
           sendRequest.cancel(true);
       }
     });
@@ -117,8 +117,8 @@ public class BugDialog extends JDialog {
     add(header, BorderLayout.NORTH);
     add(buildContentsPanel(), BorderLayout.CENTER);
     add(buildButtonPanel(), BorderLayout.SOUTH);
- 
-    showVersionCheckPanel(); 
+
+    showVersionCheckPanel();
     pack();
   }
 
@@ -126,7 +126,7 @@ public class BugDialog extends JDialog {
     deck = new CardLayout();
     contents = new JPanel(deck);
     contents.setBorder(BorderFactory.createEmptyBorder(12,12,0,12));
-    
+
     contents.add(buildVersionCheckPanel(),     "versionCheckPanel");
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel");
     contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel");
@@ -139,7 +139,7 @@ public class BugDialog extends JDialog {
 
   private Component buildButtonPanel() {
     button_deck = new CardLayout();
-    buttons = new JPanel(button_deck); 
+    buttons = new JPanel(button_deck);
 
     buttons.add(buildVersionCheckButtons(),     "versionCheckButtons");
     buttons.add(buildCurrentVersionButtons(),   "currentVersionButtons");
@@ -180,14 +180,14 @@ public class BugDialog extends JDialog {
 // FIXME: tags don't push buttons to ends?
     final JPanel panel = new JPanel(new MigLayout("align right"));
     panel.add(cancelButton, "tag cancel");
-    
+
     return panel;
   }
 
   private Component buildCurrentVersionPanel() {
     final FlowLabel label = new FlowLabel(
       Resources.getString("BugDialog.current_version_instructions"));
-   
+
     descriptionArea = new JTextArea(10, 1);
     descriptionArea.setLineWrap(true);
     descriptionArea.setWrapStyleWord(true);
@@ -252,7 +252,7 @@ public class BugDialog extends JDialog {
     final JPanel panel = new JPanel(new MigLayout("align right"));
     panel.add(sendButton, "tag ok");
     panel.add(dontSendButton, "tag cancel");
-    
+
     return panel;
   }
 
@@ -267,7 +267,7 @@ public class BugDialog extends JDialog {
     final FlowLabel label = new FlowLabel(
       Resources.getString("BugDialog.old_version_instructions"));
     label.addHyperlinkListener(BrowserSupport.getListener());
-   
+
     final JScrollPane detailsScroll = buildDetailsScroll();
 
     final DetailsButton detailsButton = new DetailsButton(
@@ -299,7 +299,7 @@ public class BugDialog extends JDialog {
 
     final JPanel panel = new JPanel(new MigLayout("align right"));
     panel.add(okButton, "tag ok");
-    
+
     return panel;
   }
 
@@ -317,7 +317,7 @@ public class BugDialog extends JDialog {
       Resources.getString("Dialogs.show_details"),
       Resources.getString("Dialogs.hide_details"),
       detailsScroll
-    ); 
+    );
     detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
@@ -410,7 +410,7 @@ public class BugDialog extends JDialog {
     deck.show(contents, "sendingBugReportPanel");
     button_deck.show(buttons, "sendingBugReportButtons");
 
-    sendRequest = new SendRequest(); 
+    sendRequest = new SendRequest();
     sendRequest.execute();
   }
 
@@ -590,7 +590,7 @@ public class BugDialog extends JDialog {
 
   private void emergencySave() {
 // FIXME: GameModule and GameState need save methods which take a filename
-/*      
+/*
     final GameModule mod = GameModule.getGameModule();
     if (mod != null) mod.save(false);
 
@@ -598,7 +598,7 @@ public class BugDialog extends JDialog {
     if (state != null && state.isModified()) {
       state.saveGame();
     }
-*/       
+*/
   }
 
   public static void main(String[] args) {

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -35,7 +35,7 @@ import VASSAL.tools.io.IOUtils;
  * The base class for socket servers for communication between the
  * {@link ModuleManager} and its children {@link Player} and {@link Editor}
  * processes. Concrete extensions will implement {@link #execute(Object)} to
- * process incoming requests. 
+ * process incoming requests.
  *
  * @see CommandClient
  * @author Joel Uckelman
@@ -59,13 +59,13 @@ public class CommandServer implements Runnable {
   public void run() {
     Socket clientSocket = null;
     ObjectOutputStream out = null;
-    ObjectInputStream in = null; 
+    ObjectInputStream in = null;
     try {
       clientSocket = serverSocket.accept();
 
       out = new ObjectOutputStream(clientSocket.getOutputStream());
       in = new ObjectInputStream(clientSocket.getInputStream());
-    
+
       Object obj;
       Object result;
       try {

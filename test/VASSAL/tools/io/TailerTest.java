@@ -74,7 +74,7 @@ public class TailerTest {
   @Test
   public void testTailer() throws InterruptedException, IOException {
     final File file = new File(exists);
-  
+
     final StringBuilder sb_tailer = new StringBuilder();
 
     final Tailer tailer = new Tailer(file);
@@ -101,7 +101,7 @@ public class TailerTest {
     finally {
       IOUtils.closeQuietly(in);
     }
-    
+
     // compare whatever the Tailer had time to read
     assertEquals(expected, actual);
   }

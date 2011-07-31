@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -54,7 +54,7 @@ public class ImageIOImageLoader implements ImageLoader {
 
   /**
    * Create an image loader.
-   * 
+   *
    * @param tconv the <code>ImageTypeConverter</code> to use for type
    * conversions
    */
@@ -65,7 +65,7 @@ public class ImageIOImageLoader implements ImageLoader {
   // Used to indicate whether this version of Java has the PNG iTXt bug.
   // This can be removed once we no longer support Java 1.5.
   protected static final boolean iTXtBug;
-  
+
   static {
     final String jvmver = System.getProperty("java.version");
     iTXtBug = jvmver == null || jvmver.startsWith("1.5");
@@ -101,8 +101,8 @@ public class ImageIOImageLoader implements ImageLoader {
     // Sun Bug 6788458: 8-bit/channel color type 2 (RGB) PNGs with tRNS chunks
     // Sun Bug 6541476: PNGs with iTXt chunks on Java 1.5
     // Sun Bug 6444360: JPEGs with corrupt color profiles
-    // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5 
-    // 
+    // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5
+    //
     // http://bugs.sun.com/view_bug.do?bug_id=6788458
     // http://bugs.sun.com/view_bug.do?bug_id=6541476
     // http://bugs.sun.com/view_bug.do?bug_id=6444360
@@ -122,10 +122,10 @@ public class ImageIOImageLoader implements ImageLoader {
       rin.mark(512);
 
       DataInputStream din = new DataInputStream(rin);
-      PNGDecoder.Chunk ch; 
+      PNGDecoder.Chunk ch;
 
       // Is this a PNG?
-      if (PNGDecoder.decodeSignature(din)) {        
+      if (PNGDecoder.decodeSignature(din)) {
         // The PNG chunks refered to here are defined in the PNG
         // standard, found at http://www.w3.org/TR/PNG/
         ch = PNGDecoder.decodeChunk(din);
@@ -139,7 +139,7 @@ public class ImageIOImageLoader implements ImageLoader {
           // tRNS chunk for this type of image, and so the appearance for
           // users is that VASSAL is broken when their 8-bit RGB PNGs don't
           // show the correct transparency.
-          
+
           // We check for type-2 8-bit PNGs with tRNS chunks.
           if (ch.data[8] == 8 && ch.data[9] == 2) {
             // This is an 8-bit-per-channel Truecolor image; we must check
@@ -161,7 +161,7 @@ public class ImageIOImageLoader implements ImageLoader {
             }
 
             if (fix_tRNS) {
-              if (ch.data.length != 6) { 
+              if (ch.data.length != 6) {
                 // There is at least one piece of software (SplitImage) which
                 // writes tRNS chunks for type 2 images which are only 3 bytes
                 // long, and because this kind of thing is used by module
@@ -169,7 +169,7 @@ public class ImageIOImageLoader implements ImageLoader {
                 // expect to see such crap from time to time.
                 throw new BrokenImageException(name, "bad tRNS chunk length");
               }
-              
+
               //
               // tRNS chunk: PNG Standard, 11.3.2.1
               //
@@ -209,19 +209,19 @@ public class ImageIOImageLoader implements ImageLoader {
       IOUtils.closeQuietly(rin);
     }
 
-    final int type = 
+    final int type =
       img.getTransparency() == BufferedImage.OPAQUE && !fix_tRNS
       ? typeIfOpaque : typeIfTransparent;
- 
+
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(img);
-  
+
     // Fix up transparency in type 2 Truecolor images.
     if (fix_tRNS) {
-      img = null;      
+      img = null;
       img = fix_tRNS(ref, tRNS, type);
       ref.obj = img;
     }
-  
+
     // We convert the image in two cases:
     // 1) the image is not yet the requested type, or
     // 2) a managed image was requested, but the image
@@ -333,7 +333,7 @@ public class ImageIOImageLoader implements ImageLoader {
     // are the same in both.
     if (img.getType() != BufferedImage.TYPE_INT_ARGB &&
         img.getType() != BufferedImage.TYPE_INT_ARGB_PRE) {
-    
+
       // If the requested type is not an ARGB one, then we convert to ARGB
       // for applying this fix.
       if (type != BufferedImage.TYPE_INT_ARGB &&

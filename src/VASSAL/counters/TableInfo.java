@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -207,7 +207,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Table Info command");
   }
-  
+
   private static class Ed implements PieceEditor {
     private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
     private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");

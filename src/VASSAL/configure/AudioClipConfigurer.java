@@ -30,9 +30,9 @@ import VASSAL.tools.filechooser.FileChooser;
 /**
  * Class for selecting an AudioClip while editing a module and adding it to
  * module
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class AudioClipConfigurer extends FileConfigurer {
   protected static DirectoryConfigurer resourceDirPref;
@@ -56,7 +56,7 @@ public class AudioClipConfigurer extends FileConfigurer {
   protected void addToArchive(java.io.File f) {
     archive.addSound(f.getPath(), f.getName());
   }
-  
+
   public Component getControls() {
     final Component c = super.getControls();
     if (button == null) {

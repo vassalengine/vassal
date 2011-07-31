@@ -38,11 +38,11 @@ public class ScriptContainer extends AbstractConfigurable {
     }
     return instance;
   }
-  
+
   public ScriptContainer() {
 
   }
-   
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -82,7 +82,7 @@ public class ScriptContainer extends AbstractConfigurable {
     super.add(b);
     if (b instanceof AbstractScript) {
       ((AbstractScript) b).compile();
-    }    
+    }
   }
 
   public HelpFile getHelpFile() {

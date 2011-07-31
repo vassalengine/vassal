@@ -66,7 +66,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       decodeOptions(getInstance().encodeOptions());
     }
   }
-  
+
   /**
    * Return the current global ObscurableOptions
    * @return global Options
@@ -170,7 +170,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       return null;
     }
   }
-  
+
   /**
    * Encode the current ObscurableOptions as a String
    * @return encoded options
@@ -187,10 +187,10 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     for (String who : allowed) {
       se.append(who);
     }
-    
+
     return se.getValue();
   }
-  
+
   /**
    * Set the current options from an encoded string
    * @param s encoded string

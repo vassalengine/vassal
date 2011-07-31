@@ -131,7 +131,7 @@ public class NotesWindow extends AbstractConfigurable
   protected class NotesDialog extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    
+
     protected NotesDialog() {
       super(GameModule.getGameModule().getFrame());
       initComponents();
@@ -241,8 +241,8 @@ public class NotesWindow extends AbstractConfigurable
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    		Resources.getString(Resources.BUTTON_TEXT),
-        	Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_TEXT),
+          Resources.getString(Resources.TOOLTIP_TEXT),
             Resources.getString(Resources.BUTTON_ICON),
             Resources.getString(Resources.HOTKEY_LABEL)
     };
@@ -331,7 +331,7 @@ public class NotesWindow extends AbstractConfigurable
       return null;
     }
   }
-  
+
   protected class SetPublicNote extends Command {
     protected String msg;
 

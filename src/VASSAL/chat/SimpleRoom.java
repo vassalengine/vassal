@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.chat;
@@ -41,7 +41,7 @@ public class SimpleRoom implements Room {
     this.name = name;
     setPlayers(players);
   }
-  
+
   public SimpleRoom(Room copy) {
     this.name = copy.getName();
     players.addAll(copy.getPlayerList());
@@ -71,7 +71,7 @@ public class SimpleRoom implements Room {
       players.set(index, p);
     }
   }
-  
+
   public Player getPlayer(String id) {
     for (Player player : players) {
       if (player.getId().equals(id)) {

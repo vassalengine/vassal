@@ -92,7 +92,7 @@ public class UnitTest implements UserDialog {
 
       try {
          writer.writeLine("A message"); //$NON-NLS-1$
-         Thread.sleep(2000); 
+         Thread.sleep(2000);
       }
       finally {
         writer.close();

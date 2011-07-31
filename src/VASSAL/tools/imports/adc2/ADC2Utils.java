@@ -26,13 +26,13 @@ import VASSAL.tools.imports.FileFormatException;
 
 /**
  * Common utilities for importing ADC2 modules to VASSAL.
- * 
+ *
  * @author Michael Kiefte
  *
  */
 
 public class ADC2Utils {
-  
+
   public static class NoMoreBlocksException extends EOFException {
     private static final long serialVersionUID = 1L;
 
@@ -44,12 +44,12 @@ public class ADC2Utils {
   public static final String MODULE_EXTENSION = ".ops";
   public static final String MAP_EXTENSION = ".map";
   public static final String SET_EXTENSION = ".set";
-  
+
   public static final String MODULE_DESCRIPTION = "ADC2 Game Module";
   public static final String MAP_DESCRIPTION = "ADC2 Map Board";
   public static final String SET_DESCRIPTION = "ADC2 Symbol Set";
   static final String TYPE = "Type";
-  
+
   // ADCs default pallet which is referenced by index.
   public static final Color[] defaultColorPallet = { new Color(0x000000),
       new Color(0x808080), new Color(0x800000), new Color(0x808000),
@@ -137,22 +137,22 @@ public class ADC2Utils {
       new Color(0x66ccff), new Color(0x99ccff), new Color(0xccccff),
       new Color(0xffccff), new Color(0x00ffff), new Color(0x33ffff),
       new Color(0x66ffff), new Color(0x99ffff), new Color(0xccffff) };
-  
+
   // can never be instantiated
   private ADC2Utils() {}
 
   private static final long serialVersionUID = 1L;
 
   /**
-   * Read a base-250 2-byte big-endian word from a <code>DataInputStream</code>. 
+   * Read a base-250 2-byte big-endian word from a <code>DataInputStream</code>.
    * This is the default (and only) encoding for words imported modules.
    */
   static int readBase250Word(DataInputStream in) throws IOException {
     return in.readUnsignedByte() * 250 + in.readUnsignedByte();
   }
-  
+
   /**
-   * Read a base-250 4-byte big-endian word from a <code>DataInputStream</code>. 
+   * Read a base-250 4-byte big-endian word from a <code>DataInputStream</code>.
    * This is the default encoding for integers in ADC2 modules (why?).
    */
   static int readBase250Integer(DataInputStream in) throws IOException {
@@ -178,7 +178,7 @@ public class ADC2Utils {
     if (in.available() == 0)
       throw new NoMoreBlocksException(string);
   }
-  
+
   /**
    * Returns a color from the default ADC pallet
    */

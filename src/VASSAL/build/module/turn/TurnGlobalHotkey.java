@@ -22,12 +22,12 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String MATCH = "match"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
-  
+
   protected PropertyExpression match = new PropertyExpression();
   protected NamedKeyStroke hotkey;
   protected FormattedString format = new FormattedString();
   protected BasicPiece checkPiece = new BasicPiece();
-  
+
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Description:  ",
@@ -51,7 +51,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
     }
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] {NAME, HOTKEY, MATCH, REPORT_FORMAT};
   }
@@ -77,7 +77,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
     }
-    else if (HOTKEY.equals(key)) {    
+    else if (HOTKEY.equals(key)) {
       if (value instanceof String) {
         value = NamedHotKeyConfigurer.decode((String) value);
       }
@@ -89,7 +89,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     else if (REPORT_FORMAT.equals(key)) {
       format.setFormat((String) value);
     }
-    
+
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
@@ -97,17 +97,17 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-    
+
   }
 
   public void addTo(Buildable parent) {
-    
+
   }
-  
+
   public static String getConfigureTypeName() {
     return "Global Hotkey";
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","Hotkey"); //$NON-NLS-1$ //$NON-NLS-2$
   }

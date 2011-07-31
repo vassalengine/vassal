@@ -35,7 +35,7 @@ public interface MultiEventListenerSupport {
    * @param c the class to listen for
    * @param l the listener to add
    */
-  public <T> void addEventListener(Class<T> c, EventListener<? super T> l); 
+  public <T> void addEventListener(Class<T> c, EventListener<? super T> l);
 
   /**
    * Removes an {@link EventListener}.
@@ -52,7 +52,7 @@ public interface MultiEventListenerSupport {
    * @return <code>true</code> if there are any listeners for the given class
    */
   public boolean hasEventListeners(Class<?> c);
- 
+
   /**
    * Gets the list of listerners.
    *

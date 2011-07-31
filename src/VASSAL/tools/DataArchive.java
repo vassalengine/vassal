@@ -72,7 +72,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   protected List<DataArchive> extensions = new ArrayList<DataArchive>();
 
-// FIXME: these should go into a cache, like images have 
+// FIXME: these should go into a cache, like images have
   private final Map<String,AudioClip> soundCache =
     new HashMap<String,AudioClip>();
 
@@ -85,7 +85,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected String soundDir = SOUND_DIR;
 
   public static final String ICON_DIR = "icons/";
-  
+
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
   }
@@ -99,15 +99,15 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public DataArchive(String zipName) throws IOException {
     this(zipName, IMAGE_DIR);
   }
-  
+
   public String getName() {
     return archive == null ? "data archive" : archive.getName();
   }
- 
+
   public FileArchive getArchive() {
     return archive;
   }
- 
+
   public String getImagePrefix() {
     return imageDir;
   }
@@ -117,7 +117,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
       if (name.toLowerCase().endsWith(".mp3")) {
-        clip = new Mp3AudioClip(path); 
+        clip = new Mp3AudioClip(path);
       }
       else {
         InputStream stream = null;
@@ -202,8 +202,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     // requested file is in this archive
     if (archive != null && archive.contains(fileName))
       return archive.getInputStream(fileName);
-   
-    // we don't have it, try our extensions 
+
+    // we don't have it, try our extensions
     for (DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
@@ -233,16 +233,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Returns a URL pointing to the named file.
-   * 
+   *
    * @param fileName the name of the file
    * @return a URL corresponding to the file
    * @throws FileNotFoundException if the file doesn't exist
-   * @throws IOException if some other problem occurs 
+   * @throws IOException if some other problem occurs
    */
   public URL getURL(String fileName) throws IOException, FileNotFoundException {
     // requested file is a resource
     if (fileName.startsWith("/")) {
-      return getClass().getResource(fileName); 
+      return getClass().getResource(fileName);
     }
 
     if (archive == null) {
@@ -252,11 +252,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (archive.contains(fileName)) {
       return new URL(getURL(), fileName);
     }
-    
+
     for (DataArchive ext : extensions) {
       try {
-        return ext.getURL(fileName); 
-      }      
+        return ext.getURL(fileName);
+      }
       catch (FileNotFoundException e) {
         // not found in this extension, try the next
       }
@@ -268,11 +268,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Returns a URL pointing to the named image file.
-   * 
+   *
    * @param fileName the name of the image file
    * @return a URL corresponding to the image file
    * @throws FileNotFoundException if the file doesn't exist
-   * @throws IOException if some other problem occurs 
+   * @throws IOException if some other problem occurs
    */
   public URL getImageURL(String fileName) throws IOException,
                                                  FileNotFoundException {
@@ -298,10 +298,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet() {
-    final TreeSet<String> s = 
+    final TreeSet<String> s =
       new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
     getImageNamesRecursively(s);
-    return s;    
+    return s;
   }
 
   protected void getImageNamesRecursively(SortedSet<String> s) {
@@ -351,7 +351,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    */
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
-    
+
     for (DataArchive ext : extensions) {
       final ArchiveWriter writer = ext.getWriter();
       if (writer != null) return writer;
@@ -361,7 +361,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
 /////////////////////////////////////////////////////////////////////
-// Methods overridden from SecureClassLoader 
+// Methods overridden from SecureClassLoader
 /////////////////////////////////////////////////////////////////////
 
   @Override
@@ -462,7 +462,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final ImageSource src;
 
     if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg")) 
+      if (name.toLowerCase().endsWith(".svg"))
         return SVGImageUtils.getImageSize(name, getImageInputStream(name));
       else
         return ImageUtils.getImageSize(name, getImageInputStream(name));
@@ -535,7 +535,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         }
       });
     }
-    
+
     final boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
     return new RotateScaleOp(new ImageSourceOp(im), theta, zoom).getImage(null);
   }
@@ -565,12 +565,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated
   public void unCacheImage(Image im) { }
 
-  @Deprecated  
+  @Deprecated
   public void clearTransformedImageCache() { }
 
   @Deprecated
   public void clearScaledImageCache() { }
- 
+
   /**
    * Find an image from the archive
    * Once an image is found, cache it in our HashMap.
@@ -597,9 +597,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return Op.rotateScale(Op.load(
       ImageUtils.toBufferedImage(base)), theta, scale).getImage();
   }
-  
+
   /**
-   * @deprecated Use {@link RotateScaleOp} instead. 
+   * @deprecated Use {@link RotateScaleOp} instead.
    * @param base
    * @param scale
    * @param theta
@@ -613,12 +613,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   /**
-   * @deprecated Use {@link ScaleOp} instead. 
+   * @deprecated Use {@link ScaleOp} instead.
    * The image will be retrieved from cache if available, cached otherwise
    * @param base
    * @param scale
    * @param reversed
-   * @param forceSmoothing If true, force smoothing. 
+   * @param forceSmoothing If true, force smoothing.
    *  This usually yields better results, but can be slow for large images
    * @return
    */
@@ -691,7 +691,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * @deprecated Use {@link #getFileStream(String)} instead.
-   */  
+   */
   @Deprecated
   public static InputStream getFileStream(File dir, String zipName, String file) {
     try {
@@ -719,7 +719,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   /** Use {@link ImageUtils.getImage(InputStream)} instead. */
-  @Deprecated  
+  @Deprecated
   public static Image getImage(InputStream in) throws IOException {
     return ImageUtils.getImage(in);
   }
@@ -748,7 +748,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated
   @SuppressWarnings("unchecked")
   protected void listImageNames(Collection l) {
-    l.addAll(setOfImageNames());    
+    l.addAll(setOfImageNames());
   }
 
   /**

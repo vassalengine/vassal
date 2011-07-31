@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Image;
@@ -27,9 +27,9 @@ import VASSAL.tools.SequenceEncoder;
 public class ImageItemInstance extends ItemInstance {
 
   protected static final String IMAGE = "image"; //$NON-NLS-1$
-  
+
   protected String imageName = ""; //$NON-NLS-1$
-  
+
   public ImageItemInstance() {
     super();
   }
@@ -43,7 +43,7 @@ public class ImageItemInstance extends ItemInstance {
   public ImageItemInstance(String name, String type, String location) {
     super(name, type, location);
   }
-  
+
   public ImageItemInstance(String nam, String typ, String loc, String iName) {
     super(nam, typ, loc);
     imageName = iName;
@@ -65,11 +65,11 @@ public class ImageItemInstance extends ItemInstance {
     setLocation(sd.nextToken("")); //$NON-NLS-1$
     imageName = sd.nextToken(""); //$NON-NLS-1$
   }
-  
+
   public String getImageName() {
     return imageName;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[] { "Image:  " };
   }
@@ -98,22 +98,22 @@ public class ImageItemInstance extends ItemInstance {
     }
     else {
       super.setAttribute(key, o);
-    }    
+    }
     if (myConfig != null) {
       myConfig.rebuildViz();
     }
   }
-  
+
   public String getAttributeValueString(String key) {
-    
+
     if (IMAGE.equals(key)) {
       return imageName;
-    }  
+    }
     else {
       return super.getAttributeValueString(key);
     }
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
        return imageCond;

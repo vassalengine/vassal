@@ -38,7 +38,7 @@ import VASSAL.tools.SequenceEncoder;
 public class SubMenu extends Decorator implements TranslatablePiece {
   public static final String ID = "submenu;";
   private String subMenu;
-  private KeyCommandSubMenu keyCommandSubMenu; 
+  private KeyCommandSubMenu keyCommandSubMenu;
   private final KeyCommand[] keyCommands = new KeyCommand[1];
 
   public SubMenu() {
@@ -104,7 +104,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   public String getMenuName() {
     return subMenu;
   }
-  
+
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
@@ -131,7 +131,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(getMenuName(), "Sub Menu Name");
   }
-  
+
   public static class Editor implements PieceEditor {
     private StringConfigurer nameConfig;
     private StringArrayConfigurer commandsConfig;

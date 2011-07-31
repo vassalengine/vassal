@@ -50,7 +50,7 @@ public class ShowServerStatusAction extends AbstractAction {
   public ShowServerStatusAction(ServerStatus status, URL iconURL) {
     this(status, iconURL, true);
   }
-  
+
   public ShowServerStatusAction(ServerStatus status, URL iconURL, boolean includeMessageControls) {
     if (frame == null) {
       frame = new Window(status, includeMessageControls);
@@ -63,7 +63,7 @@ public class ShowServerStatusAction extends AbstractAction {
     }
     putValue(SHORT_DESCRIPTION, Resources.getString("Chat.display_connections")); //$NON-NLS-1$
   }
-  
+
   public void actionPerformed(ActionEvent e) {
     frame.refresh();
   }
@@ -73,7 +73,7 @@ public class ShowServerStatusAction extends AbstractAction {
 
     private ServerStatusView view;
     private MessageBoardControls messageMgr;
-    
+
     public Window(ServerStatus status, boolean includeMessageControls) {
       super(Resources.getString("Chat.server_status")); //$NON-NLS-1$
       setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));

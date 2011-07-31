@@ -1,7 +1,7 @@
 /*
  * $Id: Property.java 7420 2010-10-17 20:24:10Z uckelman $
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

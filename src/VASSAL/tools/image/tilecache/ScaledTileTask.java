@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -55,7 +55,7 @@ class ScaledTileTask extends TileTask {
   @Override
   protected BufferedImage sliceTile() {
     // get actual tile width, height (edge tiles can be less than full size)
-    final int atw = Math.min(tw, dw - tx*tw);  
+    final int atw = Math.min(tw, dw - tx*tw);
     final int ath = Math.min(th, dh - ty*th);
 
     final int type = src.getType();

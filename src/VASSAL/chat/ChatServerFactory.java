@@ -1,4 +1,4 @@
-/* 
+/*
  * $Id$
  *
  * Copyright (c) 2000-2006 by Rodney Kinney
@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * A Factory for building {@link ChatServerConnection} instances
- * 
+ *
  * @author rkinney
  */
 public abstract class ChatServerFactory {

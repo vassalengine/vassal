@@ -28,10 +28,10 @@ import VASSAL.configure.Configurer;
  * A Checkbox Module Preference.
  */
 public class BooleanPreference extends BasicPreference {
-  
+
   protected boolean defaultValue = false;
   protected BooleanConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "Checkbox Preference";
   }
@@ -56,7 +56,7 @@ public class BooleanPreference extends BasicPreference {
       config = new BooleanConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }});
     }
     return config;

@@ -34,7 +34,7 @@ import VASSAL.tools.version.VassalVersion;
  * @author Joel Uckelman
  */
 public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
-  
+
   private static final Logger logger =
     LoggerFactory.getLogger(UpdateCheckRequest.class);
 

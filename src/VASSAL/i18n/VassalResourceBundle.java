@@ -27,21 +27,21 @@ import java.util.ResourceBundle;
 /**
  * VASSAL PropertyResourceBundle
  *  - Expose setParent()
- *  
+ *
  * @author Brent Easton
  *
  */
 public class VassalResourceBundle extends PropertyResourceBundle {
   /**
    * Standard constructor - read properties from a file
-   * 
+   *
    * @param in Input stream
    * @throws IOException
    */
   public VassalResourceBundle(InputStream in) throws IOException {
     super(in);
   }
-  
+
   /**
    * Expose the protected setParent() routine in the superclass as public.
    */

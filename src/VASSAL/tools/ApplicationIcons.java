@@ -130,7 +130,7 @@ public class ApplicationIcons {
 
     if (setIconImages != null) {
       setIconImages(w);
-    } 
+    }
     else {
       // Load a single image as a fallback and watch in horror as it
       // gets scaled to ridiculous sizes.

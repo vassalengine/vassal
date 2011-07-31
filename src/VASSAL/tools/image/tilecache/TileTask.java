@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,7 +20,7 @@
 package VASSAL.tools.image.tilecache;
 
 import java.awt.image.BufferedImage;
-import java.awt.Graphics2D; 
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 class TileTask implements Callable<Void> {
   protected final BufferedImage src;
   protected final File dst;
@@ -72,7 +72,7 @@ class TileTask implements Callable<Void> {
 
   protected BufferedImage sliceTile() {
     // get actual tile width, height (edge tiles can be less than full size)
-    final int atw = Math.min(tw, dw - tx*tw);  
+    final int atw = Math.min(tw, dw - tx*tw);
     final int ath = Math.min(th, dh - ty*th);
 
     final int type = src.getType();

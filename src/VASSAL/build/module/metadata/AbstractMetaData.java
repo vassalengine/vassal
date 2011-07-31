@@ -59,20 +59,20 @@ import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 
 /**
- * 
- * Base class representing the metadata for a Saved Game, Module or Extension. 
- * 
+ *
+ * Base class representing the metadata for a Saved Game, Module or Extension.
+ *
  * @author Brent Easton
  * @since 3.1.0
  */
 public abstract class AbstractMetaData {
-  
+
   private static final Logger logger =
     LoggerFactory.getLogger(AbstractMetaData.class);
 
   protected static final String TRUE = "true";
   protected static final String FALSE = "false";
-  
+
   protected static final String NAME_ATTR = "name";
   protected static final String VERSION_ATTR = "version";
   protected static final String VASSAL_VERSION_ATTR = "vassalVersion";
@@ -90,7 +90,7 @@ public abstract class AbstractMetaData {
   protected static final String DESCRIPTION_ELEMENT = "description";
   protected static final String NAME_ELEMENT = "name";
   protected static final String DATE_SAVED_ELEMENT = "dateSaved";
-  
+
   protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule";
   protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule";
   protected static final String BUILDFILE_EXTENSION_ELEMENT = "VASSAL.build.module.ModuleExtension";
@@ -98,35 +98,35 @@ public abstract class AbstractMetaData {
   protected String version;
   protected String vassalVersion;
   protected Attribute descriptionAttr;
- 
+
   public AbstractMetaData() {
     setVassalVersion(Info.getVersion());
   }
- 
+
   public String getVersion() {
     return version == null ? "" : version;
   }
-  
+
   public void setVersion(String s) {
     version = s;
   }
-  
+
   public String getVassalVersion() {
     return vassalVersion == null ? "" : vassalVersion;
   }
-  
+
   public void setVassalVersion(String s) {
     vassalVersion = s;
   }
-  
+
   public void setDescription(Attribute desc) {
     descriptionAttr = desc;
   }
- 
+
   public void setDescription(String desc) {
     descriptionAttr = new Attribute(GameModule.DESCRIPTION, desc);
   }
- 
+
   public String getDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getValue();
   }
@@ -134,7 +134,7 @@ public abstract class AbstractMetaData {
   public String getLocalizedDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getLocalizedValue();
   }
- 
+
   public void save(FileArchive archive) throws IOException {
     OutputStream out = null;
     try {
@@ -146,7 +146,7 @@ public abstract class AbstractMetaData {
       IOUtils.closeQuietly(out);
     }
   }
- 
+
   protected void save(OutputStream out) throws IOException {
     Document doc = null;
     Element e = null;
@@ -159,7 +159,7 @@ public abstract class AbstractMetaData {
       root.setAttribute(VERSION_ATTR, getMetaDataVersion());
       doc.appendChild(root);
 
-      if (getVersion() != null) { 
+      if (getVersion() != null) {
         e = doc.createElement(VERSION_ELEMENT);
         e.appendChild(doc.createTextNode(getVersion()));
         root.appendChild(e);
@@ -170,16 +170,16 @@ public abstract class AbstractMetaData {
         e.appendChild(doc.createTextNode(getVassalVersion()));
         root.appendChild(e);
       }
-      
+
       e = doc.createElement(DATE_SAVED_ELEMENT);
       e.appendChild(doc.createTextNode(
         String.valueOf(System.currentTimeMillis())));
       root.appendChild(e);
-      
+
       if (descriptionAttr != null) {
         descriptionAttr.generateXML(doc, root, DESCRIPTION_ELEMENT);
       }
-      
+
       addElements(doc, root);
     }
     catch (ParserConfigurationException ex) {
@@ -211,11 +211,11 @@ public abstract class AbstractMetaData {
       throw (IOException) new IOException().initCause(ex);
     }
   }
-  
+
   /**
    * Write common metadata to the specified Archive. Call addElements to
    * add elements specific to particular concrete subclasses.
-   * 
+   *
    * @param archive
    *          Extension Archive
    * @throws IOException
@@ -245,58 +245,58 @@ public abstract class AbstractMetaData {
       in.close();
     }
     catch (FileNotFoundException e) {
-      // No Metatdata in source module, create a fresh copy 
+      // No Metatdata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
     finally {
       IOUtils.closeQuietly(in);
     }
   }
-  
+
   /**
    * Return the Entry name for the metatdata file
-   * 
+   *
    * @return Zip Entry name
    */
   public abstract String getZipEntryName();
-  
+
   /**
    * Return the version of the metadata structure
-   * 
+   *
    * @return version
    */
   public abstract String getMetaDataVersion();
-  
+
   /**
    * Add elements specific to a MetaData subclass
-   * 
+   *
    * @param doc Document
    * @param root Root element
    */
   protected abstract void addElements(Document doc, Element root);
-  
+
   /*************************************************************************
    * Utility Exception class, used to cancel SAX parsing
    *
    */
   static class SAXEndException extends SAXException {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
   }
-  
+
   /*************************************************************************
    * Utility class representing a Configurable attribute and its translations
-   * 
+   *
    */
   static class Attribute {
     protected String attributeName;
     protected String value;
     protected HashMap<String, String> translations =
       new HashMap<String, String>();
-    
+
     /**
      * Build Attribute class based on atrribute value and translations
      * available in the current module
-     * 
+     *
      * @param c Target configurable
      * @param name Attribute name
      */
@@ -306,36 +306,36 @@ public abstract class AbstractMetaData {
       String key = target.getI18nData().getFullPrefix();
       if (key.length()> 0) key += ".";
       key += attributeName;
-      
+
       for (Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
         addTranslation(t.getLanguageCode(), t.translate(key));
       }
-    }   
-    
+    }
+
     public Attribute (String attributeName, String value) {
       this.attributeName = attributeName;
       this.value = value;
     }
-    
+
     public void addTranslation(String language, String value) {
       if (value != null) {
         translations.put(language, value);
       }
     }
-    
+
     /**
      * Return the untranslated value of this attribute
-     * 
+     *
      * @return value
      */
     public String getValue() {
       return value;
     }
-    
+
     /**
      * Return the value of this attribute translated into the local
      * language
-     * 
+     *
      * @return translated value
      */
     public String getLocalizedValue() {
@@ -343,27 +343,27 @@ public abstract class AbstractMetaData {
       String tx = translations.get(lang);
       return tx == null ? getValue() : tx;
     }
-    
+
     /**
      * Output metadata XML for this attribute, including translations
-     * 
+     *
      * @param doc Root document
      * @param root Parent element
      * @param prefix Attribute prefix
      */
     public void generateXML(Document doc, Element root, String prefix) {
-      
+
       if (value == null) {
         return;
       }
-      
+
       Element e = null;
-      
+
       e = doc.createElement(prefix);
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
-     
-      for (Map.Entry<String,String> en : translations.entrySet()) { 
+
+      for (Map.Entry<String,String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
         e.setAttribute(LANG_ATTR, en.getValue());
         e.appendChild(doc.createTextNode(en.getKey()));
@@ -372,7 +372,7 @@ public abstract class AbstractMetaData {
     }
   }
 
-  /** 
+  /**
    * This is the shared parser for all subclasses of AbstractMetaData.
    * We use a shared parser because the call to
    * {@link XMLReaderFactory.createXMLReader()} is extremely expensive.
@@ -394,7 +394,7 @@ public abstract class AbstractMetaData {
       ErrorDialog.bug(e);
     }
   }
- 
+
   /*************************************************************************
    * Base XML Handler for all metadata classes
    *
@@ -402,7 +402,7 @@ public abstract class AbstractMetaData {
   class XMLHandler extends DefaultHandler {
     final StringBuilder accumulator = new StringBuilder();
     protected String language = "";
-    
+
     @Override
     public void startElement(String uri, String localName,
                              String qName, Attributes attrs) {
@@ -410,19 +410,19 @@ public abstract class AbstractMetaData {
       accumulator.setLength(0);
 
       // Track language for localizable attributes
-      language = getAttr(attrs, LANG_ATTR); 
+      language = getAttr(attrs, LANG_ATTR);
     }
-    
+
     protected String getAttr(Attributes attrs, String qName) {
       final String value = attrs.getValue(qName);
       return value == null ? "" : value;
     }
-    
+
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
-      
+
       String value = accumulator.toString().trim();
-      
+
       if (VERSION_ELEMENT.equals(qName)) {
          setVersion(value);
       }
@@ -438,7 +438,7 @@ public abstract class AbstractMetaData {
         }
       }
     }
-    
+
     @Override
     public void characters(char[] ch, int start, int length) {
       accumulator.append(ch, start, length);
@@ -458,19 +458,19 @@ public abstract class AbstractMetaData {
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
-    
+
   }
-  
+
   /*************************************************************************
    * XML Handler for parsing a buildFile. Used to read minimal data from
-   * modules saved prior to 3.1.0. 
+   * modules saved prior to 3.1.0.
    */
   class BuildFileXMLHandler extends DefaultHandler {
     final StringBuilder accumulator = new StringBuilder();
 
     @Override
     public void startElement(String uri, String localName,
-                             String qName, Attributes attrs) 
+                             String qName, Attributes attrs)
         throws SAXEndException {
       // clear the content accumulator
       accumulator.setLength(0);
@@ -480,7 +480,7 @@ public abstract class AbstractMetaData {
       final String value = attrs.getValue(qName);
       return value == null ? "" : value;
     }
-    
+
     @Override
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here

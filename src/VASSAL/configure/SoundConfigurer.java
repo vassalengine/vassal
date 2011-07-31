@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -169,7 +169,7 @@ public class SoundConfigurer extends Configurer {
 
   public void chooseClip() {
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setFileFilter(new AudioFileFilter());    
+    fc.setFileFilter(new AudioFileFilter());
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue(NO_VALUE);

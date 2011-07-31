@@ -1,6 +1,6 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -45,10 +45,10 @@ import VASSAL.tools.imageop.Op;
 public class ImageItem extends Item {
 
   public static final String TYPE = "Image"; //$NON-NLS-1$
-  
+
   public static final String SRC_VARIABLE = "Specified in individual images";
   public static final String SRC_FIXED = "Fixed for this layout";
-  
+
   protected static final String IMAGE = "image"; //$NON-NLS-1$
   public static final String SOURCE = "source"; //$NON-NLS-1$
 
@@ -57,7 +57,7 @@ public class ImageItem extends Item {
   @Deprecated protected Image image = null;
   protected ImageOp srcOp;
   protected Rectangle imageBounds = new Rectangle();
- 
+
   public ImageItem() {
     super();
   }
@@ -70,7 +70,7 @@ public class ImageItem extends Item {
     this(l);
     setConfigureName(n);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -96,7 +96,7 @@ public class ImageItem extends Item {
       SOURCE
     );
   }
-  
+
   public void setAttribute(String key, Object o) {
     if (IMAGE.equals(key)) {
       if (o instanceof String) {
@@ -117,16 +117,16 @@ public class ImageItem extends Item {
     else {
       super.setAttribute(key, o);
     }
-    
+
     if (layout != null) {
       layout.refresh();
-    }   
+    }
   }
-  
+
   public String getAttributeValueString(String key) {
     if (IMAGE.equals(key)) {
       return imageName;
-    }  
+    }
     else if (SOURCE.equals(key)) {
       return imageSource;
     }
@@ -134,7 +134,7 @@ public class ImageItem extends Item {
       return super.getAttributeValueString(key);
     }
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
        return falseCond;
@@ -152,13 +152,13 @@ public class ImageItem extends Item {
       return false;
     }
   };
-  
+
   private VisibilityCondition fixedCond = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return imageSource.equals(SRC_FIXED);
     }
   };
-  
+
   public static class TextSource extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
@@ -167,11 +167,11 @@ public class ImageItem extends Item {
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
     Point origin = layout.getPosition(this);
-    
-    if (isAntialias()) {    
+
+    if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                         RenderingHints.VALUE_ANTIALIAS_ON);
-    } 
+    }
     else {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                         RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -184,7 +184,7 @@ public class ImageItem extends Item {
       }
     }
   }
-  
+
   public String getType() {
     return TYPE;
   }
@@ -196,7 +196,7 @@ public class ImageItem extends Item {
   public boolean isFixed() {
     return imageSource.equals(SRC_FIXED);
   }
-  
+
   protected void loadImage(GamePieceImage defn) {
     ImageItemInstance Ii = null;
     if (defn != null) {
@@ -205,7 +205,7 @@ public class ImageItem extends Item {
     if (Ii == null) {
       Ii = new ImageItemInstance();
     }
-    
+
     String iName;
     if (imageSource.equals(SRC_FIXED)) {
       iName = imageName;
@@ -213,9 +213,9 @@ public class ImageItem extends Item {
     else {
       iName = Ii.getImageName();
     }
-    
+
 //    image = null;
-    
+
     if (iName != null) {
       if (iName.trim().length() == 0) {
         srcOp = BaseOp.op;
@@ -238,7 +238,7 @@ public class ImageItem extends Item {
       imageBounds = new Rectangle();
     }
   }
- 
+
   protected static final class BaseOp extends AbstractTileOpImpl {
     private BaseOp() { }
 
@@ -258,12 +258,12 @@ public class ImageItem extends Item {
 
     protected void fixSize() { }
 
-    @Override 
+    @Override
     public Dimension getSize() {
       return new Dimension(10,10);
     }
- 
-    @Override 
+
+    @Override
     public int getWidth() {
       return 10;
     }
@@ -280,27 +280,27 @@ public class ImageItem extends Item {
     // NB: This ImageOp doesn't need custom equals() or hashCode()
     // because it's a singleton.
   }
- 
+
   public static Item decode(GamePieceLayout l, String s) {
-    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');    
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     final ImageItem item = new ImageItem(l);
-    
+
     sd.nextToken();
     item.imageName = sd.nextToken(""); //$NON-NLS-1$
     item.imageSource = sd.nextToken(SRC_FIXED);
-    
+
     return item;
   }
-  
+
   public String encode() {
     final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
-    
+
     se1.append(imageName)
        .append(imageSource);
-   
+
     final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
-    
+
     return se2.getValue();
   }
 }

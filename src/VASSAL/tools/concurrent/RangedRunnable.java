@@ -81,17 +81,17 @@ public abstract class RangedRunnable<T> implements Runnable {
   /**
    * Processes the given range.
    *
-   * @param r the range to process 
-   */ 
+   * @param r the range to process
+   */
   protected abstract void run(Pair<T,T> r);
 
   /**
    * Returns the old range and creates a new range adjacent to the old one.
-   * The upper bound of the old range becomes the lower bound of the new range. 
+   * The upper bound of the old range becomes the lower bound of the new range.
    *
    * @return the range being flushed
    */
-  private final synchronized Pair<T,T> flush() { 
+  private final synchronized Pair<T,T> flush() {
     final Pair<T,T> flushed = range;
     range = new Pair<T,T>(flushed.second, null);
     submitted = false;

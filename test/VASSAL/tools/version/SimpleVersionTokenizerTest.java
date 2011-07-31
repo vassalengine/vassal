@@ -61,6 +61,6 @@ public class SimpleVersionTokenizerTest {
           fail("expected exception from " + vs + ", token " + i);
         }
       }
-    }    
+    }
   }
 }

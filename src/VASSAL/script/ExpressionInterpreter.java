@@ -39,48 +39,48 @@ import bsh.EvalError;
 import bsh.NameSpace;
 
 /**
- * 
+ *
  * A BeanShell Interpreter customised to evaluate a single Vassal
  * expression containing Vassal property references.
  * All traits with the same expression will share the same Interpreter
- * 
+ *
  * Each ExpressionInterpreter has 2 levels of NameSpace:
- * 1. Top level is a single global NameSpace that contains utility methods 
+ * 1. Top level is a single global NameSpace that contains utility methods
  *    available to all ExpressionInterpreters. It is the parent of all
  *    level 2 NameSpaces.
  * 2. Level 2 is a NameSpace for each unique expression that contains the
- *    parsed expression. All expressions in all traits that are the same 
- *    will use the one Expression NameSpace. 
+ *    parsed expression. All expressions in all traits that are the same
+ *    will use the one Expression NameSpace.
  *
  */
 public class ExpressionInterpreter extends AbstractInterpreter {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh";
   protected static final String THIS = "_interp";
   protected static final String SOURCE = "_source";
   protected static final String MAGIC1 = "_xyzzy";
   protected static final String MAGIC2 = "_plugh";
   protected static final String MAGIC3 = "_plover";
-  
-   
+
+
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
   protected static NameSpace topLevelNameSpace;
-  
+
   protected NameSpace expressionNameSpace;
-  
-  //protected NameSpace localNameSpace;    
+
+  //protected NameSpace localNameSpace;
 
   protected String expression;
   protected PropertySource source;
   protected List<String> variables = new ArrayList<String>();
-  
+
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<String, ExpressionInterpreter>();
-  
+
   public static ExpressionInterpreter createInterpreter (String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
     ExpressionInterpreter interpreter = cache.get(e);
@@ -90,7 +90,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
     return interpreter;
   }
-  
+
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
@@ -98,37 +98,37 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
     return expr;
   }
-  
+
   /**
    * Private constructor to build an ExpressionInterpreter. Interpreters
    * can only be created by createInterpreter.
-   * 
+   *
    * @param expr Expression
    * @throws MalformedExpressionException
    */
   private ExpressionInterpreter(String expr) throws ExpressionException {
     super();
-    
+
     expression = expr;
-    
+
     // Install the Vassal Class loader so that bsh can find Vassal classes
     this.setClassLoader(this.getClass().getClassLoader());
-    
+
     // Initialise the top-level name space if this is the first
     // expression to be created
     if (topLevelNameSpace == null) {
-      initialiseStatic();      
-    }    
+      initialiseStatic();
+    }
 
     // Create the Expression level namespace as a child of the
     // top level namespace
     expressionNameSpace = new NameSpace(topLevelNameSpace, "expression");
-    
+
     // Get a list of any variables used in the expression. These are
     // property names that will need to be evaluated at expression
     // evaluation time
     variables = new BeanShellExpressionValidator(expression).getVariables();
-    
+
     // Build a method enclosing the expression. This saves the results
     // of the expression parsing, improving performance. Force return
     // value to a String as this is what Vassal is expecting.
@@ -141,17 +141,17 @@ public class ExpressionInterpreter extends AbstractInterpreter {
         throw new ExpressionException(getExpression());
       }
     }
- 
+
     // Add a link to this Interpreter into the new NameSpace for callbacks from
     // BeanShell back to us
     setVar(THIS, this);
-    
+
   }
-  
+
   /**
    * Initialise the static elements of this class. Create a Top Level
    * NameSpace using the Vassal class loader, load useful classes and
-   * read and process the init_expression.bsh file to load scripted 
+   * read and process the init_expression.bsh file to load scripted
    * methods available to expressions.
    */
   protected void initialiseStatic() {
@@ -159,8 +159,8 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     setNameSpace(topLevelNameSpace);
     getNameSpace().importClass("VASSAL.build.module.properties.PropertySource");
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
-    
-    // Read the Expression initialisation script into the top level namespace 
+
+    // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
     BufferedReader in = null;
     try {
@@ -170,7 +170,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
       try {
         eval(in);
-      } 
+      }
       catch (EvalError e) {
         //FIXME: Error message
         WarningDialog.show(e, "");
@@ -184,7 +184,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       IOUtils.closeQuietly(in);
     }
   }
-  
+
   /**
    * Return the current expression
    * @return expression
@@ -192,30 +192,30 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   public String getExpression() {
     return expression;
   }
-  
+
   /**
-   * Evaluate the expression, setting the value of any undefined 
+   * Evaluate the expression, setting the value of any undefined
    * values to the matching Vassal property value. Primitives must
    * be wrapped.
-   * 
+   *
    * @return result
    */
   public String evaluate(PropertySource ps) throws ExpressionException {
     return evaluate(ps, false);
   }
-  
+
   public String evaluate(PropertySource ps, boolean localized) throws ExpressionException {
-    
+
     if (getExpression().length() == 0) {
       return "";
     }
-    
+
     // Default to the GameModule to satisfy properties if no
     // GamePiece supplied.
     source = ps == null ? GameModule.getGameModule() : ps;
-    
+
     setNameSpace(expressionNameSpace);
-    
+
     // Bind each undeclared variable with the value of the
     // corresponding Vassal property. Allow for old-style $variable$ references
     for (String var : variables) {
@@ -234,19 +234,19 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       else if ("false".equals(value)) {
         setVar(var, false);
       }
-      else {           
+      else {
         try {
           setVar(var, Integer.valueOf(value).intValue());
         }
         catch (NumberFormatException e) {
           setVar(var, value);
-        }        
+        }
       }
     }
-    
+
     // Re-evaluate the pre-parsed expression now that the undefined variables have
     // been bound to their Vassal property values.
-    
+
     setVar(THIS, this);
     setVar(SOURCE, source);
 
@@ -254,25 +254,25 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     try {
       eval(MAGIC1+"="+MAGIC2+"()");
       result = get(MAGIC1).toString();
-    } 
+    }
     catch (EvalError e) {
       final String s = e.getRawMessage();
       final String search = MAGIC2+"();'' : ";
       final int pos = s.indexOf(search);
       throw new ExpressionException(getExpression(), s.substring(pos+search.length()));
     }
-    
+
     return result;
   }
-  
+
   public String evaluate() throws ExpressionException {
     return getExpression().length() == 0 ? "" : evaluate(GameModule.getGameModule());
   }
-  
+
   /*****************************************************************
    * Callbacks from BeanShell Expressions to Vassal
    **/
-  
+
   public Object getProperty(String name) {
     return BeanShell.wrap(source.getProperty(name).toString());
   }
@@ -280,12 +280,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   public Object getLocalizedProperty(String name) {
     return BeanShell.wrap(source.getLocalizedProperty(name).toString());
   }
-  
+
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
    * same stack as the specified piece.
-   * 
+   *
    * @param property Property Name
    * @param ps GamePiece
    * @return total
@@ -308,15 +308,15 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
     return result;
   }
-  
+
   /**
    * SumLocation(property) function
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
-   * 
+   *
    * * WARNING * This WILL be inneficient as the number of counters on the
    * map increases.
-   * 
+   *
    * @param property Property Name
    * @param ps GamePiece
    * @return total
@@ -355,5 +355,5 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
     }
     return result;
-  }  
+  }
 }

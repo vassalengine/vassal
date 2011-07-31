@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-/** 
+/**
  * Class tht implements a names Font Swatch
  */
 
@@ -35,49 +35,49 @@ public class FontStyle extends AbstractConfigurable {
 
   protected static final String NAME = "name"; //$NON-NLS-1$
   protected static final String STYLE = "style"; //$NON-NLS-1$
-  
+
   protected OutlineFont font;
-  
+
   public FontStyle() {
     super();
     setConfigureName(FontManager.DEFAULT);
     font = new OutlineFont(FontManager.DIALOG, Font.PLAIN, 12, false);
   }
-  
+
   public FontStyle(String name, OutlineFont f) {
     super();
     setConfigureName(name);
     font = f;
   }
-  
+
   public OutlineFont getFont() {
     return font;
   }
-  
+
   public boolean isOutline() {
     return font.isOutline();
   }
-  
+
   public String[] getAttributeDescriptions() {
-    return new String[] { 
-      "Style Name:  ", 
+    return new String[] {
+      "Style Name:  ",
       "Font Style:  "
     };
   }
 
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] { 
-      String.class, 
+    return new Class<?>[] {
+      String.class,
       FontStyleConfig.class
     };
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {     
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FontConfigurer(key, name, ((FontStyle) c).font);
     }
   }
-  
+
   public String[] getAttributeNames() {
     return new String[] { NAME, STYLE };
   }
@@ -92,9 +92,9 @@ public class FontStyle extends AbstractConfigurable {
       }
       font = (OutlineFont) o;
     }
-   
+
   }
-  
+
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -107,7 +107,7 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-  
+
   }
 
   public HelpFile getHelpFile() {
@@ -121,7 +121,7 @@ public class FontStyle extends AbstractConfigurable {
   public static String getConfigureTypeName() {
     return "Font Style";
   }
-  
+
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }

@@ -185,12 +185,12 @@ public class ChartWindow extends Widget {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString(Resources.NAME_LABEL),
-    	    Resources.getString(Resources.BUTTON_TEXT),
-    	    Resources.getString(Resources.TOOLTIP_TEXT),
-    	    Resources.getString(Resources.BUTTON_ICON),
-    	    Resources.getString(Resources.HOTKEY_LABEL)
-    	    };
+        Resources.getString(Resources.NAME_LABEL),
+          Resources.getString(Resources.BUTTON_TEXT),
+          Resources.getString(Resources.TOOLTIP_TEXT),
+          Resources.getString(Resources.BUTTON_ICON),
+          Resources.getString(Resources.HOTKEY_LABEL)
+          };
   }
 
   public Class<?>[] getAttributeTypes() {

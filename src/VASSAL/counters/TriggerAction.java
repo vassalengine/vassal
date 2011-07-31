@@ -136,7 +136,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       .append(propertyMatch.getExpression())
       .append(NamedKeyStrokeArrayConfigurer.encode(watchKeys))
       .append(NamedKeyStrokeArrayConfigurer.encode(actionKeys))
-      .append(loop)      
+      .append(loop)
       .append(preLoopKey)
       .append(postLoopKey)
       .append(loopType)
@@ -153,7 +153,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   /**
    * Apply key commands to inner pieces first
-   * 
+   *
    * @param stroke
    * @return
    */
@@ -192,7 +192,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     Command c = new NullCommand();
 
     // 4. Handle non-looping case
-    if (!loop) {      
+    if (!loop) {
       try {
         doLoopOnce(c);
       }
@@ -211,7 +211,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     executeKey(c, preLoopKey);
 
     // Loop
-    
+
     // Set up counters for a counted loop
     int loopCounter = 0;
     int loopCountLimit = 0;
@@ -219,9 +219,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       loopCountLimit = loopCount.getTextAsInt(outer, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
     RecursionLimitException loopException = null;
-    
+
     for (;;) {
-        
+
       // While loop - test condition is still true before actions
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
         if (!whileExpression.accept(outer)) {
@@ -229,7 +229,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
         }
       }
 
-      // Execute the actions and catch and looping. Save any 
+      // Execute the actions and catch and looping. Save any
       // loop Exception to be thrown after the post-loop code
       // to ensure post-loop key is executed.
       try {
@@ -247,23 +247,23 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
         }
       }
 
-      // Check for infinite looping. Save any 
+      // Check for infinite looping. Save any
       // loop Exception to be thrown after the post-loop code
       // to ensure post-loop key is executed.
       if (loopCounter++ >= LoopControl.LOOP_LIMIT) {
         loopException = new RecursionLimitException(this);
         break;
       }
-      
+
       // Counted loop - Check if looped enough times
       if (LoopControl.LOOP_COUNTED.equals(loopType)) {
         if (loopCounter >= loopCountLimit) {
           break;
         }
       }
-    
+
       // Increment the Index Variable
-      indexValue += indexStep;      
+      indexValue += indexStep;
 
     }
 
@@ -274,7 +274,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     if (loopException != null) {
       RecursionLimiter.infiniteLoop(loopException);
     }
-    
+
     return c;
   }
 
@@ -397,7 +397,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     indexStart = st.nextInt(1);
     indexStep = st.nextInt(1);
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */
@@ -411,20 +411,20 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       return super.getPropertyNames();
     }
   }
-  
+
   // Setters for JUnit testing
   public void setPropertyMatch(String s) {
     propertyMatch.setExpression(s);
   }
-  
+
   public void setCommandName(String s) {
     command = s;
   }
-  
+
   public void setKey(NamedKeyStroke k) {
     key = k;
   }
-  
+
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -512,7 +512,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       untilExpressionConfig = new PropertyExpressionConfigurer(null,
           Resources.getString("Editor.TriggerAction.looping_ends"), piece.untilExpression); //$NON-NLS-1$
       box.add(untilExpressionConfig.getControls());
-      
+
       preLoopKeyConfig = new NamedHotKeyConfigurer(null,
           Resources.getString("Editor.TriggerAction.keystroke_before"), //$NON-NLS-1$
           piece.preLoopKey);

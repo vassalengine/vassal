@@ -39,7 +39,7 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
- * 
+ *
  * @since 3.1.0
  * @author Joel Uckelman
  */
@@ -50,7 +50,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
 
   /** The cached hash code of this object. */
   protected final int hash;
-  
+
   /** The zip file from which the image will be loaded */
   protected final DataArchive archive;
 
@@ -64,7 +64,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   public SourceOpSVGImpl(String name) {
     this(name, GameModule.getGameModule().getDataArchive());
   }
-  
+
   public SourceOpSVGImpl(String name, DataArchive archive) {
     if (name == null || name.length() == 0 || archive == null)
       throw new IllegalArgumentException();
@@ -115,7 +115,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       InputStream in = null;
       try {
         in = archive.getInputStream(name);
-        
+
         final Dimension d = SVGImageUtils.getImageSize(name, in);
         in.close();
         return d;
@@ -129,7 +129,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       }
       catch (IOException e) {
         throw new ImageIOException(name, e);
-      } 
+      }
       finally {
         IOUtils.closeQuietly(in);
       }
@@ -149,7 +149,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    * Returns the name of the image which {@link #getImage} will produce.
    *
    * @return the name of the image in the {@link DataArchive}.
-   */  
+   */
   public String getName() {
     return name;
   }

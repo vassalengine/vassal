@@ -80,7 +80,7 @@ public class Tutorial extends AbstractConfigurable {
       public Command doInBackground() throws Exception {
         return getTutorialCommand();
       }
-    
+
       @Override
       protected void done() {
         Command saveCommand = null;
@@ -243,9 +243,9 @@ public class Tutorial extends AbstractConfigurable {
   public boolean isFirstRun() {
     return launchOnFirstStartup && !hasViewedTutorial.booleanValue();
   }
-  
+
   /**
-   * Mark this tutorial as having been viewed 
+   * Mark this tutorial as having been viewed
    */
   public void markAsViewed() {
     hasViewedTutorial.setValue(Boolean.TRUE);

@@ -69,7 +69,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
     disconnectAction = new AbstractAction(
                         Resources.getString("Chat.disconnect")) {  //$NON-NLS-1$
-      private static final long serialVersionUID = 1L; 
+      private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(false);
@@ -111,5 +111,5 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     controls.getToolbar().remove(connectButton);
     controls.getToolbar().remove(disconnectButton);
   }
-  
+
 }

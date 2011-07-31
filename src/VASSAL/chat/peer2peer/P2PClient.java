@@ -1,5 +1,5 @@
 /*
- * $Id: 
+ * $Id:
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
@@ -78,7 +78,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
     this(encoder, msgSvr, welcomeMessageServer, pool, new Properties());
   }
-  
+
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
     this.encoder = encoder;
     this.msgSvr = msgSvr;
@@ -90,7 +90,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     roomMgr = new RoomManager();
     tracker = new RoomTracker();
     me = new SimplePlayer("???"); //$NON-NLS-1$
-    me.updateStatus();  
+    me.updateStatus();
     playerStatusControls = new SimpleStatusControlsInitializer(this, false);
     roomControls = new RoomInteractionControlsInitializer(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
@@ -110,7 +110,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   protected boolean isServerMode() {
     return serverMode;
   }
-  
+
   public RoomManager getRoomMgr() {
     return roomMgr;
   }
@@ -184,7 +184,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     }
     else {
       me = (SimplePlayer) p;
-      me.updateStatus();      
+      me.updateStatus();
     }
     propSupport.firePropertyChange(PLAYER_INFO, null, me);
   }
@@ -218,7 +218,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       }
       // FIXME: review error message
       catch (IOException e) {
-        fireStatus(Resources.getString("Peer2Peer.connection_error", e.getMessage())); //$NON-NLS-1$        
+        fireStatus(Resources.getString("Peer2Peer.connection_error", e.getMessage())); //$NON-NLS-1$
         fireStatus(Resources.getString("Peer2Peer.disconnected")); //$NON-NLS-1$ //$NON-NLS-2$
         connected = false;
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
@@ -229,7 +229,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         peerMgr.clear();
       }
       roomMgr.clear();
-      pool.disconnect();      
+      pool.disconnect();
       propSupport.firePropertyChange(AVAILABLE_ROOMS, null, new Room[0]);
       propSupport.firePropertyChange(ROOM, new SimpleRoom(), null);
       connected = false;
@@ -241,11 +241,11 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   protected void fireStatus(String msg) {
     propSupport.firePropertyChange(STATUS, null, msg);
   }
-  
+
   public boolean isConnected() {
     return connected;
   }
-  
+
   public Message[] getMessages() {
     return msgSvr.getMessages();
   }
@@ -273,7 +273,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
-  
+
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }

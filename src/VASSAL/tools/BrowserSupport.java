@@ -34,7 +34,7 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  */
 public class BrowserSupport {
   private static final BrowserLauncher browserLauncher;
- 
+
   static {
     BrowserLauncher bl = null;
     try {
@@ -49,7 +49,7 @@ public class BrowserSupport {
 
     browserLauncher = bl;
   }
- 
+
   public static void openURL(String url) {
     if (browserLauncher != null) {
       browserLauncher.openURLinBrowser(url);
@@ -69,5 +69,5 @@ public class BrowserSupport {
 
   public static HyperlinkListener getListener() {
     return listener;
-  } 
+  }
 }

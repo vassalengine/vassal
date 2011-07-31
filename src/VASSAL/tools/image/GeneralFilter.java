@@ -29,15 +29,15 @@ import java.awt.image.WritableRaster;
    and a profiler. Most things which are odd are that way because
    they're faster. Please profile any changes to ensure that they do not
    ruin our hard-won performance.
-  
+
    Profiling information:
 
 java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 0
 java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 1
 java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 2
-  
+
    cc.png is a 3100x2500 32-bit image.
- 
+
    RGBA PRE RGB
   32000               original version, not comitted
    1261         r32   precalculate xcontrib, ycontrib; large work[]
@@ -53,23 +53,23 @@ java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 2
     525 597 468 r5896 correctly premultiply, scale, unpremultiply for ARGB
     535 483 408 r7416 don't copy src rectangle, use src data directly
     531 476 412 r7417 moved common expressions out of loops
-*/  
+*/
 
-/** 
+/**
  * GeneralFilter is a pluggable image resampler.
- * 
+ *
  * <p><code>GeneralFilter</code> up- or down-samples images or parts of
  * images using any one of the various filters contained in it as internal
  * classes.</p>
  *
  * <p><code>GeneralFilter</code> is based on <code>filter_rcg.c</code>, which
  * contains modifications made by Ray Gardener to <code>filter.c</code>,
- * originally by Dale Schumacher. <code>filter.c</code> appeared in 
+ * originally by Dale Schumacher. <code>filter.c</code> appeared in
  *
  * <blockquote>Dale Schumacher. "General Filtered Image Rescaling".
  * <em>Graphics Gems III</em>. David Kirk, ed. Academic Press. 1994.
  * pp. 8&ndash;16, 414&ndash;424.</blockquote>
- * 
+ *
  * and the source for <code>filter.c</code> and <code>filter_rcg.c</code>
  * are available
  * <a href="http://tog.acm.org/GraphicsGems/gems.html#gemsiii">here</a>.
@@ -97,7 +97,7 @@ public final class GeneralFilter {
     public abstract float apply(float t);
   }
 
-  /** A Hermite filter. */ 
+  /** A Hermite filter. */
   public static final class HermiteFilter extends Filter {
     public float apply(float t) {
       // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
@@ -109,7 +109,7 @@ public final class GeneralFilter {
     public float getSamplingRadius() { return 1.0f; }
   }
 
-  /** A box filter. */ 
+  /** A box filter. */
   public static final class BoxFilter extends Filter {
     public float apply(float t) {
       if (t > -0.5f && t <= 0.5f) return 1.0f;
@@ -119,7 +119,7 @@ public final class GeneralFilter {
     public float getSamplingRadius() { return 0.5f; }
   }
 
-  /** A triangle, or bilinear, filter. */ 
+  /** A triangle, or bilinear, filter. */
   public static final class TriangleFilter {
     public float apply(float t) {
       if (t < 0.0f) t = -t;
@@ -130,7 +130,7 @@ public final class GeneralFilter {
     public float getSamplingRadius() { return 1.0f; }
   }
 
-  /** A Lanczos filter with radius 3. */ 
+  /** A Lanczos filter with radius 3. */
   public static final class Lanczos3Filter extends Filter {
     private float sinc(float t) {
       if (t == 0.0f) return 1.0f;
@@ -172,7 +172,7 @@ public final class GeneralFilter {
     public float getSamplingRadius() { return 2.0f; }
   }
 
-  /** A Bell filter. */ 
+  /** A Bell filter. */
   public static final class BellFilter extends Filter {
     public float apply(float t) {
       // box (*) box (*) box
@@ -184,7 +184,7 @@ public final class GeneralFilter {
       }
       return 0.0f;
     }
-    
+
     public float getSamplingRadius() { return 1.5f; }
   }
 
@@ -217,13 +217,13 @@ public final class GeneralFilter {
    * {@link zoom(WritableRaster, Rectangle, BufferedImage, Filter)},
    * setting the destination rectangle as the bounds of the destination
    * tile.
-   * 
+   *
    * @param dst the destination rectangle
    * @param src the soure image
    * @param filter the filter to apply
    * @throws ClassCastException if <code>src</code> does not store its data
    * in a {@link DataBufferInt}
-   */ 
+   */
   public static BufferedImage zoom(
     Rectangle dst, BufferedImage src, final Filter filter) {
 
@@ -268,7 +268,7 @@ public final class GeneralFilter {
     else {
       src_type = TRANS_UNPREMULT;
     }
-  
+
     final int dx0 = dstR.getMinX();
     final int dy0 = dstR.getMinY();
     final int dx1 = dx0 + dstR.getWidth() - 1;
@@ -302,7 +302,7 @@ public final class GeneralFilter {
       ((DataBufferInt) srcI.getRaster().getDataBuffer()).getData();
 
     resample(
-      src_data, false, 
+      src_data, false,
       sx0, sy0, sx1, sy1, sw, sh, src_type, srcWidth, srcHeight,
       dst_data, dx0, dy0, dx1, dy1, dw, dh, dstWidth, dstHeight,
       xscale, yscale, filter
@@ -344,12 +344,12 @@ public final class GeneralFilter {
 
     final CList[] ycontrib =
       calc_contrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
-    final CList[] xcontrib = 
+    final CList[] xcontrib =
       calc_contrib(dw, fwidth, xscale, dx0, sx0, sw, filter);
 
     // apply the filter
     switch (src_type) {
-    case OPAQUE: 
+    case OPAQUE:
       // handle TYPE_INT_RGB, TYPE_INT_BGR
       if (src_data_consecutive) {
         for (int dx = 0; dx < dw; ++dx) {
@@ -417,7 +417,7 @@ public final class GeneralFilter {
 
       // unpremultiply destination data
       for (int i = 0; i < dst_data.length; ++i) {
-        final int pre = dst_data[i];        
+        final int pre = dst_data[i];
         final int a = (pre >>> 24) & 0xff;
 
         if (a == 255) {
@@ -461,22 +461,22 @@ public final class GeneralFilter {
       final int start = (int) Math.max(center-width+0.5f, s0);
       final int stop = (int) Math.min(center+width+0.5f, s0+sl);
       final int numContrib = stop - start;
-     
+
       contrib[i].n = numContrib;
-      contrib[i].pixel = start - s0; 
+      contrib[i].pixel = start - s0;
       contrib[i].weight = new float[numContrib];
 
       float density = 0.0f;
       for (int n = 0; n < numContrib; n++) {
         density += contrib[i].weight[n] =
           filter.apply(kscale*(start+n-center+0.5f));
-      } 
+      }
 
       if (density != 0.0f && density != 1.0f) {
         for (int j = 0; j < numContrib; j++) {
           contrib[i].weight[j] /= density;
         }
-      } 
+      }
     }
 
     return contrib;
@@ -527,7 +527,7 @@ public final class GeneralFilter {
           s_b += ((sd       ) & 0xff) * w;
         }
 
-        // Ugly, but fast.        
+        // Ugly, but fast.
         work[k] =
          (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
@@ -538,7 +538,7 @@ public final class GeneralFilter {
         // If there's no color change from 0 to max, maintain that.
         work[k] = pel;
       }
-    } 
+    }
   }
 
   private static void apply_h_opaque(
@@ -560,9 +560,9 @@ public final class GeneralFilter {
       float s_r = 0.0f;  // red sample
       float s_g = 0.0f;  // green sample
       float s_b = 0.0f;  // blue sample
-       
+
       final int pos = base + k*stride;
- 
+
       final int pel = src[pos];
       boolean bPelDelta = false;
 
@@ -584,7 +584,7 @@ public final class GeneralFilter {
           s_b += ((sd       ) & 0xff) * w;
         }
 
-        // Ugly, but fast.        
+        // Ugly, but fast.
         work[k] =
          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
@@ -640,7 +640,7 @@ public final class GeneralFilter {
         final int a = s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f);
 
         // Ugly, but fast.
-        dst[dx + i*dw] = 
+        dst[dx + i*dw] =
          a << 24 |
          (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
          (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
@@ -655,7 +655,7 @@ public final class GeneralFilter {
         final int g = (pel >>>  8) & 0xff;
         final int b = (pel       ) & 0xff;
 
-        dst[dx + i*dw] = 
+        dst[dx + i*dw] =
          a << 24 |
          (r > a ? a : r) << 16 |
          (g > a ? a : g) <<  8 |
@@ -702,14 +702,14 @@ public final class GeneralFilter {
         }
 
         // Ugly, but fast.
-        dst[dx + i*dw] = 
+        dst[dx + i*dw] =
          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
-        dst[dx + i*dw] = pel; 
+        dst[dx + i*dw] = pel;
       }
     }
   }

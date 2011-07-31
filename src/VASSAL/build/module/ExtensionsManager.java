@@ -33,9 +33,9 @@ import VASSAL.tools.WriteErrorDialog;
 /**
  * Convenience class for managing extensions relative to a module file.
  * Create extension directory as lazily as possible.
- * 
+ *
  * @author rodneykinney
- * 
+ *
  */
 
 public class ExtensionsManager {
@@ -97,7 +97,7 @@ public class ExtensionsManager {
     extensionsDir = dir == null ? null : ensureExists(dir);
   }
 
-  
+
   /**
    * Ensure a directory exists.
    * @param dir Directory
@@ -169,12 +169,12 @@ public class ExtensionsManager {
             extensions.add(file);
           }
         }
-        
+
       }
-    }    
+    }
     return extensions;
   }
-  
+
   public List<File> getActiveExtensions() {
     return getExtensions(getExtensionsDirectory(false));
   }

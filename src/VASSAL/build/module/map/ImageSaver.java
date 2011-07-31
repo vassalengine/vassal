@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.map;
@@ -79,7 +79,7 @@ public class ImageSaver extends AbstractConfigurable {
 
   private static final Logger logger =
     LoggerFactory.getLogger(ImageSaver.class);
-	
+
   protected LaunchButton launch;
   protected Map map;
   protected boolean promptToSplit = false;
@@ -93,7 +93,7 @@ public class ImageSaver extends AbstractConfigurable {
         writeMapAsImage();
       }
     };
-  
+
     launch =
       new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
 
@@ -139,10 +139,10 @@ public class ImageSaver extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    		Resources.getString(Resources.BUTTON_TEXT),
-    		Resources.getString(Resources.TOOLTIP_TEXT),
-    		Resources.getString(Resources.BUTTON_ICON),
-    		Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
     };
   }
 
@@ -181,8 +181,8 @@ public class ImageSaver extends AbstractConfigurable {
     final Frame frame =
       (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
 
-    if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return; 
-   
+    if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return;
+
     final File file = fc.getSelectedFile();
 
     dialog = new ProgressDialog(frame, "Saving Map Image",
@@ -193,7 +193,7 @@ public class ImageSaver extends AbstractConfigurable {
     // something with the minimum size or font metrics
     final int l = "Saving map image as ".length() + file.getName().length() + 6;
     final StringBuilder b = new StringBuilder();
-    for (int i = 0; i < l; i++) b.append("N"); 
+    for (int i = 0; i < l; i++) b.append("N");
     dialog.setLabel(b.toString());
 
     dialog.pack();
@@ -202,15 +202,15 @@ public class ImageSaver extends AbstractConfigurable {
     dialog.setIndeterminate(true);
     dialog.setLocationRelativeTo(frame);
 
-    // get the dimensions of the image to write 
+    // get the dimensions of the image to write
     final Dimension s = map.mapSize();
-    
+
     if (s.width == 0) s.width = 1;
     if (s.height == 0) s.height = 1;
 
     int w = (int) Math.round(s.width * map.getZoom());
     int h = (int) Math.round(s.height * map.getZoom());
-    
+
     // ensure that the resulting image is at least 1x1
     if (w < 1 || h < 1) {
       if (s.width < s.height) {
@@ -324,7 +324,7 @@ public class ImageSaver extends AbstractConfigurable {
       // FIXME: do something to estimate how long painting will take
       final Graphics2D g = img.createGraphics();
 
-      final Color oc = g.getColor(); 
+      final Color oc = g.getColor();
       g.setColor(bg);
       g.fillRect(0, 0, img.getWidth(), img.getHeight());
       g.setColor(oc);
@@ -343,7 +343,7 @@ public class ImageSaver extends AbstractConfigurable {
       final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
       iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {
         public void imageComplete(ImageWriter source) { }
-      
+
         public void imageProgress(ImageWriter source, float percentageDone) {
           setProgress(Math.round((100*tilesDone + percentageDone)/tiles));
         }
@@ -351,16 +351,16 @@ public class ImageSaver extends AbstractConfigurable {
         public void imageStarted(ImageWriter source, int imageIndex) { }
 
         public void thumbnailComplete(ImageWriter source) { }
-  
+
         public void thumbnailProgress(ImageWriter source,
                                       float percentageDone) { }
 
         public void thumbnailStarted(ImageWriter source,
                                      int imageIndex, int thumbnailIndex) { }
-  
+
         public void writeAborted(ImageWriter source) { }
       });
-      
+
       ImageOutputStream os = null;
       try {
         os = ImageIO.createImageOutputStream(f);
@@ -404,9 +404,9 @@ public class ImageSaver extends AbstractConfigurable {
         writeImage(file, img, new Rectangle(0, 0, w, h));
       }
       else {
-        // get the base name of the files to write 
+        // get the base name of the files to write
         final String base;
-        final String suffix; 
+        final String suffix;
         final String s = file.getName();
         if (s.endsWith(".png")) {
           base = s.substring(0, s.lastIndexOf('.'));
@@ -417,7 +417,7 @@ public class ImageSaver extends AbstractConfigurable {
           suffix = "";
         }
 
-        // calculate total tiles 
+        // calculate total tiles
         tiles = (int) (Math.ceil((double)w/iw) * Math.ceil((double)h/ih));
 
         // tile across the map with images of size iw by ih.
@@ -425,10 +425,10 @@ public class ImageSaver extends AbstractConfigurable {
           for (int iy = 0; iy < h; iy += ih) {
             final File f = new File(file.getParent(),
               base + "." + (ix/iw) + "." + (iy/iw) + suffix);
-  
+
             final Rectangle r = new Rectangle(ix, iy,
               Math.min(w-ix, iw), Math.min(h-iy, ih));
-  
+
             writeImage(f, img, r);
             tilesDone++;
           }
@@ -459,7 +459,7 @@ public class ImageSaver extends AbstractConfigurable {
           ErrorDialog.bug(e);
         }
       }
-    } 
+    }
   }
 
   /**
@@ -483,7 +483,7 @@ public class ImageSaver extends AbstractConfigurable {
 
       Image output = map.getView().createImage(totalWidth, height);
       Graphics2D gg = (Graphics2D) output.getGraphics();
-      
+
       map.paintRegion(gg, new Rectangle(
         -(int) (map.getZoom() * buffer.width),
         -(int) (map.getZoom() * buffer.height) + height * i,

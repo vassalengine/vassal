@@ -83,19 +83,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     setChanged(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
-  
+
   public PieceDefiner(String id, GpIdSupport s) {
     this();
     pieceId = id;
     pieceIdLabel.setText("Id: "+id);
     gpidSupport = s;
   }
-  
+
   public PieceDefiner(GpIdSupport s) {
     this();
     gpidSupport = s;
   }
-  
+
   protected static void initDefinitions() {
     if (availableModel == null) {
       availableModel = new DefaultListModel();
@@ -145,7 +145,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     initDefinitions();
     availableModel.addElement(definition);
   }
-  
+
   public void setPiece(GamePiece piece) {
     inUseModel.clear();
     while (piece instanceof Decorator) {
@@ -205,11 +205,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   public void setChanged(boolean b) {
     changed = b;
   }
-  
+
   public boolean isChanged() {
     return changed;
   }
-  
+
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -347,7 +347,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     pieceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(pieceIdLabel);
-    
+
     controls.add(addRemovePanel);
 
     inUsePanel.setLayout(new BoxLayout(inUsePanel, 1));
@@ -440,7 +440,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
     );
     moveUpDownPanel.add(moveDownButton);
-    
+
     copyButton.setText("Copy");
     copyButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -459,7 +459,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       }});
     moveUpDownPanel.add(pasteButton);
-    
+
     controls.add(moveUpDownPanel);
 
     add(controls);
@@ -477,7 +477,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     c.mySetState(clipBoard.getState());
     refresh();
   }
-  
+
   protected void moveDecoratorDown(int index) {
     GamePiece selm1 = (GamePiece) inUseModel.elementAt(index - 1);
     Decorator sel = (Decorator) inUseModel.elementAt(index);
@@ -544,7 +544,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       BrowserSupport.openURL(h.getContents().toString());
     }
   }
-  
+
   protected boolean edit(int index) {
     Object o = inUseModel.elementAt(index);
     if (!(o instanceof EditablePiece)) {
@@ -605,17 +605,17 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       ed = p.getEditor();
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       add(ed.getControls());
-      
+
       JButton b = new JButton("Ok");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           dispose();
         }
       });
-      
+
       JPanel panel = new JPanel();
       panel.add(b);
-      
+
       b = new JButton("Cancel");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -624,7 +624,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       });
       panel.add(b);
-      
+
       if (p.getHelpFile() != null) {
         b = new JButton("Help");
         b.addActionListener(new ActionListener() {
@@ -634,7 +634,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         });
         panel.add(b);
       }
-      
+
       add(panel);
       pack();
       setLocationRelativeTo(getOwner());
@@ -710,7 +710,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       return this;
     }
   }
-  
+
   /**
    * Contents of the Copy/Paste buffer for traits in the editor
    * @author rkinney

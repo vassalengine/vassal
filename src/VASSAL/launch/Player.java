@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -69,7 +69,7 @@ public class Player extends Launcher {
     new IconFactory();  // Initialise the Icon Factory
     if (lr.builtInModule) {
       GameModule.init(createModule(createDataArchive()));
-      
+
       if (lr.autoext != null) {
         for (String ext : lr.autoext) {
           createExtension(ext).build();
@@ -141,7 +141,7 @@ public class Player extends Launcher {
       );
       setEnabled(!editing.contains(module));
     }
-    
+
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
       super(Resources.getString("General.open"), mm, Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module, saveGame)
@@ -198,7 +198,7 @@ public class Player extends Launcher {
         );
         return;
       }
-      
+
       super.actionPerformed(e);
     }
   }

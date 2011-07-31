@@ -63,8 +63,8 @@ public class ModuleUpdaterDialog extends JDialog {
       public void actionPerformed(ActionEvent e) {
         final FileChooser fc = GameModule.getGameModule().getFileChooser();
         if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
-          return; 
-        
+          return;
+
         final File output = fc.getSelectedFile();
         ZipUpdater updater = null;
         try {

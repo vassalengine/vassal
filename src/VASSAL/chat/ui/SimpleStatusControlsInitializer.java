@@ -35,7 +35,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
   private boolean includeLooking;
   private JButton lookingBox;
   private JButton awayButton;
-  
+
   /**
    * Entry Point for P2P client - 'Looking for Game' does not make sense.
    */
@@ -44,14 +44,14 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
     this.client = client;
     this.includeLooking = includeLooking;
   }
-  
+
   public SimpleStatusControlsInitializer(ChatServerConnection client) {
     this(client, true);
   }
 
   public void initializeControls(final ChatServerControls controls) {
     URL imageURL;
-    
+
     if (includeLooking) {
       lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
       lookingBox.addActionListener(new ActionListener() {
@@ -72,7 +72,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
         lookingBox.setIcon(new ImageIcon(imageURL));
       }
     }
-    
+
     awayButton = new JButton(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
     awayButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -94,7 +94,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
       awayButton.setText(""); //$NON-NLS-1$
       awayButton.setIcon(new ImageIcon(imageURL));
     }
-    
+
     if (includeLooking) {
       controls.getToolbar().add(lookingBox);
     }

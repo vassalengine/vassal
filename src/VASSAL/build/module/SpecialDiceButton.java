@@ -142,7 +142,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * The text reported after the results of the roll;
-   * 
+   *
    * @deprecated
    */
   @Deprecated
@@ -220,7 +220,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * The Attributes of a DiceButton are:
-   * 
+   *
    * <code>BUTTON_TEXT</code> the label of the button in the toolbar <code>ICON</code> the icon of the button in the
    * toolbar <code>HOTKEY</code> the hotkey equivalent of the button <code>DICE_SET</code> list of dice sets, an
    * entry can be: [number]name of die[+|-modifier] "name of die" must be SpecialDie "modifier" is added/subtracted
@@ -252,19 +252,19 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString(Resources.NAME_LABEL),
-    	Resources.getString(Resources.BUTTON_TEXT),
-	    Resources.getString(Resources.TOOLTIP_TEXT),
-	    Resources.getString(Resources.BUTTON_ICON),
-	    Resources.getString(Resources.HOTKEY_LABEL),
-	    Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
-	    Resources.getString("Editor.report_format"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.width"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.height"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.background") //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.width"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.height"), //$NON-NLS-1$
+      Resources.getString("Editor.SpecialDiceButton.background") //$NON-NLS-1$
     };
   }
 
@@ -374,7 +374,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * Make a best gues for a unique identifier for the target. Use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName if non-null, otherwise use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId
-   * 
+   *
    * @param target
    * @return
    */
@@ -384,7 +384,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * Get boolean value of object.
-   * 
+   *
    * @param o object as input for setAttribute()
    * @return boolean value of object
    */
@@ -498,7 +498,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * create String from int array
-   * 
+   *
    * @param ia
    *          int-array
    * @return encoded String
@@ -516,7 +516,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * get int array from string
-   * 
+   *
    * @param s
    *          string with encoded int array
    * @return int array

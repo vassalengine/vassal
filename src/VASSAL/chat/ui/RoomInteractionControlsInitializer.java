@@ -41,9 +41,9 @@ import VASSAL.chat.SimpleRoom;
 /**
  * Adds mouse listeners to the RoomTree components: double-click to join a room, etc. Builds a popup when right-clicking
  * on a player or room
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
@@ -129,7 +129,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
         controls.getNewRoom().setText(""); //$NON-NLS-1$
       }
     };
-    controls.getNewRoom().addActionListener(roomCreator);  
+    controls.getNewRoom().addActionListener(roomCreator);
   }
 
   protected void createRoom(String name) {

@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  *
  * @since author Joel Uckelman
  * @since 3.2.0
- */ 
+ */
 public interface SettableFuture<V> extends Future<V> {
   /**
    * Sets the exception to be wrapped in an {@link ExecutionException} and

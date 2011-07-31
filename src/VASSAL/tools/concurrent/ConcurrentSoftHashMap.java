@@ -70,9 +70,9 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
     @Override
     public int hashCode() {
-      return get() == null ? 0 : get().hashCode(); 
+      return get() == null ? 0 : get().hashCode();
     }
-  } 
+  }
 
   private final ConcurrentMap<K,SoftValue<K,V>> map =
     new ConcurrentHashMap<K,SoftValue<K,V>>();
@@ -80,7 +80,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   private final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
   @SuppressWarnings("unchecked")
-  private void processQueue() { 
+  private void processQueue() {
     SoftValue<K,V> sv;
     // The ReferenceQueue API is broken. ReferenceQueue<T>.poll()
     // returns a Reference<? extends T>. WTF? How could you ever use
@@ -103,7 +103,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   /** {@inheritDoc} */
-  @Override 
+  @Override
   public boolean containsKey(Object key) {
     if (key == null)
       throw new NullPointerException();
@@ -157,7 +157,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   // Bulk Operations
- 
+
   /** {@inheritDoc} */
   @Override
   public void clear() {
@@ -166,13 +166,13 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   // Views
-  
+
   private Set<Map.Entry<K,V>> entrySet;
 
-  /** 
+  /**
    * An implementation of {@link Map.Entry}. Remove this and use
-   * {@link AbstractMap.SimpleEntry} with 1.6+. 
-   */ 
+   * {@link AbstractMap.SimpleEntry} with 1.6+.
+   */
   public static class SimpleEntry<K,V> implements Entry<K,V> {
     private final K key;
     private V value;
@@ -220,7 +220,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
         return o1 == null ? o2 == null : o1.equals(o2);
     }
   }
- 
+
   /** {@inheritDoc} */
   public Set<Map.Entry<K, V>> entrySet() {
     processQueue();
@@ -238,7 +238,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
             public Map.Entry<K,V> next() {
               final Map.Entry<K,SoftValue<K,V>> e = i.next();
-              return new SimpleEntry<K,V>(e.getKey(), e.getValue().get()); 
+              return new SimpleEntry<K,V>(e.getKey(), e.getValue().get());
             }
 
             public void remove() {
@@ -253,13 +253,13 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
         public boolean contains(Object v) {
           return ConcurrentSoftHashMap.this.containsValue(v);
-        }  
+        }
       };
     }
 
     return entrySet;
   }
-  
+
   // Concurrent Operations
 
   /** {@inheritDoc} */
@@ -311,6 +311,6 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     processQueue();
     final SoftValue<K,V> oldSV =
       map.replace(key, new SoftValue<K,V>(key, value, queue));
-    return oldSV == null ? null : oldSV.get(); 
+    return oldSV == null ? null : oldSV.get();
   }
 }

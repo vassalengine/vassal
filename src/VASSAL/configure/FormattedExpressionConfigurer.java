@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -44,7 +44,7 @@ import VASSAL.tools.icon.IconFamily;
 public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   protected ExpressionButton button;
   protected EditablePiece pieceTarget;
-  
+
   public FormattedExpressionConfigurer(String key, String name) {
     super(key, name);
   }
@@ -57,11 +57,11 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   public FormattedExpressionConfigurer(String key, String name, FormattedString s) {
     this(key, name, s.getFormat());
   }
-  
+
   public FormattedExpressionConfigurer(String key, String name, String s, EditablePiece p) {
     this(key, name, s, (GamePiece) p);
   }
-  
+
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
     this(key, name, s);
     if (p instanceof Decorator) {
@@ -71,7 +71,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
       }
     }
   }
-  
+
   public FormattedExpressionConfigurer(String key, String name, String[] options) {
     super(key, name, options);
   }
@@ -85,14 +85,14 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     button.setSize(nameField.getPreferredSize().height);
     return p;
   }
-  
+
   protected ExpressionButton buildButton() {
-    return new ExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);  
+    return new ExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);
   }
-  
+
   /**
    * A small 'Calculator' button added after the text to indicate this
-   * Configurer accepts Expressions. Clicking on the button will open 
+   * Configurer accepts Expressions. Clicking on the button will open
    * an ExpressionConfigurer.
    *
    */
@@ -104,7 +104,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     public ExpressionButton(Configurer config, int size) {
       this(config, size, null);
     }
-    
+
     public ExpressionButton(Configurer config, int size, EditablePiece piece) {
       this.config = config;
       this.piece = piece;
@@ -118,9 +118,9 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
       setPreferredSize(new Dimension(size, size));
       setMaximumSize(new Dimension(size, size));
     }
-    
+
     public void actionPerformed(ActionEvent e) {
-      new ExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);   
+      new ExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);
     }
   }
 }

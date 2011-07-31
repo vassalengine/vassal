@@ -48,12 +48,12 @@ public class KickAction extends AbstractAction {
   }
 
   public void actionPerformed(ActionEvent evt) {
-    if (isEnabled()) {    
+    if (isEnabled()) {
         client.doKick(kickee);
         GameModule.getGameModule().warn(Resources.getString("Chat.kick_sent", kickee.getName())); //$NON-NLS-1$
     }
   }
-  
+
   public static PlayerActionFactory factory(final LockableChatServerConnection client) {
     return new PlayerActionFactory() {
       public Action getAction(SimplePlayer p, JTree tree) {

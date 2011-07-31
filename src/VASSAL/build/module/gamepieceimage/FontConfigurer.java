@@ -76,7 +76,7 @@ public class FontConfigurer extends Configurer {
       p = new JPanel();
 
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-      
+
       Box box = Box.createHorizontalBox();
       box.add(new JLabel("Font Family:  "));
 
@@ -107,7 +107,7 @@ public class FontConfigurer extends Configurer {
       demo.setEditable(false);
       box.add(demo);
       p.add(box);
-      
+
       updateValue();
 
       ItemListener l = new ItemListener() {
@@ -131,10 +131,10 @@ public class FontConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-    final int style = Font.PLAIN | 
-       (bold.booleanValue().booleanValue() ? Font.BOLD : 0) | 
-       (italic.booleanValue().booleanValue() ? Font.ITALIC : 0); 
-   
+    final int style = Font.PLAIN |
+       (bold.booleanValue().booleanValue() ? Font.BOLD : 0) |
+       (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
+
     final OutlineFont font = new OutlineFont(
       (String) family.getSelectedItem(),
       style,
@@ -144,7 +144,7 @@ public class FontConfigurer extends Configurer {
 
     setValue(font);
     demo.setFont(font);
-    
+
     final Window w = SwingUtilities.getWindowAncestor(getControls());
     if (w != null) {
       w.pack();
@@ -158,8 +158,8 @@ public class FontConfigurer extends Configurer {
   public static OutlineFont decode(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     return new OutlineFont(
-        sd.nextToken(FontManager.DIALOG), 
-        sd.nextInt(Font.PLAIN), 
+        sd.nextToken(FontManager.DIALOG),
+        sd.nextInt(Font.PLAIN),
         sd.nextInt(10),
         sd.nextBoolean(false));
   }
@@ -179,7 +179,7 @@ public class FontConfigurer extends Configurer {
   public boolean isItalic() {
     return (getFontValue().getStyle() & Font.ITALIC) != 0;
   }
-  
+
   public boolean isOutline() {
     return getFontValue().isOutline();
   }

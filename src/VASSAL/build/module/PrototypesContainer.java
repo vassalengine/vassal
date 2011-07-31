@@ -117,7 +117,7 @@ public class PrototypesContainer extends AbstractConfigurable {
     }
     return instance.definitions.get(name);
   }
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData data = super.getI18nData();
     data.setPrefix(""); //$NON-NLS-1$

@@ -68,7 +68,7 @@ public class ThrowableUtils {
     if (cl.isInstance(t)) return cl.cast(t);
     return getAncestor(cl, t);
   }
- 
+
   /**
    * Throws the most recent {@link Throwable} of class <code>T</code> in
    * the proper causal history of the given <code>Throwable</code>, if one
@@ -126,5 +126,5 @@ public class ThrowableUtils {
     thrown.printStackTrace(pw);
     pw.flush();
     return sw.toString();
-  }      
+  }
 }

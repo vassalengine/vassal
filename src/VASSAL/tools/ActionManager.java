@@ -8,14 +8,14 @@ import javax.swing.Action;
 
 
 public class ActionManager {
-  private final Map<Object,Action> map = new HashMap<Object,Action>(); 
+  private final Map<Object,Action> map = new HashMap<Object,Action>();
 
   private static final ActionManager instance = new ActionManager();
-  
+
   private ActionManager() { }
-  
+
   public static ActionManager getInstance() {
-    return instance;  
+    return instance;
   }
 
   public Set<?> getActionIds() {

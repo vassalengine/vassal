@@ -38,7 +38,7 @@ import VASSAL.tools.image.ImageUtils;
 
 /**
  * An {@link ImageOp} which scales its source and cobbles scaled tiles
- * from the tile cache. 
+ * from the tile cache.
  *
  * @since 3.2.0
  * @author Joel Uckelman
@@ -93,16 +93,16 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     private final RenderingHints hints;
 
     private final int hash;
- 
+
     private static final GeneralFilter.Filter downFilter =
       new GeneralFilter.Lanczos3Filter();
 
     private static final GeneralFilter.Filter upFilter =
       new GeneralFilter.MitchellFilter();
- 
+
     public TileOp(ScaleOpTiledBitmapImpl rop, int tileX, int tileY) {
       if (rop == null) throw new IllegalArgumentException();
- 
+
       if (tileX < 0 || tileX >= rop.getNumXTiles() ||
           tileY < 0 || tileY >= rop.getNumYTiles())
         throw new IndexOutOfBoundsException();
@@ -113,14 +113,14 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       scale = rop.getScale();
       hints = rop.getHints();
 
-      // destination sizes and coordinates 
+      // destination sizes and coordinates
       dd = rop.getSize();
- 
+
       dx0 = tileX * rop.getTileWidth();
       dy0 = tileY * rop.getTileHeight();
       dw = Math.min(rop.getTileWidth(), dd.width - dx0);
       dh = Math.min(rop.getTileHeight(), dd.height - dy0);
- 
+
       dx1 = dx0 + dw - 1;
       dy1 = dy0 + dh - 1;
 
@@ -186,29 +186,29 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
         rsop.getTileIndices(new Rectangle(sx0, sy0, sw, sh));
       final int tw = rsop.getTileWidth();
       final int th = rsop.getTileHeight();
-  
+
       // match the transparency of the first tile
       final BufferedImage src = ImageUtils.createCompatibleImage(
         sw, sh,
         rsop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
       );
-  
+
       final Graphics2D g = src.createGraphics();
-  
+
       for (Point tile : tiles) {
         g.drawImage(rsop.getTile(tile, null),
                     tile.x*tw-sx0, tile.y*th-sy0, null);
       }
-  
+
       g.dispose();
-  
+
       final int src_data[] =
         ((DataBufferInt) src.getRaster().getDataBuffer()).getData();
-  
+
       final WritableRaster dstR = src.getColorModel()
                                        .createCompatibleWritableRaster(dw, dh);
       final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
-  
+
       final int src_type;
       if (src.getTransparency() == BufferedImage.OPAQUE) {
         src_type = GeneralFilter.OPAQUE;
@@ -218,15 +218,15 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       }
       else {
         src_type = GeneralFilter.TRANS_UNPREMULT;
-      } 
-  
+      }
+
       GeneralFilter.resample(
         src_data, true, sx0, sy0, sx1, sy1, sw, sh, src_type, sd.width, sd.height,
 //        src_data, sx0, sy0, sx1, sy1, sw, sh, src_type, sd.width, sd.height,
         dst_data, dx0, dy0, dx1, dy1, dw, dh, dd.width, dd.height,
         xscale, yscale, scale < 1.0f ? downFilter : upFilter
       );
-  
+
       return ImageUtils.toCompatibleImage(new BufferedImage(
         src.getColorModel(),
         dstR,
@@ -236,7 +236,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     }
 
     protected void fixSize() { }
- 
+
     /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
@@ -253,7 +253,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
              scale == op.scale &&
              Arrays.equals(sop, op.sop);
     }
- 
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
@@ -276,8 +276,8 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final ScaleOpTiledBitmapImpl op = (ScaleOpTiledBitmapImpl) o;
-    return scale == op.scale && 
-           sop.equals(op.sop) && 
+    return scale == op.scale &&
+           sop.equals(op.sop) &&
            hints.equals(op.hints);
   }
 }

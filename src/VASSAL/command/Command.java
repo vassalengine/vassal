@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.command;
@@ -29,10 +29,10 @@ import VASSAL.tools.ThrowableUtils;
  * place during a game should be encapsulated in a Command object. When
  * performing actions during a game, corresponding Commands will be logged
  * in the current logfile and/or sent to other players on the server.
- * 
+ *
  * Commands can be strung together into compound commands with the
  * {@link #append} method.
- * 
+ *
  * @see CommandEncoder
  */
 public abstract class Command {
@@ -67,7 +67,7 @@ public abstract class Command {
       }
       catch (Throwable t) {
         handleFailure(t);
-      }    
+      }
     }
   }
 
@@ -76,7 +76,7 @@ public abstract class Command {
     ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
 
     if (t instanceof Error) {
-      // some unusual problem occurred    
+      // some unusual problem occurred
       throw (Error) t;
     }
     else {
@@ -112,7 +112,7 @@ public abstract class Command {
   }
 
   /**
-   * 
+   *
    * @return true if this command should be stored in a logfile
    */
   public boolean isLoggable() {
@@ -129,7 +129,7 @@ public abstract class Command {
   /**
    * Return true if this command has no sub-commands attached to it
    * (other than null commands).
-   * 
+   *
    * @return
    */
   protected boolean isAtomic() {

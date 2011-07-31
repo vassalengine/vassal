@@ -1,7 +1,7 @@
 /*
  * $Id: ZipFileImageTiler.java 7652 2011-02-26 18:51:52Z uckelman $
  *
- * Copyright (c) 2010, 2011 by Joel Uckelman 
+ * Copyright (c) 2010, 2011 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -38,7 +38,7 @@ import VASSAL.tools.lang.Callback;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public class FileArchiveImageTiler {
   private static final Logger logger =
     LoggerFactory.getLogger(FileArchiveImageTiler.class);
@@ -81,8 +81,8 @@ public class FileArchiveImageTiler {
         in.close();
       }
       catch (IOException e) {
-        logger.error("", e); 
-        continue;   
+        logger.error("", e);
+        continue;
       }
       finally {
         IOUtils.closeQuietly(in);

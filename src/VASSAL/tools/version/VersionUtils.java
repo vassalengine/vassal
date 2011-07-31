@@ -25,14 +25,14 @@ public class VersionUtils {
     if (release == null) release = getVersion(baseURL + currentRelease);
     return release;
   }
-   
+
   public static VassalVersion getBeta() throws IOException {
     if (beta == null) beta = getVersion(baseURL + currentBeta);
     return beta;
   }
-  
+
   private static VassalVersion getVersion(String url) throws IOException {
-    InputStream in = null; 
+    InputStream in = null;
     try {
       in = new URL(url).openStream();
       final VassalVersion version =
@@ -56,17 +56,17 @@ public class VersionUtils {
       in.close();
 
       switch (result) {
-      case 0: return false; 
+      case 0: return false;
       case 1: return true;
       default:
-        throw new NumberFormatException("bad return value: " + result); 
+        throw new NumberFormatException("bad return value: " + result);
       }
     }
     finally {
       IOUtils.closeQuietly(in);
     }
   }
-*/  
+*/
 
   public static boolean isCurrent(VassalVersion version) throws IOException {
     // a version is current if it would update to itself
@@ -89,7 +89,7 @@ public class VersionUtils {
         case  0:  // version is the current beta
         case  1:  // version is newer than the current beta
           return version;
-        } 
+        }
       }
     }
 

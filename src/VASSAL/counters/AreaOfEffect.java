@@ -216,10 +216,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     final int myRadius = getRadius();
 
     final Board board = map.findBoard(mapPosition);
-    final MapGrid grid = board == null ? null : board.getGrid();  
+    final MapGrid grid = board == null ? null : board.getGrid();
 
     if (grid instanceof GeometricGrid) {
-      final GeometricGrid gGrid = (GeometricGrid) grid;      
+      final GeometricGrid gGrid = (GeometricGrid) grid;
 
       final Rectangle boardBounds = board.bounds();
       final Point boardPosition = new Point(
@@ -233,7 +233,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       if (mag != 1.0) {
         t.translate(boardPosition.x, boardPosition.y);
         t.scale(mag, mag);
-        t.translate(-boardPosition.x, -boardPosition.y);        
+        t.translate(-boardPosition.x, -boardPosition.y);
       }
       a = a.createTransformedArea(t);
     }
@@ -257,12 +257,12 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         return Integer.parseInt(r);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);           
+        reportDataError(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);
         return 0;
       }
     }
   }
-  
+
   // No hot-keys
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
@@ -342,7 +342,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       descConfig = new StringConfigurer(null, "Description:  ", trait.description);
       panel.add(descConfig.getControls());
-      
+
       useMapShader = new BooleanConfigurer(null, "Use Map Shading?", trait.mapShaderName != null);
       mapShaderId = trait.mapShaderName;
       panel.add(useMapShader.getControls());
@@ -376,8 +376,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       panel.add(transparencyColorValue.getControls());
       transparencyValue = new IntConfigurer(null, "Opacity (%):  ", (int) (trait.transparencyLevel * 100));
       panel.add(transparencyValue.getControls());
-      
-      fixedRadius = new BooleanConfigurer(null, "Fixed Radius?", 
+
+      fixedRadius = new BooleanConfigurer(null, "Fixed Radius?",
                                           Boolean.valueOf(trait.fixedRadius));
       fixedRadius.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -385,10 +385,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         }
       });
       panel.add(fixedRadius.getControls());
-      
+
       radiusValue = new IntConfigurer(null, "Radius: ", trait.radius);
       panel.add(radiusValue.getControls());
-      
+
       radiusMarker = new StringConfigurer(null, "Radius Marker: ", trait.radiusMarker);
       panel.add(radiusMarker.getControls());
 
@@ -397,7 +397,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       activateKey = new NamedHotKeyConfigurer(null, "Toggle visible keyboard shortcut:  ", trait.activateKey);
 
       updateRangeVisibility();
-      
+
       alwaysActive.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           updateCommandVisibility();
@@ -431,7 +431,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       radiusMarker.getControls().setVisible(!fixedRange);
       repack();
     }
-    
+
     protected void updateCommandVisibility() {
       final boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
       activateCommand.getControls().setVisible(!alwaysActiveSelected);
@@ -476,7 +476,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       return AreaOfEffect.ID + se.getValue();
     }
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(activateCommand, getCommandDescription(description, "Toggle Visible command"));
   }

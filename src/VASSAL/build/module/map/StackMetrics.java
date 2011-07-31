@@ -84,12 +84,12 @@ public class StackMetrics extends AbstractConfigurable {
   public static final String UP_KEY = "up";
   public static final String DOWN_KEY = "down";
   public static final String COLOR = "color";
-  
+
   public static int DEFAULT_EXSEP_X = 6;
   public static int DEFAULT_EXSEP_Y = 18;
   public static int DEFAULT_UNEXSEP_X = 2;
   public static int DEFAULT_UNEXSEP_Y = 4;
-  
+
   protected Map map;
 
   public void setAttribute(String name, Object value) {
@@ -551,12 +551,12 @@ public class StackMetrics extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString("Editor.Stacking.disable"), //$NON-NLS-1$
-    		Resources.getString("Editor.Stacking.h_expand"), //$NON-NLS-1$
-    		Resources.getString("Editor.Stacking.v_expand"), //$NON-NLS-1$
-    		Resources.getString("Editor.Stacking.hnon_expand"), //$NON-NLS-1$
-    		Resources.getString("Editor.Stacking.vnon_expand"), //$NON-NLS-1$
-    		Resources.getString("Editor.Stacking.color_nonexpand"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.disable"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.h_expand"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.v_expand"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.hnon_expand"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.vnon_expand"), //$NON-NLS-1$
+        Resources.getString("Editor.Stacking.color_nonexpand"), //$NON-NLS-1$
     };
   }
 
@@ -591,7 +591,7 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public Stack createStack(GamePiece p) {
-    return createStack(p, false);  
+    return createStack(p, false);
   }
 
   public Stack createStack(GamePiece p, boolean force) {

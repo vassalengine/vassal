@@ -283,7 +283,7 @@ public abstract class DieServer {
     finally {
       IOUtils.closeQuietly(out);
     }
-  
+
     BufferedReader in = null;
     try {
       in = new BufferedReader(

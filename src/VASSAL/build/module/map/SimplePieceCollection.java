@@ -62,7 +62,7 @@ public class SimplePieceCollection implements PieceCollection {
   public GamePiece[] getPieces() {
     return ArrayUtils.copyOf(pieces, pieceCount);
   }
-  
+
   public GamePiece[] getAllPieces() {
     return getPieces();
   }

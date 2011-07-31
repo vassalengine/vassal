@@ -28,10 +28,10 @@ import VASSAL.configure.DoubleConfigurer;
  * A Decimal Number Module Preference.
  */
 public class DoublePreference extends BasicPreference {
-  
+
   protected double defaultValue = 0.0;
   protected DoubleConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "Decimal Number Preference";
   }
@@ -49,7 +49,7 @@ public class DoublePreference extends BasicPreference {
       value = Double.valueOf((String) value);
     }
     defaultValue = ((Double) value).doubleValue();
-      
+
   }
 
   public Configurer getPreferenceConfigurer() {
@@ -58,7 +58,7 @@ public class DoublePreference extends BasicPreference {
         new DoubleConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }
       });
     }

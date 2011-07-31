@@ -99,7 +99,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
   public synchronized void add(int p) {
     if (p != 0) set(get()+p);
   }
- 
+
   /**
    * Sets the progress as a percentage.
    *
@@ -123,7 +123,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    *
    * @param prog the range of progress since the last update
    */
-  protected abstract void run(Pair<Integer,Integer> prog); 
+  protected abstract void run(Pair<Integer,Integer> prog);
 
   /**
    * Submits this {@link Runnable} to be run on the Event Dispatch Thread.

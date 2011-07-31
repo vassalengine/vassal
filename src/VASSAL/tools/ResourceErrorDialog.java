@@ -18,9 +18,9 @@
 package VASSAL.tools;
 
 
-/** 
- * Utility class for reporting failure to load a resource from a module file 
- * 
+/**
+ * Utility class for reporting failure to load a resource from a module file
+ *
  * @author rodneykinney
  */
 public class ResourceErrorDialog {

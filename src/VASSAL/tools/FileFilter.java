@@ -34,13 +34,13 @@ import java.io.File;
 public abstract class FileFilter extends javax.swing.filechooser.FileFilter
                                  implements java.io.FilenameFilter {
    /**
-    * The accept test used by Swing file choosers. 
+    * The accept test used by Swing file choosers.
     *
     * @return Whether the given file is accepted by this filter.
     */
    public abstract boolean accept(File f);
 
-   /** 
+   /**
     * The accept test used by AWT file choosers.
     *
     * @return Whether the given file is accepted by this filter.

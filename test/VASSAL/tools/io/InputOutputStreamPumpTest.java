@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -65,7 +65,7 @@ public class InputOutputStreamPumpTest {
     final InputOutputStreamPump p = new IOSP();
     p.run();
 
-    final InputStream in = new ClosedInputStream();    
+    final InputStream in = new ClosedInputStream();
     p.setInputStream(in);
   }
 
@@ -163,5 +163,5 @@ public class InputOutputStreamPumpTest {
 
     final InputOutputStreamPump p = new InputOutputStreamPump(in, out, el);
     p.run();
-  } 
+  }
 }

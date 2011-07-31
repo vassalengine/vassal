@@ -610,7 +610,7 @@ public class ArrayUtils {
       if (orig[i] == e) {
         final float[] tmp = new float[orig.length-1];
         System.arraycopy(orig, 0, tmp, 0, i);
-        if (i < tmp.length) 
+        if (i < tmp.length)
           System.arraycopy(orig, i+1, tmp, i, orig.length-i-1);
         return tmp;
       }
@@ -623,7 +623,7 @@ public class ArrayUtils {
       if (orig[i] == e) {
         final int[] tmp = new int[orig.length-1];
         System.arraycopy(orig, 0, tmp, 0, i);
-        if (i < tmp.length) 
+        if (i < tmp.length)
           System.arraycopy(orig, i+1, tmp, i, orig.length-i-1);
         return tmp;
       }
@@ -636,7 +636,7 @@ public class ArrayUtils {
       if (orig[i] == e) {
         final long[] tmp = new long[orig.length-1];
         System.arraycopy(orig, 0, tmp, 0, i);
-        if (i < tmp.length) 
+        if (i < tmp.length)
           System.arraycopy(orig, i+1, tmp, i, orig.length-i-1);
         return tmp;
       }
@@ -649,7 +649,7 @@ public class ArrayUtils {
       if (orig[i] == e) {
         final short[] tmp = new short[orig.length-1];
         System.arraycopy(orig, 0, tmp, 0, i);
-        if (i < tmp.length) 
+        if (i < tmp.length)
           System.arraycopy(orig, i+1, tmp, i, orig.length-i-1);
         return tmp;
       }
@@ -664,7 +664,7 @@ public class ArrayUtils {
         final T[] tmp = (T[]) Array.newInstance(
           orig.getClass().getComponentType(), orig.length-1);
         System.arraycopy(orig, 0, tmp, 0, i);
-        if (i < tmp.length) 
+        if (i < tmp.length)
           System.arraycopy(orig, i+1, tmp, i, orig.length-i-1);
         return tmp;
       }

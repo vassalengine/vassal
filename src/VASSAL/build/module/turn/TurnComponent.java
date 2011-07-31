@@ -33,19 +33,19 @@ import VASSAL.build.module.documentation.HelpFile;
 public class TurnComponent extends AbstractConfigurable {
 
   protected List<TurnLevel> levels = new ArrayList<TurnLevel>();
-  
+
   public void addLevel(TurnLevel t) {
     levels.add(t);
   }
-  
+
   public void removeLevel(TurnLevel t) {
     levels.remove(t);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
-  
+
   protected TurnLevel getTurnLevel(int i) {
     if (i >= levels.size()) {
       return null;
@@ -60,7 +60,7 @@ public class TurnComponent extends AbstractConfigurable {
   public Iterator<TurnLevel> getTurnLevels() {
     return levels.iterator();
   }
-  
+
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
@@ -70,7 +70,7 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   public void setAttribute(String key, Object value) {
-    
+
   }
 
   public String getAttributeValueString(String key) {

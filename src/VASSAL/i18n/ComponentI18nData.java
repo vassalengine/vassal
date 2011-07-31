@@ -37,11 +37,11 @@ import VASSAL.counters.PlaceMarker;
  * The majority of translatable components subclass AbstractConfigurable,
  * but some extend JFrame or JDialog and implement Configurable or
  * AutoConfigurable.
- * 
+ *
  * AbstractConfigurable components are almost completely handled within the
  * AbstractConfigurable base class. AutoConfigurable/Configurable components
  * must call a different constructor and supply additional information.
- * 
+ *
  * @author Brent Easton
  */
 public class ComponentI18nData {
@@ -58,7 +58,7 @@ public class ComponentI18nData {
    * Build from an AbstractConfigurable. The parent will be set from
    * AbstractConfigurable.add(). untranslatedValues will be filled in as
    * attributes are translated.
-   * 
+   *
    * @param c
    *          AbstractConfigurable component
    * @param prefix
@@ -73,7 +73,7 @@ public class ComponentI18nData {
   }
   /**
    * Build from an AutoConfigurable
-   * 
+   *
    * @param c
    *          AutoConfgurable component
    * @param prefix
@@ -116,7 +116,7 @@ public class ComponentI18nData {
    * Build from a Configurable. Configurable does not support
    * getAttributeNames() getAttributeTypes() or getAttributeValueString(),
    * so more information must be supplied.
-   * 
+   *
    * @param c
    *          Component
    * @param prefix
@@ -186,7 +186,7 @@ public class ComponentI18nData {
 
   /**
    * Return a unique key prefix including a full path of parent prefixes. All Translatable Pieces share a common prefix.
-   * 
+   *
    * @return
    */
   public String getFullPrefix() {
@@ -224,7 +224,7 @@ public class ComponentI18nData {
 
   /**
    * Is the specified attribute allowed to be translated?
-   * 
+   *
    * @param attr
    *          Attribute name
    * @return is translatable
@@ -235,7 +235,7 @@ public class ComponentI18nData {
 
   /**
    * Return true if this component has any translatable attributes, or if any of its children are translatable
-   * 
+   *
    * @return component translatable status
    */
   public boolean isTranslatable() {
@@ -252,7 +252,7 @@ public class ComponentI18nData {
 
   /**
    * Force a specified attribute to be translatable/not translatable
-   * 
+   *
    * @param attribute
    *          Attribute name
    * @param set
@@ -277,7 +277,7 @@ public class ComponentI18nData {
   /**
    * Apply a translatation to the specified attribute. Record the untranslated value in the untranslatedValues array and
    * set the new value into the real attribute
-   * 
+   *
    * @param attr
    *          Attribute name
    * @param value
@@ -293,7 +293,7 @@ public class ComponentI18nData {
 
   /**
    * Return description for named Attribute
-   * 
+   *
    * @param attr
    * @return description
    */
@@ -303,7 +303,7 @@ public class ComponentI18nData {
 
   /**
    * Return the pre-translation value stored in this Object.
-   * 
+   *
    * @param attr
    *          Attribute Name
    * @return untranslated value
@@ -322,7 +322,7 @@ public class ComponentI18nData {
 
   /**
    * Set an untranslatedValue for the specified attribute. Used by components that do not subclass AbstractConfigurable
-   * 
+   *
    * @param attr
    *          Attribute name
    * @param value
@@ -342,7 +342,7 @@ public class ComponentI18nData {
 
   /**
    * Return all child Translatable components of this component
-   * 
+   *
    * @return Child translatables
    */
   public List<Translatable> getChildren() {
@@ -352,7 +352,7 @@ public class ComponentI18nData {
   /**
    * Return true if this component or any of its children have at least one translatable attribute with a non-null value
    * that does not have a translation in the supplied translation.
-   * 
+   *
    * @param t
    *          Translation
    * @return true if translation of this component is not complete

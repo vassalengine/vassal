@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -107,7 +107,7 @@ public abstract class MenuManager {
       if (nextVisibleItemNotASeparator(end)) {
         ((MenuProxy) parent).insertSeparator(endPos+1);
       }
-      
+
       // check from the start of the group to the previous visible
       // item and insert a separator if that item is not one
       if (prevVisibleItemNotASeparator(start)) {
@@ -126,11 +126,11 @@ public abstract class MenuManager {
 
     // remove the item
     parent.remove(item);
-  
-    // do separator check if this was the last item in the group 
+
+    // do separator check if this was the last item in the group
     if (parent instanceof MenuProxy) {
-      final int startPos = parent.getIndex(start);     
-      final int endPos = parent.getIndex(end);    
+      final int startPos = parent.getIndex(start);
+      final int endPos = parent.getIndex(end);
       if (startPos + 1 == endPos) {
         if (visibleItemBefore(start)) {
           // if we have a group on each side, or before but not after;
@@ -143,7 +143,7 @@ public abstract class MenuManager {
           parent.remove(endPos+1);
         }
         // otherwise, we were the sole group, our parent has no visible
-        // items now 
+        // items now
       }
     }
   }
@@ -153,7 +153,7 @@ public abstract class MenuManager {
     final int count = parent.getChildCount();
     for (int i = parent.getIndex(child) + 1; i < count; i++) {
       final ChildProxy<?> c = parent.getChild(i);
-      if (!(c instanceof MenuMarker)) return true; 
+      if (!(c instanceof MenuMarker)) return true;
     }
     return false;
   }
@@ -162,7 +162,7 @@ public abstract class MenuManager {
     final ParentProxy parent = child.getParent();
     for (int i = parent.getIndex(child) - 1; i >= 0; i++) {
       final ChildProxy<?> c = parent.getChild(i);
-      if (!(c instanceof MenuMarker)) return true; 
+      if (!(c instanceof MenuMarker)) return true;
     }
     return false;
   }
@@ -173,7 +173,7 @@ public abstract class MenuManager {
     for (int i = parent.getIndex(child) + 1; i < count; i++) {
       final ChildProxy<?> c = parent.getChild(i);
       if (c instanceof MenuMarker) continue;
-      
+
       return !(c instanceof SeparatorProxy);
     }
     return false;
@@ -184,7 +184,7 @@ public abstract class MenuManager {
     for (int i = parent.getIndex(child) - 1; i >= 0; i--) {
       final ChildProxy<?> c = parent.getChild(i);
       if (c instanceof MenuMarker) continue;
-      
+
       return !(c instanceof SeparatorProxy);
     }
     return false;

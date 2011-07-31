@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.chat.ui;
@@ -160,7 +160,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   private void refresh(final int page) {
     if (page == 0) {
       if (cur_request != null && !cur_request.isDone()) return;
-      
+
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
       cur_request = new SwingWorker<ServerStatus.ModuleSummary[],Void>() {
@@ -168,7 +168,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
         public ServerStatus.ModuleSummary[] doInBackground() {
           return status.getStatus();
         }
-      
+
         @Override
         protected void done() {
           try {
@@ -185,7 +185,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
             ex.printStackTrace();
           }
 
-          if (hist_request == null || hist_request.isDone()) 
+          if (hist_request == null || hist_request.isDone())
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
           cur_request = null;
@@ -204,7 +204,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
         public ServerStatus.ModuleSummary[] doInBackground() {
           return status.getHistory(getTitleAt(page));
         }
-      
+
         @Override
         protected void done() {
           final int sel = getSelectedIndex();
@@ -230,7 +230,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
             refresh(sel);
           }
 
-          if (cur_request == null || cur_request.isDone()) 
+          if (cur_request == null || cur_request.isDone())
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
       };
@@ -279,7 +279,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       final SimpleRoom r = (SimpleRoom) o;
 
       final List<Player> l = r.getPlayerList();
-      
+
       // append the number of players to each room name
       r.setName(r.getName() + " (" + l.size() + ")");
       children = l.toArray(new Player[l.size()]);

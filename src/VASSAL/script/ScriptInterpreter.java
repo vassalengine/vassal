@@ -24,24 +24,24 @@ import bsh.EvalError;
 import bsh.NameSpace;
 
 public class ScriptInterpreter extends AbstractInterpreter {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   public ScriptInterpreter(ClassLoader loader) {
     super();
     setClassLoader(loader);
-    
+
     myNameSpace = new NameSpace(getClassManager(), "script");
-    
+
     setNameSpace(myNameSpace);
     getNameSpace().importClass("VASSAL.build.module.properties.PropertySource");
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
     getNameSpace().importClass("VASSAL.script.ScriptInterpreter");
-    
+
     setVar(THIS, this);
-    
+
   }
-  
+
   public Object evaluate(String statement) throws EvalError {
     setVar(SOURCE, (PropertySource) GameModule.getGameModule());
     return super.eval(statement);

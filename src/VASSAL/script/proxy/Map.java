@@ -27,29 +27,29 @@ import VASSAL.script.BeanShell;
  * BeanShell proxy for the Vassal Map object
  *
  * BeanShell proxies control access to Vassal components and expose
- * a consistent API to BeanShell Scripts. 
- * 
+ * a consistent API to BeanShell Scripts.
+ *
  * PLEASE NOTE
  * New methods may be added, but DO NOT remove or change the
  * call signature of any existing methods
- * 
+ *
  */
 public class Map {
-  
+
   private VASSAL.build.module.Map vassalMap;
-  
+
   public Map(VASSAL.build.module.Map m) {
     vassalMap = m;
   }
-  
+
   public String getName() {
     return vassalMap.getMapName();
   }
-  
+
   public Object getProperty(String name) {
     return BeanShell.wrap(vassalMap.getProperty(name).toString());
   }
-  
+
   public List<GamePiece> getPieces() {
     VASSAL.counters.GamePiece[] vPieces = vassalMap.getPieces();
     ArrayList<GamePiece> pieces = new ArrayList<GamePiece>(vPieces.length);

@@ -16,27 +16,27 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build;
 
 /**
  * GameModule and ModuleExtension are the top-level components and must
  * provide some Namespace services for generated GamePiece Identifiers.
- * 
+ *
  * Each Extension must have a unique Namespace String. Each PieceSlot is
  * allocated a unique number in a series maintained for each top level
  * component.
- * 
- * Each GampePiece generated is tied to it's originating PieceSlot by the 
+ *
+ * Each GampePiece generated is tied to it's originating PieceSlot by the
  * NameSpace Id and the PieceSlot Id.
  */
 public interface GpIdSupport {
-  
+
   /**
    * Generate a new PieceSlot Id, unique to this top-level component.
-   * 
+   *
    * @return PieceSlot Id
    */
-  public String generateGpId();  
-  
+  public String generateGpId();
+
 }

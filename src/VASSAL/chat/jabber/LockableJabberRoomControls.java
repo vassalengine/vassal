@@ -35,9 +35,9 @@ import VASSAL.chat.ui.LockableRoomControls;
 import VASSAL.i18n.Resources;
 
 public class LockableJabberRoomControls extends LockableRoomControls {
-  
+
   protected ActionListener extendedRoomCreator;
-  
+
   public void initializeControls(final ChatServerControls controls) {
     super.initializeControls(controls);
     extendedRoomCreator = new ActionListener() {
@@ -57,29 +57,29 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       }};
       controls.addExtendedNewRoomHandler(extendedRoomCreator);
   }
-  
+
   public void uninitializeControls(final ChatServerControls controls) {
     super.uninitializeControls(controls);
     controls.removeExtendedNewRoomHandler(extendedRoomCreator);
   }
-  
+
   public LockableJabberRoomControls(JabberClient client) {
     super((ChatServerConnection) client);
   }
- 
+
   protected void addLockRoomAction(JPopupMenu popup, Room target) {
     JabberClient c = getJabberClient();
     if (c != null) {
       popup.add(new LockRoomAction((JabberRoom) target, c));
     }
   }
-  
+
   public JPopupMenu buildPopupForRoom(Room target, JTree tree) {
     final JPopupMenu popup = super.buildPopupForRoom(target, tree);
     popup.add(new RoomPropertiesAction((JabberRoom) target));
     return popup;
   }
-  
+
   private JabberClient getJabberClient() {
     JabberClient c = null;
     if (client instanceof JabberClient) {
@@ -91,13 +91,13 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     }
     return c;
   }
-  
+
   protected void createRoom(Properties props) {
     final JabberRoom room = ((JabberClient) client).getRoomByName(props.getProperty(JabberRoom.CONFIG_NAME));
     room.setConfig(props);
     client.setRoom(room);
   }
-  
+
   protected void createRoom(String name) {
     if (client.isConnected()) {
       if (name != null && name.length() > 0) {
@@ -109,9 +109,9 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
     }
   }
-  
+
   class LockRoomAction extends AbstractAction {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     private JabberClient client;
     private JabberRoom target;
@@ -125,20 +125,20 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       this.client = client;
     }
 
-    public void actionPerformed(ActionEvent e) {      
+    public void actionPerformed(ActionEvent e) {
       client.lockRoom(target);
     }
-  } 
-  
+  }
+
   class RoomPropertiesAction extends AbstractAction {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
     private JabberRoom target;
-    
+
     public RoomPropertiesAction(JabberRoom room) {
       super(Resources.getString("General.properties")); //$NON-NLS-1$
       target = room;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
       target.showConfig();
     }

@@ -68,12 +68,12 @@ public class NewColorConfigurer extends Configurer {
   protected Box swatchBox;
   BooleanConfigurer bc;
   ColorSwatchConfigurer csc;
-  
+
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-      
+
       Box box = Box.createHorizontalBox();
       box.add(new JLabel("Use Named Colors?"));
       bc = new BooleanConfigurer(null, "", Boolean.FALSE); //$NON-NLS-1$
@@ -83,10 +83,10 @@ public class NewColorConfigurer extends Configurer {
           colorBox.setVisible(!bc.booleanValue().booleanValue());
           swatchBox.setVisible(bc.booleanValue().booleanValue());
           SwingUtilities.getWindowAncestor(bc.getControls()).pack();
-        }   
+        }
       });
       p.add(box);
-      
+
       colorBox = Box.createHorizontalBox();
       colorBox.add(new JLabel(getName()));
       cp = new Panel();
@@ -97,7 +97,7 @@ public class NewColorConfigurer extends Configurer {
       JButton b = new JButton("Select");
       colorBox.add(b);
       p.add(colorBox);
-      
+
       b.addActionListener
           (new java.awt.event.ActionListener() {
             public void actionPerformed
@@ -107,23 +107,23 @@ public class NewColorConfigurer extends Configurer {
               csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
             }
           });
-      
+
       swatchBox = Box.createHorizontalBox();
       csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE"); //$NON-NLS-2$
       csc.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           setValue(csc.getValueColor());
-        }   
+        }
       });
       swatchBox.add(csc.getControls());
       swatchBox.setVisible(false);
       p.add(swatchBox);
-      
-      
+
+
     }
     return p;
   }
-  
+
   private Color colorValue() {
     return (Color) value;
   }

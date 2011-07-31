@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.map;
@@ -50,16 +50,16 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     globalCommand = new DeckGlobalCommand(this);
     setConfigureName("");
   }
-  
+
   public DeckGlobalKeyCommand(String code) {
     this();
     decode(code);
   }
-  
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
   }
-  
+
   public void addTo(Buildable parent) {
     if (parent instanceof Map) {
       map = (Map) parent;
@@ -69,19 +69,19 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
     ((DrawPile) parent).addGlobalKeyCommand(this);
   }
-  
+
   public void removeFrom(Buildable parent) {
     ((DrawPile) parent).removeGlobalKeyCommand(this);
   }
-  
+
   public KeyCommand getKeyCommand(Deck deck) {
     return new DeckKeyCommand(getLocalizedConfigureName(), null, deck);
   }
-  
+
   class DeckKeyCommand extends KeyCommand {
     private static final long serialVersionUID = 1L;
     protected Deck deck;
-    public DeckKeyCommand(String name, KeyStroke key, Deck deck) {      
+    public DeckKeyCommand(String name, KeyStroke key, Deck deck) {
       super(name, key, deck);
       this.deck = deck;
     }
@@ -89,10 +89,10 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       apply(deck);
     }
   }
-  
+
   /**
    * Since we also limit application of a Deck Global Key command to a specified number of pieces in the
-   * Deck, a null match expression should match all pieces, not reject them all. 
+   * Deck, a null match expression should match all pieces, not reject them all.
    */
   public PieceFilter getFilter() {
     if (propertiesFilter == null || propertiesFilter.getExpression() == null || propertiesFilter.getExpression().length() == 0) {
@@ -100,11 +100,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
     return super.getFilter();
   }
-  
+
   public void apply(Deck deck) {
     GameModule.getGameModule().sendAndLog(((DeckGlobalCommand) globalCommand).apply(deck, getFilter()));
   }
-  
+
   public String encode() {
     SequenceEncoder se = new SequenceEncoder('|');
     se.append(getConfigureName())
@@ -115,7 +115,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       .append(getLocalizedConfigureName());
     return se.getValue();
   }
-  
+
   public void decode(String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     setConfigureName(sd.nextToken(""));
@@ -125,14 +125,14 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString(Resources.NAME_LABEL),
-    	Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
-    	Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
-    	Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
-    	Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
+      Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
+      Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
     };
   }
 
@@ -156,7 +156,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       ReportFormatConfig.class
     };
   }
-  
+
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
     public DeckPolicyConfig2() {
       super();
@@ -164,9 +164,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       prompt.setText("Affects:  ");
     }
   }
-  
+
   public static class DeckGlobalCommand extends GlobalCommand {
-    
+
     public DeckGlobalCommand(Loopable l) {
       super(l);
     }
@@ -183,7 +183,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       }
       Visitor visitor = new Visitor(c, filter, keyStroke);
       DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
-     
+
       dispatcher.accept(d);
       visitor.getTracker().repaint();
 
@@ -191,5 +191,5 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       return c;
     }
   }
-    
+
 }

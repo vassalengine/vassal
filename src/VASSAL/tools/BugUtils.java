@@ -19,7 +19,7 @@ public class BugUtils {
     InputStream in = null;
     try {
 /*
-      final URL url = new URL("http://sourceforge.net/tracker/index.php");    
+      final URL url = new URL("http://sourceforge.net/tracker/index.php");
       pb.setParameter("group_id", "90612");
       pb.setParameter("atid", "594231");
       pb.setParameter("func", "postadd");
@@ -40,7 +40,7 @@ public class BugUtils {
 
       in = pb.post(url);
       final String result = IOUtils.toString(in);
-    
+
       // script should return zero on success, otherwise it failed
       try {
         if (Integer.parseInt(result) != 0) {
@@ -51,7 +51,7 @@ public class BugUtils {
         throw (IOException) new IOException().initCause(e);
       }
 
-	    in.close();
+      in.close();
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -66,7 +66,7 @@ public class BugUtils {
     else {
       final String tc = t.getClass().getName();
       summary = tc.substring(tc.lastIndexOf('.') + 1);
-      
+
       if (t.getMessage() != null) {
         summary += ": " + t.getMessage();
       }

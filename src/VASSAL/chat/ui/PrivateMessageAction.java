@@ -44,12 +44,12 @@ public class PrivateMessageAction extends AbstractAction {
   super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
   this.p = p;
   this.mgr = mgr;
-  setEnabled(p != null 
+  setEnabled(p != null
        && client != null
-       && mgr != null 
+       && mgr != null
        && !p.equals(client.getUserInfo()));
     }
-    
+
   public void actionPerformed(ActionEvent evt) {
     PrivateChatter chat = mgr.getChatterFor(p);
     // Chat is null of other player is ignoring us.
@@ -59,7 +59,7 @@ public class PrivateMessageAction extends AbstractAction {
       f.toFront();
     }
   }
-    
+
     public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
       return new PlayerActionFactory() {
         public Action getAction(SimplePlayer p, JTree tree) {

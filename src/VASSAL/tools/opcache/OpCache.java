@@ -50,7 +50,7 @@ public class OpCache {
 
   /**
    * A cache key for <code>OpCache</code>.
-   */ 
+   */
   public static class Key<V> {
     public final Op<V> op;
     public final int version;
@@ -63,9 +63,9 @@ public class OpCache {
      *
      * @param op the <code>Op</code> for which this is a key
      * @param version the current version of this key
-     */ 
+     */
     public Key(Op<V> op, int version) {
-      this.op = op; 
+      this.op = op;
       this.version = version;
 
       for (Op<?> dop : op.getSources()) deps.add(dop.newKey());
@@ -89,44 +89,44 @@ public class OpCache {
     @Override
     public int hashCode() {
       return hash;
-    } 
-  } 
- 
+    }
+  }
+
   protected final ConcurrentMap<Key<?>,Future<?>> cache =
     new ConcurrentSoftHashMap<Key<?>,Future<?>>();
 
   /**
    * A request for execution of an {@link Op} which will be completed
    * synchronously and set manually.
-   */ 
+   */
   private static final class Result<V> implements Future<V> {
     private static final long serialVersionUID = 1L;
 
     private V value = null;
     private boolean failed = false;
-    private final CountDownLatch done = new CountDownLatch(1); 
-  
+    private final CountDownLatch done = new CountDownLatch(1);
+
     public void set(V value) {
       this.value = value;
       done.countDown();
     }
- 
+
     public void fail() {
       failed = true;
     }
- 
+
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
-  
+
     public boolean isCancelled() {
       return false;
     }
-  
+
     public boolean isDone() {
       return done.getCount() == 0;
     }
-  
+
     public V get() throws InterruptedException, ExecutionException {
       done.await();
       if (failed) throw new ExecutionException(new OpFailedException());
@@ -144,10 +144,10 @@ public class OpCache {
       throw new TimeoutException();
     }
   }
- 
+
   /**
    * The {@link Future} which is cached on failure of an {@link Op}.
-   */ 
+   */
   private static final Future<Void> failure = new Future<Void>() {
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
@@ -172,11 +172,11 @@ public class OpCache {
 
   /**
    * A request for execution of an {@link Op}, to be queued.
-   */ 
+   */
   private class Request<V> extends SwingWorker<V,Void> {
     private final Key<V> key;
     private final OpObserver<V> obs;
-    
+
     public Request(Key<V> key, OpObserver<V> obs) {
       if (key == null) throw new IllegalArgumentException();
       if (obs == null) throw new IllegalArgumentException();
@@ -210,19 +210,19 @@ public class OpCache {
       }
     }
   }
- 
+
   /**
    * Gets a value from the cache.
    *
    * @param key the <code>Key</code> for which to retrieve a value
    * @return the value associated with <code>key</code>
-   */ 
+   */
   public <V> V get(Key<V> key) {
     try {
       return get(key, null);
     }
     catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
+      // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
     catch (InterruptedException e) {
@@ -311,7 +311,7 @@ public class OpCache {
             val = key.op.eval();
           }
           catch (Throwable t) {
-            res.fail(); 
+            res.fail();
             cache.put(key, failure);
             throw new ExecutionException(t);
           }
@@ -340,7 +340,7 @@ public class OpCache {
         }
       }
     }
- 
+
     return fut;
   }
 

@@ -64,14 +64,14 @@ public class ImagePicker extends JPanel
     icon = new OpIcon();
     imageView = new JLabel(icon);
     imageView.addMouseListener(this);
-    
+
     imageViewer = new JPanel(new BorderLayout());
     imageScroller = new ScrollPane(
       imageView,
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
-  
+
     select = new JComboBox(
       GameModule.getGameModule().getDataArchive().getImageNames());
     select.addItemListener(this);
@@ -99,17 +99,17 @@ public class ImagePicker extends JPanel
       if (d.width > 400) d.width = 400;
       if (d.height > 400) d.height = 400;
       imageScroller.setPreferredSize(d);
-        
+
       add(imageViewer,0);
 /*
       try {
         icon.setImage(getImage());
-        
+
         Dimension d = new Dimension (icon.getIconWidth(), icon.getIconHeight());
         if (d.width > 400) d.width = 400;
         if (d.height > 400) d.height = 400;
         imageScroller.setPreferredSize(d);
-        
+
         name = imageName;
         add(imageViewer,0);
       }
@@ -159,7 +159,7 @@ public class ImagePicker extends JPanel
   public void pickImage() {
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setFileFilter(new ImageFileFilter());
-    
+
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
          && fc.getSelectedFile().exists()) {
       String name = fc.getSelectedFile().getName();

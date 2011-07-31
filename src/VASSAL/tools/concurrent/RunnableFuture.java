@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,10 +26,10 @@ import java.util.concurrent.Future;
  * This class exists for Java 1.5 compatibility. When we switch to Java 1.6,
  * this class should be removed and replaced by
  * {@link java.util.concurrent.RunnableFuture}.
- * 
- * 
+ *
+ *
  * @param <V> the result type returned by this {@code Future}'s
- *            {@code get} method 
+ *            {@code get} method
  *
  * @author Joel Uckelman
  * @since 3.2.0

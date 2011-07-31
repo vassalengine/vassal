@@ -85,7 +85,7 @@ public class Translation extends AbstractConfigurable
   protected String getDescription() {
     return locale.getDisplayName(Locale.getDefault());
   }
-  
+
   public String getLanguageCode() {
     return locale.getLanguage();
   }
@@ -123,7 +123,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Set a property into our property map. i.e. an attribute has been translated
-   * 
+   *
    * @param key
    *          property key
    * @param value
@@ -131,7 +131,7 @@ public class Translation extends AbstractConfigurable
    */
   public void setProperty(String key, String value) {
     if (value == null || value.length() == 0) {
-      getProperties().remove(key);  
+      getProperties().remove(key);
     }
     else {
       getProperties().setProperty(key, value);
@@ -141,7 +141,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Return true if this translation has unsaved modifications
-   * 
+   *
    * @return true if undaved changes
    */
   public boolean isDirty() {
@@ -150,7 +150,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Return the translation for the supplied key
-   * 
+   *
    * @param s
    * @return
    */
@@ -160,8 +160,8 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Load properties from the bundle file in the module/extension
-   * @throws IOException 
-   * 
+   * @throws IOException
+   *
    */
   protected void loadProperties() throws IOException {
     if (localProperties == null) {
@@ -183,7 +183,7 @@ public class Translation extends AbstractConfigurable
           dirty = false;
           return;
         }
-      
+
         localProperties.load(in);
         in.close();
       }
@@ -191,7 +191,7 @@ public class Translation extends AbstractConfigurable
         IOUtils.closeQuietly(in);
       }
     }
-       
+
     dirty = false;
   }
 
@@ -215,8 +215,8 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Reload the properties from the module/extension
-   * @throws IOException 
-   * 
+   * @throws IOException
+   *
    */
   public void reloadProperties() throws IOException {
     localProperties = new Properties();
@@ -225,8 +225,8 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Save the properties back to the module/extension
-   * @throws IOException 
-   * 
+   * @throws IOException
+   *
    */
   protected void saveProperties() throws IOException {
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -242,7 +242,7 @@ public class Translation extends AbstractConfigurable
   /**
    * Return the properties map for this translation. Create and load from
    * the module if necessary.
-   * 
+   *
    * @return properties
    */
   public Properties getProperties() {
@@ -260,7 +260,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Build the bundle name
-   * 
+   *
    * @return bundle name
    */
   public String getBundleName() {
@@ -270,7 +270,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Build the bundle file name
-   * 
+   *
    * @return bundle file name
    */
   public String getBundleFileName() {

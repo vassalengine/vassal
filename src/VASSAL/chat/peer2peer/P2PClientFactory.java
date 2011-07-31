@@ -1,5 +1,5 @@
 /*
- * $Id: 
+ * $Id:
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
@@ -54,9 +54,9 @@ public class P2PClientFactory extends ChatServerFactory {
         public String getUserName() {
           return GameModule.getUserId();
         }
-      
+
     });
-    
+
 
     final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {

@@ -142,7 +142,7 @@ public class ZipArchive implements FileArchive {
    * @throws IOException
    */
   public ZipArchive(FileArchive src, File dst) throws IOException {
-    this(dst, true);    
+    this(dst, true);
 
     final byte[] buf = new byte[8192];
 
@@ -151,7 +151,7 @@ public class ZipArchive implements FileArchive {
       InputStream in = null;
       try {
         in = src.getInputStream(name);
-  
+
         OutputStream out = null;
         try {
           out = getOutputStream(name);
@@ -180,12 +180,12 @@ public class ZipArchive implements FileArchive {
     return archiveFile;
   }
 
-  /** {@inheritDoc} */ 
+  /** {@inheritDoc} */
   public boolean isClosed() {
     return closed;
-  } 
+  }
 
-  /** {@inheritDoc} */ 
+  /** {@inheritDoc} */
   public boolean isModified() {
     return modified;
   }
@@ -196,7 +196,7 @@ public class ZipArchive implements FileArchive {
    * <b>Note:</b> It is impeative the that calling code ensures that this
    * stream is eventually closed, since the returned stream holds a read
    * lock on the archive.
-   */ 
+   */
   public InputStream getInputStream(String path) throws IOException {
     r.lock();
     try {
@@ -204,8 +204,8 @@ public class ZipArchive implements FileArchive {
 
       final Entry e = entries.get(path);
       if (e == null) throw new FileNotFoundException(path + " not in archive");
- 
-      InputStream in = null; 
+
+      InputStream in = null;
       if (e.file != null) {
         in = new FileInputStream(e.file);
       }
@@ -225,12 +225,12 @@ public class ZipArchive implements FileArchive {
   }
 
   /**
-   * {@inheritDoc} 
+   * {@inheritDoc}
    *
    * <b>Note:</b> It is imperative the that calling code ensures that this
    * stream is eventually closed, since the returned stream holds a write
    * lock on the archive.
-   */ 
+   */
   public OutputStream getOutputStream(String path) throws IOException {
     return getOutputStream(path, true);
   }
@@ -266,7 +266,7 @@ public class ZipArchive implements FileArchive {
       final ZipEntry ze = new ZipEntry(path);
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
       e.ze = ze;
-    
+
       // clean up old temp file
       if (e.file != null) e.file.delete();
 
@@ -348,7 +348,7 @@ public class ZipArchive implements FileArchive {
       }
 
       readEntries();
-      modified = false; 
+      modified = false;
     }
     finally {
       w.unlock();
@@ -365,7 +365,7 @@ public class ZipArchive implements FileArchive {
       w.unlock();
     }
   }
-  
+
   private void writeToDisk() throws IOException {
     if (!modified) return;
 
@@ -383,7 +383,7 @@ public class ZipArchive implements FileArchive {
 
       if (zipFile != null) {
         zipFile.close();
-  
+
         // copy unmodified file into the temp archive
         ZipInputStream in = null;
         try {
@@ -406,7 +406,7 @@ public class ZipArchive implements FileArchive {
             out.putNextEntry(ze);
             IOUtils.copy(in, out, buf);
 
-            entries.remove(ze.getName()); 
+            entries.remove(ze.getName());
           }
 
           in.close();
@@ -499,7 +499,7 @@ public class ZipArchive implements FileArchive {
     finally {
       r.unlock();
     }
-  } 
+  }
 
   /** {@inheritDoc} */
   public long getMTime(String path) throws IOException {
@@ -514,7 +514,7 @@ public class ZipArchive implements FileArchive {
     finally {
       r.unlock();
     }
-  } 
+  }
 
   /** {@inheritDoc} */
   public List<String> getFiles() throws IOException {
@@ -620,7 +620,7 @@ public class ZipArchive implements FileArchive {
     @Override
     public void write(byte[] bytes, int off, int len) throws IOException {
       super.write(bytes, off, len);
-      count += len;      
+      count += len;
     }
 
     @Override
@@ -641,7 +641,7 @@ public class ZipArchive implements FileArchive {
     @Override
     public void close() throws IOException {
       if (closed) return;
-    
+
       try {
         super.close();
       }
@@ -662,11 +662,11 @@ public class ZipArchive implements FileArchive {
     archive.flush();
 
     // read test
-    
-    InputStream in = null; 
+
+    InputStream in = null;
     try {
       in = archive.getInputStream("NOTES");
-      IOUtils.copy(in, System.out); 
+      IOUtils.copy(in, System.out);
       in.close();
     }
     finally {

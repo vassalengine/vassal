@@ -29,9 +29,9 @@ import VASSAL.tools.menu.MenuManager;
 public class ExtensionEditorWindow extends EditorWindow {
 
   private static final long serialVersionUID = 1L;
-  protected static ExtensionEditorWindow instance = null;  
+  protected static ExtensionEditorWindow instance = null;
   protected ModuleExtension extension;
- 
+
   public ExtensionEditorWindow(GameModule mod, ModuleExtension ext) {
     super();
 
@@ -39,15 +39,15 @@ public class ExtensionEditorWindow extends EditorWindow {
     tree = new ExtensionTree(mod, helpWindow, ext, this);
     treeStateChanged(false);
     scrollPane.setViewportView(tree);
-    
+
     tree.populateEditMenu(this);
 
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("Editor.ModuleEditor.reference_manual", tree.getHelpAction());
-    
+
     toolBar.addSeparator();
     toolBar.add(extension.getEditAction(new JDialog(this)));
-    
+
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     createUpdater.setEnabled(true);
@@ -56,7 +56,7 @@ public class ExtensionEditorWindow extends EditorWindow {
   }
 
   public void moduleLoading(GameModule mod) {
-    
+
   }
 
   public String getEditorType() {
@@ -70,11 +70,11 @@ public class ExtensionEditorWindow extends EditorWindow {
     menu.addSeparator();
     addQuitMenuItem(menu);
   }
-  
+
   protected void populateToolsMenu(JMenu menu) {
     addUpdaterMenuItem(menu);
     menu.addSeparator();
-    addTranslateMenuItem(menu);    
+    addTranslateMenuItem(menu);
   }
 */
 
@@ -88,7 +88,7 @@ public class ExtensionEditorWindow extends EditorWindow {
           WriteErrorDialog.error(e, extension.getDataArchive().getName());
         }
       }
-    });  
+    });
   }
 
   protected void saveAs() {
@@ -101,6 +101,6 @@ public class ExtensionEditorWindow extends EditorWindow {
           WriteErrorDialog.error(e, extension.getDataArchive().getName());
         }
       }
-    }); 
+    });
   }
 }

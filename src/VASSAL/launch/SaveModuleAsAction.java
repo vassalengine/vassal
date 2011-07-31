@@ -26,6 +26,6 @@ public class SaveModuleAsAction extends SaveAsAction {
 
   public void actionPerformed(ActionEvent e) {
     // TODO Auto-generated method stub
-    
+
   }
 }

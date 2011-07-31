@@ -48,9 +48,9 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 /**
  * A trait that acts like a button on a GamePiece, such that clicking on a
  * particular area of the piece invokes a keyboard command
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;";
@@ -141,7 +141,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public String getComponentTypeName() {
     return getDescription();
   }
-  
+
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -226,7 +226,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
      * Handle a mouse click on the given GamePiece at the given location (where
      * 0,0 is the center of the piece). Activate all Action Buttons in sequence
      * that are not Masked or Hidden
-     * 
+     *
      * @param p
      * @param x
      * @param y

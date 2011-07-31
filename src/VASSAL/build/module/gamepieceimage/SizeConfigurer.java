@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -94,10 +94,10 @@ public class SizeConfigurer extends StringEnumConfigurer {
         final int sample_w = 6;
         final int sample_h = 12;
         final int sample_g = 1;
-        
+
         final int w = sample_w*6 + sample_g*5 + 1;
         final int h = sample_h+1;
-        
+
         final BufferedImage img = ImageUtils.createCompatibleImage(w, h);
         final Graphics2D g = img.createGraphics();
         g.setColor(Color.white);
@@ -109,7 +109,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
           (String) value, sample_w, sample_h, sample_g);
         int x = (w/2) - (simg.getWidth()/2);
         g.drawImage(simg, x, 0, null);
-        g.dispose();       
+        g.dispose();
 
         setIcon(new ImageIcon(img));
         setText((String) value);

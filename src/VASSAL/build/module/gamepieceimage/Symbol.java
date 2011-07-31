@@ -38,14 +38,14 @@ public class Symbol {
 
   //  public static void draw(Graphics g, Rectangle r, Color fg, Color bg, String
   // symbolSet, String symbolName) {
-  //    
+  //
   //    if (symbolSet.equals(NATO_SIZE_SET)) {
-  //      
+  //
   //    }
   //    else if (symbolSet.equals(NATO_UNIT_SET)) {
   //      NatoUnitSymbolSet.draw(g, r, fg, bg, symbolName);
   //    }
-  //    
+  //
   //  }
 
   protected String symbolSetName;
@@ -141,16 +141,16 @@ public class Symbol {
     protected static final String SQUAD_SYMBOL = "s"; //$NON-NLS-1$
     protected static final String COMPANY_SYMBOL = "i"; //$NON-NLS-1$
     protected static final String BRIGADE_SYMBOL = "x"; //$NON-NLS-1$
-    
+
     protected static final String[] getSymbolNames() {
-      return new String[] { 
-          NONE, 
-          INFANTRY, 
+      return new String[] {
+          NONE,
+          INFANTRY,
           RECON,
-          ARMORED, 
-          ARTILLERY, 
-          ENGINEERS, 
-          AIRBORNE, 
+          ARMORED,
+          ARTILLERY,
+          ENGINEERS,
+          AIRBORNE,
           AIR_DEFENCE,
           AIR_FORCE,
           ANTI_TANK,
@@ -165,7 +165,7 @@ public class Symbol {
     }
 
     protected static String[] sizeNames;
-    
+
     protected static String[] getSymbolSizes() {
       if (sizeNames == null) {
         sizeNames = new String[SIZES.length];
@@ -175,7 +175,7 @@ public class Symbol {
       }
       return sizeNames;
     }
-    
+
     protected static SizeOption findSize(String name) {
       for (int i = 0; i < SIZES.length; i++) {
         if (name.equals(SIZES[i].getName())) {
@@ -203,7 +203,7 @@ public class Symbol {
         new SizeOption(SZ_ARMY_GROUP, 5, BRIGADE_SYMBOL),
         new SizeOption(SZ_REGION, 6, BRIGADE_SYMBOL)
     };
-    
+
     protected static void draw(String name1, String name2, Graphics g, Rectangle bounds, Color fg, Color bg,
         Color sz, float lineWidth, String size) {
 
@@ -222,7 +222,7 @@ public class Symbol {
 
       g.setColor(sz);
       drawSize(g, size, bounds);
-      
+
       g.setColor(fg);
       draw(g, lineWidth, name1, bounds, false);
       draw(g, lineWidth, name2, bounds, true);
@@ -233,7 +233,7 @@ public class Symbol {
       Graphics2D g2 = (Graphics2D) g;
       BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
       g2.setStroke(stroke);
-      
+
       int x_left = bounds.x;
       int x_center = bounds.x + bounds.width / 2 + 1;
       int x_right = bounds.x + bounds.width;
@@ -249,15 +249,15 @@ public class Symbol {
       else if (name.equals(AIRBORNE)) {
         int x1 = x_center - bounds.width / 4;
         int y1 = y_top + bounds.height * 4 / 5 + 1;
-        g2.draw(new Arc2D.Double(x1, y1, bounds.width/4, bounds.height/4, 0, 
+        g2.draw(new Arc2D.Double(x1, y1, bounds.width/4, bounds.height/4, 0,
             180, Arc2D.OPEN));
-        g2.draw(new Arc2D.Double(x_center, y1, bounds.width/4, bounds.height/4, 0, 
+        g2.draw(new Arc2D.Double(x_center, y1, bounds.width/4, bounds.height/4, 0,
             180, Arc2D.OPEN));
 
       }
 
       else if (name.equals(AIR_DEFENCE)) {
-        g2.draw(new Arc2D.Double(x_left, y_top+ bounds.height / 4, bounds.width, bounds.height*1.5, 0, 
+        g2.draw(new Arc2D.Double(x_left, y_top+ bounds.height / 4, bounds.width, bounds.height*1.5, 0,
             180, Arc2D.OPEN));
 
       }
@@ -304,12 +304,12 @@ public class Symbol {
       }
 
       else if (name.equals(COMMANDO)) {
-        
+
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
         int x1 = (int) (bounds.width / 2.5);
         int y1 = (int) (bounds.height / 2.5);
-        
+
         GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_left+x1, y_top);
@@ -320,9 +320,9 @@ public class Symbol {
         p.lineTo(x_right-x1, y_top + y1);
         p.lineTo(x_right, y_top);
         g2.fill(p);
-        
+
       }
-      
+
       else if (name.equals(ENGINEERS)) {
         BasicStroke oldStroke = (BasicStroke) g2.getStroke();
         BasicStroke estroke = new BasicStroke(oldStroke.getLineWidth() * 1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
@@ -332,7 +332,7 @@ public class Symbol {
         int y2 = y1 + yh;
         int x1 = x_center - bounds.width / 5;
         int x2 = x_center + bounds.width / 5;
-        
+
         GeneralPath p = new GeneralPath();
         p.moveTo(x1, y2);
         p.lineTo(x1, y1);
@@ -344,12 +344,12 @@ public class Symbol {
       }
 
       else if (name.equals(GLIDER)) {
-        
+
         g.drawLine(x_left+(x_center-x_left)/3, y_center, x_right-(x_center-x_left)/3,y_center);
       }
-      
+
       else if (name.equals(GUERILLA)) {
-        
+
         GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_right, y_bottom);
@@ -357,14 +357,14 @@ public class Symbol {
         p.lineTo(x_left, y_bottom);
         p.lineTo(x_left, y_top);
         g2.fill(p);
-        
+
       }
-      
+
       else if (name.equals(INFANTRY)) {
-        
+
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
- 
+
       }
 
       else if (name.equals(MARINES)) {
@@ -390,25 +390,25 @@ public class Symbol {
         g.drawLine(x_center-xoff1, y_top+yoff1+yoff2, x_center+xoff1, y_top+yoff1+yoff2);
         g2.draw(new Arc2D.Double(x_center-xoff2, y_top+yoff1, xoff2*2, bounds.height-(2*yoff1), 225, 90, Arc2D.OPEN));
       }
-      
+
       else if (name.equals(RECON)) {
         g.drawLine(bounds.x, bounds.y + bounds.height, bounds.x + bounds.width, bounds.y);
       }
 
     }
-    
+
     /**
-     * 
-     * @param g       Grahics 
+     *
+     * @param g       Grahics
      * @param size    Name of size symbol
      * @param bounds  Size of the unit symbol
      */
     protected static void drawSize(Graphics g, String size, Rectangle bounds) {
-      
+
       if (size.equals(SZ_NONE) || size.equals("")) { //$NON-NLS-1$
         return;
       }
-      
+
       SizeOption option = findSize(size);
       String type = option.getType();
       int count = option.getCount();
@@ -422,21 +422,21 @@ public class Symbol {
         sym_w = bounds.width / 7;
       }
       int gap = bounds.width / 15;
-      
+
       BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
-      
+
       int xpos = bounds.x + (bounds.width/2) - (bi.getWidth()/2) + gap; // + (gap/2) - (bi.getWidth()/2);
       int ypos = bounds.y - sym_h - 1;
       g.drawImage(bi, xpos, ypos , null);
-      
+
     }
-    
+
     public static BufferedImage buildSizeImage(String size, int sym_w, int sym_h, int gap) {
-      
+
       SizeOption option = findSize(size);
       String type = option.getType();
       int count = option.getCount();
-      
+
       BufferedImage bi = createImage(count, sym_w, sym_h, gap);
       Graphics2D g = bi.createGraphics();
       g.setBackground(null);
@@ -449,12 +449,12 @@ public class Symbol {
       if (w < 1) w = sym_w;
       return ImageUtils.createCompatibleTranslucentImage(w, sym_h+1);
     }
-      
+
     public static BufferedImage buildSizeImage(Graphics g, int count, String type, int sym_w, int sym_h, int gap) {
 
       Graphics2D g2 = (Graphics2D) g;
       BufferedImage bi;
-      
+
       if (type.equals(INSTALLATION_SYMBOL)) {
         bi = createImage(count, sym_w*3, sym_h, gap);
       }
@@ -464,7 +464,7 @@ public class Symbol {
       Graphics2D big = bi.createGraphics();
       big.setColor(g2.getColor());
       big.setBackground(null);
-   
+
       // Force Size symbol to be drawn 1 pixel wide with anti-aliasing to ensure readability
       big.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       big.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -473,12 +473,12 @@ public class Symbol {
       for (int i = 0; i < count; i++) {
         if (type.equals(TEAM_SYMBOL)) {
           int radius = sym_w / 2;
-          big.drawOval(x_pos, sym_h/3, radius * 2, radius * 2);  
+          big.drawOval(x_pos, sym_h/3, radius * 2, radius * 2);
           big.drawLine(x_pos, sym_h, x_pos+sym_w, 0);
         }
         else if (type.equals(SQUAD_SYMBOL)) {
           int radius = sym_w / 2;
-          big.fillOval(x_pos, sym_h/3, radius * 2, radius * 2);   
+          big.fillOval(x_pos, sym_h/3, radius * 2, radius * 2);
         }
         else if (type.equals(COMPANY_SYMBOL)) {
           big.drawLine(x_pos+sym_w/2, 0, x_pos+sym_w/2, sym_h);
@@ -492,10 +492,10 @@ public class Symbol {
         }
         x_pos += sym_w + gap;
       }
-     
+
       big.dispose();
- 
-      return bi;      
+
+      return bi;
     }
   }
 }
@@ -504,21 +504,21 @@ public class Symbol {
     String name;
     String type;
     int count;
-    
+
     public SizeOption (String n, int c, String t) {
       name = n;
       type = t;
       count = c;
     }
-    
+
     public String getName() {
       return name;
     }
-    
+
     public String getType() {
       return type;
     }
-    
+
     public int getCount() {
       return count;
     }

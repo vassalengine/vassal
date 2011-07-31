@@ -37,7 +37,7 @@ import VASSAL.configure.DirectoryConfigurer;
  * {@link java.awt.FileDialog}, selecting whichever is preferred on the
  * user's OS. <code>FileChooser</code>'s methods mirror those of
  * <code>JFileChooser</code>.
- * 
+ *
  * @author Joel Uckelman
  */
 public abstract class FileChooser {
@@ -64,7 +64,7 @@ public abstract class FileChooser {
 
   /**
    * Creates a FileChooser appropriate for the user's OS.
-   * 
+   *
    * @param parent
    *          The Component over which the FileChooser should appear.
    * @param prefs
@@ -350,8 +350,8 @@ public abstract class FileChooser {
               "parent is contained in neither a Dialog nor a Frame");
           }
         }
-      }     
- 
+      }
+
       fd.setModal(true);
       fd.setFilenameFilter(filter);
       if (cur != null) {
@@ -371,7 +371,7 @@ public abstract class FileChooser {
       System.setProperty("apple.awt.fileDialogForDirectories",
                          String.valueOf(mode == DIRECTORIES_ONLY));
       fd.setVisible(true);
-        
+
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
@@ -388,7 +388,7 @@ public abstract class FileChooser {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.SAVE);
       fd.setVisible(true);
-      
+
       final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());

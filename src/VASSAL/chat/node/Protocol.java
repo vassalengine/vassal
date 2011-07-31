@@ -48,7 +48,7 @@ public class Protocol {
   /**
    * Contains registration information sent when a client initially connects to
    * the server
-   * 
+   *
    * @param id
    * @param initialPath
    * @param info
@@ -74,7 +74,7 @@ public class Protocol {
 
   /**
    * Sent when a player wishes to join a room
-   * 
+   *
    * @param newParentPath
    * @return
    */
@@ -84,7 +84,7 @@ public class Protocol {
 
   /**
    * Sent when a player is invited to join a locked room
-   * 
+   *
    * @param newParentPath
    * @param password
    * @return
@@ -92,7 +92,7 @@ public class Protocol {
   public static String encodeJoinCommand(String newParentPath, String password) {
     return JOIN + newParentPath + "\t" + password;
   }
-  
+
   /**
    * @see #encodeJoinCommand
    * @return newParentPath
@@ -105,7 +105,7 @@ public class Protocol {
         info = new String[] {parts[1]};
       }
       else if (parts.length == 3) {
-        info = new String[] {parts[1], parts[2]}; 
+        info = new String[] {parts[1], parts[2]};
       }
     }
     return info;
@@ -113,7 +113,7 @@ public class Protocol {
 
   /**
    * Forward a message to other client nodes
-   * 
+   *
    * @param recipientPath
    *          a path name specifying the indented recipients of the message
    * @param message
@@ -139,7 +139,7 @@ public class Protocol {
 
   /**
    * Sent when a player updates his personal information
-   * 
+   *
    * @param info
    *          the encoded properties of the {@link PlayerNode} corresponding to
    *          the player
@@ -164,7 +164,7 @@ public class Protocol {
 
   /**
    * Sent when the info for a particular (non-player) node is updated
-   * 
+   *
    * @param n
    * @return
    */
@@ -177,7 +177,7 @@ public class Protocol {
   }
 
   /**
-   * 
+   *
    * @param cmd
    * @return path, info
    * @see #encodeNodeInfoCommand
@@ -195,7 +195,7 @@ public class Protocol {
 
   /**
    * Sent when a room's info changes, or to update all rooms' info at once
-   * 
+   *
    * @param rooms
    * @return
    */
@@ -226,7 +226,7 @@ public class Protocol {
   /**
    * A dump of the current connections to the server. Includes a path name and
    * info for each player node
-   * 
+   *
    * @param nodes
    * @return
    */
@@ -275,7 +275,7 @@ public class Protocol {
 
   /**
    * Sent when associating a connection with a given username
-   * 
+   *
    * @param username
    * @see ConnectionLimiter
    */
@@ -293,14 +293,14 @@ public class Protocol {
 
   /**
    * Sent by the owner of a room to kick another player back to the Main Room
-   * 
+   *
    * @param p
    * @return
    */
   public static String encodeKickCommand(String kickeeId) {
     return KICK + kickeeId;
   }
-  
+
   public static String[] decodeKickCommand(String cmd) {
     String[] player = null;
     if (cmd.startsWith(KICK)) {
@@ -308,11 +308,11 @@ public class Protocol {
     }
     return player;
   }
-  
+
   /**
    * A dump of the current connections to the server. Includes a path name and
    * info for each player node, and info for each room node as well
-   * 
+   *
    * @param nodes
    * @return public static String encodeContentsCommand(Node[] nodes) {
    *         SequenceEncoder list = new SequenceEncoder('\t'); for (int i = 0; i <

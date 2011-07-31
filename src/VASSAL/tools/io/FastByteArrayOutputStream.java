@@ -11,7 +11,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -40,12 +40,12 @@ public class FastByteArrayOutputStream extends ByteArrayOutputStream {
     super();
   }
 
-  /** 
+  /**
    * Creates a new byte array output stream, with the specified buffer
-   * capacity, in bytes. 
-   * 
+   * capacity, in bytes.
+   *
    * @param size the initial size
-   */ 
+   */
   public FastByteArrayOutputStream(int size) {
     super(size);
   }
@@ -74,7 +74,7 @@ public class FastByteArrayOutputStream extends ByteArrayOutputStream {
   /**
    * Creates an <code>InputStream</code> which reads the bytes stored by
    * this <code>FastByteArrayOutputStream</code>.
-   * 
+   *
    * @return the <code>InputStream</code> for this buffer
    */
   public InputStream toInputStream() {

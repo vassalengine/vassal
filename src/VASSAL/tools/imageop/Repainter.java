@@ -32,7 +32,7 @@ import VASSAL.tools.opcache.Op;
  * An <code>ImageOpObserver</code> which repaints {@link Component}s.
  * This class stores a reference to a <code>Component</code> and a
  * rectangle of that component which will be repainted when
- * {@link #imageOpChange} is called and <code>success</code> is true. 
+ * {@link #imageOpChange} is called and <code>success</code> is true.
  *
  * @since 3.1.0
  * @author Joel Uckelman
@@ -55,10 +55,10 @@ public class Repainter implements ImageOpObserver {
    *
    * @param c the component to repaint
    * @param x the x coordinate of the upper-left corner of the
-   *          rectangle to repaint 
+   *          rectangle to repaint
    * @param y the y coordinate of the upper-left corner of the
    *          rectangle to repaint
-   * @param w the width of the rectangle to repaint 
+   * @param w the width of the rectangle to repaint
    * @param h the height of the rectangle to repaint
    *
    * @throws IllegalArgumentException if <code>c == null</code>
@@ -97,7 +97,7 @@ public class Repainter implements ImageOpObserver {
    * {@inheritDoc}
    *
    * @param op {@inheritDoc}
-   * @param success repaint the <code>Component</code> iff <code>true</code> 
+   * @param success repaint the <code>Component</code> iff <code>true</code>
    */
   public void imageOpChange(ImageOp op, boolean success) {
     if (success) c.repaint(x, y, w, h);

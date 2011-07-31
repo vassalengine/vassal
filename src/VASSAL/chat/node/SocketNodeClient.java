@@ -87,6 +87,6 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
   }
 
   public void updateConfig(Properties params) {
-    // No Configurable parameters    
+    // No Configurable parameters
   }
 }

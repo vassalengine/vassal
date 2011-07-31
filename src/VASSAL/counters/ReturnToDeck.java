@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -160,12 +160,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     deck = pile;
     return pile;
   }
-  
+
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-    
+
     class AvailableDeck {
       private DrawPile pile;
 
@@ -177,14 +177,14 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         return pile.getConfigureName();
       }
     }
-    
+
     final List<DrawPile> piles =
       GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
 
     if (piles.size() == 0) {
       throw new IllegalStateException("No decks in module.");
     }
-    
+
     final AvailableDeck[] decks = new AvailableDeck[piles.size()];
     int i = 0;
     for (DrawPile p : piles)
@@ -250,7 +250,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(returnCommand, "Return to Deck command");
   }
-  
+
   private static class Ed implements PieceEditor {
     private StringConfigurer menuName;
     private NamedHotKeyConfigurer menuKey;

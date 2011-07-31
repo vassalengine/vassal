@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.chat;
@@ -23,14 +23,14 @@ import java.util.Map;
 
 /**
  * Represents the history and current state of connections to the chat
- * room server 
+ * room server
  *
  * @author rkinney
  */
 public interface ServerStatus {
   /** Return the current connections to the server */
   public ModuleSummary[] getStatus();
-  
+
   public String[] getSupportedTimeRanges();
 
   /**
@@ -46,7 +46,7 @@ public interface ServerStatus {
     public ModuleSummary(String moduleName) {
       this.moduleName = moduleName;
     }
-    
+
     public ModuleSummary(String moduleName, Room[] rooms) {
       this (moduleName);
       for (Room r : rooms) {
@@ -61,7 +61,7 @@ public interface ServerStatus {
     public void setModuleName( String moduleName ) {
       this.moduleName = moduleName;
     }
-    
+
     public void addRoom(Room r) {
       rooms.put(r.getName(), r);
     }
@@ -75,10 +75,10 @@ public interface ServerStatus {
     }
 
     public int numPlayers(){
-  	  Room[] roomsArray = getRooms();
-	  int n=0;
+      Room[] roomsArray = getRooms();
+    int n=0;
       for (int i = 0; i < roomsArray.length; ++i) {
-    	  n += ((SimpleRoom)roomsArray[i]).numPlayers();
+        n += ((SimpleRoom)roomsArray[i]).numPlayers();
       }
       return n;
     }

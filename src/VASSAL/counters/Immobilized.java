@@ -38,10 +38,10 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Decorator that filters events to prevent a GamePiece from
  * being selected and/or moved.
- * 
+ *
  * Note: The Alt selection filter was originally implemented
  * as a ctl-shift filter, but this conflicts with the standard counter
- * selection interface and has not worked since v3.0. 
+ * selection interface and has not worked since v3.0.
  *
  */
 public class Immobilized extends Decorator implements EditablePiece {
@@ -60,7 +60,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char MOVE_NORMAL = 'N';
   protected static final char NEVER_MOVE = 'V';
   protected static final char IGNORE_GRID = 'g';
-  protected static final char SHIFT_SELECT = 'i'; 
+  protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
 
@@ -75,8 +75,8 @@ public class Immobilized extends Decorator implements EditablePiece {
       return !evt.isAltDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   };
-  
-  
+
+
   protected class MoveIfSelected implements EventFilter {
     public boolean rejectEvent(InputEvent evt) {
       return !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
@@ -196,9 +196,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     else {
       return super.getLocalizedProperty(key);
-    }    
+    }
   }
-  
+
   public Object getProperty(Object key) {
     if (Properties.NO_STACK.equals(key)) {
       return Boolean.TRUE;
@@ -280,7 +280,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */

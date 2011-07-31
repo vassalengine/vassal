@@ -19,11 +19,11 @@
 package VASSAL.build.module;
 
 /*
- * 
+ *
  * @author Brent Easton
- * 
+ *
  * Enhanced Dice Button includes access to Internet Die Servers via the DieManager.
- * 
+ *
  */
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;

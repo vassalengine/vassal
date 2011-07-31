@@ -95,7 +95,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       final NamedNodeMap attributes = e.getAttributes();
       for (int i = 0; i < attributes.getLength(); ++i) {
         final Attr att = (Attr) attributes.item(i);
- 
+
         // Old versions of VASSAL (pre-2.9?) wrote "Retire" as the
         // icon filename for the retireButton, even when no such
         // image existed in the archive. This test blocks irritating
@@ -112,7 +112,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
           catch (IOException ex) {
             continue;
           }
-        }  
+        }
 
         retireButton.setAttribute(att.getName(), att.getValue());
         Localization.getInstance()
@@ -253,7 +253,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static String getMyLocalizedSide() {
     return getMySide(true);
   }
-  
+
   protected static String getMySide(boolean localized) {
     PlayerRoster r = getInstance();
     if (r != null) {
@@ -367,28 +367,28 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   // Implement GameSetupStep
   public boolean isFinished() {
-    
+
     // Step is always finished if all sides are allocated
     if (allSidesAllocated()) {
       return true;
     }
-    
-    // If we are already recorded as a player (i.e. in Saved Game), then 
+
+    // If we are already recorded as a player (i.e. in Saved Game), then
     // the step is only finished if we are not the Observer.
-    final PlayerInfo newPlayerInfo = 
-      new PlayerInfo(GameModule.getUserId(), 
+    final PlayerInfo newPlayerInfo =
+      new PlayerInfo(GameModule.getUserId(),
           GlobalOptions.getInstance().getPlayerId(), null);
     if (players.contains(newPlayerInfo)) {
       final PlayerInfo pi = players.get(players.indexOf(newPlayerInfo));
       return ! OBSERVER.equals(pi.getSide());
     }
- 
+
     // Step is not finished
     return false;
   }
 
   /**
-   * 
+   *
    * @return true if all sides have been claimed by a player
    */
   protected boolean allSidesAllocated() {
@@ -444,11 +444,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         return false;
       }
     }
-    
+
     public String getSide() {
       return side;
     }
-    
+
     public String getLocalizedSide() {
       return PlayerRoster.getInstance().translateSide(side);
     }
@@ -537,7 +537,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   protected StringEnumConfigurer sideConfig;
-  
+
   /**
    * PlayerRoster is not a true AbstractConfigurable, it handles
    * it's own configuration. Implement the rest of the AbstractConfigurable
@@ -580,14 +580,14 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
     else {
       retireButton.setAttribute(key, value);
-    }  
+    }
   }
-  
+
   protected String getSidesAsString() {
     String[] s = sides.toArray(new String[sides.size()]);
     return StringArrayConfigurer.arrayToString(s);
   }
-  
+
   protected String untranslateSide(String side) {
     if (untranslatedSides != null) {
       for (int i = 0; i < sides.size(); i++) {
@@ -609,7 +609,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
     return side;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[] {Resources.getString("Editor.button_text_label"), Resources.getString("Editor.tooltip_text_label"), Resources.getString("Editor.PlayerRoster.sides_label")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }

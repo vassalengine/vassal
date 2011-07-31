@@ -28,7 +28,7 @@ import VASSAL.chat.ui.ServerStatusControlsInitializer;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 
-/** 
+/**
  * Empty server
  * @author rkinney
  *

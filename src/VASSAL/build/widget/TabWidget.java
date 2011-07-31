@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.widget;
@@ -117,7 +117,7 @@ public class TabWidget extends Widget
     }
     return tab;
   }
-  
+
   public String[] getAttributeNames() {
     return new String[]{NAME};
   }

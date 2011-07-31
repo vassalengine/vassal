@@ -44,9 +44,9 @@ public class SpecialDieFace extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString("Editor.SpecialDieFace.text_value"), //$NON-NLS-1$
-    	    Resources.getString("Editor.SpecialDieFace.numeric_value"), //$NON-NLS-1$
-    	    Resources.getString("Editor.SpecialDieFace.icon") //$NON-NLS-1$
+        Resources.getString("Editor.SpecialDieFace.text_value"), //$NON-NLS-1$
+          Resources.getString("Editor.SpecialDieFace.numeric_value"), //$NON-NLS-1$
+          Resources.getString("Editor.SpecialDieFace.icon") //$NON-NLS-1$
     };
   }
 

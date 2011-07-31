@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -126,7 +126,7 @@ class PNGChunkSkipInputStream extends InputStream {
 
 /*
   public static void main(String[] args) throws Exception {
-    
+
     final InputStream fin = new PNGChunkSkipInputStream(
       java.util.Collections.singleton(PNGDecoder.iTXt),
       new java.io.FileInputStream("iTXt.png")

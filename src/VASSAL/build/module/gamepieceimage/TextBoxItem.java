@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -38,11 +38,11 @@ import VASSAL.tools.image.ImageUtils;
 public class TextBoxItem extends TextItem {
 
   public static final String TYPE = "TextBox"; //$NON-NLS-1$
-  
+
   protected static final String WIDTH = "width"; //$NON-NLS-1$
   protected static final String HEIGHT = "height"; //$NON-NLS-1$
   protected static final String USE_HTML = "use_html"; //$NON-NLS-1$
-  
+
   protected int height = 30;
   protected int width = 40;
   protected boolean isHTML = false;
@@ -59,7 +59,7 @@ public class TextBoxItem extends TextItem {
     this(l);
     setConfigureName(n);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -111,7 +111,7 @@ public class TextBoxItem extends TextItem {
       USE_HTML
     );
   }
-  
+
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
       if (o instanceof String) {
@@ -124,7 +124,7 @@ public class TextBoxItem extends TextItem {
         o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
-    }   
+    }
     else if (USE_HTML.equals(key)) {
       if (o instanceof String) {
         o = Boolean.valueOf((String)o);
@@ -134,21 +134,21 @@ public class TextBoxItem extends TextItem {
     else {
       super.setAttribute(key, o);
     }
-    
+
     if (layout != null) {
       layout.refresh();
     }
-    
+
   }
-  
+
   public String getAttributeValueString(String key) {
-    
+
     if (WIDTH.equals(key)) {
       return String.valueOf(width);
     }
     else if (HEIGHT.equals(key)) {
       return String.valueOf(height);
-    } 
+    }
     else if (USE_HTML.equals(key)) {
       return String.valueOf(isHTML);
     }
@@ -156,7 +156,7 @@ public class TextBoxItem extends TextItem {
       return super.getAttributeValueString(key);
     }
   }
-  
+
   public int getWidth() {
     return width;
   }
@@ -164,7 +164,7 @@ public class TextBoxItem extends TextItem {
   public int getHeight() {
     return height;
   }
-  
+
   public void draw(Graphics g, GamePieceImage defn) {
 
     TextBoxItemInstance tbi = null;
@@ -174,7 +174,7 @@ public class TextBoxItem extends TextItem {
     if (tbi == null) {
       tbi = new TextBoxItemInstance();
     }
-    
+
     Color fg = tbi.getFgColor().getColor();
     Color bg = tbi.getBgColor().getColor();
 
@@ -192,18 +192,18 @@ public class TextBoxItem extends TextItem {
       }
     }
 
-    if (isAntialias()) {    
+    if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    } 
+    }
     else {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
     }
-    
+
     if (bg != null) {
       g.setColor(bg);
       g.fillRect(r.x, r.y, r.width, r.height);
     }
- 
+
     JTextPane l = new JTextPane();
     if (isHTML) l.setContentType("text/html"); //$NON-NLS-1$
     l.setText(s);
@@ -224,11 +224,11 @@ public class TextBoxItem extends TextItem {
 
     g.drawImage(img, origin.x+1, origin.y+1, null);
   }
-  
+
   public String getType() {
     return TextBoxItem.TYPE;
   }
-  
+
   public String getDisplayName() {
     return "Text Box";
   }
@@ -239,36 +239,36 @@ public class TextBoxItem extends TextItem {
 
 
   public static Item decode(GamePieceLayout l, String s) {
-    
+
     TextBoxItem item = new TextBoxItem(l);
-    
+
     SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, ',');
     String s1 = sd1.nextToken(""); //$NON-NLS-1$
-    
+
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s1, ';');
     sd.nextToken();
     item.width = sd.nextInt(30);
     item.height = sd.nextInt(40);
     item.isHTML = sd.nextBoolean(false);
-    
+
     TextItem.decode(item, sd1.nextToken("")); //$NON-NLS-1$
-        
+
     return item;
   }
-  
+
   public String encode() {
-   
+
     SequenceEncoder se1 = new SequenceEncoder(TextBoxItem.TYPE, ';');
-    
+
     se1.append(width);
     se1.append(height);
     se1.append(isHTML);
-   
+
     SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), ',');
     se2.append(super.encode());
-    
+
     return se2.getValue();
   }
-  
-  
+
+
 }

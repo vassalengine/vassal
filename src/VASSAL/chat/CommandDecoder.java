@@ -27,9 +27,9 @@ import VASSAL.command.Command;
 /**
  * Listens for incoming messages (PropertyChangeEvents with name {@link ChatServerConnection.INCOMING_MSG}) and
  * interprets the message as a command to be executed
- * 
+ *
  * @author rodneykinney
- * 
+ *
  */
 public class CommandDecoder implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent evt) {

@@ -83,14 +83,14 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * Return the Class for the attributes of this object. Valid classes are: String, Integer, Double, Boolean, Image,
    * Color, and KeyStroke
-   * 
+   *
    * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
    */
   public abstract Class<?>[] getAttributeTypes();
 
   /**
    * By default, all attributes are visible
-   * 
+   *
    * @param name
    * @return
    */

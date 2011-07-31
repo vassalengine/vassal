@@ -37,11 +37,11 @@ import VASSAL.build.GameModule;
 import VASSAL.tools.io.IOUtils;
 
 /**
- * 
+ *
  * Class representing the metadata for a Module or an Extension. Modules
  * and extensions can't be differentiated until either the metadata or the
  * buildfile is parsed, so they share the same metadata structure.
- * 
+ *
  * @author Brent Easton
  * @since 3.1.0
  *
@@ -53,13 +53,13 @@ public class ModuleMetaData extends AbstractMetaData {
 
   public static final String ZIP_ENTRY_NAME = "moduledata";
   public static final String DATA_VERSION = "1";
-    
+
   protected Attribute nameAttr;
 
   public ModuleMetaData(ZipFile zip) {
     read(zip);
   }
-  
+
   public ModuleMetaData(GameModule module) {
     super();
     nameAttr = new Attribute(module, GameModule.MODULE_NAME);
@@ -76,7 +76,7 @@ public class ModuleMetaData extends AbstractMetaData {
   public String getName() {
     return nameAttr == null ? "" : nameAttr.getValue();
   }
-  
+
   public String getLocalizedName() {
     return nameAttr == null ? "" : nameAttr.getLocalizedValue();
   }
@@ -84,14 +84,14 @@ public class ModuleMetaData extends AbstractMetaData {
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
-  
+
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
-  
+
   /**
-   * Add elements specific to a ModuleMetaData 
-   * 
+   * Add elements specific to a ModuleMetaData
+   *
    * @param doc Document
    * @param root Root element
    */
@@ -103,7 +103,7 @@ public class ModuleMetaData extends AbstractMetaData {
    * Read and validate a Module file.
    *  - Check it has a Zip Entry named buildfile
    *  - If it has a metadata file, read and parse it.
-   *  
+   *
    * @param file Module File
    */
   public void read(ZipFile zip) {
@@ -119,13 +119,13 @@ public class ModuleMetaData extends AbstractMetaData {
       if (data == null) {
         data = zip.getEntry(GameModule.BUILDFILE);
         if (data == null) return;
-        
+
         handler = new ModuleBuildFileXMLHandler();
       }
       else {
         handler = new MetadataXMLHandler();
       }
-      
+
       BufferedInputStream in = null;
       try {
         in = new BufferedInputStream(zip.getInputStream(data));
@@ -138,12 +138,12 @@ public class ModuleMetaData extends AbstractMetaData {
           parser.parse(new InputSource(in));
         }
 
-        in.close(); 
+        in.close();
       }
       finally {
         IOUtils.closeQuietly(in);
       }
- 
+
       zip.close();
     }
     catch (IOException e) {
@@ -181,16 +181,16 @@ public class ModuleMetaData extends AbstractMetaData {
       }
     }
   }
-  
+
   /**
    * XML Handle for parsing a Module buildFile. Used to read minimal data from
-   * modules saved prior to 3.1.0. 
+   * modules saved prior to 3.1.0.
    */
   private class ModuleBuildFileXMLHandler extends BuildFileXMLHandler {
 
     @Override
     public void startElement(String uri, String localName,
-                             String qName, Attributes attrs) 
+                             String qName, Attributes attrs)
         throws SAXEndException {
       super.startElement(uri, localName, qName, attrs);
 

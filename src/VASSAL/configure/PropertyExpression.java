@@ -15,13 +15,13 @@ import VASSAL.tools.ErrorDialog;
  * A PropertyExpression is it's own PieceFilter.
  */
 public class PropertyExpression implements PieceFilter {
-  
+
   protected Expression expression = new NullExpression();
-  
+
   public PropertyExpression() {
 
   }
-  
+
   public PropertyExpression(String s) {
     setExpression(s);
   }
@@ -37,11 +37,11 @@ public class PropertyExpression implements PieceFilter {
   public boolean isNull() {
     return expression == null || expression instanceof NullExpression;
   }
-  
+
   public PieceFilter getFilter(PropertySource source) {
     return expression.getFilter(source);
   }
-  
+
   public PieceFilter getFilter() {
     return expression.getFilter();
   }
@@ -49,19 +49,19 @@ public class PropertyExpression implements PieceFilter {
   public boolean accept(GamePiece piece) {
     return getFilter(piece).accept(piece);
   }
-  
+
   public boolean equals(Object o) {
     if (o instanceof PropertyExpression) {
       return getExpression().equals(((PropertyExpression) o).getExpression());
     }
     return false;
   }
-  
+
   /**
    * Evaluate the Property Expression as true/false using
    * a supplied property source
-   * 
-   * @param ps Property Source   * 
+   *
+   * @param ps Property Source   *
    * @return boolean result
    */
   public boolean isTrue(PropertySource ps) {
@@ -74,6 +74,6 @@ public class PropertyExpression implements PieceFilter {
     }
     return "true".equals(result);
   }
-  
+
 }
 

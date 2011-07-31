@@ -35,14 +35,14 @@ public interface FileArchive extends Closeable {
    * Gets the path to the archive file.
    *
    * @return the path as a <code>String</code>
-   */  
+   */
   public String getName();
 
   /**
    * Gets the path to the archive file.
    *
    * @return the path as a <code>File</code>
-   */ 
+   */
   public File getFile();
 
   /**
@@ -142,7 +142,7 @@ public interface FileArchive extends Closeable {
    * Queries whether the archive is closed.
    *
    * @return <code>true</code> if the archive is closed
-   */ 
+   */
   public boolean isClosed();
 
   /**

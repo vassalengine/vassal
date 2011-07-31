@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.documentation;
@@ -82,7 +82,7 @@ public class HelpFile extends AbstractConfigurable {
     this.title = title;
     this.contents = contents;
     setConfigureName(title);
-    
+
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
@@ -90,7 +90,7 @@ public class HelpFile extends AbstractConfigurable {
         showWindow();
       }
     };
- 
+
     launch.putValue(Action.NAME, getConfigureName());
   }
 
@@ -113,20 +113,20 @@ public class HelpFile extends AbstractConfigurable {
   /**
    * Create and display a new HelpWindow as a Dialog
    * with the contents of this HelpFile
-   */  
+   */
   public void showWindow(Dialog owner) {
     final DialogHelpWindow w = getDialogHelpWindow(owner);
     w.setVisible(true);
     w.toFront();
   }
-  
+
   protected DialogHelpWindow getDialogHelpWindow(Dialog d) {
     if (dialog == null) {
       dialog = new DialogHelpWindow(title, getContents(), d);
     }
     return dialog;
   }
-  
+
   public URL getContents() {
     if (contents != null || fileName == null) return contents;
 
@@ -252,17 +252,17 @@ public class HelpFile extends AbstractConfigurable {
     MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
     launch.setEnabled(true);
   }
-  
+
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);   
+               .removeFromSection("Documentation.Module", launchItem);
     launch.setEnabled(false);
   }
 
   public static HelpFile getReferenceManualPage(String page) {
     return getReferenceManualPage(page,null);
   }
-  
+
   public static HelpFile getReferenceManualPage(String page, String anchor) {
     if (anchor != null && !anchor.startsWith("#")) { //$NON-NLS-1$
       anchor = "#"+anchor; //$NON-NLS-1$

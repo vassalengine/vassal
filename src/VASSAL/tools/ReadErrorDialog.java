@@ -46,7 +46,7 @@ public class ReadErrorDialog {
         filename
       );
     }
-    else { 
+    else {
       // something more serious happened during I/O
       ErrorDialog.showDisableable(
         t,

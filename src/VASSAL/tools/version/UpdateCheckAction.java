@@ -57,7 +57,7 @@ public class UpdateCheckAction extends AbstractAction {
     @Override
     protected void done() {
       try {
-        final VassalVersion update = get(); 
+        final VassalVersion update = get();
         if (update == null) {
           // running version is current
           JOptionPane.showMessageDialog(

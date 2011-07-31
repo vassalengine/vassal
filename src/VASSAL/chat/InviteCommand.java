@@ -43,7 +43,7 @@ public class InviteCommand extends Command {
     this.room = room;
     this.client = client;
   }
-  
+
   public InviteCommand(String player, String playerId, String room) {
     this(player, playerId, room, null);
   }
@@ -51,7 +51,7 @@ public class InviteCommand extends Command {
   public String getRoom() {
     return room;
   }
-  
+
   public String getPlayer() {
     return player;
   }
@@ -59,7 +59,7 @@ public class InviteCommand extends Command {
   public String getPlayerId() {
     return playerId;
   }
-  
+
   protected void executeCommand() {
     if (client instanceof NodeClient) {
       final int i = Dialogs.showConfirmDialog(
@@ -67,13 +67,13 @@ public class InviteCommand extends Command {
         Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
         Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
         Resources.getString("Chat.invitation", player, room),  //$NON-NLS-1$
-        JOptionPane.QUESTION_MESSAGE, 
-        null, 
+        JOptionPane.QUESTION_MESSAGE,
+        null,
         JOptionPane.YES_NO_OPTION,
         "Invite"+playerId,  //$NON-NLS-1$
         Resources.getString("Chat.ignore_invitation") //$NON-NLS-1$
       );
- 
+
       if (i == 0) {
         ((NodeClient) client).doInvite(playerId, room);
       }

@@ -135,7 +135,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$ 
+    return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
   }
 
   public static class Prompt extends StringEnum {
@@ -152,25 +152,25 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
-      StringPreference.class, 
+      StringPreference.class,
       TextPreference.class,
       EnumPreference.class,
-      IntegerPreference.class, 
-      DoublePreference.class, 
+      IntegerPreference.class,
+      DoublePreference.class,
       BooleanPreference.class
     };
   }
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
-    	null,
-    	Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
-    	Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
-    	Resources.getString("Editor.GlobalOption.playerid_format") //$NON-NLS-1$
+      Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
+      null,
+      Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalOption.playerid_format") //$NON-NLS-1$
    };
   }
-  
+
   public String[] getAttributeNames() {
     final ArrayList<String> attributes = new ArrayList<String>(
       Arrays.asList(
@@ -219,13 +219,13 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public void build(Element e) {
     if (e == null) return;
- 
+
     final NamedNodeMap nnm = e.getAttributes();
     for (int i = 0; i < nnm.getLength(); ++i) {
       final Attr att = (Attr) nnm.item(i);
       setAttribute(att.getName(), att.getValue());
     }
-    
+
     for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
       if (n.getNodeType() == Node.ELEMENT_NODE) {
         final Element element = (Element) n;
@@ -240,7 +240,7 @@ public class GlobalOptions extends AbstractConfigurable {
           }
         }
         else {
-          try { 
+          try {
             final Buildable b = Builder.create(element);
             b.addTo(this);
             add(b);

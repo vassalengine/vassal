@@ -38,7 +38,7 @@ import VASSAL.counters.KeyBuffer;
  * @see InputEvent#isConsumed */
 public class ForwardToKeyBuffer implements Buildable, KeyListener {
   private KeyEvent lastConsumedEvent;
-  
+
   public void build(org.w3c.dom.Element e) {
   }
 

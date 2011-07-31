@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -75,7 +75,7 @@ public class MultiImagePicker extends JPanel {
   public void addListSelectionListener(ListSelectionListener l) {
     imageList.addListSelectionListener(l);
   }
-  
+
   public void showSelected() {
     if (imageList.getSelectedValue() != null) {
       cl.show(multiPanel, (String) imageList.getSelectedValue());
@@ -96,7 +96,7 @@ public class MultiImagePicker extends JPanel {
   }
 
   /**
-   * Returns a list of image names in this picker. 
+   * Returns a list of image names in this picker.
    *
    * @return the list of image names
    */
@@ -109,7 +109,7 @@ public class MultiImagePicker extends JPanel {
     return names;
   }
 
-  /** Use {@link #getImageNameList()} instead. */  
+  /** Use {@link #getImageNameList()} instead. */
   @Deprecated
   public Enumeration<String> getImageNames() {
     return Collections.enumeration(getImageNameList());
@@ -150,7 +150,7 @@ public class MultiImagePicker extends JPanel {
     multiPanel.removeAll();
     cl = new CardLayout();
     multiPanel.setLayout(cl);
-    
+
     for (int i = 0; i < imageListElements.size(); i++) {
       Component c = null;
       if (i == index1) {
@@ -164,11 +164,11 @@ public class MultiImagePicker extends JPanel {
       }
       multiPanel.add(c, "Image " + (i+1));
     }
-    
+
     imageList.setSelectedIndex(index2);
     showSelected();
   }
-  
+
   public void setImageList(String names[]) {
     while (names.length > multiPanel.getComponentCount()) {
       addEntry();

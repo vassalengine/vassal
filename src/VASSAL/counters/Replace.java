@@ -32,7 +32,7 @@ import VASSAL.i18n.Resources;
  */
 public class Replace extends PlaceMarker {
   public static final String ID = "replace;";
-  
+
   public Replace() {
     this(ID + "Replace;R;null", null);
   }
@@ -62,7 +62,7 @@ public class Replace extends PlaceMarker {
     }
     return c;
   }
-  
+
   protected void selectMarker(GamePiece marker) {
     KeyBuffer.getBuffer().add(marker);
   }
@@ -78,7 +78,7 @@ public class Replace extends PlaceMarker {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Replace.htm");
   }
-  
+
   public String myGetType() {
     return ID + super.myGetType().substring(PlaceMarker.ID.length());
   }
@@ -90,12 +90,12 @@ public class Replace extends PlaceMarker {
   public GamePiece createMarker() {
     GamePiece marker = super.createMarker();
     if (marker != null && matchRotation) {
-    	if (above) {
-    		matchTraits(this, marker);
-    	}
-    	else {
-    		matchTraits(Decorator.getOutermost(this), marker);
-    	}
+      if (above) {
+        matchTraits(this, marker);
+      }
+      else {
+        matchTraits(Decorator.getOutermost(this), marker);
+      }
     }
     return marker;
   }
@@ -142,7 +142,7 @@ public class Replace extends PlaceMarker {
   }
 
   protected static class Ed extends PlaceMarker.Ed {
-	  
+
     public Ed(Replace piece) {
       super(piece);
       defineButton.setText("Define Replacement");

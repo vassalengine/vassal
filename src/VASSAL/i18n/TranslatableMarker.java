@@ -27,7 +27,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PlaceMarker;
 
 /**
- * 
+ *
  * @author Brent Easton
  *
  * A dummy AbstractConfigurable to hold a PlaceMarker or Replace definition while translating
@@ -35,13 +35,13 @@ import VASSAL.counters.PlaceMarker;
 public class TranslatableMarker extends AbstractConfigurable {
 
   protected GamePiece markerDefinition;
-  
+
   public TranslatableMarker(PlaceMarker p) {
     markerDefinition = p.createBaseMarker();
     setConfigureName(p.getDescription());
-    
+
   }
-  
+
   public static String getConfigureTypeName() {
     return "Marker Definition";
   }
@@ -49,25 +49,25 @@ public class TranslatableMarker extends AbstractConfigurable {
   public ComponentI18nData getI18nData() {
     return new ComponentI18nData(this, markerDefinition);
   }
-  
+
   public String getAttributeValueString(String attr) {
     return getI18nData().getLocalUntranslatedValue(attr);
   }
 
 
   public void setAttribute(String attr, Object value) {
-    
+
   }
 
   public void add(Buildable child) {
   }
 
   public void addTo(Buildable parent) {
-    
+
   }
 
   public void build(Element e) {
-    
+
   }
 
   public Element getBuildElement(Document doc) {
@@ -95,7 +95,7 @@ public class TranslatableMarker extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-    
+
   }
-  
+
 }

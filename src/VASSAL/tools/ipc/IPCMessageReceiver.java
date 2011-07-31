@@ -19,7 +19,7 @@ class IPCMessageReceiver implements Runnable {
     LoggerFactory.getLogger(IPCMessageReceiver.class);
 
   protected final ObjectInput in;
-  protected final MultiEventListenerSupport lsup; 
+  protected final MultiEventListenerSupport lsup;
 
   public IPCMessageReceiver(ObjectInput in,
                             MultiEventListenerSupport lsup) {

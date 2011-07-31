@@ -59,7 +59,7 @@ public class DefaultEventListenerSupport<T> implements EventListenerSupport<T> {
   public boolean hasEventListeners() {
     return !listeners.isEmpty();
   }
- 
+
   /** {@inheritDoc} */
   public List<EventListener<? super T>> getEventListeners() {
     return new ArrayList<EventListener<? super T>>(listeners);

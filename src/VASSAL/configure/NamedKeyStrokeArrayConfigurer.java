@@ -57,7 +57,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (panel == null) {
       panel = new JPanel(new BorderLayout());
       controls = Box.createVerticalBox();
-      final JScrollPane scroll = new JScrollPane(controls); 
+      final JScrollPane scroll = new JScrollPane(controls);
       Box b = Box.createHorizontalBox();
       controls.add(b);
       JLabel l = new JLabel(getName());
@@ -69,9 +69,9 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
           addKey(null);
         }
       });
-      
+
       panel.add(scroll, BorderLayout.CENTER);
-      
+
       NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
       if (keyStrokes != null) {
         for (int i = 0; i < keyStrokes.length; i++) {

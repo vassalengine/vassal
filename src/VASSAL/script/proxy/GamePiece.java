@@ -24,38 +24,38 @@ import VASSAL.script.BeanShell;
 
 /**
  * BeanShell proxy for the Vassal GamePiece object
- * 
+ *
  * BeanShell proxies control access to Vassal components and expose
- * a consistent API to BeanShell Scripts. 
+ * a consistent API to BeanShell Scripts.
  *
  * PLEASE NOTE
  * New methods may be added, but DO NOT remove or change the
  * call signature of any existing methods
  */
 public class GamePiece {
-  
+
   private VASSAL.counters.GamePiece vassalGamePiece;
-  
+
   public GamePiece(VASSAL.counters.GamePiece g) {
     setVassalGamePiece(g);
   }
-  
+
   protected void setVassalGamePiece(VASSAL.counters.GamePiece g) {
     vassalGamePiece = g;
   }
-  
+
   VASSAL.counters.GamePiece getVassalGamePiece() {
     return vassalGamePiece;
   }
-  
+
   public String getName() {
     return vassalGamePiece.getName();
   }
-  
+
   public Object getProperty(String key) {
     return BeanShell.wrap(vassalGamePiece.getProperty(key).toString());
   }
-  
+
   public Map getMap() {
     return new Map(vassalGamePiece.getMap());
   }
@@ -63,7 +63,7 @@ public class GamePiece {
   public Point getPosition() {
     return vassalGamePiece.getPosition();
   }
-  
+
   public Stack getParent() {
     return new Stack(vassalGamePiece.getParent());
   }

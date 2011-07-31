@@ -157,7 +157,7 @@ public class ServerNode extends Node {
   /**
    * One client has requested to kick another out of a room. Validate that - Both players are in the same room - Kicker
    * is the owner of the room
-   * 
+   *
    * @param kickerId
    *          Id of Kicking player
    * @param kickeeId

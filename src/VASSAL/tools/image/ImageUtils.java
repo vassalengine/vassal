@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -56,24 +56,24 @@ public class ImageUtils {
     new GeneralFilter.Lanczos3Filter();
 
   @Deprecated
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
+  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$
   private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
 
   static {
     // Initialise Image prefs prior to Preferences being read.
-    
+
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
                      RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     defaultHints.put(RenderingHints.KEY_ANTIALIASING,
                      RenderingHints.VALUE_ANTIALIAS_ON);
-  } 
+  }
 
   /** @deprecated All scaling is done with the high-quality scaler now. */
-  @Deprecated 
+  @Deprecated
   public static void setHighQualityScaling(boolean b) {}
-   
+
   public static RenderingHints getDefaultHints() {
     return new RenderingHints(defaultHints);
   }
@@ -109,7 +109,7 @@ public class ImageUtils {
     if (src.getWidth() * scale == 0 || src.getHeight() * scale == 0) {
       return NULL_IMAGE;
     }
-  
+
     // use the default hints if we weren't given any
     if (hints == null) hints = getDefaultHints();
 
@@ -119,7 +119,7 @@ public class ImageUtils {
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
       hints.put(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_OFF);
-        
+
       final Rectangle ubox = getBounds(src);
       final Rectangle tbox = transform(ubox, scale, angle);
 
@@ -198,21 +198,21 @@ public class ImageUtils {
   public static BufferedImage coerceToIntType(BufferedImage img) {
     // ensure that img is a type which GeneralFilter can handle
     switch (img.getType()) {
-    case BufferedImage.TYPE_INT_RGB:  
+    case BufferedImage.TYPE_INT_RGB:
     case BufferedImage.TYPE_INT_ARGB:
     case BufferedImage.TYPE_INT_ARGB_PRE:
-    case BufferedImage.TYPE_INT_BGR:  
+    case BufferedImage.TYPE_INT_BGR:
       return img;
     default:
       return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
-        BufferedImage.TYPE_INT_RGB : 
+        BufferedImage.TYPE_INT_RGB :
         getCompatibleTranslucentImageType() == BufferedImage.TYPE_INT_ARGB ?
           BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_ARGB_PRE);
     }
   }
 
   /**
-   * @param im 
+   * @param im
    * @return the boundaries of this image, where (0,0) is the
    * pseudo-center of the image
    */
@@ -230,7 +230,7 @@ public class ImageUtils {
                           d.height);
   }
 
-  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */ 
+  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */
   @Deprecated
   public static Dimension getImageSize(InputStream in) throws IOException {
     return getImageSize("", in);
@@ -250,7 +250,7 @@ public class ImageUtils {
     return loader.size(name, in);
   }
 
-  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */ 
+  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */
   @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
     return getImage("", in);
@@ -262,7 +262,7 @@ public class ImageUtils {
     if (in == null) throw new ImageNotFoundException(name);
     return getImage(name, in);
   }
- 
+
   public static BufferedImage getImage(String name, InputStream in)
                                                       throws ImageIOException {
     return loader.load(
@@ -305,7 +305,7 @@ public class ImageUtils {
 
   /**
    * Transform an <code>Image</code> to a <code>BufferedImage</code>.
-   * 
+   *
    * @param src the <code>Image</code> to transform
    */
   public static BufferedImage toBufferedImage(Image src) {
@@ -386,8 +386,8 @@ public class ImageUtils {
   public static final String JPEG_SUFFIX = ".jpeg";
   public static final String[] IMAGE_SUFFIXES = {
     GIF_SUFFIX, PNG_SUFFIX, SVG_SUFFIX, JPG_SUFFIX, JPEG_SUFFIX
-  };                                                           
-  
+  };
+
   public static boolean hasImageSuffix(String name) {
     final String s = name.toLowerCase();
     for (String suffix : IMAGE_SUFFIXES) {
@@ -397,7 +397,7 @@ public class ImageUtils {
     }
     return false;
   }
-  
+
   public static String stripImageSuffix(String name) {
     final String s = name.toLowerCase();
     for (String suffix : IMAGE_SUFFIXES) {

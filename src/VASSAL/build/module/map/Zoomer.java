@@ -139,7 +139,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     public State(double[] levels, int initial) {
       this.levels = levels;
       Arrays.sort(this.levels);
-      
+
       cur = this.initial = initial;
       custom = -1;
     }
@@ -154,10 +154,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       cur = this.initial = initial;
       custom = -1;
     }
-  
+
     public double getZoom() {
       return custom < 0 ? levels[cur] : custom;
-    }  
+    }
 
     public void setZoom(double z) {
       cur = Arrays.binarySearch(levels, z);
@@ -201,23 +201,23 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public boolean atLevel() {
-      return custom < 0;      
+      return custom < 0;
     }
 
     public void lowerLevel() {
       if (custom >= 0) custom = -1;
       --cur;
-    } 
+    }
 
     public void higherLevel() {
       if (custom < 0) ++cur;
       else custom = -1;
     }
-    
+
     public boolean hasLowerLevel() {
       return cur > 0;
     }
- 
+
     public boolean hasHigherLevel() {
       return custom < 0 ? cur < levels.length-1 : cur < levels.length;
     }
@@ -226,7 +226,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final ArrayList<Double> l = new ArrayList<Double>(levels.length);
       for (double d : levels) l.add(d);
       return l;
-    } 
+    }
   }
 
   public Zoomer() {
@@ -251,11 +251,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         if (zoomPickButton.isShowing()) {
           zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
         }
-      } 
+      }
     };
 
     zoomPickButton = new LaunchButton(null, PICK_TOOLTIP, PICK_BUTTON_TEXT,
-      ZOOM_PICK, PICK_ICON_NAME, zoomPick); 
+      ZOOM_PICK, PICK_ICON_NAME, zoomPick);
     zoomPickButton.setAttribute(PICK_TOOLTIP,
       Resources.getString("Zoomer.zoom_select")); //$NON-NLS-1$
     zoomPickButton.setAttribute(PICK_ICON_NAME, PICK_DEFAULT_ICON);
@@ -299,7 +299,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       PICK_TOOLTIP,
       PICK_BUTTON_TEXT,
       PICK_ICON_NAME,
-      ZOOM_PICK, 
+      ZOOM_PICK,
       OUT_TOOLTIP,
       OUT_BUTTON_TEXT,
       OUT_ICON_NAME,
@@ -367,7 +367,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public static class LevelConfig implements ConfigurerFactory {
-    public Configurer getConfigurer(AutoConfigurable c, 
+    public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new LevelConfigurer((Zoomer) c, key, name);
     }
@@ -393,7 +393,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     public LevelConfigurer(final Zoomer z, String key, String name) {
       super(key, name);
       this.z = z;
- 
+
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
@@ -427,7 +427,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           final String text = levelField.getText();
           addButton.setEnabled(text.matches(pattern) &&
             !z.state.getLevels().contains(parseLevel(text)));
-        } 
+        }
       });
 
       // rely on addButton to do the validation
@@ -469,7 +469,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           z.init();
           model.updateModel();
 
-          // adjust the selection          
+          // adjust the selection
           levelList.setSelectedIndex(
             Math.max(Math.min(rm_level, l.size()-1), 0));
           updateButtons();
@@ -483,7 +483,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       initialButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           // set the new initial scale level
-          final int i = levelList.getSelectedIndex();          
+          final int i = levelList.getSelectedIndex();
           z.state = new State(z.state.getLevels(), i);
           z.init();
           model.updateModel();
@@ -553,18 +553,18 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // add the new scale level
       final double new_level_val = parseLevel(levelField.getText());
-      l.add(new_level_val);        
+      l.add(new_level_val);
       Collections.sort(l);
 
       // find the initial scale index
       final int new_init = l.indexOf(old_init_val);
-                   
-      // adjust the state 
+
+      // adjust the state
       z.state = new State(l, new_init);
       z.init();
       model.updateModel();
-         
-      // adjust the selection 
+
+      // adjust the selection
       final int new_level = l.indexOf(new_level_val);
       levelList.setSelectedIndex(new_level);
 
@@ -586,13 +586,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
      */
     protected class LevelModel extends AbstractListModel {
       private static final long serialVersionUID = 1L;
-    
+
       public void updateModel() {
         fireContentsChanged(this, 0, z.state.getLevelCount()-1);
       }
 
       public Object getElementAt(int i) {
-        return z.state.getLevels().get(i) + 
+        return z.state.getLevels().get(i) +
           (z.state.getInitialLevel() == i ? " *" : ""); //$NON-NLS-1$ //$NON-NLS-2$
       }
 
@@ -622,7 +622,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   protected static final String ZOOM_START = "zoomStart"; //$NON-NLS-1$
   protected static final String ZOOM_LEVELS = "zoomLevels"; //$NON-NLS-1$
-  
+
   protected static final String ZOOM_IN = "zoomInKey"; //$NON-NLS-1$
   protected static final String IN_TOOLTIP = "inTooltip"; //$NON-NLS-1$
   protected static final String IN_BUTTON_TEXT = "inButtonText"; //$NON-NLS-1$
@@ -634,13 +634,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected static final String PICK_BUTTON_TEXT = "pickButtonText"; //$NON-NLS-1$
   protected static final String PICK_ICON_NAME = "pickIconName"; //$NON-NLS-1$
   protected static final String PICK_DEFAULT_ICON = "/images/zoom.png"; //$NON-NLS-1$
-  
+
   protected static final String ZOOM_OUT = "zoomOutKey"; //$NON-NLS-1$
   protected static final String OUT_TOOLTIP = "outTooltip"; //$NON-NLS-1$
   protected static final String OUT_BUTTON_TEXT = "outButtonText"; //$NON-NLS-1$
   protected static final String OUT_ICON_NAME = "outIconName"; //$NON-NLS-1$
   protected static final String OUT_DEFAULT_ICON = "/images/zoomOut.gif"; //$NON-NLS-1$
-  
+
   public void addTo(Buildable b) {
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
@@ -660,7 +660,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       //
       // 1. ZOOM_START is one-based, not zero-based.
       // 2. The levels in state run from zoomed out to zoomed in,
-      // while the levels coming from outside Zoomer run from 
+      // while the levels coming from outside Zoomer run from
       // zoomed in to zoomed out. Hence we reverse the initial
       // zoom level being returned here.
       //
@@ -698,20 +698,20 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         //
         // 1. ZOOM_START is one-based, not zero-based.
         // 2. The levels in state run from zoomed out to zoomed in,
-        // while the levels coming from outside Zoomer run from 
+        // while the levels coming from outside Zoomer run from
         // zoomed in to zoomed out. Hence we reverse the initial
         // zoom level being set here.
         //
         final List<Double> levels = state.getLevels();
         final int initial =
           Math.max(0, Math.min(levels.size()-1, levels.size()-(Integer) val));
-        
+
         state = new State(levels, initial);
 
         if (deprecatedFactor > 0 && deprecatedMax > 0) {
           // zero these to prevent further adjustments due to old properties
           deprecatedFactor = 0.0;
-          deprecatedMax = 0;  
+          deprecatedMax = 0;
         }
 
         init();
@@ -728,7 +728,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         for (String s : (String[]) val) {
           levels.add(Double.valueOf(s));
         }
-  
+
         state = new State(levels,
           Math.min(state.getInitialLevel(), levels.size()-1));
         init();
@@ -751,7 +751,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-  
+
       if (val != null) {
         deprecatedMax = (Integer) val;
 
@@ -836,7 +836,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     if (state.hasHigherLevel()) {
       final Point center = getMapCenter();
       state.higherLevel();
-      updateZoomer(center); 
+      updateZoomer(center);
     }
   }
 
@@ -878,7 +878,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     private static final String OTHER = "Other..."; //$NON-NLS-1$
     private static final String FIT_WIDTH = "Fit Width"; //$NON-NLS-1$
-    private static final String FIT_HEIGHT = "Fit Height"; //$NON-NLS-1$ 
+    private static final String FIT_HEIGHT = "Fit Height"; //$NON-NLS-1$
     private static final String FIT_VISIBLE = "Fit Visible";  //$NON-NLS-1$
 
     private static final long serialVersionUID = 1L;
@@ -943,10 +943,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
       catch (NumberFormatException e) {
       }
-      
+
       final String cmd = a.getActionCommand();
 
-      if (OTHER.equals(cmd)) {      
+      if (OTHER.equals(cmd)) {
         final ZoomDialog dialog = new ZoomDialog((Frame)
           SwingUtilities.getAncestorOfClass(Frame.class, map.getView()),
           Resources.getString("Zoomer.ZoomDialog.title"), true); //$NON-NLS-1$
@@ -1007,10 +1007,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     protected final SpinnerNumberModel ratioNumeratorModel;
     protected final SpinnerNumberModel ratioDenominatorModel;
     protected final SpinnerNumberModel percentModel;
-    protected final JButton okButton;   
+    protected final JButton okButton;
 
     private static final long serialVersionUID = 1L;
- 
+
     public ZoomDialog(Frame owner, String title, boolean modal) {
       super(owner, title, modal);
 
@@ -1078,14 +1078,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       c.insets = dinset;
       c.anchor = GridBagConstraints.LINE_START;
       controlsPane.add(percentBox, c);
-     
+
       percentModel =
         new SpinnerNumberModel(state.getZoom()*100.0, 0.39, 25600.0, 10.0);
       percentSpinner = new JSpinner(percentModel);
       percentLabel.setLabelFor(percentSpinner);
       percentSpinner.addChangeListener(this);
       percentBox.add(percentSpinner);
- 
+
       updateRatio();
 
       percentBox.add(Box.createHorizontalStrut(hsep));
@@ -1102,7 +1102,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       buttonBox.add(okButton);
 
       buttonBox.add(Box.createHorizontalStrut(hsep));
- 
+
       final JButton cancelButton = new JButton(
         Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(this);
@@ -1161,7 +1161,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     private void updateRatio() {
       // Warning: Heavy maths ahead!
-      // 
+      //
       // This algorithm borrowed from gimpzoommodel.c in LIBGIMP:
       // http://svn.gnome.org/viewcvs/gimp/trunk/libgimpwidgets/gimpzoommodel.c
       //
@@ -1169,14 +1169,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // for a discussion of calculating continued fractions by convergeants.
 
       double z = percentModel.getNumber().doubleValue() / 100.0;
-    
+
       // we want symmetric behavior, so find reciprocal when zooming out
       boolean swapped = false;
       if (z < 1.0) {
         z = 1.0/z;
         swapped = true;
       }
-      
+
       // calculate convergeants
       int p0 = 1;
       int q0 = 0;
@@ -1184,15 +1184,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       int q1 = 1;
       int p2;
       int q2;
-  
+
       double r = z - p1;
       double next_cf;
-      
+
       while (Math.abs(r) >= 0.0001 &&
              Math.abs((double)p1/q1 - z) > 0.0001) {
         r = 1.0/r;
         next_cf = Math.floor(r);
-  
+
         p2 = (int)(next_cf * p1 + p0);
         q2 = (int)(next_cf * q1 + q0);
 
@@ -1200,19 +1200,19 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         // and also exclude absurd ratios like 170:171.
         if (p2 > 256 || q2 > 256 || (p2 > 1 && q2 > 1 && p2 * q2 > 200))
           break;
- 
-        // remember the last two fractions 
+
+        // remember the last two fractions
         p0 = p1;
         p1 = p2;
         q0 = q1;
         q1 = q2;
-  
+
         r -= next_cf;
       }
-  
+
       z = (double)p1/q1;
- 
-      // hard upper and lower bounds for zoom ratio 
+
+      // hard upper and lower bounds for zoom ratio
       if (z > 256.0) {
         p1 = 256;
         q1 = 1;
@@ -1221,20 +1221,20 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         p1 = 1;
         q1 = 256;
       }
-   
+
       if (swapped) {
         final int tmp = p1;
         p1 = q1;
         q1 = tmp;
       }
- 
+
       // disconnect listeners to prevent circularity
       ratioNumeratorSpinner.removeChangeListener(this);
       ratioDenominatorSpinner.removeChangeListener(this);
-   
+
       ratioNumeratorModel.setValue(p1);
       ratioDenominatorModel.setValue(q1);
-  
+
       ratioNumeratorSpinner.addChangeListener(this);
       ratioDenominatorSpinner.addChangeListener(this);
     }

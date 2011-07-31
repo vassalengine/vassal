@@ -37,9 +37,9 @@ import VASSAL.tools.ToolBarComponent;
 
 /**
  * Adds a global property to a Map or Module
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource, MutableProperty {
   public static final String NAME = "name";
@@ -73,7 +73,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name",
-      "Initial value:  ", 
+      "Initial value:  ",
       "Description:  ",
       "Is Numeric",
       "Minimum value:  ",
@@ -219,7 +219,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
     return comm;
   }
-  
+
   /**
    * A String that identifies this property in an encoded Command
    * @return
@@ -325,7 +325,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public static String getConfigureTypeName() {
     return "Global Property";
   }
-  
+
   public void addMutablePropertyChangeListener(PropertyChangeListener l) {
     property.addMutablePropertyChangeListener(l);
   }

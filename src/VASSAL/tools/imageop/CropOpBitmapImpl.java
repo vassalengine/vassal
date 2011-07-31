@@ -42,7 +42,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   private final ImageOp sop;
   private final int x0, y0, x1, y1;
   private final int hash;
- 
+
   /**
    * Constructs an <code>ImageOp</code> which will crop the image
    * produced by its source <code>ImageOp</code>.
@@ -85,7 +85,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
 
     for (Point tile : tiles) ops.add(sop.getTileOp(tile));
 
-    return ops; 
+    return ops;
   }
 
   /**
@@ -117,7 +117,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     return dst;
   }
 
-  protected void fixSize() {} 
+  protected void fixSize() {}
 
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new CropOpBitmapImpl(this,
@@ -163,7 +163,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
            y0 == op.getY0() &&
            x1 == op.getX1() &&
            y1 == op.getY1() &&
-           sop.equals(op.sop); 
+           sop.equals(op.sop);
   }
 
   /** {@inheritDoc} */

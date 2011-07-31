@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools;
@@ -69,7 +69,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
 
     super(view, vsbPolicy, hsbPolicy);
 
-    // set configurer      
+    // set configurer
     final IntConfigurer config = new IntConfigurer(
       SCROLL_SPEED,
       Resources.getString("AdjustableSpeedScrollPane.scroll_increment"),

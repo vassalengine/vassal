@@ -95,7 +95,7 @@ public class GameState implements CommandEncoder {
   protected String lastSave;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
-  
+
   public GameState() {}
 
   /**
@@ -183,7 +183,7 @@ public class GameState implements CommandEncoder {
   public void removeGameComponent(GameComponent theComponent) {
     gameComponents.remove(theComponent);
   }
-  
+
   /**
    * @return an enumeration of all {@link GameComponent} objects
    * that have been added to this GameState
@@ -207,7 +207,7 @@ public class GameState implements CommandEncoder {
   public void addGameSetupStep(GameSetupStep step) {
     setupSteps.add(step);
   }
-  
+
   /** Remove a {@link GameSetupStep} */
   public void removeGameSetupStep(GameSetupStep step) {
     setupSteps.remove(step);
@@ -226,37 +226,37 @@ public class GameState implements CommandEncoder {
     }
     return l.iterator();
   }
-  
+
   /* Using an instance variable allows us to shut down in the
      middle of a startup. */
   private boolean gameStarting = false;
   private boolean gameStarted = false;
- 
-  // 
+
+  //
   // FIXME: This will become unnecessary when we do model-view separation.
   //
   private volatile boolean gameUpdating = false;
 
-  /** 
+  /**
    * Start a game for updating (via editor).
    * <em>NOTE: This method is not for use in custom code.</em>
    */
   public void setup(boolean gameStarting, boolean gameUpdating) {
-	  this.gameUpdating = gameUpdating;
-	  setup(gameStarting);
+    this.gameUpdating = gameUpdating;
+    setup(gameStarting);
   }
-  
+
   /**
    * Indicated game update is completed and game is saved.
    */
   public void updateDone() {
-	  this.gameUpdating = false;
+    this.gameUpdating = false;
   }
-  
+
   public boolean isUpdating() {
-	  return this.gameUpdating;
+    return this.gameUpdating;
   }
-  // 
+  //
   // END FIXME
   //
 
@@ -338,7 +338,7 @@ public class GameState implements CommandEncoder {
         WarningDialog.show("GameState.invalid_save_file", f.getPath());
         return;
       }
-      
+
       // Check it belongs to this module and matches the version if is a
       // post 3.0 save file
       final SaveMetaData saveData = (SaveMetaData) metaData;
@@ -349,7 +349,7 @@ public class GameState implements CommandEncoder {
         final String moduleName = GameModule.getGameModule().getGameName();
         final String moduleVersion = GameModule.getGameModule().getGameVersion();
         String message = null;
-        
+
         if (! saveModuleName.equals(moduleName)) {
           message = Resources.getString("GameState.load_module_mismatch", f.getName(), saveModuleName, moduleName);
         }
@@ -360,15 +360,15 @@ public class GameState implements CommandEncoder {
           if (JOptionPane.showConfirmDialog(
               null,
               message,
-              Resources.getString("GameState.load_mismatch"),              
+              Resources.getString("GameState.load_mismatch"),
               JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
-            GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));            
+            GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));
             return;
           }
         }
       }
-      
+
       if (gameStarted) {
         loadContinuation(f);
       }
@@ -542,9 +542,9 @@ public class GameState implements CommandEncoder {
       return null;
     }
   }
-  
+
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
-  
+
   /**
    * Return a {@link Command} that, when executed, will restore the
    * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
@@ -630,7 +630,7 @@ public class GameState implements CommandEncoder {
 
     Launcher.getInstance().sendSaveCmd(f);
   }
-  
+
   public void loadGameInBackground(final File f) {
     try {
       loadGameInBackground(f.getName(),
@@ -667,7 +667,7 @@ public class GameState implements CommandEncoder {
           String msg = null;
           try {
             loadCommand = get();
-  
+
             if (loadCommand != null) {
               msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
               if (loadComments != null && loadComments.length() > 0) {
@@ -676,7 +676,7 @@ public class GameState implements CommandEncoder {
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
-            } 
+            }
           }
           catch (InterruptedException e) {
             ErrorDialog.bug(e);
@@ -696,7 +696,7 @@ public class GameState implements CommandEncoder {
             }
             msg = Resources.getString("GameState.error_loading", shortName);
           }
-  
+
           if (loadCommand != null) {
             loadCommand.execute();
           }
@@ -725,7 +725,7 @@ public class GameState implements CommandEncoder {
       if (p.getParent() == null) {
         index = pieceList.size();
       }
-      // TODO remove stacks that were empty when the game was loaded and are still empty now 
+      // TODO remove stacks that were empty when the game was loaded and are still empty now
       pieceList.add(index, p);
     }
 
@@ -748,7 +748,7 @@ public class GameState implements CommandEncoder {
     return decodeSavedGame(
       new BufferedInputStream(new FileInputStream(saveFile)));
   }
-  
+
   public Command decodeSavedGame(InputStream in) throws IOException {
     ZipInputStream zipInput = null;
     try {

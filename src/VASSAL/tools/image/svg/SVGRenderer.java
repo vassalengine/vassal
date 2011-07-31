@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -65,7 +65,7 @@ import VASSAL.tools.io.IOUtils;
  *
  * @author Joel Uckelman
  * @since 3.1.0
- */ 
+ */
 public class SVGRenderer {
   private static final Logger logger =
     LoggerFactory.getLogger(SVGRenderer.class);
@@ -74,7 +74,7 @@ public class SVGRenderer {
     new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
   private static final ImageRendererFactory rendFactory =
     new ConcreteImageRendererFactory();
- 
+
   private final Document doc;
   private final float defaultW, defaultH;
   private final Rasterizer r = new Rasterizer();
@@ -166,9 +166,9 @@ public class SVGRenderer {
       logger.error("", e);
     }
 
-    return null; 
+    return null;
   }
- 
+
   private static class DataArchiveDocumentLoader extends DocumentLoader {
     public DataArchiveDocumentLoader(UserAgent userAgent) {
       super(userAgent);
@@ -208,7 +208,7 @@ public class SVGRenderer {
     protected BridgeContext createBridgeContext() {
       return new BridgeContext(userAgent, docLoader);
     }
-    
+
     @Override
     protected void transcode(Document document,
                              String uri,
@@ -263,7 +263,7 @@ public class SVGRenderer {
       }
       g2d.dispose();
       rend = null; // We're done with it...
-        
+
       writeImage(dest, output);
     }
 
@@ -277,7 +277,7 @@ public class SVGRenderer {
 
     public void setTransform(AffineTransform px) {
       xform = px;
-    } 
+    }
   }
 
   public static final TranscodingHints.Key KEY_BACKGROUND_COLOR =

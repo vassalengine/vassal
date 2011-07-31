@@ -31,9 +31,9 @@ import VASSAL.tools.ToolBarComponent;
 
 /**
  * Dummy component that acts as a simple container for GlobalProperty components
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
   private TemporaryToolBar tempToolbar = new TemporaryToolBar();
@@ -53,11 +53,11 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public String[] getAttributeNames() {
     return new String[0];
   }
-  
+
   public Configurer getConfigurer() {
     return null;
   }
-  
+
   public static String getConfigureTypeName() {
     return "Global Properties";
   }
@@ -92,7 +92,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     GameModule.getGameModule().addCommandEncoder(
       new ChangePropertyCommandEncoder(this));
   }
-  
+
   public void addMutableProperty(String key, MutableProperty p) {
     if (parent == null) {
       initialValues.put(key,p);
@@ -122,7 +122,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public Object getLocalizedProperty(Object key) {
     return propertySource == null ? null : propertySource.getLocalizedProperty(key);
   }
-  
+
    public GlobalProperty getMutableProperty(String name) {
    GlobalProperty property = null;
     for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
@@ -132,14 +132,14 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
     return property;
   }
-  
+
   /*
    * Null i18n key prefix for this component
    */
   public String getI18nPrefix() {
     return "";
   }
-  
+
   public MutablePropertiesContainer getParent() {
     return parent;
   }

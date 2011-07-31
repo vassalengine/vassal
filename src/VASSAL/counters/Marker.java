@@ -35,7 +35,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A generic Decorator that retains in its state the value of a property. 
+ * A generic Decorator that retains in its state the value of a property.
  * That is, if {@link #setProperty(Object,Object)} is invoked with a key
  * that is one of {@link #getKeys()}, the <code>String</code> value of that
  * property will be reflected in the {@link #myGetState(String)} method.
@@ -95,7 +95,7 @@ public class Marker extends Decorator implements EditablePiece {
     }
     return super.getProperty(key);
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     for (int i = 0; i < keys.length; ++i) {
       if (keys[i].equals(key)) {
@@ -175,7 +175,7 @@ public class Marker extends Decorator implements EditablePiece {
     }
     return l;
   }
-  
+
   private static class Ed implements PieceEditor {
     private StringConfigurer propName;
     private StringConfigurer propValue;

@@ -23,7 +23,7 @@ public abstract class AbstractProxy<T extends JComponent>
   protected void processQueue() {
     Reference<? extends T> ref;
     while ((ref = queue.poll()) != null) {
-      peers.remove(ref); 
+      peers.remove(ref);
     }
   }
 

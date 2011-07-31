@@ -127,7 +127,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             JMenuItem command = commands.get(strokes.indexOf(stroke));
             Action action = command.getAction();
             if (action != null) {
-              String commandName = 
+              String commandName =
                 (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
                   commandName.length() < c[i].getName().length()) {
@@ -161,7 +161,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
 
       // Move commands from main menu into submenus
-      for (java.util.Map.Entry<KeyCommandSubMenu,JMenu> e : 
+      for (java.util.Map.Entry<KeyCommandSubMenu,JMenu> e :
                                                         subMenus.entrySet()) {
         final KeyCommandSubMenu menuCommand = e.getKey();
         final JMenu subMenu = e.getValue();
@@ -177,7 +177,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
       }
-      
+
       // Promote contents of a single submenu
       if (commands.size() == 1) {
         if (commands.get(0) instanceof JMenu) {
@@ -189,7 +189,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         }
       }
 
-      for (JMenuItem item : commands) {      
+      for (JMenuItem item : commands) {
         popup.add(item);
       }
     }

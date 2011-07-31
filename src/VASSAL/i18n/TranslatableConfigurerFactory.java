@@ -22,7 +22,7 @@ import VASSAL.configure.ConfigurerFactory;
 
 /*
  * Custom configurers that implement TranslatableConfigurerFactory
- * will 
+ * will
  */
 public interface TranslatableConfigurerFactory extends ConfigurerFactory {
 

@@ -52,7 +52,7 @@ public class Region extends AbstractConfigurable {
     this();
     origin = p;
   }
-  
+
   public Region(Region r) {
     setConfigureName(r.getName());
     origin.x = r.getOrigin().x;
@@ -67,7 +67,7 @@ public class Region extends AbstractConfigurable {
   public String getLocalizedName() {
     return getLocalizedConfigureName();
   }
-  
+
   public Rectangle getSelectionRect() {
     return selectionRect;
   }
@@ -181,7 +181,7 @@ public class Region extends AbstractConfigurable {
   public String localizedLocationName() {
     return getLocalizedConfigureName();
   }
-  
+
   public boolean isSelected() {
     return selected;
   }
@@ -201,9 +201,9 @@ public class Region extends AbstractConfigurable {
 
     int newX = getOrigin().x + dx;
     int newY = getOrigin().y + dy;
-    
+
     Dimension d = myGrid.container.getSize();
-    
+
     if (newX >= 0 && newX < d.width && newY >= 0 && newY < d.height) {
       moveOrigin(dx, dy);
     }
@@ -217,7 +217,7 @@ public class Region extends AbstractConfigurable {
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
     draw(g, bounds, visibleRect, scale, reversed, 0, 0);
   }
-  
+
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed, int xOffset, int yOffset) {
     if (!bounds.intersects(visibleRect)) {
       return;

@@ -48,7 +48,7 @@ public class LongConfigurer extends StringConfigurer {
       setValue(l);
     }
   }
-  
+
   public long getLongValue(long defaultValue) {
     if (getValue() instanceof Long) {
       return ((Long) getValue()).longValue();

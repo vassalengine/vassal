@@ -1,7 +1,7 @@
 /*
  * $Id: TileSlicer.java 7650 2011-02-26 18:41:20Z uckelman $
  *
- * Copyright (c) 2010, 2011 by Joel Uckelman 
+ * Copyright (c) 2010, 2011 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,11 +37,11 @@ import VASSAL.tools.lang.Callback;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public class TileSlicerImpl implements TileSlicer {
   /**
    * Slices an image into tiles.
-   * 
+   *
    * @param src the source image
    * @param iname the basename for the tiles
    * @param tpath the path for the tiles
@@ -91,14 +91,14 @@ public class TileSlicerImpl implements TileSlicer {
     for (int div = 2; sw/div > 0 && sh/div > 0; div <<= 1) {
       final int dw = sw/div;
       final int dh = sh/div;
- 
+
       queueTileTasks(
         src, iname, tpath, div, tw, th, dw, dh, scaled, exec, futures
       );
     }
 
     // wait for all tiles to complete
-    try { 
+    try {
       for (Future<Void> f : futures) {
         f.get();
         progress.receive(null);
@@ -140,11 +140,11 @@ public class TileSlicerImpl implements TileSlicer {
     TaskMaker tm,
     ExecutorService exec,
     List<Future<Void>> futures
-  ) 
+  )
   {
     final int tcols = (int) Math.ceil((double) dw / tw);
     final int trows = (int) Math.ceil((double) dh / th);
-  
+
     for (int tx = 0; tx < tcols; ++tx) {
       for (int ty = 0; ty < trows; ++ty) {
         final String tn = TileUtils.tileName(iname, tx, ty, div);

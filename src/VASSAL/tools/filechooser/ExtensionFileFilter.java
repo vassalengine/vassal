@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.filechooser;
@@ -54,7 +54,7 @@ public class ExtensionFileFilter extends FileFilter {
     }
     return false;
   }
- 
+
   /**
    * @return The description of this filter.
    */

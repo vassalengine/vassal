@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.i18n;
@@ -124,7 +124,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
     });
   }
-  
+
   protected Component getHeaderPanel() {
     JPanel langPanel = new JPanel();
     langPanel.add(new JLabel("Language:  "));
@@ -142,18 +142,18 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       langBox.setSelectedIndex(0);
     }
     langPanel.setMinimumSize(new Dimension(800, 0));
-    
+
     JButton addButton = new JButton("Add translation");
     addButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        getNewTranslation();   
+        getNewTranslation();
       }});
-    
+
     langPanel.add(addButton);
-    
+
     return langPanel;
   }
-  
+
   /**
    * User has clicked on the Add Translation button. Create a new
    * PropertiesWindow for a translation and display it.
@@ -164,7 +164,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     PropertiesWindow w = new MyPropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), false, t, null, this);
     w.setVisible(true);
   }
-  
+
   /**
    * Called from MyPropertiesWindow when the user saves the new translation
    * @param target new Translation
@@ -183,7 +183,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     keyTable.setEnabled(true);
     tree.repaint();
   }
-   
+
   protected static class MyPropertiesWindow extends PropertiesWindow {
     private static final long serialVersionUID = 1L;
     protected Configurable myTarget;
@@ -201,7 +201,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       dispose();
     }
   }
-  
+
   protected Component buildMainPanel() {
     JPanel keyPanel = buildKeyTablePanel();
 
@@ -227,7 +227,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
      */
     JSplitPane split1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treePanel, keyPanel);
     split1.setResizeWeight(0.5);
-    
+
     return split1;
   }
 
@@ -251,7 +251,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     keyTable.getSelectionModel().addListSelectionListener(this);
     keyTable.setEnabled(currentTranslation != null);
-        
+
     JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     keyPanel.add(keyScroll, BorderLayout.CENTER);
@@ -259,7 +259,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     keyPanel.setPreferredSize(new Dimension(800, 200));
     return keyPanel;
   }
-  
+
   protected Component getButtonPanel() {
     final JPanel buttonBox = new JPanel();
 
@@ -292,7 +292,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     return buttonBox;
   }
-  
+
   // Workaround for JRE Bug 4709394 - Cell editing lost when JTable loses
   // focus. Call this all over the place!
   protected void commitTableEdit() {
@@ -346,10 +346,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     if (keys != null && keys.length > 0) {
       keyTable.getSelectionModel().setSelectionInterval(0, 0);
     }
-    ((MyTableModel) keyTable.getModel()).update();   
+    ((MyTableModel) keyTable.getModel()).update();
   }
 
- 
+
   /**
    * When a key is selected in the table, display the source and translated
    * texts in the right hand panels
@@ -431,7 +431,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save button clicked
-   * @throws IOException 
+   * @throws IOException
    */
   protected void save() throws IOException {
     commitTableEdit();
@@ -442,7 +442,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save the current Translation
-   * @throws IOException 
+   * @throws IOException
    */
   protected boolean saveTranslation() throws IOException {
     if (currentTranslation != null) {
@@ -453,7 +453,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Reload the current translation from the archive
-   * @throws IOException 
+   * @throws IOException
    */
   protected void reloadTranslation() throws IOException {
     if (currentTranslation != null) {
@@ -475,7 +475,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       setDefaultEditor( JComponent.class, new JComponentCellEditor() );
 
     }
-    
+
     public TableCellRenderer getCellRenderer(int row, int column) {
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
@@ -491,7 +491,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
       return renderer;
     }
-    
+
     public TableCellEditor getCellEditor(int row, int column) {
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellEditor editor = tableColumn.getCellEditor();
@@ -509,7 +509,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
 
   }
-  
+
   /**
    * Custome Cell Renderer to support CopyButtons in JTable cells
    *
@@ -528,29 +528,29 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    */
   protected static class JComponentCellEditor
                      implements TableCellEditor, TreeCellEditor, Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     protected EventListenerList listenerList = new EventListenerList();
     transient protected ChangeEvent changeEvent = null;
-    
+
     protected JComponent editorComponent = null;
     protected JComponent container = null;    // Can be tree or table
-    
-    
+
+
     public Component getComponent() {
       return editorComponent;
     }
-    
-    
+
+
     public Object getCellEditorValue() {
       return editorComponent;
     }
-    
+
     public boolean isCellEditable(EventObject anEvent) {
       return true;
     }
-    
+
     public boolean shouldSelectCell(EventObject anEvent) {
       if( editorComponent != null && anEvent instanceof MouseEvent
         && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
@@ -560,17 +560,17 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
       return false;
     }
-    
+
     public boolean stopCellEditing() {
       return true;
     }
-    
+
     public void cancelCellEditing() {
     }
-    
+
     public void addCellEditorListener(CellEditorListener l) {
     }
-    
+
     public void removeCellEditorListener(CellEditorListener l) {
     }
 
@@ -579,24 +579,24 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       boolean isSelected, boolean expanded, boolean leaf, int row) {
 //      String stringValue = tree.convertValueToText(value, isSelected,
 //        expanded, leaf, row, false);
-      
+
       editorComponent = (JComponent)value;
       container = tree;
       return editorComponent;
     }
-    
+
     // implements javax.swing.table.TableCellEditor
     public Component getTableCellEditorComponent(JTable table, Object value,
       boolean isSelected, int row, int column) {
-      
+
       editorComponent = (JComponent)value;
       container = table;
       return editorComponent;
     }
-    
+
   } // End of class JComponentCellEditor
 
-  
+
   /**
    * Custom Key Table Model
    */
@@ -604,7 +604,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   static final int SOURCE_COL = 1;
   static final int CC_COL = 2;
   static final int TRAN_COL = 3;
-  
+
   class MyTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 1L;
@@ -727,10 +727,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     public void actionPerformed(ActionEvent e) {
       String key = keys[row];
-      currentKey = keyTarget.getI18nData().getFullPrefix() +  key; //$NON-NLS-1$  
+      currentKey = keyTarget.getI18nData().getFullPrefix() +  key; //$NON-NLS-1$
       currentTranslation.setProperty(currentKey, keyTarget.getAttributeValueString(keys[row]));
       checkEnabled();
-      ((MyTableModel) keyTable.getModel()).update();   
+      ((MyTableModel) keyTable.getModel()).update();
     }
     public void checkEnabled() {
       if (keyTarget != null && keys != null && keys[row] != null) {
@@ -740,7 +740,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       else {
         setEnabled(true);
       }
-        
+
     }
   }
   /**

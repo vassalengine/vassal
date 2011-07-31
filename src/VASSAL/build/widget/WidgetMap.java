@@ -24,7 +24,7 @@ public class WidgetMap extends Map {
       toolBar.setVisible(false);
     }
   }
-  
+
   /**
    * Widget maps are always undocked
    */

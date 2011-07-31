@@ -27,45 +27,45 @@ import javax.swing.KeyStroke;
  * A NamedKeyStroke is a KeyStroke with a name given by the module developer.
  * An actual KeyStroke is allocated from a pool of KeyStrokes at run-time and
  * associated with the name.
- * 
+ *
  * KeyStrokes have been replaced by NamedKeyStrokes within Vassal wherever
  * the Stroke is saved. A standard KeyStroke is represented as a NamedKeyStroke
- * with a null or zero-length name. 
+ * with a null or zero-length name.
  *
  * NamedKeyStroke variables should never be null, use NULL_KEYSTROKE to
  * represent a NamedKeyStroke with no value.
  */
 public class NamedKeyStroke {
   public static final NamedKeyStroke NULL_KEYSTROKE = new NamedKeyStroke();
-  
+
   protected KeyStroke stroke;
   protected String name;
-  
+
   public NamedKeyStroke(int code, int modifiers) {
     this(code, modifiers, null);
   }
-  
+
   public NamedKeyStroke(int code, int modifiers, String s) {
     this(KeyStroke.getKeyStroke(code, modifiers), s);
   }
-   
+
   public NamedKeyStroke(KeyStroke k, String s) {
     stroke = k;
     name = s;
   }
-  
+
   public NamedKeyStroke(KeyStroke k) {
     this(k, null);
   }
-  
+
   public NamedKeyStroke(String s) {
     this(NamedKeyManager.getMarkerKeyStroke(), s);
   }
-  
+
   public NamedKeyStroke() {
     this(null, null);
   }
-  
+
   /**
    * Is there a name associated with this KeyStroke? No name means
    * it is a standard KeyStroke.
@@ -74,7 +74,7 @@ public class NamedKeyStroke {
   public boolean isNamed() {
     return ! (name == null || name.length() == 0);
   }
-  
+
   public String getName() {
     return name;
   }
@@ -82,7 +82,7 @@ public class NamedKeyStroke {
   public boolean isNull() {
     return (stroke == null && name == null) || (stroke != null & stroke.getKeyCode() == 0 && stroke.getModifiers() == 0);
   }
-  
+
   /**
    * Return the raw KeyStroke stored in this NamedKeyStroke
    * @return KeyStroke
@@ -90,7 +90,7 @@ public class NamedKeyStroke {
   public KeyStroke getStroke() {
     return stroke;
   }
- 
+
   public boolean equals(Object o) {
     if (o instanceof NamedKeyStroke) {
       if (getKeyStroke() == null) {
@@ -109,7 +109,7 @@ public class NamedKeyStroke {
     }
     return false;
   }
-  
+
   /**
    * Return the allocated KeyStroke associated with this KeyStroke
    */
@@ -125,17 +125,17 @@ public class NamedKeyStroke {
   public static NamedKeyStroke getNamedKeyStroke(char c) {
     return getNamedKeyStroke(c, 0);
   }
-  
+
   public static NamedKeyStroke getNamedKeyStroke(char c, int mod) {
     return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
   }
-  
+
   public static NamedKeyStroke getNamedKeyStroke(int c, int mod) {
     return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
   }
-  
+
   public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
     return new NamedKeyStroke(KeyStroke.getKeyStrokeForEvent(e));
   }
-  
+
 }

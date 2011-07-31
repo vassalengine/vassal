@@ -47,7 +47,7 @@ import VASSAL.tools.imports.adc2.SymbolSet;
 
 /**
  * Action for importing foreign modules into VASSAL.
- * 
+ *
  * @author Michael Kiefte
  * @since 3.1.0
  */
@@ -70,13 +70,13 @@ public final class ImportAction extends EditModuleAction {
    * They should be ordered in priority from most likely to least likely. File formats
    * with complex file headers should take greater priority.
    */
-  
+
   private static final String[] EXTENSIONS = {
     ADC2Utils.MODULE_EXTENSION,
     ADC2Utils.MAP_EXTENSION,
     ADC2Utils.SET_EXTENSION,
   };
-  
+
   private static final String[] DESCRIPTIONS = {
     ADC2Utils.MODULE_DESCRIPTION,
     ADC2Utils.MAP_DESCRIPTION,
@@ -86,8 +86,8 @@ public final class ImportAction extends EditModuleAction {
   /*
    * These classes must descend from Importer.
    */
-    
-  private static final Class<?>[] IMPORTERS = { 
+
+  private static final Class<?>[] IMPORTERS = {
     ADC2Module.class,
     MapBoard.class,
     SymbolSet.class,
@@ -102,7 +102,7 @@ public final class ImportAction extends EditModuleAction {
     for (int i = IMPORTERS.length-1; i >= 0; --i) {
       chooser.addChoosableFileFilter(new ExtensionFileFilter(
         DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase()
-                        + ";*" + EXTENSIONS[i].toUpperCase() + ")", 
+                        + ";*" + EXTENSIONS[i].toUpperCase() + ")",
         new String[] {EXTENSIONS[i]})
       );
     }
@@ -115,7 +115,7 @@ public final class ImportAction extends EditModuleAction {
     for (int i = 0; i < indices.length; ++i) {
       indices[i] = i;
     }
-    
+
     final String s = '.' + Importer.getExtension(f.getName());
     for (int i = 0; i < EXTENSIONS.length; ++i) {
       if (EXTENSIONS[i].compareToIgnoreCase(s) == 0) {
@@ -124,7 +124,7 @@ public final class ImportAction extends EditModuleAction {
         break;
       }
     }
-    
+
     for (int i = 0; i < indices.length; ++i) {
       try {
         if (((Importer) (IMPORTERS[indices[i]].newInstance())).isValidImportFile(f)) {
@@ -138,17 +138,17 @@ public final class ImportAction extends EditModuleAction {
         ErrorDialog.bug(e);
       }
     }
-    
+
     return null;
   }
-  
+
   public void performAction(ActionEvent e) throws IOException {
     actionCancelled = true;
-  
+
     fc.resetChoosableFileFilters();
     for (int i = IMPORTERS.length-1; i >= 0; --i) {
       fc.addChoosableFileFilter(new ExtensionFileFilter(
-          DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase() + ";*" + EXTENSIONS[i].toUpperCase() + ")", 
+          DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase() + ";*" + EXTENSIONS[i].toUpperCase() + ")",
           new String[] {EXTENSIONS[i]})
       );
     }
@@ -159,21 +159,21 @@ public final class ImportAction extends EditModuleAction {
         loadModule(f);
         actionCancelled = false;
       }
-    }    
+    }
   }
 
   public void loadModule(File f) throws IOException {
     final Class<?> impClass = getImporterClass(f);
-    if (impClass == null) {      
+    if (impClass == null) {
       throw new FileFormatException("Unrecognized file format");
     }
-    
+
     final GameModule module = new BasicModule(new ArchiveWriter((String) null));
     GameModule.init(module);
 
     final Importer imp;
     try {
-      imp = (Importer) (impClass.newInstance());      
+      imp = (Importer) (impClass.newInstance());
       imp.importFile(this, f);
       imp.writeToArchive();
     }
@@ -186,7 +186,7 @@ public final class ImportAction extends EditModuleAction {
     }
 
     module.getFrame().setVisible(true);
-    new ModuleEditorWindow(module).setVisible(true);    
+    new ModuleEditorWindow(module).setVisible(true);
   }
 
   /**
@@ -203,9 +203,9 @@ public final class ImportAction extends EditModuleAction {
 
   /**
    * Find case-insensitive, cross-platform match for a given Windows file. If unable
-   * to find a match, will then search the directory of the second file for a match. 
+   * to find a match, will then search the directory of the second file for a match.
    * Will ask the user if still unable to locate the specified file.
-   * 
+   *
    * @param f    File to match with a Windows-specific file-name format.
    * @param base Another file whose directory to search for a match if unable to find otherwise.
    * @return     Local match
@@ -220,10 +220,10 @@ public final class ImportAction extends EditModuleAction {
 
   /**
    * Find case-insensitive, cross-platform match for a given Windows file. If unable
-   * to find a match, will then search the directory of the second file for a match. 
+   * to find a match, will then search the directory of the second file for a match.
    * If still unable to locate the specified file will ask the user to locate the file
    * using the specified file filter.
-   * 
+   *
    * @param f      File to match with a Windows-specific file-name format.
    * @param base   Another file whose directory to search for a match.
    * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
@@ -234,10 +234,10 @@ public final class ImportAction extends EditModuleAction {
 //  }
 
   /**
-   * Find case-insensitive, cross-platform match for a given Windows file. 
+   * Find case-insensitive, cross-platform match for a given Windows file.
    * If unable to locate the specified file will ask the user to locate the file
    * using the specified file filter.
-   * 
+   *
    * @param f      File to match with a Windows-specific file-name format.
    * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
    * @return       Local match
@@ -248,7 +248,7 @@ public final class ImportAction extends EditModuleAction {
 
   /**
    * Find case-insensitive, cross-platform match for a given file specified for a Windows directory structure.
-   * 
+   *
    * @param f                File to search for formatted for Windows. E.g., "C:Dir\File.txt". The method will first
    *                         check to see if the file exists as formatted.  It will then search the path that this
    *                         file is in if that exists.
@@ -268,14 +268,14 @@ public final class ImportAction extends EditModuleAction {
   /*
    * This needs to be here as it uses the action's file chooser.
    */
-  public File getCaseInsensitiveFile(File f, File base, 
+  public File getCaseInsensitiveFile(File f, File base,
       boolean queryIfNotFound, FileFilter filter) {
     // Easy case
     if (f.exists())
       return f;
-  
+
     final String name = Importer.getFileName(f.getName());
-  
+
     // check files in same directory ignoring case
     final File parent = f.getParentFile();
     if (parent != null) {
@@ -287,7 +287,7 @@ public final class ImportAction extends EditModuleAction {
         }
       }
     }
-  
+
     // if that doesn't work, check the files in the same directory as base
     if (base != null) {
       final File[] peers = base.getParentFile().listFiles();
@@ -298,29 +298,29 @@ public final class ImportAction extends EditModuleAction {
         }
       }
     }
-  
+
     // no luck so far.  Ask the user.
     if (queryIfNotFound) {
 // FIXME: I18N!
       JOptionPane.showMessageDialog(comp, "Unable to locate file:\n"
-          + f.getPath() + "\nPlease locate it in the following dialog.", 
+          + f.getPath() + "\nPlease locate it in the following dialog.",
           "File Warning", JOptionPane.WARNING_MESSAGE);
-  
+
       if (fc == null) {
         fc = getFileChooser(comp);
       }
 
       fc.resetChoosableFileFilters();
       if (filter != null) fc.setFileFilter(filter);
-  
+
       fc.setSelectedFile(new File(f.getName()));
-      
+
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
         final File p = fc.getSelectedFile();
         if (p.exists()) return p;
       }
     }
-  
+
     // total failure
     return null;
   }
@@ -335,6 +335,6 @@ public final class ImportAction extends EditModuleAction {
     catch (IOException e) {
       return null;
     }
-    return new ImportMetaData();    
+    return new ImportMetaData();
   }
 }

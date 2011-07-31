@@ -33,7 +33,7 @@ import VASSAL.configure.StringArrayConfigurer;
 
 /**
  * Encodes a sequence of Strings into a single String with a given delimiter.
- * Escapes the delimiter character if it occurs in the element strings. 
+ * Escapes the delimiter character if it occurs in the element strings.
  *
  * This is a very handy class for storing structured data into flat text and
  * quite a bit faster than parsing an XML document.
@@ -119,7 +119,7 @@ public class SequenceEncoder {
   public SequenceEncoder append(NamedKeyStroke stroke) {
     return append(NamedHotKeyConfigurer.encode(stroke));
   }
-  
+
   public SequenceEncoder append(Color color) {
     return append(ColorConfigurer.colorToString(color));
   }
@@ -131,7 +131,7 @@ public class SequenceEncoder {
   public SequenceEncoder append(PropertyExpression p) {
     return append(p.getExpression());
   }
-  
+
   public String getValue() {
     return buffer != null ? buffer.toString() : null;
   }
@@ -213,7 +213,7 @@ public class SequenceEncoder {
     public String next() {
       return nextToken();
     }
-  
+
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -311,15 +311,15 @@ public class SequenceEncoder {
       }
       return defaultValue;
     }
-    
+
     public NamedKeyStroke nextNamedKeyStroke(char defaultValue) {
       return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_MASK));
     }
-    
+
     public NamedKeyStroke nextNamedKeyStroke() {
       return nextNamedKeyStroke(NamedKeyStroke.NULL_KEYSTROKE);
     }
-    
+
     public NamedKeyStroke nextNamedKeyStroke(NamedKeyStroke defaultValue) {
       if (val != null) {
         String s = nextToken();
@@ -335,7 +335,7 @@ public class SequenceEncoder {
       }
       return defaultValue == null ? NamedKeyStroke.NULL_KEYSTROKE : defaultValue;
     }
-   
+
     /**
      * Return the next token, or the default value if there are no more tokens
      * @param defaultValue

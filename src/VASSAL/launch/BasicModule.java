@@ -90,7 +90,7 @@ public class BasicModule extends GameModule {
     BufferedInputStream in = null;
     try {
       in = new BufferedInputStream(getDataArchive().getInputStream(BUILDFILE));
-    }    
+    }
     // FIXME: review error message
     // FIXME: this should be more specific, to separate the case where
     // we have failed I/O from when we read ok but have no module
@@ -123,7 +123,7 @@ public class BasicModule extends GameModule {
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
       getPrefs().getEditor().getEditAction());
-    
+
     gameRefresher = new GameRefresher();
     gameRefresher.addTo(this);
     MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
@@ -153,7 +153,7 @@ public class BasicModule extends GameModule {
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
-      ensureComponent(Language.class);      
+      ensureComponent(Language.class);
     }
     else {
       buildDefaultComponents();
@@ -184,7 +184,7 @@ public class BasicModule extends GameModule {
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     GameModule.setUserId(user.getValueString());
   }
-   
+
   protected void initImagePreferences() {
   }
 
@@ -326,11 +326,11 @@ public class BasicModule extends GameModule {
       add(child);
     }
   }
-  
+
   public ChatServerControls getServerControls() {
     return serverControls;
   }
-  
+
   /*
    * The module I18n key prefix is null for the top level.
    */

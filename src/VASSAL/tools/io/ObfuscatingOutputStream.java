@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools.io;
@@ -29,7 +29,7 @@ import java.util.Random;
 /**
  * A {@link FilterOutputStream} which handles simple obfuscation of a file's
  * contents, to prevent the casual cheat of hand-editing.
- * 
+ *
  * @author uckelman
  * @since 3.2.0
  */
@@ -43,7 +43,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /**
    * @param out the stream to wrap
    * @throws IOException
-   */ 
+   */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
     this(out, (byte) rand.nextInt(256));
   }
@@ -52,7 +52,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
    * @param out the stream to wrap
    * @param key the byte to use as the key
    * @throws IOException
-   */ 
+   */
   public ObfuscatingOutputStream(OutputStream out, byte key)
                                                           throws IOException {
     super(out);
@@ -68,7 +68,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /** {@inheritDoc} */
   @Override
   public void write(byte[] bytes, int off, int len) throws IOException {
-    for (int i = 0; i < len; ++i) write(bytes[off+i]); 
+    for (int i = 0; i < len; ++i) write(bytes[off+i]);
   }
 
   private final static byte[] hex = {

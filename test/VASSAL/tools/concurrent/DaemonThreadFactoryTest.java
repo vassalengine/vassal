@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,7 +30,7 @@ public class DaemonThreadFactoryTest {
   public void testNewThread() {
     final String basename = "foo";
     final ThreadFactory tf = new DaemonThreadFactory(basename);
-    
+
     final Runnable r = new Runnable() {
       public void run() {}
     };

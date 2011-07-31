@@ -76,7 +76,7 @@ public abstract class Expression {
 
   /**
    * Return a PieceFilter using the expression.
-   * 
+   *
    * @param ps
    * @return
    */
@@ -94,7 +94,7 @@ public abstract class Expression {
 
   /**
    * Output a BeanShell equivalent of this expression.
-   * 
+   *
    * @return BeanShell equivalent
    */
   public abstract String toBeanShellString();
@@ -169,14 +169,14 @@ public abstract class Expression {
 
   @Override
   public boolean equals(Object obj) {
-  	if (this == obj) return true;
+    if (this == obj) return true;
 
-  	if (obj == null || getClass() != obj.getClass()) return false;
+    if (obj == null || getClass() != obj.getClass()) return false;
 
-  	final Expression other = (Expression) obj;
+    final Expression other = (Expression) obj;
 
-  	if (expression == null && other.expression != null) return false;
-    
+    if (expression == null && other.expression != null) return false;
+
     return expression.equals(other.expression);
   }
 }

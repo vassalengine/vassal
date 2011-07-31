@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -42,7 +42,7 @@ public interface Properties {
 
   /**
    * If a piece is obscured to other players, return a String identifying the player who obscured it
-   * 
+   *
    * @see VASSAL.build.GameModule#getUserId
    */
   public static final String OBSCURED_BY = Obscurable.ID;
@@ -61,7 +61,7 @@ public interface Properties {
 
   /**
    * If a piece is hidden to other players, return a STring identifying the player who hit it
-   * 
+   *
    * @see VASSAL.build.GameModule#getUserId
    */
   public static final String HIDDEN_BY = Hideable.HIDDEN_BY;
@@ -109,7 +109,7 @@ public interface Properties {
    * Return Boolean.TRUE if this piece has movement restricted by a Restricted Access trait   */
   public static final String RESTRICTED_MOVEMENT = "RestrictedMovement";
 
-  
+
   /** Return Boolean.TRUE if this piece has been moved */
   public static final String MOVED = "Moved";
 
@@ -119,7 +119,7 @@ public interface Properties {
   /**
    * If Boolean.TRUE, then treat the piece as if it were not rotated. This affects the value returned by
    * {@link GamePiece#getShape} and the way the piece is drawn.
-   * 
+   *
    * @see FreeRotator
    */
   public static final String USE_UNROTATED_SHAPE = "useUnrotatedShape";
@@ -132,7 +132,7 @@ public interface Properties {
 
   /** Return Boolean.TRUE if the piece can never be moved */
   public static final String NON_MOVABLE = "cannotMove";
-  
+
   /** Global Piece Id */
   public static final String PIECE_ID = "PieceId";
 }

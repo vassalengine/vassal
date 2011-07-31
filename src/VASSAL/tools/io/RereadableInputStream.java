@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -32,8 +32,8 @@ import java.io.IOException;
  * @author Joel Uckelman
  * @since 3.1.0
  */
-public class RereadableInputStream extends InputStream { 
-  /* 
+public class RereadableInputStream extends InputStream {
+  /*
    * The implementation here is based on the one found at
    * http://www.mattryall.net/blog/2007/03/composition-resettable-stream
    */
@@ -46,7 +46,7 @@ public class RereadableInputStream extends InputStream {
    * <code>InputStream</code> as its source.
    *
    * @param src source input stream
-   */ 
+   */
   public RereadableInputStream(InputStream src) {
     if (src == null) throw new IllegalArgumentException();
     this.src = src;
@@ -93,7 +93,7 @@ public class RereadableInputStream extends InputStream {
   }
 
   /** {@inheritDoc} */
-  @Override 
+  @Override
   public int read() throws IOException {
     final int result = src.read();
     if (marked) savedBytes.write(result);

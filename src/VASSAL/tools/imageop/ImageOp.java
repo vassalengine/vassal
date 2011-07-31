@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * operations. The results of all operations are memoized (using a
  * memory-sensitive cache), so retrieving results is both fast and
  * memory-efficient.
- * 
+ *
  * <p><b>Warning:</b> For efficiency reasons, no images retrieved from
  * an <code>ImageOp</code> are returned defensively. That is, the
  * <code>Image</code>  returned is possibly the one retained internally by
@@ -78,7 +78,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * is given, then the operation may be done asynchronously. If the
    * observer is <code>null</code>, then this method will block on
    * completion of the operation.
-   * 
+   *
    * <p> When a non-blocking call is made (i.e., when
    * <code>obs != null</code>), the cache is checked and if the image is
    * found, it is returned immediately. If the image is already being
@@ -92,7 +92,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * blocks on the completion of the existing calculation. Otherwise,
    * a new calculation is started and this method blocks on it. In
    * all cases, when a calculation is completed, the result is cached.</p>
-   * 
+   *
    * <p><b>Warning:</b> <code>BufferedImage</code>s returned by this method
    * <em>must not</em> be modified.</p>
    *
@@ -104,14 +104,14 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getTile
    * @see #getFutureTile
    * @see #getFutureImage
-   */ 
+   */
   public BufferedImage getImage(ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /**
    * Submits a request for the <code>BufferedImage</code> produced by this
    * operation, and returns a reference to that request.
-   * 
+   *
    * If a non-<code>null</code> observer is given, then the operation may
    * be done asynchronously. If the observer is <code>null</code>, then
    * this method will block on completion of the operation.
@@ -120,7 +120,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * calls to <code>getFutureImage</code>. It returns a
    * {@code Future<BufferedImage>} so that the request may be cancelled if no
    * longer needed.</p>
-   * 
+   *
    *  <p><code>Future</code>s are returned immediately, except in the
    * case where the is no observer and no pre-existing <code>Future</code>
    * for this <code>ImageOp</code>'s <code>BufferedImage</code>, in which
@@ -286,7 +286,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * corner of the main <code>BufferedImage</code> is <code>(0,0)</code>.
    * Note that <code>tileX</code> and <code>tileY</code> are indices into the
    * tile array, not pixel locations.
-   * 
+   *
    * <p>This convenience method is equivalent to
    * <code>getFutureTile(p.x, p.y, obs)</code>.</p>
    *
@@ -334,7 +334,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @param p the position of the requested tile
    * @return the <code>ImageOp</code> which produces the requested tile
    */
-  public ImageOp getTileOp(Point p); 
+  public ImageOp getTileOp(Point p);
 
   /**
    * Returns an <code>ImageOp</code> which can produce the requested tile.
@@ -342,13 +342,13 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @param tileX the x position of the requested tile
    * @param tileY the y position of the requested tile
    * @return the <code>ImageOp</code> which produces the requested tile
-   */ 
+   */
   public ImageOp getTileOp(int tileX, int tileY);
 
   /**
    * Returns an array of <code>Point</code>s representing the tiles
-   * intersecting the given <code>Rectangle</code>. 
-   * 
+   * intersecting the given <code>Rectangle</code>.
+   *
    * @param rect the rectangle
    * @return the positions of the tiles hit by the rectangle
    * @throws IllegalArgumentException if <code>rect == null</code>.

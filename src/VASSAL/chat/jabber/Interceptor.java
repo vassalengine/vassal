@@ -37,7 +37,7 @@ public abstract class Interceptor implements PacketInterceptor, PacketFilter {
       e.printStackTrace();
     }
   }
-  
+
   protected abstract void intercept(Packet p);
 
   public boolean accept(Packet packet) {
@@ -50,9 +50,9 @@ public abstract class Interceptor implements PacketInterceptor, PacketFilter {
       return false;
     }
   }
-  
+
   protected abstract boolean acceptPacket(Packet packet);
-  
+
   public void addTo(XMPPConnection conn) {
     conn.addPacketWriterInterceptor(this, this);
   }

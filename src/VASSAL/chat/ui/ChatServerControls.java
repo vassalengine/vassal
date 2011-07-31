@@ -70,7 +70,7 @@ public class ChatServerControls extends AbstractBuildable {
   protected JToolBar toolbar;
   protected RoomTree roomTree;
   protected JButton newRoomButton;
-  
+
   protected JButton launch;
   protected ChatServerConnection client;
   protected JPanel controlPanel;
@@ -118,7 +118,7 @@ public class ChatServerControls extends AbstractBuildable {
     toolbar = new JToolBar();
     controlPanel.add("North", toolbar);  //$NON-NLS-1$
     toolbar.addSeparator();
-    
+
     configServerButton = new JButton();
     configServerButton.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
@@ -128,22 +128,22 @@ public class ChatServerControls extends AbstractBuildable {
       public void mouseClicked(MouseEvent e) {
         if (!client.isConnected() && e.isMetaDown()) {
           showChangeServerMenu();
-        }        
+        }
       }
     });
     toolbar.add(configServerButton);
   }
-  
+
   private void showChangeServerMenu() {
-    ServerAddressBook.changeServerPopup(configServerButton);    
+    ServerAddressBook.changeServerPopup(configServerButton);
   }
-  
+
   public void updateClientDisplay(Icon icon, String text) {
     configServerButton.setIcon(icon);
     configServerText = text;
     updateConfigServerToolTipText();
   }
-  
+
   private void updateConfigServerToolTipText() {
     if (client.isConnected()) {
       configServerButton.setToolTipText(configServerText);
@@ -152,11 +152,11 @@ public class ChatServerControls extends AbstractBuildable {
       configServerButton.setToolTipText("<html><center>" + configServerText + "<br>" + "Right-click to change server");
     }
   }
-  
+
   public Component getExtendedControls() {
     return null;
   }
-  
+
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
     setClient((ChatServerConnection) gm.getServer());
@@ -185,7 +185,7 @@ public class ChatServerControls extends AbstractBuildable {
       }
     });
     iconConfig.fireUpdate();
-    
+
     final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getNamedKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(keyConfig);
     keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -195,7 +195,7 @@ public class ChatServerControls extends AbstractBuildable {
       }
     });
     keyConfig.fireUpdate();
-      
+
     gm.addKeyStrokeListener(l);
     gm.getToolBar().add(launch);
   }
@@ -282,7 +282,7 @@ public class ChatServerControls extends AbstractBuildable {
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
     client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener(){
       public void propertyChange(PropertyChangeEvent e) {
-        updateConfigServerToolTipText();        
+        updateConfigServerToolTipText();
       }});
   }
 
@@ -312,17 +312,17 @@ public class ChatServerControls extends AbstractBuildable {
   public JTextField getNewRoom() {
     return newRoom;
   }
-  
+
   public void addExtendedNewRoomHandler(ActionListener l) {
     newRoomButton.addActionListener(l);
     newRoomButton.setVisible(true);
   }
-  
+
   public void removeExtendedNewRoomHandler(ActionListener l) {
     newRoomButton.removeActionListener(l);
     newRoomButton.setVisible(false);
   }
-  
+
 
   public RoomTree getRoomTree() {
     return roomTree;

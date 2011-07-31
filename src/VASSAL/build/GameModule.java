@@ -131,7 +131,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
   public static final String BUILDFILE = "buildFile";
-  
+
   private static GameModule theModule;
 
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
@@ -147,7 +147,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
       for (Map map : Map.getMapList()) {
-        map.repaint();            
+        map.repaint();
       }
     }
   };
@@ -167,7 +167,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected WizardSupport wizardSupport;
   protected PropertyChangeSupport idChangeSupport;
-  
+
   protected List<KeyStrokeSource> keyStrokeSources =
     new ArrayList<KeyStrokeSource>();
   protected List<KeyStrokeListener> keyStrokeListeners =
@@ -176,30 +176,30 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected List<String> deferredChat = new ArrayList<String>();
 
   protected int nextGpId = 0;
-  
-  protected boolean loggingPaused = false;  
+
+  protected boolean loggingPaused = false;
   protected Object loggingLock = new Object();
   protected Command pausedCommands;
-  
+
   /*
    * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
-   * during module/extension load. 
+   * during module/extension load.
    */
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
-  
+
   /**
    * @return the top-level frame of the controls window
    */
   public JFrame getFrame() {
     return frame;
   }
-  
+
   public void initFrameTitle() {
     frame.setTitle(getLocalizedGameName());
   }
-  
+
   public WizardSupport getWizardSupport() {
     if (wizardSupport == null) {
       wizardSupport = new WizardSupport();
@@ -225,7 +225,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     validator = new CompoundValidityChecker
         (new MandatoryComponent(this, Documentation.class),
          new MandatoryComponent(this, GlobalOptions.class));
-    
+
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
 
@@ -357,7 +357,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       DiceButton.class,
       GlobalKeyCommand.class,
       Inventory.class,
-//                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming 
+//                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,
       SpecialDiceButton.class,
       PredefinedSetup.class,
@@ -396,7 +396,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
-   
+
   @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
@@ -410,14 +410,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       fireKeyStroke(stroke.getKeyStroke());
     }
   }
-  
+
   /**
    * @return the name of the game for this module
    */
   public String getGameName() {
     return gameName;
   }
-  
+
   public String getLocalizedGameName() {
     return localizedGameName == null ? gameName : localizedGameName;
   }
@@ -440,7 +440,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public void removeIdChangeListener(PropertyChangeListener l) {
     idChangeSupport.removePropertyChangeListener(l);
   }
-  
+
   /**
    * @return the preferences for this module
    */
@@ -485,7 +485,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    * Central location to create any type of GamePiece from within VASSAL
-   * 
+   *
    * @param type
    * @return
    */
@@ -500,7 +500,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     return null;
   }
-  
+
   public GamePiece createPiece(String type, GamePiece inner) {
     for (int i = 0; i < commandEncoders.length; ++i) {
       if (commandEncoders[i] instanceof BasicCommandEncoder) {
@@ -512,7 +512,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     return null;
   }
-  
+
   /**
    * Display the given text in the control window's status line.
    * Save the messages for later if the Chatter has not been initialised yet
@@ -629,7 +629,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
 
     return fileChooser;
-  } 
+  }
 
   /**
    * @deprecated Use {@link #getFileChooser} instead.
@@ -683,7 +683,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Prompt user to save open game and modules/extensions being edited 
+   * Prompt user to save open game and modules/extensions being edited
    * @return true if shutDown should proceed, i.e. user did not cancel
    */
   public boolean shutDown() {
@@ -736,7 +736,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
       finally {
         IOUtils.closeQuietly(p);
-      }    
+      }
 
       // close the module
       try {
@@ -776,14 +776,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     }
   }
-  
+
   /**
    * Pause logging and return true if successful.
    * Return false if logging already paused
-   * 
+   *
    * While Paused, commands are accumulated into pausedCommands so that they
    * can all be logged at the same time, and generate a single UNDO command.
-   * 
+   *
    * @return
    */
   public boolean pauseLogging () {
@@ -805,11 +805,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     synchronized(loggingLock) {
       c = pausedCommands == null ? new NullCommand() : pausedCommands;
       pausedCommands = null;
-      loggingPaused = false;    
+      loggingPaused = false;
     }
     return c;
   }
-  
+
   /**
    * Clear outstanding Commands
    * Use where the calling level handles the sending of outstanding commands
@@ -862,9 +862,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         throw e;
       }
     }
-    
+
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
-            
+
       // Run through the module and identify all existing gpid's.
       // Determine the maximum. Keep a list of of any PieceSlots that need
       // a new Id generated.
@@ -898,19 +898,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
           }
         }
       }
-        
+
       // Update the nextgpid if necessary
       if (getGameModule().nextGpId < maxId) {
         getGameModule().nextGpId = maxId+1;
       }
-      
+
       // Generate new gpid's for slots that need them.
       for (PieceSlot pieceSlot : duplicates) {
         pieceSlot.updateGpId();
       }
-      
+
     }
-    
+
     /*
      * Tell any Plugin components that the build is complete so that they
      * can finish initialization.
@@ -919,9 +919,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       plugin.init();
     }
   }
-  
+
   /**
-   * Unload the module 
+   * Unload the module
    */
   public static void unload() {
     if (theModule != null) {
@@ -935,33 +935,33 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public void updateLastSave() {
     lastSavedConfiguration = buildString();
   }
-  
+
   public String generateGpId() {
     return String.valueOf(nextGpId++);
   }
-  
+
   public void setGpIdSupport(GpIdSupport s) {
     gpidSupport = s;
   }
-  
+
   public GpIdSupport getGpIdSupport() {
     return gpidSupport;
   }
-  
+
   /**
    * @return the object which stores data for the module
    */
   public DataArchive getDataArchive() {
     return archive;
   }
-  
+
   /**
    * If the module is being edited, return the writeable archive for the module
    */
   public ArchiveWriter getArchiveWriter() {
     return archive.getWriter();
   }
- 
+
   public ImageTileSource getImageTileSource() {
     if (tcache == null) {
       // FIXME: There's no guarantee that getGameName() and getGameVersion()
@@ -976,7 +976,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
     return tcache;
   }
- 
+
   /**
    * Is the module being translated into the user's Locale?  Localization is disabled when editing a module
    *
@@ -1014,7 +1014,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected void save(boolean saveAs) {
     vassalVersionCreated = Info.getVersion();
-    
+
     final ArchiveWriter writer = getArchiveWriter();
 
     try {
@@ -1023,10 +1023,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }
-    
+
     try {
       final String save = buildString();
-      writer.addFile(BUILDFILE,  
+      writer.addFile(BUILDFILE,
         new ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
 
       if (saveAs) writer.saveAs(true);
@@ -1062,7 +1062,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
-  
+
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
@@ -1079,7 +1079,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     return p;
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMyLocalizedSide();
@@ -1089,14 +1089,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return getProperty(key);
     }
   }
-  
+
   public long getCrc() {
     if (crc == null) {
       crc = buildCrc();
     }
     return crc.longValue();
   }
-  
+
   protected Long buildCrc() {
     final List<File> files = new ArrayList<File>();
     if (getDataArchive().getArchive() != null) {
@@ -1117,7 +1117,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return 0L;
     }
   }
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(MODULE_VERSION, false);

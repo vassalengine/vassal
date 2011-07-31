@@ -28,7 +28,7 @@ import VASSAL.command.Command;
 
 /**
  * A container for a String property that can be updated
- * 
+ *
  * @author rkinney
  */
 public interface MutableProperty {
@@ -43,7 +43,7 @@ public interface MutableProperty {
     /**
      * Look for a {@link MutableProperty} in the list of {@link MutablePropertiesContainer}. Return the first one
      * found, searching the lists in order. The list may contain null references, which are skipped
-     * 
+     *
      * @param propertyContainers
      * @return
      */
@@ -62,9 +62,9 @@ public interface MutableProperty {
    * Simple implementation of {@link MutableProperty} Support dynamic changing of the property name, provided that
    * the {@link #addTo(MutablePropertiesContainer)} method is used to register this property with a properties
    * container.
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public static class Impl implements MutableProperty {
     private PropertyChangeSupport propSupport;
@@ -77,9 +77,9 @@ public interface MutableProperty {
     public static List<Impl> getAllProperties() {
       return allProperties;
     }
-    
+
     /**
-     * 
+     *
      * @param source
      *          will be the source of any {@link PropertyChangeEvent} fired by this object
      */
@@ -105,7 +105,7 @@ public interface MutableProperty {
       }
       propertyName = name;
     }
-    
+
     public void removeFromContainer() {
       if (parent != null) {
         parent.removeMutableProperty(propertyName);
@@ -116,11 +116,11 @@ public interface MutableProperty {
     public String getPropertyValue() {
       return value;
     }
-    
+
     public String getName() {
       return propertyName;
     }
-    
+
     public MutablePropertiesContainer getParent() {
       return parent;
     }

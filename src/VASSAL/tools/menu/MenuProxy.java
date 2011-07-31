@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -74,7 +74,7 @@ public class MenuProxy extends AbstractParent<JMenu> {
       final JComponent peer = child.createPeer();
       if (peer != null) menu.add(peer);
     }
-    
+
     peers.add(new WeakReference<JMenu>(menu, queue));
     return menu;
   }

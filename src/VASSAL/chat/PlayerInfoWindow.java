@@ -40,12 +40,12 @@ public class PlayerInfoWindow extends JDialog {
   public PlayerInfoWindow(Frame f, SimplePlayer p) {
     super(f, p.getName());
     setLayout(new MigLayout("insets dialog", "[align right][fill,grow]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-   
-    // player name 
+
+    // player name
     final JTextField name_f = new JTextField(p.getName().length());
     name_f.setText(p.getName());
     name_f.setEditable(false);
-    
+
     final JLabel name_l = new JLabel(Resources.getString("Chat.real_name")); //$NON-NLS-1$
     name_l.setLabelFor(name_f);
     add(name_l);
@@ -57,13 +57,13 @@ public class PlayerInfoWindow extends JDialog {
       final JTextField login_f = new JTextField(login.length());
       login_f.setText(login);
       login_f.setEditable(false);
-      
+
       final JLabel login_l = new JLabel(Resources.getString("Chat.server_login")); //$NON-NLS-1$
       login_l.setLabelFor(login_f);
       add(login_l);
       add(login_f, "pushx, wrap"); //$NON-NLS-1$
     }
-    
+
     // IP address
     final String ip = ((SimpleStatus)p.getStatus()).getIp();
     if (ip != null && ip.length() > 0) {
@@ -77,8 +77,8 @@ public class PlayerInfoWindow extends JDialog {
       add(ip_l);
       add(ip_f, "pushx, wrap"); //$NON-NLS-1$
     }
-   
-    // client version 
+
+    // client version
     String client = ((SimpleStatus)p.getStatus()).getClient();
     if (client == null || client.length() == 0) client = "< 3.1"; //$NON-NLS-1$
 
@@ -93,7 +93,7 @@ public class PlayerInfoWindow extends JDialog {
     add(client_l);
     add(client_f, "pushx, wrap"); //$NON-NLS-1$
 
-    // module version    
+    // module version
     final String moduleVersion =
       ((SimpleStatus)p.getStatus()).getModuleVersion();
     if (moduleVersion != null && moduleVersion.length() > 0) {
@@ -107,24 +107,24 @@ public class PlayerInfoWindow extends JDialog {
 
       add(mver_l);
       add(mver_f, "pushx, wrap"); //$NON-NLS-1$
-    }   
-       
-    // module checksum 
+    }
+
+    // module checksum
     final String csum = ((SimpleStatus)p.getStatus()).getCrc();
     if (csum != null && csum.length() > 0) {
       final JTextField csum_f = new JTextField();
       csum_f.setText(csum);
       csum_f.setEditable(false);
-  
+
       final JLabel csum_l =
         new JLabel(Resources.getString("Chat.module_checksum")); //$NON-NLS-1$
       csum_l.setLabelFor(csum_f);
 
       add(csum_l);
       add(csum_f, "pushx, wrap"); //$NON-NLS-1$
-    }  
-  
-    // looking for a game? 
+    }
+
+    // looking for a game?
     final JCheckBox looking_b =
       new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
     looking_b.setSelected(((SimpleStatus) p.getStatus()).isLooking());
@@ -146,7 +146,7 @@ public class PlayerInfoWindow extends JDialog {
     pinfo_a.setEditable(false);
     pinfo_a.setLineWrap(true);
     pinfo_a.setWrapStyleWord(true);
-  
+
     final JScrollPane pinfo_s = new JScrollPane(pinfo_a);
 
     final JLabel pinfo_l =

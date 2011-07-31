@@ -27,10 +27,10 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 
 /**
- * 
+ *
  * @author Brent Easton
  * A Container class for Zone Highlighters.
- * 
+ *
  */
 public class ZonedGridHighlighter extends AbstractConfigurable  {
 
@@ -41,7 +41,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   public ZonedGridHighlighter() {
     highlightList = new ArrayList<ZoneHighlight>();
   }
-  
+
   public void addHighlight(ZoneHighlight h) {
     highlightList.add(h);
   }
@@ -49,7 +49,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   public void removeHighlight(ZoneHighlight h) {
     highlightList.remove(h);
   }
-  
+
   public ZoneHighlight getZoneHighlightByName(String highlightName) {
     for (ZoneHighlight h : highlightList) {
       if (h.getName().equals(highlightName)) {
@@ -58,7 +58,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     }
     return null;
   }
-  
+
   public String getName() {
     return name;
   }

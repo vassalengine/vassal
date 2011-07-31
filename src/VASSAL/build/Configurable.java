@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build;
@@ -54,13 +54,13 @@ public interface Configurable extends Translatable {
     public HelpFile getHelpFile();
 
     /**
-     * @return an array of Configurer objects representing 
+     * @return an array of Configurer objects representing
      * the Configurable children of this Configurable object
      */
     public Configurable[] getConfigureComponents();
 
     /**
-     * Return a {@link Configurer} object which can be used to set the 
+     * Return a {@link Configurer} object which can be used to set the
      * attributes of this object
      */
     public Configurer getConfigurer();
@@ -74,9 +74,9 @@ public interface Configurable extends Translatable {
     public Class[] getAllowableConfigureComponents();
 
     /**
-     * Add a PropertyChangeListener.  A PropertyChangeEvent should be fired 
-     * with property name {@link #NAME_PROPERTY} when the value returned from 
-     * {@link #getConfigureName} has changed 
+     * Add a PropertyChangeListener.  A PropertyChangeEvent should be fired
+     * with property name {@link #NAME_PROPERTY} when the value returned from
+     * {@link #getConfigureName} has changed
      */
     public void addPropertyChangeListener(java.beans.PropertyChangeListener l);
 }

@@ -27,7 +27,7 @@ import VASSAL.configure.DirectoryConfigurer;
  * {@link java.awt.FileDialog}, selecting whichever is preferred on the
  * user's OS. <code>FileChooser</code>'s methods mirror those of
  * <code>JFileChooser</code>.
- * 
+ *
  * @author Joel Uckelman
  * @deprecated Moved to {@link VASSAL.tools.filechooser.FileChooser}.
  */

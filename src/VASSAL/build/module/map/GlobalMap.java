@@ -124,7 +124,7 @@ public class GlobalMap implements AutoConfigurable,
 
     map.addDrawComponent(this);
     map.getToolBar().add(launch);
-    
+
     if (b instanceof Translatable) {
       getI18nData().setOwningComponent((Translatable) b);
     }
@@ -244,7 +244,7 @@ public class GlobalMap implements AutoConfigurable,
   /**
    * Transform a point from Map coordinates to coordinates in the overview
    * window
-   * 
+   *
    * @param p
    * @return
    */
@@ -256,7 +256,7 @@ public class GlobalMap implements AutoConfigurable,
   /**
    * Transform a point from coordinates in the overview window to Map
    * coordinates
-   * 
+   *
    * @param p
    * @return
    */
@@ -365,7 +365,7 @@ public class GlobalMap implements AutoConfigurable,
      */
     public Dimension getPreferredSize() {
       final Dimension d = view.getPreferredSize();
-      final Insets i = getInsets();    
+      final Insets i = getInsets();
       d.width += i.left + i.right;
       d.height += i.top + i.bottom;
       return d;
@@ -390,7 +390,7 @@ public class GlobalMap implements AutoConfigurable,
     public void setBounds(Rectangle r) {
       final Dimension availSize = map.getView().getParent().getSize();
       final Dimension viewSize = view.getPreferredSize();
-      final Insets i = getInsets();    
+      final Insets i = getInsets();
       viewSize.width += i.left + i.right;
       viewSize.height += i.top + i.bottom;
 
@@ -398,9 +398,9 @@ public class GlobalMap implements AutoConfigurable,
       final boolean vsbNeeded = availSize.height < viewSize.height;
 
       final Dimension realSize = new Dimension();
-  
+
       if (availSize.width < viewSize.width) {
-        realSize.width = availSize.width;     
+        realSize.width = availSize.width;
       }
       else if (vsbNeeded) {
         realSize.width = Math.min(availSize.width,
@@ -411,7 +411,7 @@ public class GlobalMap implements AutoConfigurable,
       }
 
       if (availSize.height < viewSize.height) {
-        realSize.height = availSize.height;     
+        realSize.height = availSize.height;
       }
       else if (hsbNeeded) {
         realSize.height = Math.min(availSize.height,
@@ -423,7 +423,7 @@ public class GlobalMap implements AutoConfigurable,
 
       super.setBounds(0,0,realSize.width,realSize.height);
     }
-  
+
     /**
      * This funcion is overridden to make sure that the parent layout
      * is redone when the GlobalMap is shown.
@@ -494,7 +494,7 @@ public class GlobalMap implements AutoConfigurable,
         (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale));
     }
   }
-  
+
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "GlobalMap");

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DaemonThreadFactory implements ThreadFactory {
   protected final AtomicInteger id = new AtomicInteger(0);
-  protected final String basename; 
+  protected final String basename;
 
   /**
    * Creates a thread factory.

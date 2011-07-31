@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -58,7 +58,7 @@ public class EditPropertiesAction extends AbstractAction {
     this(target, helpWindow, dialogOwner);
     this.tree = tree;
   }
-  
+
   public void actionPerformed(ActionEvent evt) {
     PropertiesWindow w = openWindows.get(target);
     if (w == null) {
@@ -67,7 +67,7 @@ public class EditPropertiesAction extends AbstractAction {
         public void windowClosed(WindowEvent e) {
           openWindows.remove(target);
           if (tree != null && target instanceof ConfigureTree.Mutable) {
-            tree.nodeUpdated(target);          
+            tree.nodeUpdated(target);
           }
         }
       });

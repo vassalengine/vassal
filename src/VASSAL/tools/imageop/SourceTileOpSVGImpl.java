@@ -49,14 +49,14 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
   private final SVGOp sop;
   private final int x0, y0, x1, y1;
   private final int hash;
- 
+
   public SourceTileOpSVGImpl(SVGOp sop, int tileX, int tileY) {
     if (sop == null) throw new IllegalArgumentException();
 
     if (tileX < 0 || tileX >= sop.getNumXTiles() ||
         tileY < 0 || tileY >= sop.getNumYTiles())
-      throw new IndexOutOfBoundsException(); 
-  
+      throw new IndexOutOfBoundsException();
+
     this.sop = sop;
 
     final int tw = sop.getTileWidth();
@@ -78,7 +78,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
                                 .append(y1)
                                 .toHashCode();
   }
- 
+
   public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -94,7 +94,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
         new BufferedInputStream(archive.getInputStream(name))
       );
 
-      final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
+      final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0);
       return renderer.render(0.0, 1.0, aoi);
     }
     catch (FileNotFoundException e) {
@@ -120,7 +120,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     return x0 == op.x0 &&
            y0 == op.y0 &&
            x1 == op.x1 &&
-           y1 == op.y1 && 
+           y1 == op.y1 &&
            sop.equals(op.sop);
   }
 

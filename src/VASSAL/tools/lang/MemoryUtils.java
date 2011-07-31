@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009, 2010 by Joel Uckelman 
+ * Copyright (c) 2009, 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -87,13 +87,13 @@ public class MemoryUtils {
           lpBuffer,
           0,
           Pointer.NULL
-        ); 
+        );
 
         final String message =
           msglen > 0 ? lpBuffer.getValue().getStringArray(0)[0] : "no message";
 
         throw new RuntimeException("Error " + errno + ": " + message);
-      } 
+      }
     }
   }
 

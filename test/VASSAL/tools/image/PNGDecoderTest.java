@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 public class PNGDecoderTest {
   @Test
   public void testDecodeSignatureOk() throws IOException {
-    final byte[] sig = { 
+    final byte[] sig = {
       (byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47,
       (byte) 0x0d, (byte) 0x0a, (byte) 0x1a, (byte) 0x0a
     };
@@ -59,9 +59,9 @@ public class PNGDecoderTest {
     final DataInputStream in =
       new DataInputStream(new ByteArrayInputStream(new byte[0]));
 
-    PNGDecoder.decodeSignature(in); 
+    PNGDecoder.decodeSignature(in);
   }
-  
+
   @Test
   public void testDecodeChunkOk() throws IOException {
     final byte[] chunk = {

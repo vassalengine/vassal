@@ -27,7 +27,7 @@ import VASSAL.tools.DataArchive;
  * but produces tiles loaded from the tile cache.
  *
  * @since 3.2.0
- * @author Joel Uckelman 
+ * @author Joel Uckelman
  */
 public class SourceOpTiledBitmapImpl extends SourceOpBitmapImpl {
 
@@ -40,7 +40,7 @@ public class SourceOpTiledBitmapImpl extends SourceOpBitmapImpl {
    */
   public SourceOpTiledBitmapImpl(String name) {
     this(name, GameModule.getGameModule().getDataArchive());
-  } 
+  }
 
   public SourceOpTiledBitmapImpl(String name, DataArchive archive) {
     super(name, archive);

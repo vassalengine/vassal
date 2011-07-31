@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -62,7 +62,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   protected JDialog configDialog;
   protected Component setControls;
-  
+
   public ListTurnLevel() {
     super();
     turnFormat = new FormattedString("$" + LEVEL_VALUE + "$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -78,7 +78,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     }
     setLow();
   }
-  
+
   protected void setLow() {
     current = first;
     super.setLow();
@@ -146,7 +146,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see turn.TurnLevel#getLongestValueName()
    */
   protected String getLongestValueName() {
@@ -218,7 +218,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     }
     return false;
   }
-  
+
   protected void buildConfigMenu(JMenu configMenu) {
     JMenu menu = getConfigMenu();
     if (menu != null) {
@@ -341,7 +341,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   public static String getConfigureTypeName() {
     return "List";
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","List"); //$NON-NLS-1$ //$NON-NLS-2$
   }
@@ -376,7 +376,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     public ConfigDialog() {
-      super(GameModule.getGameModule().getFrame(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$ 
+      super(GameModule.getGameModule().getFrame(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
       if (configFirst) {
@@ -399,8 +399,8 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       }
 
       if (configList) {
-      
-        add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$ 
+
+        add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$
         for (int i = 0; i < list.length; i++) {
 
           BooleanConfigurer b =
@@ -423,7 +423,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       JPanel p = new JPanel();
 
       JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
-      saveButton.setToolTipText(Resources.getString("TurnTracker.save_changes")); //$NON-NLS-1$ 
+      saveButton.setToolTipText(Resources.getString("TurnTracker.save_changes")); //$NON-NLS-1$
       p.add(saveButton);
       saveButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -432,7 +432,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       });
 
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
-      cancelButton.setToolTipText(Resources.getString("TurnTracker.discard_changes")); //$NON-NLS-1$ 
+      cancelButton.setToolTipText(Resources.getString("TurnTracker.discard_changes")); //$NON-NLS-1$
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setVisible(false);
@@ -444,11 +444,11 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       pack();
     }
   }
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(LIST, true);
     return myI18nData;
   }
-  
+
 }

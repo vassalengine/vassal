@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -42,7 +42,7 @@ public class ShowHelpAction extends AbstractAction {
   public ShowHelpAction(URL contents, URL iconURL) {
     this(null, contents, iconURL);
   }
-  
+
   public ShowHelpAction(HelpWindow helpWindow, HelpFile contents, URL iconURL) {
     this(helpWindow, contents == null ? null : contents.getContents(), iconURL);
     setEnabled(contents != null);

@@ -37,7 +37,7 @@ public interface OpObserver<V> {
   /**
    * Callback which is run when the observed <code>Op</code> completes
    * successfully.
-   * 
+   *
    * @param op the successfully completed <code>Op</code>
    * @param val the value of the <code>Op</code>
    */
@@ -45,28 +45,28 @@ public interface OpObserver<V> {
 
   /**
    * Callback which is run when the observed <code>Op</code> is cancelled.
-   * 
+   *
    * @param op the cancelled <code>Op</code>
    * @param e the <code>CancellationException</code> thrown when the
-   *  <code>Op</code> was cancelled 
+   *  <code>Op</code> was cancelled
    */
   public void cancelled(Op<V> op, CancellationException e);
 
   /**
    * Callback which is run when the observed <code>Op</code> is interrupted.
-   * 
+   *
    * @param op the interrupted <code>Op</code>
    * @param e the <code>InterruptedException</code> thrown when the
-   *  <code>Op</code> was interrupted 
+   *  <code>Op</code> was interrupted
    */
   public void interrupted(Op<V> op, InterruptedException e);
 
   /**
    * Callback which is run when the observed <code>Op</code> fails.
-   * 
+   *
    * @param op the failed <code>Op</code>
    * @param e the <code>ExecutionException</code> thrown when the
-   *  <code>Op</code> failed 
+   *  <code>Op</code> failed
    */
   public void failed(Op<V> op, ExecutionException e);
 }

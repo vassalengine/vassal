@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -54,18 +54,18 @@ public class TileUtilsTest {
     hout.writeInt(BufferedImage.TYPE_INT_ARGB);
     hout.close();
 
-    // write the compressed data 
+    // write the compressed data
     final DataOutputStream zout =
       new DataOutputStream(new GZIPOutputStream(baos));
     zout.writeInt(0xDEADBEEF);
     zout.close();
 
     bytes = baos.toByteArray();
-    
+
     // the same 1x1 test image as a BufferedImage
     src = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-    src.setRGB(0, 0, 0xDEADBEEF); 
-  }  
+    src.setRGB(0, 0, 0xDEADBEEF);
+  }
 
   @Test
   public void testReadInputStreamOk() throws IOException {
@@ -77,7 +77,7 @@ public class TileUtilsTest {
   @Test(expected=IOException.class)
   public void testReadInputStreamUnderflow() throws IOException {
     final InputStream in = new ByteArrayInputStream(new byte[0]);
-    TileUtils.read(in);    
+    TileUtils.read(in);
   }
 
 /*
@@ -96,9 +96,9 @@ public class TileUtilsTest {
   @Test(expected=IOException.class)
   public void testReadInputStreamBadSignature() throws IOException {
     final InputStream in = new ByteArrayInputStream("xyzzy".getBytes());
-    TileUtils.read(in);    
+    TileUtils.read(in);
   }
- 
+
   @Test
   public void testReadHeaderOk() throws IOException {
     final InputStream in = new ByteArrayInputStream(bytes);
@@ -111,12 +111,12 @@ public class TileUtilsTest {
     final InputStream in = new ByteArrayInputStream("xyzzy".getBytes());
     TileUtils.readHeader(in);
   }
- 
+
   @Test
   public void testCheckSignatureOk() throws IOException {
     TileUtils.checkSignature("VASSAL".getBytes());
   }
- 
+
   @Test(expected=IOException.class)
   public void testCheckSignatureBad() throws IOException {
     TileUtils.checkSignature("xyzzy".getBytes());
@@ -140,7 +140,7 @@ public class TileUtilsTest {
   public void testWriteOutputStream() throws IOException {
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     TileUtils.write(src, out);
-    assertArrayEquals(bytes, out.toByteArray());   
+    assertArrayEquals(bytes, out.toByteArray());
   }
 
   @Test
@@ -153,7 +153,7 @@ public class TileUtilsTest {
 
     assertImageEquals(src, dst);
   }
-  
+
   @Test
   public void testReadWriteRoundTrip() throws IOException {
     final InputStream in = new ByteArrayInputStream(bytes);

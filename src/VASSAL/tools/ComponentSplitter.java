@@ -53,7 +53,7 @@ public class ComponentSplitter {
   /**
    * Create a new hideable panel to the right of the base component. The base component is replaced by a
    * {@link SplitPane}
-   * 
+   *
    * @param base
    *          the base component
    * @param hideableComponent
@@ -70,7 +70,7 @@ public class ComponentSplitter {
   /**
    * Create a new hideable panel to the left of the base component. The base component is replaced by a
    * {@link SplitPane}
-   * 
+   *
    * @param base
    *          the base component
    * @param hideableComponent
@@ -87,7 +87,7 @@ public class ComponentSplitter {
   /**
    * Create a new hideable panel to the bottom of the base component. The base component is replaced by a
    * {@link SplitPane}
-   * 
+   *
    * @param base
    *          the base component
    * @param hideableComponent
@@ -103,7 +103,7 @@ public class ComponentSplitter {
 
   /**
    * Create a new hideable panel to the top of the base component. The base component is replaced by a {@link SplitPane}
-   * 
+   *
    * @param base
    *          the base component
    * @param hideableComponent
@@ -119,7 +119,7 @@ public class ComponentSplitter {
 
   /**
    * Search the containment hierarchy for the index-th {@link SplitPane} ancestor of a target component
-   * 
+   *
    * @param c
    *          the target component
    * @param index
@@ -173,7 +173,7 @@ public class ComponentSplitter {
 
     /**
      * Initialize the SplitPane with the two component
-     * 
+     *
      * @param hideableComponent
      * @param baseComponent
      * @param hideablePosition
@@ -278,7 +278,7 @@ public class ComponentSplitter {
     }
 
     /**
-     * 
+     *
      * @return the size of the hideable component along the axis of orientation
      */
     protected int getHideableComponentSize() {
@@ -339,7 +339,7 @@ public class ComponentSplitter {
     /**
      * Set the divider location and/or the top-level ancestor size to be large enough to display the argument
      * {@link SplitPane}'s hideable component
-     * 
+     *
      * @param split
      */
     protected void showTransverseComponent(SplitPane split) {
@@ -396,7 +396,7 @@ public class ComponentSplitter {
     /**
      * Set the divider location and/or the top-level ancestor size to
      * the preferred transverse size.
-     * 
+     *
      * @param split
      */
     protected void hideTransverseComponent(SplitPane split) {
@@ -498,7 +498,7 @@ public class ComponentSplitter {
 
     /**
      * Return the first SplitPane ancestor with a different orientation from this SplitPane
-     * 
+     *
      * @return
      */
     public SplitPane getTransverseSplit() {

@@ -51,22 +51,22 @@ public final class IconFactory {
 
   static final String FILE = "file:"; //$NON-NLS-1$
   static final String JAR = "jar:"; //$NON-NLS-1$
-  
+
   private static final JarArchive jar = new JarArchive();
 
   private static IconFactory instance;
   private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<String, IconFamily>();
   private static final Object preloadLock = new Object();
   private Thread preloadThread;
-  
-  /** 
+
+  /**
    * Set the Singleton instance
-   * @param i 
+   * @param i
    */
   static void setInstance(IconFactory i) {
     instance = i;
   }
-  
+
   /**
    * Return the Singleton instance.
    */
@@ -76,16 +76,16 @@ public final class IconFactory {
     }
     return instance;
   }
-  
+
   /**
    * Create a new IconFactory.
    */
   public IconFactory () {
 // FIXME: Why do this? Have a final INSTANCE instead.
-    setInstance(this);    
+    setInstance(this);
 
 // FIXME: Maybe send this off to an executor?
-// FIXME: preloadThread is never set to null, cannot be gc'd     
+// FIXME: preloadThread is never set to null, cannot be gc'd
     // Find all available Icon Familys within Vassal.
     // May take a little while, so run it on a background thread
     preloadThread = new Thread(new Runnable(){
@@ -102,10 +102,10 @@ public final class IconFactory {
     }, "IconFactory-preload"); //$NON-NLS-1$
     preloadThread.start();
   }
-  
+
   /**
    * Return an Icon of the specified size. Standard sizes are defined in IconFamily
-   * 
+   *
    * @param IconFamilyName Name of Icon family
    * @param size Size (See IconFamily)
    * @return Sized Icon
@@ -117,10 +117,10 @@ public final class IconFactory {
     }
     return family.getIcon(size);
   }
-    
+
   /**
     Return an Icon of the specified size as an Image. Standard sizes are defined in IconFamily
-   * 
+   *
    * @param IconFamilyName Name of Icon family
    * @param size Size (See IconFamily)
    * @return Sized Image
@@ -132,7 +132,7 @@ public final class IconFactory {
     }
     return family.getImage(size);
   }
-  
+
   /**
    * Return a sorted list of all Icon Family names.
    * @return
@@ -140,7 +140,7 @@ public final class IconFactory {
   public static List<String> getIconFamilyNames() {
     return getInstance().getIconFamilyList();
   }
-  
+
   /**
    * Add a new IconFamily
    * @param family Icon Family Name
@@ -148,7 +148,7 @@ public final class IconFactory {
   public static void addIconFamily(IconFamily family) {
     getInstance().add(family);
   }
-  
+
   /**
    * Remove an IconFamily
    * @param name Icon Family Name
@@ -156,17 +156,17 @@ public final class IconFactory {
   public static void removeIconFamily(IconFamily family) {
     getInstance().remove(family);
   }
-  
+
   /**
    * Rename an IconFamily
-   * 
+   *
    * @param oldName Old Icon Family Name
    * @param newName New Icon Family Name
    */
   public static void renameIconFamily(String oldName, IconFamily family) {
-    getInstance().rename(oldName, family); 
+    getInstance().rename(oldName, family);
   }
-  
+
   /**
    * Return an Icon Family
    * @param name
@@ -175,11 +175,11 @@ public final class IconFactory {
   public static IconFamily getIconFamily(String name) {
     return getInstance().getFamily(name);
   }
-  
+
   /**
    * Add an Icon Family. Don't overwrite an existing Icon Family
    * of the same name.
-   * 
+   *
    * @param family
    */
   private void add(IconFamily family) {
@@ -187,7 +187,7 @@ public final class IconFactory {
       iconFamilies.put(family.getName(), family);
     }
   }
-  
+
   /**
    * Remove an Icon Family. Ensure that the family to be removed is
    * the same as the one on the list.
@@ -199,11 +199,11 @@ public final class IconFactory {
       iconFamilies.remove(family.getName());
     }
   }
-  
+
   /**
    * Rename an IconFamily. Do not affect existing families with the
    * same name.
-   * 
+   *
    * @param oldFamilyName
    * @param iconFamily
    */
@@ -214,19 +214,19 @@ public final class IconFactory {
     }
     add(iconFamily);
   }
-  
-  
+
+
   /**
-   * Return an individual named IconFamily. 
+   * Return an individual named IconFamily.
    * Ensure the Vassal icon prescan has completed first.
-   * 
+   *
    * @param iconFamilyName
    * @return Icon Family
    */
   IconFamily getFamily(String iconFamilyName) {
     try {
 
-// FIXME: This is bad---we should wait on a Future instead.      
+// FIXME: This is bad---we should wait on a Future instead.
       // Ensure preload is complete
       if (preloadThread.isAlive()) {
         try {
@@ -243,10 +243,10 @@ public final class IconFactory {
     }
     return null;
   }
-  
+
   /**
    * Return a sorted list of all available IconFamily names.
-   * 
+   *
    * @return Icon Family name list
    */
   private List<String> getIconFamilyList() {
@@ -259,12 +259,12 @@ public final class IconFactory {
     Collections.sort(names);
     return names;
   }
-  
+
   /** -------------------------------------------------------------------
    * Inspect the Jar file (for a standard installation) or the local file
    * system (Vassal running under a debugger) and determine all available
    * Icons of all sizes and collect them into named Icon Familys.
-   * 
+   *
    * This is essentially a cross-reference of all available Icons to ensure
    * fast processing of requests for Icons. No Icons are created at this
    * stage.
@@ -275,16 +275,16 @@ public final class IconFactory {
       //Build a URL to the Vassal images folder. It is guaranteed to exist
       // in any version of Vassal
       imageUrl = jar.getURL(DataArchive.IMAGE_DIR);
-      // Determine if we are running locally under a debugger, or 
+      // Determine if we are running locally under a debugger, or
       // from an installation package. If running an installed version
-      // of Vassal, the images URL will start with "jar:".   
-      if (imageUrl.toString().startsWith(FILE)) {      
+      // of Vassal, the images URL will start with "jar:".
+      if (imageUrl.toString().startsWith(FILE)) {
         findLocalScalableIcons();
         for (int size = 0; size < IconFamily.SIZE_DIRS.length; size++) {
           findLocalSizedIcons(size);
         }
       }
-      else if (imageUrl.toString().startsWith(JAR)) {     
+      else if (imageUrl.toString().startsWith(JAR)) {
         findJarIcons();
       }
       else {
@@ -295,11 +295,11 @@ public final class IconFactory {
       ReadErrorDialog.error(e, imageUrl.toString());
     }
   }
-  
+
   /**
    * Record all icons of the specified size found in the local file system
    * NB. Vassal is not running from a bundled Jar file
-   * 
+   *
    * @param size
    * @throws IOException
    */
@@ -327,11 +327,11 @@ public final class IconFactory {
       IOUtils.closeQuietly(br);
     }
   }
-  
+
   /**
    * Record all scalable icons found on the local file system.
    * NB. Vassal is not running from a bundled Jar file
-   *  
+   *
    * @throws IOException
    */
   private void findLocalScalableIcons() throws IOException {
@@ -358,13 +358,13 @@ public final class IconFactory {
       IOUtils.closeQuietly(br);
     }
   }
-  
+
   /**
    * Process the installed Vassal JarFile to find contained Icons
    * @throws IOException
    */
   private void findJarIcons() throws IOException {
-     
+
     // Path to scalable icons
     final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
     // Path to sized icons
@@ -372,10 +372,10 @@ public final class IconFactory {
     for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
       sizePaths[size] = DataArchive.ICON_DIR+IconFamily.SIZE_DIRS[size];
     }
-    
+
     final JarURLConnection j = (JarURLConnection) jar.getURL(DataArchive.IMAGE_DIR).openConnection();
     final JarFile vengine = j.getJarFile();
-    
+
     for (Enumeration<JarEntry> e = vengine.entries(); e.hasMoreElements();) {
       final JarEntry entry = e.nextElement();
       final String entryName = entry.getName();
@@ -392,7 +392,7 @@ public final class IconFactory {
           iconFamilies.put(familyName, family);
           continue;
         }
-    
+
         for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
           if (entryName.startsWith(sizePaths[size]) && ! entryName.equals(sizePaths[size])) {
             final String imageName = entryName.substring(sizePaths[size].length());
@@ -408,5 +408,5 @@ public final class IconFactory {
         }
       }
     }
-  }  
+  }
 }

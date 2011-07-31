@@ -28,10 +28,10 @@ import VASSAL.configure.StringConfigurer;
  * A String Module Preference.
  */
 public class StringPreference extends BasicPreference {
-  
+
   protected String defaultValue = "";
   protected StringConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "String Preference";
   }
@@ -53,7 +53,7 @@ public class StringPreference extends BasicPreference {
       config = new StringConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }});
     }
     return config;

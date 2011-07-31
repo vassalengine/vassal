@@ -45,7 +45,7 @@ public class Op {
   public static SourceOp load(BufferedImage image) {
     return new ImageSourceOpBitmapImpl(image);
   }
- 
+
   public static SourceOp loadLarge(String name) {
     if (!name.startsWith("/"))
       name = "images/" + name;
@@ -55,7 +55,7 @@ public class Op {
     else
       return new SourceOpTiledBitmapImpl(name);
   }
- 
+
   public static ScaleOp scale(ImageOp sop, double scale) {
     if (sop instanceof SVGOp)
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);
@@ -67,11 +67,11 @@ public class Op {
   }
 
   public static RotateOp rotate(ImageOp sop, double angle) {
-    if (sop instanceof SVGOp) 
+    if (sop instanceof SVGOp)
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, 1.0);
     else if (angle % 90.0 == 0.0)
       return new OrthoRotateOpBitmapImpl(sop, (int) angle);
-    else 
+    else
       return new RotateScaleOpBitmapImpl(sop, angle, 1.0);
   }
 
@@ -79,7 +79,7 @@ public class Op {
                                           double angle, double scale) {
     if (sop instanceof SVGOp)
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, scale);
-    else 
+    else
       return new RotateScaleOpBitmapImpl(sop, angle, scale);
   }
 
@@ -89,7 +89,7 @@ public class Op {
 
   public static GamePieceOp piece(GamePiece gp) {
     return new GamePieceOpImpl(gp);
-  } 
+  }
 
   public static void clearCache() {
     AbstractOpImpl.clearCache();

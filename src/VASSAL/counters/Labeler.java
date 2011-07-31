@@ -109,7 +109,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   protected KeyCommand menuKeyCommand;
 
   private Point position = null; // Label position cache
-  
+
   public Labeler() {
     this(ID, null);
   }
@@ -154,7 +154,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return super.getLocalizedProperty(key);
     }
   }
-  
+
   public Object getProperty(Object key) {
     if (key.equals(propertyName)) {
       return getLabel();
@@ -208,7 +208,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return nameFormat.getText(Decorator.getOutermost(this));
     }
   }
-  
+
   public String getLocalizedName() {
     if (label.length() == 0) {
       return piece.getLocalizedName();
@@ -283,8 +283,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
         Math.toRadians(rotateDegrees), x, y);
       g2d.transform(newXForm);
     }
-      
-    imagePainter.draw(g, labelX, labelY, zoom, obs);    
+
+    imagePainter.draw(g, labelX, labelY, zoom, obs);
 
     if (rotateDegrees != 0) {
       g2d.setTransform(saveXForm);
@@ -305,7 +305,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
         new LabelOp(lastCachedLabel, font, textFg, textBg));
     }
   }
-  
+
   /**
    * Return the relative position of the upper-left corner of the label,
    * for a piece at position (0,0). Cache the position of the label once the label
@@ -355,12 +355,12 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
 
     final Point result = new Point(x, y);
-    
+
     // Cache the position once the label image has been generated
     if (lblSize.height > 0 && lblSize.width > 0 ) {
       position = result;
     }
-    
+
     return result;
   }
 
@@ -404,7 +404,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     private final Color fg;
     private final Color bg;
     private final int hash;
-    
+
     public LabelOp(String txt, Font font, Color fg, Color bg) {
       this.txt = txt;
       this.font = font;
@@ -427,7 +427,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
       // draw nothing if our size is zero
       if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
- 
+
       // prepare the target image
       final BufferedImage im = ImageUtils.createCompatibleImage(
         size.width,
@@ -438,8 +438,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
       final Graphics2D g = im.createGraphics();
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
-      
-      // paint the background  
+
+      // paint the background
       if (bg != null) {
         g.setColor(bg);
         g.fillRect(0, 0, size.width, size.height);
@@ -453,7 +453,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
         else {
           g.setColor(fg);
           g.setFont(font);
-  
+
           final FontMetrics fm = g.getFontMetrics(font);
           g.drawString(txt, 0, size.height - fm.getDescent());
         }
@@ -484,17 +484,17 @@ public class Labeler extends Decorator implements TranslatablePiece {
         g.dispose();
       }
 
-      return label; 
+      return label;
     }
 
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
         buildDimensions();
-      
+
         // ensure that our area is nonempty
         if (size.width <= 0 || size.height <= 0) {
           size.width = size.height = 1;
-        } 
+        }
       }
     }
 
@@ -519,7 +519,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   public String getLabel() {
     return labelFormat.getText(Decorator.getOutermost(this));
   }
-  
+
   public String getLocalizedLabel() {
     final FormattedString f =
       new FormattedString(getTranslation(labelFormat.getFormat()));
@@ -534,22 +534,22 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   protected Rectangle lastRect = null;
   protected Area lastShape = null;
-  
+
   /**
    * Return the Shape of the counter by adding the shape of this label to the shape of all inner traits.
-   * Minimize generation of new Area objects. 
+   * Minimize generation of new Area objects.
    */
   public Shape getShape() {
     Shape innerShape = piece.getShape();
-    
+
     // If the label has a Control key, then the image of the label is NOT included in the selectable area of the
     // counter
     if (labelKey != null) {
       return innerShape;
     }
-    else {      
+    else {
       final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
-      
+
       // If the label is completely enclosed in the current counter shape, then we can just return
       // the current shape
       if (innerShape.contains(r.x, r.y, r.width, r.height)) {
@@ -561,7 +561,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
         // Cache the Area object generated. Only recreate if the label position or size has changed
         if (!r.equals(lastRect)) {
           lastShape = new Area(r);
-          lastRect = new Rectangle(r);          
+          lastRect = new Rectangle(r);
         }
         a.add(lastShape);
         return a;
@@ -631,7 +631,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
     return l;
   }
-  
+
   private static class Ed implements PieceEditor {
     private NamedHotKeyConfigurer labelKeyInput;
     private JPanel controls = new JPanel();
@@ -822,10 +822,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
       }
     }
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(
-        new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand}, 
+        new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand},
         new String[] {"Label Text", "Label Format", "Change Label Command"});
   }
 }

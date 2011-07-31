@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -33,11 +33,11 @@ public class BooleanAndPieceFilter implements PieceFilter {
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) && filter2.accept(piece);
   }
-  
+
   public PieceFilter getFilter1() {
     return filter1;
   }
-  
+
   public PieceFilter getFilter2() {
     return filter2;
   }

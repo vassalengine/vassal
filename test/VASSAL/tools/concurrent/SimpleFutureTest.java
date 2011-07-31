@@ -108,7 +108,7 @@ public class SimpleFutureTest {
   public void testGetAfterSet()
                               throws ExecutionException, InterruptedException {
     final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
-    f.set(42); 
+    f.set(42);
     assertEquals(42, (int) f.get());
   }
 
@@ -142,7 +142,7 @@ public class SimpleFutureTest {
                                               InterruptedException,
                                               TimeoutException {
     final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
-    f.set(42); 
+    f.set(42);
     assertEquals(42, (int) f.get(1, TimeUnit.NANOSECONDS));
   }
 
@@ -166,7 +166,7 @@ public class SimpleFutureTest {
 
   @Test(expected=CancellationException.class)
   public void testGetTimeoutAfterCancel() throws ExecutionException,
-                                                 InterruptedException, 
+                                                 InterruptedException,
                                                  TimeoutException {
     final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
     f.cancel(true);

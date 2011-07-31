@@ -14,7 +14,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module;
@@ -132,7 +132,7 @@ public class Inventory extends AbstractConfigurable
 //  public static final String DEST_CHAT = "Chat Window";
 //  public static final String DEST_DIALOG = "Dialog Window";
 //  public static final String DEST_TREE = "Tree Window";
-//  public static final String[] DEST_OPTIONS = { DEST_CHAT, DEST_DIALOG, DEST_TREE }; 
+//  public static final String[] DEST_OPTIONS = { DEST_CHAT, DEST_DIALOG, DEST_TREE };
 //  protected String destination = DEST_TREE;
 
   public static final String FILTER = "include"; //$NON-NLS-1$
@@ -176,7 +176,7 @@ public class Inventory extends AbstractConfigurable
 
   public static final String FOLDERS_ONLY = "foldersOnly"; //$NON-NLS-1$
   protected boolean foldersOnly = false;
-  
+
   public static final String SORT_PIECES = "sortPieces"; //$NON-NLS-1$
   protected boolean sortPieces = true;
 
@@ -189,9 +189,9 @@ public class Inventory extends AbstractConfigurable
   public static final String[] SORT_OPTIONS = { ALPHA, LENGTHALPHA, NUMERIC };
 
   protected String sortStrategy = ALPHA;
-  
+
   public static final String SORTING = "sorting"; //$NON-NLS-1$
-  
+
   protected JDialog frame;
 
   public Inventory() {
@@ -352,9 +352,9 @@ public class Inventory extends AbstractConfigurable
   }
 
   /**
-   * @author Scot McConnachie. 
+   * @author Scot McConnachie.
    * Writes the inventory text data to a user selected file.
-   * This allows a module designer to use Inventory to create customized text 
+   * This allows a module designer to use Inventory to create customized text
    * reports from the game.
    * @author spindler
    * Changed FileChooser to use the new Vassal.tool.FileChooser
@@ -373,17 +373,17 @@ public class Inventory extends AbstractConfigurable
     mapSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
     // groupSeparator = mapSeparator + "  ";
     // groupSeparator = " ";
-    output.append(results.getResultString()); 
+    output.append(results.getResultString());
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
 
-    PrintWriter p = null; 
+    PrintWriter p = null;
     try {
       p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
       p.print(output);
-      p.close();     
- 
+      p.close();
+
       final Command c = new Chatter.DisplayText(
         GameModule.getGameModule().getChatter(),
         Resources.getString("Inventory.wrote", file)  //$NON-NLS-1$
@@ -432,7 +432,7 @@ public class Inventory extends AbstractConfigurable
     for (VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
       m.getPieces();
     }
-    
+
     final ArrayList<String> path = new ArrayList<String>();
     for (int i = 0; i < groupBy.length; i++)
       path.add(groupBy[i]);
@@ -485,33 +485,33 @@ public class Inventory extends AbstractConfigurable
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Inventory.htm"); //$NON-NLS-1$
   }
-  
+
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-    	Resources.getString(Resources.NAME_LABEL),
-    	Resources.getString(Resources.BUTTON_TEXT),
-    	Resources.getString(Resources.TOOLTIP_TEXT),
-    	Resources.getString(Resources.BUTTON_ICON),
-    	Resources.getString(Resources.HOTKEY_LABEL),
-    	// "Display",
-    	Resources.getString("Editor.Inventory.show_pieces"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.sort_group_properties"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.label_folders"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.show_folders"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.label_pieces"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.sort"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.label_sort"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.sort_method"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.center_piece"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.forward_keystroke"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.rightclick_piece"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.draw_piece"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.zoom"), //$NON-NLS-1$
-    	Resources.getString("Editor.Inventory.available") //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      // "Display",
+      Resources.getString("Editor.Inventory.show_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.sort_group_properties"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.label_folders"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.show_folders"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.label_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.sort"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.label_sort"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.sort_method"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.center_piece"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.forward_keystroke"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.rightclick_piece"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.draw_piece"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.available") //$NON-NLS-1$
     };
   }
 
@@ -522,19 +522,19 @@ public class Inventory extends AbstractConfigurable
       String.class,
       IconConfig.class,
       NamedKeyStroke.class,
-      // DestConfig.class, 
+      // DestConfig.class,
       PropertyExpression.class,
       String[].class,
       String.class,
       Boolean.class,
       PieceFormatConfig.class,
       Boolean.class,
-      PieceFormatConfig.class, 
+      PieceFormatConfig.class,
       SortConfig.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
-      Boolean.class, 
+      Boolean.class,
       Double.class,
       String[].class
     };
@@ -547,14 +547,14 @@ public class Inventory extends AbstractConfigurable
       TOOLTIP,
       ICON,
       HOTKEY,
-   // DEST, 
+   // DEST,
       FILTER,
       GROUP_BY,
       NON_LEAF_FORMAT,
       FOLDERS_ONLY,
       LEAF_FORMAT,
       SORT_PIECES,
-      SORT_FORMAT,  
+      SORT_FORMAT,
       SORTING,
       CENTERONPIECE,
       FORWARD_KEYSTROKE,
@@ -775,15 +775,15 @@ public class Inventory extends AbstractConfigurable
 
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting && enabledForPlayersSide());
-    if (gameStarting) 
+    if (gameStarting)
       setupLaunch();
   }
-  
+
   protected void setupLaunch() {
     launch.setEnabled(enabledForPlayersSide());
     launch.setVisible(launch.isEnabled());
   }
-  
+
   /**
    * Update inventory according to change of side.
    */
@@ -936,7 +936,7 @@ public class Inventory extends AbstractConfigurable
     }
 
   }
-  
+
 //  public static class Dest extends StringEnum {
 //    public String[] getValidValues(AutoConfigurable target) {
 //      return new String[] {DEST_CHAT, DEST_DIALOG, DEST_TREE};
@@ -952,9 +952,9 @@ public class Inventory extends AbstractConfigurable
    * Holds static information of and a reference to a gamepiece. Pay attention
    * to the equals method. It checks if two pieces can be found under the same
    * path!
-   * 
+   *
    * @author Brent Easton and Torsten Spindler
-   * 
+   *
    */
   public class Counter implements PropertySource {
     // The gamepiece is stored here to allow dynamic changes of name, location
@@ -972,7 +972,7 @@ public class Inventory extends AbstractConfigurable
     public Counter(String name) {
       this(name, null);
     }
-    
+
     public Counter(String name, GamePiece p) {
       this(null, null, 0, nonLeafFormat, sortFormat);
       this.localName = name;
@@ -1071,7 +1071,7 @@ public class Inventory extends AbstractConfigurable
     public Object getLocalizedProperty(Object key) {
       return getProperty(key);
     }
-    
+
     public void setNode(CounterNode node) {
       this.node = node;
     }
@@ -1080,7 +1080,7 @@ public class Inventory extends AbstractConfigurable
 
   /**
    * Filter to select pieces required
-   * 
+   *
    * @author Brent Easton
    */
   protected static class Selector implements PieceFilter {
@@ -1120,9 +1120,9 @@ public class Inventory extends AbstractConfigurable
 
   /**
    * CounterNode for the result tree.
-   * 
+   *
    * @author spindler
-   * 
+   *
    */
   public class CounterNode implements Comparable<CounterNode> {
     protected final String entry;
@@ -1134,7 +1134,7 @@ public class Inventory extends AbstractConfigurable
 
     public CounterNode(final String entry,
                        final Counter counter,
-                       final int level) { 
+                       final int level) {
       this(entry, counter);
       this.level = level;
     }
@@ -1207,13 +1207,13 @@ public class Inventory extends AbstractConfigurable
     }
 
     protected void sortChildren() {
-      if (sortStrategy.equals(ALPHA)) 
+      if (sortStrategy.equals(ALPHA))
         Collections.sort(children);
       else if (sortStrategy.equals(LENGTHALPHA))
         Collections.sort(children, new LengthAlpha());
       else if (sortStrategy.equals(NUMERIC))
         Collections.sort(children, new Numerical());
-      else 
+      else
         Collections.sort(children);
     }
 
@@ -1323,16 +1323,16 @@ public class Inventory extends AbstractConfigurable
        * @return true if arguments looks processable, false else
        */
       protected boolean argsOK(Object arg0, Object arg1) {
-        return (arg0 != null && 
-                arg1 != null && 
-                arg0 instanceof CounterNode && 
+        return (arg0 != null &&
+                arg1 != null &&
+                arg0 instanceof CounterNode &&
                 arg1 instanceof CounterNode);
         }
-    
+
       protected int compareStrangeArgs(Object arg0, Object arg1) {
         if (arg1.equals(arg1))
           return 0;
-  
+
         if (arg0 == null)
           return 1;
         if (arg1 == null)
@@ -1341,12 +1341,12 @@ public class Inventory extends AbstractConfigurable
           return -1;
         if (arg1 instanceof CounterNode && !(arg0 instanceof CounterNode))
           return 1;
-   
+
         throw new IllegalArgumentException(
           "These CounterNodes are not strange!"); //$NON-NLS-1$
       }
     }
-  
+
     /**
      * Compare two CounterNodes based on the alphanumerical order of their
      * SortKeys.
@@ -1359,15 +1359,15 @@ public class Inventory extends AbstractConfigurable
       public int compare(CounterNode left, CounterNode right) {
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
-  
+
         return left.compareTo(right);
-      }  
+      }
     }
 
     /**
      * Compare two CounterNodes based on the first integer value found in
      * their SortKeys. If a CounterNodes SortKey does not contain an integer
-     * at all it is assigned the lowest available integer. 
+     * at all it is assigned the lowest available integer.
      *
      * @author spindler
      */
@@ -1378,11 +1378,11 @@ public class Inventory extends AbstractConfigurable
 
       /**
        * Get first integer in key, if any. Otherwise return lowest possible
-       * integer. 
+       * integer.
        *
        * @param key is a string that may or may not contain an integer value
        * @return the value of the integer found, min(Integer) otherwise
-       * 
+       *
        */
       protected int getInt(String key) {
         int found = Integer.MIN_VALUE;
@@ -1394,7 +1394,7 @@ public class Inventory extends AbstractConfigurable
         }
         int start = match.start();
         found = Integer.parseInt(key.substring(start, match.end()));
- 
+
         // Check for sign
         if ( (start > 0) && (key.charAt(start-1) == '-') ) {
           // negative integer found
@@ -1412,7 +1412,7 @@ public class Inventory extends AbstractConfigurable
       public int compare(CounterNode left, CounterNode right) {
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
-  
+
          int l = getInt(left.toSortKey());
          int r = getInt(right.toSortKey());
 
@@ -1436,7 +1436,7 @@ public class Inventory extends AbstractConfigurable
       public int compare(CounterNode left, CounterNode right) {
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
-        
+
         int leftLength = left.toSortKey().length();
         int rightLength = right.toSortKey().length();
         if (leftLength < rightLength)
@@ -1476,7 +1476,7 @@ public class Inventory extends AbstractConfigurable
 
     /**
      * insert counter into the tree. It is not sorted in any way.
-     * 
+     *
      * @param counter
      */
     public void insert(Counter counter) {
@@ -1507,7 +1507,7 @@ public class Inventory extends AbstractConfigurable
 
     /**
      * Deliver information of the tree as text.
-     * 
+     *
      * @return String
      */
     public String getResultString() {
@@ -1519,7 +1519,7 @@ public class Inventory extends AbstractConfigurable
 
     /**
      * Compatibility for DisplayResults class.
-     * 
+     *
      * @return String[]
      */
     public String[] getResultStringArray() {

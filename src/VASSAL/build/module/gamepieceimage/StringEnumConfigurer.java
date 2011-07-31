@@ -74,7 +74,7 @@ public class StringEnumConfigurer extends Configurer {
     }
     return panel;
   }
-  
+
   public JComboBox getComboBox() {
     JComboBox b = new JComboBox(validValues);
     b.setMaximumSize(new Dimension(b.getMaximumSize().width,b.getPreferredSize().height));
@@ -98,7 +98,7 @@ public class StringEnumConfigurer extends Configurer {
     validValues = s;
   box.setModel(new DefaultComboBoxModel(validValues));
   }
-  
+
   public void setValue(Object o) {
     if (validValues == null
         || isValidValue(o)) {

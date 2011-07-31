@@ -42,7 +42,7 @@ public class IPCMessenger {
 
   protected final MultiEventListenerSupport lsup;
 
-  public IPCMessenger(InputStream in, OutputStream out, 
+  public IPCMessenger(InputStream in, OutputStream out,
                       MultiEventListenerSupport lsup) throws IOException {
     if (in == null) throw new IllegalArgumentException("in == null");
     if (out == null) throw new IllegalArgumentException("out == null");
@@ -57,7 +57,7 @@ public class IPCMessenger {
     this(sock.getInputStream(), sock.getOutputStream());
   }
 
-  public IPCMessenger(InputStream in, OutputStream out) throws IOException { 
+  public IPCMessenger(InputStream in, OutputStream out) throws IOException {
     if (in == null) throw new IllegalArgumentException("in == null");
     if (out == null) throw new IllegalArgumentException("out == null");
 

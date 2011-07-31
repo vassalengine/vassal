@@ -46,7 +46,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   protected GamePiece lastMoved;
   protected static java.util.Map<Map,HighlightLastMoved> instances =
     new HashMap<Map,HighlightLastMoved>();
-  
+
   protected boolean enabled;
   protected boolean currentlyEnabled;
 
@@ -54,12 +54,12 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     highlighter = new ColoredBorder(Color.RED, 2);
     enabled = true;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString("Editor.HighlightLastMoved.enabled"), //$NON-NLS-1$
-    		Resources.getString(Resources.COLOR_LABEL),
-    		Resources.getString("Editor.HighlightLastMoved.thickness"), //$NON-NLS-1$
+        Resources.getString("Editor.HighlightLastMoved.enabled"), //$NON-NLS-1$
+        Resources.getString(Resources.COLOR_LABEL),
+        Resources.getString("Editor.HighlightLastMoved.thickness"), //$NON-NLS-1$
     };
   }
 
@@ -135,7 +135,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   public void draw(Graphics g, Map map) {
     if (lastMoved != null && enabled) {
       if (lastMoved.getMap() == map) {
-        highlighter.draw(lastMoved, g, (int) (lastMoved.getPosition().x * map.getZoom()), 
+        highlighter.draw(lastMoved, g, (int) (lastMoved.getPosition().x * map.getZoom()),
             (int) (lastMoved.getPosition().y * map.getZoom()), map.getView(), map.getZoom());
       }
       else {

@@ -38,13 +38,13 @@ public class LoopControl {
 
   // Localized description of loop types
   public static final String[] LOOP_TYPE_DESCS = new String[] {
-      Resources.getString("Editor.LoopControl.repeat_fixed"), //$NON-NLS-1$ 
-      Resources.getString("Editor.LoopControl.repeat_until"), //$NON-NLS-1$ 
+      Resources.getString("Editor.LoopControl.repeat_fixed"), //$NON-NLS-1$
+      Resources.getString("Editor.LoopControl.repeat_until"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.repeat_while") }; //$NON-NLS-1$
 
   /**
    * Convert a Loop Type to a localized description
-   * 
+   *
    * @param type
    *          loop type
    * @return localized description
@@ -60,7 +60,7 @@ public class LoopControl {
 
   /**
    * Convert a localized desciption of a loop type back to a raw type
-   * 
+   *
    * @param desc
    *          localized description of loop type
    * @return loop type

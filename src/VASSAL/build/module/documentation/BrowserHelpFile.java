@@ -61,7 +61,7 @@ import VASSAL.tools.menu.MenuManager;
 /**
  * Unpacks a zipped directory stored in the module and displays it in an
  * external browser window.
- * 
+ *
  * @author rkinney
  */
 public class BrowserHelpFile extends AbstractBuildable implements Configurable {
@@ -80,7 +80,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   public BrowserHelpFile() {
     super();
-    
+
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
@@ -98,9 +98,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       BrowserSupport.openURL(url.toString());
     }
   }
-  
+
   /**
-   * The entry in the module Zip file containing the HTML directory 
+   * The entry in the module Zip file containing the HTML directory
    * @return
    */
   protected String getContentsResource() {
@@ -121,7 +121,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         url = new URL(startingPage);
         return;
       }
-        
+
       final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
       File output = tmp.getParentFile();
       tmp.delete();
@@ -129,10 +129,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       output = new File(output, "help"); //$NON-NLS-1$
       output = new File(output, getContentsResource());
       if (output.exists()) recursiveDelete(output);
-  
+
       output.mkdirs();
       ZipEntry entry;
-  
+
       while ((entry = in.getNextEntry()) != null) {
         if (entry.isDirectory()) {
           new File(output, entry.getName()).mkdirs();
@@ -150,7 +150,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           }
         }
       }
-  
+
       in.close();
       url = new File(output, startingPage).toURI().toURL();
     }
@@ -173,7 +173,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       output.delete();
     }
   }
- 
+
   public String[] getAttributeNames() {
     return new String[]{
       TITLE,
@@ -261,7 +261,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
     public String[] getAttributeDescriptions() {
       return new String[]{
-        "Menu Entry:  ", 
+        "Menu Entry:  ",
         "Contents:  ",
         "Starting Page:  "
       };
@@ -347,7 +347,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
         FileInputStream in = null;
         try {
-          in = new FileInputStream(packed); 
+          in = new FileInputStream(packed);
           IOUtils.copy(in, out);
           in.close();
         }
@@ -418,9 +418,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   /**
    * Handles the packaging of the target directory into the module file after the user saves the properties in the
    * editor
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   protected static class MyConfigurer extends AutoConfigurer {
     public MyConfigurer(AutoConfigurable c) {
@@ -434,7 +434,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return super.getValue();
     }
   }
-  
+
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null,

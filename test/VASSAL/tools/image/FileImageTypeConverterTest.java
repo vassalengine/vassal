@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -70,7 +70,7 @@ public class FileImageTypeConverterTest {
   @BeforeClass
   public static void setup() throws IOException {
     src = ImageIO.read(new File(test));
-  } 
+  }
 
   @Test
   public void testWriteRead() throws IOException {
@@ -96,9 +96,9 @@ public class FileImageTypeConverterTest {
   public void testLoad() throws IOException {
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
     final File tmpFile = new File(tmp);
-    
+
     BufferedImage dst = null;
-    try { 
+    try {
       final FileImageTypeConverter c = new FileImageTypeConverter(tf);
       dst = c.convert(ref, BufferedImage.TYPE_INT_ARGB);
 

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools;
@@ -22,8 +22,8 @@ import java.awt.image.AreaAveragingScaleFilter;
 import java.awt.image.ColorModel;
 
 /**
- * Extension of java.awt.image.AreaAveragingScaleFilter.  Uses the 
- * same algorithm but makes sure all images are scaled using area 
+ * Extension of java.awt.image.AreaAveragingScaleFilter.  Uses the
+ * same algorithm but makes sure all images are scaled using area
  * averaging.  Ensures there is no fallback to ReplicateScaleFilter. */
 public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
   private int savedWidth, savedHeight, savedPixels[];
@@ -57,7 +57,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
       ColorModel cm, int pixels[], int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
-  
+
   private void setThePixels (int x, int y, int width, int height,
       ColorModel cm, Object pixels, int offset, int scansize) {
 
@@ -76,7 +76,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
       destinationOffset += (savedWidth - width);
     }
   }
-  
+
   public void imageComplete (int status) {
     if ((status == IMAGEABORTED) || (status == IMAGEERROR)) {
       consumer.imageComplete (status);
@@ -89,7 +89,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
         position=0;
         int start = yy * savedWidth;
         for (int xx=0;xx<savedWidth;xx++) {
-          pixels[position++] = savedPixels[start+xx]; 
+          pixels[position++] = savedPixels[start+xx];
         }
         super.setPixels (0, yy, savedWidth, 1, defaultCM,
             pixels, 0, savedWidth);

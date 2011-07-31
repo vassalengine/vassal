@@ -59,19 +59,19 @@ import VASSAL.tools.swing.Dialogs;
 
 /**
  * An IconFamily is a named set of Icons in the four standard Tango sizes.
- * 
+ *
  * Each IconFamily consists of at least a Scalable Icon, plus zero or more
  * specifically sized icons.
- * 
+ *
  * If a specific sized Icon is missing, the IconFamily will supply a scaled icon
  * based on the Scalable icon.
- * 
+ *
  * Icons are created as lazily as possible.
- * 
+ *
  * IconFamilys are created in two ways: - For Vassal inbuilt Icons by
  * IconFactory when it scans the Vengine for inbuilt Icons - For Modules,
  * IconFamilys can be added to IconFamilyContainer by the module designer.
- * 
+ *
  * Each IconFamily consists of at least a Scalable Icon, plus zero or more
  * specifically sized icons. If an
  */
@@ -100,7 +100,7 @@ public class IconFamily extends AbstractConfigurable {
 
   // Directories within the icons directory to locate each Tango Size
   static final String[] SIZE_DIRS = new String[] {
-    "16x16/", //$NON-NLS-1$ 
+    "16x16/", //$NON-NLS-1$
     "22x22/", //$NON-NLS-1$
     "32x32/", //$NON-NLS-1$
     "48x48/"  //$NON-NLS-1$
@@ -123,7 +123,7 @@ public class IconFamily extends AbstractConfigurable {
 
   /**
    * Return list of Icon Size names in local language
-   * 
+   *
    * @return
    */
   public static String[] getIconSizeNames() {
@@ -162,16 +162,16 @@ public class IconFamily extends AbstractConfigurable {
   /**
    * Create a new IconFamily with the given name. The name supplied will
    * normally be the name of an IconFamily, with no suffix.
-   * 
+   *
    * These constructors are used by IconFactory to create IconFamilys for the
    * Vassal inbuilt Icons
-   * 
+   *
    * FIXME: Write this bit...Will be needed once Toolbar Icon support is added
    * Backward Compatibility: If the name supplied does have a file type suffix,
    * then it is a specific Icon name from a pre-IconFamily module. By throwing
    * away the suffix, IconFamily will use the supplied icon as a base icon to
    * create the full IconFamily.
-   * 
+   *
    * @param familyName
    *          IconFamily name or Icon name
    * @param scalableName
@@ -214,7 +214,7 @@ public class IconFamily extends AbstractConfigurable {
   /**
    * Return a particular sized icon. If it can't be found, then build it by
    * scaling the base Icon.
-   * 
+   *
    * @param size
    *          Icon size
    * @return Icon
@@ -235,7 +235,7 @@ public class IconFamily extends AbstractConfigurable {
   /**
    * Return a particular sized Icon, but do not build one from the scalable Icon
    * if it is not found.
-   * 
+   *
    * @param size
    * @return
    */
@@ -248,7 +248,7 @@ public class IconFamily extends AbstractConfigurable {
 
   /**
    * Return the scalable icon directly (used by {@link IconImageConfigurer})
-   * 
+   *
    * @return
    */
   public Icon getScalableIcon() {
@@ -297,7 +297,7 @@ public class IconFamily extends AbstractConfigurable {
 
   /**
    * Scale an Icon to desired size
-   * 
+   *
    * @param base
    *          Base Icon
    * @param toSizePixels
@@ -416,7 +416,7 @@ public class IconFamily extends AbstractConfigurable {
 
   /*******************************************************
    * Custom Configurer for Icon Family
-   * 
+   *
    */
   static class IconFamilyConfig extends Configurer {
     protected IconFamily family;
@@ -461,7 +461,7 @@ public class IconFamily extends AbstractConfigurable {
       mig.add(errorLabel, "span 2,wrap"); //$NON-NLS-1$
 
       final IconImageConfigurer scalableConfig = new IconImageConfigurer(family);
-      mig.add(new JLabel(Resources.getString("Editor.IconFamily.scalable_icon_label"))); //$NON-NLS-1$ 
+      mig.add(new JLabel(Resources.getString("Editor.IconFamily.scalable_icon_label"))); //$NON-NLS-1$
       mig.add(scalableConfig.getControls(), "wrap"); //$NON-NLS-1$
 
       final IconImageConfigurer[] sizeConfig = new IconImageConfigurer[IconFamily.SIZE_COUNT];
@@ -514,7 +514,7 @@ public class IconFamily extends AbstractConfigurable {
 
     /**
      * Constructor to Configure the scalable icon;
-     * 
+     *
      * @param key
      * @param name
      * @param testElementName

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 /*
@@ -21,7 +21,7 @@
  * User: rkinney
  * Date: Jul 21, 2002
  * Time: 10:15:59 PM
- * To change template for new interface use 
+ * To change template for new interface use
  * Code Style | Class Templates options (Tools | IDE Options).
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;

@@ -89,10 +89,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString(Resources.NAME_LABEL),
-    		Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
-    		Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
-    		Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
+        Resources.getString(Resources.NAME_LABEL),
+        Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
+        Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
+        Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
     };
   }
 
@@ -269,5 +269,5 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public void setup(boolean gameStarting) {
     launchAction.setEnabled(!gameStarting);
   }
-  
+
 }

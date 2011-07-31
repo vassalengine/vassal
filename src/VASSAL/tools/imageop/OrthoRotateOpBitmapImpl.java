@@ -41,7 +41,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
 
     angle = (360 + (angle % 360)) % 360;  // put angle in [0,360)
     if (angle % 90 != 0) throw new IllegalArgumentException();
- 
+
     // angle is now in { 0, 90, 180, 270 }.
 
     this.sop = sop;
@@ -78,7 +78,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       size = sop.getSize();
 
       // transpose dimensions for 90- and 270-degree rotations
-      if (angle == 1 || angle == 3) 
+      if (angle == 1 || angle == 3)
         size.setSize(size.height, size.width);
     }
   }
@@ -100,13 +100,13 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     private final ImageOp sop;
     private final int angle;
     private final int hash;
- 
+
     public TileOp(OrthoRotateOpBitmapImpl rop, int tileX, int tileY) {
       if (rop == null) throw new IllegalArgumentException();
 
       if (tileX < 0 || tileX >= rop.getNumXTiles() ||
           tileY < 0 || tileY >= rop.getNumYTiles())
-        throw new IndexOutOfBoundsException(); 
+        throw new IndexOutOfBoundsException();
 
       this.angle = rop.angle;
 
@@ -149,7 +149,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       size = new Dimension(sx1-sx0, sy1-sy0);
 
       sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
-                            
+
       hash = new HashCodeBuilder().append(sop)
                                   .append(angle)
                                   .toHashCode();
@@ -172,11 +172,11 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       g.drawImage(src, 0, 0, null);
       g.dispose();
 
-      return dst; 
+      return dst;
     }
 
     protected void fixSize() { }
-  
+
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -191,13 +191,13 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     public int hashCode() {
       return hash;
     }
-  } 
+  }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
-    
+
     final OrthoRotateOpBitmapImpl op = (OrthoRotateOpBitmapImpl) o;
     return angle == op.getAngle() && sop.equals(op.sop);
   }

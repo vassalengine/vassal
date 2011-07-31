@@ -46,16 +46,16 @@ import VASSAL.i18n.Resources;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- */ 
+ */
 public class ProgressDialog extends JDialog {
   private static final long serialVersionUID = 1L;
- 
+
   protected final JLabel label;
   protected final JProgressBar progbar;
   protected final JButton cancel;
-  
-  protected final EventListenerList listeners = new EventListenerList(); 
- 
+
+  protected final EventListenerList listeners = new EventListenerList();
+
   /**
    * Creates a progress dialog.
    *
@@ -77,10 +77,10 @@ public class ProgressDialog extends JDialog {
     progbar.setStringPainted(true);
     progbar.setValue(0);
 
-// AUGH! This is retarded that we can't set a default font size... 
+// AUGH! This is retarded that we can't set a default font size...
 //    f = progbar.getFont();
 //    progbar.setFont(f.deriveFont(14f));
- 
+
     cancel = new JButton(Resources.getString(Resources.CANCEL));
 
 //    f = cancel.getFont();
@@ -92,15 +92,15 @@ public class ProgressDialog extends JDialog {
       public void windowClosing(WindowEvent e) {
         fireCancelledEvent(new ActionEvent(
           ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel"
-        )); 
+        ));
       }
-    });   
+    });
 
     // forward clicks on the close button to the cancellation listeners
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        fireCancelledEvent(e); 
-      }      
+        fireCancelledEvent(e);
+      }
     });
 
     // create the layout
@@ -203,7 +203,7 @@ public class ProgressDialog extends JDialog {
 
   /**
    * Sets whether the progress bar should contain a progress string.
-   * 
+   *
    * @param painted whether the progress bar should contain a progress string
    */
   public void setStringPainted(boolean painted) {
@@ -212,7 +212,7 @@ public class ProgressDialog extends JDialog {
 
   /**
    * Adds a cancellation listener.
-   * 
+   *
    * @param l the action listener
    */
   public void addActionListener(ActionListener l) {
@@ -227,7 +227,7 @@ public class ProgressDialog extends JDialog {
   public void removeActionListener(ActionListener l) {
     listeners.remove(ActionListener.class, l);
   }
-  
+
   /**
    * Gets the list of cancellation listeners.
    *
@@ -238,7 +238,7 @@ public class ProgressDialog extends JDialog {
   }
 
   /**
-   * Creates a progress dialog on the EDT. 
+   * Creates a progress dialog on the EDT.
    *
    * This is a convenience method to be used when a non-EDT thread needs to
    * create a progress dialog in order to attach listeners to it.

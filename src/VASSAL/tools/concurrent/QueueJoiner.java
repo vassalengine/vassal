@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
  * deadlocking in the event that the child tasks are unable to make it to the
  * front of the {@code ExecutorService}'s queue, because the thread of the
  * original task will eventually clear the queue on its own.
- * 
+ *
  * @author Joel Uckelman
  * @since 3.1.11
  */

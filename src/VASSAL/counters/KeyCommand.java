@@ -46,13 +46,13 @@ public class KeyCommand extends AbstractAction {
   protected NamedKeyStroke namedKeyStroke;
 
   public KeyCommand(String name, KeyStroke key, GamePiece target) {
-    this(name, key, target, null); 
+    this(name, key, target, null);
   }
-  
+
   public KeyCommand(String name, NamedKeyStroke key, GamePiece target) {
-    this(name, key, target, null); 
+    this(name, key, target, null);
   }
-  
+
   public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
     super(key == null ? name : name + "  " + NamedHotKeyConfigurer.getString(key));
     this.target = target;
@@ -65,22 +65,22 @@ public class KeyCommand extends AbstractAction {
     this(name, key == null ? null : key.getKeyStroke(), target, i18nPiece);
     namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
   }
-  
+
   public KeyCommand(String name, NamedKeyStroke key, GamePiece target, boolean enabled) {
     this(name, key == null ? null : key.getKeyStroke(), target, enabled);
     namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
   }
-  
+
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
     this(name, key, target, null);
     setEnabled(enabled);
   }
-  
+
   public KeyCommand(KeyCommand command) {
     this(command.name, command.stroke, command.target, command.isEnabled());
     this.i18nPiece = command.i18nPiece;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -96,7 +96,7 @@ public class KeyCommand extends AbstractAction {
   public NamedKeyStroke getNamedKeyStroke() {
     return namedKeyStroke;
   }
-  
+
   public GamePiece getTarget() {
     return target;
   }
@@ -104,11 +104,11 @@ public class KeyCommand extends AbstractAction {
   public boolean isEnabled() {
     return enabled;
   }
-  
+
   public void setEnabled(boolean b) {
     enabled = b;
   }
-  
+
   /**
    * If true, then this action will apply to all selected pieces
    * @return
@@ -160,7 +160,7 @@ public class KeyCommand extends AbstractAction {
           }
         }
         if (key != null) {
-          localizedName = Localization.getInstance().translate(key, name); 
+          localizedName = Localization.getInstance().translate(key, name);
         }
       }
       localizedMenuText = stroke == null ? localizedName : localizedName + "  " + NamedHotKeyConfigurer.getString(stroke);

@@ -123,12 +123,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected static List<AdditionalComponent> additionalComponents =
     new ArrayList<AdditionalComponent>();
-  
+
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
     this(root, helpWindow, null);
   }
-  
+
   public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
@@ -182,7 +182,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public JFrame getFrame() {
     return editorWindow;
   }
-  
+
   class KeyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     protected String actionName;
@@ -205,7 +205,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * Tell our enclosing EditorWindow that we are now clean
    * or dirty.
-   * 
+   *
    * @param changed true = state is not dirty
    */
   protected void notifyStateChanged(boolean changed) {
@@ -213,7 +213,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       editorWindow.treeStateChanged(changed);
     }
   }
-  
+
   protected Configurable getTarget(int x, int y) {
     TreePath path = getPathForLocation(x, y);
     Configurable target = null;
@@ -408,7 +408,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components
-   * 
+   *
    * @param c Configurable to update
    */
   public void updateGpIds(Configurable c) {
@@ -419,7 +419,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       for (Configurable comp : c.getConfigureComponents()) updateGpIds(comp);
     }
   }
-  
+
   protected Action buildImportAction(final Configurable target) {
     Action a = new AbstractAction("Add Imported Class") {
       private static final long serialVersionUID = 1L;
@@ -485,7 +485,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return false;
   }
-  
+
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
     for (Class<? extends Buildable> newConfig :
@@ -521,7 +521,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         catch (Throwable t) {
           ReflectionUtils.handleNewInstanceFailure(t, newConfig);
-        } 
+        }
 
         if (ch != null) {
           final Configurable child = ch;
@@ -755,7 +755,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * used to call <code>getConfigureTypeName()</code>, which should be
    * a static method if it exists in the given class. (This is necessary
    * because static methods are not permitted in interfaces.)
-   *  
+   *
    * @param the class whose configure name will be returned
    * @return the configure name of the class
    */
@@ -765,7 +765,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     catch (NoSuchMethodException e) {
       // Ignore. This is normal, since some classes won't have this method.
-    } 
+    }
     catch (IllegalAccessException e) {
       ErrorDialog.bug(e);
     }
@@ -912,7 +912,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   /**
    * Build an AddAction and execute it to request a new component from the user
-   * 
+   *
    * @param parent
    *          Target Parent
    * @param type
@@ -928,7 +928,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   public void populateEditMenu(EditorWindow ew) {
     final MenuManager mm = MenuManager.getInstance();
-    
+
     mm.addAction("Editor.delete", deleteAction);
     mm.addAction("Editor.cut", cutAction);
     mm.addAction("Editor.copy", copyAction);
@@ -937,12 +937,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     mm.addAction("Editor.ModuleEditor.properties", propertiesAction);
     mm.addAction("Editor.ModuleEditor.translate", translateAction);
 
-    updateEditMenu(); 
+    updateEditMenu();
   }
 
   /**
    * Handle main Edit menu selections/accelerators
-   * 
+   *
    * @param action
    *          Edit command name
    */
@@ -1007,7 +1007,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   /**
    * Find the parent Configurable of a specified Configurable
-   * 
+   *
    * @param target
    * @return parent
    */
@@ -1015,32 +1015,32 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getTreeNode(target).getParent();
     return (Configurable) parentNode.getUserObject();
   }
-  
+
   /**
    * Record additional available components to add to the popup menu.
-   * 
+   *
    * @param parent
    * @param child
    */
   public static void addAdditionalComponent(Class<? extends Buildable> parent, Class<? extends Buildable> child) {
     additionalComponents.add(new AdditionalComponent(parent, child));
   }
-  
+
   protected static class AdditionalComponent {
     Class<? extends Buildable> parent;
     Class<? extends Buildable> child;
-    
+
     public AdditionalComponent(Class<? extends Buildable> p, Class<? extends Buildable> c) {
       parent = p;
       child = c;
     }
-    
+
     public Class<? extends Buildable> getParent() {
       return parent;
     }
-    
+
     public Class<? extends Buildable> getChild() {
       return child;
-    }     
+    }
   }
 }

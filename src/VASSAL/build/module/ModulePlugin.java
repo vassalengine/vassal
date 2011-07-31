@@ -35,20 +35,20 @@ public class ModulePlugin extends ModuleExtension {
   public Command getRestoreCommand() {
     return new RegCmd(getName(), getVersion());
   }
-  
+
   public static class RegCmd extends ModuleExtension.RegCmd {
 
     public RegCmd(String name, String version) {
       super(name, version);
     }
-    
+
     protected String getVersionErrorMsg(String v) {
       return Resources.getString("ModulePlugin.wrong_plugin_version", //$NON-NLS-1$
           getVersion(), getName(), v);
     }
-    
+
     protected String getNotLoadedMsg() {
-      return Resources.getString("ModulePlugin.load_plugin", getName(), PluginsLoader.getPluginDirectory()); //$NON-NLS-1$ 
+      return Resources.getString("ModulePlugin.load_plugin", getName(), PluginsLoader.getPluginDirectory()); //$NON-NLS-1$
     }
-  }  
+  }
 }

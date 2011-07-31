@@ -43,13 +43,13 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class CgiServerStatus implements ServerStatus {
   private static final long DAY = 24L * 3600L * 1000L;
-  
+
   public static final String LAST_DAY = "Server.last_24_hours"; //$NON-NLS-1$
   public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
   public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
-  
+
   private static final Map<String,Long> timeRanges = new HashMap<String,Long>();
-  
+
   private static final String[] times = new String[]{
     Resources.getString(LAST_DAY),
     Resources.getString(LAST_WEEK),
@@ -124,9 +124,9 @@ public class CgiServerStatus implements ServerStatus {
     for (LongRange y : requests) {
       for (ListIterator<LongRange> i = toRequest.listIterator(); i.hasNext();) {
         final LongRange x = i.next();
-        
+
         if (!x.overlapsRange(y)) continue; // no overlap, nothing to subtract
-    
+
         // otherwise, remove x and add what remains after subtracting y
         i.remove();
 
@@ -139,7 +139,7 @@ public class CgiServerStatus implements ServerStatus {
         if (xl <= yr && yr < xr) i.add(new LongRange(yr, xr));
       }
     }
-       
+
     // now toRequest contains the intervals we are missing; request those
     for (LongRange i : toRequest) {
       for (String s : getInterval(i)) {
@@ -167,7 +167,7 @@ public class CgiServerStatus implements ServerStatus {
           e.printStackTrace();
         }
       }
-  
+
       requests.add(i);
     }
 
@@ -198,7 +198,7 @@ public class CgiServerStatus implements ServerStatus {
     for (List<String[]> l : records.subMap(req.getMinimumLong(),
                                            req.getMaximumLong()).values()) {
       for (String[] r : l) {
-        final String moduleName = r[0]; 
+        final String moduleName = r[0];
         final String roomName = r[1];
         final String playerName = r[2];
 
@@ -209,7 +209,7 @@ public class CgiServerStatus implements ServerStatus {
         }
         else {
           updateEntry(entry, roomName, playerName);
-        } 
+        }
       }
     }
 
@@ -222,7 +222,7 @@ public class CgiServerStatus implements ServerStatus {
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ServerStatus.ModuleSummary[entries.size()]);
     Arrays.sort(e, new Comparator<ServerStatus.ModuleSummary>() {
-      public int compare(ServerStatus.ModuleSummary a, 
+      public int compare(ServerStatus.ModuleSummary a,
                          ServerStatus.ModuleSummary b) {
         return a.getModuleName().compareTo(b.getModuleName());
       }

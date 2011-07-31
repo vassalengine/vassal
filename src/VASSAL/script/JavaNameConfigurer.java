@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.script;
@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 import VASSAL.configure.Configurer;
 
 /**
- * A Configurer for a String that enforces the string to be a valid 
+ * A Configurer for a String that enforces the string to be a valid
  * Java name
  */
 public class JavaNameConfigurer extends Configurer {
@@ -76,7 +76,7 @@ public class JavaNameConfigurer extends Configurer {
             }
             else if (i > 0 && c >= '0' && c <= '9') {
               buffer.append(c);
-            }            
+            }
           }
           String newString = buffer.toString();
           setValue(newString);
@@ -84,7 +84,7 @@ public class JavaNameConfigurer extends Configurer {
           if (newString.length() < v.length()) {
             caret--;
           }
-          nameField.setCaretPosition(caret);          
+          nameField.setCaretPosition(caret);
           noUpdate = false;
         }
       });

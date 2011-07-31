@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,7 +33,7 @@ public interface PropertyContainer {
    * Returns the {@link Property}s known to this container.
    *
    * @return a set of known {@link Property}s
-   */ 
+   */
   public Set<Property<?>> getProperties();
 
   /**
@@ -73,14 +73,14 @@ public interface PropertyContainer {
    * @return {@code true} if there are listeners
    */
   public boolean hasListeners();
-  
+
   /**
    * Returns a list of {@link PropertyListener}s listening to all changes
    * to this container.
    *
    * @return a list of listeners
    */
-  public List<PropertyListener<Object>> getPropertyListeners(); 
+  public List<PropertyListener<Object>> getPropertyListeners();
 
   /**
    * Adds a listener for a specific {@link Property}.

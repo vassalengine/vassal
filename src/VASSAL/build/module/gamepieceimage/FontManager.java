@@ -44,7 +44,7 @@ public class FontManager extends AbstractConfigurable {
   public static FontManager getFontManager() {
     return instance;
   }
-    
+
   protected Map<String,FontStyle> fontStyles = new HashMap<String,FontStyle>();
 
   public static final String DIALOG = "Dialog"; //$NON-NLS-1$
@@ -52,17 +52,17 @@ public class FontManager extends AbstractConfigurable {
   public static final String SANS_SERIF = "SanSerif"; //$NON-NLS-1$
   public static final String DIALOG_INPUT = "DialogInput"; //$NON-NLS-1$
   public static final String MONOSPACED = "Monospaced"; //$NON-NLS-1$
-  
+
   public static final String DEFAULT = "Default"; //$NON-NLS-1$
   public static final OutlineFont DEFAULT_FONT = new OutlineFont(DIALOG, Font.PLAIN, 12, false);
   public static final FontStyle DEFAULT_STYLE = new FontStyle();
 
 //  public static final String[] ALLOWABLE_FONTS = new String[] { DIALOG, DIALOG_INPUT, MONOSPACED, SANS_SERIF, SERIF };
   public static final String[] ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-  
+
   public FontManager() {
   }
-  
+
   public void build(Element e) {
     super.build(e);
 

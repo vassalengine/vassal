@@ -144,7 +144,7 @@ public class PrivateMap extends Map {
       return super.getAttributeValueString(key);
     }
   }
-  
+
   public JComponent getView() {
     if (theMap == null) {
       theMap = new View(this);
@@ -170,7 +170,7 @@ public class PrivateMap extends Map {
 
         @Override
         public void setVisible(boolean show) {
-          super.setVisible(show && 
+          super.setVisible(show &&
             (visibleToAll || isAccessibleTo(PlayerRoster.getMySide())));
         }
       };
@@ -225,7 +225,7 @@ public class PrivateMap extends Map {
   public boolean isVisibleTo(String playerSide) {
     return (visibleToAll || isAccessibleTo(playerSide));
   }
-  
+
   public void setup(boolean show) {
     super.setup(show);
     if (!show) {
@@ -270,8 +270,8 @@ public class PrivateMap extends Map {
     validator = new ValidityChecker() {
       public void validate(Buildable target, ValidationReport report) {
         if (!PlayerRoster.isActive()) {
-          report.addWarning(Resources.getString("Editor.PrivateMap.warning", 
-          								  ConfigureTree.getConfigureName(PlayerRoster.class),
+          report.addWarning(Resources.getString("Editor.PrivateMap.warning",
+                            ConfigureTree.getConfigureName(PlayerRoster.class),
                             ConfigureTree.getConfigureName(getClass())));
         }
       }

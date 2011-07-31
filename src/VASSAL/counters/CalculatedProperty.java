@@ -50,11 +50,11 @@ import VASSAL.tools.RecursionLimiter.Loopable;
  * A marker with a variable value depending on conditions.
  * */
 public class CalculatedProperty extends Decorator implements EditablePiece, Loopable {
-  
+
   public static final String ID = "calcProp;";
-  
+
   protected static int counter = 0;
-  
+
   protected String name = "";
   protected Expression expression;
 
@@ -93,7 +93,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       .append(getExpression());
     return ID + se.getValue();
   }
-  
+
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
@@ -123,7 +123,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     name = st.nextToken("");
     expression = BeanShellExpression.createExpression(st.nextToken(""));
   }
-  
+
   protected String getExpression() {
     return expression.getExpression();
   }
@@ -147,31 +147,31 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       finally {
         RecursionLimiter.endExecution();
       }
-   
+
       return result;
     }
     return super.getProperty(key);
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (name.length() > 0 && name.equals(key)) {
       return getProperty(key);
     }
     return super.getLocalizedProperty(key);
   }
-  
+
   /**
    * Evaluate the calculated property. Do not call Decorator.reportDataError as this will probably
    * cause an infinite reporting loop.
-   * 
+   *
    * @return value
    */
   protected String evaluate() {
     try {
       return expression.evaluate(Decorator.getOutermost(this));
     }
-    catch (ExpressionException e) {      
-      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), piece.getProperty(BasicPiece.BASIC_NAME)+"-Calculated Property["+name+"]="+getExpression()+", Error="+e.getError(), e));  
+    catch (ExpressionException e) {
+      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), piece.getProperty(BasicPiece.BASIC_NAME)+"-Calculated Property["+name+"]="+getExpression()+", Error="+e.getError(), e));
       return "";
     }
   }
@@ -179,7 +179,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   /**
    * Trait Editor implementation
    *
@@ -190,18 +190,18 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     protected BeanShellExpressionConfigurer expressionConfig;
     protected StringConfigurer defaultValueConfig;
     protected JPanel box;
-    
+
     public Ed(CalculatedProperty piece) {
 
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-      
+
       nameConfig = new StringConfigurer(null, "Property Name:  ", piece.name);
       box.add(nameConfig.getControls());
 
       expressionConfig = new BeanShellExpressionConfigurer(null, "Expression:  ", piece.getExpression(), Decorator.getOutermost(piece));
       box.add(expressionConfig.getControls());
-      
+
     }
 
     public Component getControls() {
@@ -217,7 +217,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       se.append(nameConfig.getValueString())
       .append(expressionConfig.getValueString());
       return ID + se.getValue();
-    }   
+    }
   }
 
   /**
@@ -231,8 +231,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   public String getComponentTypeName() {
     return "Calculated Property";
-  }  
-  
+  }
+
   /**
    * Return Property names exposed by this trait
    */
@@ -241,5 +241,5 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     l.add(name);
     return l;
   }
-  
+
 }

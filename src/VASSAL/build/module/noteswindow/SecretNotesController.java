@@ -422,7 +422,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           final SecretNote note = new SecretNote(
-            name.getValueString(), 
+            name.getValueString(),
             GameModule.getUserId(),
             (String) text.getValue(),
             true

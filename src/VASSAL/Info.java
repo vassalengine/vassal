@@ -36,10 +36,10 @@ import VASSAL.tools.version.VersionTokenizer;
  */
 public final class Info {
   private static final String VERSION = "3.2.0-svn7644"; //$NON-NLS-1$
-  
+
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
-  
+
   private static File homeDir;
 
   /** The path to the JVM binary. */
@@ -59,7 +59,7 @@ public final class Info {
    @* integers. In the version number, w.x are the major/minor release number,
    * y is the bug-fix release number, and the 'b' indicates a beta release,
    * e.g. 3.0b2.
-   * 
+   *
    * @return the version of the VASSAL engine.
    */
   public static String getVersion() {
@@ -70,7 +70,7 @@ public final class Info {
    * The major/minor portion of the release version. If the version is a
    * beta-release number, a 'beta' is appended. For example, the minor
    * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
-   * 
+   *
    * @return
    * @deprecated If you need the minor version number, get it from
    * a {@link VersionTokenizer}.
@@ -118,7 +118,7 @@ public final class Info {
 
   /**
    * Get size of screen accounting for the screen insets (i.e. Windows taskbar)
-   * 
+   *
    * @return
    */
   public static Rectangle getScreenBounds(Component c) {
@@ -143,13 +143,13 @@ public final class Info {
   public static boolean isMacOsX() {
     return SystemUtils.IS_OS_MAC_OSX;
   }
-  
+
   /** @depricated Use {@link SystemUtils.IS_OS_WINDOWS} instead */
   @Deprecated
   public static boolean isWindows() {
     return SystemUtils.IS_OS_WINDOWS;
   }
-  
+
   public static boolean isModuleTooNew(String version) {
     return compareVersions(version, EXPIRY_VERSION) >= 0;
   }
@@ -173,9 +173,9 @@ public final class Info {
       while (tok0.hasNext() && tok1.hasNext()) {
         final int n0 = tok0.next();
         final int n1 = tok1.next();
-      
+
         if (n0 != n1) return n0 - n1;
-      }    
+      }
     }
     catch (VersionFormatException e) {
       return 0;
@@ -196,7 +196,7 @@ public final class Info {
 
   /**
    * Returns the directory where the VASSAL documentation is installed.
-   * 
+   *
    * @return a {@link File} representing the directory
    * @deprecated Use {@link getDocDir()} instead.
    */

@@ -55,7 +55,7 @@ import VASSAL.tools.WriteErrorDialog;
  */
 public class UsernameAndPasswordDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-    
+
   public UsernameAndPasswordDialog(Frame parent) {
     super(parent, "Set Your Username and Password", true);
     setLocationRelativeTo(parent);
@@ -77,7 +77,7 @@ public class UsernameAndPasswordDialog extends JDialog {
 
     final JLabel error = new JLabel(Resources.getString(
       "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
-   
+
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
     ok.addActionListener(new ActionListener() {
@@ -96,17 +96,17 @@ public class UsernameAndPasswordDialog extends JDialog {
           WriteErrorDialog.error(ex, p.getFile());
         }
 
-        UsernameAndPasswordDialog.this.dispose(); 
+        UsernameAndPasswordDialog.this.dispose();
       }
     });
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        UsernameAndPasswordDialog.this.dispose(); 
+        UsernameAndPasswordDialog.this.dispose();
       }
     });
-   
+
     final JPanel panel = new JPanel();
 
     final GroupLayout layout = new GroupLayout(panel);
@@ -132,7 +132,7 @@ public class UsernameAndPasswordDialog extends JDialog {
           .addGap(0, 0, Integer.MAX_VALUE)
           .addComponent(ok)
           .addComponent(cancel)));
-      
+
     layout.setVerticalGroup(
       layout.createSequentialGroup()
         .addComponent(nc)
@@ -167,7 +167,7 @@ public class UsernameAndPasswordDialog extends JDialog {
           .add(0, 0, Integer.MAX_VALUE)
           .add(ok)
           .add(cancel)));
-      
+
     layout.setVerticalGroup(
       layout.createSequentialGroup()
         .add(nc)
@@ -183,7 +183,7 @@ public class UsernameAndPasswordDialog extends JDialog {
             .add(cancel)));
 
     layout.linkSize(new Component[]{ok, cancel});
-    
+
     add(panel);
 
     pack();
@@ -229,7 +229,7 @@ public class UsernameAndPasswordDialog extends JDialog {
           // everything is ok
           error.setText("");  //$NON-NLS-1$
           error.setForeground(Color.black);
-          ok.setEnabled(true); 
+          ok.setEnabled(true);
         }
       }
     };

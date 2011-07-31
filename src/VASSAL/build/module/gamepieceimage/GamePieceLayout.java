@@ -138,7 +138,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       "Counter Height:  ",
       "Border Style:  ",
       ""  //$NON-NLS-1$
-    }; 
+    };
   }
 
   public Class<?>[] getAttributeTypes() {
@@ -309,7 +309,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public void remove(Buildable b) {
     super.remove(b);
   }
-  
+
   public Image getVisualizerImage() {
     if (visImage == null) {
       rebuildVisualizerImage();

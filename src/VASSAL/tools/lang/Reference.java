@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -28,8 +28,8 @@ package VASSAL.tools.lang;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
-public class Reference<T> {  
+ */
+public class Reference<T> {
   // FIXME: Replace this class with Mutable<T> from Apache Commons lang
   // once we move from 2.5 to 3.0.
 

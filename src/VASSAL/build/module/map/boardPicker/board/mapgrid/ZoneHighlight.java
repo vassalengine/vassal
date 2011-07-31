@@ -76,7 +76,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   public static final String STYLE_STRIPES = "Striped";
   public static final String STYLE_CROSS = "Crosshatched";
   public static final String STYLE_IMAGE = "Tiled Image";
-  
+
   protected Color color = null;
   protected String coverage = COVERAGE_FULL;
   protected int width = 1;
@@ -84,14 +84,14 @@ public class ZoneHighlight extends AbstractConfigurable  {
   protected String imageName = null;
   protected SourceOp srcOp;
   protected int opacity = 100;
-  
+
   protected TexturePaint paint;
 
   public ZoneHighlight() {
     setConfigureName("");
   }
-  
-  /* 
+
+  /*
    * Stage 1 - Only Plain Style and Border Coverage is implemented
    */
   public void draw(Graphics2D g2d, Shape s, double scale) {
@@ -104,15 +104,15 @@ public class ZoneHighlight extends AbstractConfigurable  {
       if (!STYLE_PLAIN.equals(style)) {
         g2d.setPaint(getPaint());
       }
-      else {    
+      else {
         g2d.setColor(color);
       }
-      
+
       g2d.setComposite(AlphaComposite.getInstance(
         AlphaComposite.SRC_OVER, opacity/100.0f));
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
-      
+
       if (COVERAGE_FULL.equals(coverage)) {
         g2d.fill(s);
       }
@@ -123,7 +123,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
         g2d.setStroke(stroke);
         g2d.draw(s);
       }
-    
+
       g2d.setColor(oldColor);
       g2d.setStroke(oldStroke);
       g2d.setComposite(oldComposite);
@@ -144,7 +144,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 // FIXME: Make this an ImageOp?
         final BufferedImage img =
           ImageUtils.createCompatibleTranslucentImage(6, 6);
-        final Graphics2D g = img.createGraphics();  
+        final Graphics2D g = img.createGraphics();
         g.setColor(color);
         if (style.equals(STYLE_STRIPES)) {
           g.drawLine(0, 5, 5, 0);
@@ -159,19 +159,19 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     return paint;
   }
-  
+
   public String getName() {
     return getConfigureName();
   }
-  
+
   public Color getColor() {
     return color;
   }
-  
+
   public void setOpacity(int o) {
     opacity = o;
   }
-  
+
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -234,7 +234,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       return zh.new PercentageConfigurer(key, name, zh.opacity);
     }
   }
-  
+
   public void addTo(Buildable b) {
     ((ZonedGridHighlighter) b).addHighlight(this);
   }
@@ -320,7 +320,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
       return new VisibilityCondition() {
@@ -340,20 +340,20 @@ public class ZoneHighlight extends AbstractConfigurable  {
       return super.getAttributeVisibility(name);
     }
   }
-  
+
   public class PercentageConfigurer extends Configurer {
 
     public PercentageConfigurer(String key, String name, Object val) {
       super(key, name, val);
       opacity = ((Integer) val).intValue();
     }
-    
+
     public String getValueString() {
       return String.valueOf(opacity);
     }
 
     public void setValue(String s) {
-      opacity = Integer.parseInt(s);   
+      opacity = Integer.parseInt(s);
     }
 
     public Component getControls() {
@@ -374,12 +374,12 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.addChangeListener(new ChangeListener() {
         public void stateChanged(ChangeEvent e) {
           final JSlider source = (JSlider) e.getSource();
-          if (!source.getValueIsAdjusting()) {    
+          if (!source.getValueIsAdjusting()) {
             opacity = source.getValue();
           }
         }});
 
       return slider;
-    }   
+    }
   }
 }

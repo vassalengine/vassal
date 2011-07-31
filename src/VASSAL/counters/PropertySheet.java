@@ -178,10 +178,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     String green = st.hasMoreTokens() ? st.nextToken() : "";
     String blue = st.hasMoreTokens() ? st.nextToken() : "";
     final String launchKeyStrokeToken = st.nextToken("");
-    
+
     backgroundColor = red.equals("") ? null : new Color(atoi(red), atoi(green), atoi(blue));
     frame = null;
-    
+
     // Handle conversion from old character only key
     if (launchKeyStrokeToken.length() > 0) {
       launchKeyStroke = NamedHotKeyConfigurer.decode(launchKeyStrokeToken);
@@ -236,7 +236,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   protected KeyCommand[] myGetKeyCommands() {
-    launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);    
+    launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
     return new KeyCommand[]{launch};
   }
 
@@ -364,7 +364,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
 
         frame = new PropertySheetDialog(parent);
-        
+
         JPanel pane = new JPanel();
         JScrollPane scroll =
           new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -579,12 +579,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     final Object value = properties.get(key);
     return value == null ? super.getLocalizedProperty(key) : value;
   }
-  
+
   public Object getProperty(Object key) {
     final Object value = properties.get(key);
     return value == null ? super.getProperty(key) : value;
   }
-  
+
   public String getDescription() {
     return "Property Sheet";
   }
@@ -840,7 +840,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
   }
-  
+
   public PieceI18nData getI18nData() {
     final ArrayList<String> items = new ArrayList<String>();
     final SequenceEncoder.Decoder defDecoder =
@@ -873,7 +873,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
     return l;
   }
-  
+
   private static class Ed implements PieceEditor {
 
     private PropertyPanel m_panel;
@@ -1231,7 +1231,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
         dx = Math.min(displayWidth * numRows / maxTicks, Math.min(getHeight() / numRows, 10));
         if (dx < 1) dx = 1;
-        
+
         numCols = (maxTicks + numRows - 1) / numRows;
 
         int dy = dx;

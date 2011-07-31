@@ -65,7 +65,7 @@ public class CountingReadWriteLockTest {
     final Lock r = rwl.readLock();
     assertFalse(r.tryLock());
   }
-  
+
   @Test
   public void testWriteLockBlocksWriteLock() {
     final ReadWriteLock rwl = new CountingReadWriteLock();

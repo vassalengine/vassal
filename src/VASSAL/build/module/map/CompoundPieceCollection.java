@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.map;
@@ -51,7 +51,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   public int getLayerForPiece(GamePiece p) {
     return 0;
   }
-  
+
   public String getLayerNameForPiece(GamePiece p) {
     return "";
   }
@@ -59,7 +59,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   public int getLayerForName(String layerName) {
     return -1;
   }
-  
+
   protected PieceCollection getCollectionForPiece(GamePiece p) {
     return layers[getLayerForPiece(p)];
   }
@@ -81,7 +81,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   public GamePiece[] getPieces() {
     return getPieces(false);
   }
-  
+
   protected GamePiece[] getPieces(boolean includeDisabled) {
     ArrayList<GamePiece> l = new ArrayList<GamePiece>();
     int layer = bottomLayer;
@@ -99,9 +99,9 @@ public abstract class CompoundPieceCollection implements PieceCollection {
 
   public GamePiece[] getAllPieces() {
       return getPieces(true);
-  
+
   }
-  
+
   public int indexOf(GamePiece p) {
     int layer = getLayerForPiece(p);
     int index = layers[layer].indexOf(p);
@@ -176,7 +176,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   public int getLayerCount() {
     return layers.length;
   }
-  
+
   /*
    * Set a new bottom layer. Take care of wrapping around ends of layer list.
    */
@@ -185,11 +185,11 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     if (bottomLayer < 0) bottomLayer = getLayerCount() - 1;
     if (bottomLayer >= getLayerCount()) bottomLayer = 0;
   }
-  
+
   public int getBottomLayer() {
     return bottomLayer;
   }
-  
+
   public int getTopLayer() {
     int layer = bottomLayer - 1;
     if (layer < 0) {
@@ -197,7 +197,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     }
     return layer;
   }
-  
+
   /*
    * Rotate layers up or down, optionally skipping top layers not containing
    * counters.
@@ -215,7 +215,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
       rotate(rotateUp);
     }
   }
-  
+
   /*
    * Rotate Layers up or down by 1 layer
    */
@@ -227,7 +227,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
       setBottomLayer(bottomLayer + 1);
     }
   }
-  
+
   /*
    * Enable/Disable layers
    */
@@ -236,22 +236,22 @@ public abstract class CompoundPieceCollection implements PieceCollection {
       enabled[layer] = b;
     }
   }
-  
+
   public void toggleLayerEnabled(int layer) {
     if (layer >= 0 && layer < layers.length) {
       enabled[layer] = !enabled[layer];
     }
   }
-  
+
   public void setLayerEnabled(String layer, boolean b) {
     setLayerEnabled(getLayerForName(layer), b);
   }
-  
+
   public void toggleLayerEnabled(String layer) {
     toggleLayerEnabled(getLayerForName(layer));
   }
-  
-  /* 
+
+  /*
    * Reset Layers to original state
    */
   public void reset() {

@@ -103,7 +103,7 @@ public class AsynchronousServerNode extends ServerNode {
         logger.fine("Sending contents of "+module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
-        
+
         // Check if any rooms have lost their first player
         for (int i = 1; i < rooms.length; i++) {
           Node[] c = rooms[i].getChildren();
@@ -123,7 +123,7 @@ public class AsynchronousServerNode extends ServerNode {
             }
           }
         }
-        
+
         String listCommand = Protocol.encodeListCommand(players);
         logger.finer(listCommand);
         module.send(listCommand);

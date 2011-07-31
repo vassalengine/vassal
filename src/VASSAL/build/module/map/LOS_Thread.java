@@ -80,14 +80,14 @@ public class LOS_Thread extends AbstractConfigurable implements
     Drawable, Configurable,
     UniqueIdManager.Identifyable,
     CommandEncoder {
-  
+
   public static final String LOS_THREAD_COMMAND = "LOS\t";
-  
+
   public static final String NAME = "threadName";
   public static final String SNAP_LOS = "snapLOS";
   public static final String SNAP_START = "snapStart";
   public static final String SNAP_END = "snapEnd";
-  public static final String REPORT = "report"; 
+  public static final String REPORT = "report";
   public static final String PERSISTENCE = "persistence";
   public static final String PERSISTENT_ICON_NAME = "persistentIconName";
   public static final String GLOBAL = "global";
@@ -108,7 +108,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String ROUND_OFF = "Nearest whole number";
   public static Font RANGE_FONT = new Font("Dialog", 0, 11);
   public static final String DEFAULT_ICON = "/images/thread.gif";
-  
+
   public static final String FROM_LOCATION = "FromLocation";
   public static final String TO_LOCATION = "ToLocation";
   public static final String CHECK_COUNT = "NumberOfLocationsChecked";
@@ -121,7 +121,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String WHEN_PERSISTENT = "When Persisting";
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("LOS_Thread");
-  
+
   protected boolean retainAfterRelease = false;
   protected long lastRelease = 0;
 
@@ -144,7 +144,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected Point lastArrow = new Point();
   protected Rectangle lastRangeRect = new Rectangle();
   protected String anchorLocation = "";
-  protected String lastLocation = ""; 
+  protected String lastLocation = "";
   protected String lastRange = "";
   protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $"+FROM_LOCATION+"$ to $"+CHECK_LIST+"$");
   protected List<String> checkList = new ArrayList<String>();
@@ -247,7 +247,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       NAME,
       LABEL,
       TOOLTIP,
-      ICON_NAME,  
+      ICON_NAME,
       HOTKEY,
       REPORT,
       PERSISTENCE,
@@ -437,17 +437,17 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   /**
    * With Global visibility, LOS_Thread now has a state that needs to be
-   * communicated to clients on other machines 
+   * communicated to clients on other machines
    */
-  
+
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(anchor.x).append(anchor.y).append(arrow.x).append(arrow.y);
-    se.append(persisting);  
+    se.append(persisting);
     se.append(mirroring);
     return se.getValue();
   }
-  
+
   public void setState(String state) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(state, ';');
     anchor.x = sd.nextInt(anchor.x);
@@ -457,7 +457,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     setPersisting(sd.nextBoolean(false));
     setMirroring(sd.nextBoolean(false));
   }
-  
+
   public void draw(java.awt.Graphics g, Map m) {
     if (initializing || !visible) {
       return;
@@ -467,13 +467,13 @@ public class LOS_Thread extends AbstractConfigurable implements
     Point mapArrow = map.componentCoordinates(arrow);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
     Board b;
-       
+
     if (drawRange) {
       if (rangeScale > 0) {
         int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation())/rangeScale);
         drawRange(g, dist);
       }
-      else  { 
+      else  {
         b = map.findBoard(anchor);
         MapGrid grid = null;
         if (b != null) {
@@ -487,8 +487,8 @@ public class LOS_Thread extends AbstractConfigurable implements
               grid = z.getGrid();
             }
         }
-        if (grid != null) {            
-          drawRange(g, grid.range(anchor, arrow));          
+        if (grid != null) {
+          drawRange(g, grid.range(anchor, arrow));
         }
       }
     }
@@ -525,11 +525,11 @@ public class LOS_Thread extends AbstractConfigurable implements
   public void setId(String id) {
     threadId = id;
   }
-  
+
   public String getId() {
     return threadId;
   }
-  
+
   /** Since we register ourselves as a MouseListener using {@link
    * Map#pushMouseListener}, these mouse events are received in map
    * coordinates */
@@ -577,25 +577,25 @@ public class LOS_Thread extends AbstractConfigurable implements
             Command com = new LOSCommand(this, getAnchor(), getArrow(), true, false);
             GameModule.getGameModule().sendAndLog(com);
             setPersisting(true);
-          } 
+          }
           else {
             Command com = new LOSCommand(this, getAnchor(), getArrow(), false, false);
-            GameModule.getGameModule().sendAndLog(com);            
-          }         
+            GameModule.getGameModule().sendAndLog(com);
+          }
         }
         map.setPieceOpacity(1.0f);
         map.popMouseListener();
         map.repaint();
       }
       lastRelease = e.getWhen();
-    
+
       if (getLosCheckCount() > 0) {
         reportFormat.setProperty(FROM_LOCATION, anchorLocation);
         reportFormat.setProperty(TO_LOCATION, lastLocation);
         reportFormat.setProperty(RANGE, lastRange);
         reportFormat.setProperty(CHECK_COUNT, String.valueOf(getLosCheckCount()));
         reportFormat.setProperty(CHECK_LIST, getLosCheckList());
-    
+
         GameModule.getGameModule().getChatter().send(reportFormat.getLocalizedText());
       }
     }
@@ -614,26 +614,26 @@ public class LOS_Thread extends AbstractConfigurable implements
       map.repaint();
     }
   }
-  
+
   protected boolean isPersisting() {
     return persisting;
   }
-  
+
   protected void setMirroring(boolean b) {
     mirroring = b;
     if (mirroring) {
       visible = true;
     }
   }
-  
+
   protected boolean isMirroring() {
     return mirroring;
   }
-  
+
   protected Point getAnchor() {
     return new Point(anchor);
   }
-  
+
   protected void setEndPoints(Point newAnchor, Point newArrow) {
     anchor.x = newAnchor.x;
     anchor.y = newAnchor.y;
@@ -641,11 +641,11 @@ public class LOS_Thread extends AbstractConfigurable implements
     arrow.y = newArrow.y;
     map.repaint();
   }
-  
+
   protected Point getArrow() {
     return new Point(arrow);
   }
-  
+
   protected int getLosCheckCount() {
     return checkList.size();
   }
@@ -653,7 +653,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected String getLosCheckList() {
     return StringUtils.join(checkList, ", ");
   }
-  
+
   /** Since we register ourselves as a MouseMotionListener directly,
    * these mouse events are received in component
    * coordinates */
@@ -665,37 +665,37 @@ public class LOS_Thread extends AbstractConfigurable implements
       retainAfterRelease = true;
 
       Point p = e.getPoint();
-      
+
       map.scrollAtEdge(p, 15);
-      
+
       if (Boolean.TRUE.equals
           (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
           || snapEnd) {
         p = map.componentCoordinates(map.snapTo(map.mapCoordinates(p)));
       }
       arrow = map.mapCoordinates(p);
-      
-      String location = map.localizedLocationName(arrow); 
+
+      String location = map.localizedLocationName(arrow);
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
         checkList.add(location);
         lastLocation = location;
       }
-      
+
       Point mapAnchor = map.mapCoordinates(lastAnchor);
       Point mapArrow = map.mapCoordinates(lastArrow);
       int fudge = (int) (1.0 / map.getZoom() * 2);
-      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x)-fudge, 
+      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x)-fudge,
           Math.min(mapAnchor.y, mapArrow.y)-fudge,
-          Math.abs(mapAnchor.x - mapArrow.x)+1+fudge*2, 
+          Math.abs(mapAnchor.x - mapArrow.x)+1+fudge*2,
           Math.abs(mapAnchor.y - mapArrow.y)+1+fudge*2);
       map.repaint(r);
-      
+
       if (drawRange) {
         r = new Rectangle(lastRangeRect);
         r.width += (int)(r.width / map.getZoom()) + 1;
         r.height += (int)(r.height / map.getZoom()) + 1;
         map.repaint(r);
-      }      
+      }
     }
   }
 
@@ -749,7 +749,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),                        
+      Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
       Resources.getString(Resources.HOTKEY_LABEL),
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
@@ -794,13 +794,13 @@ public class LOS_Thread extends AbstractConfigurable implements
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
   }
-  
+
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { FROM_LOCATION, TO_LOCATION, RANGE, CHECK_COUNT, CHECK_LIST });
     }
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     VisibilityCondition cond = null;
     if (RANGE_SCALE.equals(name)
@@ -810,7 +810,7 @@ public class LOS_Thread extends AbstractConfigurable implements
           return drawRange;
         }
       };
-    } 
+    }
     else if (HIDE_OPACITY.equals(name)) {
       cond = new VisibilityCondition() {
         public boolean shouldBeVisible() {
@@ -825,7 +825,7 @@ public class LOS_Thread extends AbstractConfigurable implements
         }
       };
     }
-      
+
     return cond;
   }
 
@@ -883,7 +883,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       return null;
     }
   }
-  
+
   public static class LOSCommand extends Command {
     protected LOS_Thread target;
     protected String oldState;
@@ -891,7 +891,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     protected Point newArrow, oldArrow;
     protected boolean newPersisting, oldPersisting;
     protected boolean newMirroring, oldMirroring;
-     
+
     public LOSCommand(LOS_Thread oTarget, Point anchor, Point arrow, boolean persisting, boolean mirroring) {
       target = oTarget;
       oldAnchor = target.getAnchor();

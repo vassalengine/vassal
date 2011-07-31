@@ -36,7 +36,7 @@ import VASSAL.tools.imageop.Op;
  * Handles temporary files. <code>TempFileManager</code> cleans up
  * stale temporary files when the singleton is constructed, and ones
  * created by the current session on exit through a shutdown hook.
- * 
+ *
  * <p>A temporary director is created in <code>"user.dir" + "/tmp"</code>
  * for each <code>TempFileManager</code> instance, which, since it is
  * a singleton, amounts to one temporary directory per VASSAL instance.
@@ -45,7 +45,7 @@ import VASSAL.tools.imageop.Op;
  * Directories which are not live will be cleaned up on creation of a
  * <code>TempFileManager</code> instance.</p>
  *
- * <p>Due to Sun Bugs 
+ * <p>Due to Sun Bugs
  * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4171239">
  * #4171239</a>,
  * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4724038">
@@ -80,7 +80,7 @@ public class TempFileManager {
           // MappedDataBufferInts backing them can be garbage collected.
           Op.clearCache();
 
-          // Run the garbage collector and finalize repeatedly, with 
+          // Run the garbage collector and finalize repeatedly, with
           // exponentially increasing pauses, until we succeed at deleting
           // the whole session temp directory or we hit the sleep limit.
           long sleep = 1;
@@ -88,7 +88,7 @@ public class TempFileManager {
           while (true) {
             System.gc();
             System.runFinalization();
-            
+
             try {
               cleanupSessionRoot();
               break;
@@ -183,7 +183,7 @@ public class TempFileManager {
     final File dir = File.createTempFile(DIR_PREFIX, "", tmpRoot);
     // delete it in case a file was created
     dir.delete();
- 
+
     // create our lock file before creating the directory to prevent
     // a race with another instance of VASSAL
     lock = new File(tmpRoot, dir.getName() + ".lck");

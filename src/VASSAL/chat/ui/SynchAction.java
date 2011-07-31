@@ -34,7 +34,7 @@ import VASSAL.i18n.Resources;
 
 /**
  * When invoked, will request synchronization info from another player
- *  - Cannot Synch when in the default room 
+ *  - Cannot Synch when in the default room
  *  - Cannot Synch with a player in a different room
  *  - Cannot Synch with yourself
  *  - Cannot Synch with any player in the same room within 15 seconds of your last synch in this room
@@ -44,7 +44,7 @@ public class SynchAction extends AbstractAction {
   private static final long TOO_SOON = 15 * 1000;
   private static Room lastRoom;
   private static long lastSync = System.currentTimeMillis();
-  
+
   private Player p;
   private ChatServerConnection client;
   private Room targetRoom;
@@ -53,7 +53,7 @@ public class SynchAction extends AbstractAction {
     super(Resources.getString("Chat.synchronize")); //$NON-NLS-1$
     this.p = p;
     this.client = client;
-    
+
     // Find which room our target player is in
     targetRoom = null;
     for (Room room : client.getAvailableRooms()) {
@@ -61,14 +61,14 @@ public class SynchAction extends AbstractAction {
         targetRoom = room;
       }
     }
-    
+
     final long now = System.currentTimeMillis();
-    
+
     if (p != null
       && GameModule.getGameModule() != null
       && !p.equals(client.getUserInfo())
       && client.getRoom() != null
-      && client.getRoom().equals(targetRoom) 
+      && client.getRoom().equals(targetRoom)
       && (!targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON))
       {
       setEnabled(true);
@@ -77,7 +77,7 @@ public class SynchAction extends AbstractAction {
       setEnabled(false);
     }
   }
-  
+
   public static void clearSynchRoom() {
     lastRoom = null;
   }
@@ -93,16 +93,16 @@ public class SynchAction extends AbstractAction {
       lastRoom = targetRoom;
     }
   }
-  
-  
+
+
   public static PlayerActionFactory factory(final ChatServerConnection client) {
     return new PlayerActionFactory() {
       public Action getAction(SimplePlayer p, JTree tree) {
         final Room r = client.getRoom();
         if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null; 
+          return null;
         }
-        return new SynchAction(p,client);        
+        return new SynchAction(p,client);
       }
     };
   }

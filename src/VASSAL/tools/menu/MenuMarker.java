@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,7 +33,7 @@ public class MenuMarker implements ChildProxy<JComponent> {
   }
 
   public void setParent(ParentProxy parent) {
-    this.parent = parent;  
+    this.parent = parent;
   }
 
   public JComponent createPeer() {

@@ -39,7 +39,7 @@ public class PropertiesPieceFilter {
 
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
-  
+
   private static PieceFilter ACCEPT_ALL = new PieceFilter() {
     public boolean accept(GamePiece piece) {
       return true;
@@ -124,9 +124,9 @@ public class PropertiesPieceFilter {
   public static String toBeanShellString(String s) {
     return toBeanShellString(parse(s));
   }
-  
+
   public static String toBeanShellString(PieceFilter f) {
-    
+
     if (f instanceof BooleanAndPieceFilter) {
       final BooleanAndPieceFilter and = (BooleanAndPieceFilter) f;
       return "("+toBeanShellString(and.getFilter1()) + ") && (" + toBeanShellString(and.getFilter2()) + ")";
@@ -139,9 +139,9 @@ public class PropertiesPieceFilter {
       return  ((ComparisonFilter) f).toBeanShellString();
     }
     return "";
-    
+
   }
-  
+
   private static abstract class ComparisonFilter implements PieceFilter {
     protected String name;
     protected String value;
@@ -157,7 +157,7 @@ public class PropertiesPieceFilter {
         alternate = Boolean.FALSE;
       }
     }
-  
+
     protected int compareTo(GamePiece piece) {
       String property = String.valueOf(piece.getProperty(name));
       try {
@@ -170,20 +170,20 @@ public class PropertiesPieceFilter {
     }
 
     public abstract String toBeanShellString();
-    
+
     protected String toBeanShellName() {
       if (name.indexOf('$') >= 0) {
         return "GetProperty("+new FormattedStringExpression(name).toBeanShellString() + ")";
       }
       else {
         return name;
-      }      
+      }
     }
-    
+
     protected String toBeanShellValue() {
       return new FormattedStringExpression(value).toBeanShellString();
     }
-    
+
   }
 
   private static class EQ extends ComparisonFilter {
@@ -207,7 +207,7 @@ public class PropertiesPieceFilter {
     public String toBeanShellString() {
       return toBeanShellName() + "==" + toBeanShellValue();
     }
-    
+
   }
 
   private static class NE extends ComparisonFilter {
@@ -226,7 +226,7 @@ public class PropertiesPieceFilter {
     public String toString() {
       return "PropertiesPieceFilter["+name+"!="+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + "!=" + toBeanShellValue();
     }
@@ -240,11 +240,11 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) < 0;
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+"<"+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + "<" + toBeanShellValue();
     }
@@ -258,11 +258,11 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) <= 0;
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+"<="+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + "<=" + toBeanShellValue();
     }
@@ -276,11 +276,11 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) > 0;
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+">"+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + ">" + toBeanShellValue();
     }
@@ -294,11 +294,11 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) >= 0;
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+">="+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + ">=" + toBeanShellValue();
     }
@@ -313,16 +313,16 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       return Pattern.matches(value, property);
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+"~"+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + "=~" + toBeanShellValue();
     }
   }
-  
+
   private static class NOT_MATCH extends MATCH {
     public NOT_MATCH(String name, String value) {
       super(name, value);
@@ -331,11 +331,11 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return !super.accept(piece);
     }
-    
+
     public String toString() {
       return "PropertiesPieceFilter["+name+"!~"+value+"]";
     }
-    
+
     public String toBeanShellString() {
       return toBeanShellName() + "!~" + toBeanShellValue();
     }

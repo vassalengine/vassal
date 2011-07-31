@@ -48,11 +48,11 @@ public class FileConfigurer extends Configurer {
   protected DirectoryConfigurer startingDirectory;
 
   public FileConfigurer(String key, String name) {
-    this(key, name, (DirectoryConfigurer)null);  
+    this(key, name, (DirectoryConfigurer)null);
   }
-  
+
   /**
-   * 
+   *
    * @param key
    * @param name
    * @param startingDirectory If non-null, points to a preferences setting that specifies the starting directory for the "Select" button
@@ -73,7 +73,7 @@ public class FileConfigurer extends Configurer {
     return fc;
   }
 
-  /** 
+  /**
    * If a non-null {@link ArchiveWriter} is used in the constructor, then invoking {@link #setValue} on this
    * FileConfigurer will automatically add the file to the archive
    */

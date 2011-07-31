@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,7 +45,7 @@ class TileProgressPump implements InputStreamPump {
 
   /**
    * Create a <code>TileProgressPump</code>.
-   * 
+   *
    * @param nameListener the listener for new filename events
    * @param progListener the listener for progress events
    * @param ioexListener the listener for {@link IOException}s
@@ -70,7 +70,7 @@ class TileProgressPump implements InputStreamPump {
 
     final byte[] buf = new byte[256];
     final StringBuilder sb = new StringBuilder();
-    
+
     int state = INIT;
     int count;
 

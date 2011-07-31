@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
  * a single tile. This class provides simpler implementations of the
  * tile-related methods than does {@link AbstractTiledOp}, as objects
  * instantiating this class' subclasses are all single tiles.
- * 
+ *
  * @since 3.1.0
  * @author Joel Uckelman
  */
@@ -45,7 +45,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
   public Dimension getTileSize() {
     return getSize();
   }
-  
+
   /**
    * {@inheritDoc}
    *
@@ -54,12 +54,12 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
   public int getTileHeight() {
     return getHeight();
   }
-  
+
   /**
    * {@inheritDoc}
    *
    * This implementation is equivalent to {@link #getWidth}.
-   */  
+   */
   public int getTileWidth() {
     return getWidth();
   }
@@ -73,7 +73,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
     return 1;
   }
 
-  /** 
+  /**
    * {@inheritDoc}
    *
    * @return <code>1</code>, always

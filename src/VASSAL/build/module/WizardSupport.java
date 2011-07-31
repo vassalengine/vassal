@@ -98,11 +98,11 @@ import VASSAL.tools.image.ImageUtils;
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
  * module in play mode. The GameSetupWizard is shown whenever the user starts a new game on- or off-line.
- * 
+ *
  * @author rkinney
  */
 public class WizardSupport {
-  
+
   private static final Logger logger =
     LoggerFactory.getLogger(WizardSupport.class);
 
@@ -116,7 +116,7 @@ public class WizardSupport {
   public static final String PLAY_ONLINE_ACTION = "online"; //$NON-NLS-1$
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
-  public static final String WELCOME_WIZARD_ENABLED = "showWelcomeWizard"; //$NON-NLS-1$ 
+  public static final String WELCOME_WIZARD_ENABLED = "showWelcomeWizard"; //$NON-NLS-1$
   protected Dimension logoSize = new Dimension(200, 200);
   protected List<PredefinedSetup> setups = new ArrayList<PredefinedSetup>();
   protected Tutorial tutorial;
@@ -126,7 +126,7 @@ public class WizardSupport {
 
   /**
    * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline
-   * 
+   *
    * @param setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
@@ -139,7 +139,7 @@ public class WizardSupport {
 
   /**
    * Specify a {@link Tutorial} that the user may load from the {@link InitialWelcomeSteps}
-   * 
+   *
    * @param tutorial
    */
   public void setTutorial(Tutorial tutorial) {
@@ -148,17 +148,17 @@ public class WizardSupport {
 
   /**
    * Show the "Welcome" wizard, shown when loading a module in play mode
-   * 
+   *
    */
   public void showWelcomeWizard() {
 
     final GameModule g = GameModule.getGameModule();
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
-    
+
     if (! Boolean.TRUE.equals(showWizard)) {
       g.getFrame().setVisible(true);
 
-      // prompt for username and password if wizard is off 
+      // prompt for username and password if wizard is off
       // but no username is set
       // FIXME: this belongs outside of the wizard, not here
       final String name = (String) g.getPrefs().getValue(GameModule.REAL_NAME);
@@ -256,9 +256,9 @@ public class WizardSupport {
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public class InitialWelcomeSteps extends WizardPanelProvider {
     public static final String NAME_STEP = "name"; //$NON-NLS-1$
@@ -469,9 +469,9 @@ public class WizardSupport {
   }
   /**
    * Wizard pages for starting a new game offline
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public static class PlayOfflinePanels extends WizardPanelProvider {
     private List setups;
@@ -574,9 +574,9 @@ public class WizardSupport {
   /**
    * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished
    * {@link GameSetupStep}s. Otherwise, enable the finish button.
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
@@ -644,9 +644,9 @@ public class WizardSupport {
   }
   /**
    * Wizard pages for loading a saved game
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public static class LoadSavedGamePanels extends WizardPanelProvider {
     private FileConfigurer fileConfig;
@@ -695,9 +695,9 @@ public class WizardSupport {
   }
   /**
    * Wizard page for an unfinished {@link GameSetupStep}
-   * 
+   *
    * @author rkinney
-   * 
+   *
    */
   public static class SetupStepPage extends WizardPage {
     private static final long serialVersionUID = 1L;
@@ -728,7 +728,7 @@ public class WizardSupport {
   }
   /**
    * Wizard pages for starting a new game. One page will be added for each unfinished {@link GameSetupStep}
-   * 
+   *
    * @see GameState#getUnfinishedSetupSteps()
    * @author rkinney
    */

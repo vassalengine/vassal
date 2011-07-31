@@ -209,7 +209,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
   public boolean isDefaultRoom(Room r) {
     return r == null ? false : r.getName().equals(getDefaultRoomName());
   }
-  
+
   protected void sendStats() {
     if (isConnected()) {
       send(Protocol.encodeStatsCommand(new PropertiesEncoder(me.toProperties())
@@ -305,7 +305,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
 
   /**
    * Send Invitation to another player to join the current room
-   * 
+   *
    * @param invitee
    *          Player to invite
    */
@@ -316,7 +316,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
 
   /**
    * Process an invitation request from a player to join a room
-   * 
+   *
    * @param player
    *          Inviting player name
    * @param room
@@ -335,7 +335,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       }
     }
   }
-  
+
   public Room getRoom() {
     return currentRoom;
   }
@@ -419,7 +419,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
 
   /**
    * Process a message received from the server
-   * 
+   *
    * @param msg
    *          Encoded message
    */

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -66,7 +66,7 @@ public interface Kernel32 extends StdCallLibrary {
    * @return <code>true</code> on success
    */
   boolean GlobalMemoryStatusEx(MEMORYSTATUSEX p);
-    
+
   /**
    * Translates system error codes to error messages.
    *

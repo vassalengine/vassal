@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -82,7 +82,7 @@ public class CheckBoxMenuItemProxy
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(action);
     item.setSelected(state);
     item.addItemListener(this);
-    
+
     peers.add(new WeakReference<JCheckBoxMenuItem>(item, queue));
     return item;
   }

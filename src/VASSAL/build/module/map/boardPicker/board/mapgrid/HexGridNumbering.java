@@ -255,7 +255,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         }
       }
     }
-    
+
     if (grid.isSideways()) {
       if (vDescending)
         col = getMaxRows() - col;
@@ -268,18 +268,18 @@ public class HexGridNumbering extends RegularGridNumbering {
       if (vDescending)
         row = getMaxRows() - row;
     }
-    
+
     Point p = new Point();
-    
+
     p.x = (int) (col * grid.getHexWidth());
     p.x += grid.getOrigin().x;
-    
+
     if (col % 2 == 0)
       p.y = (int) (row * grid.getHexSize());
     else
       p.y = (int) (row * grid.getHexSize() + grid.getHexSize()/2);
     p.y += grid.getOrigin().y;
-    
+
     grid.rotateIfSideways(p);
     return p;
   }

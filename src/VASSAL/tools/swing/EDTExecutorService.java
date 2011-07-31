@@ -97,7 +97,7 @@ public class EDTExecutorService extends AbstractExecutorService {
       lock.unlock();
     }
   }
-  
+
   /** {@inheritDoc} */
   public List<Runnable> shutdownNow() {
     shutdown();
@@ -156,7 +156,7 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   /**
    * Submits a {@code EDTRunnableFuture} task for execution and returns it.
-   * 
+   *
    * @param task the task to submit
    * @return the task which was submitted
    * @throws RejectedExecutionException if the task cannot be scheduled for
@@ -183,7 +183,7 @@ public class EDTExecutorService extends AbstractExecutorService {
         futures.add(f);
         execute(f);
       }
-      
+
       for (Future<T> f : futures) {
         if (!f.isDone()) {
           try {
@@ -195,7 +195,7 @@ public class EDTExecutorService extends AbstractExecutorService {
           }
         }
       }
-      
+
       done = true;
       return futures;
     }
@@ -237,7 +237,7 @@ public class EDTExecutorService extends AbstractExecutorService {
       for (Future<T> f : futures) {
         if (!f.isDone()) {
           if (nanos <= 0) return futures;
-          
+
           try {
             f.get(nanos, TimeUnit.NANOSECONDS);
           }
@@ -248,13 +248,13 @@ public class EDTExecutorService extends AbstractExecutorService {
           catch (TimeoutException toe) {
             return futures;
           }
-          
+
           final long now = System.nanoTime();
           nanos -= now - lastTime;
           lastTime = now;
         }
       }
-      
+
       done = true;
       return futures;
     }

@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
@@ -35,33 +35,33 @@ public class CounterTurnLevel extends TurnLevel {
   protected static final String INCR = "incr"; //$NON-NLS-1$
   protected static final String LOOP = "loop"; //$NON-NLS-1$
   protected static final String LOOP_LIMIT = "loopLimit"; //$NON-NLS-1$
-  
+
   protected int incr = 1;
   protected boolean loop = false;
   protected int loopLimit = -1;
-  
+
   public CounterTurnLevel() {
     super();
   }
-  
+
   /*
    *  Reset counter to initial state
    */
   protected void reset() {
     super.reset();
-    setLow();    
+    setLow();
   }
 
   protected void setLow() {
     current = start;
     super.setLow();
   }
-  
+
   protected void setHigh() {
     current = loopLimit;
     super.setHigh();
   }
-  /* 
+  /*
    * Generate the state of the level
    */
   protected String getState() {
@@ -76,7 +76,7 @@ public class CounterTurnLevel extends TurnLevel {
     return se.getValue();
   }
 
-  /* 
+  /*
    * Set the state of the level
    */
   protected void setState(String code) {
@@ -99,14 +99,14 @@ public class CounterTurnLevel extends TurnLevel {
    * @see turn.TurnLevel#getLongestValueName()
    */
   protected String getLongestValueName() {
-    return start < 10000 ? "9999" : String.valueOf(start); //$NON-NLS-1$ 
+    return start < 10000 ? "9999" : String.valueOf(start); //$NON-NLS-1$
   }
 
-  /* 
+  /*
    * Advance this level.
    * 1. If there are any sub-levels, Advance the current sub-level first.
    * 2. If the sublevels roll over, then advance the counter
-   * 3. If LOOP is reached, roll over the counter  
+   * 3. If LOOP is reached, roll over the counter
    */
   protected void advance() {
     // Advance sub-levels
@@ -125,8 +125,8 @@ public class CounterTurnLevel extends TurnLevel {
 
   protected void retreat() {
     // Retreat sub-levels
-    super.retreat();  
-    
+    super.retreat();
+
     // If no sub-levels, or they rolled over, retreat this level
     int oldCurrent = current;
     if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
@@ -135,19 +135,19 @@ public class CounterTurnLevel extends TurnLevel {
         current = loopLimit;
         setRolledOver(true);
       }
-    }  
+    }
     myValue.setPropertyValue(getValueString());
   }
 
   protected Component getSetControl() {
-    
+
     final IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         current = (Integer) ((IntConfigurer) e.getSource()).getValue();
         myValue.setPropertyValue(getValueString());
       }});
-    
+
     return config.getControls();
   }
 
@@ -212,7 +212,7 @@ public class CounterTurnLevel extends TurnLevel {
     else {
       super.setAttribute(key, value);
     }
-    
+
   }
 
   public String getAttributeValueString(String key) {
@@ -231,11 +231,11 @@ public class CounterTurnLevel extends TurnLevel {
     else
       return super.getAttributeValueString(key);
   }
-  
+
   public static String getConfigureTypeName() {
     return "Counter";
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","Counter"); //$NON-NLS-1$ //$NON-NLS-2$
   }

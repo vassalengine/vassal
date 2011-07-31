@@ -128,7 +128,7 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
    * Returns the name of the image which {@link #getImage} will produce.
    *
    * @return the name of the image in the {@link DataArchive}.
-   */  
+   */
   public String getName() {
     return name;
   }

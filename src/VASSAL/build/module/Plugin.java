@@ -32,9 +32,9 @@ import VASSAL.counters.PieceDefiner;
  * require some sort of initialisation. Module Plugins do not need
  * to include a Plugin component if they consist only of code and
  * image resources used by other parts of the module.
- * 
- * Plugin should be subclassed and added to the Module Plugin. 
- * 
+ *
+ * Plugin should be subclassed and added to the Module Plugin.
+ *
  */
 public class Plugin extends AbstractConfigurable implements PluginsLoader.PluginElement {
 
@@ -43,27 +43,27 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
    * initialisation should be performed in the constructor
    */
   public Plugin() {
-    
+
   }
-  
+
   /**
    * init() is called by the GameModule when the build of the module and
    * all extensions is complete. Any initialisation that depends
    * on other parts of the module should be implemented here
    */
   public void init() {
-    
+
   }
-  
+
   /**
-   * Utility routine to register a GamePiece with the PieceDefiner 
+   * Utility routine to register a GamePiece with the PieceDefiner
    * so that it appears as an option in the list of traits
    * @param p GamePiece to register
    */
   public void registerGamePiece(GamePiece p) {
     PieceDefiner.addDefinition(p);
   }
-  
+
   /**
    * Utility routine to register a CommandEncoder with the module
    * @param encoder
@@ -71,7 +71,7 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
   public void registerCommandEncoder(CommandEncoder encoder) {
     GameModule.getGameModule().addCommandEncoder(encoder);
   }
-  
+
   /**
    * Utility routine to register a new component with the module
    * editor so that it appears in the right-click popup menu. To add
@@ -83,7 +83,7 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
   public void registerComponent(Class<? extends Buildable> parent, Class<? extends Buildable> child) {
     ConfigureTree.addAdditionalComponent(parent, child);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -101,7 +101,7 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
   }
 
   public void setAttribute(String key, Object value) {
-    
+
   }
 
   @SuppressWarnings("unchecked")
@@ -114,11 +114,11 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
   }
 
   public void removeFrom(Buildable parent) {
-    
+
   }
 
   public void addTo(Buildable parent) {
-    
+
   }
- 
+
 }

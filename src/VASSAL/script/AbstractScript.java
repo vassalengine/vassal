@@ -22,38 +22,38 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.i18n.ComponentI18nData;
 
 public abstract class AbstractScript extends AbstractConfigurable {
-  
+
   public static final String NAME = "name";
   public static final String DESC = "desc";
   public static final String SCRIPT = "script";
-  
+
   private String description = "";
-  private String script = ""; 
-  
+  private String script = "";
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public String getDescription() {
     return description;
   }
-  
+
   public void setScript(String script) {
     this.script = script;
   }
-  
+
   public String getScript() {
     return script;
   }
-  
+
   public abstract CompileResult compile();
-  
+
   public ComponentI18nData getI18nData() {
     ComponentI18nData data = super.getI18nData();
     data.setAllAttributesUntranslatable();
     return data;
   }
-  
+
   /* --------------------------------------------
    * AbstractConfigurable implementation
    * Minimal due to custom Configurer
@@ -72,11 +72,11 @@ public abstract class AbstractScript extends AbstractConfigurable {
   public String[] getAttributeNames() {
     return new String[] {NAME, DESC, SCRIPT};
   }
-  
+
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-  
+
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
@@ -99,11 +99,11 @@ public abstract class AbstractScript extends AbstractConfigurable {
     else if (DESC.equals(key)) {
       setDescription((String) value);
     }
-    else if (SCRIPT.equals(key)) { 
+    else if (SCRIPT.equals(key)) {
       setScript((String) value);
     }
     return;
   }
-  
-  
+
+
 }

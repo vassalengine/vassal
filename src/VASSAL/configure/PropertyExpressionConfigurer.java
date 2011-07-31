@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -30,7 +30,7 @@ import VASSAL.script.expression.PropertyExpressionBuilder;
  * A Configurer for Java Expressions
  */
 public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer {
-  
+
 
   public PropertyExpressionConfigurer(String key, String name) {
     this(key, name, "");
@@ -39,36 +39,36 @@ public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer 
   public PropertyExpressionConfigurer(String key, String name, String val) {
     this(key, name, val, null);
   }
-  
+
   public PropertyExpressionConfigurer(String key, String name, PropertyExpression val) {
     this(key, name, val.getExpression());
   }
-  
+
   public PropertyExpressionConfigurer(String key, String name, PropertyExpression val, GamePiece piece) {
     this(key, name, val.getExpression(), piece);
   }
-  
+
   public PropertyExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     super(key, name, val, piece);
   }
-  
+
   protected ExpressionButton buildButton() {
-    return new PropertyExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);  
+    return new PropertyExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);
   }
-  
+
   public static class PropertyExpressionButton extends ExpressionButton {
     private static final long serialVersionUID = 1L;
-    
+
     public PropertyExpressionButton(Configurer config, int size,
         EditablePiece piece) {
       super(config, size, piece);
     }
-    
+
     public void actionPerformed(ActionEvent e) {
-      new PropertyExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);   
+      new PropertyExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);
     }
 
-    
+
   }
- 
+
 }

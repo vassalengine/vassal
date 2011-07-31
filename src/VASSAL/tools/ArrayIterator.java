@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 by Joel Uckelman 
+ * Copyright (c) 2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
  * @since 3.2.0
  */
 public class ArrayIterator<T> implements Iterator<T> {
-  
+
   private T[] array;
   private int pos = 0;
 

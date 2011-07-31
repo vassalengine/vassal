@@ -54,7 +54,7 @@ public class ColorConfigurer extends Configurer {
 
   public void setValue(Object o) {
     super.setValue(o);
-    if (cb != null) 
+    if (cb != null)
       cb.setColor((Color) o);
   }
 

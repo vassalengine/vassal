@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.module.documentation;
@@ -52,15 +52,15 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     pane = new JEditorPane();
     pane.setEditable(false);
     pane.addHyperlinkListener(this);
-    
+
     /*
-     * Allow <src> tag to display images from the module DataArchive 
+     * Allow <src> tag to display images from the module DataArchive
      * where no pathname included in the image name.
      */
     pane.setContentType("text/html"); //$NON-NLS-1$
     XTMLEditorKit myHTMLEditorKit = new HtmlChart.XTMLEditorKit();
     pane.setEditorKit(myHTMLEditorKit);
-    
+
     JScrollPane scroll = new ScrollPane(pane);
     add(scroll);
     update(contents);

@@ -86,7 +86,7 @@ import VASSAL.tools.FormattedString;
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
  * the mouse is held over a stack with the control key down.
- * 
+ *
  * @author David Sullivan
  * @version 1.0
  */
@@ -204,7 +204,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     setAttributeTranslatable(VERSION, false);
     setAttributeTranslatable(SUMMARY_REPORT_FORMAT, true);
-    setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);    
+    setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);
   }
 
   public void draw(Graphics g, Map map) {
@@ -235,7 +235,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  @Deprecated // Required for backward compatibility 
+  @Deprecated // Required for backward compatibility
   protected void drawGraphics(Graphics g, Point pt, JComponent comp,
                               PieceIterator pi) {
     ArrayList<GamePiece> a = new ArrayList<GamePiece>();
@@ -288,9 +288,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         if (isTextUnderCounters()) {
           String text = counterReportFormat.getLocalizedText(piece);
           if (text.length() > 0) {
-        	  int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
-        	  int y = bounds.y + bounds.height + 10;
-        	  drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
+            int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
+            int y = bounds.y + bounds.height + 10;
+            drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
           }
         }
 
@@ -318,12 +318,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
     return pieceBounds;
   }
-  
+
   protected boolean isTextUnderCounters() {
     return textVisible && counterReportFormat.getFormat().length() > 0;
   }
 
-  @Deprecated // Required for backward compatibility 
+  @Deprecated // Required for backward compatibility
   protected void drawText(Graphics g, Point pt,
                           JComponent comp, PieceIterator pi) {
     ArrayList<GamePiece> a = new ArrayList<GamePiece>();
@@ -373,7 +373,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  @Deprecated // Required for backward compatibility 
+  @Deprecated // Required for backward compatibility
   protected void drawLabel(Graphics g, Point pt, String label) {
     drawLabel(g, pt, label, Labeler.RIGHT, Labeler.BOTTOM);
   }
@@ -399,7 +399,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * showGraphicsSingle/showTextSingle and stack must not be expanded. Empty
      * space - Depends on setting of
      */
-    
+
     double zoom = getZoom();
     if (displayablePieces.size() < minimumDisplayablePieces) {
       if (displayablePieces.size() > 0) {
@@ -469,12 +469,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       // If it Does Not Stack, do we want to see it?
       if (Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK)) && !showNoStack) {
         return false;
-      }      
-      
+      }
+
       if (Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE)) && !showNonMovable) {
         return false;
       }
-      
+
       if (Boolean.TRUE.equals(piece.getProperty(Properties.TERRAIN)) && !showMoveSelected) {
         return false;
       }
@@ -733,14 +733,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return new String[] {
       VERSION,
       DELAY,
-      HOTKEY,  
+      HOTKEY,
       BG_COLOR,
       FG_COLOR,
       MINIMUM_DISPLAYABLE,
       ZOOM_LEVEL,
       DRAW_PIECES,
       DRAW_PIECES_AT_ZOOM,
-      GRAPH_SINGLE_DEPRECATED, 
+      GRAPH_SINGLE_DEPRECATED,
       BORDER_WIDTH,
       SHOW_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
@@ -762,9 +762,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return new String[] {
        Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
        Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$  
+       Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$ 
+       Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
@@ -782,10 +782,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$ 
+       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
-      }; 
+      };
   }
 
   public Class<?>[] getAttributeTypes() {

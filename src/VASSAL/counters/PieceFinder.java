@@ -76,12 +76,12 @@ public interface PieceFinder {
     protected Map map;
     protected Point pt;
     protected DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(this);
-    
+
     // This constructor is safe only if using the PieceFinder.select() method
     public Movable() {
       this(null,null);
     }
-    
+
     public Movable(Map map, Point pt) {
       this.map = map;
       this.pt = pt;
@@ -111,9 +111,9 @@ public interface PieceFinder {
       for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
            i.hasNext();) {
         GamePiece child = i.next();
-       
+
         // Pieces can be moved by background threads causing the size of
-        // the Stack to change after the Iterator is generated. 
+        // the Stack to change after the Iterator is generated.
         // FIXME: This is a workaround. We should fix the threading bug
         // which causes.
         final int index = s.indexOf(child);

@@ -35,19 +35,19 @@ public class Mp3AudioClip implements AudioClip {
   protected String name;
   protected Player player;
   protected InputStream stream;
-  
+
   public Mp3AudioClip(String name) {
     this.name = name;
   }
-  
+
   public void play() {
     try {
       stream = GameModule.getGameModule().getDataArchive().getInputStream(name);
       player = new Player(stream);
-    } 
+    }
     catch (JavaLayerException e) {
       ErrorDialog.bug(e);
-    } 
+    }
     catch (FileNotFoundException e) {
       ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.not_found", name), "", e));
     }
@@ -57,7 +57,7 @@ public class Mp3AudioClip implements AudioClip {
     finally {
       IOUtils.closeQuietly(stream);
     }
-    
+
     // run in new thread to play in background
     new Thread() {
         public void run() {
@@ -65,12 +65,12 @@ public class Mp3AudioClip implements AudioClip {
             if (player != null) {
               player.play();
             }
-          } 
+          }
           catch (JavaLayerException e) {
             ErrorDialog.bug(e);
-          } 
+          }
         }
-    }.start();    
+    }.start();
   }
 
   public void stop() {
@@ -79,10 +79,10 @@ public class Mp3AudioClip implements AudioClip {
       IOUtils.closeQuietly(stream);
     }
   }
-  
+
   public void loop() {
-    // Not used by Vassal    
+    // Not used by Vassal
   }
-  
-  
+
+
 }

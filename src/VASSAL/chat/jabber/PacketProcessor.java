@@ -53,7 +53,7 @@ public abstract class PacketProcessor implements PacketListener, PacketFilter {
   }
 
   protected abstract boolean acceptPacket(Packet packet);
-  
+
   public void addTo(XMPPConnection conn) {
     conn.addPacketListener(this, this);
   }

@@ -33,42 +33,42 @@ import VASSAL.configure.SingleChildInstance;
  * Actual definition is in inner class {@link GamePieceLayout}
  */
 public class GamePieceImageDefinitions extends AbstractConfigurable {
-  
+
   protected static GamePieceImageDefinitions instance;
   protected GamePieceLayoutsContainer definitions;
   protected ColorManager colors;
   protected FontManager fonts;
-  
+
   protected static final Color DEFAULT_COLOR  = Color.WHITE;
-  
+
   public GamePieceImageDefinitions() {
     instance = this;
   }
-  
+
   public static GamePieceImageDefinitions getInstance() {
     return instance;
   }
-  
+
   public void build(Element e) {
     super.build(e);
 
-    if (colors == null) { 
+    if (colors == null) {
       addChild(new ColorManager());
       colors.build(null);
     }
-    if (fonts == null) { 
+    if (fonts == null) {
       addChild(new FontManager());
       fonts.build(null);
     }
     if (definitions == null) addChild(new GamePieceLayoutsContainer());
 
   }
-  
+
   private void addChild(Buildable b) {
     add(b);
     b.addTo(this);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -118,7 +118,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     }
     else if (b instanceof FontManager) {
       fonts = (FontManager) b;
-    }    
+    }
   }
 
   public void remove(Buildable b) {
@@ -131,9 +131,9 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     }
     else if (b instanceof FontManager) {
       fonts = null;
-    }  
+    }
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm"); //$NON-NLS-1$
   }
@@ -142,9 +142,9 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    
+
     return definitions.getGenericDefn(defnName);
-    
+
   }
-  
+
 }

@@ -73,7 +73,7 @@ public class FirstTimeDialog extends JDialog {
     welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
     welcome.setForeground(Color.black);
 
-    final JButton tour = new JButton(new LaunchTourAction(parent)); 
+    final JButton tour = new JButton(new LaunchTourAction(parent));
     final JButton jump =
       new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     final JButton help = new JButton(Resources.getString(Resources.HELP));
@@ -165,7 +165,7 @@ public class FirstTimeDialog extends JDialog {
           .add(langbox)));
 
     layout.linkSize(new Component[]{tour, jump, help});
-    
+
     add(panel);
 
     pack();

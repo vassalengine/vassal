@@ -2,7 +2,7 @@ package VASSAL.tools.ipc;
 
 public class SimpleIPCMessage implements IPCMessage {
   private static final long serialVersionUID = 1L;
-  
+
   protected long id;
   protected long inReplyTo;
 

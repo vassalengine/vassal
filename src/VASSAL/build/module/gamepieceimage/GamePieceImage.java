@@ -43,7 +43,7 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
 /**
- * 
+ *
  */
 public class GamePieceImage extends AbstractConfigurable implements Visualizable, Cloneable, UniqueIdManager.Identifyable {
 
@@ -67,7 +67,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
   protected Image visImage = null;
- 
+
   protected SourceOp srcOp;
 
   public GamePieceImage() {
@@ -315,7 +315,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
                      getEncodedImage((BufferedImage) visImage));
           SourceOp op = Op.load(getConfigureName());
           op.update();
-        }       
+        }
       }
     }
   }

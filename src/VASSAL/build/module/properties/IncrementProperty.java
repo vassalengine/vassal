@@ -24,11 +24,11 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
 /**
- * Increments a property by a given value.  
+ * Increments a property by a given value.
  * The value can be specified as a FormattedString property and evaluated at runtime
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class IncrementProperty implements PropertyChanger {
   protected Constraints constraints;
@@ -41,7 +41,7 @@ public class IncrementProperty implements PropertyChanger {
     this.constraints = constraints;
     format.setFormat(incr);
   }
-  
+
   public String getNewValue(String oldValue) {
     int value = 0;
     try {
@@ -51,10 +51,10 @@ public class IncrementProperty implements PropertyChanger {
       ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.non_number_error"),"Increment "+prop.getName()+": oldValue "+"="+oldValue,e));
       return oldValue;
     }
-    
+
     try {
-      
-      int incr = Integer.parseInt(format.getText(constraints)); 
+
+      int incr = Integer.parseInt(format.getText(constraints));
       if (constraints.isWrap()) {
         if (value + incr > constraints.getMaximumValue()) {
           value = constraints.getMinimumValue() + (value + incr - constraints.getMaximumValue() - 1);
@@ -82,7 +82,7 @@ public class IncrementProperty implements PropertyChanger {
   public String getIncrement() {
     return format.getFormat();
   }
-  
+
   public static interface Constraints extends PropertySource {
     int getMinimumValue();
     int getMaximumValue();

@@ -88,23 +88,23 @@ public class EDTExecutorServiceTest {
   public void testSubmitRunnable() throws Exception {
     final EDTExecutorService ex = new EDTExecutorService();
     final Future<?> f = ex.submit(new Runnable() {
-      public void run() { 
+      public void run() {
         assertTrue(SwingUtilities.isEventDispatchThread());
       }
     });
-   
-    f.get(); 
+
+    f.get();
   }
 
   @Test
   public void testSubmitRunnableWithValue() throws Exception {
     final EDTExecutorService ex = new EDTExecutorService();
     final Future<Double> f = ex.submit(new Runnable() {
-      public void run() { 
+      public void run() {
         assertTrue(SwingUtilities.isEventDispatchThread());
       }
     }, Math.PI);
-   
+
     assertEquals(Math.PI, f.get().doubleValue(), 0.0);
   }
 
@@ -112,12 +112,12 @@ public class EDTExecutorServiceTest {
   public void testSubmitCallable() throws Exception {
     final EDTExecutorService ex = new EDTExecutorService();
     final Future<Byte> f = ex.submit(new Callable<Byte>() {
-      public Byte call() { 
+      public Byte call() {
         assertTrue(SwingUtilities.isEventDispatchThread());
         return (byte) 0xfe;
       }
     });
-   
+
     assertEquals((byte) 0xfe, f.get().byteValue());
   }
 
@@ -129,7 +129,7 @@ public class EDTExecutorServiceTest {
         assertTrue(SwingUtilities.isEventDispatchThread());
       }
     });
-   
+
     assertEquals(3, f.get().shortValue());
   }
 
@@ -167,7 +167,7 @@ public class EDTExecutorServiceTest {
     for (Future<Character> f : ex.invokeAll(tasks)) {
       assertEquals('x', f.get().charValue());
     }
-  } 
+  }
 
   @Test
   public void testInvokeAllTimeout() throws Exception {
@@ -215,7 +215,7 @@ public class EDTExecutorServiceTest {
       public Float call() { return 1.0f; }
     });
   }
-  
+
   @Test(expected=RejectedExecutionException.class)
   public void testSubmitEDTRunnableFutureAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
@@ -247,7 +247,7 @@ public class EDTExecutorServiceTest {
     }
 
     ex.invokeAll(tasks);
-  } 
+  }
 
   @Test(expected=RejectedExecutionException.class)
   public void testInvokeAllTimeoutAfterShutdown() throws Exception {

@@ -149,11 +149,11 @@ public class Delete extends Decorator implements TranslatablePiece {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.htm", "Delete");
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, "Delete command");
   }
-  
+
   public static class Ed implements PieceEditor {
     private StringConfigurer nameInput;
     private NamedHotKeyConfigurer keyInput;

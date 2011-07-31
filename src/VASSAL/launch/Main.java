@@ -18,7 +18,7 @@ package VASSAL.launch;
 
 import VASSAL.tools.ErrorDialog;
 
-/** 
+/**
  * @deprecated Use {@link Editor}, {@link Player}, and {@link ModuleManager}
  *  as entry points for VASSAL instead.
  */

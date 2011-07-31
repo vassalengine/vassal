@@ -28,7 +28,7 @@ import java.awt.RenderingHints;
  * @since 3.1.0
  */
 public interface ScaleOp extends ImageOp {
-  
+
   public double getScale();
 
   public RenderingHints getHints();

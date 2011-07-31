@@ -46,7 +46,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
   protected int numYTiles;
 
   /** The tiles already created, stored as <code>y*numXTiles + x</code>. */
-  protected ImageOp[] tiles; 
+  protected ImageOp[] tiles;
 
   /**
    * Sets the <code>tileSize</code> which is used by {@link getTileSize},
@@ -75,7 +75,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
     if (tileSize == null) fixTileSize();
     return tileSize.height;
   }
-    
+
   /** {@inheritDoc} */
   public int getTileWidth() {
     if (tileSize == null) fixTileSize();
@@ -87,7 +87,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
     if (tileSize == null) fixTileSize();
     return numXTiles;
   }
-  
+
   /** {@inheritDoc} */
   public int getNumYTiles() {
     if (tileSize == null) fixTileSize();
@@ -105,10 +105,10 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
     if (top == null) {
       top = tiles[tileY*numXTiles + tileX] = createTileOp(tileX, tileY);
     }
-  
+
     return top;
   }
-  
+
   protected abstract ImageOp createTileOp(int tileX, int tileY);
 
   /**
@@ -135,7 +135,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    */
   public Future<BufferedImage> getFutureTile(
     int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
-  { 
+  {
     if (tileX < 0 || tileX >= numXTiles ||
         tileY < 0 || tileY >= numYTiles)
       throw new IndexOutOfBoundsException();
@@ -163,7 +163,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
     final int minTileY = rect.y/tileSize.height;
     final int maxTileX = (rect.x + rect.width - 1)/tileSize.width;
     final int maxTileY = (rect.y + rect.height - 1)/tileSize.height;
-   
+
     final Point[] tilesInRect =
       new Point[(maxTileX-minTileX+1)*(maxTileY-minTileY+1)];
 

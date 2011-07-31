@@ -49,14 +49,14 @@ import VASSAL.counters.Stack;
 
 /**
  * This component listens for mouse clicks on a map and draws the selection
- * rectangle. 
+ * rectangle.
  *
  * If the user clicks on a {@link GamePiece}, that piece is added to the
  * {@link KeyBuffer}. {@link #draw(Graphics, Map)} is responsible for
  * drawing the mouse selection rectangle, and
  * {@link #mouseDragged(MouseEvent)} is responsible for triggering repaint
  * events as the selection rectangle is moved.
- * 
+ *
  * @see Map#addLocalMouseListener
  */
 public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionListener, Drawable {
@@ -174,7 +174,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   /**
    * This PieceVisitorDispatcher determines what to do with pieces on the
    * map when the player finished dragging a rectangle to select pieces
-   * 
+   *
    * @return
    */
   protected PieceVisitorDispatcher createDragSelector(boolean selecting, boolean altDown) {
@@ -244,7 +244,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   protected void repaintSelectionRect() {
-    /* 
+    /*
      * Repaint strategy: There is no reason to repaint the interior of
      * the selection rectangle, as we didn't paint over it in the first
      * place. Instead, we repaint only the four (slender) rectangles
@@ -253,10 +253,10 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
      * in order to prevent drawing artifacts. The KeyBuffer handles
      * repainting pieces which have been (de)selected, so we don't
      * worry about those.
-     * 
-     * Area drawn: 
-     *                selection.x     
-     *                     |              
+     *
+     * Area drawn:
+     *                selection.x
+     *                     |
      *                  ___________________
      *   selection.y __ |__|__|_____|__|__| __
      *                  |__|__|_____|__|__|   |
@@ -265,13 +265,13 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
      *                  |__|__|_____|__|__|   |
      * ~thickness/2 --{ |__|__|_____|__|__| __|
      * ~thickness/2 --{ |__|__|_____|__|__|
-     *                    
-     *                     |___________|  
+     *
+     *                     |___________|
      *                    selection.width
      */
     final int ht = thickness / 2 + thickness % 2;
     final int ht2 = 2*ht;
-      
+
     // left
     map.getView().repaint(selection.x - ht,
                           selection.y - ht,
@@ -282,7 +282,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
                           selection.y - ht,
                           ht2,
                           selection.height + ht2);
-    // top 
+    // top
     map.getView().repaint(selection.x - ht,
                           selection.y - ht,
                           selection.width + ht2,
@@ -294,7 +294,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
                           ht2);
   }
 
-  /** 
+  /**
    * Sets the new location of the selection rectangle.
    */
   public void mouseDragged(MouseEvent e) {

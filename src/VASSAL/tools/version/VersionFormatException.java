@@ -29,7 +29,7 @@ package VASSAL.tools.version;
  */
 public class VersionFormatException extends Exception {
   private static final long serialVersionUID = 1L;
-  
+
   /** {@inheritDoc} */
   public VersionFormatException() { }
 

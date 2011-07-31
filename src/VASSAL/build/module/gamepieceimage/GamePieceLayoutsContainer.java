@@ -38,11 +38,11 @@ import VASSAL.configure.SingleChildInstance;
 public class GamePieceLayoutsContainer extends AbstractConfigurable {
   protected Map<String,GamePieceLayout> definitions =
     new HashMap<String,GamePieceLayout>();
-  
+
   protected GamePieceLayout getDefinition(String name) {
     return definitions.get(name);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -102,7 +102,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
       definitions.remove(((GamePieceLayout) b).getConfigureName());
     }
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }

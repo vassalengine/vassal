@@ -69,7 +69,7 @@ public class SumProperties implements PropertySource {
     }
     return value;
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }

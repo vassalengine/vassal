@@ -32,7 +32,7 @@ import org.jdesktop.swingworker.SwingWorker;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- */ 
+ */
 public class ThreadManager {
   private ThreadManager() { }
 
@@ -45,7 +45,7 @@ public class ThreadManager {
       boolean ret = super.offer(r);
       if (ret) System.out.println("queued " + r);
       else System.out.println("failed to queue " + r);
-    
+
       for (Iterator<Runnable> i = requestQueue.iterator(); i.hasNext(); ) {
         System.out.println("in queue: " + i.next());
       }

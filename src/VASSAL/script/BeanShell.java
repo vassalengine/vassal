@@ -30,14 +30,14 @@ import bsh.BeanShellExpressionValidator;
 import bsh.NameSpace;
 
 /**
- * 
+ *
  * Class encapsulating BeanShell support in Vassal
  *
  */
 public class BeanShell {
-  
+
   public static BeanShell instance;
-  
+
   public static BeanShell getInstance() {
     if (instance == null) {
       instance = new BeanShell();
@@ -45,20 +45,20 @@ public class BeanShell {
     }
     return instance;
   }
-  
+
   protected static final String INIT_SCRIPT = "/VASSAL/script/init_script.bsh";
-  
+
   /*
-   * An interpreter for adding script methods to the global NameSpace 
+   * An interpreter for adding script methods to the global NameSpace
    */
   protected ScriptInterpreter globalInterpreter;
-  
-  public BeanShell() {       
+
+  public BeanShell() {
     globalInterpreter = new ScriptInterpreter(this.getClass().getClassLoader());
   }
-  
+
   public void init() {
-    // Read in the Vassal Script init script 
+    // Read in the Vassal Script init script
     URL ini = instance.getClass().getResource(INIT_SCRIPT);
     BufferedReader in = null;
     try {
@@ -85,26 +85,26 @@ public class BeanShell {
       }
     }
   }
-  
+
   public CompileResult compile (Reader in) {
     try {
       globalInterpreter.eval(in);
-    } 
+    }
     catch (EvalError e) {
       return new CompileResult(e);
     }
     return new CompileResult();
   }
-  
+
   /**
    * Return the Vassal shared NameSpace
-   * 
+   *
    * @return Global NameSpace
    */
   public NameSpace getGlobalNameSpace() {
     return globalInterpreter.getNameSpace();
   }
-  
+
   /**
    * Execute a Script named in a component DoAction or trait DoAction.
    * Action Scripts take no parameters and return no value.
@@ -117,22 +117,22 @@ public class BeanShell {
     catch (EvalError e) {
       e.printStackTrace();
     }
-    
-    
+
+
   }
-  /** 
+  /**
    * Parse and validate a single expression or script. No evaluation or checking
    * for undefined variables
-   * 
+   *
    * @param expression Expression to validate
    */
   public static boolean validateExpression(String expression) {
     return new BeanShellExpressionValidator(expression).isValid();
-  } 
-  
+  }
+
   /**
    * Convert a String value into a wrapped primitive object if possible.
-   * 
+   *
    * @param value
    * @return wrapped value
    */
@@ -146,13 +146,13 @@ public class BeanShell {
     else if ("false".equals(value)) {
       return Boolean.FALSE;
     }
-    else {           
+    else {
       try {
         return Integer.valueOf(value);
       }
       catch (NumberFormatException e) {
         return value;
-      }   
+      }
     }
   }
 }

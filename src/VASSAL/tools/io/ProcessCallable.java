@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Joel Uckelman
  * @since 3.2.0
- */ 
+ */
 class ProcessCallable implements Callable<Integer> {
 
   private static final Logger logger =
@@ -54,7 +54,7 @@ class ProcessCallable implements Callable<Integer> {
    * @param stdout the stream where the process' STDOUT is redirected
    * @param stderr the stream where the process' STDERR is redirected
    * @param exec the executor which runs the stream pumps
-   */ 
+   */
   public ProcessCallable(
     Process proc,
     InputStreamPump stdoutPump,
@@ -83,18 +83,18 @@ class ProcessCallable implements Callable<Integer> {
    * {@inheritDoc}
    *
    *  @return the return value of the process
-   */  
+   */
   public Integer call() {
- 
-    stdoutPump.setInputStream(proc.getInputStream());
-    stderrPump.setInputStream(proc.getErrorStream()); 
 
-    final Future<?> out_f = exec.submit(stdoutPump); 
+    stdoutPump.setInputStream(proc.getInputStream());
+    stderrPump.setInputStream(proc.getErrorStream());
+
+    final Future<?> out_f = exec.submit(stdoutPump);
     final Future<?> err_f = exec.submit(stderrPump);
 
     try {
       final int result = proc.waitFor();
-     
+
       // stop the stream pumps
       stopPump(out_f);
       stopPump(err_f);

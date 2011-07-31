@@ -27,10 +27,10 @@ import VASSAL.configure.IntConfigurer;
  * A whole number Module Preference.
  */
 public class IntegerPreference extends BasicPreference {
-  
+
   protected int defaultValue = 0;
   protected IntConfigurer config;
-  
+
   public static String getConfigureTypeName() {
     return "Whole Number Preference";
   }
@@ -48,7 +48,7 @@ public class IntegerPreference extends BasicPreference {
       value = Integer.valueOf((String) value);
     }
     defaultValue = ((Integer) value).intValue();
-      
+
   }
 
   public Configurer getPreferenceConfigurer() {
@@ -57,7 +57,7 @@ public class IntegerPreference extends BasicPreference {
         new IntConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());          
+          updateGlobalProperty(config.getValueString());
         }});
     }
     return config;

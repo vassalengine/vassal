@@ -61,6 +61,6 @@ public class VassalVersionTokenizerTest {
           fail("expected exception from " + vs + ", token " + i);
         }
       }
-    }    
+    }
   }
 }

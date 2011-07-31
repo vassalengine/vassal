@@ -62,10 +62,10 @@ public class SpecialDie extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString(Resources.NAME_LABEL),
-    		Resources.getString("Editor.SpecialDie.result_format") //$NON-NLS-1$
+        Resources.getString(Resources.NAME_LABEL),
+        Resources.getString("Editor.SpecialDie.result_format") //$NON-NLS-1$
     };
-    		
+
   }
 
   public Class<?>[] getAttributeTypes() {
@@ -129,14 +129,14 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      format.setProperty(RESULT, "undefined"); //$NON-NLS-1$   
+      format.setProperty(RESULT, "undefined"); //$NON-NLS-1$
       format.setProperty(NUMERICAL_VALUE, "0"); //$NON-NLS-1$
       logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
     }
     else {
-      final SpecialDieFace aFace = dieFaceList.get(face);      
+      final SpecialDieFace aFace = dieFaceList.get(face);
       format.setProperty(RESULT, aFace.getTextValue());
-      format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$      
+      format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
     }
     return format.getLocalizedText();
   }
@@ -158,7 +158,7 @@ public class SpecialDie extends AbstractConfigurable {
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
       logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
-      return ""; //$NON-NLS-1$      
+      return ""; //$NON-NLS-1$
     }
     else {
       return dieFaceList.get(face).getImageName();

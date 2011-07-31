@@ -42,60 +42,60 @@ import VASSAL.tools.io.IOUtils;
  * Class representing the metadata for a Save Game/Log File. Details
  * about the module this savegame was created with are saved in a
  * seperate moduledata file in the saved game zip.
- * 
+ *
  * @author Brent Easton
  * @since 3.1.0
  */
 public class SaveMetaData extends AbstractMetaData {
-  
+
   private static final Logger logger =
     LoggerFactory.getLogger(SaveMetaData.class);
 
   public static final String ZIP_ENTRY_NAME = "savedata";
   public static final String DATA_VERSION = "1";
   public static final String PROMPT_LOG_COMMENT = "promptLogComment";
-  
+
   protected ModuleMetaData moduleData;
 
   public SaveMetaData() {
     super();
 
     String comments = "";
-    if ( (Boolean)GameModule.getGameModule().getPrefs().getValue( PROMPT_LOG_COMMENT )){ 		
-	    comments = (String) JOptionPane.showInputDialog(
-	      GameModule.getGameModule().getFrame(),
-	      Resources.getString("BasicLogger.enter_comments"),
-	      Resources.getString("BasicLogger.log_file_comments"),
-	      JOptionPane.PLAIN_MESSAGE,
-	      null,
-	      null,
-	      ""
-	    );
+    if ( (Boolean)GameModule.getGameModule().getPrefs().getValue( PROMPT_LOG_COMMENT )){
+      comments = (String) JOptionPane.showInputDialog(
+        GameModule.getGameModule().getFrame(),
+        Resources.getString("BasicLogger.enter_comments"),
+        Resources.getString("BasicLogger.log_file_comments"),
+        JOptionPane.PLAIN_MESSAGE,
+        null,
+        null,
+        ""
+      );
 
-	    setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+      setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
     }
   }
-  
+
   public SaveMetaData(ZipFile zip) {
     read(zip);
   }
-  
+
   public String getModuleName() {
     return moduleData == null ? "" : moduleData.getName();
   }
-  
+
   public String getModuleVersion() {
     return moduleData == null ? "" : moduleData.getVersion();
   }
-  
+
   public ModuleMetaData getModuleData() {
     return moduleData;
   }
-  
+
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
-  
+
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
@@ -107,13 +107,13 @@ public class SaveMetaData extends AbstractMetaData {
    */
   public void save(ArchiveWriter archive) throws IOException {
     super.save(archive);
-    
+
     // Also save a copy of the current module metadata in the save file. Copy
     // module metadata from the module archive as it will contain full i18n
     // information.
     copyModuleMetadata(archive);
   }
-  
+
   /**
    * Add Elements specific to SaveMetaData
    */
@@ -155,8 +155,8 @@ public class SaveMetaData extends AbstractMetaData {
       }
       finally {
         IOUtils.closeQuietly(in);
-      }       
- 
+      }
+
       // read the matching Module data
       moduleData = new ModuleMetaData(zip);
 

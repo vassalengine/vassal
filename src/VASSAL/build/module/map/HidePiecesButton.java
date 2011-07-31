@@ -94,7 +94,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     map.addDrawComponent(this);
 
     map.getToolBar().add(launch);
-    
+
     if (b instanceof Translatable) {
       getI18nData().setOwningComponent((Translatable) b);
     }
@@ -160,7 +160,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString(Resources.BUTTON_TEXT), 
+      Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.HOTKEY_LABEL),
       Resources.getString("Editor.HidePieceButton.show_icon"), //$NON-NLS-1$
@@ -260,7 +260,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
-  
+
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "HidePieces");

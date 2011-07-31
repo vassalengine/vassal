@@ -45,7 +45,7 @@ public class ArchiveWriter extends DataArchive {
 
   /**
    * Create a new writeable archive.
-   * 
+   *
    * @param zipName the name of the archive. If null, the user will be
    * prompted for a filename when saving. If not null, new entries will
    * be added to the named archive. If the file exists and is not a zip
@@ -84,13 +84,13 @@ public class ArchiveWriter extends DataArchive {
       WriteErrorDialog.error(e, archiveName);
     }
   }
-  
+
   public ArchiveWriter(FileArchive archive) {
     archiveName = archive.getName();
     this.archive = archive;
   }
 
-  @Deprecated  
+  @Deprecated
   public ArchiveWriter(ZipFile archive) {
     archiveName = archive.getName();
     try {
@@ -101,12 +101,12 @@ public class ArchiveWriter extends DataArchive {
       WriteErrorDialog.error(e, archiveName);
     }
   }
-   
+
   /**
    * Add an image file to the archive. The file will be copied into an
    * "images" directory in the archive. Storing another image with the
    * same name will overwrite the previous image.
-   * 
+   *
    * @param path the full path of the image file on the user's filesystem
    * @param name the name under which to store the image in the archive
    */
@@ -137,8 +137,8 @@ public class ArchiveWriter extends DataArchive {
   public void addImage(String name, byte[] contents) {
     addFile(imageDir + name, contents);
     localImages = null;
-  } 
-  
+  }
+
   public void addSound(String path, String fileName) {
     addFile(path, soundDir + fileName);
   }
@@ -163,10 +163,10 @@ public class ArchiveWriter extends DataArchive {
 
     localImages = null;
   }
- 
+
   /**
    * Copy a file from the user's filesystem to the archive.
-   * 
+   *
    * @param path the full path of the file on the user's filesystem
    * @param fileName the name under which to store the file in the archive
    */
@@ -181,7 +181,7 @@ public class ArchiveWriter extends DataArchive {
 
   /**
    * Copy an <code>InputStream</code> into the archive
-   * 
+   *
    * @param fileName the name under which to store the contents of the stream
    * @param in the stream to copy
    */
@@ -221,11 +221,11 @@ public class ArchiveWriter extends DataArchive {
   public void saveAs() throws IOException {
     saveAs(false);
   }
-  
+
   protected void write(FileArchive fa, boolean notifyModuleManager)
                                                            throws IOException {
     fa.flush();
-    
+
     // FIXME: use a listener here?
     if (notifyModuleManager) {
       Launcher.getInstance().sendSaveCmd(fa.getFile());
@@ -250,13 +250,13 @@ public class ArchiveWriter extends DataArchive {
 
       tmp.revert();
       tmp.close();
-    
+
       write(archive, notifyModuleManager);
 
       if (isTempArchive) {
         tmp.getFile().delete();
         isTempArchive = false;
-      } 
+      }
     }
     else {
       write(archive, notifyModuleManager);
@@ -274,7 +274,7 @@ public class ArchiveWriter extends DataArchive {
     write(false);
   }
 
-  @Deprecated  
+  @Deprecated
   public void write(boolean notifyModuleManager) throws IOException {
     save(notifyModuleManager);
   }

@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -101,12 +101,12 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
         final String symbol1 = (String) value;
         final String symbol2 = Symbol.NatoUnitSymbolSet.NONE;
-        final Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);   
+        final Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);
         Symbol.NatoUnitSymbolSet.draw(
           symbol1, symbol2, g, bounds,
           Color.BLACK, Color.WHITE, Color.BLACK, 1.0f, ""); //$NON-NLS-1$
-        g.dispose();       
- 
+        g.dispose();
+
         setIcon(new ImageIcon(img));
         setText((String) value);
         this.setHorizontalTextPosition(SwingConstants.LEFT);

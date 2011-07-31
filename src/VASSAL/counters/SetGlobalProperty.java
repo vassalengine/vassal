@@ -50,9 +50,9 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * 
+ *
  * @author Brent Easton
- * 
+ *
  * A trait that allows counters to manipulate the value of Global properties.
  * Uses the Property manipulation functionality of DynamicPropert, but
  * applies them to Global Properties.
@@ -93,7 +93,7 @@ public class SetGlobalProperty extends DynamicProperty {
     keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
     ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
-    for (DynamicKeyCommand dkc : keyCommands) { 
+    for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.getName() != null && dkc.getName().length() > 0) {
         l.add(dkc);
       }
@@ -143,7 +143,7 @@ public class SetGlobalProperty extends DynamicProperty {
       return piece.getProperty(key);
     }
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getProperty(key);
@@ -173,7 +173,7 @@ public class SetGlobalProperty extends DynamicProperty {
       piece.setProperty(key, val);
     }
   }
-  
+
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SetGlobalProperty.htm");
   }
@@ -189,7 +189,7 @@ public class SetGlobalProperty extends DynamicProperty {
       if (keyCommands[i].matches(stroke)) {
         MutableProperty prop = null;
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
-        
+
         ArrayList<MutablePropertiesContainer> propertyContainers =
           new ArrayList<MutablePropertiesContainer>();
         propertyContainers.add(0, GameModule.getGameModule());

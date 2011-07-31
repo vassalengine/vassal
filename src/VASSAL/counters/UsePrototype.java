@@ -44,7 +44,7 @@ import VASSAL.tools.RecursionLimiter.Loopable;
  * that those traits were defined in a prototype instead of assigned to piece directly. This is necessary so that
  * subsequent changes to a prototype definition don't invalidate games that were saved using previous versions of the
  * module.
- * 
+ *
  */
 public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "prototype;";
@@ -86,7 +86,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
             String value = st3.nextToken();
             p.setProperty(key, value);
           }
-        } 
+        }
       }
       properties = new PropertySource() {
         public Object getProperty(Object key) {
@@ -156,7 +156,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
    * Build a new GamePiece instance based on the traits in the referenced {@link PrototypeDefinition}. Substitute the
    * new instance for {@link #getInner} and return it. If the referenced definition does not exist, return the default
    * inner piece.
-   * 
+   *
    * @return the new instance
    */
   public GamePiece getExpandedInner() {
@@ -225,7 +225,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       return ID + nameConfig.getValueString();
     }
   }
-  
+
   // Implement Loopable
   public String getComponentName() {
     return getDescription();

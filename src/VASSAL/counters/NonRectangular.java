@@ -48,7 +48,7 @@ import VASSAL.tools.imageop.Op;
 
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}
- * 
+ *
  * @see GamePiece#getShape
  */
 public class NonRectangular extends Decorator implements EditablePiece {
@@ -118,7 +118,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
     if (sh == null) {
       final GeneralPath path = new GeneralPath();
       final StringTokenizer st = new StringTokenizer(spec, ",");
-      if (st.hasMoreTokens()) {        
+      if (st.hasMoreTokens()) {
         while (st.hasMoreTokens()) {
           final String token = st.nextToken();
           switch (token.charAt(0)) {
@@ -135,7 +135,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
             break;
           }
         }
-        sh = new Area(path);       
+        sh = new Area(path);
         shapeCache.put(spec, sh);
       }
     }

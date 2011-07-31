@@ -23,7 +23,7 @@ import VASSAL.tools.FormattedString;
 /**
  * Provides a fixed value
  * The value can be specified as a FormattedString property and evaluated at runtime
- * 
+ *
  * @author rkinney
  *
  */
@@ -41,9 +41,9 @@ public class PropertySetter implements PropertyChanger {
   }
 
   public String getRawValue() {
-    return newValue; 
+    return newValue;
   }
-  
+
   public String getNewValue(String oldValue) {
     String s = newValue;
     if (format != null) {

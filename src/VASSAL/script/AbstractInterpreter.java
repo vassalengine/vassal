@@ -46,7 +46,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Set a variable and handle exceptions
-   * 
+   *
    * @param name
    *          Variable name
    * @param value
@@ -98,7 +98,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Alert(message) Display a message in a dialog box/
-   * 
+   *
    * @param message
    */
   public Object alert(String message) {
@@ -108,7 +108,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Get a module level property value.
-   * 
+   *
    * @param name
    *          Property Name
    * @return Property value
@@ -120,7 +120,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Set the value of a module level property
-   * 
+   *
    * @param name
    *          Property name
    * @param value
@@ -133,7 +133,7 @@ public abstract class AbstractInterpreter extends Interpreter {
   /**
    * Return a proxy reference to the named map as long as it is accessible to
    * us.
-   * 
+   *
    * @param mapName
    *          Map Name
    * @return Map proxy
@@ -152,7 +152,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Is a map accessible to us?
-   * 
+   *
    * @param m
    *          Map
    * @return true if accessible
@@ -174,7 +174,7 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   /**
    * Fire off a Global Hot Key
-   * 
+   *
    * @param stroke
    *          Keystroke
    */

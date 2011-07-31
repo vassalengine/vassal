@@ -90,7 +90,7 @@ public class ListWidget extends Widget
       list.setVisibleRowCount(3);
       split.setLeftComponent(multiPanel);
       split.setRightComponent(new ScrollPane(list));
-      
+
       if (width > 0 && height > 0) {
         split.setPreferredSize(new Dimension(width,height));
       }
@@ -159,7 +159,7 @@ public class ListWidget extends Widget
       height = Integer.parseInt((String)value);
     }
     else if (DIVIDER.equals(name)) {
-      divider = Integer.parseInt((String)value);  
+      divider = Integer.parseInt((String)value);
     }
   }
 

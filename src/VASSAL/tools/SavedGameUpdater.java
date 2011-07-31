@@ -68,7 +68,7 @@ public class SavedGameUpdater {
       catch (InterruptedException e) {
       }
     }
-    
+
     GamePiece[] gp_array = gs.getAllPieces().toArray(new GamePiece[0]);
     for (GamePiece p : gp_array) {
       if (!(p instanceof Stack)) {

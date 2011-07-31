@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
 import VASSAL.tools.concurrent.DaemonThreadFactory;
 
 /**
- * 
+ *
  *
  * @author Joel Uckelman
  * @since 3.2.0
- */ 
+ */
 public class ProcessLauncher {
 
   private static final Logger logger =
@@ -110,7 +110,7 @@ public class ProcessLauncher {
 
     final ProcessBuilder pb = new ProcessBuilder(args);
     pb.directory(workDir);
-    
+
     final Process proc = pb.start();
     final ProcessCallable pcall =
       new ProcessCallable(proc, stdoutPump, stderrPump, exec);

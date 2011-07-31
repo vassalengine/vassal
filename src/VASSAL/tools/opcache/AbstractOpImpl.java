@@ -31,13 +31,13 @@ import java.util.concurrent.Future;
  * is the base class for all such operations. The results of all operations
  * are memoized (using a memory-sensitive cache), so retrieving results is
  * both fast and memory-efficient.
- * 
+ *
  * <p><b>Warning:</b> For efficiency reasons, the methods {@link #get()} and
  * {@link #get(OpObserver)} do <em>not</em> return defensively, nor do the
  * {@code Future}s returned by {@link #getFuture(OpObserver)}. That is, the
  * object returned is possibly the one retained internally by the
  * <code>AbstractOpImpl</code>. Therefore, objects obtained from an
- * <code>AbstractOpImpl</code> <em>must not</em> be altered, as this might 
+ * <code>AbstractOpImpl</code> <em>must not</em> be altered, as this might
  * interfere with caching. If an object obtained this way needs to be
  * modified, copy the object first and alter the copy.</p>
  *
@@ -48,9 +48,9 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   /** The cache which contains calculated results. */
   protected final OpCache cache;
 
-  /** 
+  /**
    * @param cache the cache for storing our result
-   */  
+   */
   public AbstractOpImpl(OpCache cache) {
     this.cache = cache;
   }
@@ -78,14 +78,14 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
                                          ExecutionException {
     return cache.get(newKey(), obs);
   }
-  
+
   /**
    * {@inheritDoc}
    *
    * @throws CancellationException if the operation was cancelled
    * @throws InterruptedException if the operation was interrupted
    * @throws ExecutionException if the operation failed
-   */  
+   */
   public Future<V> getFuture(OpObserver<V> obs) throws ExecutionException {
     return cache.getFuture(newKey(), obs);
   }
@@ -93,7 +93,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   private static final ConcurrentMap<Op<?>,OpCache.Key<?>> kcache =
     new ConcurrentHashMap<Op<?>,OpCache.Key<?>>();
 
-  /** {@inheritDoc} */  
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public OpCache.Key<V> newKey() {
     OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);
@@ -106,7 +106,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
     return key;
   }
 
-  /** {@inheritDoc} */  
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public void update() {
     final OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);

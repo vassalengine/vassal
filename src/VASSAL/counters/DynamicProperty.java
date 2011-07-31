@@ -54,9 +54,9 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Trait that contains a property accessible via getProperty() and updateable
  * dynamically via key commands
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class DynamicProperty extends Decorator implements TranslatablePiece, PropertyPrompt.DialogParent, PropertyChangerConfigurer.Constraints {
 
@@ -143,7 +143,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
     return super.getProperty(key);
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (key.equals(getKey())) {
       return getValue();
@@ -192,7 +192,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     // re-insert it into the map.
     // No need to re-insert pieces in Decks, it causes problems if they are NO_STACK
     if (map != null && ! (getParent() instanceof Deck)) {
-      
+
       GamePiece outer = Decorator.getOutermost(this);
       if (parent == null) {
         Point pos = getPosition();
@@ -223,12 +223,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       this.value = value;
     }
   }
-  
+
   private String formatValue(String value) {
     format.setFormat(value);
     return format.getText(Decorator.getOutermost(this));
   }
-  
+
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
@@ -282,17 +282,17 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   /**
    * Return Property names exposed by this trait
-   */  
+   */
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<String>();
     l.add(key);
     return l;
   }
-  
+
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     final String[] commandNames = new String[menuCommands.length];
     final String[] commandDescs = new String[menuCommands.length];
@@ -395,7 +395,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   /**
-   * 
+   *
    * Configure a single Dynamic Key Command line
    */
   protected static class DynamicKeyCommandConfigurer extends Configurer {
@@ -407,7 +407,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK), target, target, 
+      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK), target, target,
           new PropertyPrompt(target, "Change value of " + target.getKey())));
       commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
       keyConfig = new NamedHotKeyConfigurer(null, " Key Command:  ", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK));

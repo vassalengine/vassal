@@ -1,17 +1,17 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
@@ -31,10 +31,10 @@ import VASSAL.configure.StringEnum;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
-public class SymbolItem extends Item {  
+public class SymbolItem extends Item {
 
   public static final String TYPE = "Symbol"; //$NON-NLS-1$
-  
+
   protected static final String SET = "set"; //$NON-NLS-1$
   protected static final String WIDTH = "width"; //$NON-NLS-1$
   protected static final String HEIGHT = "height"; //$NON-NLS-1$
@@ -44,7 +44,7 @@ public class SymbolItem extends Item {
   protected int height = 30;
   protected int width = 40;
   protected double lineWidth = 1.0f;
-  
+
   public SymbolItem() {
     super();
   }
@@ -54,17 +54,17 @@ public class SymbolItem extends Item {
     width = getLayout().getLayoutWidth() / 2;
     height = (int) (width * 0.75);
   }
-  
+
   public SymbolItem(GamePieceLayout l, String nam) {
     this(l);
     setConfigureName(nam);
   }
-  
+
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
       "Symbol Set:  ",
-      "Width:  ", 
+      "Width:  ",
       "Height:  ",
       "Line Width:  "
     );
@@ -74,7 +74,7 @@ public class SymbolItem extends Item {
     return ArrayUtils.insert(
       super.getAttributeTypes(), 2,
       new Class<?>[]{
-        SetConfig.class, 
+        SetConfig.class,
         Integer.class,
         Integer.class,
         Double.class
@@ -91,16 +91,16 @@ public class SymbolItem extends Item {
       LINE_WIDTH
     );
   }
-  
+
   public static class SetConfig extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
       return Symbol.SYMBOL_SETS;
     }
   }
   public void setAttribute(String key, Object o) {
-    
+
     if (SET.equals(key)) {
-      
+
     }
     else if (WIDTH.equals(key)) {
       if (o instanceof String) {
@@ -113,7 +113,7 @@ public class SymbolItem extends Item {
         o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
-    }    
+    }
     else if (LINE_WIDTH.equals(key)) {
       if (o instanceof String) {
         o = Double.valueOf((String) o);
@@ -122,14 +122,14 @@ public class SymbolItem extends Item {
     }
     else
       super.setAttribute(key, o);
-    
+
     if (layout != null) {
       layout.refresh();
     }
   }
-  
+
   public String getAttributeValueString(String key) {
-    
+
     if (SET.equals(key)) {
       return symbolSet;
     }
@@ -146,12 +146,12 @@ public class SymbolItem extends Item {
       return super.getAttributeValueString(key);
 
   }
-  
+
 //  public void addTo(Buildable parent) {
 //    super.addTo(parent);
 //
 //  }
-  
+
   public int getWidth() {
     return width;
   }
@@ -159,7 +159,7 @@ public class SymbolItem extends Item {
   public int getHeight() {
     return height;
   }
-  
+
   public void draw(Graphics g, GamePieceImage defn) {
 
     SymbolItemInstance si = null;
@@ -177,25 +177,25 @@ public class SymbolItem extends Item {
 
     Point origin = layout.getPosition(this);
     Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
-    
+
     if (getRotation() != 0) {
       Graphics2D g2d = (Graphics2D) g;
       AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
         g2d.transform(newXForm);
     }
-    
-    if (isAntialias()) {    
+
+    if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    } 
+    }
     else {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
     }
-    
+
     symbol.draw(g, r, si.getFgColor().getColor(), si.getBgColor().getColor(), si.getSizeColor().getColor(), (float) lineWidth);
- 
+
   }
-  
+
   public String getType() {
     return TYPE;
   }
@@ -205,31 +205,31 @@ public class SymbolItem extends Item {
   }
 
   public static Item decode(GamePieceLayout l, String s) {
-    
+
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
-    
+
     SymbolItem item = new SymbolItem(l);
-    
+
     sd.nextToken();
     item.width = sd.nextInt(54);
     item.height = sd.nextInt(54);
     item.lineWidth = sd.nextDouble(1.0f);
-    
+
     return item;
   }
-  
+
   public String encode() {
-   
+
     SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
-    
+
     se1.append(width);
     se1.append(height);
     se1.append(lineWidth);
-   
+
     SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
-    
+
     return se2.getValue();
   }
-  
+
 }

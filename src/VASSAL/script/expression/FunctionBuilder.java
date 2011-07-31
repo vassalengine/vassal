@@ -45,14 +45,14 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ButtonFactory;
 
 public class FunctionBuilder extends JDialog {
-  
+
   private static final long serialVersionUID = 1L;
   protected String save;
   protected StringConfigurer target;
   protected String function;
   protected List<BeanShellExpressionConfigurer> configs = new ArrayList<BeanShellExpressionConfigurer>();
   protected EditablePiece targetPiece;
-  
+
   public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece) {
     super(parent, "Function Builder - "+function, true);
     target = c;
@@ -61,23 +61,23 @@ public class FunctionBuilder extends JDialog {
     this.function = function;
     JPanel p = new JPanel();
     p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-    
+
     p.add(new JLabel(desc));
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i]+":  ", "", targetPiece);
       configs.add(config);
       p.add(config.getControls());
     }
-    
+
     Box buttonBox = Box.createHorizontalBox();
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         save();
       }
-    });    
+    });
     buttonBox.add(okButton);
-    
+
     JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -85,7 +85,7 @@ public class FunctionBuilder extends JDialog {
       }
     });
     buttonBox.add(cancelButton);
-    
+
     JButton helpButton = ButtonFactory.getHelpButton();
     helpButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -93,10 +93,10 @@ public class FunctionBuilder extends JDialog {
       }
     });
     buttonBox.add(helpButton);
-    
+
     p.add(buttonBox);
     add(p);
-    
+
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -106,7 +106,7 @@ public class FunctionBuilder extends JDialog {
       }
     });
   }
-  
+
   /**
    * Ok button pressed. Set the expression back into the target configurer.
    */
@@ -124,9 +124,9 @@ public class FunctionBuilder extends JDialog {
     target.setValue(result);
     dispose();
   }
-  
+
   public void cancel() {
     dispose();
-  }  
-  
+  }
+
 }

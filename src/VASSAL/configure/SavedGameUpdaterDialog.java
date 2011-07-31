@@ -245,11 +245,11 @@ public class SavedGameUpdaterDialog extends JDialog {
       oldPieceInfo = new Properties();
 
       BufferedInputStream in = null;
-      try { 
+      try {
         in = new BufferedInputStream(new FileInputStream(fc.getSelectedFile()));
         oldPieceInfo.load(in);
         in.close();
-      
+
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
         String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {

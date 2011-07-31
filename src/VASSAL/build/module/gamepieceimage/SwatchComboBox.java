@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
- 
+
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
@@ -56,7 +56,7 @@ public class SwatchComboBox extends JComboBox {
     setSelectedItem(colorName);
     addItemListener(l);
   }
-  
+
   public class SwatchRenderer extends JLabel implements ListCellRenderer {
     private static final long serialVersionUID = 1L;
 
@@ -101,7 +101,7 @@ public class SwatchComboBox extends JComboBox {
       return this;
     }
   }
-  
+
   class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
     private static final long serialVersionUID = 1L;
 

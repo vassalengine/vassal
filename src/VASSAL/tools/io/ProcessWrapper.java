@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  *
  * @author Joel Uckelman
  * @since 3.2.0
- */ 
+ */
 public class ProcessWrapper {
   public final Future<Integer> future;
   public final InputStream stdout;

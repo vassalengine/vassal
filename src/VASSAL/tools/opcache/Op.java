@@ -31,27 +31,27 @@ public interface Op<V> {
   /**
    * Runs the <code>Op</code>. This method should be called only by the
    * caching framework.
-   *  
+   *
    * @return the result of running this <code>Op</code>
-   */  
+   */
   public V eval() throws Exception;
 
   /**
    * Returns a list of <code>Op</code>s on which this <code>Op</code> depends.
    *
    * @return the <code>Op</code>s on which this <code>Op</code> depends
-   */  
+   */
   public List<Op<?>> getSources();
 
   /**
    * Returns the current cache key for this <code>Op</code>.
-   * 
+   *
    * @return the current cache key for this <code>Op</code>
-   */  
+   */
   public OpCache.Key<V> newKey();
 
   /**
    * Invalidates the current cache key for this <code>Op</code>.
-   */  
+   */
   public void update();
 }

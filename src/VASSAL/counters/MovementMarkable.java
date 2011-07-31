@@ -177,9 +177,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     }
     else {
       return super.getLocalizedProperty(key);
-    }    
+    }
   }
-  
+
   public Object getProperty(Object key) {
     if (Properties.MOVED.equals(key)) {
       return isMoved() ? Boolean.TRUE : Boolean.FALSE;
@@ -202,11 +202,11 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Mark Moved command");
   }
-  
+
 
   private static class Ed implements PieceEditor {
     private IconConfigurer iconConfig;
@@ -263,7 +263,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       return "false";
     }
   }
-  
+
   /**
    * Return Property names exposed by this trait
    */

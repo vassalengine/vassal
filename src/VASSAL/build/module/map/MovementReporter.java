@@ -91,12 +91,12 @@ public class MovementReporter {
   protected MoveSummary createMoveSummary(AddPiece c) {
     return new MoveSummary(c);
   }
-  
+
   protected MoveSummary createMoveSummary(MovePiece c) {
     return new MoveSummary(c);
   }
-  
-  
+
+
   /**
    * Mark all pieces with the {@link MovementMarkable} trait
    * @return the equivalent Command
@@ -215,11 +215,11 @@ public class MovementReporter {
     PieceAccess.GlobalAccess.revertAll();
     return c;
   }
-  
+
   protected String getLocation(Map map, Point p) {
     return map.localizedLocationName(p);
   }
-  
+
   /**
    * A version of the MovementReporter for reporting the movement of
    * Invisible pieces. Replace the locations with '?'
@@ -229,15 +229,15 @@ public class MovementReporter {
     public HiddenMovementReporter(Command moveCommand) {
       super(moveCommand);
     }
-    
+
     protected MoveSummary createMoveSummary(AddPiece c) {
       return new HiddenMoveSummary(c);
     }
-    
+
     protected MoveSummary createMoveSummary(MovePiece c) {
       return new HiddenMoveSummary(c);
     }
-    
+
     protected boolean shouldReport(AddPiece addPiece) {
       GamePiece target = addPiece.getTarget();
       if (target != null
@@ -271,11 +271,11 @@ public class MovementReporter {
             || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
       }
     }
-    
+
     protected String getLocation(Map map, Point p) {
       return "?";
     }
-    
+
   }
 
   public static class MoveSummary {
@@ -366,17 +366,17 @@ public class MovementReporter {
       return names.toString();
     }
   }
-  
+
   public static class HiddenMoveSummary extends MoveSummary {
-    
+
     public HiddenMoveSummary(AddPiece c) {
       super(c);
     }
-    
+
     public HiddenMoveSummary(MovePiece c) {
       super(c);
     }
-    
+
     public String getPieceName() {
       final StringBuilder names = new StringBuilder();
       boolean first = true;
@@ -406,11 +406,11 @@ public class MovementReporter {
       }
       return names.toString();
     }
-    
+
     protected boolean isInvisible(GamePiece piece) {
       return Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
       || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
     }
-    
+
   }
 }

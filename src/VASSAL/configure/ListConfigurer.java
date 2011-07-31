@@ -45,179 +45,179 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public abstract class ListConfigurer extends Configurer implements
-		PropertyChangeListener {
-	protected Box controls;
-	protected Box configControls;
-	protected JPanel panel;
-	protected Dimension fixedSize;
-	protected List<Configurer> configurers = new ArrayList<Configurer>();
+    PropertyChangeListener {
+  protected Box controls;
+  protected Box configControls;
+  protected JPanel panel;
+  protected Dimension fixedSize;
+  protected List<Configurer> configurers = new ArrayList<Configurer>();
 
-	public ListConfigurer(String key, String name) {
-		super(key, name, new ArrayList<Object>());
-	}
+  public ListConfigurer(String key, String name) {
+    super(key, name, new ArrayList<Object>());
+  }
 
-	public ListConfigurer(String key, String name, List<?> val) {
-		super(key, name, val);
-	}
+  public ListConfigurer(String key, String name, List<?> val) {
+    super(key, name, val);
+  }
 
-	public String getValueString() {
-		if (getListValue().isEmpty()) {
-			return "";
-		}
-		Configurer c = buildChildConfigurer();
-		SequenceEncoder se = new SequenceEncoder(',');
-		for (Object value : getListValue()) {
-			c.setValue(value);
-			se.append(c.getValueString());
-		}
-		return se.getValue();
-	}
+  public String getValueString() {
+    if (getListValue().isEmpty()) {
+      return "";
+    }
+    Configurer c = buildChildConfigurer();
+    SequenceEncoder se = new SequenceEncoder(',');
+    for (Object value : getListValue()) {
+      c.setValue(value);
+      se.append(c.getValueString());
+    }
+    return se.getValue();
+  }
 
-	public void setValue(String s) {
-		getListValue().clear();
-		if (s.length() > 0) {
-			Configurer c = buildChildConfigurer();
-			SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
-			while (sd.hasMoreTokens()) {
-				c.setValue(sd.nextToken());
-				getListValue().add(c.getValue());
-			}
-		}
-		updateControls();
-	}
+  public void setValue(String s) {
+    getListValue().clear();
+    if (s.length() > 0) {
+      Configurer c = buildChildConfigurer();
+      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      while (sd.hasMoreTokens()) {
+        c.setValue(sd.nextToken());
+        getListValue().add(c.getValue());
+      }
+    }
+    updateControls();
+  }
 
-	protected void updateValue() {
-		noUpdate = true;
-		ArrayList<Object> newArray = new ArrayList<Object>();
-		for (Configurer c : configurers) {
-			newArray.add(c.getValue());
-		}
-		setValue(newArray);
-		noUpdate = false;
-	}
+  protected void updateValue() {
+    noUpdate = true;
+    ArrayList<Object> newArray = new ArrayList<Object>();
+    for (Configurer c : configurers) {
+      newArray.add(c.getValue());
+    }
+    setValue(newArray);
+    noUpdate = false;
+  }
 
-	public void setValue(Object o) {
-		if (o == null) {
-			o = new ArrayList<Object>();
-		}
-		super.setValue(o);
-		if (!noUpdate) {
-			updateControls();
-		}
-	}
+  public void setValue(Object o) {
+    if (o == null) {
+      o = new ArrayList<Object>();
+    }
+    super.setValue(o);
+    if (!noUpdate) {
+      updateControls();
+    }
+  }
 
-	public Component getControls() {
-		if (panel == null) {
-			panel = new JPanel(new BorderLayout());
-			controls = Box.createVerticalBox();
-			final JScrollPane scroll = new JScrollPane(controls);
-			controls.setBorder(BorderFactory.createTitledBorder(getName()));
-			configControls = Box.createVerticalBox();
+  public Component getControls() {
+    if (panel == null) {
+      panel = new JPanel(new BorderLayout());
+      controls = Box.createVerticalBox();
+      final JScrollPane scroll = new JScrollPane(controls);
+      controls.setBorder(BorderFactory.createTitledBorder(getName()));
+      configControls = Box.createVerticalBox();
 
-			JButton addButton = new JButton("New");
-			addButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Configurer c = buildChildConfigurer();
-					getListValue().add(c.getValue());
-					updateControls();
-				}
-			});
-			controls.add(addButton);
-			controls.add(configControls);
-			panel.add(scroll, BorderLayout.CENTER);
-			updateControls();
-		}
-		return panel;
-	}
+      JButton addButton = new JButton("New");
+      addButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          Configurer c = buildChildConfigurer();
+          getListValue().add(c.getValue());
+          updateControls();
+        }
+      });
+      controls.add(addButton);
+      controls.add(configControls);
+      panel.add(scroll, BorderLayout.CENTER);
+      updateControls();
+    }
+    return panel;
+  }
 
-	@SuppressWarnings("unchecked")
-	public List<Object> getListValue() {
-		return (List<Object>) getValue();
-	}
+  @SuppressWarnings("unchecked")
+  public List<Object> getListValue() {
+    return (List<Object>) getValue();
+  }
 
-	/**
-	 * The objects in the list are specified by the Configurer returned here
-	 *
-	 * @return
-	 */
-	protected abstract Configurer buildChildConfigurer();
+  /**
+   * The objects in the list are specified by the Configurer returned here
+   *
+   * @return
+   */
+  protected abstract Configurer buildChildConfigurer();
 
-	public void propertyChange(PropertyChangeEvent evt) {
-		updateValue();
-	}
+  public void propertyChange(PropertyChangeEvent evt) {
+    updateValue();
+  }
 
-	protected void updateControls() {
-		if (controls != null) {
-			for (Configurer c : configurers) {
-				c.removePropertyChangeListener(this);
-			}
-			configurers.clear();
-			configControls.removeAll();
+  protected void updateControls() {
+    if (controls != null) {
+      for (Configurer c : configurers) {
+        c.removePropertyChangeListener(this);
+      }
+      configurers.clear();
+      configControls.removeAll();
 
-			for (Object value : getListValue()) {
-				final Configurer c = buildChildConfigurer();
-				c.setValue(value);
-				c.addPropertyChangeListener(this);
-				configurers.add(c);
-				final Box b = Box.createHorizontalBox();
-				JButton delButton = new JButton("Remove");
-				delButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						getListValue().remove(c.getValue());
-						updateControls();
-						repack();
-					}
-				});
-				b.add(delButton);
-				b.add(c.getControls());
-				configControls.add(b);
-				if (configurers.size() > 5) {
-					if (fixedSize == null) {
-						fixedSize = new Dimension(
-								panel.getPreferredSize().width + 20, 210);
-					}
-					panel.setPreferredSize(fixedSize);
-				} else {
-					panel.setPreferredSize(null);
-				}
-			}
-			repack();
-		}
-	}
+      for (Object value : getListValue()) {
+        final Configurer c = buildChildConfigurer();
+        c.setValue(value);
+        c.addPropertyChangeListener(this);
+        configurers.add(c);
+        final Box b = Box.createHorizontalBox();
+        JButton delButton = new JButton("Remove");
+        delButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            getListValue().remove(c.getValue());
+            updateControls();
+            repack();
+          }
+        });
+        b.add(delButton);
+        b.add(c.getControls());
+        configControls.add(b);
+        if (configurers.size() > 5) {
+          if (fixedSize == null) {
+            fixedSize = new Dimension(
+                panel.getPreferredSize().width + 20, 210);
+          }
+          panel.setPreferredSize(fixedSize);
+        } else {
+          panel.setPreferredSize(null);
+        }
+      }
+      repack();
+    }
+  }
 
-	public void repack() {
-		Window w = SwingUtilities.getWindowAncestor(controls);
-		if (w != null) {
-			w.pack();
-		}
-	}
+  public void repack() {
+    Window w = SwingUtilities.getWindowAncestor(controls);
+    if (w != null) {
+      w.pack();
+    }
+  }
 
-	@Override
-	public int hashCode() {
-		String valueString = getValueString();
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((valueString == null) ? 0 : valueString.hashCode());
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    String valueString = getValueString();
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((valueString == null) ? 0 : valueString.hashCode());
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ListConfigurer other = (ListConfigurer) obj;
-		String valueString = getValueString();
-		String otherValueString = other.getValueString();
-		if (valueString == null) {
-			if (otherValueString != null)
-				return false;
-		} else if (!valueString.equals(otherValueString))
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    ListConfigurer other = (ListConfigurer) obj;
+    String valueString = getValueString();
+    String otherValueString = other.getValueString();
+    if (valueString == null) {
+      if (otherValueString != null)
+        return false;
+    } else if (!valueString.equals(otherValueString))
+      return false;
+    return true;
+  }
 }

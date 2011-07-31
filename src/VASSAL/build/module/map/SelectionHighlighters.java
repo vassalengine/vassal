@@ -17,7 +17,7 @@ import VASSAL.i18n.Resources;
 public class SelectionHighlighters extends AbstractConfigurable {
   protected Map map;
   protected List<SelectionHighlighter> highlighters = new ArrayList<SelectionHighlighter>();
-  
+
   public SelectionHighlighters() {
     super();
   }
@@ -65,7 +65,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
       removeFromMap(highlighter);
     }
   }
-  
+
   public void removeHighlighter(SelectionHighlighter highlighter) {
     highlighters.add(highlighter);
     removeFromMap(highlighter);
@@ -83,7 +83,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
       }
     }
   }
-  
+
   protected void removeFromMap(SelectionHighlighter highlighter) {
     if (map != null) {
       if (map.getHighlighter() instanceof ColoredBorder) {
@@ -91,7 +91,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
       }
     }
   }
-  
+
   public Configurer getConfigurer() {
     return null;
   }

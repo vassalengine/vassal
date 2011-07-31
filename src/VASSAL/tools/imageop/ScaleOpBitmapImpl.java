@@ -119,38 +119,38 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
      @SuppressWarnings("unused")
      private final RenderingHints hints;
      private final int hash;
- 
+
      private static final GeneralFilter.Filter downFilter =
        new GeneralFilter.Lanczos3Filter();
      private static final GeneralFilter.Filter upFilter =
        new GeneralFilter.MitchellFilter();
- 
+
      public TileOp(ScaleOpBitmapImpl rop, int tileX, int tileY) {
        if (rop == null) throw new IllegalArgumentException();
- 
+
        if (tileX < 0 || tileX >= rop.getNumXTiles() ||
            tileY < 0 || tileY >= rop.getNumYTiles())
          throw new IndexOutOfBoundsException();
- 
+
       sop = rop.sop;
- 
+
       scale = rop.getScale();
       hints = rop.getHints();
- 
+
       final Rectangle sr =
          new Rectangle(0, 0,
                        (int)(sop.getWidth()*scale),
                        (int)(sop.getHeight()*scale));
- 
+
       dx0 = tileX*rop.getTileWidth();
       dy0 = tileY*rop.getTileHeight();
       dw = Math.min(rop.getTileWidth(), sr.width - dx0);
       dh = Math.min(rop.getTileHeight(), sr.height - dy0);
- 
+
       size = new Dimension(dw,dh);
 
       hash = new HashCodeBuilder().append(sop)
-                                  .append(dx0)  
+                                  .append(dx0)
                                   .append(dy0)
                                   .append(dw)
                                   .append(dh)
@@ -163,7 +163,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
     public BufferedImage eval() throws Exception {
       if (dw < 1 || dh < 1) return ImageUtils.NULL_IMAGE;
- 
+
       // ensure that src is a type which GeneralFilter can handle
       final BufferedImage src = ImageUtils.coerceToIntType(sop.getImage(null));
 
@@ -187,7 +187,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     }
 
     protected void fixSize() { }
- 
+
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -201,7 +201,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
              scale == op.scale &&
              sop.equals(op.sop);
     }
- 
+
     @Override
     public int hashCode() {
       return hash;
@@ -228,7 +228,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   public double getScale() {
     return scale;
   }
-  
+
   /** {@inheritDoc} */
   @Override
   public boolean equals(Object o) {
@@ -236,8 +236,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final ScaleOpBitmapImpl op = (ScaleOpBitmapImpl) o;
-    return scale == op.scale && 
-           sop.equals(op.sop) && 
+    return scale == op.scale &&
+           sop.equals(op.sop) &&
            hints.equals(op.hints);
   }
 

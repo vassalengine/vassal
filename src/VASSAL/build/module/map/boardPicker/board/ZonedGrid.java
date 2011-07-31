@@ -100,7 +100,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   public Board getBoard() {
     return container != null ? container.getBoard() : null;
   }
-  
+
   public Map getMap() {
     return getBoard() == null ? null : getBoard().getMap();
   }
@@ -138,14 +138,14 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   protected double lastScale = 0.0;
   protected int lastX = -1;
   protected int lastY = -1;
-  
+
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
 
-    /* 
+    /*
      * Skip clipping if there is no background grid, or it isn't visible
      */
     if (background != null && background.isVisible()) {
-      
+
       /*
        * Calculate and cache scaled shape consisting of all zones that do not
        * use the parent grid. (There may be none!)
@@ -169,7 +169,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
         lastScale = scale;
         translateTransform = null;  // Force translatedZones to be regenerated
       }
-      
+
       /*
        * Translate and cache the combined zone shape
        */
@@ -182,7 +182,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
         lastX = bounds.x;
         lastY = bounds.y;
       }
-      
+
       /*
        * Clip out the area covered by the Zones not using the background grid and draw it.
        */
@@ -216,7 +216,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
           return p;
         }
       }
-      catch (BadCoords bc) {        
+      catch (BadCoords bc) {
       }
     }
     if (background != null)
@@ -258,7 +258,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     }
     return name;
   }
-  
+
   public int range(Point p1, Point p2) {
     MapGrid grid = background;
     Zone z1 = findZone(p1);
@@ -296,7 +296,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     }
     return null;
   }
-  
+
   public Zone findZone(String name) {
     for (Zone zone : zones) {
       if (zone.getName().equals(name)) {
@@ -346,27 +346,27 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   public void setBackgroundGrid(MapGrid background) {
     this.background = background;
   }
-  
+
   public void build(Element e) {
     super.build(e);
     if (getComponentsOf(ZonedGridHighlighter.class).isEmpty()) {
       addChild(new ZonedGridHighlighter());
     }
   }
-  
+
   private void addChild(Buildable b) {
     add(b);
     b.addTo(this);
   }
-  
+
   public void setZoneHighlighter(ZonedGridHighlighter zh) {
     zoneHighlighters = zh;
   }
-  
+
   public ZoneHighlight getZoneHighlight(String name) {
     if (zoneHighlighters != null) {
       return zoneHighlighters.getZoneHighlightByName(name);
-    } 
+    }
     return null;
   }
 }

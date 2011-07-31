@@ -25,9 +25,9 @@ import VASSAL.counters.GamePiece;
 
 /**
  * Object encapsulating the internationalization information for a GamePiece.
- * 
+ *
  * @author Brent Easton
- * 
+ *
  */
 public class PieceI18nData {
   protected GamePiece piece;

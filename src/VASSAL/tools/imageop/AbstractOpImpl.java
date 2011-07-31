@@ -36,7 +36,7 @@ import VASSAL.tools.opcache.OpCache;
  * operations. The results of all operations are memoized (using a
  * memory-sensitive cache), so retrieving results is both fast and
  * memory-efficient.
- * 
+ *
  * <p><b>Warning:</b> For efficiency reasons, the methods {@link #getImage}
  * and {@link #getTile} do <em>not</em> return <code>Image</code>s
  * defensively, nor do the {@code Future<Image>}s returned by
@@ -62,7 +62,7 @@ public abstract class AbstractOpImpl
   protected static final OpCache cache = new OpCache();
 
   public static void clearCache() {
-    cache.clear();  
+    cache.clear();
   }
 
   public AbstractOpImpl() {
@@ -78,7 +78,7 @@ public abstract class AbstractOpImpl
       return getImage(null);
     }
     catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
+      // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
     catch (InterruptedException e) {

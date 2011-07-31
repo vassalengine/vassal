@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.tools;
@@ -46,18 +46,18 @@ public class ScrollPane extends JScrollPane {
    */
    public ScrollPane() {
       this(null, VERTICAL_SCROLLBAR_AS_NEEDED,
-                 HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+                 HORIZONTAL_SCROLLBAR_AS_NEEDED);
    }
 
    /**
      Creates a ScrollPane that displays the contents of the specified
      component, where both horizontal and vertical scrollbars appear whenever
      the component's contents are larger than the view.
-  
+
      @param view the component to display in the scrollpane's viewport
    */
    public ScrollPane(Component view) {
-      this(view, VERTICAL_SCROLLBAR_AS_NEEDED, 
+      this(view, VERTICAL_SCROLLBAR_AS_NEEDED,
                  HORIZONTAL_SCROLLBAR_AS_NEEDED);
    }
 
@@ -143,8 +143,8 @@ public class ScrollPane extends JScrollPane {
 
       horizontalScrollBar.addMouseWheelListener(new MouseWheelListener() {
          public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.getScrollAmount() == 0) return; 
-            
+            if (e.getScrollAmount() == 0) return;
+
             if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
                horizontalScrollBar.setValue(
                     horizontalScrollBar.getValue() +

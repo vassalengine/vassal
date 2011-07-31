@@ -37,7 +37,7 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
- * 
+ *
  * @since 3.1.0
  * @author Joel Uckelman
  */
@@ -48,7 +48,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   /** The cached hash code of this object. */
   protected final int hash;
-  
+
   /** The zip file from which the image will be loaded */
   protected final DataArchive archive;
 
@@ -62,7 +62,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   public SourceOpBitmapImpl(String name) {
     this(name, GameModule.getGameModule().getDataArchive());
   }
-  
+
   public SourceOpBitmapImpl(String name, DataArchive archive) {
     if (name == null || name.length() == 0 || archive == null)
       throw new IllegalArgumentException();
@@ -85,7 +85,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     InputStream in = null;
     try {
       in = archive.getInputStream(name);
-      
+
       final BufferedImage img = ImageUtils.getImage(name, in);
       in.close();
       return img;
@@ -101,7 +101,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       throw new ImageIOException(name, e);
     }
     finally {
-      IOUtils.closeQuietly(in); 
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -120,7 +120,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       InputStream in = null;
       try {
         in = archive.getInputStream(name);
-        
+
         final Dimension d = ImageUtils.getImageSize(name, in);
         in.close();
         return d;
@@ -134,7 +134,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       }
       catch (IOException e) {
         throw new ImageIOException(name, e);
-      } 
+      }
       finally {
         IOUtils.closeQuietly(in);
       }
@@ -154,7 +154,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    * Returns the name of the image which {@link #getImage} will produce.
    *
    * @return the name of the image in the {@link DataArchive}.
-   */  
+   */
   public String getName() {
     return name;
   }

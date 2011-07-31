@@ -76,17 +76,17 @@ public class Resources {
   protected static String DATE_FORMAT = "{0,date}";
 
   private Resources() {
-	  init();
+    init();
   }
 
   private static Resources getInstance() {
-		synchronized (Resources.class) {
-			if (instance == null) {
-				instance = new Resources();
-			}
-		}
-		return instance;
-	}
+    synchronized (Resources.class) {
+      if (instance == null) {
+        instance = new Resources();
+      }
+    }
+    return instance;
+  }
 
   private void init() {
     Locale myLocale = Locale.getDefault();
@@ -159,22 +159,22 @@ public class Resources {
   }
 
   public static void addSupportedLocale(Locale l) {
-	  getInstance().addLocale(l);
+    getInstance().addLocale(l);
   }
 
   private void addLocale(Locale l) {
-		l = new Locale(l.getLanguage());
-		if (!supportedLocales.contains(l)) {
-			supportedLocales.add(0, l);
-			StringEnumConfigurer config = (StringEnumConfigurer) Prefs
-					.getGlobalPrefs().getOption(LOCALE_PREF_KEY);
-			if (config != null) {
-				ArrayList<String> valid = new ArrayList<String>(Arrays
-						.asList(config.getValidValues()));
-				valid.add(0, l.getLanguage());
-				config.setValidValues(valid.toArray(new String[valid.size()]));
-			}
-		}
+    l = new Locale(l.getLanguage());
+    if (!supportedLocales.contains(l)) {
+      supportedLocales.add(0, l);
+      StringEnumConfigurer config = (StringEnumConfigurer) Prefs
+          .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
+      if (config != null) {
+        ArrayList<String> valid = new ArrayList<String>(Arrays
+            .asList(config.getValidValues()));
+        valid.add(0, l.getLanguage());
+        config.setValidValues(valid.toArray(new String[valid.size()]));
+      }
+    }
   }
 
   public static Collection<String> getVassalKeys() {
@@ -253,7 +253,7 @@ public class Resources {
   }
 
   private String getInstanceString(String id) {
-	return getBundleForKey(id).getString(id);
+  return getBundleForKey(id).getString(id);
 }
 
 protected BundleHelper getBundleForKey(String id) {
@@ -374,7 +374,7 @@ protected static final String BASE_BUNDLE = "VASSAL.properties";
   }
 
   public static void setLocale(Locale l) {
-	  getInstance().setInstanceLocale(l);
+    getInstance().setInstanceLocale(l);
   }
 
   private void setInstanceLocale(Locale l) {

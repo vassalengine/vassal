@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -141,7 +141,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     });
     stepIconConfig.fireUpdate();
-    
+
     final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
     undoIconConfig.setValue(UNDO_ICON);
     GlobalOptions.getInstance().addOption(undoIconConfig);
@@ -151,7 +151,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     });
     undoIconConfig.fireUpdate();
-    
+
     final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(stepKeyConfig);
     stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -220,7 +220,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public boolean isLogging() {
     return outputFile != null;
   }
-  
+
   public Command getRestoreCommand() {
     return null;
   }
@@ -278,7 +278,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   /**
    * Write the logfile to a file. The file will have been selected when the logfile was begun.
-   * 
+   *
    */
   public void write() throws IOException {
     if (!logOutput.isEmpty()) {
@@ -309,17 +309,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
       finally {
         IOUtils.closeQuietly(archive);
-      }      
+      }
 
       Launcher.getInstance().sendSaveCmd(outputFile);
-      
-      GameModule.getGameModule().getGameState().setModified(false); 
+
+      GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
     }
 
     endLogAction.setEnabled(false);
   }
- 
+
   private File getSaveFile() {
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.addChoosableFileFilter(new LogFileFilter());
@@ -342,7 +342,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     return file;
   }
- 
+
   protected void beginOutput() {
     outputFile = getSaveFile();
     if (outputFile == null) return;
@@ -393,7 +393,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
     undoAction.setEnabled(nextUndo >= 0);
   }
-  
+
   /**
    * Are there Input Steps yet to be replayed?
    */

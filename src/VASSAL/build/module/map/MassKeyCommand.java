@@ -151,11 +151,11 @@ public class MassKeyCommand extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     if (condition == null) {
       return new String[]{
-    	Resources.getString(Resources.DESCRIPTION),
-    	Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
+      Resources.getString(Resources.DESCRIPTION),
+      Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
         Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),
@@ -167,11 +167,11 @@ public class MassKeyCommand extends AbstractConfigurable
     else {
       // Backward compatibility
       return new String[]{
-    	Resources.getString(Resources.DESCRIPTION),
-    	Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
-    	Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
+      Resources.getString(Resources.DESCRIPTION),
+      Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
         Resources.getString(Resources.BUTTON_TEXT),
         Resources.getString(Resources.TOOLTIP_TEXT),
         Resources.getString(Resources.BUTTON_ICON),

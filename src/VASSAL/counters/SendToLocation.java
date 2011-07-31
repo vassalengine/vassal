@@ -69,7 +69,7 @@ import VASSAL.tools.SequenceEncoder;
  *   4. The location of another counter selected by a Propert Match String
  * Once the target locaiton is identified, it can be further offset in the X and Y directions
  * by a set of multipliers.
- * All Input Fields may use $...$ variable names 
+ * All Input Fields may use $...$ variable names
  */
 public class SendToLocation extends Decorator implements TranslatablePiece {
   public static final String ID = "sendto;";
@@ -255,15 +255,15 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           final int yValue = y.getTextAsInt(outer, "YLocation", this);
 
           dest = new Point(xValue,yValue);
-          
+
           Board b = map.getBoardByName(boardName.getText(outer));
           if (b != null && dest != null) {
             dest.translate(b.bounds().x, b.bounds().y);
           }
           break;
-          
+
         case 'Z':
-          final String zoneName = zone.getText(outer); 
+          final String zoneName = zone.getText(outer);
           Zone z = map.findZone(zoneName);
           if (z == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
@@ -274,12 +274,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
            }
           break;
-          
+
         case 'R':
-          final String regionName = region.getText(outer);           
+          final String regionName = region.getText(outer);
           Region r = map.findRegion(regionName);
           if (r == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));              
+            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));
           }
           else {
             Rectangle r2 = r.getBoard().bounds();
@@ -296,10 +296,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (dest != null) {
       dest = offsetDestination(dest.x, dest.y, outer);
     }
-    
+
     return dest;
   }
-  
+
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
@@ -338,23 +338,23 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
          // Apply Auto-move key
          if (backMap.getMoveKey() != null) {
            c.append(outer.keyEvent(backMap.getMoveKey()));
-         }         
+         }
       }
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
     }
     return c;
   }
-   
+
   /*
-   * Offset the destination by the Advanced Options offset 
+   * Offset the destination by the Advanced Options offset
    */
   protected Point offsetDestination(int x, int y, GamePiece outer) {
     int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer);
     int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer);
     return new Point(xPos, yPos);
   }
-  
+
   private int parse (String desc, FormattedString s, GamePiece outer) {
     int i = 0;
     String val = s.getText(outer, _0);
@@ -366,7 +366,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
     return i;
   }
-  
+
   public void mySetState(String newState) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState,';');
     String mapId = st.nextToken("");
@@ -380,7 +380,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);        
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);
       }
     }
   }
@@ -416,12 +416,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SendToLocation.htm");
   }
-  
+
   public PieceI18nData getI18nData() {
-    return getI18nData(new String[] {commandName, backCommandName}, 
+    return getI18nData(new String[] {commandName, backCommandName},
                        new String[] {getCommandDescription(description, "Send command"), getCommandDescription(description, "Back command")});
   }
-  
+
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected StringConfigurer backNameInput;
@@ -453,7 +453,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       descInput = new StringConfigurer(null, "Description:  ", p.description);
       controls.add(descInput.getControls());
-      
+
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
@@ -465,7 +465,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       backKeyInput = new NamedHotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
       controls.add(backKeyInput.getControls());
-      
+
       destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);
       destInput.setValue(DEST_LOCATION);
       for (int i=0; i < DEST_OPTIONS.length; i++) {
@@ -478,7 +478,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           updateVisibility();
         }});
       controls.add(destInput.getControls());
-      
+
       mapControls = Box.createHorizontalBox();
       mapIdInput = new FormattedExpressionConfigurer(null, "Map:  ", p.mapId.getFormat(), p);
       mapControls.add(mapIdInput.getControls());
@@ -516,54 +516,54 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       boardControls.add(select);
       boardControls.add(clear);
       controls.add(boardControls);
-      
-      
+
+
       xInput = new FormattedExpressionConfigurer(null, "X Position:  ", p.x.getFormat(), p);
       controls.add(xInput.getControls());
 
       yInput = new FormattedExpressionConfigurer(null, "Y Position:  ", p.y.getFormat(), p);
       controls.add(yInput.getControls());
-      
+
       zoneInput = new FormattedExpressionConfigurer(null, "Zone Name:  ", p.zone.getFormat(), p);
       controls.add(zoneInput.getControls());
 
       regionInput = new FormattedExpressionConfigurer(null, "Region Name:  ", p.region.getFormat(), p);
       controls.add(regionInput.getControls());
-      
+
       propertyInput = new PropertyExpressionConfigurer(null, "Property Match:  ", p.propertyFilter);
       controls.add(propertyInput.getControls());
-      
+
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
         }});
       controls.add(advancedInput.getControls());
-      
+
       advancedControls = Box.createHorizontalBox();
       xIndexInput = new FormattedExpressionConfigurer(null, "Additional X offset:  ", p.xIndex.getFormat(), p);
       advancedControls.add(xIndexInput.getControls());
       xOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.xOffset.getFormat(), p);
       advancedControls.add(xOffsetInput.getControls());
       controls.add(advancedControls);
-      
+
       advancedControls = Box.createHorizontalBox();
       yIndexInput = new FormattedExpressionConfigurer(null, "Additional Y offset:  ", p.yIndex.getFormat(), p);
       advancedControls.add(yIndexInput.getControls());
       yOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.yOffset.getFormat(), p);
       advancedControls.add(yOffsetInput.getControls());
       controls.add(advancedControls);
-      
+
       updateVisibility();
     }
-    
+
     private void updateVisibility() {
       boolean advancedVisible = advancedInput.booleanValue().booleanValue();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);
       yIndexInput.getControls().setVisible(advancedVisible);
       yOffsetInput.getControls().setVisible(advancedVisible);
-      
+
       String destOption = destInput.getValueString();
       xInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
@@ -572,13 +572,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
       regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
       propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
-      
+
       Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
       }
     }
-    
+
     private void clearBoard() {
       boardNameInput.setValue("");
     }

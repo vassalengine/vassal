@@ -49,7 +49,7 @@ public class PieceCloner {
       final Map m = piece.getMap();
 
       // Temporarily set map to null so that clone won't be added to map
-      piece.setMap(null); 
+      piece.setMap(null);
 
       clone.setState(piece.getState());
       piece.setMap(m);

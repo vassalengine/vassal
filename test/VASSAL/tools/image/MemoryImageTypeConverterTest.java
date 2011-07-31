@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -37,7 +37,7 @@ public class MemoryImageTypeConverterTest {
 
   @Test
   public void testConvert() throws IOException {
-    final BufferedImage src = ImageIO.read(new File(test)); 
+    final BufferedImage src = ImageIO.read(new File(test));
     final ImageTypeConverter c = new MemoryImageTypeConverter();
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
     final BufferedImage dst = c.convert(ref, BufferedImage.TYPE_INT_ARGB);

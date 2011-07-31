@@ -110,7 +110,7 @@ public class FormattedStringConfigurer
           pos = work.length();
         }
       }
-      
+
       String news = work.substring(0, pos) + item + work.substring(pos);
       nameField.setText(news);
       nameField.setCaretPosition(pos + item.length());

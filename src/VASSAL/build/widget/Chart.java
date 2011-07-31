@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.build.widget;
@@ -131,10 +131,10 @@ public class Chart extends Widget {
   /*
    * public Configurer[] getAttributeConfigurers() { Configurer config[] = new Configurer[2]; config[0] = new
    * StringConfigurer(NAME,"Name"); config[0].setValue(getConfigureName()); listenTo(config[0]);
-   * 
+   *
    * config[1] = new ImageConfigurer (FILE,"Image", GameModule.getGameModule().getArchiveWriter());
    * config[1].setValue(fileName); listenTo(config[1]);
-   * 
+   *
    * return config; }
    */
   public Class<?>[] getAllowableConfigureComponents() {
@@ -143,7 +143,7 @@ public class Chart extends Widget {
 
   /**
    * The Attributes of a Chart are:
-   * 
+   *
    * <pre>
    * <code>
    * NAME
@@ -176,7 +176,7 @@ public class Chart extends Widget {
     }
     return null;
   }
-  
+
   public static String getConfigureTypeName() {
     return "Chart";
   }

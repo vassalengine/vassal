@@ -64,7 +64,7 @@ public class DefaultMultiEventListenerSupport
         e.getValue().add(l);
       }
     }
-  } 
+  }
 
   /** {@inheritDoc} */
   public <T> void removeEventListener(Class<T> c, EventListener<? super T> l) {
@@ -83,7 +83,7 @@ public class DefaultMultiEventListenerSupport
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (other.isAssignableFrom(c)) {
-        if (!e.getValue().isEmpty()) { 
+        if (!e.getValue().isEmpty()) {
           return true;
         }
       }
@@ -91,14 +91,14 @@ public class DefaultMultiEventListenerSupport
 
     return false;
   }
- 
+
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public <T> List<EventListener<? super T>> getEventListeners(Class<T> c) {
     final List<EventListener<? super T>> list =
       new ArrayList<EventListener<? super T>>();
 
-    // make a list of all listeners for every supertype of c 
+    // make a list of all listeners for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (other.isAssignableFrom(c)) {
@@ -119,7 +119,7 @@ public class DefaultMultiEventListenerSupport
 
     for (EventListener l : list) {
       l.receive(src, c.cast(event));
-    } 
+    }
   }
 
   protected List<EventListener<?>> registerType(Class<?> c) {
@@ -131,7 +131,7 @@ public class DefaultMultiEventListenerSupport
     // make a set of all listeners for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
-      if (other.isAssignableFrom(c)) {     
+      if (other.isAssignableFrom(c)) {
         lset.addAll(e.getValue());
       }
     }

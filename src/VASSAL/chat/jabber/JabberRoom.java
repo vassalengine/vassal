@@ -61,7 +61,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public static final String CONFIG_MIN_MODULE_VERSION = "minModVer"; //$NON-NLS-1$
   public static final String CONFIG_CRC_CHECK = "crcCheck"; //$NON-NLS-1$
   public static final String CONFIG_CRC = "crc"; //$NON-NLS-1$
-  
+
   private static final String JABBER_MEMBERSONLY = "muc#roomconfig_membersonly";  //$NON-NLS-1$
   private static final String JABBER_ALLOW_INVITES = "muc#roomconfig_allowinvites"; //$NON-NLS-1$
   private static final String JABBER_CHANGE_SUBJECT = "muc#roomconfig_changesubject"; //$NON-NLS-1$
@@ -69,7 +69,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   private static final String JABBER_PASSWORD_PROTECTED = "muc#roomconfig_passwordprotectedroom"; //$NON-NLS-1$
   private static final String JABBER_PERSISTENT = "muc#roomconfig_persistentroom"; //$NON-NLS-1$
   private static final String JABBER_PUBLIC_ROOM = "muc#roomconfig_publicroom"; //$NON-NLS-1$
-  
+
   private String jid;
   private RoomInfo info;
   private boolean ownedByMe;
@@ -85,7 +85,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     config.clear();
     config.put(CONFIG_NAME, name);
   }
-  
+
   public String getJID() {
     return jid;
   }
@@ -97,7 +97,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public void setInfo(RoomInfo info) {
     this.info = info;
   }
-  
+
   public void toggleLock(MultiUserChat muc) {
     try {
       if (!isLocked()) {
@@ -125,27 +125,27 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     form.setAnswer(JABBER_MEMBERSONLY, false);
     muc.sendConfigurationForm(form);
   }
-  
+
   public MultiUserChat join(JabberClient client, JabberPlayer me) throws XMPPException {
     MultiUserChat chat = new MultiUserChat(client.getConnection(), getJID());
     chat.join(StringUtils.parseName(me.getJid()));
-    
+
     if (!chat.isJoined()) {
       return null;
     }
-    
+
     try {
       // This is necessary to create the room if it doesn't already exist
       // Configure the options we needs explicitly, don't depend on the server supplied defaults
       final Form configForm = chat.getConfigurationForm().createAnswerForm();
-      configForm.setAnswer(JABBER_MEMBERSONLY, isStartLocked()); 
-      configForm.setAnswer(JABBER_ALLOW_INVITES, false); 
+      configForm.setAnswer(JABBER_MEMBERSONLY, isStartLocked());
+      configForm.setAnswer(JABBER_ALLOW_INVITES, false);
       configForm.setAnswer(JABBER_CHANGE_SUBJECT, false);
       configForm.setAnswer(JABBER_MODERATED, false);
       configForm.setAnswer(JABBER_PASSWORD_PROTECTED, false);
       configForm.setAnswer(JABBER_PERSISTENT, false);
       configForm.setAnswer(JABBER_PUBLIC_ROOM, true);
-      
+
       chat.sendConfigurationForm(configForm);
       ownedByMe = true;
       owners.clear();
@@ -179,7 +179,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public boolean isOwnedByMe() {
     return ownedByMe;
   }
-  
+
   public boolean isOwner(String jid) {
     return owners.contains(jid);
   }
@@ -189,28 +189,28 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       owners.add(jid);
     }
   }
-  
+
   public void removeOwner(String jid) {
     owners.remove(jid);
   }
-  
+
   public Player getOwningPlayer() {
     if (owners.size() == 0) {
       return null;
     }
     return getPlayer(owners.get(0));
   }
-  
+
   public void setConfig(Properties props) {
     config = props;
     setName(config.getProperty(CONFIG_NAME));
   }
-  
+
   public String encodeConfig() {
     final String s = new PropertiesEncoder(config).getStringValue();
     return s == null ? "" : s; //$NON-NLS-1$
   }
-  
+
   public void decodeConfig(String s) {
     try {
       config = new PropertiesEncoder(s).getProperties();
@@ -220,52 +220,52 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       e.printStackTrace();
     }
   }
-  
+
   public boolean isStartLocked() {
     return "true".equals(config.getProperty(CONFIG_LOCKED)); //$NON-NLS-1$
   }
-  
+
   public boolean isMatchCrc() {
     return "true".equals(config.getProperty(CONFIG_CRC_CHECK)); //$NON-NLS-1$
   }
-  
+
   public String getCheckCrc() {
     return config.getProperty(CONFIG_CRC);
   }
-  
+
   public String getVassalOption() {
     return config.getProperty(CONFIG_VASSAL_VERSION, ANY_OPTION);
   }
-  
+
   public String getVassalVersion() {
     return config.getProperty(CONFIG_MIN_VASSAL_VERSION, Info.getVersion());
   }
-  
+
   public String getModuleOption() {
     return config.getProperty(CONFIG_MODULE_VERSION, ANY_OPTION);
   }
-  
+
   public String getModuleVersion() {
     return config.getProperty(CONFIG_MIN_MODULE_VERSION, GameModule.getGameModule().getGameVersion());
   }
-  
+
   public void showConfig() {
-    final JabberRoomConfig c = new JabberRoomConfig(config, false);    
+    final JabberRoomConfig c = new JabberRoomConfig(config, false);
     Dialogs.showDialog(null, Resources.getString("Chat.room_configuration"), c, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null, null, null); //$NON-NLS-1$
   }
-  
+
   /**
    * Is the specified player allowed to join this room?
    * @param p A JabberPlayer
    * @return null = false, non-null = error message
    */
   public String canJoin(JabberPlayer p) {
-    
+
     // Owner can always join
     if (isOwnedByMe()) {
       return null;
     }
-    
+
     // Check Vassal Version
     String option = getVassalOption();
     if (!ANY_OPTION.equals(option)) {
@@ -298,7 +298,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         }
       }
     }
-    
+
     // Check CRC
     if (isMatchCrc()) {
       final String playerCRC = ((SimpleStatus) p.getStatus()).getCrc();
@@ -309,14 +309,14 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     }
     return null;
   }
-  
+
   public static class Manager {
     private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
 
     public JabberRoom getRoomByJID(JabberClient client, String jid) {
       return getRoomByJID(client, jid, "");
     }
-    
+
     public synchronized JabberRoom getRoomByJID(JabberClient client, String jid, String defaultName) {
       if (jid == null) {
         return null;
@@ -351,21 +351,21 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     public void deleteRoom(String jid) {
       jidToRoom.remove(jid);
     }
-    
+
     public synchronized void clear() {
       jidToRoom.clear();
     }
   }
-  
+
   public static Properties configureNewRoom() {
-    final JabberRoomConfig config = new JabberRoomConfig();    
+    final JabberRoomConfig config = new JabberRoomConfig();
     int result = ((Integer) Dialogs.showDialog(null, Resources.getString("Chat.create_new_room"), config, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null, null, null)).intValue(); //$NON-NLS-1$
-    if (result == 0) {  
+    if (result == 0) {
       return config.getProperties();
     }
     return null;
   }
-  
+
   private static final String MINIMUM_OPTION = "min"; //$NON-NLS-1$
   private static final String ANY_OPTION = "any"; //$NON-NLS-1$
   private static final String THIS_OPTION = "this"; //$NON-NLS-1$
@@ -387,7 +387,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     private String vassalVersion;
     private String moduleVersion;
     private boolean updateEnabled = true;
-    
+
     static String versionToOption(String version) {
       if (MINIMUM_VERSION.equals(version)) {
         return MINIMUM_OPTION;
@@ -395,9 +395,9 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       else if (THIS_VERSION.equals(version)) {
         return THIS_OPTION;
       }
-      return ANY_OPTION; 
+      return ANY_OPTION;
     }
-    
+
     static String optionToVersion(String option) {
       if (MINIMUM_OPTION.equals(option)) {
         return MINIMUM_VERSION;
@@ -405,63 +405,63 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       else if (THIS_OPTION.equals(option)) {
         return THIS_VERSION;
       }
-      return ANY_VERSION; 
+      return ANY_VERSION;
     }
-    
+
     public JabberRoomConfig() {
       super();
-      
+
       vassalVersion = Info.getVersion();
       moduleVersion = GameModule.getGameModule().getGameVersion();
       setLayout(new MigLayout("insets dialog", "[align right][fill,grow]", "")); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
-      
-      
+
+
       add(new JLabel(Resources.getString("Chat.new_room_name"))); //$NON-NLS-1$
       roomNameConfig = new JTextField();
       add(roomNameConfig, "wrap"); //$NON-NLS-1$
-      
+
       add(new JLabel(Resources.getString("Chat.start_locked"))); //$NON-NLS-1$
       startLockedConfig = new JCheckBox();
       add(startLockedConfig, "wrap"); //$NON-NLS-1$
-      
+
       add(new JLabel(Resources.getString("Chat.vassal_versions_allowed")));     //$NON-NLS-1$
       vassalVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
       vassalVersionConfig.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent arg0) {
-          updateVisibility();          
+          updateVisibility();
         }});
       add(vassalVersionConfig);
       minimumVassalVersionConfig = new JTextField(12);
       minimumVassalVersionConfig.setText(vassalVersion);
       add(minimumVassalVersionConfig, "wrap"); //$NON-NLS-1$
-      
+
       add(new JLabel(Resources.getString("Chat.module_versions_allowed"))); //$NON-NLS-1$
       moduleVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
       moduleVersionConfig.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent arg0) {
-          updateVisibility();          
+          updateVisibility();
         }});
-      
+
       add(moduleVersionConfig);
       minimumModuleVersionConfig = new JTextField(12);
       minimumModuleVersionConfig.setText(moduleVersion);
       add(minimumModuleVersionConfig, "wrap"); //$NON-NLS-1$
-      
+
       add(new JLabel(Resources.getString("Chat.crc_match"))); //$NON-NLS-1$
       matchCrcConfig = new JCheckBox();
       matchCrcConfig.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          updateVisibility();          
+          updateVisibility();
         }});
-      add(matchCrcConfig); 
+      add(matchCrcConfig);
       crcConfig = new JTextField(12);
       crcConfig.setText(Long.toHexString(GameModule.getGameModule().getCrc()));
       crcConfig.setEditable(false);
       add(crcConfig, "wrap"); //$NON-NLS-1$
-      
+
       updateVisibility();
     }
-    
+
     public JabberRoomConfig(Properties props) {
       this();
       roomNameConfig.setText(props.getProperty(CONFIG_NAME));
@@ -473,17 +473,17 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       matchCrcConfig.setSelected("true".equals(props.getProperty(CONFIG_CRC_CHECK))); //$NON-NLS-1$
       crcConfig.setText(props.getProperty(CONFIG_CRC));
     }
-    
+
     public JabberRoomConfig(Properties props, boolean enabled) {
       this(props);
       setEnabled(enabled);
     }
-    
-    
+
+
     public boolean isUpdateEnabled() {
       return updateEnabled;
     }
-    
+
     public void setEnabled(boolean enabled) {
       updateEnabled = enabled;
       updateVisibility();
@@ -493,16 +493,16 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       minimumVassalVersionConfig.setVisible(! ANY_VERSION.equals(vassalVersionConfig.getSelectedItem()));
       minimumModuleVersionConfig.setVisible(! ANY_VERSION.equals(moduleVersionConfig.getSelectedItem()));
       crcConfig.setVisible(matchCrcConfig.isSelected());
-      
+
       roomNameConfig.setEditable(isUpdateEnabled());
       startLockedConfig.setEnabled(isUpdateEnabled());
       vassalVersionConfig.setEnabled(isUpdateEnabled());
       minimumVassalVersionConfig.setEditable(isUpdateEnabled() && vassalVersionConfig.getSelectedItem().equals(MINIMUM_VERSION));
       moduleVersionConfig.setEnabled(isUpdateEnabled());
       minimumModuleVersionConfig.setEditable(isUpdateEnabled() && moduleVersionConfig.getSelectedItem().equals(MINIMUM_VERSION));
-      matchCrcConfig.setEnabled(isUpdateEnabled());      
+      matchCrcConfig.setEnabled(isUpdateEnabled());
     }
-    
+
     public Properties getProperties() {
       Properties props = new Properties();
       props.put(CONFIG_NAME, roomNameConfig.getText());

@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -39,14 +39,14 @@ public class ConfigurerWindow extends JDialog {
   protected JButton okButton = new JButton("Ok");
   protected JButton canButton = new JButton("Cancel");
   protected boolean cancelled;
-  
+
   public ConfigurerWindow(Configurer c) {
     this(c, true);
   }
 
   public ConfigurerWindow(final Configurer c, boolean modal) {
     super((JFrame) null, modal);
-    
+
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {
@@ -54,7 +54,7 @@ public class ConfigurerWindow extends JDialog {
          cancelled = true;
       }
     });
-    
+
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     add(c.getControls());
     c.addPropertyChangeListener
@@ -67,7 +67,7 @@ public class ConfigurerWindow extends JDialog {
         }
       });
     setTitle(c.getName());
-    
+
     okButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
         c.getValue();
@@ -75,23 +75,23 @@ public class ConfigurerWindow extends JDialog {
         cancelled = false;
       }
     });
-    
+
     canButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
         dispose();
         cancelled = true;
       }
     });
-    
+
     final JPanel buttonPanel = new JPanel();
     buttonPanel.add(okButton);
     buttonPanel.add(canButton);
     add(buttonPanel);
     cancelled = false;
-    
+
     pack();
   }
-  
+
   public boolean isCancelled() {
     return cancelled;
   }

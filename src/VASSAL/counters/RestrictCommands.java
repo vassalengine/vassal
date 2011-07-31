@@ -43,7 +43,7 @@ import VASSAL.tools.SequenceEncoder;
 
 /**
  * RestrictCommands
- * Restrict the availability of Key Commands, depending on a 
+ * Restrict the availability of Key Commands, depending on a
  * Property Match String.
  *  - Variable list of Key Commands to restrict
  *  - Disable or Invisible
@@ -101,7 +101,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
-  
+
   /*
    * Cancel execution of watched KeyStrokes
    */
@@ -118,7 +118,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     }
     return super.keyEvent(stroke);
   }
-  
+
   protected KeyCommand[] getKeyCommands() {
     KeyCommand[] commands = super.getKeyCommands();
     ArrayList<KeyCommand> newCommands =
@@ -144,7 +144,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     }
     return commands;
   }
-  
+
   protected boolean matchesFilter() {
     GamePiece outer = Decorator.getOutermost(this);
     if (!propertyMatch.isNull()) {
@@ -222,7 +222,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       b.add(new JLabel("Restriction:  "));
       b.add(actionOption);
       box.add(b);
-      
+
       propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch, Decorator.getOutermost(piece));
       box.add(propertyMatch.getControls());
 

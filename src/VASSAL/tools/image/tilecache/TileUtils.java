@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2010 by Joel Uckelman 
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -56,12 +56,12 @@ import VASSAL.tools.io.IOUtils;
  * @author Joel Uckelman
  */
 public class TileUtils {
-  
+
   private TileUtils() {}
 
   /**
    * Reads an image tile file.
-   * 
+   *
    * @param src the path of the tile file
    * @return the tile image
    *
@@ -74,7 +74,7 @@ public class TileUtils {
 
   /**
    * Reads an image tile file.
-   * 
+   *
    * @param src the path of the tile file
    * @return the tile image
    *
@@ -103,7 +103,7 @@ public class TileUtils {
 
   /**
    * Reads an image tile.
-   * 
+   *
    * @param in a stream containing the tile data
    * @return the tile image
    *
@@ -115,12 +115,12 @@ public class TileUtils {
     // read the header
     final byte[] header = readHeader(in);
     bb = ByteBuffer.wrap(header);
-    
+
     // validate the signature
     final byte[] sig = new byte[6];
     bb.get(sig);
     checkSignature(sig);
-      
+
     // get the dimensions and type
     final int w = bb.getInt();
     final int h = bb.getInt();
@@ -128,10 +128,10 @@ public class TileUtils {
 
     // read the image data
     final byte[] cdata = IOUtils.toByteArray(in);
-    
+
     // decompress the image data
     InputStream zin = null;
-    try {  
+    try {
       zin = new GZIPInputStream(new ByteArrayInputStream(cdata));
       bb = ByteBuffer.wrap(IOUtils.toByteArray(zin));
       zin.close();
@@ -148,7 +148,7 @@ public class TileUtils {
     final DataBufferInt db = (DataBufferInt) img.getRaster().getDataBuffer();
     final int[] data = db.getData();
 
-    final IntBuffer ib = bb.asIntBuffer(); 
+    final IntBuffer ib = bb.asIntBuffer();
     ib.get(data);
 
 /*
@@ -185,7 +185,7 @@ public class TileUtils {
    * @param sig the byte array to check
    *
    * @throws IOException if the byte array is not the tile signature
-   */ 
+   */
   static void checkSignature(byte[] sig) throws IOException {
     if (!Arrays.equals(sig, "VASSAL".getBytes())) {
       throw new IOException(
@@ -197,7 +197,7 @@ public class TileUtils {
 
   /**
    * Reads the dimensions of the tile in an image tile file.
-   * 
+   *
    * @param src the path of the tile file
    * @return the dimensions
    *
@@ -210,7 +210,7 @@ public class TileUtils {
 
   /**
    * Reads the dimensions of the tile in an image tile file.
-   * 
+   *
    * @param src the path of the tile file
    * @return the dimensions
    *
@@ -239,7 +239,7 @@ public class TileUtils {
 
   /**
    * Reads the dimensions of the tile from a stream.
-   * 
+   *
    * @param in the stream
    * @return the dimensions
    *
@@ -251,12 +251,12 @@ public class TileUtils {
     // read the header
     final byte[] header = readHeader(in);
     bb = ByteBuffer.wrap(header);
-    
+
     // validate the signature
     final byte[] sig = new byte[6];
     bb.get(sig);
     checkSignature(sig);
-      
+
     // get the dimensions
     return new Dimension(bb.getInt(), bb.getInt());
   }
@@ -266,7 +266,7 @@ public class TileUtils {
    *
    * @param tile the image
    * @param dst the tile file
-   * 
+   *
    * @throws ImageIOException if the write fails
    */
   public static void write(BufferedImage tile, String dst)
@@ -279,7 +279,7 @@ public class TileUtils {
    *
    * @param tile the image
    * @param dst the tile file
-   * 
+   *
    * @throws ImageIOException if the write fails
    */
   public static void write(BufferedImage tile, File dst)
@@ -303,16 +303,16 @@ public class TileUtils {
    *
    * @param tile the image
    * @param out the stream
-   * 
+   *
    * @throws ImageIOException if the write fails
    */
   public static void write(BufferedImage tile, OutputStream out)
                                                            throws IOException {
-    ByteBuffer bb; 
+    ByteBuffer bb;
 
     // write the header
     bb = ByteBuffer.allocate(18);
-      
+
     bb.put("VASSAL".getBytes())
       .putInt(tile.getWidth())
       .putInt(tile.getHeight())
@@ -359,7 +359,7 @@ public class TileUtils {
    * @throws IllegalArgumentException if any argument is nonpositive
    */
   public static int tileCount(int iw, int ih, int tw, int th) {
-    // TODO: Find a closed-form expression for this, if there is one. 
+    // TODO: Find a closed-form expression for this, if there is one.
     int tcount = 0;
     for (int div = 1; iw/div > 0 && ih/div > 0; div <<= 1) {
       tcount += tileCountAtScale(iw, ih, tw, th, div);
@@ -403,7 +403,7 @@ public class TileUtils {
     if (div < 1) throw new IllegalArgumentException("div = " + div + " < 1");
 
     final int cols = (int) Math.ceil((double) (iw/div) / tw);
-    final int rows = (int) Math.ceil((double) (ih/div) / th);    
+    final int rows = (int) Math.ceil((double) (ih/div) / th);
     return cols*rows;
   }
 

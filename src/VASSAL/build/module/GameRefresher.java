@@ -48,21 +48,21 @@ import VASSAL.tools.ErrorDialog;
 /**
  * GameRefresher
  * Replace all counters in the same game with the current
- * version of the counters defined in the module 
- * 
+ * version of the counters defined in the module
+ *
  * Note: Counters that are Hidden or Obscured to us
- * cannot be updated.  
+ * cannot be updated.
  *
  */
 public final class GameRefresher implements GameComponent {
-  
-  private Action refreshAction; 
+
+  private Action refreshAction;
   protected HashMap<String, SlotElement> idMap = new HashMap<String, SlotElement>();
-  protected HashMap<String, SlotElement> typeMap = new HashMap<String, SlotElement>(); 
+  protected HashMap<String, SlotElement> typeMap = new HashMap<String, SlotElement>();
 
   public GameRefresher() {
   }
-  
+
   public void addTo(AbstractConfigurable parent) {
     refreshAction = new AbstractAction(
         Resources.getString("GameRefresher.refresh_counters")) { //$NON-NLS-1$
@@ -75,13 +75,13 @@ public final class GameRefresher implements GameComponent {
     refreshAction.setEnabled(false);
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
-  
+
   public Action getRefreshAction() {
     return refreshAction;
   }
-  
+
   public void execute() {
-    
+
     /*
      * Stage 1
      *  Build a cross-reference of all PieceSlots in the module
@@ -90,7 +90,7 @@ public final class GameRefresher implements GameComponent {
       ErrorDialog.show("GameRefresher.no_gpids"); //$NON-NLS-1$
       return;
     }
-    
+
     /*
      * Stage 2
      * Process each piece on the map and collect the commands to update
@@ -98,7 +98,7 @@ public final class GameRefresher implements GameComponent {
      */
     final Command command = new NullCommand();
     final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
-    
+
     for (GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
       if (piece instanceof Deck) {
         for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext(); ) {
@@ -111,7 +111,7 @@ public final class GameRefresher implements GameComponent {
           if (! Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME)) &&
               ! Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
             pieces.add(0, p);
-          }          
+          }
         }
       }
       else if (piece.getParent() == null) {
@@ -121,58 +121,58 @@ public final class GameRefresher implements GameComponent {
         }
       }
     }
-    
+
     for (GamePiece piece : pieces) {
       processGamePiece(piece, command);
     }
-    
+
     /*
      * Stage 3
      * Send the update to other clients
      */
     GameModule.getGameModule().sendAndLog(command);
   }
-  
+
   private boolean buildIdMap() {
     for (PieceSlot slot : GameModule.getGameModule().getAllDescendantComponentsOf(PieceSlot.class)) {
-      final String id = slot.getGpId(); 
+      final String id = slot.getGpId();
       if (id.length() == 0) {
         return false;
       }
       final SlotElement se = new SlotElement(slot);
       idMap.put(id, se);
       typeMap.put(slot.getPiece().getType(), se);
-      
+
       GamePiece piece = slot.getPiece();
       if (!findPlaceMarkerTraits(piece)) {
-        return false;      
+        return false;
       }
     }
     return true;
   }
-  
+
   /**
    * Process a single game piece and replace it with an updated
    * version if possible. Append the commands required to replace
    * the piece to the supplied Command.
-   * If no new version is available, replace it with itself to ensure 
+   * If no new version is available, replace it with itself to ensure
    * the Stacking order does not change.
-   * 
+   *
    * @param piece GamePiece to replace
    * @param command Command List.
    */
   private void processGamePiece(GamePiece piece, Command command) {
-    
+
     final Map map = piece.getMap();
     final Point pos = piece.getPosition();
-    final SlotElement se = findSlot(piece); 
+    final SlotElement se = findSlot(piece);
     if (se != null) {
 
-      final GamePiece newPiece = se.createPiece(piece);   
+      final GamePiece newPiece = se.createPiece(piece);
       final Stack oldStack = piece.getParent();
       final int oldPos = oldStack.indexOf(piece);
-  
-      // Place the new Piece. 
+
+      // Place the new Piece.
       final Command place = map.placeOrMerge(newPiece, pos);
       command.append(place);
 
@@ -180,26 +180,26 @@ public final class GameRefresher implements GameComponent {
       final Command remove = new RemovePiece(Decorator.getOutermost(piece));
       remove.execute();
       command.append(remove);
-      
+
       // If still in the same stack, move to correct position
-      final Stack newStack = newPiece.getParent();    
+      final Stack newStack = newPiece.getParent();
       if (newStack != null && oldStack != null && newStack == oldStack) {
-        final int newPos = newStack.indexOf(newPiece);        
+        final int newPos = newStack.indexOf(newPiece);
         if (newPos >= 0 && oldPos >= 0 && newPos != oldPos) {
           final String oldState = newStack.getState();
           newStack.insert(newPiece, oldPos);
-          command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));     
+          command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
         }
       }
     }
   }
-  
+
   /**
    * Search all available SlotElements for one that can be used to
    * recreate the specified GamePiece.
    *  1. Find the PieceSlot that created this piece directly by looking up the GpId
    *  2. Fallback, find a PieceSlot with an identically Typed piece
-   * 
+   *
    * @param piece Source GamePiece
    * @return Found SlotElement
    */
@@ -214,11 +214,11 @@ public final class GameRefresher implements GameComponent {
     }
     return se;
   }
-  
+
   /**
    * Search a GamePiece for PlaceMarker traits and record them
    * in our source list of potential new pieces.
-   * 
+   *
    * @param piece GamePiece to search within
    * @return false if a PlaceMarker is found with no gpid
    */
@@ -232,11 +232,11 @@ public final class GameRefresher implements GameComponent {
       if (id.length() == 0) {
         return false;
       }
-      idMap.put(id, new SlotElement(pm));          
+      idMap.put(id, new SlotElement(pm));
     }
     return findPlaceMarkerTraits(((Decorator) piece).getInner());
   }
-  
+
   public Command getRestoreCommand() {
     return null;
   }
@@ -245,22 +245,22 @@ public final class GameRefresher implements GameComponent {
    * Enable Refresh menu item when game is running only.
    */
   public void setup(boolean gameStarting) {
-    refreshAction.setEnabled(gameStarting);    
+    refreshAction.setEnabled(gameStarting);
   }
-  
+
   /*********************************************************************
    * Wrapper class for gpid-able components - They will all be either
    * PieceSlot components or PlaceMarker Decorator's
-   * 
+   *
    * @author Brent Easton
    *
    */
   class SlotElement {
-    
+
     private PieceSlot slot;
     private PlaceMarker marker;
     private String id;
-    
+
     public SlotElement() {
       slot = null;
       marker = null;
@@ -271,29 +271,29 @@ public final class GameRefresher implements GameComponent {
       slot = ps;
       id = ps.getGpId();
     }
-    
+
     public SlotElement(PlaceMarker pm) {
       this();
       marker = pm;
       id = pm.getGpId();
     }
-    
+
     public String getGpId() {
       return id;
     }
-    
+
     public PieceSlot getSlot() {
       return slot;
     }
-    
+
     public PlaceMarker getMarker() {
       return marker;
     }
-    
+
     /**
      * Create a new GamePiece based on this Slot Element. Use oldPiece
      * to copy state information over to the new piece.
-     * 
+     *
      * @param oldPiece Old Piece for state information
      * @return New Piece
      */
@@ -316,7 +316,7 @@ public final class GameRefresher implements GameComponent {
     /**
      * Copy as much state information as possible from the old
      * piece to the new piece
-     * 
+     *
      * @param oldPiece Piece to copy state from
      * @param newPiece Piece to copy state to
      */
@@ -324,7 +324,7 @@ public final class GameRefresher implements GameComponent {
       GamePiece p = newPiece;
       while (p != null) {
         if (p instanceof BasicPiece) {
-          ((BasicPiece) p).setState(((BasicPiece) Decorator.getInnermost(oldPiece)).getState());          
+          ((BasicPiece) p).setState(((BasicPiece) Decorator.getInnermost(oldPiece)).getState());
           p = null;
         }
         else {
@@ -336,13 +336,13 @@ public final class GameRefresher implements GameComponent {
           }
           p = decorator.getInner();
         }
-      }      
+      }
     }
-    
+
     /**
      * Locate a Decorator in the old piece that has the exact same
      * type as the new Decorator and return it's state
-     * 
+     *
      * @param oldPiece Old piece to search
      * @param typeToFind Type to match
      * @param classToFind Class to match

@@ -46,7 +46,7 @@ public class URLUtils {
    * @param f the file for which the URL is wanted
    * @return the URL of the file
    * @throws MalformedURLException if the URL can't be created
-   */ 
+   */
   public static URL toURL(File f) throws MalformedURLException {
     return f.toURI().toURL();
   }
@@ -71,7 +71,7 @@ public class URLUtils {
    */
   public static URL toJarURL(File f) throws MalformedURLException {
     // As as workaround for Sun Bug 4523159, we urlencode all '!' in
-    // our inner URL to prevent these from being misinterpreted by 
+    // our inner URL to prevent these from being misinterpreted by
     // Class.getResourceAsStream() as the JAR marker "!/".
     return new URL("jar:" + toURL(f).toString().replace("!", "%21") + "!/");
   }

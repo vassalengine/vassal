@@ -31,7 +31,7 @@ public class StringExpression extends Expression {
   public StringExpression (String s) {
     setExpression(s);
   }
-  
+
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     return getExpression();
   }

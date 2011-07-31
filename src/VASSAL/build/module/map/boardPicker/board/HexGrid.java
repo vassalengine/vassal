@@ -108,17 +108,17 @@ public class HexGrid extends AbstractConfigurable
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString("Editor.HexGrid.sideways"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
-    	Resources.getString("Editor.HexGrid.hex_height"), //$NON-NLS-1$
-    	Resources.getString("Editor.HexGrid.hex_width"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
-    	Resources.getString("Editor.HexGrid.vertices"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.center_dots"), //$NON-NLS-1$
-    	Resources.getString(Resources.COLOR_LABEL),
+      Resources.getString("Editor.HexGrid.sideways"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.HexGrid.hex_height"), //$NON-NLS-1$
+      Resources.getString("Editor.HexGrid.hex_width"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
+      Resources.getString("Editor.HexGrid.vertices"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.center_dots"), //$NON-NLS-1$
+      Resources.getString(Resources.COLOR_LABEL),
     };
   }
 
@@ -159,9 +159,9 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public Configurer getConfigurer() {
-    
+
     boolean buttonExists = config != null;
-    
+
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     final Configurer dxConfig = c.getConfigurer(DX);
     c.getConfigurer(DY).addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -182,7 +182,7 @@ public class HexGrid extends AbstractConfigurable
       });
       ((Container) c.getControls()).add(b);
     }
-    
+
     return config;
   }
 
@@ -226,7 +226,7 @@ public class HexGrid extends AbstractConfigurable
   public boolean isSideways() {
     return sideways;
   }
-  
+
   public void setSideways(boolean b) {
     sideways = b;
   }
@@ -252,19 +252,19 @@ public class HexGrid extends AbstractConfigurable
   public void setHexWidth(double w) {
     dx = w;
   }
-  
+
   public double getDx() {
     return getHexWidth();
   }
-  
+
   public void setDx(double d) {
     setHexWidth(d);
   }
-  
+
   public double getDy() {
     return getHexSize();
   }
-  
+
   public void setDy(double d) {
     dy = d; // DO NOT call setHexSize() so that dx is not reset
   }
@@ -285,7 +285,7 @@ public class HexGrid extends AbstractConfigurable
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.HexGrid.component_type"); //$NON-NLS-1$
   }
-  
+
   public String getGridName() {
     return getConfigureTypeName();
   }
@@ -421,7 +421,7 @@ public class HexGrid extends AbstractConfigurable
   public String locationName(Point p) {
     return numbering == null ? null : numbering.locationName(p);
   }
-  
+
   public String localizedLocationName(Point p) {
     return numbering == null ? null : numbering.localizedLocationName(p);
   }
@@ -438,7 +438,7 @@ public class HexGrid extends AbstractConfigurable
       return p;
     }
     Point center = snapToHex(p);
-    
+
     if (edgesLegal && cornersLegal) {
       Point edge = snapToHexSide(p);
       Point vertex = snapToHexVertex(p);
@@ -462,19 +462,19 @@ public class HexGrid extends AbstractConfigurable
       return snapToHex(p);
     }
   }
-  
-  // FIXME: snapToHexVertex() does not always return the correct X co-ordinate 
-  // if the point is close to the center of the Hex. Workaround by returning 
-  // the real hex center if it is within 1 pixel x/y 
-  protected Point checkCenter(Point center, Point target) { 
-    if ((center.x - target.x) * (center.x - target.x) 
-          + (center.y - target.y) * (center.y - target.y) <= 2) { 
-      return center; 
-    } 
-    else { 
-      return target; 
-    } 
-  } 
+
+  // FIXME: snapToHexVertex() does not always return the correct X co-ordinate
+  // if the point is close to the center of the Hex. Workaround by returning
+  // the real hex center if it is within 1 pixel x/y
+  protected Point checkCenter(Point center, Point target) {
+    if ((center.x - target.x) * (center.x - target.x)
+          + (center.y - target.y) * (center.y - target.y) <= 2) {
+      return center;
+    }
+    else {
+      return target;
+    }
+  }
 
 
   public boolean isLocationRestricted(Point p) {
@@ -718,10 +718,10 @@ public class HexGrid extends AbstractConfigurable
     }
   }
 
-  // FIXME: vertexX does not always return the same value as HexX for hex 
-  // centres, it is sometimes 1 pixel off. The values returned for the 
-  // vertices are fine, so snapTo() has been changed to work around this. 
-  // There is a rounding error in here if someone else wants to track it down. 
+  // FIXME: vertexX does not always return the same value as HexX for hex
+  // centres, it is sometimes 1 pixel off. The values returned for the
+  // vertices are fine, so snapTo() has been changed to work around this.
+  // There is a rounding error in here if someone else wants to track it down.
   protected int vertexX(int x, int y) {
     int ny = (int) floor((y - origin.y + dy / 4) * 2 / dy);
     if (ny % 2 == 0) {
@@ -752,7 +752,7 @@ public class HexGrid extends AbstractConfigurable
     if (!bounds.intersects(visibleRect) || color == null) {
       return;
     }
-    
+
     Graphics2D g2d = (Graphics2D) g;
 
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -874,12 +874,12 @@ public class HexGrid extends AbstractConfigurable
   public Point getOrigin() {
     return new Point(origin);
   }
-  
+
   public void setOrigin(Point p) {
     origin.x = p.x;
     origin.y = p.y;
   }
-  
+
   public void editGrid() {
     gridEditor = new HexGridEditor((GridEditor.EditableGrid) this);
     gridEditor.setVisible(true);
@@ -894,9 +894,9 @@ public class HexGrid extends AbstractConfigurable
     cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
     cfg.getConfigurer(SIDEWAYS).setValue(String.valueOf(sideways));
   }
-  
+
   public static class HexGridEditor extends GridEditor {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     public HexGridEditor(EditableGrid grid) {
       super(grid);
@@ -907,13 +907,13 @@ public class HexGrid extends AbstractConfigurable
      * picked out by the user.
      */
     public void calculate() {
-      
+
       /*
-       * Two of the points must lie on the same horizontal or vertical line (be perpendicular to). 
+       * Two of the points must lie on the same horizontal or vertical line (be perpendicular to).
        * The third point must not be perpendicular to either of the first two. First step is to work out
        * which is which as we can't be sure what order they picked out the points in.
        */
-      
+
       if (isPerpendicular(hp1, hp2)) {
         calculate_step2(hp1, hp2, hp3);
       }
@@ -927,10 +927,10 @@ public class HexGrid extends AbstractConfigurable
         reportShapeError();
       }
     }
-    
+
     /*
      * Step 2. Check third point is not perpendicular to either of
-     * the first two, then call appropriate calculation routine 
+     * the first two, then call appropriate calculation routine
      * depending on location relative to the first two.
      */
     protected void calculate_step2(Point p1, Point p2, Point p3) {
@@ -962,7 +962,7 @@ public class HexGrid extends AbstractConfigurable
     }
 
     protected void check (boolean sideways, Point p1, Point p2, Point p3) {
-      
+
       int r = abs(p1.x - p2.x);
       int width = r * 3 / 2;
       if (width < 1) {
@@ -970,7 +970,7 @@ public class HexGrid extends AbstractConfigurable
         return;
       }
       int height = abs(p3.y - p2.y) * 2;
-      
+
       int Xoff = min(p1.x, p2.x) % width + r/2;
       int col = min(p1.x, p2.x) / width;
       int Yoff = min(p1.y, p2.y) % height - (col % 2 == 1 ? 0 : height/2);
@@ -978,34 +978,34 @@ public class HexGrid extends AbstractConfigurable
 
       setMetrics(width, height, Xoff, Yoff, sideways);
     }
-    
+
     protected void checkEnd (boolean sideways, Point p1, Point p2, Point p3) {
       if (abs((p1.x + p2.x) / 2 - p3.x) > ERROR_MARGIN) {
         reportShapeError();
         return;
       }
-      
+
       int r = abs(p3.y - p1.y) * 2;
       int width = r * 3 / 2;
       int height = abs(p3.x - p2.x) * 2;
-      
+
       int xOrigin = p1.y - (p3.y < p1.y ? 0 : r);
       int Xoff = xOrigin % width + r/2;
       int col = xOrigin / width;
       int Yoff = min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height/2);
-      
+
       setMetrics(width, height, Xoff, Yoff, sideways);
     }
-    
+
     protected void setMetrics(int width, int height, int xoff, int yoff, boolean b) {
-      
+
       grid.setDx(width);
       grid.setDy(height);
       grid.setOrigin(new Point(xoff, yoff));
       grid.setSideways(b);
 
     }
-    
+
   }
 
   public int getSnapScale() {

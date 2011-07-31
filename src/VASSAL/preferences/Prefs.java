@@ -93,10 +93,10 @@ public class Prefs implements Closeable {
 
   /**
    * Add a configurable property to the preferences in the given category
-   * 
+   *
    * @param category
    *          the tab under which to add the Configurer's controls in the editor window. If null, do not add controls.
-   * 
+   *
    * @param prompt
    *          If non-null and the value was not read from the preferences file on initialization (i.e. first-time
    *          setup), prompt the user for an initial value
@@ -135,7 +135,7 @@ public class Prefs implements Closeable {
 
   /**
    * Return the value of a given preference.
-   * 
+   *
    * @param key
    *          the name of the preference to retrieve
    * @return the value of this option read from the Preferences file at startup, or <code>null</code> if no value is
@@ -171,7 +171,7 @@ public class Prefs implements Closeable {
   private void read() {
     final FileArchive fa = editor.getFileArchive();
     try {
-      if (fa.contains(name)) { 
+      if (fa.contains(name)) {
         BufferedInputStream in = null;
         try {
           in = new BufferedInputStream(fa.getInputStream(name));
@@ -234,7 +234,7 @@ public class Prefs implements Closeable {
 
   /**
    * A global set of preferences that exists independent of any individual module.
-   * 
+   *
    * @return the global <code>Prefs</code> object
    */
   public static Prefs getGlobalPrefs() {
@@ -259,15 +259,15 @@ public class Prefs implements Closeable {
 
     return globalPrefs;
   }
-  
+
   /**
    * Initialize visible Global Preferences that are shared between the
    * Module Manager and the Editor/Player.
-   * 
+   *
    */
   public static void initSharedGlobalPrefs() {
     getGlobalPrefs();
-    
+
     // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {
       final BooleanConfigurer d3dConf = new BooleanConfigurer(

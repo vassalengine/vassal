@@ -31,7 +31,7 @@ import java.io.OutputStream;
  *
  * @author Joel Uckelman
  * @since 3.1.0
- */ 
+ */
 public class LoggedOutputStream extends OutputStream {
   private final Logger logger;
 
@@ -78,5 +78,5 @@ public class LoggedOutputStream extends OutputStream {
       logger.warn(new String(buf.toByteArray()));
       buf.reset();
     }
-  } 
+  }
 }

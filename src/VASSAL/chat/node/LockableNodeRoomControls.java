@@ -30,18 +30,18 @@ import VASSAL.chat.ui.LockableRoomControls;
 import VASSAL.i18n.Resources;
 
 public class LockableNodeRoomControls extends LockableRoomControls {
-  
+
   public LockableNodeRoomControls(NodeClient client) {
     super((ChatServerConnection) client);
   }
-  
+
   protected void addLockRoomAction(JPopupMenu popup, Room target) {
     NodeClient c = getNodeClient();
     if (c != null) {
       popup.add(new LockRoomAction((NodeRoom) target, c));
     }
   }
-  
+
   private NodeClient getNodeClient() {
     NodeClient c = null;
     if (client instanceof NodeClient) {
@@ -53,7 +53,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     }
     return c;
   }
-  
+
   protected void createRoom(String name) {
     Room existing = null;
     Room[] rooms = client.getAvailableRooms();
@@ -82,9 +82,9 @@ public class LockableNodeRoomControls extends LockableRoomControls {
       super.createRoom(name);
     }
   }
-  
+
   class LockRoomAction extends AbstractAction {
-    private static final long serialVersionUID = 1L; 
+    private static final long serialVersionUID = 1L;
 
     private NodeClient client;
     private NodeRoom target;
@@ -101,6 +101,6 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     public void actionPerformed(ActionEvent e) {
       client.lockRoom(target);
     }
-  } 
-  
+  }
+
 }

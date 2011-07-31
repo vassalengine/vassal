@@ -24,16 +24,16 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * Report Format or old-style Formatted String expression containing at 
+ * Report Format or old-style Formatted String expression containing at
  * least one $variable$ name reference
- * 
+ *
  */
 public class FormattedStringExpression extends Expression {
 
   public FormattedStringExpression (String s) {
     setExpression(s);
   }
-  
+
   /**
    * Evaluate this expression.
    * NB. Code moved from FormattedString.java
@@ -68,7 +68,7 @@ public class FormattedStringExpression extends Expression {
           }
           else if (!localized) {
             buffer.append(token);
-          } 
+          }
         }
         else {
           buffer.append(token);
@@ -84,7 +84,7 @@ public class FormattedStringExpression extends Expression {
    */
   public String toBeanShellString() {
     final String s = getExpression();
-    
+
     try {
       Integer.parseInt(s);
       return s;
@@ -92,7 +92,7 @@ public class FormattedStringExpression extends Expression {
     catch (NumberFormatException e) {
       // Not an error
     }
-    
+
     final StringBuilder buffer = new StringBuilder();
     final SequenceEncoder.Decoder st =
       new SequenceEncoder.Decoder(s, '$');
@@ -122,5 +122,5 @@ public class FormattedStringExpression extends Expression {
 
     return buffer.toString();
   }
-  
+
 }

@@ -31,7 +31,7 @@ import java.io.IOException;
 public class ImageIOException extends IOException {
   private static final long serialVersionUID = 1L;
 
-  private final File file; 
+  private final File file;
 
   protected ImageIOException() {
     this.file = null;

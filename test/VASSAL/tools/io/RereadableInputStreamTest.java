@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 
@@ -54,7 +54,7 @@ public class RereadableInputStreamTest {
     final byte[] expected = new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7 };
     final InputStream in =
       new RereadableInputStream(new ByteArrayInputStream(expected));
-    
+
     for (int i = 0; i < expected.length; ++i) {
       assertEquals(expected[i], in.read());
     }
@@ -67,9 +67,9 @@ public class RereadableInputStreamTest {
     final byte[] expected = new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7 };
     final InputStream in =
       new RereadableInputStream(new ByteArrayInputStream(expected));
-   
+
     final byte[] actual = new byte[expected.length];
-    final int count = in.read(actual); 
+    final int count = in.read(actual);
 
     assertEquals(-1, in.read());
     assertArrayEquals(expected, actual);
@@ -85,7 +85,7 @@ public class RereadableInputStreamTest {
   public void testMarkAndReset() throws IOException {
     final byte[] expected = new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7 };
     final InputStream in =
-      new RereadableInputStream(new ByteArrayInputStream(expected));  
+      new RereadableInputStream(new ByteArrayInputStream(expected));
 
     in.mark(4);
 
@@ -93,9 +93,9 @@ public class RereadableInputStreamTest {
 
     final byte[] buf = new byte[4];
     count = in.read(buf, 0, 4);
-    
+
     assertEquals(4, count);
-    
+
     in.reset();
 
     final byte[] actual = new byte[expected.length];
@@ -104,12 +104,12 @@ public class RereadableInputStreamTest {
     assertEquals(expected.length, count);
     assertEquals(-1, in.read());
     assertArrayEquals(expected, actual);
-  } 
+  }
 
   @Test
   public void testClose() throws IOException {
     final InputStream child = context.mock(InputStream.class);
-    
+
     context.checking(new Expectations() {
       {
         oneOf(child).close();

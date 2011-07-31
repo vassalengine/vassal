@@ -35,12 +35,12 @@ import VASSAL.tools.io.IOUtils;
 /**
  * Utility class to allow translation of VASSAL using the Component
  * Translation mechanism.
- * 
+ *
  * @author Brent Easton
  */
 public class VassalTranslation extends Translation {
   protected String[] allKeys;
-  
+
   protected Properties baseValues = new Properties();
 
   public VassalTranslation() {
@@ -54,7 +54,7 @@ public class VassalTranslation extends Translation {
           in = new BufferedInputStream(is);
           baseValues.load(in);
           in.close();
-        }    
+        }
         finally {
           IOUtils.closeQuietly(in);
         }
@@ -67,7 +67,7 @@ public class VassalTranslation extends Translation {
       ReadErrorDialog.error(e, "VASSAL.properties");
     }
   }
-  
+
   protected String getI18nPrefix() {
     return "";
   }
@@ -85,7 +85,7 @@ public class VassalTranslation extends Translation {
   public String getAttributeValueString(String key) {
     return baseValues.getProperty(key);
   }
-  
+
   public String[] getAttributeDescriptions() {
     initkeys();
     return allKeys;
@@ -95,7 +95,7 @@ public class VassalTranslation extends Translation {
     initkeys();
     return allKeys;
   }
-  
+
   public Class<?>[] getAttributeTypes() {
     initkeys();
     final Class<?>[] types = new Class<?>[allKeys.length];
@@ -123,7 +123,7 @@ public class VassalTranslation extends Translation {
   }
 
   protected void loadProperties(InputStream in) throws IOException {
-    try { 
+    try {
       localProperties.load(in);
       dirty = false;
       in.close();

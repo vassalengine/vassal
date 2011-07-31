@@ -76,7 +76,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @return an Enumeration of the pieces in the stack, from the bottom up This
    *         is a clone of the contents so add/remove operations during read
    *         won't affect it.
-   * @deprecated 
+   * @deprecated
    */
   @Deprecated
   public Enumeration<GamePiece> getPieces() {
@@ -90,7 +90,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   /**
    * Return an enumeration of the pieces in the start, from the top down
-   * 
+   *
    * @return
    * @deprecated
    */
@@ -132,7 +132,7 @@ public class Stack implements GamePiece, StateMergeable {
       expanded = expanded && pieceCount > 1;
     }
   }
-  
+
   /**
    * Perform some action on a GamePiece that has just been removed this Stack
    * @param p
@@ -178,7 +178,7 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * Adds a piece to the stack. If the piece already exists in the stack, moves
    * it to the top
-   * 
+   *
    * @param c
    */
   public void add(GamePiece c) {
@@ -189,7 +189,7 @@ public class Stack implements GamePiece, StateMergeable {
    * Adds a GamePiece to this Stack. Slightly more efficient than
    * {@link #insert} because it assumes the piece does not already belong to
    * this Stack.
-   * 
+   *
    * @param child
    * @param index
    */
@@ -208,7 +208,7 @@ public class Stack implements GamePiece, StateMergeable {
     return pieceCount;
   }
 
-  /** 
+  /**
    * Return the number of pieces that could possible be drawn in the stack, regardless of visibility to any particular player
    * @return
    */
@@ -219,7 +219,7 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * Inserts a child GamePiece at a given index. If the child piece already
    * belongs to this Stack, it will be repositioned to the given index.
-   * 
+   *
    * @param p
    * @param pos
    */
@@ -246,7 +246,7 @@ public class Stack implements GamePiece, StateMergeable {
       insertChild(p, pos);
     }
   }
-  
+
   /**
    * Perform some action on a GamePiece that has just been added to this Stack
    * @param p
@@ -260,7 +260,7 @@ public class Stack implements GamePiece, StateMergeable {
    * If the <code>obs</code> parameter is a {@link Map}, delegate drawing of
    * this Stack to the {@link StackMetrics} of that Map. If <code>obs</code>
    * is not a Map, use the default StackMetrics
-   * 
+   *
    * @see StackMetrics#draw
    * @see #getDefaultMetrics
    */
@@ -289,11 +289,11 @@ public class Stack implements GamePiece, StateMergeable {
     }
     return val.toString();
   }
-  
+
   public String getName() {
     return getName(false);
   }
-  
+
   public String getLocalizedName() {
     return getName(true);
   }
@@ -486,7 +486,7 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * Compute the difference between <code>newState</code> and
    * <code>oldState</code> and appy that difference to the current state
-   * 
+   *
    * @param newState
    * @param oldState
    */
@@ -532,14 +532,14 @@ public class Stack implements GamePiece, StateMergeable {
 
   public void setProperty(Object key, Object val) {
   }
-  
+
   public String toString() {
     return super.toString()+"["+getName()+"]";
   }
 
   /**
    * Calls setProperty() on each piece in this stack
-   * 
+   *
    * @param key
    * @param val
    */
@@ -552,7 +552,7 @@ public class Stack implements GamePiece, StateMergeable {
   public Object getProperty(Object key) {
     return null;
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }
@@ -594,11 +594,11 @@ public class Stack implements GamePiece, StateMergeable {
   public static void setDefaultMetrics(StackMetrics s) {
     defaultMetrics = s;
   }
-  
+
   public StackMetrics getStackMetrics(Map m) {
     return m == null ? getDefaultMetrics() : m.getStackMetrics();
   }
-  
+
   public StackMetrics getStackMetrics() {
     return getStackMetrics(getMap());
   }

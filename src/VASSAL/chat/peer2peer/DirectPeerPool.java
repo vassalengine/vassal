@@ -1,5 +1,5 @@
 /*
- * $Id: 
+ * $Id:
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
@@ -67,7 +67,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private JButton addButton;
   private JButton editButton;
   private JButton removeButton;
-  private JList addressList; 
+  private JList addressList;
   private DefaultListModel addressBook;
   private Properties params;
   private boolean serverMode;
@@ -75,7 +75,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   public DirectPeerPool() {
     this (new Properties());
   }
-    
+
  public DirectPeerPool(Properties param) {
     params = new Properties();
     params.putAll(param);
@@ -90,7 +90,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     inviteButton.setVisible(P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY)));
   }
 
-  public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {    
+  public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
     listenPort = 5050;
     if (!isServerMode()) {
       String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
@@ -103,7 +103,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         }
       }
     }
-    
+
     acceptThread = new AcceptPeerThread(listenPort, ppm);
     acceptThread.setName("Accept Peer Thread"); //$NON-NLS-1$
     myInfo.getInfo().setPort(acceptThread.getPort());
@@ -117,7 +117,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected boolean isServerMode() {
     return serverMode;
   }
-  
+
   public void disconnect() {
     if (frame != null) {
       frame.dispose();
@@ -136,31 +136,31 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   public void initComponents(final P2PPlayer me, final PendingPeerManager ppm) {
-    
-    // Retrieve Address Book from preference 
+
+    // Retrieve Address Book from preference
     if (addressConfig == null) {
-      addressConfig = new StringArrayConfigurer(ADDRESS_PREF, null); 
+      addressConfig = new StringArrayConfigurer(ADDRESS_PREF, null);
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
     }
     String[] encodedEntries = addressConfig.getStringArray();
     addressBook = new DefaultListModel();
     addressList = new JList(addressBook);
-    
+
     for (String e : encodedEntries) {
       addToList(new Entry(e));
     }
-    
+
     Frame owner = null;
     if (GameModule.getGameModule() != null) {
       owner = GameModule.getGameModule().getFrame();
     }
     frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
-    frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);  
-    frame.setLayout(new MigLayout());  
-    
+    frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+    frame.setLayout(new MigLayout());
+
 //    frame.add(new WTextArea(Resources.getString("Peer2Peer.connection_info")), "growx, span 4, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
 
-//    final JPanel detailPanel = new JPanel(new MigLayout("", "")); 
+//    final JPanel detailPanel = new JPanel(new MigLayout("", ""));
 //    detailPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
 //    if (!localIp.equals(internetIp)) {
 //      detailPanel.add(new JLabel(Resources.getString("Peer2Peer.local_address",localIp, String.valueOf(listenPort))), "align center, push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -173,7 +173,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 //      detailPanel.add(new JLabel(Resources.getString("Peer2Peer.no_password")), "align center, push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
 //    }
 //    frame.add(detailPanel, "span 4, growx, push, wrap");
-      
+
     frame.add(new WTextArea(Resources.getString("Peer2Peer.other_players_address")), "growx, span 4,wrap"); //$NON-NLS-1$ //$NON-NLS-2$
 
     final JScrollPane scroll = new JScrollPane(addressList);
@@ -186,7 +186,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         invite(ppm);
       }});
     frame.add(invitePeerButton, "growx, push"); //$NON-NLS-1$
-    
+
     addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
     addButton.setToolTipText(Resources.getString("Peer2Peer.add_button_tooltip")); //$NON-NLS-1$))
     addButton.addActionListener(new ActionListener(){
@@ -194,7 +194,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         addEntry();
       }});
     frame.add(addButton, "growx, push"); //$NON-NLS-1$
-    
+
     editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
     editButton.setToolTipText(Resources.getString("Peer2Peer.edit_button_tooltip")); //$NON-NLS-1$))
     editButton.addActionListener(new ActionListener(){
@@ -202,21 +202,21 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         editEntry();
       }});
     frame.add(editButton, "growx, push"); //$NON-NLS-1$
-    
+
     removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
     removeButton.setToolTipText(Resources.getString("Peer2Peer.remove_button_tooltip")); //$NON-NLS-1$))
     removeButton.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent arg0) {
-        removeEntries();        
+        removeEntries();
       }});
     frame.add(removeButton, "growx, push, wrap"); //$NON-NLS-1$
-    
-    
+
+
     frame.pack();
     frame.setLocationRelativeTo(owner);
-    
+
     return;
-    
+
   }
 
   protected void invite(final PendingPeerManager ppm) {
@@ -233,7 +233,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       }
     }
   }
-  
+
   protected void addEntry() {
     final Entry e = new Entry();
     if (e.edit()) {
@@ -243,7 +243,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       }
     }
   }
-  
+
   protected void addToList(Entry e) {
     boolean added = false;
     for (int i = 0; i < addressBook.getSize() && !added; i++) {
@@ -256,7 +256,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       addressBook.addElement(e);
     }
   }
-  
+
   protected void editEntry() {
     final int index = addressList.getSelectedIndex();
     if (index >= 0) {
@@ -268,7 +268,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       }
     }
   }
-  
+
   protected void removeEntries() {
     final int selected[] = addressList.getSelectedIndices();
     if (selected.length == 0) {
@@ -278,7 +278,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     for (int i = 0; i < selected.length; i++) {
       entries[i] = (Entry) addressBook.getElementAt(selected[i]);
     }
-    
+
     final JPanel queryPanel = new JPanel(new MigLayout("", "10[][]10"));
     final String mess = (entries.length == 1 ? Resources.getString("Peer2Peer.remove_entry") : Resources.getString("Peer2Peer.remove_entries", entries.length));  //$NON-NLS-1$ //$NON-NLS-2$
     queryPanel.add(new JLabel(mess), "align center, wrap");
@@ -287,18 +287,18 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       queryPanel.add(new JLabel(entries[i].toString()), "wrap");
     }
 
-    if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$ 
+    if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
         queryPanel, JOptionPane.QUESTION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-        null, null, null, null)) {     
-    
+        null, null, null, null)) {
+
       for (int i = 0; i < entries.length; i++) {
         addressBook.removeElement(entries[i]);
       }
-    
+
       saveAddressBook();
     }
   }
-  
+
   protected void saveAddressBook() {
     final String[] entries = new String[addressBook.size()];
     int i = 0;
@@ -316,10 +316,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     controls.getToolbar().remove(inviteButton);
     controls.getToolbar().repaint();
   }
-  
-  /** 
+
+  /**
    * A class representing the address of another player's computer.
-   * 
+   *
    */
   private class Entry implements Comparable<Entry>{
     String description;
@@ -330,42 +330,42 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     JTextField addressField;
     JTextField portField;
     JTextField passwdField;
-    
+
     public Entry () {
       this("", "", "5050", "");
     }
-    
+
     public Entry (String description, String address, String port, String passwd) {
       this.description =description;
       this.address = address;
       this.port = port;
       this.passwd = passwd;
     }
-    
+
     public Entry (String s) {
       decode(s);
     }
-    
+
     public String getDescription() {
       return description;
     }
-    
+
     public String getAddress() {
       return address;
     }
-    
+
     public String getPort() {
       return port;
     }
-    
+
     public String getPasswd() {
       return passwd;
     }
-    
+
     public String toString() {
       return description + " [" + address + ":" + port + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
-    
+
     private void decode(String s) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
       description = sd.nextToken(""); //$NON-NLS-1$
@@ -373,26 +373,26 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       port = sd.nextToken("5050"); //$NON-NLS-1$
       passwd = sd.nextToken(""); //$NON-NLS-1$
     }
-    
+
     public String encode() {
       SequenceEncoder se = new SequenceEncoder('|');
       se.append(description);
       se.append(address);
       se.append(port);
       se.append(passwd);
-      return se.getValue();      
+      return se.getValue();
     }
 
     public int compareTo(Entry e) {
       return toString().compareTo(e.toString());
     }
-    
+
     public boolean edit() {
       descriptionField = new JTextField(description);
       addressField = new JTextField(address);
-      portField = new JTextField(port); 
+      portField = new JTextField(port);
       passwdField = new JTextField(passwd);
-      
+
       final JPanel editPanel = new JPanel(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       editPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
       editPanel.add(descriptionField, "wrap, grow, push"); //$NON-NLS-1$
@@ -402,7 +402,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       editPanel.add(portField, "wrap, grow, push"); //$NON-NLS-1$
       editPanel.add(new JLabel(Resources.getString("Prefs.password_label"))); //$NON-NLS-1$
       editPanel.add(passwdField, "wrap, grow, push"); //$NON-NLS-1$
-      
+
       if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.add_peer_connection"), //$NON-NLS-1$
           editPanel, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
           null, null, null, null)) {
@@ -415,7 +415,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       return false;
     }
   }
-  
+
   private class WTextArea extends JTextArea {
     private static final long serialVersionUID = 1L;
     public WTextArea(String s) {

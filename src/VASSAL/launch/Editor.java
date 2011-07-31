@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -167,7 +167,7 @@ public class Editor extends Launcher {
 
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
         lr.importFile = fc.getSelectedFile();
-        
+
         if (lr.importFile != null) {
           if (lr.importFile.exists()) {
             final AbstractMetaData metadata =
@@ -184,8 +184,8 @@ public class Editor extends Launcher {
             lr.importFile = null;
           }
         }
-      } 
-    
+      }
+
       return lr.importFile;
     }
   }

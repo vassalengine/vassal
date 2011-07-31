@@ -47,15 +47,15 @@ public class OpIcon extends ImageIcon implements Icon {
 
   /**
    * Creates an <code>OpIcon</code> using a given <code>ImageOp</code> as
-   * its image source. 
+   * its image source.
    *
    * @param op the <code>ImageOp</code> to be used by this <code>OpIcon</code>
-   */ 
+   */
   public OpIcon(ImageOp op) {
     sop = op;
   }
 
-  /** 
+  /**
    * {@inheritDoc}
    *
    * <p>The given <code>ImageOp</code> is called asynchronously when painting,
@@ -69,7 +69,7 @@ public class OpIcon extends ImageIcon implements Icon {
   @Override
   public void paintIcon(Component c, Graphics g, int x, int y) {
     if (sop == null) return;
-    
+
     final Repainter r = c == null ? null : new Repainter(c, g.getClipBounds());
 
     try {
@@ -98,7 +98,7 @@ public class OpIcon extends ImageIcon implements Icon {
    */
   @Override
   public void setImage(Image img) {}
-  
+
   /** {@inheritDoc} */
   @Override
   public int getIconWidth() {
@@ -124,7 +124,7 @@ public class OpIcon extends ImageIcon implements Icon {
   /**
    * Sets the <code>ImageOp</code> which produces this icon's
    * <code>Image</code>.
-   * 
+   *
    * @param op the <code>ImageOp</code>
    */
   public void setOp(ImageOp op) {

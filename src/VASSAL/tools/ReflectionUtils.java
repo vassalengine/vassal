@@ -51,7 +51,7 @@ public class ReflectionUtils {
    * <code>Class.getConstructor().newInstance()</code>.
    *
    * @param t the <code>Throwable</code>
-   */ 
+   */
   public static void handleNewInstanceFailure(Throwable t, Class<?> c) {
     handle(
       t,
@@ -75,7 +75,7 @@ public class ReflectionUtils {
       ErrorDialog.bug(t);
       return;
     }
-    
+
     // these errors are expected from custom classes
     for (Class<?> cl : args) {
       if (cl.isInstance(t)) {
@@ -89,14 +89,14 @@ public class ReflectionUtils {
         return;
       }
     }
-  
+
     // otherwise something weird happened
     if (t instanceof Error) {
-      // some unusual problem occurred    
+      // some unusual problem occurred
       throw (Error) t;
     }
     else if (t instanceof RuntimeException) {
-      // some unusual problem occurred    
+      // some unusual problem occurred
       throw (RuntimeException) t;
     }
     else {

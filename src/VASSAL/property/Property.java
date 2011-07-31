@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman 
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,7 +30,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @param <T> the class of the value of this {@code Property}
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
 public final class Property<T> {
   /** The name of this property. */
   public final String name;
@@ -42,7 +42,7 @@ public final class Property<T> {
   public final T def;
 
   private final int hash;
-  
+
   /**
    * Creates a {@code Property} with {@code null} as its default value.
    *
@@ -50,7 +50,7 @@ public final class Property<T> {
    * @param type the class of the value of the property
    * @throws IllegalArgumentException if {@code name} or {@code type}
    * is {@code null}
-   */  
+   */
   public Property(String name, Class<T> type) {
     this(name, type, null);
   }
@@ -63,7 +63,7 @@ public final class Property<T> {
    * @param def  the default value of the property
    * @throws IllegalArgumentException if {@code name} or {@code type}
    * is {@code{ null}
-   */ 
+   */
   public Property(String name, Class<T> type, T def) {
     if (name == null) throw new IllegalArgumentException();
     if (type == null) throw new IllegalArgumentException();

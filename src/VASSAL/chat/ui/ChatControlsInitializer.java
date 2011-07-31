@@ -19,7 +19,7 @@ package VASSAL.chat.ui;
 
 
 /**
- * Interface for registering event listeners with the Swing components in a ChatServerControls component 
+ * Interface for registering event listeners with the Swing components in a ChatServerControls component
  * @author rkinney
  *
  */

@@ -160,7 +160,7 @@ public class DieManager extends AbstractConfigurable {
       return null;
     }
     else {
-      return servers.keySet().toArray(new String[servers.size()]); 
+      return servers.keySet().toArray(new String[servers.size()]);
     }
   }
 
@@ -325,9 +325,9 @@ public class DieManager extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    		Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
-    		Resources.getString("Editor.DieManager.ndice"), //$NON-NLS-1$
-    		Resources.getString("Editor.DieManager.nsides") //$NON-NLS-1$
+        Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
+        Resources.getString("Editor.DieManager.ndice"), //$NON-NLS-1$
+        Resources.getString("Editor.DieManager.nsides") //$NON-NLS-1$
      };
   }
 

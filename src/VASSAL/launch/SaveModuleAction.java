@@ -42,14 +42,14 @@ public class SaveModuleAction extends SaveAction {
           public void ok() {
             save();
           }
-  
+
           public void cancel() {
           }
         }
       ).setVisible(true);
     }
   }
-  
+
   protected void save() {
     GameModule.getGameModule().save();
   }

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -44,7 +44,7 @@ public abstract class AbstractParent<T extends JComponent>
         peer.add(child.createPeer());
       }
     });
-  } 
+  }
 
   protected int proxyIndexToRealIndex(int pos) {
     // find the true position, neglecting markers
@@ -58,7 +58,7 @@ public abstract class AbstractParent<T extends JComponent>
   public void insert(final ChildProxy<?> child, int pos) {
     children.add(pos, child);
     child.setParent(this);
-    
+
     if (child instanceof MenuMarker) return;
 
     final int rpos = proxyIndexToRealIndex(pos);
@@ -83,8 +83,8 @@ public abstract class AbstractParent<T extends JComponent>
 
   public int getChildCount() {
     return children.size();
-  }  
-  
+  }
+
   public ChildProxy<?>[] getChildren() {
     return children.toArray(new ChildProxy<?>[children.size()]);
   }

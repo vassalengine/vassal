@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.configure;
@@ -36,7 +36,7 @@ public class ImageConfigurer extends FileConfigurer {
       this.archive = archive;
       editable = false;
    }
-  
+
   protected FileChooser initFileChooser() {
     if (resourceDirPref == null) {
       resourceDirPref = new DirectoryConfigurer("imageDir", null);

@@ -34,7 +34,7 @@ import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Loads a module in play mode
- * 
+ *
  * @author rodneykinney
  */
 public class LoadModuleAction extends GameModuleAction {
@@ -71,7 +71,7 @@ public class LoadModuleAction extends GameModuleAction {
       // bail out if still no target
       if (target == null) return;
     }
- 
+
     loadModule(target);
     actionCancelled = false;
   }
@@ -86,7 +86,7 @@ public class LoadModuleAction extends GameModuleAction {
     Localization.getInstance().translate();
     new ExtensionsLoader().addTo(GameModule.getGameModule());
     GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
-    
+
 //      frame.setVisible(false);
 //    }
 //    finally {

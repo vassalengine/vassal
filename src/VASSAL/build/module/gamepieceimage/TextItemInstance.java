@@ -109,8 +109,8 @@ public class TextItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { 
-      "Value:  ", 
+    return new String[] {
+      "Value:  ",
       "Foreground Color:  ",
       "Background Color:  ",
       "Outline Color:  "

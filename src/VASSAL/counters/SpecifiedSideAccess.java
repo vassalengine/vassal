@@ -25,9 +25,9 @@ import VASSAL.build.module.PlayerRoster;
 /**
  * Access is granted if {@link VASSAL.build.module.PlayerRoster#getMySide()}
  * is in a specified list
- * 
+ *
  * @author rkinney
- * 
+ *
  */
 public class SpecifiedSideAccess implements PieceAccess {
   private List<String> sides;

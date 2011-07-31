@@ -40,7 +40,7 @@ import VASSAL.tools.ButtonFactory;
  * Interactively build inline(beanshell) expressions
  */
 public class ExpressionBuilder extends JDialog {
-  
+
   private static final long serialVersionUID = 1L;
   protected BeanShellExpressionConfigurer expression;
   protected String save;
@@ -50,7 +50,7 @@ public class ExpressionBuilder extends JDialog {
   public ExpressionBuilder(Configurer c, JDialog parent) {
     this(c, parent, null);
   }
-  
+
   public ExpressionBuilder(Configurer c, JDialog parent, EditablePiece piece) {
     super(parent, "Expression Builder", true);
     target = c;
@@ -58,27 +58,27 @@ public class ExpressionBuilder extends JDialog {
     save = target.getValueString();
     JPanel p = new JPanel();
     p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-    
+
     String value = target.getValueString();
-    
+
     if (value.startsWith("{") && value.endsWith("}")) {
-      setExpression(value.substring(1, value.length()-1)); 
+      setExpression(value.substring(1, value.length()-1));
     }
     else {
       setExpression(convert(value));
     }
-    
+
     p.add(expression.getControls());
-    
+
     Box buttonBox = Box.createHorizontalBox();
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         save();
       }
-    });    
+    });
     buttonBox.add(okButton);
-    
+
     JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -86,7 +86,7 @@ public class ExpressionBuilder extends JDialog {
       }
     });
     buttonBox.add(cancelButton);
-    
+
     JButton helpButton = ButtonFactory.getHelpButton();
     helpButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -94,10 +94,10 @@ public class ExpressionBuilder extends JDialog {
       }
     });
     buttonBox.add(helpButton);
-    
+
     p.add(buttonBox);
     add(p);
-    
+
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -107,7 +107,7 @@ public class ExpressionBuilder extends JDialog {
       }
     });
   }
-  
+
   /**
    * OK button pressed. Set the expression back into the target configurer
    * as an inline expression.
@@ -122,11 +122,11 @@ public class ExpressionBuilder extends JDialog {
     }
     dispose();
   }
-  
+
   public void cancel() {
     dispose();
   }
- 
+
   /**
    * Convert an old-style $variable$ string to a BeanShell Expression
    * @param s Old-style string
@@ -135,7 +135,7 @@ public class ExpressionBuilder extends JDialog {
   public String convert(String s) {
     return Expression.createExpression(s).toBeanShellString();
   }
-  
+
   public void setExpression(String value) {
     if (expression == null) {
       String prompt = target.getName().length() == 0 ? "Expression:  " : target.getName();
@@ -143,9 +143,9 @@ public class ExpressionBuilder extends JDialog {
     }
     expression.setValue(value);
   }
-  
+
   public String getExpression() {
     return expression == null ? "" : expression.getValueString();
   }
-    
+
 }

@@ -29,36 +29,36 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * Some general purpose CRC utilities.
- * 
+ *
  * @author Brent Easton
  * @since 3.1.0
  */
 public class CRCUtils {
-  
+
   public static final int DEFAULT_BUFFER_SIZE = 8192;
 
   /**
    * Calculate a cumulative CRC over a series of files
-   * 
+   *
    * NOTE: It is up to the calling routine to ensure that the order of
    * Files in the list is consistent accross all platforms.
-   * 
+   *
    * @param files List of files
    * @return CRC
-   * @throws IOException 
+   * @throws IOException
    */
   public static long getCRC(List<File> files) throws IOException {
-    final CRC32 crc = new CRC32();  
+    final CRC32 crc = new CRC32();
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-    for (File file : files) {      
+    for (File file : files) {
       buildCRC(file, crc, buffer);
     }
     return crc.getValue();
   }
-  
+
   /**
    * Internal routine to accumulate a CRC over a single file
-   * 
+   *
    * @param file File
    * @param crc CRC32 to accumulate
    * @param bytes size of File (out)
@@ -68,16 +68,16 @@ public class CRCUtils {
   private static void buildCRC(File file, CRC32 crc, byte[] buffer) throws IOException {
     InputStream in = new FileInputStream(file);
     try {
-      buildCRC(in, crc, buffer);      
+      buildCRC(in, crc, buffer);
     }
     finally {
       IOUtils.closeQuietly(in);
     }
   }
-  
+
   /**
    * Internal routine to accumulate a CRC over a single InputStream
-   * 
+   *
    * @param in InputStream
    * @param crc CRC32 to accumulate
    * @param bytes number of bytes read
@@ -85,11 +85,11 @@ public class CRCUtils {
    * @throws IOException
    */
   private static void buildCRC(InputStream in, CRC32 crc, byte[] buffer) throws IOException {
-      
+
     int count;
     while ((count = in.read(buffer)) >= 0) {
       crc.update(buffer, 0, count);
     }
   }
-  
+
 }

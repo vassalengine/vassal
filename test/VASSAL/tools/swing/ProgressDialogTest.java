@@ -41,7 +41,7 @@ public class ProgressDialogTest {
     public UIDefaults getDefaults() {
       final float scale = 3f;
 
-      final UIDefaults defaults = super.getDefaults(); 
+      final UIDefaults defaults = super.getDefaults();
 
       final Map<Object,Object> changes = new HashMap<Object,Object>();
 
@@ -55,7 +55,7 @@ public class ProgressDialogTest {
             new FontUIResource(ores.deriveFont(ores.getSize2D()*scale));
           changes.put(key, nres);
           System.out.println(key + " = " + nres);
-        } 
+        }
         else if (val instanceof Font) {
           final Font ofont = (Font) val;
           final Font nfont = ofont.deriveFont(ofont.getSize2D()*scale);
@@ -107,7 +107,7 @@ public class ProgressDialogTest {
         }
       }
 */
-//   } 
+//   }
 
 /*
     float scale=1.5f;
@@ -146,7 +146,7 @@ public class ProgressDialogTest {
 
         pd.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            System.exit(0); 
+            System.exit(0);
           }
         });
 

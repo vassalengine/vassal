@@ -30,7 +30,7 @@ public class EDTRunnableFutureTest {
     final EDTRunnableFuture<Integer> r = new EDTRunnableFuture<Integer>(42) {
       protected void runOnEDT() {}
     };
-   
+
     r.run();
     assertEquals(42, r.get().intValue());
   }
@@ -42,7 +42,7 @@ public class EDTRunnableFutureTest {
         throw new RuntimeException();
       }
     };
-   
+
     r.run();
     r.get();
   }

@@ -83,7 +83,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public static final String getAnonymousUserName() {
     return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
   }
-  
+
   public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     conversation = new JTextArea(15, 60);
@@ -99,7 +99,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
       }
     });
-    input = new JTextField(60); 
+    input = new JTextField(60);
     input.setFocusTraversalKeysEnabled(false);
     input.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -116,7 +116,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   private String formatChat(String text) {
-    final String id = GlobalOptions.getInstance().getPlayerId(); 
+    final String id = GlobalOptions.getInstance().getPlayerId();
     return "<" + (id.length() == 0 ? "("+getAnonymousUserName()+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -371,7 +371,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     public String getMessage() {
       return msg;
     }
-    
+
     public String getDetails() {
       return msg;
     }

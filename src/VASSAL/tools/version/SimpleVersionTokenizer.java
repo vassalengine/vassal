@@ -53,7 +53,7 @@ public class SimpleVersionTokenizer implements VersionTokenizer {
    *
    * @param version the version <code>String</code> to parse
    * @throws IllegalArgumentException if <code>version == null</code>.
-   */  
+   */
   public SimpleVersionTokenizer(String version) {
     if (version == null) throw new IllegalArgumentException();
     v = version;
@@ -66,7 +66,7 @@ public class SimpleVersionTokenizer implements VersionTokenizer {
 
   /** {@inheritDoc} */
   public int next() throws VersionFormatException {
-    if (!hasNext()) throw new NoSuchElementException(); 
+    if (!hasNext()) throw new NoSuchElementException();
 
     int n;
 

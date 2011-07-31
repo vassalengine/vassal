@@ -290,12 +290,12 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
   /**
    * Creates a {@link Decorator} instance
-   * 
+   *
    * @param type
    *          the type of the Decorator to be created. Once created, the
    *          Decorator should return this value from its
    *          {@link Decorator#myGetType} method.
-   * 
+   *
    * @param inner
    *          the inner piece of the Decorator
    * @see Decorator
@@ -319,7 +319,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
   /**
    * Create a GamePiece instance that is not a Decorator
-   * 
+   *
    * @param type
    *          the type of the GamePiece. The created piece should return this
    *          value from its {@link GamePiece#getType} method

@@ -62,7 +62,7 @@ public class Dialogs {
     String disableMsg)
   {
     showMessageDialog(parent, title, heading, message,
-                      messageType, null, key, disableMsg); 
+                      messageType, null, key, disableMsg);
   }
 
   public static void showMessageDialog(
@@ -122,7 +122,7 @@ public class Dialogs {
     if (o == null || !(o instanceof Integer))
       return JOptionPane.CLOSED_OPTION;
     else
-      return ((Integer) o).intValue();    
+      return ((Integer) o).intValue();
   }
 
   public static Object showDialog(
@@ -252,7 +252,7 @@ public class Dialogs {
       "This Is the Header",
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
-      Boolean.TRUE, 
+      Boolean.TRUE,
       "Don't show this again"
     );
 
@@ -266,5 +266,5 @@ public class Dialogs {
     );
 
     System.exit(0);
-  } 
+  }
 }
