@@ -870,9 +870,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
-      Class<?> c[] = parent.getAllowableConfigureComponents();
+      final Class<?> c[] = parent.getAllowableConfigureComponents();
       for (int i = 0; i < c.length; ++i) {
-        if (c[i] == child.getClass()) {
+        if (c[i].isAssignableFrom(child.getClass())) {
           return true;
         }
       }

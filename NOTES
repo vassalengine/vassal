@@ -29,6 +29,11 @@ Source code:
 Changes since 3.1:
 *********************
 
+The following bugs are fixed in 3.2.0-beta1:
+
+* 3486: ConfigureTree.isValidParent() should permit subclasses
+
+
 Please report all bugs in beta8, even if they are bugs which you've
 already reported against other betas. We take your bug reports very
 seriously---they're the reason we've been able to fix so many bugs.
