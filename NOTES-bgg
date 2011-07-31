@@ -1,0 +1,74 @@
+[size=18][b]VASSAL 3.1.15 released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.1.15, which fixes several problems found in earlier versions.
+
+[size=16][b]Download[/b][/size]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-src.zip]Source code[/url]
+
+[size=16][b]Changes since 3.1.0[/b][/size]
+
+Changes in 3.1.15:
+
+* Windows installer now suggests JRE 1.6.0_22 for Java upgrades.
+* URLs for version checking and bug reporting switched to vassalengine.org.
+* Starting with this release, all Bug and RFE numbers refer to the ones in our Bugzilla tracker at http://www.vassalengine.org/tracker.
+
+The following bugs are fixed in 3.1.15:
+
+* 3208: Adjust Windows installer to detect Java 6u22 and later
+* 3179: JNA needs Kernel32 to be public
+* 3095: JPEGs with bad color profiles throw CMMException
+* 2979: CounterGlobalKeyCommand logs its changes separately
+* 2949: IndexOutOfBoundsException in SpecialDiceButton.ResultsIcon.setResults()
+* 2924: Mac OS X: Quartz renderer misrenders fonts
+* 2883: MemoryUtilsImpl is misnamed
+* 2813: NPE in Decorator.setId()
+* 2803: IndexOutOfBoundsException in SpecialDie.getTextValue()
+* 2602: ClassCastException in Decorator.setProperty()
+* 2549: Mac OS X: Failed to create temporary file for jnidispatch library
+* 2463: NPE in Map.getAttributeValueString()
+* 2451: ArrayIndexOutOfBoundsException in Embellishment.getCommonName()
+* ADC2 line definition names are max 25 chars long
+* Incorrect color for empty messages in chat pane
+* Only one connection record is listed per timestamp in server history
+
+The following bugs which affect VASSAL on Windows are fixed in Java 6 Update 21. If you are using an earlier version of Java, we strongly recommend upgrading to at least this version.
+
+* 2601: NPE in sun.awt.shell.Win32ShellFolderManager2.isFileSystemRoot()
+* 2572: IOException in Win32ShellFolder2.getFileSystemPath0()
+* 2552: NPE in sun.awt.shell.Win32ShellFolder2.pidlsEqual()
+
+Changes in 3.1.14:
+
+* RFE: Total player count now appears in the Server Status pane.
+
+The following bugs are fixed in 3.1.14:
+
+* Bug 2944858: Misplaced AreaOfEffect center when board is magnified
+* Bug 2933236: ArrayIndexOutOfBoundsException in StackMetrics.draw()
+* Bug 2912371: Custom step/undo/connect icons not showing in 3.1.13
+* Bug: user.home property is not passed from Module Manager to Player or Editor
+* Bug: Only select marker if original piece was selected. Prevents autoselecting of markers when placed via Global Key Command.
+
+For changes prior to 3.1.14, see the change log. For feature changes from 3.0 to 3.1, see the release notes for 3.1.0.
+
+VASSAL has a new User's Guide! You can view the User's Guide by selecting "User's Guide" from the Help menu in any of VASSAL's components.
+
+The recommended minimum Java version for VASSAL 3.1 has changed. A bug in versions of Java prior to 1.5.0_08 (a.k.a. Java 5 update 8) prevents some images from loading properly. We now recommend that anyone using a version of Java older than 1.5.0_08 upgrade to [i]at least[/i] 1.5.0_08.  
+
+Furthermore, we recommend that Windows users in particular upgrade to at least Java 1.6.0_21 (a.k.a. Java 6 Update 21), in order to avoid bugs present in earlier versions of Java. Windows users installing VASSAL 3.1.15 with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_22. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
+
+Please report all bugs, even if they are bugs which you've already reported against other versions. We take your bug reports very seriously---they're the reason we're able to find and fix bugs.
+
+[size=16][b]Help us test[/b][/size]
+Should you find any problems/oddities/bugs, please tell us so that we can fix them for the next release of VASSAL.
+
+Report bugs here in the Technical Support & Bugs category at the [url=http://vassalengine.org/forums/viewforum.php?f=3]VASSAL forums[/url] or by email to uckelman@nomic.net.
+
+
+Cheers,
+
+The VASSAL Team

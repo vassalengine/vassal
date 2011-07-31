@@ -1,3 +1,168 @@
+3.1.16 - ?
+
+3.1.15 - 6 December 2010
+
+* Windows installer now suggests JRE 1.6.0_22 for Java upgrades.
+* URLs for version checking and bug reporting switched to vassalengine.org.
+* Starting with this release, all Bug and RFE numbers refer to the ones
+  in our Bugzilla tracker at http://www.vassalengine.org/tracker.
+
+Bugs fixed:
+
+* 3208: Adjust Windows installer to detect Java 6u22 and later
+* 3179: JNA needs Kernel32 to be public
+* 3095: JPEGs with bad color profiles throw CMMException
+* 2979: CounterGlobalKeyCommand logs its changes separately
+* 2949: IndexOutOfBoundsException in SpecialDiceButton.ResultsIcon.setResults()
+* 2924: Mac OS X: Quartz renderer misrenders fonts
+* 2883: MemoryUtilsImpl is misnamed
+* 2813: NPE in Decorator.setId()
+* 2803: IndexOutOfBoundsException in SpecialDie.getTextValue()
+* 2602: ClassCastException in Decorator.setProperty()
+* 2549: Mac OS X: Failed to create temporary file for jnidispatch library
+* 2463: NPE in Map.getAttributeValueString()
+* 2451: ArrayIndexOutOfBoundsException in Embellishment.getCommonName()
+* ADC2 line definition names are max 25 chars long
+* Incorrect color for empty messages in chat pane
+* Only one connection record is listed per timestamp in server history
+
+The following bugs which affect VASSAL on Windows are fixed in Java 6 Update
+21. If you are using an earlier version of Java, we strongly recommend
+upgrading to at least this version.
+
+* 2601: NPE in sun.awt.shell.Win32ShellFolderManager2.isFileSystemRoot()
+* 2572: IOException in Win32ShellFolder2.getFileSystemPath0()
+* 2552: NPE in sun.awt.shell.Win32ShellFolder2.pidlsEqual()
+
+3.1.14 - 10 March 2010
+
+* RFE: Total player count now appears in the Server Status pane.
+
+* Bug 2944858: Misplaced AreaOfEffect center when board is magnified
+* Bug 2933236: ArrayIndexOutOfBoundsException in StackMetrics.draw()
+* Bug 2912371: Custom step/undo/connect icons not showing in 3.1.13
+* Bug: user.home property is not passed from Module Manager to Player or Editor
+* Bug: Only select marker if original piece was selected. Prevents
+  autoselecting of markers when placed via Global Key Command.
+
+3.1.13 - 2 December 2009 
+
+* Bug 2902254: NPE in {Player,Editor}.PromptLaunchAction.actionPerformed()
+* Bug 2900930: Trigger Actions not disabled when Property Expression fails
+* Bug 2899561: Module is marked 'dirty' as soon as it is opened.
+* Bug 2888918: IndexOutOfBoundsException in SpecialDie.getImageName()
+* Bug 2817148: NPE in BasicLogger.write() - Trying to log to closed logfile
+* Bug 2816987: IndexOutOfBoundsException in SpecialDie.getTextValue()
+* Bug: Removed spurious Vengine.jar from Launch4j classpath.
+* Bug: Confusing error message on attempt to run without unzipping on Windows
+
+3.1.12 - 15 October 2009
+
+* Bug 2873163: Cannot save module after adding bad SVG image
+* Bug 2871323: NPE in ImageIOException
+* Bug 2844284: Global key cmd "Suppress individual reports" bug
+* Bug 2835838: bad transparency for Type 2 Truecolor PNGs
+* Bug: DataArchive.getImageNameSet() returns empty string for images dir
+
+3.1.11 - 30 September 2009
+
+* The Mac OS X bundle has been updated to run with a 64-bit JVM if one
+is available.
+
+* Bug 2849638: StackOverflowError - Return to Deck and Map auto-move
+* Bug 2844284: GKC does not "Suppress individual reports" across maps
+* Bug 2839916: Player with no Name does not appear properly on Server (II)
+* Bug 2817002: UnsatisfiedLinkError in JNA on some versions of Mac OS X
+
+3.1.10 - 26 August 2009
+
+* VASSAL has a new User's Guide.
+
+* Bug 2839923: Users not showing an IP address
+* Bug 2839916: Player with no Name does not appear properly on Server
+* Bug 2838915: ArrayIndexOutOfBoundsException in ReportState.myKeyEvent()
+* Bug 2835827: Use images with premultiplied alpha on Macs
+* Bug 2835735: ArrayIndexOutOfBoundsException in PieceDefiner
+* Bug 2833840: IllegalArgumentException in FileChooser with Java 1.5
+* Bug 2832499: IllegalArgumentException in PropertySheet
+* Bug 2832472: Inventory: Pieces appear multiple times  
+* Bug 2832471: Inventory: Label for folders cannot contain properties  
+* Bug 2827225: NPE in NodeClient.doInvite()
+* Bug 2826715: NPE in GlobalProperty.encode()
+* Bug 2825175: Game Piece Inventory: "Draw Piece Images?" option is broken
+* Bug 2817139: NPE in RangeFilter ctor
+* Bug 2827113: ArrayIndexOutOfBoundsException in Embellishment
+* Bug 2817070: PropertySheet saves empty hotkey as null
+* Bug 2756330: StackOverflowError in BasicPiece.mySetType()
+* Bug 2735630: IllegalArgumentException due to non-UTF8 ZipEntry names
+* Bug 2259361: NPE in FreeRotator - Counter moved or deleted during rotate 
+
+3.1.9 - 11 July 2009
+
+* Bug 2817613: Bad initial zoom level when loading old Zoomer attributes
+* Rolled back fix for Bug 2813765.
+
+3.1.8 - 9 July 2009
+
+* Bug 2817069: IllegalComponentStateException in MenuDisplayer
+* Bug 2817064: Global Key Commands can send Null KeyStrokes
+* Bug 2817038: NPE in MetaDataFactory.buildMetaData()
+* Bug 2816275: NPE in Embellishment adding layer with no image
+* Bug 2813782: NPE in VASSAL.counters.AreaOfEffect.getArea
+* Bug 2813765: Can't always Peek at a card, even though you can unmask it
+
+3.1.7 - 26 June 2009
+
+* Bug 2811307: Extraneous error messages in Embellishment following property
+* Bug 2811211: Area of Effect does not display in all Zoned Grids
+* Bug 2806392: Observer side linked to password
+* Bug 2806183: Trigger action fails to execute another TA more than once
+* Bug 2805282: SendToLocation does not undo correctly
+* Bug 2804153: NPE in ModuleManager when refreshing Save Folder
+
+3.1.6 - 30 May 2009
+
+* Bug 2798275: Layer following prop does not allow non-string custom props
+* Bug 2794703: StackOverflow using Embellishment level following property
+* Bug 2793103: Memory check fails on Linux due to architecture mismatch
+* Bug: Transparent images used for orthogonal rotations of opaque sources
+* Bug: Incorrect PropertySource used to evaluate properties
+* Bug: Use bounds for primary screen on multi-monitor X11 systems.
+
+3.1.5 - 11 May 2009
+
+* Bug 2786932: MemoryUtils.getPhysicalMemory() fails on PPC Linux
+* Bug 2787242: Layer tracking Property - Report Action lags on PieceName
+* Bug 2787134: NPE during map scrolling due to off-EDT Swing calls
+* Bug 2785328: ImageIO fails to read size of JPEGs with bad color profiles
+* Bug 2784636: NPE in MapShader.buildTexture()
+* Bug 2766794: Expanded Stack of 2 pieces collapses when arrow keys used
+* Bug 2659577: ImageSaver paints Boards with no background black
+* Bug: Accidentally rejecting perfectly valid mask images in ADC2 symbol sets
+* Bug: CounterDetailViewer calls Swing methods off EDT
+* Bug: CounterDetailViewer should not appear during piece drags
+
+* Image scaling is now 35% faster.
+* Map-edge autoscrolling is now smoother and more responsive.
+
+3.1.4 - 15 April 2009
+
+* Bug 2731738: Memory test fails on Windows 98, Windows ME
+* Bug 2721306: IllegalArgumentException in PanelWidget.getLayout()
+* Bug 2718948: v3.0+ DoesNotStack trait bug
+  - Replace Crtl-Shift-Click Selection filter with Alt-Click selection filter
+  - Allow Alt-lasso to select Alt-click selection filter units
+  - Allow Ctrl-lasso to deselect Does Not Stack units.
+  - Double-click on Does Not Stack units causes selection status to toggle
+* Bug 2696618: ImageSaver fails when map has nonpositive dimensions
+* Bug: Bind to loopback ports only to avoid collisions and firewall problems
+* Bug: Module Manager fails to start if port in prefs is already in use
+* Bug: Race condition when setting Module Manager port and key
+* Bug: GUI calls by Module Manager server executed off the EDT
+* Bug: Memory test inaccurate on Linux
+* Bug: Deadlock when Module Manager is closed before children
+* Bug: Java 1.5 ImageIO fails to load PNGs with iTXt chunks
+
 3.1.3 - 1 April 2009
 
 * Bug 2721276: Illegal Heap sizes crashing startup
@@ -52,64 +217,181 @@
 * TurnTracker improvements
 * Spanish translation
 * Adjustable map background color
+* New VASSAL application icon.
+* Less ugly Windows installer theme.
+* Die-roll sorting.
+* Invite, kick players from locked rooms
+* Suggest .vsav instead of .sav as the save extension.
+* Updated JRE download URL to fetch current JRE 1.6.0_6u12.
+* Improved error messages when loading an invalid module.
 
+* RFE 2373999: Module Manager to have access to Global preferences
+* RFE 2193791: Pieces in palette to show correct dynamic property values.
 * RFE 1633152: Simplify adjusting Maximum Memory requirements
 * RFE 1566177: Implement JAI tiled images to reduce memory usage
 * RFE 1565958: Zooming to larger than 100%
 
-* Bug 1716071: Multiple selection isn't drawn in drag ghosts
-* Bug 1716080: Piece traits editor allows removal of BasicPiece trait
+* Bug 2536324: Memory mapped and Scaling prefs missing
+* Bug 2527705: NPE in SelectionHiglighter.addHighlighter()
+* Bug 2522301: NPE when loading broken PNGs
+* Bug 2521503: Bug Dialog Show Details does not repack dialog correctly
+* Bug 2514834: OutOfMemoryError should not be reported as a bug
+* Bug 2503662: NPE on connection with a newly created module
+* Bug 2502717: NPE in PrefsEditor.save()
+* Bug 2501338: IllegalStateException if cannot create extensions directory 
+* Bug 2499980: User Profile display reverting to pre 3.1 version
+* Bug 2499446: NPE when extension directory does not exist
+* Bug 2499238: Return to Deck stacking issue
+* Bug 2498607: Edit extension from another module generates bug report
+* Bug 2497564: No GamePieceImage items when piece first created
+* Bug 2495248: NPE in Replace.replacePiece()
+* Bug 2493325: Don't add Preferences to Module Manager File menu on MacOS X
+* Bug 2489325: SocketException in ModuleManager$SocketListener.run()
+* Bug 2486596: NPE in SequenceEncoder.appendEscapedString()
+* Bug 2476838: IllegalArgumentException in BundleHelper.getString()
+* Bug 2475197: Chat classes call Swing methods off the EDT
+* Bug 2446130: Better handling for ModuleManager socket errors
+* Bug 2442887: Exception if no Layer levels and type new level name
+* Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
+  cannot be cast to VASSAL.counters.Decorator
+* Bug 2431468: NumberFormatException in StackMetrics.setAttribute()
+* Bug 2418907: NPE When SendToLocation sends to Region that does not exist
+* Bug 2418813: NPE Sending PrivateMsg to person who is 'Ignoring' you
+* Bug 2415632: NPE in DeckGlobalKeyCommand.encode()
+* Bug 2393526: Cache requests not marked as failed when Errors occured
+* Bug 2393130: Zoom menu not initialized at time of Zoomer creation
+* Bug 2390630: Connecting to server blocks GUI when server is down
+* Bug 2381419: NPE in RegionGrid.Config.EditRegionAction.windowClosed()
+* Bug 2380245: FileNotFoundException not being caught during image loading
+* Bug 2373956: NPE in child ImageOp when parent fails
+* Bug 2373491: StackOverflowError due to infinite Send-to-location loop
+* Bug 2372199: NPE in PieceSlot.updateGpId()
+* Bug 2358673: Piece transparency in LOS looks weird at non 100% zoom
+* Bug 2346899: file chooser fails with null owner window in Java 1.5
+* Bug 2344403: gpidSupport not set on pieces coming from PieceDefiner  
+* Bug 2340311: Edit All pieces, no change, should not update pieces
+* Bug 2339611: Try to load PNGs with bad metadata anyway
+* Bug 2319018: Triggering multiple 'Move Fixed Distance' traits doesn't work
+* Bug 2316022: ArithmeticException in PropertySheet.TickLabel.mouseClicked
+* Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
+* Bug 2311318: Setting Label length to 0 in Turn Tracker changes to Fixed
+* Bug 2309593: Move Fixed Distance auto-report never turns off
+* Bug 2306908: Default option for 'Auto-Report Moves' should be Always
+* Bug 2306873: Not a Number when referencing DiceButton value in Edit mode
+* Bug 2305254: Chart Maps not Visible if Main map undocked
+* Bug 2301594: LoadExtensionException trying to open an Extension
+* Bug 2300943: Module names with apostrophes don't appear in Server Status
+* Bug 2296067: InvalidDnDOperationException in PieceMover.DragHandler
+* Bug 2294041: Bad Image generates IOException instead of Bad Data report
+* Bug 2292450: Corrupted Color Preference causing NoSuchElement Exception
+* Bug 2290225: Cancel when setting a Dynamic/Global Property sets to null
+* Bug 2286888: NPE in FileChooser$NativeFileChooser.awt_file_dialog_init
+* Bug 2286774: Problems playing modules from folders with '!' in pathname
+* Bug 2286742: Exception loading tutorial while constructing Welcome Wizard
+* Bug 2285925: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
+* Bug 2282205: ArrayIndexOutOfBoundsException in ZoomMenu.initZoomItems()
+* Bug 2280943: Delete key no longer deletes elements in Edit Mode
+* Bug 2280253: NPE if no Key Command specified
+* Bug 2273032: NPE in PlaceMarker.placeMarker()
+* Bug 2265820: Prevent StackOverflowErrors due to LaunchButton loops
+* Bug 2261405: Unable to move region in irregular grid
+* Bug 2259361: NPE in FreeRotator.mouseReleased()
+* Bug 2254357: StringIndexOutOfBoundsException in FormattedStringConfigurer
+* Bug 2250058: NPE when adding a Place Marker to a prototype.
+* Bug 2248313: NoSuchElementException in ColorConfigurer.stringToColor()
+* Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
+* Bug 2219448: Can Synchronize with players in Locked Rooms
+* Bug 2202296: Hang when moving trait up
+* Bug 2199683: NPE in GameState.addPiece()
+* Bug 2199032: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
+* Bug 2198485: NPE in PlaceMarker.updateGpId()
+* Bug 2198485: NPE in PlaceMarker.updateGpId()
+* Bug 2194826: ArithmeticException in HexGrid.HexGridEditor.check()
+* Bug 2191296: HTML not working in Text Label traits
+* Bug 2189633: NPE in Footprint.redraw()
+* Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
+* Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
+* Bug 2180966: Only allow valid module files to be opened or edited
+* Bug 2179397: Poor performance for counters with multiple Text Labels
+* Bug 2176712: NPE in SetupStack.StackConfigurer.actionPerformed()
+* Bug 2176550: NumberFormatException in PositionOption.setValue()
+* Bug 2175571: NoSuchElementException in ColorConfigurer.stringToColor()
+* Bug 2174283: SymbolSet$SymbolData.getImage() creates 0-width image
+* Bug 2172904: NPE in StackMetrics.merge()
+* Bug 2172556: Synchronize on shared SAXSVGDocumentFactory
+* Bug 2169452: Don't raise a dialog for missing images
+* Bug 2162266: NPE in HybridClient.setDelegate()
+* Bug 2146393: No zoom levels in zoom menu
+* Bug 2129550: UnknownHostException in HttpRequestWrapper.doGet()
+* Bug 2124682: Synchronize on shared SAXSVGDocumentFactor
+* Bug 2107274: GeneralFilter gets images with wrong data type
+* Bug 2099742: NullPointerException in Deck
+* Bug 2087474: NullPointerException in PolygonEditor
+* Bug 2087474: ArrayIndexOutOfBoundsException in PolygonEditor
+* Bug 2078197: NullPointerException in RemovePiece
+* Bug 2074670: NullPointerException in AreaOfEffect
+* Bug 2043946: NullPointerException in Footprint
+* Bug 2042928: NullPointerException in Deck
+* Bug 2038103: NullPointerException in BoardPicker
+* Bug 1926512: Updated Private notes not written to save file
+* Bug 1877899: Return To Deck Stacking Problem 
 * Bug 1866161: Exception when deleting initial elements from tabs
 * Bug 1860941: Do not prompt to start new logfile when already recording
-* Bug 1877899: Return To Deck Stacking Problem 
-* Bug 1926512: Updated Private notes not written to save file
-* Bug 2038103: NullPointerException in BoardPicker
-* Bug 2087474: NullPointerException in PolygonEditor
-* Bug 2042928: NullPointerException in Deck
-* Bug 2043946: NullPointerException in Footprint
-* Bug 2074670: NullPointerException in AreaOfEffect
-* Bug 2078197: NullPointerException in RemovePiece
-* Bug 2087474: ArrayIndexOutOfBoundsException in PolygonEditor
-* Bug 2099742: NullPointerException in Deck
+* Bug 1716080: Piece traits editor allows removal of BasicPiece trait
+* Bug 1716071: Multiple selection isn't drawn in drag ghosts
+* Bug: Main Room must not be lockable
+* Bug: Tooltip for dice button was completely broken.
+* Bug: Canonicalize $0 in case VASSAL.sh is being invoked via a symbolic link
+* Bug: Restricted Access trait works again
+* Bug: Must recalculate bounding box for rotation when inner piece changes
+* Bug: Check that child port is in [0,65535] when launching Player or Editor
+* Bug: Problem when adding a Place Marker to a Place Marker definition
+* Bug: Transparent SVG has an opaque black background
+* Bug: Some transparent PNGs not loaded properly by ImageIO
+* Bug: Added missing Cancel button, close window handling to several dialogs 
 * Bug: Zooming now correctly maintains view center
 * Bug: Fixed player name bug which falsely reported empty player
 * Bug: LaunchButton return focus to previous focus owner
-* Bug: ReturnToDeck would not prompt user for deck if there was a
-draw pile that had the empty string as a name
+* Bug: ReturnToDeck would not prompt user for deck if there was a draw pile
+  that had the empty string as a name
 * Bug: Disable main selection highlighter if thickness is set to 0
 * Bug: Disable Undo at the start of a new log
 * Bug: Fix PropertyExpressoin to correctly compare 2 properties
 * Bug: Two bugs in HexGridNumbering.getCenterPoint()
-* Bug: Can't display a Global Property in a Text Label of a piece
-that has a Set Global Property trait defined.
+* Bug: Can't display a Global Property in a Text Label of a piece that has
+  a Set Global Property trait defined.
 * Bug: Report movement of Invisible pieces (? moves ? to ?)
-* Bug: Offset of dragged piece from Deck with maximum # of pieces
-to show
-* Bug: Offset of dragged piece from Deck with large number of
-showing pieces
+* Bug: Offset of dragged piece from Deck with maximum # of pieces to show
+* Bug: Offset of dragged piece from Deck with large number of showing pieces
 * Bug: Fix bug in RestrictCommands not re-enabling commands
 * Bug: Properly handle px units in width and height of SVG images
 * Bug: Fixed bug in SendToLocation when using offsets.
 * Bug: SpecialDiceButton use correct format for text/window-title
 
 3.0.18 - 3 February 2008
+
 * Remove LOS_Thread console output.
 * Bug: Fix LaunchButton focusability.
 
 3.0.17 - 30 December 2007
+
 * Bug: Load extensions for built-in modules.
 
 3.0.16 - 27 December 2007
+
 * Bug: Don't report legacy clone/delete actions for invisible pieces
 
 3.0.15 - 17 December 2007
+
 * Bug: NullPointerException in Embelishment
 * RFE: SetupStack now understands locations on grids and regions.
 
 3.0.14 - 17 December 2007
+
 * Not released.
 
 3.0.13 - 8 November 2007
+
 Usability improvements:
 * Move up/down/top/bottom keys preserve order when multiple pieces are
 selected.
@@ -118,6 +400,7 @@ selected.
 marker.
 
 3.0.12 - 20 October 2007
+
 * Bug: Untrapped error on "Jump right in"
 * Bug: Arbitrary rotations on private maps,
 * Bug: Decks with Mask traits assigned to "any side"
@@ -126,48 +409,60 @@ marker.
 * Bug: Boards that have no name
 
 3.0.11 - 8 October 2007
+
 * Bug: A number of minor bugs with PropertySheet dialogs, toolbar menus,
 prefix names, stack movement.
 
 3.0.10 - 4 October 2007
+
 * Bug: Fixed a NullPointerException.
 
 3.0.9 - 3 October 2007
+
 * Bug: Fixed some problems with non-docking Map Windows, including the Map
 Overview Window and toolbar.
 
 3.0.8 - 1 Ocbober 2007
+
 * Restored high-quality image scaling preference.
 
 3.0.7 - 26 September 2007
+
 * Added High-quality scaling algorithm for zooming in. The scaling is
 faster than the previous smooth-scaling algorithm, so the "Use smooth
 scaling" preferences option has been removed.
 
 3.0.6 - 5 September 2007
+
 * Not released.
 
 3.0.5 - 1 September 2007
+
 * Bug: Layout problems with the board picker in the Game Setup wizard.
 * Bug: Untrapped error when adding a new Chart to a module.
 
 3.0.4 - 29 August 2007
+
 * Bug: Masked pieces can be un-masked by non-owners
 * Bug: The "Level1=" field is not property initialized in the Layer
 properties editor.
 
 3.0.3 - 21 August 2007
+
 * Bug: Problem creating module installers.
 
 3.0.2 - 16 August 2007
+
 * Not released.
 
 3.0.1 - 13 August 2007 
+
 * Bug: Multi-Action buttons no longer appear as sub-menus within a Toolbar
 menu
 * Bug: Dynamic Properties are correctly substituted within a Text Label.
 
 3.0.0 - 9 August 2007
+
 * Choose between central server and direct peer-to-peer connection
 * Internationalization support: Modules can be translated into any
 language via module extensions
@@ -194,3 +489,4 @@ opponent's window
 * Allow Transparent Border/Bg color in Mouse Over Stack Viewer
 * Send To Location - specify Zone, other piece's location
 * Shift clicking on map should not deselect counters
+
