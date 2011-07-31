@@ -424,6 +424,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Deprecated
   public String oldGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
