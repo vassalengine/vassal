@@ -425,7 +425,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public String oldGetType() {
-    final SequenceEncoder se = new SequenceEncoder(null, ';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
 
     se2.append(resetCommand)
