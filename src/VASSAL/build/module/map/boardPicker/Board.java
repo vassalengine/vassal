@@ -218,7 +218,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
       imageFile = (String) val;
       boardImageOp = imageFile == null || imageFile.trim().length() == 0
-                   ? null : Op.loadLarge(imageFile);
+                   ? null : Op.loadLarge("images/" + imageFile);
     }
     else if (WIDTH.equals(key)) {
       if (val instanceof String) {

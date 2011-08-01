@@ -47,9 +47,6 @@ public class Op {
   }
 
   public static SourceOp loadLarge(String name) {
-    if (!name.startsWith("/"))
-      name = "images/" + name;
-
     if (name.endsWith(".svg"))
       return new SourceOpSVGImpl(name);
     else
