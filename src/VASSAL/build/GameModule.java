@@ -27,6 +27,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +98,6 @@ import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
-import VASSAL.tools.MTRandom;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ToolBarComponent;
@@ -160,7 +160,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Prefs preferences;
   protected Logger logger;
   protected Chatter chat;
-  protected Random RNG;
+  protected Random RNG = new SecureRandom();
   protected ServerConnection server;
 
   protected ImageTileSource tcache;
@@ -530,9 +530,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return a single Random number generator that all objects may share
    */
   public Random getRNG() {
-    if (RNG == null) {
-      RNG = new MTRandom();
-    }
     return RNG;
   }
 

@@ -79,8 +79,9 @@ import java.util.Random;
  *
  * </rdf:RDF>
  * -->
- *
+ * @deprecated Use {@link java.secure.SecureRandom} instead.
  */
+@Deprecated
 public class MTRandom extends Random {
 
   /**
