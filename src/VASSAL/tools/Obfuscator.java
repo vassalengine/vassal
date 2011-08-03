@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.Random;
 
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ObfuscatingOutputStream;
 
 /**
  * Utility class that handles simple obfuscation of a file's contents,

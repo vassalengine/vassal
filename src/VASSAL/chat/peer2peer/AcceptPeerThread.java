@@ -1,9 +1,9 @@
 package VASSAL.chat.peer2peer;
 
-import org.litesoft.p2pchat.PendingPeerManager;
-
-import java.net.ServerSocket;
 import java.io.IOException;
+import java.net.ServerSocket;
+
+import org.litesoft.p2pchat.PendingPeerManager;
 
 /**
  * Date: Mar 11, 2003

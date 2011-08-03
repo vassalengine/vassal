@@ -21,7 +21,9 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JScrollPane;
+
 import VASSAL.build.GameModule;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;

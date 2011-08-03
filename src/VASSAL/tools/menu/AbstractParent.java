@@ -21,6 +21,7 @@ package VASSAL.tools.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JComponent;
 
 /**

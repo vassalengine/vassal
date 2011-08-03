@@ -20,6 +20,7 @@
 package VASSAL.tools.menu;
 
 import java.lang.ref.WeakReference;
+
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 

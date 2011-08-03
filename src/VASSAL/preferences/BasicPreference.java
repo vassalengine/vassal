@@ -20,7 +20,9 @@
 package VASSAL.preferences;
 
 import java.awt.Component;
+
 import javax.swing.JLabel;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;

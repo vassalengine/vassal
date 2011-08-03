@@ -41,7 +41,6 @@ import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.WriteErrorDialog;
 
 // FXIME: Would be better if this didn't set the username and password
 // directly, but instead had a static method for returning them.

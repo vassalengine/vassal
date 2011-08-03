@@ -21,6 +21,7 @@ package VASSAL.counters;
 import java.awt.Point;
 import java.awt.Shape;
 import java.util.Iterator;
+
 import VASSAL.build.module.Map;
 
 /**

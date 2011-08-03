@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.bug.BugHandler;
 import VASSAL.tools.bug.Bug2694Handler;
+import VASSAL.tools.bug.BugHandler;
 
 /**
  * @author Joel Uckelman

@@ -50,11 +50,10 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.image.ImageUtils;

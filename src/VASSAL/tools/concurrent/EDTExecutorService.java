@@ -18,6 +18,8 @@
  */
 package VASSAL.tools.concurrent;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * An {@link ExecutorService} which submits to Event Dispatch Thread.
  *

@@ -81,11 +81,9 @@ import javax.swing.tree.TreePath;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang.SystemUtils;
-
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

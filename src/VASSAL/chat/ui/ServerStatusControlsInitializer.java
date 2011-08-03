@@ -18,6 +18,7 @@
 package VASSAL.chat.ui;
 
 import javax.swing.JButton;
+
 import VASSAL.chat.ServerStatus;
 
 public class ServerStatusControlsInitializer implements ChatControlsInitializer {

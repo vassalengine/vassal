@@ -25,8 +25,8 @@ import java.io.Reader;
 import java.net.URL;
 
 import VASSAL.tools.WarningDialog;
-import bsh.EvalError;
 import bsh.BeanShellExpressionValidator;
+import bsh.EvalError;
 import bsh.NameSpace;
 
 /**

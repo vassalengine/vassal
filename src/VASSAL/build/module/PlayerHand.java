@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.HandMetrics;

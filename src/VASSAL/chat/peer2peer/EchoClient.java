@@ -14,7 +14,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
+
 import org.litesoft.p2pchat.PeerInfo;
+
 import VASSAL.build.module.Chatter;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;

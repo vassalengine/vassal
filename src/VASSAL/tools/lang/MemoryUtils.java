@@ -20,15 +20,14 @@ package VASSAL.tools.lang;
 
 import java.lang.management.ManagementFactory;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
-
-import com.sun.management.OperatingSystemMXBean;
-
 import org.apache.commons.lang.SystemUtils;
 
 import VASSAL.tools.jna.Kernel32;
+
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
+import com.sun.management.OperatingSystemMXBean;
 
 /**
  * A utility class for getting information about system memory.

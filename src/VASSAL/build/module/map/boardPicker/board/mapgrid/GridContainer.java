@@ -1,6 +1,7 @@
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.Dimension;
+
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 

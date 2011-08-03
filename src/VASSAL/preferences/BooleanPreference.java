@@ -21,6 +21,7 @@ package VASSAL.preferences;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 

@@ -18,6 +18,7 @@
 package VASSAL.chat.ui;
 
 import javax.swing.JButton;
+
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.messageboard.MessageBoardControls;
 

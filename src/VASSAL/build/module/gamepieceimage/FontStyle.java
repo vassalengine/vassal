@@ -24,6 +24,7 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;

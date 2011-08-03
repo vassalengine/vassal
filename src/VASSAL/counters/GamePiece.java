@@ -23,7 +23,9 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;

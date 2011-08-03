@@ -19,11 +19,11 @@
 
 package VASSAL.tools.logging;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link OutputStream} which feeds an {@link org.slf4j.Logger}.

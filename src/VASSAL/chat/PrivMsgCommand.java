@@ -20,8 +20,10 @@ package VASSAL.chat;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
+
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
 import VASSAL.command.Command;
 
 /**

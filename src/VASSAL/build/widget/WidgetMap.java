@@ -2,6 +2,7 @@ package VASSAL.build.widget;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
+
 import VASSAL.build.module.Map;
 import VASSAL.configure.VisibilityCondition;
 

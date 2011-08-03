@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Image;
 import java.io.File;
+
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 

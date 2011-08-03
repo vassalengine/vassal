@@ -74,7 +74,6 @@ import javax.swing.WindowConstants;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;

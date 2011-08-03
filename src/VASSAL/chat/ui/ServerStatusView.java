@@ -18,25 +18,41 @@
  */
 package VASSAL.chat.ui;
 
-import VASSAL.chat.SimpleRoom;
-import VASSAL.chat.Player;
-import VASSAL.chat.ServerStatus;
-import VASSAL.i18n.Resources;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.*;
-import javax.swing.tree.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import org.jdesktop.swingworker.SwingWorker;
 
+import VASSAL.chat.Player;
+import VASSAL.chat.ServerStatus;
+import VASSAL.chat.SimpleRoom;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**

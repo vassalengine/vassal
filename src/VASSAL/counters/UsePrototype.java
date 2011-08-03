@@ -33,8 +33,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * This trait is a placeholder for a pre-defined series of traits specified in a

@@ -24,6 +24,7 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;

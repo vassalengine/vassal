@@ -26,9 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+
 import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
 

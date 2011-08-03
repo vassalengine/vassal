@@ -26,6 +26,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.tools.ArrayUtils;

@@ -2,6 +2,8 @@ package VASSAL.tools;
 
 import java.awt.Image;
 
+import VASSAL.tools.imageop.ImageOp;
+
 /*
  * $Id$
  *

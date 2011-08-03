@@ -21,8 +21,8 @@ package VASSAL.tools.io;
 import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
@@ -30,6 +30,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.util.zip.ZipFile;
+
 import javax.imageio.stream.ImageInputStream;
 
 /**

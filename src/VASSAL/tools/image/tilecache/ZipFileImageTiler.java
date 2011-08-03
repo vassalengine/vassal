@@ -19,9 +19,12 @@
 
 package VASSAL.tools.image.tilecache;
 
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -44,8 +47,6 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.lang.Callback;
-
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.*;
 
 /**
  * Tiles images contained in a ZIP archive.

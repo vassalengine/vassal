@@ -45,7 +45,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
-
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;

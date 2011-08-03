@@ -28,7 +28,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.jdesktop.swingworker.SwingWorker;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

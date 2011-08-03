@@ -19,6 +19,7 @@
 package VASSAL.build.module.map;
 
 import javax.swing.JToolBar;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;

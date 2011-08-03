@@ -18,10 +18,10 @@
  */
 package VASSAL.chat.peer2peer;
 
+import java.io.IOException;
+
 import org.litesoft.p2pchat.PeerInfo;
 import org.litesoft.p2pchat.PendingPeerManager;
-
-import java.io.IOException;
 
 /**
  * Date: Mar 11, 2003

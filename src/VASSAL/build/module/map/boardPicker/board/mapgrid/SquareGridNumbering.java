@@ -34,8 +34,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.counters.Labeler;

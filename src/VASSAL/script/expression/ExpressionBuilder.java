@@ -30,8 +30,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
 import VASSAL.configure.BeanShellExpressionConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.counters.EditablePiece;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ButtonFactory;

@@ -21,20 +21,15 @@ package VASSAL.tools;
 ////////////////////////////////////////////////////////
 // These imports are used in deprecated methods only. //
 ////////////////////////////////////////////////////////
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
-import java.awt.image.FilteredImageSource;
-import java.awt.Toolkit;
-import java.awt.Rectangle;
-import java.util.Collection;
-import javax.swing.ImageIcon;
-import VASSAL.tools.imageop.Op;
-////////////////////////////////////////////////////////
-
 import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,17 +43,24 @@ import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipFile;
-import sun.applet.AppletAudioClip;
 
+import javax.swing.ImageIcon;
+
+import sun.applet.AppletAudioClip;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.RotateScaleOp;
+import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;

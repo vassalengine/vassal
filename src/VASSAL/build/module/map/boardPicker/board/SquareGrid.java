@@ -18,6 +18,12 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -32,7 +38,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
-import static java.lang.Math.*;
 
 import javax.swing.JButton;
 

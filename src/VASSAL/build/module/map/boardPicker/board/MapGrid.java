@@ -19,6 +19,7 @@
 package VASSAL.build.module.map.boardPicker.board;
 
 import java.awt.Point;
+
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 
 /**

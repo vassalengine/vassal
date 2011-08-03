@@ -19,6 +19,7 @@
 package VASSAL.counters;
 
 import java.awt.Point;
+
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;

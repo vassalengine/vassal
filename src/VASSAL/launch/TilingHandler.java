@@ -19,14 +19,17 @@
 
 package VASSAL.launch;
 
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
+import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,11 +39,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,17 +51,15 @@ import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.image.tilecache.TileUtils;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.FileStore;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.InputOutputStreamPump;
 import VASSAL.tools.io.InputStreamPump;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.EDT;
 import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.Progressor;
-
-import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.*;
 
 /**
  * A launcher for the process which tiles large images.

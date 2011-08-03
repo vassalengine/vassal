@@ -21,6 +21,7 @@ package VASSAL.i18n;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import VASSAL.counters.GamePiece;
 
 /**

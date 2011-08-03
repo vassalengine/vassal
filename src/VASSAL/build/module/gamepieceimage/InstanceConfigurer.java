@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -38,6 +39,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.tools.ScrollPane;

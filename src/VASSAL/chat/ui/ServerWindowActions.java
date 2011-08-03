@@ -19,6 +19,7 @@ package VASSAL.chat.ui;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+
 import VASSAL.chat.Room;
 
 /*

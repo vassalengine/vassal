@@ -19,6 +19,9 @@
 
 package VASSAL.tools;
 
+import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  * A memory-sensitive {@link ConcurrentMap} which stores the values
  * in {@link SoftReference}s. This <code>ConcurrentMap</code> grows

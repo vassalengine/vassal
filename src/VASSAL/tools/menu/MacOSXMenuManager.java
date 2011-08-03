@@ -21,6 +21,7 @@ package VASSAL.tools.menu;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;

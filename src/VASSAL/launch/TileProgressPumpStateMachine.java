@@ -20,6 +20,7 @@
 package VASSAL.launch;
 
 import VASSAL.tools.concurrent.listener.EventListener;
+import VASSAL.tools.image.tilecache.ZipFileImageTiler;
 
 /**
  * A state machine for parsing the output of {@link ZipFileImageTiler}.

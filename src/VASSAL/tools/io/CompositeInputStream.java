@@ -18,12 +18,12 @@
  */
 package VASSAL.tools.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * An {@link InputStream} which concatenates other <code>InputStreams</code>.

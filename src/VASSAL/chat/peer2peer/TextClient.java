@@ -11,6 +11,7 @@ package VASSAL.chat.peer2peer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
+
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;

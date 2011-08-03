@@ -19,8 +19,8 @@
 
 package VASSAL.tools.image.tilecache;
 
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Callable;

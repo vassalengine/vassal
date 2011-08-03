@@ -18,18 +18,24 @@
  */
 package VASSAL.chat;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
+
 import org.apache.commons.lang.StringUtils;
 
+import VASSAL.build.GameModule;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.build.GameModule;
 import VASSAL.tools.SequenceEncoder;
-
-import java.util.*;
-import java.io.IOException;
 
 public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   private HttpRequestWrapper welcomeURL;

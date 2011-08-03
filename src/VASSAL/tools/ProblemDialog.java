@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.swing.DetailsDialog;
+import VASSAL.tools.swing.Dialogs;
 
 /**
  * @author Joel Uckelman

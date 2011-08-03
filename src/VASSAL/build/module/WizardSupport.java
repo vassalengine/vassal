@@ -70,9 +70,8 @@ import org.netbeans.spi.wizard.WizardBranchController;
 import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
-import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
-
+import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

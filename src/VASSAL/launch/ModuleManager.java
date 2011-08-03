@@ -41,7 +41,6 @@ import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.SystemUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,10 +60,6 @@ import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
-//import VASSAL.tools.signal.DefaultMultiplexedSignalSource;
-//import VASSAL.tools.signal.MultiplexedSignalSource;
-//import VASSAL.tools.signal.SignalDispatcher;
-//import VASSAL.tools.signal.SignalSender;
 
 /**
  * Tracks recently-used modules and builds the main GUI window for

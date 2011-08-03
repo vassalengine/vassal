@@ -24,8 +24,8 @@ import java.awt.image.BufferedImage;
 import VASSAL.build.BadDataReport;
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.opcache.OpFailedException;
 

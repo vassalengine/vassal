@@ -20,9 +20,10 @@ package VASSAL.chat.node;
 
 import java.util.List;
 import java.util.Properties;
+
 import VASSAL.chat.LockableRoom;
-import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.Player;
+import VASSAL.chat.SimpleRoom;
 import VASSAL.configure.StringArrayConfigurer;
 
 /**

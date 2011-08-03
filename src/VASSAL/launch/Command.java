@@ -21,6 +21,8 @@ package VASSAL.launch;
 
 import java.io.Serializable;
 
+import VASSAL.tools.ipc.IPCMessage;
+
 /**
  * The interface for objects passed by {@link CommandClient} to
  * {@link CommandServer}.

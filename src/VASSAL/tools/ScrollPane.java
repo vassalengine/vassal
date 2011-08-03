@@ -21,6 +21,7 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 

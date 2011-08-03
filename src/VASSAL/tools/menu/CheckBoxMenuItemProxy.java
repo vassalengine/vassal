@@ -22,6 +22,7 @@ package VASSAL.tools.menu;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.ref.WeakReference;
+
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 

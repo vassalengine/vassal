@@ -21,6 +21,7 @@ package VASSAL.chat.node;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.DynamicClient;
 import VASSAL.chat.HttpRequestWrapper;

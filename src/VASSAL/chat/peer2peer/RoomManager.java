@@ -18,14 +18,15 @@
  */
 package VASSAL.chat.peer2peer;
 
-import org.litesoft.p2pchat.PeerInfo;
-import VASSAL.chat.Player;
-import VASSAL.chat.SimpleRoom;
-import VASSAL.chat.Room;
-import VASSAL.i18n.Resources;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.litesoft.p2pchat.PeerInfo;
+
+import VASSAL.chat.Player;
+import VASSAL.chat.Room;
+import VASSAL.chat.SimpleRoom;
+import VASSAL.i18n.Resources;
 
 public class RoomManager {
   private List<Room> rooms = new ArrayList<Room>();

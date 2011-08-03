@@ -22,6 +22,7 @@ package VASSAL.tools.logging;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JTextArea;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;

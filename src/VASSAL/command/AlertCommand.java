@@ -16,8 +16,10 @@
  */
 package VASSAL.command;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
-import javax.swing.*;
 
 /** This command, when executed, displays a Dialog box with a message */
 public class AlertCommand extends Command {

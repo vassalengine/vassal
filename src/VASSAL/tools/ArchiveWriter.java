@@ -19,8 +19,8 @@
 package VASSAL.tools;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipFile;
 
@@ -29,10 +29,10 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.imageop.Op;
 import VASSAL.tools.image.svg.SVGImageUtils;
-import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
 
 /**

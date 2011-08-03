@@ -20,8 +20,8 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

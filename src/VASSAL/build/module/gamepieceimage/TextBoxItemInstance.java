@@ -20,6 +20,7 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;

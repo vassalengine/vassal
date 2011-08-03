@@ -56,8 +56,8 @@ import VASSAL.tools.LoopControl;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * Macro Execute a series of Keystrokes against this same piece - Triggered by

@@ -18,6 +18,8 @@
  */
 package VASSAL.tools;
 
+import static VASSAL.tools.IterableEnumeration.iterate;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -35,13 +37,12 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static VASSAL.tools.IterableEnumeration.iterate;
 
 import VASSAL.tools.io.IOUtils;
 

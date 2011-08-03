@@ -3,6 +3,7 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.util.concurrent.Future;
+
 import javax.swing.JOptionPane;
 
 

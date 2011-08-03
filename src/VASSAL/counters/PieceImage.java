@@ -24,6 +24,8 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import VASSAL.tools.imageop.GamePieceOp;
+
 /**
  * Maintains an {@link Image} built from the {@link GamePiece#draw}
  * method of a {@link GamePiece}

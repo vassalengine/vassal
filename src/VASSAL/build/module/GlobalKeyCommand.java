@@ -19,6 +19,7 @@
 package VASSAL.build.module;
 
 import java.util.ArrayList;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.configure.VisibilityCondition;

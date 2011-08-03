@@ -19,6 +19,7 @@ package VASSAL.chat.node;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+
 import VASSAL.chat.HttpRequestWrapper;
 import VASSAL.chat.SimpleStatus;
 import VASSAL.tools.PropertiesEncoder;

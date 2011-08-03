@@ -21,24 +21,21 @@ package VASSAL.tools.opcache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// FIXME: switch to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * A memory-sensitive cache for {@link Op}s and their results.

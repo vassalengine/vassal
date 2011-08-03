@@ -18,14 +18,15 @@
  */
 package VASSAL.chat.peer2peer;
 
+import java.io.IOException;
+import java.util.Properties;
+
+import org.litesoft.p2pchat.PeerInfo;
+
 import VASSAL.chat.Player;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
 import VASSAL.tools.PropertiesEncoder;
-import org.litesoft.p2pchat.PeerInfo;
-
-import java.io.IOException;
-import java.util.Properties;
 
 public class P2PPlayer extends SimplePlayer {
   private static final String ID = "id"; //$NON-NLS-1$

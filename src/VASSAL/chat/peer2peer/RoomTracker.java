@@ -19,9 +19,10 @@
 package VASSAL.chat.peer2peer;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 

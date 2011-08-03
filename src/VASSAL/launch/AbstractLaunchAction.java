@@ -22,22 +22,16 @@ package VASSAL.launch;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.EOFException;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,17 +42,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipFile;
+
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,20 +60,13 @@ import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.concurrent.FutureUtils;
-import VASSAL.tools.concurrent.SettableFuture;
-import VASSAL.tools.concurrent.SimpleFuture;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
-import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.FileStore;
-import VASSAL.tools.io.InputOutputStreamPump;
-import VASSAL.tools.io.InputStreamPump;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;

@@ -28,7 +28,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+
 import javax.swing.JTextPane;
+
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ArrayUtils;

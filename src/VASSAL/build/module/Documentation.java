@@ -20,8 +20,10 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.net.MalformedURLException;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+
 import org.w3c.dom.Element;
 
 import VASSAL.Info;

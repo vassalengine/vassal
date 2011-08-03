@@ -21,6 +21,7 @@ package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * An interface for classes which supply image tiles.

@@ -19,12 +19,12 @@
 
 package VASSAL.tools.logging;
 
-import VASSAL.Info;
-import VASSAL.tools.concurrent.SimpleFuture;
-
 import java.util.concurrent.Future;
 
 import org.slf4j.LoggerFactory;
+
+import VASSAL.Info;
+import VASSAL.tools.concurrent.SimpleFuture;
 
 /**
  * @author Joel Uckelman

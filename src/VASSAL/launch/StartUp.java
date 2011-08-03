@@ -19,11 +19,11 @@
 
 package VASSAL.launch;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;

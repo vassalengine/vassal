@@ -37,8 +37,8 @@ import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * This version of {@link MassKeyCommand} is added directly to a

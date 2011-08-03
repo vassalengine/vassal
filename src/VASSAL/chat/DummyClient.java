@@ -18,6 +18,7 @@
 package VASSAL.chat;
 
 import java.beans.PropertyChangeListener;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.chat.peer2peer.PeerPoolInfo;

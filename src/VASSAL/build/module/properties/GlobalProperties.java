@@ -20,7 +20,9 @@ package VASSAL.build.module.properties;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JToolBar;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;

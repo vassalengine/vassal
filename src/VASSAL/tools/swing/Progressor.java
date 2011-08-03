@@ -19,8 +19,8 @@
 
 package VASSAL.tools.swing;
 
-import VASSAL.tools.lang.Pair;
 import VASSAL.tools.concurrent.RangedRunnable;
+import VASSAL.tools.lang.Pair;
 
 /**
  * A progress handler.

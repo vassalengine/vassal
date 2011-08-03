@@ -24,8 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import VASSAL.Info;
 import VASSAL.tools.ReadErrorDialog;

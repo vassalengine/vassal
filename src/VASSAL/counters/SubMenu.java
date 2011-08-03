@@ -24,8 +24,10 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import javax.swing.Box;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;

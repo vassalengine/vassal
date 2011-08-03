@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +21,6 @@ import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.io.IOUtils;
-
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
-import org.jdesktop.swingworker.SwingWorker;
 
 
 /**

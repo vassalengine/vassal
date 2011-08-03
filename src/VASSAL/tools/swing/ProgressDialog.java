@@ -20,7 +20,6 @@
 package VASSAL.tools.swing;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -38,7 +38,6 @@ import javax.swing.JProgressBar;
 import javax.swing.event.EventListenerList;
 
 import net.miginfocom.swing.MigLayout;
-
 import VASSAL.i18n.Resources;
 
 /**

@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageTileSource;

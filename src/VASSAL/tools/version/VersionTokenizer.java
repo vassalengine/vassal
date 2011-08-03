@@ -19,6 +19,8 @@
 
 package VASSAL.tools.version;
 
+import java.util.NoSuchElementException;
+
 /**
  * Converts version numbers into a series of integers.
  * The integers thus returned from two different tokenizers may be

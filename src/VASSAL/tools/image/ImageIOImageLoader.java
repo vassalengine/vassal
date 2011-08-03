@@ -24,11 +24,12 @@ import java.awt.color.CMMException;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;

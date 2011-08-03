@@ -24,6 +24,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;

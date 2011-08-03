@@ -20,9 +20,10 @@ package VASSAL.tools.version;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

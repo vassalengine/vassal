@@ -19,6 +19,7 @@
 package VASSAL.configure;
 
 import java.io.File;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.filechooser.FileChooser;

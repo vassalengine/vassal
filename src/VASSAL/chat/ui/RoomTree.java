@@ -18,10 +18,12 @@
 package VASSAL.chat.ui;
 
 import java.util.List;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.i18n.Resources;

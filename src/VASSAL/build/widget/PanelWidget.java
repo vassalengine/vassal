@@ -25,9 +25,11 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;

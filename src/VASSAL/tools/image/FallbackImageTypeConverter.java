@@ -20,11 +20,9 @@
 package VASSAL.tools.image;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import VASSAL.tools.lang.Reference;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.lang.Reference;
 
 /**
  * Convert a {@link BufferedImage} to a different type, falling back to

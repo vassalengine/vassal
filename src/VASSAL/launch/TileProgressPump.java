@@ -19,14 +19,15 @@
 
 package VASSAL.launch;
 
-import java.io.InputStream;
+import static VASSAL.launch.TileProgressPumpStateMachine.DONE;
+import static VASSAL.launch.TileProgressPumpStateMachine.INIT;
+
 import java.io.IOException;
+import java.io.InputStream;
 
 import VASSAL.tools.concurrent.listener.EventListener;
+import VASSAL.tools.image.tilecache.ZipFileImageTiler;
 import VASSAL.tools.io.InputStreamPump;
-
-import static VASSAL.launch.TileProgressPumpStateMachine.INIT;
-import static VASSAL.launch.TileProgressPumpStateMachine.DONE;
 
 /**
  * A stream pump which receives input from {@link ZipFileImageTiler}.

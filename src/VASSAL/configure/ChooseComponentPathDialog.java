@@ -19,9 +19,11 @@
 package VASSAL.configure;
 
 import java.awt.Frame;
+
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.tools.ArrayUtils;

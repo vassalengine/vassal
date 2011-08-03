@@ -24,13 +24,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.SystemUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

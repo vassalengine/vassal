@@ -1,6 +1,7 @@
 package VASSAL.command;
 
 import java.awt.Point;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;

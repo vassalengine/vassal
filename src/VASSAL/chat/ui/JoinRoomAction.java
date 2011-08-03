@@ -17,13 +17,15 @@
  */
 package VASSAL.chat.ui;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JTree;
+
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
 import VASSAL.i18n.Resources;
-
-import javax.swing.*;
-
-import java.awt.event.ActionEvent;
 
 /**
  * When invoked, will join a game room on the server

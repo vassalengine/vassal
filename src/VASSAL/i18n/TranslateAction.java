@@ -24,8 +24,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;

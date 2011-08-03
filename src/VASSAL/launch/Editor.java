@@ -28,7 +28,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import org.apache.commons.lang.SystemUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

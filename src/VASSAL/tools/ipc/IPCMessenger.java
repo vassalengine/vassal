@@ -1,9 +1,7 @@
 package VASSAL.tools.ipc;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.InvalidClassException;
-import java.io.NotSerializableException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -11,21 +9,18 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.google.common.util.concurrent.ValueFuture;
-
-import VASSAL.tools.concurrent.SettableFuture;
-import VASSAL.tools.concurrent.SimpleFuture;
 import VASSAL.tools.concurrent.listener.DefaultMultiEventListenerSupport;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.concurrent.listener.MultiEventListenerSupport;
-import VASSAL.tools.io.IOUtils;
+
+import com.google.common.util.concurrent.ValueFuture;
 
 public class IPCMessenger {
 

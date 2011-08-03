@@ -19,6 +19,8 @@
 
 package VASSAL.tools.io;
 
+import static VASSAL.tools.IterableEnumeration.iterate;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -27,8 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.Checksum;
-import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -47,8 +49,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
 
 import VASSAL.tools.concurrent.CountingReadWriteLock;
-
-import static VASSAL.tools.IterableEnumeration.iterate;
 
 /**
  * @author Joel Uckelman

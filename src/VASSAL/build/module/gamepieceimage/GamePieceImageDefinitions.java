@@ -1,7 +1,9 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
+
 import org.w3c.dom.Element;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;

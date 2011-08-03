@@ -39,7 +39,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.configure.ConfigureTree;
 import VASSAL.tools.ErrorDialog;
 
 /**

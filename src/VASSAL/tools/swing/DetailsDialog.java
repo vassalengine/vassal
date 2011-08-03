@@ -32,7 +32,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-
 import VASSAL.tools.DialogUtils;
 
 /**

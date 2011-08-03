@@ -22,6 +22,8 @@ package VASSAL.tools;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.google.common.base.Strings;
+
 /**
  * A collection of methods for manipulating {@link String}s.
  *

@@ -19,6 +19,7 @@
 package VASSAL.launch;
 
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;

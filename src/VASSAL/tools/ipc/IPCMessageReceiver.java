@@ -1,8 +1,7 @@
 package VASSAL.tools.ipc;
 
-import java.io.InputStream;
-import java.io.InvalidClassException;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInput;
 import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;

@@ -44,6 +44,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;

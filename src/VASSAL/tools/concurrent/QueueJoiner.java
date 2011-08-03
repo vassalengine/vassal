@@ -20,6 +20,7 @@ package VASSAL.tools.concurrent;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 /**
  * A {@link Callable} which calls a {@code Callable} retrieved from a queue.

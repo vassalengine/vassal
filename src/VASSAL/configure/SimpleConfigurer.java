@@ -21,6 +21,7 @@ package VASSAL.configure;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 

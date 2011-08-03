@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import net.iharder.Base64;
-
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.CgiServerStatus;
