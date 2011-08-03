@@ -118,7 +118,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   protected void setState(String code) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
-    currentSubLevel = sd.nextInt(-1);
+    currentSubLevel = sd.nextInt(0); // change to 0 as default due to issue 3500
     first = sd.nextInt(0);
 
     final String[] s = sd.nextStringArray(0);

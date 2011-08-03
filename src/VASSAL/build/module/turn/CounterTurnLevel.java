@@ -82,7 +82,7 @@ public class CounterTurnLevel extends TurnLevel {
   protected void setState(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
-    currentSubLevel = sd.nextInt(-1);
+    currentSubLevel = sd.nextInt(0);  // Change to 0 as default due to issue 3500
     loop = sd.nextBoolean(false);
     loopLimit = sd.nextInt(-1);
     for (int i = 0; i < getTurnLevelCount(); i++) {
