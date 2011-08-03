@@ -103,7 +103,7 @@ public class Op {
         ErrorDialog.dataError(new BadDataReport(
           "Image not found",
           ((ImageNotFoundException) c).getFile().getName(),
-          c
+          null 
         ));
         return true;
       }
