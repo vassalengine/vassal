@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -34,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.concurrent.DaemonThreadFactory;
 import VASSAL.tools.image.FallbackImageTypeConverter;
 import VASSAL.tools.image.ImageIOImageLoader;
@@ -77,7 +77,7 @@ public class ZipFileImageTiler {
       final String tpath = args[1];
       final int tw = Integer.parseInt(args[2]);
       final int th = Integer.parseInt(args[3]);
-      final String[] ipaths = Arrays.copyOfRange(args, 4, args.length);
+      final String[] ipaths = ArrayUtils.copyOfRange(args, 4, args.length);
 
       // TODO: Determine what the optimal number of threads is.
       final Runtime runtime = Runtime.getRuntime();

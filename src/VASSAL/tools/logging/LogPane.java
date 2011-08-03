@@ -40,7 +40,7 @@ public class LogPane extends JTextArea {
     setLineWrap(true);
     setWrapStyleWord(true);
     setTabSize(2);
-    setFont(new Font(Font.MONOSPACED, Font.PLAIN, getFont().getSize()));
+    setFont(new Font("Monospaced", Font.PLAIN, getFont().getSize()));
 
     tailer = new Tailer(file);
 
