@@ -247,7 +247,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     /** @deprecated Use {@link #SetAllowed(List<String>)} instead. */
     @Deprecated
     @SuppressWarnings("unchecked")
-    public SetAllowed(Vector allowed) {
+    public SetAllowed(Vector<String> allowed) {
       this.allowed = allowed;
     }
 

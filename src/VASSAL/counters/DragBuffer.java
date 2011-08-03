@@ -202,7 +202,7 @@ public class DragBuffer {
   @Deprecated
   @SuppressWarnings("unchecked")
   public void sort(VASSAL.tools.Sort.Comparator comp) {
-    sort((Comparator) comp);
+    sort((Comparator<GamePiece>) comp);
   }
 
   /** @deprecated */

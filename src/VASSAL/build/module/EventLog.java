@@ -129,7 +129,7 @@ public class EventLog extends AbstractBuildable
 
   /** Use {@link #decodedEvents()} instead. */
   @Deprecated
-  public static Enumeration decodeEvents(String s) {
+  public static Enumeration<Event> decodeEvents(String s) {
     ArrayList<Event> l = new ArrayList<Event>();
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
@@ -161,7 +161,7 @@ public class EventLog extends AbstractBuildable
 
   /** Use {@link #encodedEvents(Iterable<Event>)} instead. */
   @Deprecated
-  public static String encodeEvents(Enumeration e) {
+  public static String encodeEvents(Enumeration<?> e) {
     final SequenceEncoder se = new SequenceEncoder('|');
     while (e.hasMoreElements()) {
       final Event evt = (Event) e.nextElement();

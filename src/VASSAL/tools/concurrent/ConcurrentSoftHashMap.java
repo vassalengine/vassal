@@ -63,7 +63,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || o.getClass() != this.getClass()) return false;
-      final SoftValue sv = (SoftValue) o;
+      final SoftValue<?, ?> sv = (SoftValue<?, ?>) o;
       return key.equals(sv.key) &&
              get() == null ? sv.get() == null : get().equals(sv.get());
     }
@@ -203,7 +203,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
     public boolean equals(Object o) {
       if (!(o instanceof Map.Entry)) return false;
-      Map.Entry e = (Map.Entry)o;
+      Map.Entry<?,?> e = (Map.Entry<?,?>) o;
       return eq(key, e.getKey()) && eq(value, e.getValue());
     }
 

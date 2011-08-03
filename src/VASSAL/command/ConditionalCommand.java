@@ -83,7 +83,7 @@ public class ConditionalCommand extends Command {
 
     @Deprecated
     @SuppressWarnings("unchecked")
-    public Eq(String property, Vector allowed) {
+    public Eq(String property, Vector<String> allowed) {
       this.property = property;
       this.allowed = allowed;
     }
@@ -98,7 +98,7 @@ public class ConditionalCommand extends Command {
 
     /** @deprecated Use {@link #getValueList()} instead. */
     @Deprecated
-    public Enumeration getValues() {
+    public Enumeration<String> getValues() {
       return Collections.enumeration(allowed);
     }
 

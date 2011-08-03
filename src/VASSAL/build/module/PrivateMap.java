@@ -251,7 +251,7 @@ public class PrivateMap extends Map {
   /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
   @Override
   @Deprecated
-  public void setBoards(Enumeration boardList) {
+  public void setBoards(Enumeration<Board> boardList) {
     if (surrogate != null) {
       boardList = surrogate.getAllBoards();
       edgeBuffer = surrogate.getEdgeBuffer();

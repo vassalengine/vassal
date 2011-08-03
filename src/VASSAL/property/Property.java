@@ -89,7 +89,7 @@ public final class Property<T> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    final Property p = (Property) o;
+    final Property<?> p = (Property<?>) o;
     return name.equals(p.name) && type.equals(p.type);
   }
 }

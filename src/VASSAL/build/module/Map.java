@@ -759,7 +759,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   @Deprecated
   @SuppressWarnings("unchecked")
-  public synchronized void setBoards(Enumeration boardList) {
+  public synchronized void setBoards(Enumeration<Board> boardList) {
     setBoards(Collections.list(boardList));
   }
 

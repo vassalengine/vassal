@@ -88,8 +88,8 @@ public class BonesDiceServer extends DieServer {
     return null;
   }
 
-  public void parseInternetRollString(RollSet rollSet, Vector results) {
-    Iterator line = results.iterator();
+  public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
+    Iterator<String> line = results.iterator();
 
     for (int i = 0; i < rollSet.dieRolls.length; ++i) {
       StringTokenizer st = new StringTokenizer((String) line.next(), " ");
@@ -106,7 +106,7 @@ public class BonesDiceServer extends DieServer {
 
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
-    final Vector returnString = new Vector();
+    final Vector<String> returnString = new Vector<String>();
 
     final URL url = new URL(rollString[0]);
     final HttpURLConnection connection =

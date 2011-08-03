@@ -35,7 +35,7 @@ import java.util.Vector;
 @Deprecated
 @SuppressWarnings("unchecked")
 public class Sort {
-    private static void swap(Vector v, int i, int j) {
+    private static void swap(Vector<Object> v, int i, int j) {
         Object tmp = v.elementAt(i);
         v.setElementAt(v.elementAt(j), i);
         v.setElementAt(tmp, j);
@@ -50,7 +50,7 @@ public class Sort {
     * @param right - the last index.
     */
     private static void quicksort(
-        Vector v, int left, int right, Comparator comp) {
+        Vector<Object> v, int left, int right, Comparator comp) {
 
         int i, last;
 
@@ -121,7 +121,7 @@ public class Sort {
     /*
     * Preform a sort using the specified comparitor object.
     */
-    public static void quicksort(Vector v, Comparator comp) {
+    public static void quicksort(Vector<Object> v, Comparator comp) {
         quicksort(v, 0, v.size() - 1, comp);
     }
 

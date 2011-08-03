@@ -189,7 +189,7 @@ public class GameState implements CommandEncoder {
    * @deprecated Use {@link #getGameComponents()} instead.
    */
   @Deprecated
-  public Enumeration getGameComponentsEnum() {
+  public Enumeration<GameComponent> getGameComponentsEnum() {
     return Collections.enumeration(gameComponents);
   }
 
