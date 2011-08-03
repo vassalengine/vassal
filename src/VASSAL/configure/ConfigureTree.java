@@ -647,7 +647,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
-  @SuppressWarnings("unchecked")
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
     Class[] sub = target.getAllowableConfigureComponents();

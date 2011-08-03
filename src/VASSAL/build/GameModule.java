@@ -343,7 +343,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
-  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[]{
       Map.class,

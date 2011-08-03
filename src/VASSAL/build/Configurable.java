@@ -70,7 +70,6 @@ public interface Configurable extends Translatable {
      * appears in this list, then instances of that class may be added
      * to this component from the Configuration Window.
      */
-    @SuppressWarnings("unchecked")
     public Class[] getAllowableConfigureComponents();
 
     /**

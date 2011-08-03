@@ -104,7 +104,6 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
 
   }
 
-  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

@@ -97,7 +97,6 @@ public class ConditionalCommand extends Command {
     }
 
     /** @deprecated Use {@link #getValueList()} instead. */
-    @SuppressWarnings("unchecked")
     @Deprecated
     public Enumeration getValues() {
       return Collections.enumeration(allowed);

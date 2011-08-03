@@ -120,7 +120,6 @@ public class Footprint extends MovementMarkable {
   }
 
   /** @deprecated Use {@link #pointList} directly. */
-  @SuppressWarnings("unchecked")
   @Deprecated
   protected Enumeration getPointList() {
     return Collections.enumeration(pointList);

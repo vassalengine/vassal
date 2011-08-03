@@ -850,7 +850,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

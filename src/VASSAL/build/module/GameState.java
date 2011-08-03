@@ -188,7 +188,6 @@ public class GameState implements CommandEncoder {
    * that have been added to this GameState
    * @deprecated Use {@link #getGameComponents()} instead.
    */
-  @SuppressWarnings("unchecked")
   @Deprecated
   public Enumeration getGameComponentsEnum() {
     return Collections.enumeration(gameComponents);

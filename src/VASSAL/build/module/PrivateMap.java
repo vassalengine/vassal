@@ -249,7 +249,6 @@ public class PrivateMap extends Map {
   }
 
   /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
-  @SuppressWarnings("unchecked")
   @Override
   @Deprecated
   public void setBoards(Enumeration boardList) {

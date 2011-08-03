@@ -94,7 +94,6 @@ public class Translation extends AbstractConfigurable
     return getDescription();
   }
 
-  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
