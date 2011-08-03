@@ -275,8 +275,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     };
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[0];
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[0];
   }
 
   public HelpFile getHelpFile() {

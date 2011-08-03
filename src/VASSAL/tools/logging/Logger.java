@@ -21,8 +21,6 @@ package VASSAL.tools.logging;
 
 import java.util.concurrent.Future;
 
-import org.slf4j.LoggerFactory;
-
 import VASSAL.Info;
 import VASSAL.tools.concurrent.SimpleFuture;
 
@@ -34,9 +32,6 @@ import VASSAL.tools.concurrent.SimpleFuture;
 @Deprecated
 public class Logger {
   private Logger() {}
-
-  private static final org.slf4j.Logger logger =
-    LoggerFactory.getLogger(Logger.class);
 
   public static final int MESSAGE = LogEntry.MESSAGE;
   public static final int WARNING = LogEntry.WARNING;

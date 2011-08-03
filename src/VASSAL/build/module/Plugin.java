@@ -104,8 +104,8 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
 
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[0];
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[0];
   }
 
   public HelpFile getHelpFile() {

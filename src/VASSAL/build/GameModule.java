@@ -343,8 +343,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[]{
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[]{
       Map.class,
       PieceWindow.class,
       PrototypesContainer.class,
