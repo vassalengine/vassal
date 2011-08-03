@@ -40,11 +40,9 @@ import VASSAL.i18n.Translatable;
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker {
   protected List<Buildable> buildComponents = new ArrayList<Buildable>();
-
-  protected ValidityChecker validator; // Sub-classes can set this
-
-  // reference to perform validity
-  // checking
+ 
+  // Sub-classes can set this reference to perform validity checking
+  protected ValidityChecker validator;
 
   /**
    * Build this component by getting all XML attributes of the XML element and
@@ -52,9 +50,9 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
    */
   public void build(Element e) {
     if (e != null) {
-      NamedNodeMap n = e.getAttributes();
+      final NamedNodeMap n = e.getAttributes();
       for (int i = 0; i < n.getLength(); ++i) {
-        Attr att = (Attr) n.item(i);
+        final Attr att = (Attr) n.item(i);
         setAttribute(att.getName(), att.getValue());
 
         /*
