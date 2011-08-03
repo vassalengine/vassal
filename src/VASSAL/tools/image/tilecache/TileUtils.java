@@ -323,7 +323,7 @@ public class TileUtils {
     final DataBufferInt db = (DataBufferInt) tile.getRaster().getDataBuffer();
     final int[] data = db.getData();
 
-    bb = bb.allocate(4*data.length);
+    bb = ByteBuffer.allocate(4*data.length);
     bb.asIntBuffer().put(data);
 
     final GZIPOutputStream zout = new GZIPOutputStream(out);
