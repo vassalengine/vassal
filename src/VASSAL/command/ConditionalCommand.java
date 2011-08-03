@@ -82,7 +82,6 @@ public class ConditionalCommand extends Command {
     }
 
     @Deprecated
-    @SuppressWarnings("unchecked")
     public Eq(String property, Vector<String> allowed) {
       this.property = property;
       this.allowed = allowed;

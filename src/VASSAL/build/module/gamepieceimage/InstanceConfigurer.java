@@ -73,11 +73,13 @@ public class InstanceConfigurer extends Configurer {
     return PropertiesToString(getValueList());
   }
 
+  @SuppressWarnings("unchecked")
   public List<ItemInstance> getValueList() {
     return (List<ItemInstance>) getValue();
   }
 
   /** @deprecated Use {@link #getValueList()} instead. */
+  @SuppressWarnings("unchecked")
   @Deprecated
   public ArrayList<ItemInstance> getValueArrayList() {
     return (ArrayList<ItemInstance>) getValue();

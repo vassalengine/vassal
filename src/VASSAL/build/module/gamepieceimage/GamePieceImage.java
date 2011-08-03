@@ -164,6 +164,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return borderColor;
   }
 
+  @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       final String newName = (String) value;

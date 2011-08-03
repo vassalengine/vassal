@@ -99,23 +99,23 @@ public class ShadowDiceDieServer extends DieServer {
     return b.toString();
   }
 
-  public void parseInternetRollString(RollSet rollSet, Vector results) {
+  public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
 
-    Enumeration e = results.elements();
+    Enumeration<String> e = results.elements();
 
     // Initialise and search for start line
-    String line = (String) e.nextElement();
+    String line =  e.nextElement();
     while (e.hasMoreElements() && !line.startsWith("! " + ROLL_MARKER))
-      line = (String) e.nextElement();
+      line = e.nextElement();
 
     // Skip description line
-    line = (String) e.nextElement();
+    line = e.nextElement();
 
     // And process the results, 1 per roll in the multiroll
     DieRoll[] rolls = rollSet.getDieRolls();
     for (int i = 0; i < rolls.length; i++) {
 
-      line = (String) e.nextElement();
+      line = e.nextElement();
 
       int firsthash = line.indexOf('#') - 1;
       StringTokenizer st = new StringTokenizer(line.substring(firsthash), " ");

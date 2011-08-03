@@ -850,8 +850,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[0];
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[0];
   }
 
   public HelpFile getHelpFile() {
