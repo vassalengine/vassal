@@ -94,6 +94,7 @@ public class Translation extends AbstractConfigurable
     return getDescription();
   }
 
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
