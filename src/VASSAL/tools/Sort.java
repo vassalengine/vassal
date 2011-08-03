@@ -33,7 +33,6 @@ import java.util.Vector;
  * @deprecated Use {@link java.util.Collections.sort} instead.
  */
 @Deprecated
-@SuppressWarnings("unchecked")
 public class Sort {
     private static void swap(Vector<Object> v, int i, int j) {
         Object tmp = v.elementAt(i);

@@ -349,7 +349,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
   @Deprecated
-  @SuppressWarnings("unchecked")
   public void setBoards(Enumeration<Board> bdEnum) {
     setBoards(Collections.list(bdEnum));
   }
@@ -743,7 +742,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
     /** @deprecated Use {@link #SetBoards(BoardPicker,List<Board>)}. */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public SetBoards(BoardPicker target, Vector<Board> boards) {
       this.target = target;
       this.boards = boards;
