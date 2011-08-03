@@ -41,6 +41,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -51,6 +54,9 @@ import VASSAL.tools.io.IOUtils;
  * objects.
  */
 public abstract class Builder {
+
+  private static final Logger logger = LoggerFactory.getLogger(Builder.class);
+
   /**
    * General building algorithm.  For each subelement of the build
    * Element, this method creates an instance of the class (which
@@ -72,12 +78,20 @@ public abstract class Builder {
         try {
           final Buildable b = create((Element) child);
           if (parent != null) {
-              b.addTo(parent);
-              parent.add(b);
+             b.addTo(parent);
+             parent.add(b);
           }
         }
         catch (IllegalBuildException ex) {
           ErrorDialog.bug(ex);
+        }
+        catch (RuntimeException ex) {
+          logger.error("Error building " + child.getNodeName());
+          throw ex;
+        }
+        catch (Error ex) {
+          logger.error("Error building " + child.getNodeName());
+          throw ex;
         }
       }
     }
