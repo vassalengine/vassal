@@ -89,10 +89,10 @@ public class BonesDiceServer extends DieServer {
   }
 
   public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
-    Iterator<String> line = results.iterator();
+    final Iterator<String> line = results.iterator();
 
     for (int i = 0; i < rollSet.dieRolls.length; ++i) {
-      StringTokenizer st = new StringTokenizer((String) line.next(), " ");
+      final StringTokenizer st = new StringTokenizer(line.next(), " ");
 
       for (int j = 0; j < rollSet.dieRolls[i].getNumDice(); ++j) {
         rollSet.dieRolls[i].setResult(j, Integer.parseInt(st.nextToken()));
