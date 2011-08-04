@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2011 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,11 @@
  */
 package VASSAL.tools;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -25,7 +30,9 @@ import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
-// FIXME: Use java.awt.Desktop for this when we move to Java 1.6+.
+import org.apache.commons.lang.SystemUtils;
+
+// FIXME: Remove BrowserLauncher when we move to Java 1.6+.
 
 /**
  * Utility class for displaying an external browser window.
@@ -33,29 +40,65 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * @author rkinney
  */
 public class BrowserSupport {
+
   private static final BrowserLauncher browserLauncher;
 
   static {
     BrowserLauncher bl = null;
-    try {
-      bl = new BrowserLauncher();
-    }
-    catch (BrowserLaunchingInitializingException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (UnsupportedOperatingSystemException e) {
-      ErrorDialog.bug(e);
-    }
 
+    if (SystemUtils.IS_JAVA_1_5) {
+      try {
+        bl = new BrowserLauncher();
+      }
+      catch (BrowserLaunchingInitializingException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (UnsupportedOperatingSystemException e) {
+        ErrorDialog.bug(e);
+      }
+    }
+    
     browserLauncher = bl;
   }
 
-  public static void openURL(String url) {
+  private static void openURLWithBrowserLauncher(String url) {
     if (browserLauncher != null) {
       browserLauncher.openURLinBrowser(url);
     }
     else {
       ErrorDialog.show("BrowserSupport.unable_to_launch", url);
+    }
+  }
+
+  private static void openURLWithDesktop(String url) {
+    final Desktop desktop = Desktop.getDesktop();
+    if (desktop.isSupported(Desktop.Action.BROWSE)) {
+      try {
+        desktop.browse(new URI(url));
+      }
+      catch (IOException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (IllegalArgumentException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (URISyntaxException e) {
+        ErrorDialog.bug(e);
+      }
+    }
+  }
+
+  public static void openURL(String url) {
+    if (!SystemUtils.IS_JAVA_1_5) {
+      if (Desktop.isDesktopSupported()) {
+        openURLWithDesktop(url);
+      }
+      else {
+        openURLWithBrowserLauncher(url);
+      }
+    }
+    else {
+      openURLWithBrowserLauncher(url);
     }
   }
 
