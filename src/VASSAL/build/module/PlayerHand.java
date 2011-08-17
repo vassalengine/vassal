@@ -65,8 +65,15 @@ public class PlayerHand extends PrivateMap {
 
   public Dimension mapSize() {
     final Rectangle r = new Rectangle(0,0,200,200);
-    for (GamePiece p : pieces.getPieces()) r.add(boundingBoxOf(p));
     r.add(new Rectangle(super.mapSize()));
+
+    for (GamePiece p : pieces.getPieces()) {
+      final Rectangle bb = boundingBoxOf(p);
+      if (bb != null) {
+        r.add(bb);
+      }
+    }
+
     return r.getSize();
   }
 }
