@@ -564,11 +564,13 @@ public class ZipArchive implements FileArchive {
   /** Rebuilds the {@link ZipEntries} from our underlying {@link ZipFile}. */
   private synchronized void readEntries() throws IOException {
     entries.clear();
-    zipFile = new ZipFile(archiveFile);
 
-    for (ZipEntry e : iterate(zipFile.entries())) {
-      entries.put(e.getName(), new Entry(e, null));
-//System.out.println(e.getName());
+    if (archiveFile.exists()) {
+      zipFile = new ZipFile(archiveFile);
+
+      for (ZipEntry e : iterate(zipFile.entries())) {
+        entries.put(e.getName(), new Entry(e, null));
+      }
     }
   }
 
