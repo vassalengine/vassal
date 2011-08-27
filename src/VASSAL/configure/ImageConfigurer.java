@@ -30,13 +30,13 @@ import VASSAL.tools.filechooser.ImageFileFilter;
  * image file and writes it to a {@link ArchiveWriter}.
  */
 public class ImageConfigurer extends FileConfigurer {
-   protected static DirectoryConfigurer resourceDirPref;
+  protected static DirectoryConfigurer resourceDirPref;
 
-   public ImageConfigurer(String key, String name, ArchiveWriter archive) {
-      super(key, name);
-      this.archive = archive;
-      editable = false;
-   }
+  public ImageConfigurer(String key, String name, ArchiveWriter archive) {
+    super(key, name);
+    this.archive = archive;
+    editable = false;
+  }
 
   protected FileChooser initFileChooser() {
     final GameModule gm = GameModule.getGameModule();
