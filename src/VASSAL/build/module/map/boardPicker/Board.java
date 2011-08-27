@@ -62,6 +62,8 @@ import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
@@ -217,8 +219,29 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = ((File) val).getName();
       }
       imageFile = (String) val;
-      boardImageOp = imageFile == null || imageFile.trim().length() == 0
-                   ? null : Op.loadLarge("images/" + imageFile);
+
+      if (imageFile == null || imageFile.trim().length() == 0) {
+        boardImageOp = null;
+      }
+      else {
+        final ImageTileSource ts =
+          GameModule.getGameModule().getImageTileSource();
+
+        boolean tiled = false;
+        try {
+          tiled = ts.tileExists(imageFile, 0, 0, 1.0);
+        }
+        catch (ImageIOException e) {
+          // ignore, not tiled
+        }
+
+        if (tiled) {
+          boardImageOp = Op.loadLarge("images/" + imageFile);
+        }
+        else {
+          boardImageOp = Op.load(imageFile);
+        }
+      }
     }
     else if (WIDTH.equals(key)) {
       if (val instanceof String) {
