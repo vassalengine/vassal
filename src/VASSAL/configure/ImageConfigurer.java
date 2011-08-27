@@ -39,15 +39,20 @@ public class ImageConfigurer extends FileConfigurer {
    }
 
   protected FileChooser initFileChooser() {
+    final GameModule gm = GameModule.getGameModule();
+
     if (resourceDirPref == null) {
       resourceDirPref = new DirectoryConfigurer("imageDir", null);
-      GameModule.getGameModule().getPrefs().addOption(null,resourceDirPref);
+      gm.getPrefs().addOption(null,resourceDirPref);
     }
-    FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getFrame(),resourceDirPref);
+
+    final FileChooser fc =
+      FileChooser.createFileChooser(gm.getFrame(), resourceDirPref);
     fc.setFileFilter(new ImageFileFilter());
     return fc;
   }
 
+  @Override
   protected void addToArchive(File f) {
     archive.addImage(f.getPath(), f.getName());
   }
