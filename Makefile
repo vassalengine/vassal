@@ -175,8 +175,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 #	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 #	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
-	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
+	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
