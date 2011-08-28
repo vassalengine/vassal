@@ -1,4 +1,20 @@
-3.1.16 - ?
+3.1.16 - 17 August 2011
+
+* Windows installer now suggests JRE 1.6.0_26 for Java upgrades.
+
+Bugs fixed:
+
+* 3500: ArrayIndexOutOfBoundsException in TurnComponent.getTurnLevel()
+* 3486: ConfigureTree.isValidParent() should permit subclasses
+* 3479: DynamicProperty.setProperty() casts non-Strings to String 
+* 3472: Initial value of DynamicProperty is not evaluated
+* 3463: Infinite recursion if $PieceName$ specified as Text Label
+* 3465: Empty DynamicProperty causes IllegalStateException on loading
+* 3277: NPE because MTRandom.setSeed() not called by Random() in Java 7
+* 3115: NPE in PlayerHand.mapSize()
+* 2907: Don't dump stack traces for missing images
+* 2815: ArrayIndexOutOfBoundsException in Stack.insertPieceAt()
+* 2633: BrowserLaunchingInitializingException in BrowserSupport()
 
 3.1.15 - 6 December 2010
 
