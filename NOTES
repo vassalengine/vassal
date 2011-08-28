@@ -26,90 +26,109 @@ Source code:
 
 
 *********************
-Changes since 3.1:
-*********************
-
-The following bugs are fixed in 3.2.0-beta1:
-
-* 3486: ConfigureTree.isValidParent() should permit subclasses
-* 3479: DynamicProperty.setProperty() casts non-Strings to String
-* 3472: Initial value of DynamicProperty is not evaluated
-* 3465: Empty DynamicProperty causes IllegalStateException on loading
-* 3463: Infinite recursion if $PieceName$ specified as Text Label
-* 2694: Warn (Windows) users to reboot after Java upgrade
-
-Please report all bugs in beta8, even if they are bugs which you've
-already reported against other betas. We take your bug reports very
-seriously---they're the reason we've been able to fix so many bugs.
-
-
-*********************
 New Features in 3.2
 *********************
 
-* Levels within a Layer can be moved up or down the level list using buttons. 
-  [RFE 1604275]
+* Levels within a Layer can be moved up or down the level list using
+  buttons. [RFE 1604275]
  
-* Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards'
-  options in right-click menu in Editor. Specify a folder of images, specify a
-  counter template and Vassal will automatically load the images and generate 
-  units. [RFE 132985]
+* Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple
+  Cards' options in right-click menu in Editor. Specify a folder of
+  images, specify a counter template and Vassal will automatically load
+  the images and generate units. [RFE 132985]
    
-* Description field added to Toolbar Menu and Multi-Action button components.
-  [RFE 2005463]
+* Description field added to Toolbar Menu and Multi-Action button
+  components. [RFE 2005463]
    
 * Specify Keystrokes by name - Key Commands can be entered as single Key
   Strokes as in earlier versions of Vassal, or can be given a 2 or more
-  character names. Named Key Strokes are essentially 'invisible' to users.
-  Vassal guarantees that a unique real keyStroke will be allocated to each
-  uniquely named Keystroke. [RFE 1604269]
- 
-* Decks can specify by Property Expression which pieces are allowed to be
-  Drag 'n Dropped onto them. Piece which may not be added are returned to
-  where the drag started. [RFE 1406133]
+  character names. Named Key Strokes are essentially 'invisible' to
+  users. Vassal guarantees that a unique real keyStroke will be
+  allocated to each uniquely named Keystroke. [RFE 1604269]
 
+* Decks can specify by Property Expression which pieces are allowed to
+  be Drag 'n Dropped onto them. Piece which may not be added are
+  returned to where the drag started. [RFE 1406133]
+ 
 * Decks can now specify a Hotkey for the Reverse and FaceUp/Down command
   and can customize the Reverse and Re-shuffle menu command names.
   [RFE 2799261]
   
 * Counters now support the DeckPosition property. If a piece is not in a
-  Deck, 0 is returned. If a piece is in a Deck, then the position of the 
-  piece relative to the top of the Deck is returned. The top piece returns
-  1, the next piece down returns 2 etc. [RFE 2799291]
+  Deck, 0 is returned. If a piece is in a Deck, then the position of the
+  piece relative to the top of the Deck is returned. The top piece
+  returns 1, the next piece down returns 2 etc. [RFE 2799291]
     
 * Support for mp3 sound files. [RFE 1913850]
 
-* Fix Display/Color handling for Grids and Numberings. Allow Numbering to
-  be visible when grid not visible in Zones. [RFE 1637018]
+* Fix Display/Color handling for Grids and Numberings. Allow Numbering
+  to be visible when grid not visible in Zones. [RFE 1637018]
 
-* Implementation of BeanShell allowing Arbitrarily complex Java Expressions to
-  be used in Property Match Expressions, In-line Java Expressions and new
-  Calculated Property trait . [RFE 1565025] 
+* Implementation of BeanShell allowing Arbitrarily complex Java
+  Expressions to be used in Property Match Expressions, In-line Java
+  Expressions and new Calculated Property trait. [RFE 1565025]
   
-* Display the Log File Comments in the Chat Window when a log file is opened
-  or continued. [RFE 2717634]
+* Display the Log File Comments in the Chat Window when a log file is
+  opened or continued. [RFE 2717634]
 
 * Global Key Commands created on a Map now have an option to affect
-  counters on all Maps, not just the Map they are created on. [RFE 2456733]
+  counters on all Maps, not just the Map they are created on.
+  [RFE 2456733]
   
-* Traits that move a counter (Send To Location, Return to Deck, Moved Fixed 
-  Distance, Pivot) now update the same location Oldxxxxxx properties that
-  Drag and Drop movement does. [RFE 2803311]
+* Traits that move a counter (Send To Location, Return to Deck, Moved
+  Fixed Distance, Pivot) now update the same location Oldxxxxxx
+  properties that Drag and Drop movement does. [RFE 2803311]
   
 * Added repeat(loop) option to Trigger Action and Multi-action button.
   [RFE 2813702]
 
-* Ensure all commands generated by a single user action are UNDOne by a single
-  click of the UNDO action. [RFE 2816016]
+* Ensure all commands generated by a single user action are undone by a
+  single click of the undo action. [RFE 2816016]
   
 * Option to allow non-owning players to move Restricted Access pieces.
   [RFE 2828808]
 
-* Add 'Snap to Grid?' option to HexGrid and SquareGrid, defaulting to Yes.
-  Allows Grid Snapping to be turned off for the whole grid. [RFE 2842811]
+* Add 'Snap to Grid?' option to HexGrid and SquareGrid, defaulting to
+  Yes. Allows Grid Snapping to be turned off for the whole grid.
+  [RFE 2842811]
 
-* All scaling is now high-quality. Low-quality scaling (in hardware) caused too   many graphics glitches on Windows.
+* All scaling is now high-quality. Low-quality scaling (in hardware)
+  caused too many graphics glitches on Windows.
   
+
+*********************
+Changes since 3.1.16
+*********************
+
+The following bugs are fixed in 3.2.0-beta1:
+
+* 2694: Warn (Windows) users to reboot after Java upgrade
+
+For changes prior to 3.2.0-beta1, see the change log.
+
+Please report all bugs in 3.2.0-beta1, even if they are bugs which
+you've already reported against other betas. We take your bug reports
+seriously---they're the reason we've been able to fix so many bugs.
+
+
+*********************
+Minimum Requirements
+*********************
+
+VASSAL 3.2 requires the Java Runtime Envrionment to run.
+
+Linux: Java 6 is required for using VASSAL on Linux.
+
+MacOS X: The recommended minimum Java version for using VASSAL on MacOS
+X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is
+unavailable, and Java 6 for Macs where Java 6 is available.
+
+Windows: The recommended minimum Java version for Windows is 1.6.0_21
+(a.k.a. Java 6 Update 21). Windows users installing VASSAL with the
+Windows installer will be prompted to update Java if what they have is
+older than 1.6.0_22. After upgrading Java on Windows, you must restart
+your computer in order for Java programs to work properly.
+
 
 *********************
 Help us test
