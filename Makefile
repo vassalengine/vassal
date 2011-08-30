@@ -67,7 +67,7 @@ JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
 JAVA:=$(JAVAPATH)/java
 
-NSIS:=PATH=$$PATH:~/java/nsis makensis
+NSIS:=/usr/bin/makensis
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
