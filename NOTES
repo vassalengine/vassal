@@ -96,13 +96,19 @@ New Features in 3.2
   caused too many graphics glitches on Windows.
   
 
+
+
+
 *********************
 Changes since 3.1.16
 *********************
 
 The following bugs are fixed in 3.2.0-beta1:
 
+* 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
+* 2671: BMPs are incompatible with memory-mapped images
+* 2556: ImageOp does not support paths
 
 For changes prior to 3.2.0-beta1, see the change log.
 
