@@ -161,6 +161,8 @@ public class ZipArchive implements FileArchive {
         finally {
           IOUtils.closeQuietly(out);
         }
+
+        in.close();
       }
       finally {
         IOUtils.closeQuietly(in);
