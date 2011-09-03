@@ -188,14 +188,6 @@ public class PrefsEditor {
   }
 
   public FileArchive getFileArchive() {
-    if (archive.isClosed()) {
-      try {
-        archive = new ZipArchive(archive.getName());
-      }
-      catch (IOException e) {
-        archive = null;
-      }
-    }
     return archive;
   }
 

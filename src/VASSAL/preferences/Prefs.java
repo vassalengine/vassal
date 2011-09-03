@@ -41,7 +41,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
@@ -169,8 +168,9 @@ public class Prefs implements Closeable {
   }
 
   private void read() {
-    final FileArchive fa = editor.getFileArchive();
+    FileArchive fa = null;
     try {
+      fa = editor.getFileArchive();
       if (fa.contains(name)) {
         BufferedInputStream in = null;
         try {
@@ -183,9 +183,14 @@ public class Prefs implements Closeable {
           IOUtils.closeQuietly(in);
         }
       }
+
+      fa.close();
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, fa.getName());
+    }
+    finally {
+      IOUtils.closeQuietly(fa);
     }
   }
 
@@ -207,14 +212,24 @@ public class Prefs implements Closeable {
       }
     }
 
-    OutputStream out = null;
+    FileArchive fa = null;
     try {
-      out = editor.getFileArchive().getOutputStream(name);
-      storedValues.store(out, null);
-      out.close();
+      fa = editor.getFileArchive();
+
+      OutputStream out = null;
+      try {
+        out = fa.getOutputStream(name);
+        storedValues.store(out, null);
+        out.close();
+      }
+      finally {
+        IOUtils.closeQuietly(out);
+      }
+
+      fa.close();
     }
     finally {
-      IOUtils.closeQuietly(out);
+      IOUtils.closeQuietly(fa);
     }
 
     changed.clear();
@@ -245,10 +260,9 @@ public class Prefs implements Closeable {
         globalPrefs = new Prefs(
           new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
         );
-        globalPrefs.write();
       }
       catch (IOException e) {
-        WriteErrorDialog.error(e, prefsFile);
+        ReadErrorDialog.error(e, prefsFile);
       }
 
       final DirectoryConfigurer c =
