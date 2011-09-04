@@ -547,7 +547,7 @@ public class ZipArchive implements FileArchive {
 //      if (!entries.containsKey(root))
 //        throw new FileNotFoundException(root + " not in archive");
 
-      root += File.separator;
+      root += '/';
       final ArrayList<String> names = new ArrayList<String>();
 
       for (String n : entries.keySet()) {
