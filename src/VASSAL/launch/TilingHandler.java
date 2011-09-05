@@ -180,7 +180,8 @@ public class TilingHandler {
       Info.javaBinPath,
       "-classpath",
       System.getProperty("java.class.path"),
-      "-Xms768M",
+//      "-Xms768M",
+      "-Xms256M",
 //        "-Xmx" + ((2*4*maxpix) >> 20) + "M",
       "-DVASSAL.id=" + pid,
       "-Duser.home=" + System.getProperty("user.home"),
@@ -331,7 +332,10 @@ public class TilingHandler {
     final Pair<Integer,Integer> s = findImages(archive, tcache, multi, failed);
 
     // nothing to do if no images need tiling
-    if (multi.isEmpty()) return;
+    if (multi.isEmpty()) {
+      logger.info("No images to tile.");
+      return;
+    }
 
     // ensure that the tile directories exist
     makeHashDirs();
