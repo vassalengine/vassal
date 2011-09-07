@@ -206,12 +206,14 @@ public class PrefsEditor {
       }
       c.setFrozen(false);
     }
+
     try {
       write();
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());
     }
+
     dialog.setVisible(false);
   }
 
