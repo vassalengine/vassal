@@ -59,7 +59,7 @@ public class ZipArchive implements FileArchive {
   private ZipFile zipFile;
 
   private boolean modified = false;
-  private boolean closed = false;
+  private boolean closed = true;
 
   private static class Entry {
     public ZipEntry ze;
@@ -119,8 +119,9 @@ public class ZipArchive implements FileArchive {
     if (file == null) throw new IllegalArgumentException();
     this.archiveFile = file;
 
-    if (truncate) archiveFile.delete();
-    else if (archiveFile.exists()) readEntries();
+    if (truncate) {
+      archiveFile.delete();
+    }
   }
 
   /**
@@ -270,13 +271,16 @@ public class ZipArchive implements FileArchive {
       e.ze = ze;
 
       // clean up old temp file
-      if (e.file != null) e.file.delete();
+      if (e.file != null) {
+        e.file.delete();
+      }
 
       // create new temp file
       e.file = TempFileManager.getInstance().createTempFile("zip", ".tmp");
 
       return new ZipArchiveOutputStream(
-        new FileOutputStream(e.file), new CRC32(), e.ze);
+        new FileOutputStream(e.file), new CRC32(), e.ze
+      );
     }
     catch (IOException ex) {
       w.unlock();
@@ -327,9 +331,14 @@ public class ZipArchive implements FileArchive {
       openIfClosed();
 
       final Entry e = entries.remove(path);
-      if (e != null) modified = true;
+      if (e != null) {
+        modified = true;
+      }
 
-      if (e.file != null) e.file.delete();
+      if (e.file != null) {
+        e.file.delete();
+      }
+
       return e != null;
     }
     finally {
@@ -346,10 +355,11 @@ public class ZipArchive implements FileArchive {
       // delete all temporary files
       for (String name : entries.keySet()) {
         final Entry e = entries.get(name);
-        if (e.file != null) e.file.delete();
+        if (e.file != null) {
+          e.file.delete();
+        }
       }
 
-      readEntries();
       modified = false;
     }
     finally {
@@ -368,8 +378,11 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  /** {@inheritDoc} */
+  public void close() throws IOException { flush(); }
+
   private void writeToDisk() throws IOException {
-    if (!modified) return;
+    if (!modified || closed) return;
 
     // write all files to a temporary zip archive
     final File tmpFile =
@@ -385,6 +398,7 @@ public class ZipArchive implements FileArchive {
 
       if (zipFile != null) {
         zipFile.close();
+        zipFile = null;
 
         // copy unmodified file into the temp archive
         ZipInputStream in = null;
@@ -454,26 +468,9 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    readEntries();
+    closed = true;
     modified = false;
-  }
-
-  /** {@inheritDoc} */
-  public void close() throws IOException {
-    w.lock();
-    try {
-      if (!closed) {
-        writeToDisk();
-
-        closed = true;
-        modified = false;
-        zipFile = null;
-        entries.clear();
-      }
-    }
-    finally {
-      w.unlock();
-    }
+    entries.clear();
   }
 
   /** {@inheritDoc} */
@@ -495,7 +492,10 @@ public class ZipArchive implements FileArchive {
       openIfClosed();
 
       final Entry e = entries.get(path);
-      if (e == null) throw new FileNotFoundException(path + " not in archive");
+      if (e == null) {
+        throw new FileNotFoundException(path + " not in archive");
+      }
+
       return e.file == null ? e.ze.getSize() : e.file.length();
     }
     finally {
@@ -510,7 +510,10 @@ public class ZipArchive implements FileArchive {
       openIfClosed();
 
       final Entry e = entries.get(path);
-      if (e == null) throw new FileNotFoundException(path + " not in archive");
+      if (e == null) {
+        throw new FileNotFoundException(path + " not in archive");
+      }
+
       return e.file == null ? e.ze.getTime() : e.file.lastModified();
     }
     finally {
@@ -537,7 +540,9 @@ public class ZipArchive implements FileArchive {
 
   /** {@inheritDoc} */
   public List<String> getFiles(String root) throws IOException {
-    if (root.length() == 0) return getFiles();
+    if (root.length() == 0) {
+      return getFiles();
+    }
 
     r.lock();
     try {
@@ -569,7 +574,6 @@ public class ZipArchive implements FileArchive {
 
     if (archiveFile.exists()) {
       zipFile = new ZipFile(archiveFile);
-
       for (ZipEntry e : iterate(zipFile.entries())) {
         entries.put(e.getName(), new Entry(e, null));
       }
