@@ -198,8 +198,6 @@ public class Prefs implements Closeable {
    * Store this set of preferences in the editor, but don't yet save to disk
    */
   public void save() throws IOException {
-    read();
-
     for (Configurer c : options.values()) {
       if (changed.contains(c.getKey())) {
         final String val = c.getValueString();
@@ -212,24 +210,15 @@ public class Prefs implements Closeable {
       }
     }
 
-    FileArchive fa = null;
+    FileArchive fa = editor.getFileArchive();
+    OutputStream out = null;
     try {
-      fa = editor.getFileArchive();
-
-      OutputStream out = null;
-      try {
-        out = fa.getOutputStream(name);
-        storedValues.store(out, null);
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
-      }
-
-      fa.close();
+      out = fa.getOutputStream(name);
+      storedValues.store(out, null);
+      out.close();
     }
     finally {
-      IOUtils.closeQuietly(fa);
+      IOUtils.closeQuietly(out);
     }
 
     changed.clear();
