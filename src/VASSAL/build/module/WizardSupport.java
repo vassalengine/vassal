@@ -430,10 +430,16 @@ public class WizardSupport {
               controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
             }
             else {
-              GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
-              GameModule.getGameModule().getPrefs().getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
+              final Prefs p = GameModule.getGameModule().getPrefs();
+
+              p.getOption(GameModule.REAL_NAME)
+               .setValue(nameConfig.getValueString());
+
+              p.getOption(GameModule.SECRET_NAME)
+               .setValue(pwd.getValueString());
+
               try {
-                GameModule.getGameModule().getPrefs().write();
+                p.save();
                 controller.setProblem(null);
               }
               // FIXME: review error message
