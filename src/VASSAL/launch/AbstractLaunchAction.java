@@ -262,8 +262,6 @@ e.printStackTrace();
         final String aname = lr.module.getAbsolutePath();
 
         final ModuleMetaData meta = new ModuleMetaData(new ZipFile(aname));
-//        final File cdir = new File(Info.getConfDir(),
-//          "tiles/" + meta.getName() + "_" + meta.getVersion());
 
         final String hstr =
           DigestUtils.shaHex(meta.getName() + "_" + meta.getVersion());
@@ -274,6 +272,7 @@ e.printStackTrace();
           aname,
           cdir,
           new Dimension(256, 256),
+          PHYS_MEMORY,
           nextId.getAndIncrement()
         );
 

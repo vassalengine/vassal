@@ -74,6 +74,7 @@ public class TilingHandler {
   protected final String aname;
   protected final File cdir;
   protected final Dimension tdim;
+  protected final int maxheap_limit;
   protected final int pid;
 
   /**
@@ -84,10 +85,12 @@ public class TilingHandler {
    * @param tdim the tile size
    * @param pid the id of the child process
    */
-  public TilingHandler(String aname, File cdir, Dimension tdim, int pid) {
+  public TilingHandler(String aname, File cdir,
+                       Dimension tdim, int mhlim, int pid) {
     this.aname = aname;
     this.cdir = cdir;
     this.tdim = tdim;
+    this.maxheap_limit = mhlim;
     this.pid = pid;
   }
 
@@ -165,16 +168,13 @@ public class TilingHandler {
     return new Pair<Integer,Integer>(tcount, maxpix);
   }
 
-  protected void runSlicer(List<String> multi, final int tcount, int maxpix)
+  protected void runSlicer(List<String> multi, final int tcount, int maxheap)
                                    throws CancellationException, IOException {
 
     final InetAddress lo = InetAddress.getByName(null);
     final ServerSocket ssock = new ServerSocket(0, 0, lo);
 
     final int port = ssock.getLocalPort();
-
-    // This was determined empirically. Does it vary across JVMs? No idea.
-    final int maxheap = (int) (2.71*((4*maxpix) >> 20) + 50);
 
     final List<String> args = new ArrayList<String>();
     args.addAll(Arrays.asList(new String[] {
@@ -339,9 +339,19 @@ public class TilingHandler {
     // ensure that the tile directories exist
     makeHashDirs();
 
+    final int tcount = s.first;
+    final int maxpix = s.second;
+
+    // fix the max heap
+
+    // This was determined empirically. Does it vary across JVMs? No idea.
+    final int maxheap_estimated = (int) (2.71*((4*maxpix) >> 20) + 50);
+
+    final int maxheap = Math.min(maxheap_estimated, maxheap_limit);
+
     // slice, and cleanup on failure
     try {
-      runSlicer(multi, s.first, s.second);
+      runSlicer(multi, s.first, maxheap);
     }
     catch (CancellationException e) {
       cleanup();
