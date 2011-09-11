@@ -165,7 +165,7 @@ public class TilingHandler {
     return new Pair<Integer,Integer>(tcount, maxpix);
   }
 
-  protected void runSlicer(List<String> multi, final int tcount, int maxsize)
+  protected void runSlicer(List<String> multi, final int tcount, int maxpix)
                                    throws CancellationException, IOException {
 
     final InetAddress lo = InetAddress.getByName(null);
@@ -173,16 +173,15 @@ public class TilingHandler {
 
     final int port = ssock.getLocalPort();
 
-// TODO: do something to determine the right max heap size based on the
-// size of the largest image to be tiled
+    // This was determined empirically. Does it vary across JVMs? No idea.
+    final int maxheap = (int) (2.71*((4*maxpix) >> 20) + 50);
+
     final List<String> args = new ArrayList<String>();
     args.addAll(Arrays.asList(new String[] {
       Info.javaBinPath,
       "-classpath",
       System.getProperty("java.class.path"),
-//      "-Xms768M",
-      "-Xms256M",
-//        "-Xmx" + ((2*4*maxpix) >> 20) + "M",
+      "-Xmx" + maxheap + "M",
       "-DVASSAL.id=" + pid,
       "-Duser.home=" + System.getProperty("user.home"),
       "-DVASSAL.port=" + port,
