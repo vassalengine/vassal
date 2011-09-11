@@ -21,6 +21,9 @@ package VASSAL.tools.image;
 
 import java.awt.image.BufferedImage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
@@ -32,6 +35,8 @@ import VASSAL.tools.lang.Reference;
  * @author Joel Uckelman
  */
 public class FallbackImageTypeConverter implements ImageTypeConverter {
+  private static final Logger logger =
+    LoggerFactory.getLogger(FallbackImageTypeConverter.class);
 
   protected final TemporaryFileFactory tfactory;
   protected final ImageTypeConverter memory_converter;
@@ -75,6 +80,7 @@ public class FallbackImageTypeConverter implements ImageTypeConverter {
     }
     catch (OutOfMemoryError e) {
       // This is ok, we just don't have enough free heap for the conversion.
+      logger.info("Switching to FileImageTypeConverter...");
     }
 
     // Try converting on disk instead.
