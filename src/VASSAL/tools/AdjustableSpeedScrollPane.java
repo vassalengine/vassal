@@ -82,13 +82,18 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
       public void propertyChange(PropertyChangeEvent e) {
         if (SCROLL_SPEED.equals(e.getPropertyName()))
           setSpeed(((Integer) e.getNewValue()).intValue());
-        }
       }
-    );
+    });
 
-    final Prefs prefs = GameModule.getGameModule().getPrefs();
-    prefs.addOption(Resources.getString("Prefs.general_tab"), config); //$NON-NLS-1$
-    setSpeed(((Integer) prefs.getValue(SCROLL_SPEED)).intValue());
+    final GameModule g = GameModule.getGameModule();
+    if (g == null) {
+      setSpeed(defaultSpeed);
+    }
+    else {
+      final Prefs prefs = g.getPrefs();
+      prefs.addOption(Resources.getString("Prefs.general_tab"), config); //$NON-NLS-1$
+      setSpeed(((Integer) prefs.getValue(SCROLL_SPEED)).intValue());
+    }
   }
 
   private void setSpeed(int speed) {
