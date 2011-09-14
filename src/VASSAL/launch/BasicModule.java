@@ -83,29 +83,30 @@ public class BasicModule extends GameModule {
   }
 
   protected void build() throws IOException {
-// FIXME: we need to handle the case where this is a new module differently,
-// since in that case getting the stream will fail due to there being no
-// buildFile yet.
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(getDataArchive().getInputStream(BUILDFILE));
-    }
-    // FIXME: review error message
-    // FIXME: this should be more specific, to separate the case where
-    // we have failed I/O from when we read ok but have no module
-    catch (IOException e) {
-      if (new File(getDataArchive().getName()).exists()) {
-        throw new IOException(
-          Resources.getString("BasicModule.not_a_module")); //$NON-NLS-1$
-      }
-    }
+    final DataArchive darch = getDataArchive();
 
+    final File f = new File(darch.getName());
     try {
-      if (in == null) {
+      if (!f.exists() || f.length() == 0) {
+        // new module, no buildFile
         build(null);
       }
       else {
+        // existing module
+        BufferedInputStream in = null;
         try {
+          try {
+            in = new BufferedInputStream(darch.getInputStream(BUILDFILE));
+          }
+          // FIXME: review error message
+          // FIXME: this should be more specific, to separate the case where
+          // we have failed I/O from when we read ok but have no module
+          catch (IOException e) {
+            throw (IOException) new IOException(
+              Resources.getString("BasicModule.not_a_module") //$NON-NLS-1$
+            ).initCause(e);
+          }
+
           final Document doc = Builder.createDocument(in);
           build(doc.getDocumentElement());
           in.close();
@@ -116,8 +117,8 @@ public class BasicModule extends GameModule {
       }
     }
     // FIXME: review error message
-    catch (IOException ex) {
-      throw new IllegalArgumentException(ex);
+    catch (IOException e) {
+      throw new IllegalArgumentException(e);
     }
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
