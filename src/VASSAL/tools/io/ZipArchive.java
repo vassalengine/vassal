@@ -572,7 +572,7 @@ public class ZipArchive implements FileArchive {
   private synchronized void readEntries() throws IOException {
     entries.clear();
 
-    if (archiveFile.exists()) {
+    if (archiveFile.exists() && archiveFile.length() > 0) {
       zipFile = new ZipFile(archiveFile);
       for (ZipEntry e : iterate(zipFile.entries())) {
         entries.put(e.getName(), new Entry(e, null));
