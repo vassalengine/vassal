@@ -461,10 +461,21 @@ public class ZipArchive implements FileArchive {
         FileUtils.moveFile(tmpFile, archiveFile);
       }
       catch (IOException e) {
-        throw (IOException) new IOException(
-          "Unable to overwrite " + archiveFile.getAbsolutePath() +
-          ", data written to " + tmpFile.getAbsolutePath() + " instead."
-        ).initCause(e);
+        String err =
+          "Unable to overwrite " + archiveFile.getAbsolutePath() + ": ";
+          
+        if (!archiveFile.exists()) {
+          err += " file does not exist.";
+        }
+        else if (!archiveFile.canWrite()) {
+          err += " file is not writable.";
+        }
+        else if (!archiveFile.isFile()) {
+          err += " not a normal file.";
+        }
+
+        err += " Data written to " + tmpFile.getAbsolutePath() + " instead.";
+        throw (IOException) new IOException(err).initCause(e);
       }
     }
 
