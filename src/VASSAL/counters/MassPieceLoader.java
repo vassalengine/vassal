@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Brent Easton
+ * Copyright (c) 2008-2010 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -60,6 +60,7 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.BooleanConfigurer;
@@ -68,6 +69,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.Dialogs;
@@ -84,6 +86,7 @@ public class MassPieceLoader {
   protected static final int SKIP_COL = 3;
   protected static final int COPIES_COL = 4;
   protected static final int COLUMN_COUNT = 5;
+  protected static final Color EDITABLE_COLOR = Color.blue;
 
   protected Configurable target;
   protected ConfigureTree configureTree;
@@ -94,7 +97,7 @@ public class MassPieceLoader {
   protected ArrayList<Emb> layers = new ArrayList<Emb>();
   protected MassLoaderDialog dialog;
   private static DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
-      "Image Directory:  ");
+      "Image Directory: ");
   private static BooleanConfigurer basicConfig = new BooleanConfigurer(null,
       "Do not load images into Basic Piece traits?", Boolean.FALSE);
   private static MassPieceDefiner definer = new MassPieceDefiner();
@@ -140,7 +143,7 @@ public class MassPieceLoader {
         }
       });
       add(dirConfig.getControls());
-
+      
       basicConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getNewValue() != null) {
@@ -189,7 +192,15 @@ public class MassPieceLoader {
       });
       buttonBox.add(cancelButton);
 
-      // FIXME: Needs a Help button
+      final JButton helpButton = new JButton(Resources
+          .getString(Resources.HELP));
+      helpButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.htm");
+          BrowserSupport.openURL(h.getContents().toString());
+        }
+      });
+      buttonBox.add(helpButton);
 
       add(buttonBox);
       pack();
@@ -347,7 +358,7 @@ public class MassPieceLoader {
         final BasicNode node = (BasicNode) tree.getPathForRow(row)
             .getLastPathComponent();
         c.setEnabled(!node.isSkip());
-        c.setForeground(Color.blue);
+        c.setForeground(EDITABLE_COLOR);
         return c;
       }
     }
@@ -360,6 +371,7 @@ public class MassPieceLoader {
         final BasicNode node = (BasicNode) tree.getPathForRow(row).getLastPathComponent();
         renderedLabel.setHorizontalAlignment(SwingConstants.CENTER);
         renderedLabel.setEnabled(!node.isSkip());
+        renderedLabel.setForeground(EDITABLE_COLOR);
         return renderedLabel;
       }
     }
