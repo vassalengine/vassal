@@ -322,13 +322,21 @@ public class TilingHandler {
    * @throws IOException if one occurs
    */
   public void sliceTiles() throws CancellationException, IOException {
-    final DataArchive archive = new DataArchive(aname);
-    final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
-
     final List<String> multi = new ArrayList<String>();
     final List<Pair<String,IOException>> failed =
       new ArrayList<Pair<String,IOException>>();
-    final Pair<Integer,Integer> s = findImages(archive, tcache, multi, failed);
+
+    Pair<Integer,Integer> s;
+    DataArchive archive = null;
+    try {
+      archive = new DataArchive(aname);
+      final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
+      s = findImages(archive, tcache, multi, failed);
+      archive.close();
+    }
+    finally {
+      IOUtils.closeQuietly(archive);
+    }
 
     // nothing to do if no images need tiling
     if (multi.isEmpty()) {
