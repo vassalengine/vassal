@@ -350,7 +350,9 @@ public class ZipArchive implements FileArchive {
   public void revert() throws IOException {
     w.lock();
     try {
-      if (!modified) return;
+      if (!modified) {
+        return;
+      }
 
       // delete all temporary files
       for (String name : entries.keySet()) {
@@ -371,7 +373,9 @@ public class ZipArchive implements FileArchive {
   public void flush() throws IOException {
     w.lock();
     try {
-      writeToDisk();
+      if (modified) {
+        writeToDisk();
+      }
     }
     finally {
       w.unlock();
@@ -379,14 +383,33 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
-  public void close() throws IOException { flush(); }
+  public void close() throws IOException {
+    w.lock();
+    try {
+      if (closed) {
+        return;
+      }
+      else if (modified) {
+        writeToDisk();
+      }
+      else if (zipFile != null) {
+        zipFile.close();
+        zipFile = null;
+
+        closed = true;
+        entries.clear();
+      }
+    }
+    finally {
+      w.unlock();
+    }
+  }
 
   private void writeToDisk() throws IOException {
-    if (!modified || closed) return;
-
     // write all files to a temporary zip archive
     final File tmpFile =
       File.createTempFile("tmp", ".zip", archiveFile.getParentFile());
+
     ZipOutputStream out = null;
     try {
       out = new ZipOutputStream(
@@ -610,7 +633,9 @@ public class ZipArchive implements FileArchive {
 
     @Override
     public void close() throws IOException {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
 
       try {
         super.close();
@@ -659,7 +684,9 @@ public class ZipArchive implements FileArchive {
 
     @Override
     public void close() throws IOException {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
 
       try {
         super.close();
