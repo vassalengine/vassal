@@ -375,8 +375,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     for (String m : mapMenus.keySet()) {
       final JMenu mapMenu = mapMenus.get(m);
       final HashMap<String, JMenu> zoneMap = zoneHash.get(m);
-      for (String zone : zoneMap.keySet()) {
-        mapMenu.add(zoneMap.get(zone));
+      if (zoneMap != null) {
+        for (String zone : zoneMap.keySet()) {
+          mapMenu.add(zoneMap.get(zone));
+        }
       }
       menu.add(mapMenu);
     }
