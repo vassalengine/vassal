@@ -54,8 +54,9 @@ public class ColorConfigurer extends Configurer {
 
   public void setValue(Object o) {
     super.setValue(o);
-    if (cb != null) 
+    if (cb != null) {
       cb.setColor((Color) o);
+    }
   }
 
   public void setValue(String s) {
@@ -95,26 +96,28 @@ public class ColorConfigurer extends Configurer {
     if (s == null || s.length() == 0 || "null".equals(s)) {
       return null;
     }
+
     try {
-	    if (s.startsWith("0X") || s.startsWith("0x")) {
-	   	 return Color.decode(s);
-	    } else {
-	   	 final StringTokenizer st = new StringTokenizer(s, ",");
-		      return new Color(Integer.parseInt(st.nextToken()),
-		                       Integer.parseInt(st.nextToken()),
-		                       Integer.parseInt(st.nextToken()));
-	    }
+      if (s.startsWith("0X") || s.startsWith("0x")) {
+        return Color.decode(s);
+      }
+      else {
+        final StringTokenizer st = new StringTokenizer(s, ",");
+        return new Color(Integer.parseInt(st.nextToken()),
+                         Integer.parseInt(st.nextToken()),
+                         Integer.parseInt(st.nextToken()));
+      }
     }   
     catch (NumberFormatException e) {
-	      ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
-	    }
-	    catch (IllegalArgumentException e) {
-	      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
-	    }
-	    catch (NoSuchElementException e) {
-	      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
-	    }
-	    
+      ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
+    }
+    catch (IllegalArgumentException e) {
+      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
+    }
+    catch (NoSuchElementException e) {
+      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
+    }
+
     // default to black in case of bad data
     return Color.BLACK;
   }
