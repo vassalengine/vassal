@@ -94,17 +94,16 @@ public class TilingHandler {
     this.pid = pid;
   }
 
-  protected boolean isFresh(DataArchive archive,
+  protected boolean isFresh(FileArchive archive,
                             FileStore tcache, String iname)
                                                            throws IOException {
-    final FileArchive fa = archive.getArchive();
     final String apath = DataArchive.IMAGE_DIR + iname;
 
     // look at the first 1:1 tile
     final String tpath = TileUtils.tileName(iname, 0, 0, 1);
 
     // check whether the image is older than the tile
-    final long imtime = fa.getMTime(apath);
+    final long imtime = archive.getMTime(apath);
 
     return imtime > 0 && // time in archive might be goofy
            imtime <= tcache.getMTime(tpath);
@@ -136,9 +135,11 @@ public class TilingHandler {
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
+    final FileArchive fa = archive.getArchive();
+
     for (String iname : images) {
       // skip images with fresh tiles
-      if (isFresh(archive, tcache, iname)) continue;
+      if (isFresh(fa, tcache, iname)) continue;
 
       final Dimension idim;
       try {
