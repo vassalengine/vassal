@@ -70,7 +70,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private boolean hasMoved = false;
 
   public MovementMarkable() {
-    this(ID + "moved;0;0", null);
+    this(ID + "moved.gif;0;0", null);
   }
 
   public MovementMarkable(String type, GamePiece p) {
