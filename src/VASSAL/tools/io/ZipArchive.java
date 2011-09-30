@@ -440,6 +440,7 @@ public class ZipArchive implements FileArchive {
             // no way to reset all fields to acceptable values.
             if (ze.getMethod() == ZipEntry.DEFLATED) {
               ze = new ZipEntry(ze.getName());
+              ze.setTime(ze.getTime());
             }
 
             out.putNextEntry(ze);
