@@ -86,7 +86,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   public BufferedImage eval() throws ImageIOException {
     try {
       final SVGRenderer renderer = new SVGRenderer(
-        archive.getImageURL(name),
+        archive.getURL(name),
         new BufferedInputStream(archive.getInputStream(name))
       );
 

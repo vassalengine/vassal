@@ -275,11 +275,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @return a URL corresponding to the image file
    * @throws FileNotFoundException if the file doesn't exist
    * @throws IOException if some other problem occurs
+   * @deprecated Use {@link #getURL(String)} instead.
    */
+  @Deprecated
   public URL getImageURL(String fileName) throws IOException,
                                                  FileNotFoundException {
-    return getURL(
-      fileName.startsWith("/") ? fileName : getImagePrefix() + fileName);
+    return getURL(fileName);
   }
 
   public boolean contains(String fileName) throws IOException {
@@ -498,7 +499,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
     if (name.startsWith("/")) {
       if (name.toLowerCase().endsWith(".svg")) {
-        return new SVGRenderer(getImageURL(name),
+        return new SVGRenderer(getURL(name),
                                getImageInputStream(name)).render();
       }
       else {
@@ -509,7 +510,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return ImageUtils.toBufferedImage(src.getImage());
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      return new SVGRenderer(getImageURL(name),
+      return new SVGRenderer(getURL(name),
                              getImageInputStream(name)).render();
     }
     else {
