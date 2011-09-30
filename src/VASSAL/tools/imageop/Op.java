@@ -36,10 +36,12 @@ public class Op {
     if (!name.startsWith("/"))
       name = "images/" + name;
 
-    if (name.endsWith(".svg"))
+    if (name.endsWith(".svg")) {
       return new SourceOpSVGImpl(name);
-    else
+    }
+    else {
       return new SourceOpBitmapImpl(name);
+    }
   }
 
   public static SourceOp load(BufferedImage image) {
@@ -47,37 +49,46 @@ public class Op {
   }
 
   public static SourceOp loadLarge(String name) {
-    if (name.endsWith(".svg"))
+    if (name.endsWith(".svg")) {
       return new SourceOpSVGImpl(name);
-    else
+    }
+    else {
       return new SourceOpTiledBitmapImpl(name);
+    }
   }
 
   public static ScaleOp scale(ImageOp sop, double scale) {
-    if (sop instanceof SVGOp)
+    if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);
-    else
+    }
+    else {
 // FIXME: Using ScaleOpTiledBitmapImpl for all scaling is wrong, because
 // non-map images aren't in the disk cache!
 //      return new ScaleOpBitmapImpl(sop, scale);
       return new ScaleOpTiledBitmapImpl(sop, scale);
+    }
   }
 
   public static RotateOp rotate(ImageOp sop, double angle) {
-    if (sop instanceof SVGOp)
+    if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, 1.0);
-    else if (angle % 90.0 == 0.0)
+    }
+    else if (angle % 90.0 == 0.0) {
       return new OrthoRotateOpBitmapImpl(sop, (int) angle);
-    else
+    }
+    else {
       return new RotateScaleOpBitmapImpl(sop, angle, 1.0);
+    }
   }
 
   public static RotateScaleOp rotateScale(ImageOp sop,
                                           double angle, double scale) {
-    if (sop instanceof SVGOp)
+    if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, scale);
-    else
+    }
+    else {
       return new RotateScaleOpBitmapImpl(sop, angle, scale);
+    }
   }
 
   public static CropOp crop(ImageOp sop, int x0, int y0, int x1, int y1) {
