@@ -62,7 +62,18 @@ public abstract class AbstractInterpreter extends Interpreter {
     }
   }
 
+  
   protected void setVar(String name, int value) {
+    try {
+      set(name, value);
+    }
+    catch (EvalError e) {
+      // FIXME: Error message
+      WarningDialog.show(e, "");
+    }
+  }
+  
+  protected void setVar(String name, float value) {
     try {
       set(name, value);
     }

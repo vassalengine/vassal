@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
@@ -56,6 +59,7 @@ import bsh.NameSpace;
 public class ExpressionInterpreter extends AbstractInterpreter {
 
   private static final long serialVersionUID = 1L;
+  private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
 
   protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh";
   protected static final String THIS = "_interp";
@@ -162,6 +166,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
+    logger.info("Attempting to load "+INIT_SCRIPT+" URI generated="+ini.toString());
     BufferedReader in = null;
     try {
       in = new BufferedReader(
@@ -171,13 +176,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       try {
         eval(in);
       }
-      catch (EvalError e) {
-        //FIXME: Error message
+      catch (EvalError e) {        
+        logger.error("Error trying to read init script: "+ini.toString());
         WarningDialog.show(e, "");
       }
     }
     catch (IOException e) {
-      //FIXME: Error message
+      logger.error("Error trying to read init script: "+ini.toString());
       WarningDialog.show(e, "");
     }
     finally {
@@ -239,7 +244,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           setVar(var, Integer.valueOf(value).intValue());
         }
         catch (NumberFormatException e) {
-          setVar(var, value);
+          try {
+            setVar(var, Float.valueOf(value).floatValue());
+          }
+          catch (NumberFormatException e1) {
+            setVar(var, value);
+          }
         }
       }
     }
