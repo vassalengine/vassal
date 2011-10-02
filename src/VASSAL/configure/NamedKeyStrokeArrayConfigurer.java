@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004-2008 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2004-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -148,7 +148,10 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     ArrayList<NamedKeyStroke> l = new ArrayList<NamedKeyStroke>();
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
-      l.add(NamedHotKeyConfigurer.decode(st.nextToken()));
+      final String token = st.nextToken();
+      if (token != "") {
+        l.add(NamedHotKeyConfigurer.decode(token));
+      }
     }
     return l.toArray(new NamedKeyStroke[l.size()]);
   }
@@ -160,7 +163,9 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     SequenceEncoder se = new SequenceEncoder(',');
     for (int i = 0; i < keys.length; i++) {
       NamedKeyStroke key = keys[i];
-      se.append(NamedHotKeyConfigurer.encode(key));
+      if (!key.isNull()) {
+        se.append(NamedHotKeyConfigurer.encode(key));
+      }
     }
     return se.getValue() != null ? se.getValue() : "";
   }
