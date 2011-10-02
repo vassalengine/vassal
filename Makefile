@@ -80,7 +80,7 @@ vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
 vpath %.jar $(LIBDIR)
 
 #all: $(CLASSDIR) $(CLASSES) i18n icons images help
-all: $(CLASSDIR) fast-compile i18n icons images help
+all: $(CLASSDIR) fast-compile i18n bsh icons images help
 
 $(CLASSDIR):
 	mkdir -p $(CLASSDIR)
@@ -108,6 +108,9 @@ $(CLASSDIR)/help: $(CLASSDIR)
 
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
+
+bsh: $(CLASSDIR)
+	for i in `cd $(SRCDIR) && find VASSAL -name '*.bsh'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
 
 fast-compile: version $(CLASSDIR)
 	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
@@ -231,4 +234,4 @@ clean-javadoc:
 clean: clean-release
 	$(RM) -r $(CLASSDIR)/*
 
-.PHONY: all fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version
+.PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version
