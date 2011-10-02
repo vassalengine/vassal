@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2005 by Rodney Kinney
+ * Copyright (c) 2005-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -49,8 +49,13 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
       final DefaultMutableTreeNode node =
         (DefaultMutableTreeNode) p.getLastPathComponent();
 
-      final Configurable[] userObjectPath =
-        (Configurable[]) node.getUserObjectPath();
+      Object x[] = node.getUserObjectPath();
+      Configurable[] userObjectPath = new Configurable[x.length];
+      
+      for (int i = 0; i < x.length; i++) {
+        userObjectPath[i] = (Configurable) x[i];
+      }
+      
       path = ArrayUtils.copyOfRange(userObjectPath, 1, userObjectPath.length);
     }
     else {
