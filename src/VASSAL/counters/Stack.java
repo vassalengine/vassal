@@ -118,6 +118,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
+    p.setParent(null);
     if (getMap() != null) {
       getMap().repaint();
     }

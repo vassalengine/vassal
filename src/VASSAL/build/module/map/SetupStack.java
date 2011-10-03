@@ -233,6 +233,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           GamePiece piece = s.getPieceAt(i);
           if (Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
             s.remove(piece);
+            piece.setParent(null);
             map.placeAt(piece,p);
             i--;
           }

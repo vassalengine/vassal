@@ -503,7 +503,7 @@ public class StackMetrics extends AbstractConfigurable {
       Math.min(parent.indexOf(c),parent.getMaximumVisiblePieceCount()-1);
 
     if (index < 0) {
-      throw new IllegalArgumentException(c + " is not contained in " + parent);
+      return new Point(0,0);
     }
 
     final Point[] pos = new Point[parent.getMaximumVisiblePieceCount()];
