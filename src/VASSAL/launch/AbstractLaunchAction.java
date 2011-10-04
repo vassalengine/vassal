@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
+import VASSAL.build.module.ExtensionsManager;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -259,10 +260,9 @@ e.printStackTrace();
       if (lr.module != null) {
         logger.info("Loading module file {}", lr.module.getAbsolutePath());
 
+        // slice tiles for module
         final String aname = lr.module.getAbsolutePath();
-
         final ModuleMetaData meta = new ModuleMetaData(new ZipFile(aname));
-
         final String hstr =
           DigestUtils.shaHex(meta.getName() + "_" + meta.getVersion());
 
@@ -282,6 +282,26 @@ e.printStackTrace();
         catch (CancellationException e) {
           cancel(true);
           return null;
+        }
+      
+        // slice tiles for extensions
+        final ExtensionsManager mgr = new ExtensionsManager(lr.module);
+        for (File ext : mgr.getActiveExtensions()) {
+          final TilingHandler eth = new TilingHandler(
+            ext.getAbsolutePath(),
+            cdir,
+            new Dimension(256, 256),
+            PHYS_MEMORY,
+            nextId.getAndIncrement()
+          );
+
+          try {
+            eth.sliceTiles();
+          }
+          catch (CancellationException e) {
+            cancel(true);
+            return null;
+          }
         }
       }
 
