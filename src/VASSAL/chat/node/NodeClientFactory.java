@@ -49,7 +49,7 @@ public class NodeClientFactory extends ChatServerFactory {
   }
 
   public ChatServerConnection buildServer(Properties param) {
-    final String host = param.getProperty(NODE_HOST,"63.144.41.3");  //$NON-NLS-1$
+    final String host = param.getProperty(NODE_HOST,"game.vassalengine.org");  //$NON-NLS-1$
     final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
     NodeServerInfo nodeServerInfo = new NodeServerInfo() {
       public String getHostName() {
