@@ -660,8 +660,6 @@ public class StackMetrics extends AbstractConfigurable {
           }
           else {
             fixedParent = createStack(fixed, true);
-            gs.addPiece(fixedParent);
-            fixed.getMap().addPiece(fixedParent);
             comm = comm.append(fixedParent.getMap().placeAt(
               fixedParent, fixedParent.getPosition()));
             index = 1;

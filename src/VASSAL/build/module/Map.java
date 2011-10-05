@@ -2030,6 +2030,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     Command c = apply(new DeckVisitorDispatcher(new Merger(this, pt, p)));
     if (c == null || c.isNull()) {
       c = placeAt(p, pt);
+      // If no piece at destination and this is a stacking piece, create
+      // a new Stack containing the piece
+      if (!(p instanceof Stack) &&
+          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+        final Stack parent = getStackMetrics().createStack(p);
+        if (parent != null) {
+          c = c.append(placeAt(parent, pt));
+        }
+      }
     }
     return c;
   }
