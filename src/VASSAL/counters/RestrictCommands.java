@@ -35,10 +35,11 @@ import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
-import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -57,7 +58,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   protected String name = "";
   protected PropertyExpression propertyMatch = new PropertyExpression();
   protected String action = HIDE;
-  protected KeyStroke[] watchKeys = new KeyStroke[0];
+  protected NamedKeyStroke[] watchKeys = new NamedKeyStroke[0];
 
   public RestrictCommands() {
     this(ID, null);
@@ -93,7 +94,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     se.append(name)
       .append(action)
       .append(propertyMatch.getExpression())
-      .append(KeyStrokeArrayConfigurer.encode(watchKeys));
+      .append(NamedKeyStrokeArrayConfigurer.encode(watchKeys));
 
     return ID + se.getValue();
   }
@@ -183,15 +184,14 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
     String keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
-      watchKeys = KeyStrokeArrayConfigurer.decode(keys);
+      watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
     }
     else {
-      watchKeys = new KeyStroke[keys.length()];
+      watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = KeyStroke.getKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
+        watchKeys[i] = new NamedKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
       }
     }
-
   }
 
   public PieceEditor getEditor() {
@@ -202,7 +202,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
     protected StringConfigurer name;
     protected PropertyExpressionConfigurer propertyMatch;
-    protected KeyStrokeArrayConfigurer watchKeys;
+    protected NamedKeyStrokeArrayConfigurer watchKeys;
     protected JComboBox actionOption;
     protected JPanel box;
 
@@ -226,7 +226,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch, Decorator.getOutermost(piece));
       box.add(propertyMatch.getControls());
 
-      watchKeys = new KeyStrokeArrayConfigurer(null, "Restrict these Key Commands  ", piece.watchKeys);
+      watchKeys = new NamedKeyStrokeArrayConfigurer(null, "Restrict these Key Commands  ", piece.watchKeys);
       box.add(watchKeys.getControls());
 
     }
