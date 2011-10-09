@@ -6,7 +6,7 @@ import VASSAL.counters.GamePiece;
 /*
  * $Id$
  *
- * Copyright (c) 2003 by Rodney Kinney
+ * Copyright (c) 2003-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -38,5 +38,9 @@ public class ChangeTracker {
 
   public Command getChangeCommand() {
     return new ChangePiece(piece.getId(), oldState, Decorator.getOutermost(piece).getState());
+  }
+  
+  public boolean isChanged() {
+    return ! oldState.equals(Decorator.getOutermost(piece).getState());
   }
 }

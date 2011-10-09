@@ -587,12 +587,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public Command myKeyEvent(KeyStroke stroke) {
 
-    ChangeTracker tracker = null;
+    final ChangeTracker tracker = new ChangeTracker(this);
 
     if (version == BASE_VERSION) {
       final char strokeChar = getMatchingActivationChar(stroke);
       if (strokeChar != 0 && nValues > 0) {  // Do not Activate if no levels defined
-        tracker = new ChangeTracker(this);
         final int index = activationStatus.indexOf(strokeChar);
         if (index < 0) {
           activationStatus += strokeChar;
@@ -612,7 +611,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     else {
       if (activateKeyStroke.equals(stroke) && nValues > 0) {
-        tracker = new ChangeTracker(this);
         activated = ! activated;
         if (activated) {
           value = Math.abs(value);
@@ -628,29 +626,26 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (version == BASE_VERSION) {
         for (int i = 0; i < upKey.length(); ++i) {
           if (KeyStroke.getKeyStroke(upKey.charAt(i), upModifiers).equals(stroke)) {
-            doIncrease(tracker);
+            doIncrease();
           }
         }
 
         for (int i = 0; i < downKey.length(); ++i) {
           if (KeyStroke.getKeyStroke(downKey.charAt(i), downModifiers).equals(stroke)) {
-            doDecrease(tracker);
+            doDecrease();
           }
         }
       }
       else {
         if (increaseKeyStroke.equals(stroke)) {
-          doIncrease(tracker);
+          doIncrease();
         }
         if (decreaseKeyStroke.equals(stroke)) {
-          doDecrease(tracker);
+          doDecrease();
         }
       }
 
       if (resetKey != null && resetKey.equals(stroke)) {
-        if (tracker == null) {
-          tracker = new ChangeTracker(this);
-        }
         final GamePiece outer = Decorator.getOutermost(this);
         final String levelText = resetLevel.getText(outer);
         try {
@@ -664,16 +659,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       // random layers
       if (rndKey != null && rndKey.equals(stroke)) {
-        if (tracker == null) {
-          tracker = new ChangeTracker(this);
-        }
         int val = 0;
         val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
     }
     // end random layers
-    return tracker != null ? tracker.getChangeCommand() : null;
+    return tracker.isChanged() ? tracker.getChangeCommand() : null;
   }
 
   private char getMatchingActivationChar(KeyStroke stroke) {
@@ -685,10 +677,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return (char) 0;
   }
 
-  protected void doIncrease(ChangeTracker tracker) {
-    if (tracker == null) {
-      tracker = new ChangeTracker(this);
-    }
+  protected void doIncrease() {
     int val = Math.abs(value);
     if (++val > nValues) {
       val = loopLevels ? 1 : nValues;
@@ -697,10 +686,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return;
   }
 
-  protected void doDecrease(ChangeTracker tracker) {
-    if (tracker == null) {
-      tracker = new ChangeTracker(this);
-    }
+  protected void doDecrease() {
     int val = Math.abs(value);
     if (--val < 1) {
       val = loopLevels ? nValues : 1;
