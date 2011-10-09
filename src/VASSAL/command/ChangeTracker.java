@@ -41,6 +41,6 @@ public class ChangeTracker {
   }
   
   public boolean isChanged() {
-    return ! oldState.equals(Decorator.getOutermost(piece).getState());
+    return !oldState.equals(Decorator.getOutermost(piece).getState());
   }
 }
