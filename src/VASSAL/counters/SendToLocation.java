@@ -85,8 +85,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected static final String DEST_ZONE = "Zone on selected Map";
   protected static final String DEST_REGION = "Region on selected Map";
   protected static final String DEST_COUNTER = "Another counter, selected by properties";
-  protected static final String[] DEST_OPTIONS = new String[] 
-	       {DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER};
+  protected static final String[] DEST_OPTIONS = {
+    DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER
+  };
   protected KeyCommand[] command;
   protected String commandName;
   protected String backCommandName;
@@ -147,25 +148,25 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
-        .append(key)
-        .append(mapId.getFormat())
-        .append(boardName.getFormat())
-        .append(x.getFormat())
-        .append(y.getFormat())
-        .append(backCommandName)
-        .append(backKey)
-        .append(xIndex.getFormat())
-        .append(yIndex.getFormat())
-        .append(xOffset.getFormat())
-        .append(yOffset.getFormat())
-        .append(description)
-        .append(destination)
-        .append(zone.getFormat())
-        .append(region.getFormat())
-        .append(propertyFilter.getExpression())
-    	  .append(gridLocation.getFormat());
+      .append(key)
+      .append(mapId.getFormat())
+      .append(boardName.getFormat())
+      .append(x.getFormat())
+      .append(y.getFormat())
+      .append(backCommandName)
+      .append(backKey)
+      .append(xIndex.getFormat())
+      .append(yIndex.getFormat())
+      .append(xOffset.getFormat())
+      .append(yOffset.getFormat())
+      .append(description)
+      .append(destination)
+      .append(zone.getFormat())
+      .append(region.getFormat())
+      .append(propertyFilter.getExpression())
+    	.append(gridLocation.getFormat());
     return ID + se.getValue();
   }
 
@@ -333,7 +334,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     // Offset destination by Advanced Options offsets
-    if ( (dest != null)  &&  (destination.charAt(0) != 'G')) {
+    if ((dest != null) && (destination.charAt(0) != 'G')) {
       dest = offsetDestination(dest.x, dest.y, outer);
     }
 
@@ -662,24 +663,24 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
-          .append(keyInput.getValueString())
-          //.append(map == null ? "" : map.getIdentifier())
-          .append(mapIdInput.getValueString())
-          .append(boardNameInput.getValueString())
-          .append(xInput.getValueString())
-          .append(yInput.getValueString())
-          .append(backNameInput.getValueString())
-          .append(backKeyInput.getValueString())
-          .append(xIndexInput.getValueString())
-          .append(yIndexInput.getValueString())
-          .append(xOffsetInput.getValueString())
-          .append(yOffsetInput.getValueString())
-          .append(descInput.getValueString())
-          .append(destInput.getValueString().charAt(0))
-          .append(zoneInput.getValueString())
-          .append(regionInput.getValueString())
-          .append(propertyInput.getValueString())
-          .append(gridLocationInput.getValueString());
+        .append(keyInput.getValueString())
+        //.append(map == null ? "" : map.getIdentifier())
+        .append(mapIdInput.getValueString())
+        .append(boardNameInput.getValueString())
+        .append(xInput.getValueString())
+        .append(yInput.getValueString())
+        .append(backNameInput.getValueString())
+        .append(backKeyInput.getValueString())
+        .append(xIndexInput.getValueString())
+        .append(yIndexInput.getValueString())
+        .append(xOffsetInput.getValueString())
+        .append(yOffsetInput.getValueString())
+        .append(descInput.getValueString())
+        .append(destInput.getValueString().charAt(0))
+        .append(zoneInput.getValueString())
+        .append(regionInput.getValueString())
+        .append(propertyInput.getValueString())
+        .append(gridLocationInput.getValueString());
       return ID + se.getValue();
     }
 
