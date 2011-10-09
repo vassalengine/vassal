@@ -2,6 +2,7 @@
  * $Id$
  *
  * Copyright (c) 2003 by Rodney Kinney
+ * GridLocation modifications copyright (c) 2010-2011 by Pieter Geerkens
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,9 +40,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.Command;
@@ -63,11 +66,12 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * This trait adds a command that sends a piece to another location. Options for the
  * target location are:
- *   1. Specified x,y co-ords on a named map/board
- *   2. The centre of a named Zone on a named map
- *   3. A named Region on a named map
- *   4. The location of another counter selected by a Propert Match String
- * Once the target locaiton is identified, it can be further offset in the X and Y directions
+ * <li>Specified x,y co-ords on a named map/board</li>
+ * <li>The centre of a named Zone on a named map</li>
+ * <li>A named Region on a named map</li>
+ * <li>The location of another counter selected by a Property Match String</li>
+ * <li>A specified grid-location on a given board & map </li>
+ * <p>Once the target location is identified, it can be further offset in the X and Y directions
  * by a set of multipliers.
  * All Input Fields may use $...$ variable names
  */
@@ -76,11 +80,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   private static final String _0 = "0";
   public static final String BACK_MAP = "backMap";
   public static final String BACK_POINT = "backPoint";
+  protected static final String DEST_GRIDLOCATION = "Grid location on selected Map";
   protected static final String DEST_LOCATION = "Location on selected Map";
   protected static final String DEST_ZONE = "Zone on selected Map";
   protected static final String DEST_REGION = "Region on selected Map";
   protected static final String DEST_COUNTER = "Another counter, selected by properties";
-  protected static final String[] DEST_OPTIONS = new String[] {DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER};
+  protected static final String[] DEST_OPTIONS = new String[] 
+	       {DEST_GRIDLOCATION, DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER};
   protected KeyCommand[] command;
   protected String commandName;
   protected String backCommandName;
@@ -94,6 +100,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected FormattedString y = new FormattedString("");
   protected FormattedString yIndex = new FormattedString("");
   protected FormattedString yOffset = new FormattedString("");
+  protected FormattedString gridLocation = new FormattedString("");
   protected KeyCommand sendCommand;
   protected KeyCommand backCommand;
   protected String description;
@@ -102,10 +109,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected FormattedString region = new FormattedString("");
   protected PropertyExpression propertyFilter = new PropertyExpression("");
   private Map map;
-  private Point dest;
+ // private Point dest;
 
   public SendToLocation() {
-    this(ID + ";;;;0;0;;", null);
+	    this(ID + ";;;;0;0;;;", null);
   }
 
   public SendToLocation(String type, GamePiece inner) {
@@ -136,6 +143,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     zone.setFormat(st.nextToken(""));
     region.setFormat(st.nextToken(""));
     propertyFilter.setExpression(st.nextToken(""));
+    gridLocation.setFormat(st.nextToken(""));
   }
 
   public String myGetType() {
@@ -156,7 +164,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         .append(destination)
         .append(zone.getFormat())
         .append(region.getFormat())
-        .append(propertyFilter.getExpression());
+        .append(propertyFilter.getExpression())
+    	  .append(gridLocation.getFormat());
     return ID + se.getValue();
   }
 
@@ -189,6 +198,22 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return command;
   }
 
+  private void LogBadGridLocation ( Point p) {
+     String s = "* " + Decorator.getOutermost(this).getName();
+     if (getMap() == null) {
+   	  s += "getMap is null";
+     } else if ( p == null) {
+   	  s += "p is null";
+     } else {
+   	  s += "getMap: " + getMap().getMapName() + 
+		  "; p: (" + p.x + "," + p.y + 
+		  "; Position: (" + getPosition().x + "," + getPosition().y +
+		  "); map: " + map.getMapName() + ";";
+     }
+     new Chatter.DisplayText(
+   		  GameModule.getGameModule().getChatter(),s).execute();
+  }
+
   public String myGetState() {
     SequenceEncoder se = new SequenceEncoder(';');
     Map backMap = (Map)getProperty(BACK_MAP);
@@ -211,7 +236,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   private Point getSendLocation() {
     GamePiece outer = Decorator.getOutermost(this);
     map = null;
-    dest = null;
+    Point dest = null;
     // Home in on a counter
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
       GamePiece target = null;
@@ -249,14 +274,29 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         map = getMap();
       }
       if (map != null) {
-        switch (destination.charAt(0)) {
+         Board b;
+         switch (destination.charAt(0)) {
+         case 'G':
+            b = map.getBoardByName(boardName.getText(outer));
+            if (b != null ) {
+          	  try {
+          		  dest = b.getGrid().getLocation(gridLocation.getText(outer));
+ 	         	  if (dest != null)	dest.translate(b.bounds().x, b.bounds().y);
+          	  } catch (BadCoords e) {
+ 						LogBadGridLocation(dest);
+          		  reportDataError(this, Resources.getString(
+ 	            		"Error.not_found", "Grid Location"),map.getMapName()); 
+          		  ; // ignore SendTo request.
+          	  }
+            }
+            break;
         case 'L':
           final int xValue = x.getTextAsInt(outer, "Xlocation", this);
           final int yValue = y.getTextAsInt(outer, "YLocation", this);
 
           dest = new Point(xValue,yValue);
 
-          Board b = map.getBoardByName(boardName.getText(outer));
+          b = map.getBoardByName(boardName.getText(outer));
           if (b != null && dest != null) {
             dest.translate(b.bounds().x, b.bounds().y);
           }
@@ -293,7 +333,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     // Offset destination by Advanced Options offsets
-    if (dest != null) {
+    if ( (dest != null)  &&  (destination.charAt(0) != 'G')) {
       dest = offsetDestination(dest.x, dest.y, outer);
     }
 
@@ -306,7 +346,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (sendCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
       Stack parent = outer.getParent();
-      getSendLocation();
+      Point dest = getSendLocation();
       if (map != null && dest != null) {
         if (map == getMap() && dest.equals(getPosition())) {
           // don't do anything if we're already there.
@@ -446,6 +486,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected Box mapControls;
     protected Box boardControls;
     protected Box advancedControls;
+    protected StringConfigurer gridLocationInput;
 
     public Ed(SendToLocation p) {
       controls = new JPanel();
@@ -533,6 +574,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       propertyInput = new PropertyExpressionConfigurer(null, "Property Match:  ", p.propertyFilter);
       controls.add(propertyInput.getControls());
 
+      gridLocationInput = new StringConfigurer(null, "Grid Location:  ", p.gridLocation.getFormat());
+      controls.add(gridLocationInput.getControls());
+      
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent arg0) {
@@ -558,7 +602,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     private void updateVisibility() {
-      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
+//      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
+       advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
+       boolean advancedVisible = advancedInput.booleanValue().booleanValue() 
+       							  && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);
       yIndexInput.getControls().setVisible(advancedVisible);
@@ -568,10 +615,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       xInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       mapControls.setVisible(!destOption.equals(DEST_COUNTER));
-      boardControls.setVisible(destOption.equals(DEST_LOCATION));
+      boardControls.setVisible(destOption.equals(DEST_LOCATION)
+      		|| destOption.equals(DEST_GRIDLOCATION));
       zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
       regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
       propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
+      gridLocationInput.getControls().setVisible(destOption.equals(DEST_GRIDLOCATION));
 
       Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
@@ -629,7 +678,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           .append(destInput.getValueString().charAt(0))
           .append(zoneInput.getValueString())
           .append(regionInput.getValueString())
-          .append(propertyInput.getValueString());
+          .append(propertyInput.getValueString())
+          .append(gridLocationInput.getValueString());
       return ID + se.getValue();
     }
 
