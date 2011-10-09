@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -50,6 +50,7 @@ import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.chat.AddressBookServerConfigurer;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.DynamicClient;
 import VASSAL.chat.DynamicClientFactory;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.jabber.JabberClientFactory;
@@ -193,7 +194,7 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
-    server = new HybridClient();
+    server = new DynamicClient();
     AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();

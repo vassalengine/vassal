@@ -1,7 +1,7 @@
 /*
  * $Id:
  *
- * Copyright (c) 2009 by Brent Easton
+ * Copyright (c) 2009-2011 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -805,6 +805,7 @@ public class ServerAddressBook {
       setProperty(DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
       setProperty(JabberClientFactory.JABBER_LOGIN, ""); //$NON-NLS-1$
       setProperty(JabberClientFactory.JABBER_PWD, ""); //$NON-NLS-1$
+      setProperty(DynamicClientFactory.URL, DynamicClient.JABBER_URL);
     }
 
     public VassalJabberEntry(Properties props) {
@@ -873,6 +874,7 @@ public class ServerAddressBook {
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
       setType(DYNAMIC_TYPE);
       setProperty(DynamicClientFactory.DYNAMIC_TYPE, NodeClientFactory.NODE_TYPE);
+      setProperty(DynamicClientFactory.URL, DynamicClient.LEGACY_URL);
     }
 
     public LegacyEntry(Properties props) {
