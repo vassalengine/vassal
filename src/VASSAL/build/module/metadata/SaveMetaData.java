@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -104,7 +104,7 @@ public class SaveMetaData extends AbstractMetaData {
    * @param archive Save game Archive
    * @throws IOException If anything goes wrong
    */
-  public void save(ArchiveWriter archive) throws IOException {
+  public void save(FileArchive archive) throws IOException {
     super.save(archive);
 
     // Also save a copy of the current module metadata in the save file. Copy
@@ -112,7 +112,7 @@ public class SaveMetaData extends AbstractMetaData {
     // information.
     copyModuleMetadata(archive);
   }
-
+  
   /**
    * Add Elements specific to SaveMetaData
    */

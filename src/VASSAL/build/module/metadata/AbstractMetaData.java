@@ -225,7 +225,7 @@ public abstract class AbstractMetaData {
     save(out);
     archive.addFile(getZipEntryName(), out.toInputStream());
   }
-
+ 
   /**
    * Copy the Module metatdata from the current module into the specified
    * archive.
@@ -234,13 +234,17 @@ public abstract class AbstractMetaData {
    * @throws IOException
    */
   public void copyModuleMetadata(ArchiveWriter archive) throws IOException {
+    copyModuleMetadata(archive.getArchive());
+  }
+  
+  public void copyModuleMetadata(FileArchive archive) throws IOException {
     BufferedInputStream in = null;
     try {
       in = new BufferedInputStream(
         GameModule.getGameModule()
                   .getDataArchive()
                   .getInputStream(ModuleMetaData.ZIP_ENTRY_NAME));
-      archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
+      archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
       in.close();
     }
     catch (FileNotFoundException e) {
@@ -249,7 +253,7 @@ public abstract class AbstractMetaData {
     }
     finally {
       IOUtils.closeQuietly(in);
-    }
+    }  
   }
 
   /**
