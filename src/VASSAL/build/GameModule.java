@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -857,52 +856,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     }
 
+    /*
+     *  If we are editing, check for duplicate, illegal or missing GamePiece Id's
+     *  and update if necessary. 
+     */    
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
-
-      // Run through the module and identify all existing gpid's.
-      // Determine the maximum. Keep a list of of any PieceSlots that need
-      // a new Id generated.
-      final HashMap<String, PieceSlot> slots = new HashMap<String, PieceSlot>(0);
-      final ArrayList<PieceSlot> duplicates = new ArrayList<PieceSlot>(0);
-      int maxId = 0;
-      for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
-        final String id = pieceSlot.getGpId();
-        if (id == null || id.length() == 0) { // gpid not generated yet?
-          duplicates.add(pieceSlot);
-        }
-        else {
-          if (slots.get(id) != null) {        // duplicate gpid?
-            duplicates.add(pieceSlot);
-          }
-          int iid = -1;
-          try {
-            iid = Integer.parseInt(id);
-          }
-          catch (Exception e) {
-            // Do Nothing
-          }
-          if (iid == -1) {
-            duplicates.add(pieceSlot);        // non-numeric gpid?
-          }
-          else {
-            slots.put(id, pieceSlot);         // gpid is good.
-            if (iid > maxId) {
-              maxId = iid;
-            }
-          }
-        }
-      }
-
-      // Update the nextgpid if necessary
-      if (getGameModule().nextGpId < maxId) {
-        getGameModule().nextGpId = maxId+1;
-      }
-
-      // Generate new gpid's for slots that need them.
-      for (PieceSlot pieceSlot : duplicates) {
-        pieceSlot.updateGpId();
-      }
-
+      theModule.checkGpIds();
     }
 
     /*
@@ -934,6 +893,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return String.valueOf(nextGpId++);
   }
 
+  public int getNextGpId() {
+    return nextGpId;
+  }
+  
+  public void setNextGpId(int id) {
+    nextGpId = id;
+  }
+  
   public void setGpIdSupport(GpIdSupport s) {
     gpidSupport = s;
   }
@@ -942,6 +909,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return gpidSupport;
   }
 
+  /**
+   * Check every PieceSlot and PlaceMarker trait for duplicate,
+   * illegal or Missing GamePiece id's and update them if necessary
+   */
+  protected void checkGpIds() {
+    final GpIdChecker checker = new GpIdChecker(this);
+    for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+      checker.add(pieceSlot);
+    }
+    checker.fixErrors();     
+  }
+  
   /**
    * @return the object which stores data for the module
    */

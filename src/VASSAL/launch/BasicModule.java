@@ -125,7 +125,7 @@ public class BasicModule extends GameModule {
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
       getPrefs().getEditor().getEditAction());
 
-    gameRefresher = new GameRefresher();
+    gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
     MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
       gameRefresher.getRefreshAction());

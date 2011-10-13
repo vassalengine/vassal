@@ -38,5 +38,11 @@ public interface GpIdSupport {
    * @return PieceSlot Id
    */
   public String generateGpId();
+  
+  /**
+   * Accessors to check and update the next GpId if necessary.
+   */
+  public int getNextGpId();
+  public void setNextGpId(int id);
 
 }

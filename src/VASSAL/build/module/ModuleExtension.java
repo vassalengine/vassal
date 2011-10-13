@@ -25,8 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 import javax.swing.AbstractAction;
@@ -49,6 +47,7 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
+import VASSAL.build.GpIdChecker;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
@@ -115,10 +114,6 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     return universal;
   }
 
-  private HashMap<String, PieceSlot> slots = new HashMap<String, PieceSlot>(0);
-  private ArrayList<PieceSlot> duplicates = new ArrayList<PieceSlot>(0);
-  private int maxId = 0;
-
   public void build() {
     final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
 
@@ -155,6 +150,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
     GameModule.getGameModule().add(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    
     if (archive instanceof ArchiveWriter) {
       lastSave = buildString();
 
@@ -164,83 +160,41 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         extensionId = id.substring(id.length()-3);
       }
 
-      // Run through the extension and identify all existing gpid's.
-      // Determine the maximum. Keep a list of of any PieceSlots that need
-      // a new Id generated.
-
+      // Fix missing, duplicate and illegal GamePieceId's
+      final GpIdChecker checker = new GpIdChecker(this);
       for (Buildable b : getBuildables()) {
-        checkGpIds(b);
+        checkGpIds(b, checker);
       }
-
-      // Update the nextgpid if necessary
-      if (nextGpId < maxId) {
-        nextGpId = maxId+1;
-      }
-
-      // Generate new gpid's for slots that need them.
-      for (PieceSlot pieceSlot : duplicates) {
-        pieceSlot.updateGpId();
-      }
+      checker.fixErrors();      
     }
-
-    // Deallocate the temporary storage
-    slots = null;
-    duplicates = null;
-
   }
 
-  protected void checkGpIds(Buildable b) {
+  protected void checkGpIds(Buildable b, GpIdChecker checker) {
     if (b instanceof PieceSlot) {
-      final PieceSlot pieceSlot = (PieceSlot) b;
-      String id = pieceSlot.getGpId();
-      if (id == null || id.length() == 0) { // gpid not generated yet?
-        duplicates.add(pieceSlot);
-      }
-      else {
-        id = id.split(":")[1];
-        if (slots.get(id) != null) {        // duplicate gpid?
-          duplicates.add(pieceSlot);
-        }
-        int iid = -1;
-        try {
-          iid = Integer.parseInt(id);
-        }
-        catch (Exception e) {
-          // Do Nothing
-        }
-        if (iid == -1) {
-          duplicates.add(pieceSlot);        // non-numeric gpid?
-        }
-        else {
-          slots.put(id, pieceSlot);         // gpid is good.
-          if (iid > maxId) {
-            maxId = iid;
-          }
-        }
-      }
+      checker.add((PieceSlot) b);
     }
     else if (b instanceof ExtensionElement) {
-     checkGpIds(((ExtensionElement) b).getExtension());
+     checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
       for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
-        checkGpIds(buildable);
+        checkGpIds(buildable, checker);
       }
     }
   }
 
+  
+  /**
+   * Allocate new gpid's to all PieceSlots defined in a Buildable and
+   * all of it's children
+   *
+   */
   protected void updateGpIds() {
     for (Buildable b : getBuildables()) {
       updateGpIds(b);
     }
   }
 
-  /**
-   * Allocate new gpid's to all PieceSlots defined in a Buildable and
-   * all of it's children
-   *
-   * @param b Buildable
-   */
   protected void updateGpIds(Buildable b) {
     if (b instanceof PieceSlot) {
       ((PieceSlot) b).updateGpId();
@@ -253,6 +207,14 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         updateGpIds(buildable);
       }
     }
+  }
+  
+  public int getNextGpId() {
+    return nextGpId;
+  }
+  
+  public void setNextGpId(int id) {
+    nextGpId = id;
   }
 
   public Command getRestoreCommand() {
