@@ -521,7 +521,7 @@ public class ArrayUtils {
       (T[]) Array.newInstance(type.getComponentType(), orig.length+1);
     System.arraycopy(orig, 0, tmp, 0, pos);
     tmp[pos] = e;
-    System.arraycopy(orig, pos+1, tmp, pos, orig.length - pos);
+    System.arraycopy(orig, pos, tmp, pos+1, orig.length - pos);
     return tmp;
   }
 
