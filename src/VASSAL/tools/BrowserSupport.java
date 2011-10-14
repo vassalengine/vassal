@@ -61,44 +61,46 @@ public class BrowserSupport {
     browserLauncher = bl;
   }
 
-  private static void openURLWithBrowserLauncher(String url) {
+  public static void openURL(String url) {
+    //
+    // This method is irritatingly complex, because:
+    // * There is no java.awt.Desktop in Java 1.5.
+    // * java.awt.Desktop seems not to work sometimes on Windows.
+    // * BrowserLauncher failes sometimes on Linux, and isn't supported
+    //   anymore.
+    //
+    if (!SystemUtils.IS_JAVA_1_5) {
+      if (Desktop.isDesktopSupported()) {
+        final Desktop desktop = Desktop.getDesktop();
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+          try {
+            desktop.browse(new URI(url));
+            return;
+          }
+          catch (IOException e) {
+            if (!SystemUtils.IS_OS_WINDOWS) {
+              // We ignore this on Windows, because Desktop seems flaky
+              ErrorDialog.bug(e);
+              return;
+            }
+          }
+          catch (IllegalArgumentException e) {
+            ErrorDialog.bug(e);
+            return;
+          }
+          catch (URISyntaxException e) {
+            ErrorDialog.bug(e);
+            return;
+          }
+        }
+      }
+    }
+
     if (browserLauncher != null) {
       browserLauncher.openURLinBrowser(url);
     }
     else {
       ErrorDialog.show("BrowserSupport.unable_to_launch", url);
-    }
-  }
-
-  private static void openURLWithDesktop(String url) {
-    final Desktop desktop = Desktop.getDesktop();
-    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-      try {
-        desktop.browse(new URI(url));
-      }
-      catch (IOException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (IllegalArgumentException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (URISyntaxException e) {
-        ErrorDialog.bug(e);
-      }
-    }
-  }
-
-  public static void openURL(String url) {
-    if (!SystemUtils.IS_JAVA_1_5) {
-      if (Desktop.isDesktopSupported()) {
-        openURLWithDesktop(url);
-      }
-      else {
-        openURLWithBrowserLauncher(url);
-      }
-    }
-    else {
-      openURLWithBrowserLauncher(url);
     }
   }
 
