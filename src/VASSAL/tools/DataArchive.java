@@ -197,13 +197,35 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     // requested file is a resource, try our JARs
     if (fileName.startsWith("/")) {
       final InputStream in = getClass().getResourceAsStream(fileName);
-      if (in != null) return in;
+      if (in != null) {
+        return in;
+      }
       throw new FileNotFoundException("Resource not found: " + fileName);
     }
 
+    // Look in this archive and its extensions
+    InputStream in = getInputStreamImpl(fileName);
+    if (in != null) {
+      return in;
+    }
+
+    // Maybe it's an extensionless GIF? Aauugh!
+    in = getInputStreamImpl(fileName + ".gif");
+    if (in != null) {
+      return in;
+    }
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName()
+    );
+  }
+
+  private InputStream getInputStreamImpl(String fileName)
+                                    throws IOException, FileNotFoundException {
     // requested file is in this archive
-    if (archive != null && archive.contains(fileName))
+    if (archive != null && archive.contains(fileName)) {
       return archive.getInputStream(fileName);
+    }
 
     // we don't have it, try our extensions
     for (DataArchive ext : extensions) {
@@ -215,8 +237,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       }
     }
 
-    throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
+    return null;
   }
 
   /**
