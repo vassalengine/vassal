@@ -74,22 +74,39 @@ import VASSAL.i18n.ComponentI18nData;
  */
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid";
-  private GamePiece c;
-  private GamePiece expanded;
-  private String name;
-  private String pieceDefinition;
+  protected GamePiece c;
+  protected GamePiece expanded;
+  protected String name;
+  protected String pieceDefinition;
   protected static Font FONT = new Font("Dialog", 0, 12);
-  private JPanel panel;
-  private int width, height;
-  private String gpId = ""; // Unique PieceSlot Id
-  private GpIdSupport gpidSupport;
+  protected JPanel panel;
+  protected int width, height;
+  protected String gpId = ""; // Unique PieceSlot Id
+  protected GpIdSupport gpidSupport;
 
   public PieceSlot() {
     panel = new PieceSlot.Panel(this);
     panel.addMouseListener(this);
     panel.addKeyListener(this);
   }
+  
+  public PieceSlot(PieceSlot piece) {
+    this();
+    copyFrom(piece);
+  }
+  
+  public PieceSlot(CardSlot card) {
+    this((PieceSlot) card);    
+  }
 
+  protected void copyFrom(PieceSlot piece) {
+    c = piece.c;
+    name = piece.name;
+    pieceDefinition = piece.pieceDefinition;
+    gpidSupport = piece.gpidSupport;    
+    gpId = piece.gpId;
+  }
+  
   public class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
     protected PieceSlot pieceSlot;

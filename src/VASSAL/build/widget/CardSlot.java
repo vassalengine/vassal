@@ -32,6 +32,11 @@ public class CardSlot extends PieceSlot {
   public CardSlot() {
   }
 
+  public CardSlot(PieceSlot piece) {
+    this();
+    copyFrom(piece);
+  }
+  
   public static String getConfigureTypeName() {
     return "Card";
   }
