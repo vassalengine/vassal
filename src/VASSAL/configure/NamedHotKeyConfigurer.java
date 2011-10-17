@@ -110,6 +110,9 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
                 setValue(NamedKeyStroke.NULL_KEYSTROKE);
                 updateVisibility();
               }
+              else {
+                setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), keyName.getText()));
+              }
               break;
             case KeyEvent.VK_SHIFT:
             case KeyEvent.VK_CONTROL:
