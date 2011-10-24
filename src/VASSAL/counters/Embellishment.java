@@ -947,7 +947,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, "Reset to level:  ");
     private JTextField resetCommand = new JTextField(8);
     private JCheckBox loop = new JCheckBox("Loop through levels?");
-    private NamedHotKeyConfigurer resetKey = new NamedHotKeyConfigurer(null, "  Key:  ");
     private JTextField name = new JTextField(8);
 
     private JPanel controls;
@@ -955,9 +954,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private List<Integer> isPrefix;
     private static final Integer NEITHER = 0;
     private static final Integer PREFIX = 1;
-    private static final Integer SUFFIX = 2;
-    // random layers
-    private NamedHotKeyConfigurer rndKeyConfig;
+    private static final Integer SUFFIX = 2;  
 
     private BooleanConfigurer followConfig;
     private StringConfigurer propertyConfig;
@@ -972,7 +969,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private NamedHotKeyConfigurer activateConfig;
     private NamedHotKeyConfigurer increaseConfig;
     private NamedHotKeyConfigurer decreaseConfig;
-
+    private NamedHotKeyConfigurer resetConfig;
+    private NamedHotKeyConfigurer rndKeyConfig;
 
     public Ed(Embellishment e) {
       Box box;
@@ -988,11 +986,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final JPanel p = new JPanel();
       p.setLayout(new GridLayout(5, 3));
 
-      activateConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.activateKeyStroke);
-      increaseConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.increaseKeyStroke);
-      decreaseConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.decreaseKeyStroke);
-
-      p.add(resetKey.getControls());
+      activateConfig = new NamedHotKeyConfigurer(null, "  ActKey:  ", e.activateKeyStroke);
+      increaseConfig = new NamedHotKeyConfigurer(null, "  IncKey:  ", e.increaseKeyStroke);
+      decreaseConfig = new NamedHotKeyConfigurer(null, "  DecKey:  ", e.decreaseKeyStroke);
+      resetConfig = new NamedHotKeyConfigurer(null, "  ResKey:  ", e.resetKey);
+      rndKeyConfig = new NamedHotKeyConfigurer(null, "  RndKey:  ", e.rndKey);
 
       activateCommand.setMaximumSize(activateCommand.getPreferredSize());
       p.add(activateCommand);
@@ -1034,7 +1032,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       reset2Controls.add(new JLabel("  Command:  "));
       reset2Controls.add(resetCommand);
       p.add(reset2Controls);
-      p.add(resetKey.getControls());
+      p.add(resetConfig.getControls());
 
       // random layer
       rnd1Controls = Box.createHorizontalBox();
@@ -1047,7 +1045,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       rndCommand.setText(e.rndText);
       rnd2Controls.add(rndCommand);
       p.add(rnd2Controls);
-      rndKeyConfig = new NamedHotKeyConfigurer(null, "  Key:  ", e.rndKey);
       p.add(rndKeyConfig.getControls());
       // end random layer
 
@@ -1258,7 +1255,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       firstLevelConfig.getControls().setVisible(!show);
       reset1Controls.setVisible(show);
       reset2Controls.setVisible(show);
-      resetKey.getControls().setVisible(show);
+      resetConfig.getControls().setVisible(show);
       rnd1Controls.setVisible(show);
       rnd2Controls.setVisible(show);
       rndKeyConfig.getControls().setVisible(show);
@@ -1362,7 +1359,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(downModifiers.getValueString())
         .append(downKeyInput.getText())
         .append(resetCommand.getText())
-        .append(resetKey.getValueString())
+        .append(resetConfig.getValueString())
         .append(resetLevel.getValueString())
         .append(drawUnderneath.isSelected())
         .append(xOffInput.getText())
@@ -1433,7 +1430,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final SequenceEncoder se2 =
         new SequenceEncoder(activateKeyInput.getText(), ';');
       se2.append(resetCommand.getText())
-         .append((KeyStroke) resetKey.getValue())
+         .append((KeyStroke) resetConfig.getValue())
          .append(resetLevel.getValueString());
 
       final SequenceEncoder se = new SequenceEncoder(null, ';');
@@ -1499,7 +1496,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       downKeyInput.setText(e.downKey);
       downCommand.setText(e.downCommand);
       downModifiers.setValue(e.downModifiers);
-      resetKey.setValue(e.resetKey);
+      resetConfig.setValue(e.resetKey);
       resetCommand.setText(e.resetCommand);
       resetLevel.setValue(e.resetLevel.getFormat());
       xOffInput.setText(String.valueOf(e.xOff));
