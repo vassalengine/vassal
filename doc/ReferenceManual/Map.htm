@@ -1225,6 +1225,31 @@ terrain features, such as some air and naval games.</td>
 </table>
 
 
+<a name="AutoExecGKC">
+<h3>AutoExec Global Key Command</h3>
+<br>
+</a>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr>
+      <td valign="top">An extension of <a href="#GlobalKeyCommand">Global Key Command</a>
+	that fires automatically upon completion of module load, once all the Key 
+	Listeners are started up. All fields behave identically to the corresponding 
+	ones in <a href="#GlobalKeyCommand">Global Key Command</a>, except that those pertaining 
+	to the physical representation of a toolbar button are repressed as being inapplicable.
+	<p>
+	If multiple start-up commands need to be run, they should be combined in a 
+	<a href="MultiActionButton.htm">MultiAction Button</a> and then launched from a single instance of
+	AutoExecGKC, as the sequence in which multiple instances of AutoExecGKC
+	are fired is undetermined.
+      </td>
+
+      <td valign="top"><img alt="" src="images/AutoExecGKC.png">&nbsp;<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
 <a name="GlobalKeyCommand">
 <h3>Global Key Command</h3>
