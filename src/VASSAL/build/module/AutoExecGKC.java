@@ -1,0 +1,109 @@
+/*
+ * $Id: MassKeyCommand.java 5139 2009-02-22 16:44:21Z uckelman $
+ *
+ * Copyright (c) 2010 by Pieter Geerkens
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+package VASSAL.build.module;
+
+import javax.swing.SwingUtilities;
+
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.SingleChildInstanceOnline;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.configure.Attribute.AbstractAttribute;
+
+/**
+ * A Global Key Command that is automatically invoked on game start-up,
+ * once the various Key Listeners have been started.
+ * <p>
+ * If multiple start-up commands need to be run, they should be combined
+ * in a MultiAction Button and then launched from a single instance of
+ * AutoExecGKC, as the sequence in which multiple instances of AutoExecGKC
+ * are fired is undetermined.
+ * 
+ * @author Pieter Geerkens
+ *
+ */
+public class AutoExecGKC extends GlobalKeyCommand implements GameComponent, SingleChildInstanceOnline {
+	public AutoExecGKC() {
+		super();
+		/* These four fields pertaining to the physical representation of the
+		 * GKC on the toolbar are not applicable in this implementation.
+		 */
+		launch.setAttribute(BUTTON_TEXT, "");
+		launch.setAttribute(TOOLTIP, "");
+		launch.setAttribute(ICON, "");
+		launch.setAttribute(HOTKEY, "");
+	}
+
+	//---------------------- GlobalKeyCommand extension ---------------------
+	@Override
+	public void addTo(Buildable parent) {
+		validator = new SingleChildInstance((AbstractConfigurable) parent, getClass());
+		super.addTo(parent);
+		GameModule.getGameModule().getGameState().addGameComponent(this);
+	}
+	public static String getConfigureTypeName() {
+		return "AutoExec GKC";
+	}
+	@Override
+	public HelpFile getHelpFile() {
+		return HelpFile.getReferenceManualPage("Map.htm", "GlobalKeyCommand");
+		// TODO write this addition to help file
+//		return HelpFile.getReferenceManualPage("Map.htm", "AutoExecGKC");
+	}
+	
+	@Override
+	public VisibilityCondition getAttributeVisibility(String key) {
+		if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key)
+		||  ICON.equals(key)        || HOTKEY.equals(key)) {
+			return AbstractAttribute.invisible;
+		} else {
+			return super.getAttributeVisibility(key);
+		}
+	}
+
+	//---------------------- GameComponent implementation ---------------------
+	private boolean hasStarted = false;	
+	@Override
+	public void setup(boolean gameStarting) {
+		if (gameStarting && !hasStarted){
+			SwingUtilities.invokeLater(new Runnable() {
+		      @Override public void run() { apply(); }
+			});
+		}
+		hasStarted = gameStarting;
+	}
+	@Override
+	public Command getRestoreCommand() {
+		return null; // No persistent state
+	}
+
+	//---------------- SingleChildInstanceOnline implementation ---------------
+	/** Delegate to SingleChildInstnaceOnline.AbstractSingleChildInstanceOnline
+	 */
+	@Override
+	public boolean enabledToAdd(AbstractBuildable parent) {
+		return SingleChildInstanceOnline.AbstractSingleChildInstanceOnline
+				.enabledToAdd(parent, this.getClass());
+	}
+}
