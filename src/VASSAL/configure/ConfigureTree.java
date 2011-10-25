@@ -60,7 +60,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -568,18 +567,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final Configurable c = target;
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
-           PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-             private static final long serialVersionUID = 1L;
+              PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+                private static final long serialVersionUID = 1L;
 
-             public void save() {
-               super.save();
-             }
+                public void save() {
+                  super.save();
+                }
 
-             public void cancel() {
-               ConfigureTree.this.remove(c, child);
-               dispose();
-             }
-           };
+                public void cancel() {
+                  ConfigureTree.this.remove(c, child);
+                  dispose();
+                }
+              };
               w.setVisible(true);
             }
           }
@@ -589,14 +588,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     };
-    
-    for(Class<?>c: newConfig.getInterfaces()) {
-   	 if((c == SingleChildInstanceOnline.class)
-   	 && (((AbstractBuildable) target).getComponentsOf(c).size() > 0)){
-   		 action.setEnabled(false);
-   		 break;
-   	 }
-    }
     return action;
   }
 
@@ -915,14 +906,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       for (int i = 0; i < c.length; ++i) {
         if (c[i].isAssignableFrom(child.getClass()) || 
             ((c[i] == CardSlot.class) && (child.getClass() == PieceSlot.class))) { // Allow PieceSlots to be pasted to Decks
-      	  if( child instanceof SingleChildInstanceOnline
-      	  && parent instanceof AbstractBuildable) {
-	      	  return !(child instanceof SingleChildInstanceOnline)
-      			|| ((SingleChildInstanceOnline)child)
-      					.enabledToAdd((AbstractBuildable) parent);
-       	  } else {
-      		  return true;
-      	  }
+          return true;
         }
       }
     }
@@ -941,7 +925,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void mouseMoved(MouseEvent e) {
   }
 
-  /**
+  /*
    * Refresh the display of a node
    */
   public void nodeUpdated(Configurable target) {
