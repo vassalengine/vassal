@@ -43,7 +43,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
-import VASSAL.build.module.AutoExecGKC;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
@@ -68,6 +67,7 @@ import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
+import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
@@ -353,7 +353,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       DoActionButton.class,
       DiceButton.class,
       GlobalKeyCommand.class,
-      AutoExecGKC.class,
+      StartupGlobalKeyCommand.class,
       Inventory.class,
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,

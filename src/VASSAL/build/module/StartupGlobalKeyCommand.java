@@ -32,14 +32,14 @@ import VASSAL.configure.VisibilityCondition;
  * <p>
  * If multiple start-up commands need to be run, they should be combined
  * in a MultiAction Button and then launched from a single instance of
- * AutoExecGKC, as the sequence in which multiple instances of AutoExecGKC
+ * StartupGlobalKeyCommand, as the sequence in which multiple instances of StartupGlobalKeyCommand
  * are fired is undetermined.
  * 
  * @author Pieter Geerkens
  *
  */
-public class AutoExecGKC extends GlobalKeyCommand implements GameComponent {
-	public AutoExecGKC() {
+public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent {
+	public StartupGlobalKeyCommand() {
 		super();
 		/* These four fields pertaining to the physical representation of the
 		 * GKC on the toolbar are not applicable in this implementation.
@@ -56,30 +56,32 @@ public class AutoExecGKC extends GlobalKeyCommand implements GameComponent {
 		  super.addTo(parent);
 		  GameModule.getGameModule().getGameState().addGameComponent(this);
 	}
+
 	public static String getConfigureTypeName() {
-		return "AutoExec GKC";
+		return "Startup Global Key Command";
 	}
+
 	@Override
 	public HelpFile getHelpFile() {
-		return HelpFile.getReferenceManualPage("Map.htm", "GlobalKeyCommand");
-		// TODO write this addition to help file
-//		return HelpFile.getReferenceManualPage("Map.htm", "AutoExecGKC");
+		return HelpFile.getReferenceManualPage("Map.htm", "StartupGlobalKeyCommand");
 	}
 	
 	@Override
 	public VisibilityCondition getAttributeVisibility(String key) {
-		if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key)
-		||  ICON.equals(key)        || HOTKEY.equals(key)) {
+		if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
+        ICON.equals(key)        || HOTKEY.equals(key)) {
 			return new VisibilityCondition() {
-					@Override public boolean shouldBeVisible() {	return false; }
-				};
-		} else {
+			  @Override public boolean shouldBeVisible() {	return false; }
+		  };
+		}
+    else {
 			return super.getAttributeVisibility(key);
 		}
 	}
 
 	//---------------------- GameComponent implementation ---------------------
 	private boolean hasStarted = false;	
+
 	@Override
 	public void setup(boolean gameStarting) {
 		if (gameStarting && !hasStarted){
@@ -89,6 +91,7 @@ public class AutoExecGKC extends GlobalKeyCommand implements GameComponent {
 		}
 		hasStarted = gameStarting;
 	}
+
 	@Override
 	public Command getRestoreCommand() {
 		return null; // No persistent state
