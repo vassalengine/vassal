@@ -32,68 +32,68 @@ import VASSAL.configure.VisibilityCondition;
  * <p>
  * If multiple start-up commands need to be run, they should be combined
  * in a MultiAction Button and then launched from a single instance of
- * StartupGlobalKeyCommand, as the sequence in which multiple instances of StartupGlobalKeyCommand
- * are fired is undetermined.
+ * StartupGlobalKeyCommand, as the sequence in which multiple instances of
+ * StartupGlobalKeyCommand are fired is undetermined.
  * 
  * @author Pieter Geerkens
  *
  */
 public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent {
-	public StartupGlobalKeyCommand() {
-		super();
-		/* These four fields pertaining to the physical representation of the
-		 * GKC on the toolbar are not applicable in this implementation.
-		 */
-		launch.setAttribute(BUTTON_TEXT, "");
-		launch.setAttribute(TOOLTIP, "");
-		launch.setAttribute(ICON, "");
-		launch.setAttribute(HOTKEY, "");
-	}
+  public StartupGlobalKeyCommand() {
+    super();
+    /* These four fields pertaining to the physical representation of the
+     * GKC on the toolbar are not applicable in this implementation.
+     */
+    launch.setAttribute(BUTTON_TEXT, "");
+    launch.setAttribute(TOOLTIP, "");
+    launch.setAttribute(ICON, "");
+    launch.setAttribute(HOTKEY, "");
+  }
 
-	//---------------------- GlobalKeyCommand extension ---------------------
-	@Override
-	public void addTo(Buildable parent) {
-		  super.addTo(parent);
-		  GameModule.getGameModule().getGameState().addGameComponent(this);
-	}
+  //---------------------- GlobalKeyCommand extension ---------------------
+  @Override
+  public void addTo(Buildable parent) {
+    super.addTo(parent);
+    GameModule.getGameModule().getGameState().addGameComponent(this);
+  }
 
-	public static String getConfigureTypeName() {
-		return "Startup Global Key Command";
-	}
+  public static String getConfigureTypeName() {
+    return "Startup Global Key Command";
+  }
 
-	@Override
-	public HelpFile getHelpFile() {
-		return HelpFile.getReferenceManualPage("Map.htm", "StartupGlobalKeyCommand");
-	}
-	
-	@Override
-	public VisibilityCondition getAttributeVisibility(String key) {
-		if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
+  @Override
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("Map.htm", "StartupGlobalKeyCommand");
+  }
+  
+  @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
         ICON.equals(key)        || HOTKEY.equals(key)) {
-			return new VisibilityCondition() {
-			  @Override public boolean shouldBeVisible() {	return false; }
-		  };
-		}
+      return new VisibilityCondition() {
+        @Override public boolean shouldBeVisible() {  return false; }
+      };
+    }
     else {
-			return super.getAttributeVisibility(key);
-		}
-	}
+      return super.getAttributeVisibility(key);
+    }
+  }
 
-	//---------------------- GameComponent implementation ---------------------
-	private boolean hasStarted = false;	
+  //---------------------- GameComponent implementation ---------------------
+  private boolean hasStarted = false;  
 
-	@Override
-	public void setup(boolean gameStarting) {
-		if (gameStarting && !hasStarted){
-			SwingUtilities.invokeLater(new Runnable() {
-		      @Override public void run() { apply(); }
-			});
-		}
-		hasStarted = gameStarting;
-	}
+  @Override
+  public void setup(boolean gameStarting) {
+    if (gameStarting && !hasStarted){
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override public void run() { apply(); }
+      });
+    }
+    hasStarted = gameStarting;
+  }
 
-	@Override
-	public Command getRestoreCommand() {
-		return null; // No persistent state
-	}
+  @Override
+  public Command getRestoreCommand() {
+    return null; // No persistent state
+  }
 }

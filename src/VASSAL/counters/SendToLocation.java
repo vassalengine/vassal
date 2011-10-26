@@ -113,7 +113,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
  // private Point dest;
 
   public SendToLocation() {
-	    this(ID + ";;;;0;0;;;", null);
+    this(ID + ";;;;0;0;;;", null);
   }
 
   public SendToLocation(String type, GamePiece inner) {
@@ -166,7 +166,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       .append(zone.getFormat())
       .append(region.getFormat())
       .append(propertyFilter.getExpression())
-    	.append(gridLocation.getFormat());
+      .append(gridLocation.getFormat());
     return ID + se.getValue();
   }
 
@@ -202,17 +202,17 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   private void LogBadGridLocation ( Point p) {
      String s = "* " + Decorator.getOutermost(this).getName();
      if (getMap() == null) {
-   	  s += "getMap is null";
+       s += "getMap is null";
      } else if ( p == null) {
-   	  s += "p is null";
+       s += "p is null";
      } else {
-   	  s += "getMap: " + getMap().getMapName() + 
-		  "; p: (" + p.x + "," + p.y + 
-		  "; Position: (" + getPosition().x + "," + getPosition().y +
-		  "); map: " + map.getMapName() + ";";
+       s += "getMap: " + getMap().getMapName() + 
+      "; p: (" + p.x + "," + p.y + 
+      "; Position: (" + getPosition().x + "," + getPosition().y +
+      "); map: " + map.getMapName() + ";";
      }
      new Chatter.DisplayText(
-   		  GameModule.getGameModule().getChatter(),s).execute();
+         GameModule.getGameModule().getChatter(),s).execute();
   }
 
   public String myGetState() {
@@ -280,15 +280,16 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
          case 'G':
             b = map.getBoardByName(boardName.getText(outer));
             if (b != null ) {
-          	  try {
-          		  dest = b.getGrid().getLocation(gridLocation.getText(outer));
- 	         	  if (dest != null)	dest.translate(b.bounds().x, b.bounds().y);
-          	  } catch (BadCoords e) {
- 						LogBadGridLocation(dest);
-          		  reportDataError(this, Resources.getString(
- 	            		"Error.not_found", "Grid Location"),map.getMapName()); 
-          		  ; // ignore SendTo request.
-          	  }
+              try {
+                dest = b.getGrid().getLocation(gridLocation.getText(outer));
+                if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
+              }
+              catch (BadCoords e) {
+                LogBadGridLocation(dest);
+                reportDataError(this, Resources.getString(
+                   "Error.not_found", "Grid Location"),map.getMapName()); 
+                ; // ignore SendTo request.
+              }
             }
             break;
         case 'L':
@@ -606,7 +607,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 //      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
        advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
        boolean advancedVisible = advancedInput.booleanValue().booleanValue() 
-       							  && advancedInput.getControls().isVisible();
+                       && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);
       yIndexInput.getControls().setVisible(advancedVisible);
@@ -617,7 +618,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       mapControls.setVisible(!destOption.equals(DEST_COUNTER));
       boardControls.setVisible(destOption.equals(DEST_LOCATION)
-      		|| destOption.equals(DEST_GRIDLOCATION));
+          || destOption.equals(DEST_GRIDLOCATION));
       zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
       regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
       propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
