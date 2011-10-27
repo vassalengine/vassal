@@ -283,7 +283,7 @@ e.printStackTrace();
           cancel(true);
           return null;
         }
-      
+
         // slice tiles for extensions
         final ExtensionsManager mgr = new ExtensionsManager(lr.module);
         for (File ext : mgr.getActiveExtensions()) {

@@ -36,39 +36,39 @@ import VASSAL.counters.Properties;
  *
  */
 public class GpIdChecker {
-  
+
   protected GpIdSupport gpIdSupport;
   protected int maxId;
   final HashMap<String, SlotElement> goodSlots = new HashMap<String, SlotElement>();
   final ArrayList<SlotElement> errorSlots = new ArrayList<SlotElement>();
-  
+
   public GpIdChecker() {
     this(null);
   }
-  
+
   public GpIdChecker(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
     maxId = -1;
   }
-  
+
   /**
    * Add a PieceSlot to our cross-reference and any PlaceMarker
    * traits it contains.
-   * 
+   *
    * @param pieceSlot
    */
   public void add(PieceSlot pieceSlot) {
-    testGpId(pieceSlot.getGpId(), new SlotElement(pieceSlot));   
-    
-    // PlaceMarker traits within the PieceSlot definition also contain GpId's. 
+    testGpId(pieceSlot.getGpId(), new SlotElement(pieceSlot));
+
+    // PlaceMarker traits within the PieceSlot definition also contain GpId's.
     GamePiece gp = pieceSlot.getPiece();
-    checkTrait(gp, pieceSlot);    
+    checkTrait(gp, pieceSlot);
   }
-  
+
   /**
-   * Check for PlaceMarker traits in a GamePiece and add them to 
+   * Check for PlaceMarker traits in a GamePiece and add them to
    * the cross-reference
-   * 
+   *
    * @param gp
    * @param slot
    */
@@ -76,16 +76,16 @@ public class GpIdChecker {
     if (gp == null || gp instanceof BasicPiece) {
       return;
     }
-    
+
     if (gp instanceof PlaceMarker) {
-       final PlaceMarker pm = (PlaceMarker) gp;  
-       testGpId (pm.getGpId(), new SlotElement(pm, slot));    
+       final PlaceMarker pm = (PlaceMarker) gp;
+       testGpId (pm.getGpId(), new SlotElement(pm, slot));
     }
-    
+
     checkTrait(((Decorator) gp).getInner(), slot);
-    
+
   }
-  
+
   /**
    * Validate a GamePieceId.
    *  - non-null
@@ -93,7 +93,7 @@ public class GpIdChecker {
    *  - Not a duplicate of any other GpId
    *  Keep a list of the good Slots and the slots with errors.
    *  Also track the maximum GpId
-   *  
+   *
    * @param id
    * @param element
    */
@@ -105,7 +105,7 @@ public class GpIdChecker {
     if (id.contains(":")) {
       id = id.split(":")[1];
     }
-    
+
     if (id == null || id.length() == 0) {   // gpid not generated yet?
       errorSlots.add(element);
     }
@@ -125,7 +125,7 @@ public class GpIdChecker {
       }
     }
   }
-  
+
   /**
    * Where any errors found?
    * @return
@@ -133,7 +133,7 @@ public class GpIdChecker {
   public boolean hasErrors() {
     return errorSlots.size() > 0;
   }
-  
+
   /**
    * Repair any errors
    *  - Update the next GpId in the module if necessary
@@ -147,13 +147,13 @@ public class GpIdChecker {
       slotElement.updateGpId();
     }
   }
-  
+
   /**
    * Locate the SlotElement that matches oldPiece and return a new GamePiece
-   * create from that Slot. 
-   * 
-   * 
-   * 
+   * create from that Slot.
+   *
+   *
+   *
    * @param oldPiece
    * @return
    */
@@ -169,14 +169,14 @@ public class GpIdChecker {
     }
     return element.createPiece(oldPiece);
   }
-  
- 
-  
+
+
+
   /**
    * Wrapper class for components that contain a GpId - They will all be either
    * PieceSlot components or PlaceMarker Decorator's.
-   * Ideally we would add an interface to these components, but this 
-   * will break any custom code based on PlaceMarker 
+   * Ideally we would add an interface to these components, but this
+   * will break any custom code based on PlaceMarker
    *
    */
   class SlotElement {
@@ -206,16 +206,16 @@ public class GpIdChecker {
     public String getGpId() {
       return id;
     }
-    
+
     public void updateGpId() {
       if (marker == null) {
         slot.updateGpId();
       }
       else {
-        marker.updateGpId();        
+        marker.updateGpId();
       }
     }
-    
+
     /**
      * Create a new GamePiece based on this Slot Element. Use oldPiece
      * to copy state information over to the new piece.

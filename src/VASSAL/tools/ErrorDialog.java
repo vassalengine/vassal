@@ -65,7 +65,7 @@ public class ErrorDialog {
     }
 
     // use a bug handler if one matches
-    for (BugHandler bh : bughandlers) {      
+    for (BugHandler bh : bughandlers) {
       if (bh.accept(thrown)) {
         bh.handle(thrown);
         return;

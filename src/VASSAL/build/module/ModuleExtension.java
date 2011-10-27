@@ -150,7 +150,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
     GameModule.getGameModule().add(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
-    
+
     if (archive instanceof ArchiveWriter) {
       lastSave = buildString();
 
@@ -165,7 +165,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       for (Buildable b : getBuildables()) {
         checkGpIds(b, checker);
       }
-      checker.fixErrors();      
+      checker.fixErrors();
     }
   }
 
@@ -183,7 +183,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
   }
 
-  
+
   /**
    * Allocate new gpid's to all PieceSlots defined in a Buildable and
    * all of it's children
@@ -208,11 +208,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
     }
   }
-  
+
   public int getNextGpId() {
     return nextGpId;
   }
-  
+
   public void setNextGpId(int id) {
     nextGpId = id;
   }

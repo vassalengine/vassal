@@ -51,11 +51,11 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
 
       Object x[] = node.getUserObjectPath();
       Configurable[] userObjectPath = new Configurable[x.length];
-      
+
       for (int i = 0; i < x.length; i++) {
         userObjectPath[i] = (Configurable) x[i];
       }
-      
+
       path = ArrayUtils.copyOfRange(userObjectPath, 1, userObjectPath.length);
     }
     else {

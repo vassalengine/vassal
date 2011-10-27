@@ -860,8 +860,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
     /*
      *  If we are editing, check for duplicate, illegal or missing GamePiece Id's
-     *  and update if necessary. 
-     */    
+     *  and update if necessary.
+     */
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
     }
@@ -898,11 +898,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public int getNextGpId() {
     return nextGpId;
   }
-  
+
   public void setNextGpId(int id) {
     nextGpId = id;
   }
-  
+
   public void setGpIdSupport(GpIdSupport s) {
     gpidSupport = s;
   }
@@ -920,9 +920,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
-    checker.fixErrors();     
+    checker.fixErrors();
   }
-  
+
   /**
    * @return the object which stores data for the module
    */

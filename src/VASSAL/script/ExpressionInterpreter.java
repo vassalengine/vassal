@@ -176,7 +176,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       try {
         eval(in);
       }
-      catch (EvalError e) {        
+      catch (EvalError e) {
         logger.error("Error trying to read init script: "+ini.toString());
         WarningDialog.show(e, "");
       }

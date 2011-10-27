@@ -40,7 +40,7 @@ import VASSAL.i18n.Translatable;
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker {
   protected List<Buildable> buildComponents = new ArrayList<Buildable>();
- 
+
   // Sub-classes can set this reference to perform validity checking
   protected ValidityChecker validator;
 

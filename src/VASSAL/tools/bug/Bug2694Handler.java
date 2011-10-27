@@ -34,8 +34,8 @@ public class Bug2694Handler implements BugHandler {
         }
       }
     }
-   
-    return false; 
+
+    return false;
   }
 
   public void handle(Throwable thrown) {

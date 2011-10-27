@@ -107,7 +107,7 @@ public class ColorConfigurer extends Configurer {
                          Integer.parseInt(st.nextToken()),
                          Integer.parseInt(st.nextToken()));
       }
-    }   
+    }
     catch (NumberFormatException e) {
       ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
     }

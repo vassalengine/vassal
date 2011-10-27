@@ -84,25 +84,25 @@ public final class GameRefresher implements GameComponent {
      * 1. Use the GpIdChecker to build a cross-reference of all available PieceSlots and
      * PlaceMarker's in the module.
      */
-    gpIdChecker = new GpIdChecker();    
+    gpIdChecker = new GpIdChecker();
     for (PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
-    }    
+    }
     if (gpIdChecker.hasErrors()) {
       // Any errors should have been resolved by the GpId check at startup, so this error indicates
       // a bug in GpIdChecker.fixErrors().
       ErrorDialog.show("GameRefresher.no_gpids"); //$NON-NLS-1$
       return;
     }
-    
+
     /*
      * 2. Make a list of all pieces in the game that we have access to
      */
-    final Command command = new Chatter.DisplayText(theModule.getChatter(), 
-        Resources.getString("GameRefresher.counters_refreshed", 
+    final Command command = new Chatter.DisplayText(theModule.getChatter(),
+        Resources.getString("GameRefresher.counters_refreshed",
             GlobalOptions.getInstance().getPlayerId()));
     command.execute();
-    
+
     final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
 
     for (GamePiece piece : theModule.getGameState().getAllPieces()) {
@@ -129,7 +129,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     /*
-     * 3. Generate the commands to update the pieces 
+     * 3. Generate the commands to update the pieces
      */
     for (GamePiece piece : pieces) {
       processGamePiece(piece, command);
@@ -147,7 +147,7 @@ public final class GameRefresher implements GameComponent {
     final Map map = piece.getMap();
     final Point pos = piece.getPosition();
     GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
-    
+
     final Stack oldStack = piece.getParent();
     final int oldPos = oldStack.indexOf(piece);
 

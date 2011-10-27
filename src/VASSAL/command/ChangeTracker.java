@@ -39,7 +39,7 @@ public class ChangeTracker {
   public Command getChangeCommand() {
     return new ChangePiece(piece.getId(), oldState, Decorator.getOutermost(piece).getState());
   }
-  
+
   public boolean isChanged() {
     return !oldState.equals(Decorator.getOutermost(piece).getState());
   }

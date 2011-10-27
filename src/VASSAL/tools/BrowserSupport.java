@@ -57,7 +57,7 @@ public class BrowserSupport {
         ErrorDialog.bug(e);
       }
     }
-    
+
     browserLauncher = bl;
   }
 

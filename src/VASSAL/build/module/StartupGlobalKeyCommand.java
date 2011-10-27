@@ -34,7 +34,7 @@ import VASSAL.configure.VisibilityCondition;
  * in a MultiAction Button and then launched from a single instance of
  * StartupGlobalKeyCommand, as the sequence in which multiple instances of
  * StartupGlobalKeyCommand are fired is undetermined.
- * 
+ *
  * @author Pieter Geerkens
  *
  */
@@ -65,7 +65,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "StartupGlobalKeyCommand");
   }
-  
+
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
     if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
@@ -80,7 +80,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   }
 
   //---------------------- GameComponent implementation ---------------------
-  private boolean hasStarted = false;  
+  private boolean hasStarted = false;
 
   @Override
   public void setup(boolean gameStarting) {

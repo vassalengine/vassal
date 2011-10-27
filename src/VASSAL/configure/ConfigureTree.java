@@ -371,7 +371,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
           final Configurable cutObj = (Configurable) cutData.getUserObject();
           final Configurable convertedCutObj = convertChild(target, cutObj);
-          if (remove(getParent(cutData), cutObj)) {            
+          if (remove(getParent(cutData), cutObj)) {
             insert(target, convertedCutObj, targetNode.getChildCount());
           }
           copyData = getTreeNode(convertedCutObj);
@@ -409,10 +409,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   /**
    * Some components need to be converted to a new type before insertion.
-   * 
+   *
    * Currently this is used to allow cut and paste of CardSlots and PieceSlots
    * between Decks and GamePiece Palette components.
-   * 
+   *
    * @param parent
    * @param child
    * @return new Child
@@ -428,7 +428,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return child;
     }
   }
-  
+
   protected boolean isAllowedChildClass(Configurable parent, Class<?> childClass) {
     final Class<?>[] allowableClasses = parent.getAllowableConfigureComponents();
     for (int i = 0; i < allowableClasses.length; i++) {
@@ -437,8 +437,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
     return false;
-  } 
-  
+  }
+
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components
    *
@@ -899,12 +899,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void mouseDragged(MouseEvent evt) {
   }
 
-  
+
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
       final Class<?> c[] = parent.getAllowableConfigureComponents();
       for (int i = 0; i < c.length; ++i) {
-        if (c[i].isAssignableFrom(child.getClass()) || 
+        if (c[i].isAssignableFrom(child.getClass()) ||
             ((c[i] == CardSlot.class) && (child.getClass() == PieceSlot.class))) { // Allow PieceSlots to be pasted to Decks
           return true;
         }

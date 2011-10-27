@@ -954,7 +954,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private List<Integer> isPrefix;
     private static final Integer NEITHER = 0;
     private static final Integer PREFIX = 1;
-    private static final Integer SUFFIX = 2;  
+    private static final Integer SUFFIX = 2;
 
     private BooleanConfigurer followConfig;
     private StringConfigurer propertyConfig;

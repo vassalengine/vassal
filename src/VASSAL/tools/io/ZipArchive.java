@@ -487,7 +487,7 @@ public class ZipArchive implements FileArchive {
       catch (IOException e) {
         String err =
           "Unable to overwrite " + archiveFile.getAbsolutePath() + ": ";
-          
+
         if (!archiveFile.exists()) {
           err += " file does not exist.";
         }

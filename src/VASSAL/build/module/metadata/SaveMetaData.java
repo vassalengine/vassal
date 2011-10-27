@@ -112,7 +112,7 @@ public class SaveMetaData extends AbstractMetaData {
     // information.
     copyModuleMetadata(archive);
   }
-  
+
   /**
    * Add Elements specific to SaveMetaData
    */

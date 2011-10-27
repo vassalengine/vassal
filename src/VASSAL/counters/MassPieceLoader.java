@@ -143,7 +143,7 @@ public class MassPieceLoader {
         }
       });
       add(dirConfig.getControls());
-      
+
       basicConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getNewValue() != null) {

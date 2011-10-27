@@ -206,8 +206,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
      } else if ( p == null) {
        s += "p is null";
      } else {
-       s += "getMap: " + getMap().getMapName() + 
-      "; p: (" + p.x + "," + p.y + 
+       s += "getMap: " + getMap().getMapName() +
+      "; p: (" + p.x + "," + p.y +
       "; Position: (" + getPosition().x + "," + getPosition().y +
       "); map: " + map.getMapName() + ";";
      }
@@ -287,7 +287,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               catch (BadCoords e) {
                 LogBadGridLocation(dest);
                 reportDataError(this, Resources.getString(
-                   "Error.not_found", "Grid Location"),map.getMapName()); 
+                   "Error.not_found", "Grid Location"),map.getMapName());
                 ; // ignore SendTo request.
               }
             }
@@ -578,7 +578,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       gridLocationInput = new StringConfigurer(null, "Grid Location:  ", p.gridLocation.getFormat());
       controls.add(gridLocationInput.getControls());
-      
+
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent arg0) {
@@ -606,7 +606,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     private void updateVisibility() {
 //      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
        advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
-       boolean advancedVisible = advancedInput.booleanValue().booleanValue() 
+       boolean advancedVisible = advancedInput.booleanValue().booleanValue()
                        && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);

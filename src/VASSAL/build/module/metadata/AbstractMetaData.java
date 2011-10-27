@@ -225,7 +225,7 @@ public abstract class AbstractMetaData {
     save(out);
     archive.addFile(getZipEntryName(), out.toInputStream());
   }
- 
+
   /**
    * Copy the Module metatdata from the current module into the specified
    * archive.
@@ -236,7 +236,7 @@ public abstract class AbstractMetaData {
   public void copyModuleMetadata(ArchiveWriter archive) throws IOException {
     copyModuleMetadata(archive.getArchive());
   }
-  
+
   public void copyModuleMetadata(FileArchive archive) throws IOException {
     BufferedInputStream in = null;
     try {
@@ -253,7 +253,7 @@ public abstract class AbstractMetaData {
     }
     finally {
       IOUtils.closeQuietly(in);
-    }  
+    }
   }
 
   /**

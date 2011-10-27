@@ -89,24 +89,24 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     panel.addMouseListener(this);
     panel.addKeyListener(this);
   }
-  
+
   public PieceSlot(PieceSlot piece) {
     this();
     copyFrom(piece);
   }
-  
+
   public PieceSlot(CardSlot card) {
-    this((PieceSlot) card);    
+    this((PieceSlot) card);
   }
 
   protected void copyFrom(PieceSlot piece) {
     c = piece.c;
     name = piece.name;
     pieceDefinition = piece.pieceDefinition;
-    gpidSupport = piece.gpidSupport;    
+    gpidSupport = piece.gpidSupport;
     gpId = piece.gpId;
   }
-  
+
   public class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
     protected PieceSlot pieceSlot;
