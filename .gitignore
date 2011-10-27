@@ -1,4 +1,5 @@
 .*.swp
-classes/
+bin/
+javadoc/
 lib/Vengine.jar
 tmp/
