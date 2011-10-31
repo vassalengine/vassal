@@ -144,19 +144,23 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   protected void insertPieceAt(GamePiece p, int index) {
-      if (index < 0) {
-          index = 0;
-      } else if (index > pieceCount) {
-          index = pieceCount;
-      }
+    if (index < 0) {
+      index = 0;
+    }
+    else if (index > pieceCount) {
+      index = pieceCount;
+    }
+
     if (pieceCount >= contents.length) {
       GamePiece[] newContents = new GamePiece[contents.length + INCR];
       System.arraycopy(contents, 0, newContents, 0, pieceCount);
       contents = newContents;
     }
+
     for (int i = pieceCount; i > index; --i) {
       contents[i] = contents[i - 1];
     }
+
     contents[index] = p;
     pieceCount++;
   }
