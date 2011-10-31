@@ -197,6 +197,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected Color bgColor = Color.white;
   protected LaunchButton launchButton;
   protected boolean useLaunchButton = false;
+  protected boolean useLaunchButtonEdit = false;
   protected String markMovedOption = GlobalOptions.ALWAYS;
   protected String markUnmovedIcon = "/images/unmoved.gif"; //$NON-NLS-1$
   protected String markUnmovedText = ""; //$NON-NLS-1$
@@ -362,7 +363,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      useLaunchButton = ((Boolean) value).booleanValue();
+      useLaunchButtonEdit = ((Boolean) value).booleanValue();
       launchButton.setVisible(useLaunchButton);
     }
     else if (SUPPRESS_AUTO.equals(key)) {
@@ -447,7 +448,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     }
     else if (USE_LAUNCH_BUTTON.equals(key)) {
-      return String.valueOf(useLaunchButton);
+      return String.valueOf(useLaunchButtonEdit);
     }
     else if (MOVE_WITHIN_FORMAT.equals(key)) {
       return getMoveWithinFormat();
@@ -635,6 +636,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see DragBuffer
    */
   public void addTo(Buildable b) {
+      useLaunchButton = useLaunchButtonEdit;
     idMgr.add(this);
     GameModule.getGameModule().addCommandEncoder(
       new ChangePropertyCommandEncoder(this));
