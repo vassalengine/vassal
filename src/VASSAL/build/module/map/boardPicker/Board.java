@@ -386,7 +386,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 // avoid mixing requests (and fade-in) between maps and their overview
 // maps. This is a kludge which should be fixed when model-view
 // separation happens.
-                if (obs == map.getView()) {
+                if ((map != null) && (obs == map.getView())) {
                   if (requested.containsKey(tile)) {
                     requested.remove(tile);
                     final Point t = tile;
@@ -431,7 +431,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 }
               }
               else {
-                if (obs == map.getView()) {
+                if ((map != null) && (obs == map.getView())) {
                   requested.putIfAbsent(tile, fim);
                 }
                 else {
@@ -452,7 +452,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
           }
         }
 
-        if (obs == map.getView()) {
+        if ((map != null) && (obs == map.getView())) {
           for (Point tile : requested.keySet().toArray(new Point[0])) {
             if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
               requested.remove(tile);
