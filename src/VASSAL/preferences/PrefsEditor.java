@@ -56,6 +56,8 @@ import VASSAL.tools.io.ZipArchive;
 public class PrefsEditor {
   private JDialog dialog;
   private List<Configurer> options = new ArrayList<Configurer>();
+  private List<Configurer> extras = new ArrayList<Configurer>();
+  private boolean iterating = false;
   private Map<Configurer, Object> savedValues;
   private List<Prefs> prefs;
   private JTabbedPane optionsTab;
@@ -170,7 +172,13 @@ public class PrefsEditor {
       pan = (JPanel) optionsTab.getComponentAt(i);
     }
 
-    options.add(c);
+    if (iterating) {
+      extras.add(c);
+    }
+    else {
+      options.add(c);
+    }
+
     final Box b = Box.createHorizontalBox();
     b.add(c.getControls());
     b.add(Box.createHorizontalGlue());
@@ -200,13 +208,20 @@ public class PrefsEditor {
   }
 
   protected synchronized void save() {
+    iterating = true;
     for (Configurer c : options) {
       if ((savedValues.get(c) == null && c.getValue() != null) || (savedValues.get(c) != null && !savedValues.get(c).equals(c.getValue()))) {
         c.fireUpdate();
       }
       c.setFrozen(false);
     }
+<<<<<<< .working
 
+=======
+    iterating = false;
+    options.addAll(extras);
+    extras.clear();
+>>>>>>> .merge-right.r7996
     try {
       write();
     }
