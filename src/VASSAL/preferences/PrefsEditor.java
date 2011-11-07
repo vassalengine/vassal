@@ -215,13 +215,11 @@ public class PrefsEditor {
       }
       c.setFrozen(false);
     }
-<<<<<<< .working
 
-=======
     iterating = false;
     options.addAll(extras);
     extras.clear();
->>>>>>> .merge-right.r7996
+
     try {
       write();
     }
