@@ -81,6 +81,11 @@ public class StartUp {
     catch (UnsupportedLookAndFeelException e) {
       ErrorDialog.bug(e);
     }
+
+    // Ensure consistent behavior in NOT consuming "mousePressed" events
+    // upon a JPopupMenu closing (added for Windows L&F, but others might
+    // also be affected.
+    UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
   }
 
   protected void initSystemSpecificProperties() {}
