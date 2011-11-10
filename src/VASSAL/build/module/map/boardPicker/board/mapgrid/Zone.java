@@ -259,7 +259,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return useParentGrid ? new Class[]{ZoneProperty.class} : new Class[]{HexGrid.class, SquareGrid.class, RegionGrid.class, ZoneProperty.class};
+    return useParentGrid ?
+      new Class<?>[]{ZoneProperty.class} :
+      new Class<?>[]{
+        HexGrid.class,
+        SquareGrid.class,
+        RegionGrid.class,
+        ZoneProperty.class
+      };
   }
 
   public void addMutableProperty(String key, MutableProperty p) {

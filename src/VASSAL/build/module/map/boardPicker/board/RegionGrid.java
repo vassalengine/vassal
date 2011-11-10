@@ -280,7 +280,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{Region.class};
+    return new Class<?>[]{Region.class};
   }
 
   public Point getLocation(String name) throws BadCoords {

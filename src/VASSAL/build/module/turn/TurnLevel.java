@@ -358,7 +358,7 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] { CounterTurnLevel.class, ListTurnLevel.class };
+    return new Class<?>[] { CounterTurnLevel.class, ListTurnLevel.class };
   }
 
   public static class TurnFormatConfig implements TranslatableConfigurerFactory {

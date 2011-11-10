@@ -112,7 +112,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] { FontStyle.class };
+    return new Class<?>[] { FontStyle.class };
   }
 
   public static String getConfigureTypeName() {

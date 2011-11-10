@@ -73,7 +73,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{GamePieceLayout.class};
+    return new Class<?>[]{GamePieceLayout.class};
   }
 
   public static String getConfigureTypeName() {

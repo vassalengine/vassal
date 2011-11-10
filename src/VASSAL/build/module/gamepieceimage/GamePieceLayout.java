@@ -237,7 +237,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{GamePieceImage.class};
+    return new Class<?>[]{GamePieceImage.class};
   }
 
   public void addTo(Buildable parent) {

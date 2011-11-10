@@ -71,7 +71,7 @@ public class ScriptContainer extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{ActionScript.class, GeneralScript.class};
+    return new Class<?>[]{ActionScript.class, GeneralScript.class};
   }
 
   public static String getConfigureTypeName() {

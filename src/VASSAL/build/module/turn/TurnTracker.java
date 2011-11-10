@@ -489,7 +489,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] { CounterTurnLevel.class, ListTurnLevel.class, TurnGlobalHotkey.class };
+    return new Class<?>[] {
+      CounterTurnLevel.class, ListTurnLevel.class, TurnGlobalHotkey.class
+    };
   }
 
   public static String getConfigureTypeName() {

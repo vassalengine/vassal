@@ -102,7 +102,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] {ZoneHighlight.class};
+    return new Class<?>[] {ZoneHighlight.class};
   }
 
 }

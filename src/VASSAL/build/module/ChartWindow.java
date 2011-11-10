@@ -150,7 +150,7 @@ public class ChartWindow extends Widget {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{
+    return new Class<?>[]{
       Chart.class,
       HtmlChart.class,
       TabWidget.class,

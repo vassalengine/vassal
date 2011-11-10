@@ -180,7 +180,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{ChangePropertyButton.class};
+    return new Class<?>[]{ChangePropertyButton.class};
   }
 
   public void addTo(Buildable parent) {
