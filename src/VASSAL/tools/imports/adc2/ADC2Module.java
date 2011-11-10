@@ -413,7 +413,8 @@ public class ADC2Module extends Importer {
         stack = new ArrayList<Piece>();
         stack.add(this);
         hash.put(position, stack);
-      } else {
+      }
+      else {
         stack.add(0, this);
       }
     }

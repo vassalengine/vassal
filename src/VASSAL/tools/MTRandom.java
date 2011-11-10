@@ -226,7 +226,8 @@ public class MTRandom extends Random {
   public final synchronized void setSeed(long seed) {
     if (compat) {
       setSeed((int)seed);
-    } else {
+    }
+    else {
 
       // Annoying runtime check for initialisation of internal data
       // caused by java.util.Random invoking setSeed() during init.

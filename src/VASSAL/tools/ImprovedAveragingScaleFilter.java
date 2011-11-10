@@ -81,7 +81,8 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
     if ((status == IMAGEABORTED) || (status == IMAGEERROR)) {
       consumer.imageComplete (status);
       return;
-    } else {
+    }
+    else {
       // get orig image width and height
       int pixels[] = new int [savedWidth];
       int position;

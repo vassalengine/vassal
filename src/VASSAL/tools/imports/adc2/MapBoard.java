@@ -993,7 +993,8 @@ public class MapBoard extends Importer {
             if (index2)
               return 1;
             index1 = true;
-          } else if (hl.getLine() == o2) {
+          }
+          else if (hl.getLine() == o2) {
             if (index1)
               return -1;
             index2 = true;
@@ -1118,7 +1119,8 @@ public class MapBoard extends Importer {
                 points.remove(j);
               }
               return;
-            } else if (b.equals(lineB.get(lineB.size() - 1))) {
+            }
+            else if (b.equals(lineB.get(lineB.size() - 1))) {
               // point A at start of lineA and point B at end of lineB
               lineB.addAll(lineA);
               points.remove(i);
@@ -1128,7 +1130,8 @@ public class MapBoard extends Importer {
           // point A at start of lineA and point B is open
           lineA.add(0, b);
           return;
-        } else if (a.equals(lineA.get(lineA.size() - 1))) {
+        }
+        else if (a.equals(lineA.get(lineA.size() - 1))) {
           // Point A is at end of line A
           if (b.equals(lineA.get(lineA.size() - 2))) // repeated segment?
             return;
@@ -1141,7 +1144,8 @@ public class MapBoard extends Importer {
               lineA.addAll(lineB);
               points.remove(j);
               return;
-            } else if (b.equals(lineB.get(lineB.size() - 1))) {
+            }
+            else if (b.equals(lineB.get(lineB.size() - 1))) {
               // point A at end of lineA and point B at end of lineB
               if (lineA.size() < lineB.size()) { // add line A to B
                 for (int k = lineA.size() - 1; k >= 0; --k)
@@ -1175,7 +1179,8 @@ public class MapBoard extends Importer {
             return;
           line.add(0, a);
           return;
-        } else if (b.equals(line.get(line.size() - 1))) {
+        }
+        else if (b.equals(line.get(line.size() - 1))) {
           // B at the end of the line
           if (a.equals(line.get(line.size() - 2)))
             return;
@@ -1836,13 +1841,15 @@ public class MapBoard extends Importer {
           lowerRight.y += getHexSize() / 2;
         // check to see if lower right-hand corner is on the wrong
         // square
-      } else if ( (r.x&1) == 1) {
+      }
+      else if ( (r.x&1) == 1) {
         // left is odd and right is even
         if (map.firstHexDown())
           lowerRight.y += getHexSize();
         else
           lowerRight.y += getHexSize()/2;
-      } else if (map.firstHexUp() && r.x % 2 == 0) {
+      }
+      else if (map.firstHexUp() && r.x % 2 == 0) {
         // left is even and right is odd
         lowerRight.y -= getHexSize() / 2;
       }
@@ -2923,7 +2930,8 @@ public class MapBoard extends Importer {
 
       // add zoned grid to board
       insertComponent(zg, board);
-    } else {
+    }
+    else {
       // add the default grid to the board
       insertComponent(ac, board);
     }
