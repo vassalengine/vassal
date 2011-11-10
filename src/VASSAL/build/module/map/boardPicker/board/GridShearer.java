@@ -461,6 +461,7 @@ public class GridShearer extends JDialog {
     public Board getBoard() { return brd; }
 
     @Override
+    @SuppressWarnings("fallthrough")
     public void paint(Graphics g) {
       if (brd == null) {
         super.paint(g);
@@ -474,25 +475,30 @@ public class GridShearer extends JDialog {
         @SuppressWarnings("hiding")
         AffineTransform saveTransform = g2d.getTransform();
         switch (mode) {
-          case DRAG:    if ( shearTransform != null) {
-                      AffineTransform transform = (AffineTransform) saveTransform.clone();
-                      transform.concatenate(shearTransform);
-                      g2d.setTransform(transform);
-                    }
-                    //$FALL-THROUGH$
-          case SEEK_SP:  g.setColor(Color.blue);
-                    highlight(g, sp);
-                    g.drawLine(sp.x, sp.y, fp1.x, fp1.y);                       
-                    g.drawLine(sp.x, sp.y, fp2.x, fp2.y);
-                             //$FALL-THROUGH$
-          case SEEK_FP2:  g.setColor(Color.red);
-                    g.drawLine(fp1.x, fp1.y, fp2.x, fp2.y);                       
-                    highlight(g, fp2);
-                    //$FALL-THROUGH$
-          case SEEK_FP1:  g.setColor(Color.red);
-                    highlight(g, fp1);
-                    //$FALL-THROUGH$
-          default:      break;
+        case DRAG:
+          if ( shearTransform != null) {
+            AffineTransform transform = (AffineTransform) saveTransform.clone();
+            transform.concatenate(shearTransform);
+            g2d.setTransform(transform);
+          }
+          //$FALL-THROUGH$
+        case SEEK_SP: 
+          g.setColor(Color.blue);
+          highlight(g, sp);
+          g.drawLine(sp.x, sp.y, fp1.x, fp1.y);                       
+          g.drawLine(sp.x, sp.y, fp2.x, fp2.y);
+          //$FALL-THROUGH$
+        case SEEK_FP2:
+          g.setColor(Color.red);
+          g.drawLine(fp1.x, fp1.y, fp2.x, fp2.y);                       
+          highlight(g, fp2);
+          //$FALL-THROUGH$
+        case SEEK_FP1:
+          g.setColor(Color.red);
+          highlight(g, fp1);
+          //$FALL-THROUGH$
+        default:
+          break;
         }
         g2d.setTransform(saveTransform);
       }
