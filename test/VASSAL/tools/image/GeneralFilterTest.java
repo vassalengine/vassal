@@ -1,5 +1,5 @@
 /*
- * $Id: GeneralFilter.java 7417 2010-10-17 19:55:50Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2007-2010 by Joel Uckelman
  *

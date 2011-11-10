@@ -1,5 +1,5 @@
 /*
- * $Id: MassKeyCommand.java 5139 2009-02-22 16:44:21Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010 by Pieter Geerkens
  *

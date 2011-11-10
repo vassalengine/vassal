@@ -1,5 +1,5 @@
 /*
- * $Id: ZipFileImageTiler.java 7652 2011-02-26 18:51:52Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010, 2011 by Joel Uckelman
  *

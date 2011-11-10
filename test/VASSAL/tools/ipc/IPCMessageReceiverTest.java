@@ -1,5 +1,5 @@
 /*
- * $Id: SignalDispatcherLoopTest.java 7266 2010-09-26 13:39:19Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010 by Joel Uckelman
  *

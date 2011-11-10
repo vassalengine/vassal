@@ -1,5 +1,5 @@
 /*
- * $Id: TileSlicer.java 7650 2011-02-26 18:41:20Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010, 2011 by Joel Uckelman
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: Property.java 7420 2010-10-17 20:24:10Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009-2010 by Joel Uckelman
  *
