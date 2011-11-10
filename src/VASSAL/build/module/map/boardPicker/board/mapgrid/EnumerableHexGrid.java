@@ -1,31 +1,29 @@
 /*
  * $Id$
- *
+ * 
  * Copyright (c) 2010-2011 by Pieter Geerkens
- *
+ * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
  * the Free Software Foundation.
- *
+ * 
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
  * details.
- *
+ * 
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, copies are available at
  * http://www.opensource.org.
  */
 
-package VASSAL.build.module.map.boardPicker.board;
+package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
-/** Dummy wrapper for {@link HexGridX} to facilitate synchronous
- * parallel development.
- * @author Pieter Geerkens
- *
- */
-public class HexGrid extends HexGridX {
-  public HexGrid() { super(); }
-  public HexGrid(double size) { super(size); }
-  public HexGrid(double width, double height) { super(width, height); }
+import java.awt.geom.Point2D;
+import VASSAL.build.module.map.boardPicker.board.CanonHexIndices;
+
+public interface EnumerableHexGrid {
+  CanonHexIndices.IntegerCHI canonHexIndices(Point2D p);
+  Point2D toOrigin(CanonHexIndices chi);
+  CanonHexIndices canonHexIndices();
 }

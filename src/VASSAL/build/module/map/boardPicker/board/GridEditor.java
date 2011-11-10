@@ -47,7 +47,6 @@ import javax.swing.WindowConstants;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 
@@ -102,7 +101,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   protected void initComponents() {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent we) {
+      @Override
+    public void windowClosing(WindowEvent we) {
          cancel();
       }
     });
@@ -130,7 +130,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     okButton = new JButton(OK);
     okButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         cancelSetMode();
         setVisible(false);
 /*
@@ -143,7 +144,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     JButton canButton = new JButton(CANCEL);
     canButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         cancel();
       }
     });
@@ -151,7 +153,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     setButton = new JButton(SET);
     setButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         startSetMode();
       }
     });
@@ -160,7 +163,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     canSetButton = new JButton(CANCEL_SET);
     canSetButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+    public void actionPerformed(ActionEvent e) {
         cancelSetMode();
       }
     });
@@ -171,8 +175,9 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     numberingButton = new JButton(NUMBERING);
     numberingButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, Boolean.valueOf(! grid.getGridNumbering().isVisible()));
+      @Override
+    public void actionPerformed(ActionEvent e) {
+        grid.getGridNumbering().setVisible(!grid.getGridNumbering().isVisible());
         repaint();
       }
     });
@@ -207,7 +212,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     setMode = false;
     grid.setVisible(saveGridVisible);
     if (grid.getGridNumbering() != null && saveNumberingVisible) {
-      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, Boolean.valueOf(saveNumberingVisible));
+      grid.getGridNumbering().setVisible(saveNumberingVisible);
     }
     repaint();
   }
@@ -226,7 +231,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     repaint();
   }
 
-  public void keyPressed(KeyEvent e) {
+  @Override
+public void keyPressed(KeyEvent e) {
     if (setMode) {
       return;
     }
@@ -320,14 +326,17 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   }
 
-  public void keyReleased(KeyEvent e) {
+  @Override
+public void keyReleased(KeyEvent e) {
     rebuild();
   }
 
-  public void keyTyped(KeyEvent e) {
+  @Override
+public void keyTyped(KeyEvent e) {
   }
 
-  public void mouseClicked(MouseEvent e) {
+  @Override
+public void mouseClicked(MouseEvent e) {
     if (setMode) {
       if (hp1 == null) {
         hp1 = e.getPoint();
@@ -344,16 +353,20 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     }
   }
 
-  public void mouseEntered(MouseEvent e) {
+  @Override
+public void mouseEntered(MouseEvent e) {
   }
 
-  public void mouseExited(MouseEvent e) {
+  @Override
+public void mouseExited(MouseEvent e) {
   }
 
-  public void mousePressed(MouseEvent e) {
+  @Override
+public void mousePressed(MouseEvent e) {
   }
 
-  public void mouseReleased(MouseEvent e) {
+  @Override
+public void mouseReleased(MouseEvent e) {
 
   }
 
@@ -435,7 +448,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         Resources.getString("Editor.GridEditor.does_not_look", grid.getGridName()), //$NON-NLS-1$
         Resources.getString("Editor.GridEditor.grid_shape_error"), //$NON-NLS-1$
         JOptionPane.ERROR_MESSAGE);
-
   }
 
   /*
@@ -450,6 +462,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   protected class GridPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    @SuppressWarnings("hiding")
     protected Board board;
 
     public GridPanel() {
@@ -472,7 +485,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return board;
     }
 
-    public void paint(Graphics g) {
+    @Override
+  public void paint(Graphics g) {
       if (board != null) {
         Rectangle b = getVisibleRect();
         g.clearRect(b.x, b.y, b.width, b.height);
@@ -499,18 +513,34 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     }
 
-    public boolean isFocusable() {
+    @Override
+  public boolean isFocusable() {
       return true;
     }
   }
 
 
-  /*
+  /**
    * Interface to be implemented by a class that wants to be edited
    * by RegularGridEditor
+   * <p>
+   * The interface EditableGrid defines the grid size and shape with each hex having
+   * height <b>dY</b> (the separation of horizontal edges in standard orientation,
+   * with hex flat-sides left and right and the pointy sides top and bottom)
+   * and a narrow width (horizontal separation of adjacent hex columns in
+   * standard orientation) of <b>dX</b>. The <i> full width </i> of the HexGrid
+   * (ie the horizontal diameter of the HexGrid hexes in standard orientation) is
+   * identically equal to 4.0 / 3.0 * <b>dX</b>.
    */
   public interface EditableGrid {
+
+    /** @return the narrow width of the grid (ie the horizontal separation of
+     * adjacent hex columns in standard orientation)
+     */
     public double getDx();
+    /** @return the height of the grid (ie the separation of horizontal edges
+     * in standard orientation)
+     */
     public double getDy();
     public Point getOrigin();
 
@@ -518,18 +548,27 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     public void setDy(double dy);
     public void setOrigin(Point p);
 
+    /**
+     * @return true if the grid is in sideways orientation (with hex
+     * flat-sides left and right and the pointy sides top and bottom), and
+     * false if the grid is in standard orientation with hex
+     * flat-sides top and bottom and the pointy sides left and right).
+     */
     public boolean isSideways();
     public void setSideways(boolean sideways);
 
     public GridContainer getContainer();
     public GridNumbering getGridNumbering();
 
+    /**
+     * @return whether the grid is to be drawn (true) or not(false).
+     */
     public boolean isVisible();
+    /**
+     * @param b whether the grid is to be drawn (true) or not (false).
+     */
     public void setVisible(boolean b);
 
     public String getGridName();
   }
-
-
-
 }

@@ -43,8 +43,9 @@ import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.counters.Labeler;
 
 public class SquareGridNumbering extends RegularGridNumbering {
+  private static final long  serialVersionUID  = 1L;
 
-  private SquareGrid grid;
+private SquareGrid grid;
 
   public void addTo(Buildable parent) {
     grid = (SquareGrid) parent;
@@ -84,6 +85,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
     if (size < 5 || !bounds.intersects(visibleRect)) {
       return;
     }
+
     Rectangle region = bounds.intersection(visibleRect);
     Shape oldClip = g.getClip();
     if (oldClip != null) {
@@ -97,11 +99,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
     Point centerPoint = null;
     Graphics2D g2d = (Graphics2D) g;
-    double radians = 0;
-    if (rotateTextDegrees != 0) {
-      radians = Math.toRadians(rotateTextDegrees);
-      g2d.rotate(radians);
-    }
+      g2d.rotate(rotateText.valueRadians);
 
     int minCol = reversed ? (int) Math.ceil((bounds.x - scale * grid.getOrigin().x + bounds.width - region.x) / deltaX)
         : (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / deltaX);
@@ -122,17 +120,17 @@ public class SquareGridNumbering extends RegularGridNumbering {
       for (double y = ymin; y < ymax; y += deltaY, row += reversed ? -1 : 1) {
         printRow = row;
         printColumn = column;
-        if (vDescending) {
+        if (vDescend) {
           printRow = getMaxRows() - row;
         }
-        if (hDescending) {
+        if (hDescend) {
           printColumn = getMaxColumns() - column;
         }
 
         // When rotating text, keep basic label position as in center along edge
         int newX = 0, newY = 0;
-        switch (rotateTextDegrees) {
-          case 90:
+        switch (rotateText.valueDegrees) { // keep existing behaviour for old values
+          case  90:
             newX = (int) (x + deltaX / 2);
             newY = (int) y;
             break;
@@ -144,10 +142,12 @@ public class SquareGridNumbering extends RegularGridNumbering {
             newX = (int) (x - deltaX / 2);
             newY = (int) y;
             break;
-          default :
-            newX = (int) x;
+          case   0:
+          case 360:
+           newX = (int) x;
             newY = (int) (y - deltaY / 2);
             break;
+          default : break; // behaviour for new values undetermined
         }
 
         centerPoint = offsetLabelCenter(newX, newY, scale);
@@ -159,15 +159,13 @@ public class SquareGridNumbering extends RegularGridNumbering {
                           Labeler.TOP, color, null, null);
       }
     }
-    if (rotateTextDegrees != 0) {
-      g2d.rotate(-radians);
-    }
+      g2d.rotate(-rotateText.valueRadians);
     g.setClip(oldClip);
   }
 
   public int getColumn(Point p) {
     int col = (int) Math.floor((p.x - grid.getOrigin().x) / grid.getDx() + 0.5);
-    if (hDescending) {
+    if (hDescend) {
       return (getMaxColumns() - col);
     }
     else {
@@ -177,7 +175,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   public int getRow(Point p) {
     int row = (int) ((p.y - grid.getOrigin().y) / grid.getDy() + 0.5);
-    if (vDescending) {
+    if (vDescend) {
       return (getMaxRows() - row);
     }
     else {
@@ -187,9 +185,9 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   @Override
   public Point getCenterPoint(int col, int row) {
-    if (vDescending)
+    if (vDescend)
       row = getMaxRows() - row;
-    if (hDescending)
+    if (hDescend)
       col = getMaxColumns() - col;
 
     // TODO: invoke grid.snapTo

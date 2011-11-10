@@ -36,7 +36,8 @@ import java.util.Map;
 
 public class ProgressDialogTest {
 
-  protected static class GTKLaF extends com.sun.java.swing.plaf.gtk.GTKLookAndFeel {
+//  protected static class GTKLaF extends com.sun.java.swing.plaf.gtk.GTKLookAndFeel {
+  protected static class GTKLaF extends com.sun.java.swing.plaf.windows.WindowsLookAndFeel {
     @Override
     public UIDefaults getDefaults() {
       final float scale = 3f;
