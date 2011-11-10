@@ -200,19 +200,21 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   private void LogBadGridLocation ( Point p) {
-     String s = "* " + Decorator.getOutermost(this).getName();
-     if (getMap() == null) {
-       s += "getMap is null";
-     } else if ( p == null) {
-       s += "p is null";
-     } else {
-       s += "getMap: " + getMap().getMapName() +
-      "; p: (" + p.x + "," + p.y +
-      "; Position: (" + getPosition().x + "," + getPosition().y +
-      "); map: " + map.getMapName() + ";";
-     }
-     new Chatter.DisplayText(
-         GameModule.getGameModule().getChatter(),s).execute();
+    String s = "* " + Decorator.getOutermost(this).getName();
+    if (getMap() == null) {
+      s += "getMap is null";
+    }
+    else if ( p == null) {
+      s += "p is null";
+    }
+    else {
+      s += "getMap: " + getMap().getMapName() +
+           "; p: (" + p.x + "," + p.y +
+           "; Position: (" + getPosition().x + "," + getPosition().y +
+           "); map: " + map.getMapName() + ";";
+    }
+    new Chatter.DisplayText(
+        GameModule.getGameModule().getChatter(),s).execute();
   }
 
   public String myGetState() {

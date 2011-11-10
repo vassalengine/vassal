@@ -177,7 +177,8 @@ public abstract class ListConfigurer extends Configurer implements
                 panel.getPreferredSize().width + 20, 210);
           }
           panel.setPreferredSize(fixedSize);
-        } else {
+        }
+        else {
           panel.setPreferredSize(null);
         }
       }
