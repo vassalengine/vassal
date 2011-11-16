@@ -1207,7 +1207,10 @@ public class PieceMover extends AbstractBuildable
     // DRAG SOURCE LISTENER INTERFACE
     //
     ///////////////////////////////////////////////////////////////////////////
-    abstract public void dragDropEnd(DragSourceDropEvent e);
+    public void dragDropEnd(DragSourceDropEvent e) {
+      final DragSource ds = e.getDragSourceContext().getDragSource();
+      ds.removeDragSourceMotionListener(this);
+    }
 
     public void dragEnter(DragSourceDragEvent e) {}
 
@@ -1296,8 +1299,10 @@ public class PieceMover extends AbstractBuildable
       super.dragGestureRecognized(dge);
     }
 
+    @Override
     public void dragDropEnd(DragSourceDropEvent e) {
       removeDragCursor();
+      super.dragDropEnd(e);
     }
 
     public void dragMouseMoved(DragSourceDragEvent e) {
@@ -1339,8 +1344,6 @@ public class PieceMover extends AbstractBuildable
       if (dragGestureRecognizedPrep(dge) == null) return;
       super.dragGestureRecognized(dge);
     }
-
-    public void dragDropEnd(DragSourceDropEvent e) {}
 
     public void dragMouseMoved(DragSourceDragEvent e) {}
   }
