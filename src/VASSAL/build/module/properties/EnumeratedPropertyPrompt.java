@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2000-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,6 +20,9 @@ package VASSAL.build.module.properties;
 
 import javax.swing.JOptionPane;
 
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.ExpressionException;
+
 /**
  * Prompts user to select from a list
  * @author rkinney
@@ -27,16 +30,38 @@ import javax.swing.JOptionPane;
  */
 public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected String[] validValues;
+  protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
-
+  protected PropertySource propertySource;
+  
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
+    this (dialogParent, prompt, validValues, null);
+  }
+  
+  public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, PropertySource propertySource) {
     super(null, prompt);
     this.validValues = validValues;
+    valueExpressions = new Expression[validValues.length];
+    for (int i = 0; i < validValues.length; i++) {
+      valueExpressions[i] = Expression.createExpression(validValues[i]);
+    }
     this.dialogParent = dialogParent;
+    this.propertySource = propertySource;
   }
 
   public String getNewValue(String oldValue) {
-    final String newValue = (String) JOptionPane.showInputDialog(dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null,validValues,oldValue);
+    final String[] finalValues = new String[valueExpressions.length];
+    for (int i = 0; i < finalValues.length; i++) {
+      String value;
+      try {
+        value = valueExpressions[i].evaluate(propertySource);
+      }
+      catch (ExpressionException e) {
+        value = valueExpressions[i].getExpression();
+      }
+      finalValues[i] = value;
+    }
+    final String newValue = (String) JOptionPane.showInputDialog(dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null,finalValues,oldValue);
     return newValue == null ? oldValue : newValue;
   }
 

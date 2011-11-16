@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.FormattedStringArrayConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
@@ -105,7 +106,7 @@ public class PropertyChangerConfigurer extends Configurer {
       promptConfig.addPropertyChangeListener(l);
       incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ");
       incrConfig.addPropertyChangeListener(l);
-      validValuesConfig = new StringArrayConfigurer(null, "Valid Values");
+      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values");
       validValuesConfig.addPropertyChangeListener(l);
       controls.add(typeConfig.getControls());
       controls.add(valueConfig.getControls());
@@ -214,7 +215,7 @@ public class PropertyChangerConfigurer extends Configurer {
       p = new IncrementProperty(this, sd.nextToken("1"), constraints);
       break;
     case ENUM_CODE:
-      p = new EnumeratedPropertyPrompt(constraints, sd.nextToken("Select new value"), sd.nextStringArray(0));
+      p = new EnumeratedPropertyPrompt(constraints, sd.nextToken("Select new value"), sd.nextStringArray(0), constraints);
       break;
     case PLAIN_CODE:
     default:

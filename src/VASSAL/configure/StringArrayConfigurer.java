@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2011 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,15 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 20, 2002
- * Time: 4:10:29 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- * i18n
- */
+
 package VASSAL.configure;
 
 import java.awt.Component;
@@ -56,10 +48,11 @@ import VASSAL.tools.SequenceEncoder;
  * A Configurer that returns an array of Strings
  */
 public class StringArrayConfigurer extends Configurer {
-  private JPanel panel;
-  private JList list;
-  private DefaultListModel model;
+  protected JPanel panel;
+  protected JList list;
+  protected DefaultListModel model;
   private static final String[] EMPTY = new String[0];
+  protected JTextField textField;
 
   public StringArrayConfigurer(String key, String name, Object val) {
     super(key, name, val);
@@ -96,34 +89,33 @@ public class StringArrayConfigurer extends Configurer {
       list.setPrototypeCellValue("MMMMMMMM");
       list.setVisibleRowCount(2);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      final JTextField tf = new JTextField(8);
-      tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, tf.getPreferredSize().height));
+      final Component textComponent = getTextComponent();
 
       ActionListener addAction = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          String s = tf.getText();
+          String s = getTextValue();
           addValue(s);
-          tf.setText("");
+          setTextValue("");
         }
       };
       ActionListener insertAction = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if (value == null) {
-            addValue(tf.getText());
+            addValue(getTextValue());
           }
           else {
             int pos = list.getSelectedIndex();
             if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert((String[]) value, pos, tf.getText()));
-            tf.setText("");
+            setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
+            setTextValue("");
             list.setSelectedIndex(pos+1);
           }
         }
       };
       JButton addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.addActionListener(addAction);
-      tf.addActionListener(insertAction);
-      leftBox.add(tf);
+      addTextActionListener(insertAction);
+      leftBox.add(textComponent);
       buttonBox.add(addButton);
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
@@ -151,6 +143,26 @@ public class StringArrayConfigurer extends Configurer {
     return panel;
   }
 
+  protected Component getTextComponent() {
+    if (textField == null) {
+      textField = new JTextField(8);
+      textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, textField.getPreferredSize().height));
+    }
+    return textField;
+  }
+  
+  protected String getTextValue() {
+    return textField.getText();
+  }
+  
+  protected void setTextValue(String s) {
+    textField.setText(s);
+  }
+  
+  protected void addTextActionListener(ActionListener a) {
+    textField.addActionListener(a);
+  }
+  
   public String[] getStringArray() {
     if (value instanceof String[]) {
       return (String[]) value;
