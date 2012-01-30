@@ -626,6 +626,7 @@ e.printStackTrace();
       }
       catch (CancellationException e) {
         // this means that loading was cancelled
+        ModuleManagerWindow.getInstance().setWaitCursor(false);
       }
       catch (InterruptedException e) {
         ErrorDialog.bug(e);
