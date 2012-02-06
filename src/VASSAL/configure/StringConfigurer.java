@@ -18,10 +18,14 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * A Configurer for String values
@@ -49,19 +53,26 @@ public class StringConfigurer extends Configurer {
     setValue((Object) s);
   }
 
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
       nameField = buildTextField();
-      nameField.setMaximumSize
-        (new java.awt.Dimension(nameField.getMaximumSize().width,
-                                nameField.getPreferredSize().height));
+      nameField.setMaximumSize(new Dimension(
+        nameField.getMaximumSize().width,
+        nameField.getPreferredSize().height
+      ));
       nameField.setText(getValueString());
       p.add(nameField);
-      nameField.addKeyListener(new java.awt.event.KeyAdapter() {
-        public void keyReleased(java.awt.event.KeyEvent evt) {
+      nameField.getDocument().addDocumentListener(new DocumentListener() {
+        public void insertUpdate(DocumentEvent e) { update(); }
+
+        public void removeUpdate(DocumentEvent e) { update(); }
+
+        public void changedUpdate(DocumentEvent e) {}
+
+        private void update() {
           noUpdate = true;
           setValue(nameField.getText());
           noUpdate = false;
