@@ -382,22 +382,38 @@ public class ImageSaver extends AbstractConfigurable {
     public Void doInBackground() throws IOException {
       setProgress(0);
 
-      int iw = w;
-      int ih = h;
+      int tw = w;
+      int th = h;
       BufferedImage img = null;
+
+      // ensure that the size of the image data array (4 bytes per pixel)
+      // does not exceed the maximum array size, 2^31-1 elements;
+      // otherwise we'll overflow an int and have a negavive array size
+      while ((long)tw * (long)th > Integer.MAX_VALUE/4) {
+        if (tw > th) {
+          tw = (int) Math.ceil(tw/2.0);
+        }
+        else {
+          th = (int) Math.ceil(th/2.0);
+        }
+      }
 
       // find a size of BufferedImage we can allocate successfully
       while (img == null) {
         try {
-          img = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB);
+          img = new BufferedImage(tw, th, BufferedImage.TYPE_INT_ARGB);
         }
         catch (OutOfMemoryError e) {
-          if (iw > ih) iw = (int) Math.ceil(iw/2.0);
-          else ih = (int) Math.ceil(ih/2.0);
+          if (tw > th) {
+            tw = (int) Math.ceil(tw/2.0);
+          }
+          else {
+            th = (int) Math.ceil(th/2.0);
+          }
         }
       }
 
-      if (iw == w && ih == h) {
+      if (tw == w && th == h) {
         // write the whole map as one image
         tiles = 1;
         writeImage(file, img, new Rectangle(0, 0, w, h));
@@ -417,19 +433,26 @@ public class ImageSaver extends AbstractConfigurable {
         }
 
         // calculate total tiles
-        tiles = (int) (Math.ceil((double)w/iw) * Math.ceil((double)h/ih));
+        final int tcols = (int) Math.ceil((double) w / tw);
+        final int trows = (int) Math.ceil((double) h / th);
 
-        // tile across the map with images of size iw by ih.
-        for (int ix = 0; ix < w; ix += iw) {
-          for (int iy = 0; iy < h; iy += ih) {
+        tiles = tcols * trows;
+
+        // tile across the map with images of size tw by th.
+        for (int tx = 0; tx < tcols; ++tx) {
+          for (int ty = 0; ty < trows; ++ty) {
             final File f = new File(file.getParent(),
-              base + "." + (ix/iw) + "." + (iy/iw) + suffix);
+              base + "." + tx + "." + ty + suffix);
 
-            final Rectangle r = new Rectangle(ix, iy,
-              Math.min(w-ix, iw), Math.min(h-iy, ih));
+            final Rectangle r = new Rectangle(
+              tw*tx,
+              th*ty,
+              Math.min(tw, w - tw*tx),
+              Math.min(th, h - th*ty)
+            );
 
             writeImage(f, img, r);
-            tilesDone++;
+            ++tilesDone;
           }
         }
       }
