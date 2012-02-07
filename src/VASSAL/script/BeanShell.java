@@ -36,13 +36,9 @@ import bsh.NameSpace;
  */
 public class BeanShell {
 
-  public static BeanShell instance;
+  private static BeanShell instance = new BeanShell();
 
   public static BeanShell getInstance() {
-    if (instance == null) {
-      instance = new BeanShell();
-      instance.init();
-    }
     return instance;
   }
 
@@ -55,6 +51,7 @@ public class BeanShell {
 
   public BeanShell() {
     globalInterpreter = new ScriptInterpreter(this.getClass().getClassLoader());
+    init();
   }
 
   public void init() {
@@ -117,9 +114,8 @@ public class BeanShell {
     catch (EvalError e) {
       e.printStackTrace();
     }
-
-
   }
+
   /**
    * Parse and validate a single expression or script. No evaluation or checking
    * for undefined variables
