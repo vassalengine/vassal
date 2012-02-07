@@ -105,6 +105,8 @@ Changes since 3.1.16
 
 The following bugs are fixed in 3.2.0-beta1:
 
+* 4184: Numeric fields truncated when committing dialogs
+* 3075: NegativeArraySizeException in ImageSaver.SnapshotTask.doInBackground()
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
