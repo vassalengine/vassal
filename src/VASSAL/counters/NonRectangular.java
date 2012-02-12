@@ -208,12 +208,24 @@ public class NonRectangular extends Decorator implements EditablePiece {
       final int h = bi.getHeight();
       final int[] pixels = bi.getRGB(0, 0, w, h, new int[w*h], 0, w);
 
+      // build the outline in strips
       final Area outline = new Area();
-      for (int j = 0; j < h; ++j) {
-        for (int i = 0; i < w; ++i) {
-          if (((pixels[i + j*w] >>> 24) & 0xff) > 0) {
-            outline.add(new Area(new Rectangle(i, j, 1, 1)));
+      for (int y = 0; y < h; ++y) {
+        int left = -1;
+        for (int x = 0; x < w; ++x) {
+          if (((pixels[x + y*w] >>> 24) & 0xff) > 0) {
+            if (left < 0) {
+              left = x;
+            }
           }
+          else if (left > -1) {
+            outline.add(new Area(new Rectangle(left, y, x-left, 1)));
+            left = -1;
+          }
+        }
+
+        if (left > -1) {
+          outline.add(new Area(new Rectangle(left, y, w-left, 1)));
         }
       }
 
