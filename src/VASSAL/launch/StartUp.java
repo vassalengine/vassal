@@ -22,6 +22,8 @@ package VASSAL.launch;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.apache.commons.lang.SystemUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,22 +66,24 @@ public class StartUp {
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    // use native LookAndFeel
-    // NB: This must be after Mac-specific properties
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (ClassNotFoundException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InstantiationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (UnsupportedLookAndFeelException e) {
-      ErrorDialog.bug(e);
+    if (!SystemUtils.IS_OS_WINDOWS) {
+      // use native LookAndFeel
+      // NB: This must be after Mac-specific properties
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
+      catch (ClassNotFoundException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (IllegalAccessException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (InstantiationException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (UnsupportedLookAndFeelException e) {
+        ErrorDialog.bug(e);
+      }
     }
 
     // Ensure consistent behavior in NOT consuming "mousePressed" events
