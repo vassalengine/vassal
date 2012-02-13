@@ -566,14 +566,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       }
 
-      if (resetKey != null && (! rndKey.isNull()) && resetCommand.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(resetCommand, resetKey, outer, this));
+      if (!followProperty) {
+        if (resetKey != null && !resetKey.isNull() && resetCommand.length() > 0) {
+          l.add(new KeyCommand(resetCommand, resetKey, outer, this));
+        }
+
+        // random layers
+        if (rndKey != null && !rndKey.isNull() && rndText.length() > 0) {
+          l.add(new KeyCommand(rndText, rndKey, outer, this));
+        }
+        // end random layers
       }
-      // random layers
-      if (rndKey != null && (! rndKey.isNull()) && rndText.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(rndText, rndKey, outer, this));
-      }
-      // end random layers
+
       commands = l.toArray(new KeyCommand[l.size()]);
     }
     if (up != null) {
