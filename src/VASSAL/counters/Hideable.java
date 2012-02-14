@@ -41,6 +41,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -52,12 +53,14 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   public static final String ID = "hide;";
   public static final String HIDDEN_BY = "hiddenBy";
+  public static final String TRANSPARENCY = "transparency";
 
   protected String hiddenBy;
   protected NamedKeyStroke hideKey;
   protected String command = "Invisible";
   protected PieceAccess access = PlayerAccess.getInstance();
 
+  protected float transparency = 0.3f;
   protected Color bgColor;
 
   protected KeyCommand[] commands;
@@ -108,7 +111,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     else if (Properties.VISIBLE_STATE.equals(key)) {
         return String.valueOf(invisibleToOthers()) +
                invisibleToMe() + piece.getProperty(key);
-      }
+    }
     else {
       return super.getProperty(key);
     }
@@ -130,6 +133,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     command = st.nextToken("Invisible");
     bgColor = st.nextColor(null);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
+    transparency = st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f;
     commands = null;
   }
 
@@ -138,8 +142,12 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(hideKey).append(command).append(bgColor).append(PieceAccessConfigurer.encode(access));
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(hideKey)
+      .append(command)
+      .append(bgColor)
+      .append(PieceAccessConfigurer.encode(access))
+      .append(transparency);
     return ID + se.getValue();
   }
 
@@ -178,17 +186,19 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return;
     }
     else if (invisibleToOthers()) {
-      Graphics2D g2d = (Graphics2D) g;
+      final Graphics2D g2d = (Graphics2D) g;
 
       if (bgColor != null) {
         g.setColor(bgColor);
-        AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+        final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
         t.translate(x / zoom, y / zoom);
         g2d.fill(t.createTransformedShape(piece.getShape()));
       }
 
-      Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
+      final Composite oldComposite = g2d.getComposite();
+      g2d.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency)
+      );
       piece.draw(g, x, y, obs, zoom);
       g2d.setComposite(oldComposite);
     }
@@ -257,7 +267,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
    * @param allHidden
    * @deprecated
    */
-  @Deprecated public static void setAllHidden(boolean allHidden) {
+  @Deprecated
+  public static void setAllHidden(boolean allHidden) {
     if (allHidden) {
       PieceAccess.GlobalAccess.hideAll();
     }
@@ -283,6 +294,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     protected NamedHotKeyConfigurer hideKeyInput;
     protected JTextField hideCommandInput;
     protected ColorConfigurer colorConfig;
+    protected IntConfigurer transpConfig;
     protected PieceAccessConfigurer accessConfig;
     protected JPanel controls;
 
@@ -304,6 +316,9 @@ public class Hideable extends Decorator implements TranslatablePiece {
       colorConfig = new ColorConfigurer(null, "Background color:  ", p.bgColor);
       controls.add(colorConfig.getControls());
 
+      transpConfig = new IntConfigurer(null, "Transparency (%):  ", (int) (p.transparency * 100));
+      controls.add(transpConfig.getControls());
+
       accessConfig = new PieceAccessConfigurer(null, "Can by hidden by:  ", p.access);
       controls.add(accessConfig.getControls());
     }
@@ -314,8 +329,13 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append(hideKeyInput.getValueString()).append(hideCommandInput.getText()).append(
-          colorConfig.getValue() == null ? "" : colorConfig.getValueString()).append(accessConfig.getValueString());
+      se.append(hideKeyInput.getValueString())
+        .append(hideCommandInput.getText())
+        .append(
+          colorConfig.getValue() == null ? "" : colorConfig.getValueString()
+        )
+        .append(accessConfig.getValueString())
+        .append(transpConfig.getIntValue(30) / 100.0f);
       return ID + se.getValue();
     }
 
