@@ -18,7 +18,13 @@
  */
 package VASSAL.tools;
 
-import java.awt.*;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 /**
@@ -183,56 +189,46 @@ public class WrapLayout extends FlowLayout {
    */
   @Override
   public void layoutContainer(final Container target) {
-      super.layoutContainer(target);
-      /*
-       * Now see how big a container is needed to hold all components
-       */
-      int maxX = 0;
-      int maxY = 0;
-      
-      for (int i =0; i < target.getComponentCount(); i++) {
-          Component cmp = target.getComponent(i);
-          if (!cmp.isVisible()) continue;
-          Rectangle b = cmp.getBounds();
-          if (b.x + b.width > maxX) maxX = b.x + b.width;
-          if (b.y + b.height > maxY) maxY = b.y + b.height;
-      }
-      
-      Dimension size = target.getSize();
-      
-      if (maxX > size.width || maxY > size.height) {
-          if (recursing) return;
-          recursing = true;
-          target.invalidate();
-          if (target instanceof JComponent) ((JComponent)target).revalidate();
-          recursing = false;
-      }
-  }
+    super.layoutContainer(target);
 
-//  /**
-//   * Lays out the container. This method lets each component take
-//   * its preferred size by reshaping the components in the
-//   * target container in order to satisfy the alignment of
-//   * this <code>WrapLayout</code> object.
-//   * @param target the specified component being laid out
-//   */
-//  @Override
-//  public void layoutContainer(final Container target) {
-//    Dimension size = preferredLayoutSize(target);
-//
-//    if (size.equals(preferredLayoutSize)) {
-//      super.layoutContainer(target);
-//    }
-//    else {
-//      preferredLayoutSize = size;
-//      target.invalidate();
-//      Container top = target;
-//
-//      while (top.getParent() != null) {
-//        top = top.getParent();
-//      }
-//
-//      top.validate();
-//    }
-//  }
+    /*
+     * Now see how big a container is needed to hold all components
+     */
+    int maxX = 0;
+    int maxY = 0;
+    
+    for (int i = 0; i < target.getComponentCount(); i++) {
+      final Component cmp = target.getComponent(i);
+      if (!cmp.isVisible()) {
+        continue;
+      }
+
+      final Rectangle b = cmp.getBounds();
+
+      if (b.x + b.width > maxX) {
+        maxX = b.x + b.width;
+      }
+
+      if (b.y + b.height > maxY) {
+        maxY = b.y + b.height;
+      }
+    }
+    
+    final Dimension size = target.getSize();
+    
+    if (maxX > size.width || maxY > size.height) {
+      if (recursing) {
+        return;
+      }
+      
+      recursing = true;
+      target.invalidate();
+
+      if (target instanceof JComponent) {
+        ((JComponent)target).revalidate();
+      }
+
+      recursing = false;
+    }
+  }
 }
