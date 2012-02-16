@@ -18,11 +18,8 @@
  */
 package VASSAL.tools;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
+import java.awt.*;
+import javax.swing.JComponent;
 
 /**
  * FlowLayout subclass that fully supports wrapping of components.
@@ -173,31 +170,69 @@ public class WrapLayout extends FlowLayout {
 
     dim.height += rowHeight;
   }
-
+  
   /**
-   * Lays out the container. This method lets each component take
-   * its preferred size by reshaping the components in the
-   * target container in order to satisfy the alignment of
-   * this <code>WrapLayout</code> object.
-   * @param target the specified component being laid out
+  * Trap for recursive failure to fit components
+  */
+  boolean recursing = false;
+  
+  /**
+   * Lays out the container using the FlowLayout. If the components as laid
+   * out do not fit in the size of then cause tree to be layout again unless
+   * this is a recursive call.
    */
   @Override
   public void layoutContainer(final Container target) {
-    Dimension size = preferredLayoutSize(target);
-
-    if (size.equals(preferredLayoutSize)) {
       super.layoutContainer(target);
-    }
-    else {
-      preferredLayoutSize = size;
-      target.invalidate();
-      Container top = target;
-
-      while (top.getParent() != null) {
-        top = top.getParent();
+      /*
+       * Now see how big a container is needed to hold all components
+       */
+      int maxX = 0;
+      int maxY = 0;
+      
+      for (int i =0; i < target.getComponentCount(); i++) {
+          Component cmp = target.getComponent(i);
+          if (!cmp.isVisible()) continue;
+          Rectangle b = cmp.getBounds();
+          if (b.x + b.width > maxX) maxX = b.x + b.width;
+          if (b.y + b.height > maxY) maxY = b.y + b.height;
       }
-
-      top.validate();
-    }
+      
+      Dimension size = target.getSize();
+      
+      if (maxX > size.width || maxY > size.height) {
+          if (recursing) return;
+          recursing = true;
+          target.invalidate();
+          if (target instanceof JComponent) ((JComponent)target).revalidate();
+          recursing = false;
+      }
   }
+
+//  /**
+//   * Lays out the container. This method lets each component take
+//   * its preferred size by reshaping the components in the
+//   * target container in order to satisfy the alignment of
+//   * this <code>WrapLayout</code> object.
+//   * @param target the specified component being laid out
+//   */
+//  @Override
+//  public void layoutContainer(final Container target) {
+//    Dimension size = preferredLayoutSize(target);
+//
+//    if (size.equals(preferredLayoutSize)) {
+//      super.layoutContainer(target);
+//    }
+//    else {
+//      preferredLayoutSize = size;
+//      target.invalidate();
+//      Container top = target;
+//
+//      while (top.getParent() != null) {
+//        top = top.getParent();
+//      }
+//
+//      top.validate();
+//    }
+//  }
 }
