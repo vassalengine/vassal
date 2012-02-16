@@ -94,7 +94,8 @@ New Features in 3.2
 
 * All scaling is now high-quality. Low-quality scaling (in hardware)
   caused too many graphics glitches on Windows.
-  
+
+* The Invisible trait now supports adjustable transparency.
 
 
 
@@ -106,6 +107,7 @@ Changes since 3.1.16
 The following bugs are fixed in 3.2.0-beta1:
 
 * 4184: Numeric fields truncated when committing dialogs
+* 4132: Bad layout for Map window obscures Global Key Command buttons
 * 3075: NegativeArraySizeException in ImageSaver.SnapshotTask.doInBackground()
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
