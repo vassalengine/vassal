@@ -54,11 +54,17 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    * @param y1 the y coordinate of the lower-right corner
    */
   public CropOpBitmapImpl(ImageOp sop, int x0, int y0, int x1, int y1) {
-    if (sop == null) throw new IllegalArgumentException();
-    if (x1 <= x0)
+    if (sop == null) {
+      throw new IllegalArgumentException();
+    }
+
+    if (x1 <= x0) {
       throw new IllegalArgumentException("left = "+ x0 + ", right = " + x1);
-    if (y1 <= y0)
+    }
+
+    if (y1 <= y0) {
       throw new IllegalArgumentException("top = " + y0 + ", bottom = " + y1);
+    }
 
     this.sop = sop;
     this.x0 = x0;
@@ -100,21 +106,28 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
-    // match the transparency of the first tile
-    final BufferedImage dst = ImageUtils.createCompatibleImage(
-      size.width, size.height,
-      sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
-    );
+    try {
+      // match the transparency of the first tile
+      final BufferedImage dst = ImageUtils.createCompatibleImage(
+        size.width, size.height,
+        sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
+      );
 
-    final Graphics2D g = dst.createGraphics();
+      final Graphics2D g = dst.createGraphics();
 
-    for (Point tile : tiles) {
-      g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
+      for (Point tile : tiles) {
+        g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
+      }
+
+      g.dispose();
+
+      return dst;
     }
-
-    g.dispose();
-
-    return dst;
+    catch (ArrayIndexOutOfBoundsException e) {
+      // FIXME: Added for Bug 2807, so we can see what x0, y0, x1, y1 are.
+      System.err.println(x0 + " " + y0 + " " + x1 + " " + y1);
+      throw e;
+    }
   }
 
   protected void fixSize() {}
