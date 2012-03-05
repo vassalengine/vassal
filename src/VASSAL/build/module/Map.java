@@ -1817,14 +1817,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return value;
   }
 
-
   /**
    * Return the auto-move key. It may be named, so just return
    * the allocated KeyStroke.
    * @return auto move keystroke
    */
   public KeyStroke getMoveKey() {
-    return moveKey.getKeyStroke();
+    return moveKey == null ? null : moveKey.getKeyStroke();
   }
 
   /**
