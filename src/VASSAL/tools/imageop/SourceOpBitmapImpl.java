@@ -33,6 +33,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -49,8 +50,9 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** The cached hash code of this object. */
   protected final int hash;
 
-  /** The zip file from which the image will be loaded */
-  protected final DataArchive archive;
+  /** The archive file from which the image will be loaded */
+  protected final DataArchive darch;
+  protected final FileArchive farch;
 
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.
@@ -64,16 +66,41 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   public SourceOpBitmapImpl(String name, DataArchive archive) {
-    if (name == null || name.length() == 0 || archive == null)
+    this(name, archive, null);
+  }
+
+  public SourceOpBitmapImpl(String name, FileArchive archive) {
+    this(name, null, archive);
+  }
+
+  protected SourceOpBitmapImpl(String name, DataArchive da, FileArchive fa) {
+    if (name == null) {
       throw new IllegalArgumentException();
+    }
+
+    if (name.length() == 0) {
+      throw new IllegalArgumentException();
+    }
+
+    if (da == null && fa == null) {
+      throw new IllegalArgumentException();
+    }
 
     this.name = name;
-    this.archive = archive;
-    hash = name.hashCode() ^ archive.hashCode();
+    this.darch = da;
+    this.farch = fa;
+
+    hash = name.hashCode() ^
+      (darch != null ? darch.hashCode() : farch.hashCode());
   }
 
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
+  }
+
+  protected InputStream getInputStream() throws IOException {
+    return darch != null ?
+      darch.getInputStream(name) : farch.getInputStream(name);
   }
 
   /**
@@ -84,7 +111,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   public BufferedImage eval() throws ImageIOException {
     InputStream in = null;
     try {
-      in = archive.getInputStream(name);
+      in = getInputStream();
 
       final BufferedImage img = ImageUtils.getImage(name, in);
       in.close();
@@ -119,7 +146,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     try {
       InputStream in = null;
       try {
-        in = archive.getInputStream(name);
+        in = getInputStream();
 
         final Dimension d = ImageUtils.getImageSize(name, in);
         in.close();
@@ -166,7 +193,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final SourceOpBitmapImpl s = (SourceOpBitmapImpl) o;
-    return archive == s.archive && name.equals(s.name);
+    return darch == s.darch && farch == s.farch && name.equals(s.name);
   }
 
   /** {@inheritDoc} */

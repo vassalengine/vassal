@@ -21,6 +21,7 @@ package VASSAL.tools.imageop;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.io.FileArchive;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive},
@@ -39,10 +40,14 @@ public class SourceOpTiledBitmapImpl extends SourceOpBitmapImpl {
    *    if <code>name</code> is <code>null</code>.
    */
   public SourceOpTiledBitmapImpl(String name) {
-    this(name, GameModule.getGameModule().getDataArchive());
+    super(name, GameModule.getGameModule().getDataArchive());
   }
 
   public SourceOpTiledBitmapImpl(String name, DataArchive archive) {
+    super(name, archive);
+  }
+
+  public SourceOpTiledBitmapImpl(String name, FileArchive archive) {
     super(name, archive);
   }
 
@@ -56,15 +61,5 @@ public class SourceOpTiledBitmapImpl extends SourceOpBitmapImpl {
     }
 
     return new SourceOpDiskCacheBitmapImpl(tname, tileX, tileY, 1.0);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || o.getClass() != this.getClass()) return false;
-
-    final SourceOpTiledBitmapImpl s = (SourceOpTiledBitmapImpl) o;
-    return archive == s.archive && name.equals(s.name);
   }
 }
