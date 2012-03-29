@@ -204,28 +204,62 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected void launch() {
-    String mySide = getMySide();
-    if (mySide != null || !allSidesAllocated()) {
-      String[] options = allSidesAllocated() ? new String[]{Resources.getString(Resources.YES), Resources.getString(Resources.NO)}
-          : new String[]{
-                         Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
-      final int CANCEL = options.length - 1;
-      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
-          Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer"))); //$NON-NLS-1$
+    final String mySide = getMySide();
+    if (mySide == null && allSidesAllocated()) {
+      return;
+    }
+
+    final String[] options = allSidesAllocated() ? 
+      new String[]{
+        Resources.getString(Resources.YES),
+        Resources.getString(Resources.NO)
+      } :
+      new String[]{
+        Resources.getString("PlayerRoster.become_observer"), //$NON-NLS-1$
+        Resources.getString("PlayerRoster.join_another_side"), //$NON-NLS-1$
+        Resources.getString(Resources.CANCEL)
+      };
+
+    final int CANCEL = options.length - 1;
+    
+    final int option = JOptionPane.showOptionDialog(
+      GameModule.getGameModule().getFrame(),
+      Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()),
+      Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$
+      JOptionPane.YES_NO_OPTION,
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      options,
+      Resources.getString("PlayerRoster.become_observer") //$NON-NLS-1$
+    );
+  
+    if (option != CANCEL) {
+      final String oldSide = getMySide();
+
+      String newSide;
       if (option == 0) {
-        String oldSide = getMySide();
-        remove(GameModule.getUserId());
-        String newSide = getMySide();
-        fireSideChange(oldSide, newSide);
+        newSide = OBSERVER;
       }
-      else if (option != CANCEL) {
-        String oldSide = getMySide();
-        remove(GameModule.getUserId());
-        promptForSide();
-        String newSide = getMySide();
-        fireSideChange(oldSide, newSide);
+      else {
+        newSide = promptForSide();
+        if (newSide == null) {
+          return;
+        } 
       }
+
+      remove(GameModule.getUserId());
+
+      final PlayerInfo me = new PlayerInfo(
+        GameModule.getUserId(),
+        GlobalOptions.getInstance().getPlayerId(),
+        newSide 
+      );
+      final Add a = new Add(this, me.playerId, me.playerName, me.side);
+      a.execute();
+      GameModule.getGameModule().getServer().sendToOthers(a);
+
+      newSide = getMySide();
+      fireSideChange(oldSide, newSide);
     }
   }
 
@@ -240,12 +274,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected static PlayerRoster getInstance() {
-    PlayerRoster r = null;
     for (PlayerRoster pr :
          GameModule.getGameModule().getComponentsOf(PlayerRoster.class)) {
-      r = pr;
+      return pr;
     }
-    return r;
+    return null;
   }
 
   public static String getMySide() {
@@ -257,12 +290,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected static String getMySide(boolean localized) {
-    PlayerRoster r = getInstance();
+    final PlayerRoster r = getInstance();
     if (r != null) {
-      PlayerInfo[] pl = r.getPlayers();
-      for (int i = 0; i < pl.length; ++i) {
-        if (pl[i].playerId.equals(GameModule.getUserId())) {
-          return localized ? pl[i].getLocalizedSide() : pl[i].getSide();
+      for (PlayerInfo pi : r.getPlayers()) {
+        if (pi.playerId.equals(GameModule.getUserId())) {
+          return localized ? pi.getLocalizedSide() : pi.getSide();
         }
       }
     }
@@ -403,7 +435,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return sides.size() == allocatedSideCount;
   }
 
-  protected void promptForSide() {
+  protected String promptForSide() {
     ArrayList<String> availableSides = new ArrayList<String>(sides);
     ArrayList<String> alreadyTaken = new ArrayList<String>();
 
@@ -413,15 +445,27 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
-    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(),
-        Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$ //$NON-NLS-2$
-        JOptionPane.QUESTION_MESSAGE, null, availableSides.toArray(new String[availableSides.size()]), OBSERVER);
+
+    final GameModule g = GameModule.getGameModule();
+    final String newSide = (String) JOptionPane.showInputDialog(
+      g.getFrame(),
+      Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
+      Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      availableSides.toArray(new String[availableSides.size()]),
+      OBSERVER
+    );
+
+    return newSide;
+/*
     if (newSide != null) {
-      PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
-      Add a = new Add(this, me.playerId, me.playerName, me.side);
+      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      final Add a = new Add(this, me.playerId, me.playerName, me.side);
       a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
+      g.getServer().sendToOthers(a);
     }
+*/
   }
 
   public static class PlayerInfo {
