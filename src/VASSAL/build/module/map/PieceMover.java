@@ -792,9 +792,9 @@ public class PieceMover extends AbstractBuildable
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener
   {
-    final static private AbstractDragHandler theDragHandler =
-        DragSource.isDragImageSupported() ? new DragHandler()
-                               : new DragHandlerNoImage();
+	  final static private AbstractDragHandler theDragHandler =
+	        DragSource.isDragImageSupported() ? new DragHandler()
+	                               : new DragHandlerNoImage();  
 
     /** returns the singleton DragHandler instance */
     static public AbstractDragHandler getTheDragHandler() {
@@ -1193,13 +1193,22 @@ public class PieceMover extends AbstractBuildable
     }
 
     protected void beginDragging(DragGestureEvent dge) {
+      // this call is needed to instantiate the boundingBox object
+	    final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
+
       final Point dragPointOffset = new Point(
-             boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
-             boundingBox.y + currentPieceOffsetY - EXTRA_BORDER);
-      dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-                   makeDragImage(dragPieceOffCenterZoom),
-                   dragPointOffset,
-                   new StringSelection(""), this); //$NON-NLS-1$
+        boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
+        boundingBox.y + currentPieceOffsetY - EXTRA_BORDER
+      );
+
+      dge.startDrag(
+        Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+        bImage,
+        dragPointOffset,
+        new StringSelection(""),
+        this
+      );
+
       dge.getDragSource().addDragSourceMotionListener(this);
     }
 
