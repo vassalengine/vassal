@@ -974,7 +974,7 @@ public class PieceMover extends AbstractBuildable
     }
 
     private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
-     final ArrayList<Point> relativePositions = new ArrayList<Point>();
+      final ArrayList<Point> relativePositions = new ArrayList<Point>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;
