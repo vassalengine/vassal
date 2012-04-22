@@ -830,6 +830,8 @@ public class PieceMover extends AbstractBuildable
     java.util.Map<Component,DropTargetListener> dropTargetListeners =
       new HashMap<Component,DropTargetListener>();
 
+    abstract protected int getOffsetMult();
+
     /**
      * Creates a new DropTarget and hooks us into the beginning of a
      * DropTargetListener chain. DropTarget events are not multicast;
@@ -1197,8 +1199,8 @@ public class PieceMover extends AbstractBuildable
 	    final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
 
       final Point dragPointOffset = new Point(
-        boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
-        boundingBox.y + currentPieceOffsetY - EXTRA_BORDER
+        getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
+        getOffsetMult() * (boundingBox.y + currentPieceOffsetY - EXTRA_BORDER)
       );
 
       dge.startDrag(
@@ -1308,6 +1310,10 @@ public class PieceMover extends AbstractBuildable
       super.dragGestureRecognized(dge);
     }
 
+    protected int getOffsetMult() {
+      return 1;
+    }
+
     @Override
     public void dragDropEnd(DragSourceDropEvent e) {
       removeDragCursor();
@@ -1352,6 +1358,10 @@ public class PieceMover extends AbstractBuildable
     public void dragGestureRecognized(DragGestureEvent dge) {
       if (dragGestureRecognizedPrep(dge) == null) return;
       super.dragGestureRecognized(dge);
+    }
+
+    protected int getOffsetMult() {
+      return -1;
     }
 
     public void dragMouseMoved(DragSourceDragEvent e) {}
