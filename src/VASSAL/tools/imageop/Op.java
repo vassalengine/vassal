@@ -33,8 +33,9 @@ public class Op {
   protected Op() {}
 
   public static SourceOp load(String name) {
-    if (!name.startsWith("/"))
+    if (!name.startsWith("/")) {
       name = "images/" + name;
+    }
 
     if (name.endsWith(".svg")) {
       return new SourceOpSVGImpl(name);
