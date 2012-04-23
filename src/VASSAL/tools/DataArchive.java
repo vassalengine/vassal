@@ -215,6 +215,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return in;
     }
 
+    // Maybe it's an extensionless GIF resource. Aauugh!
+    in = getClass().getResourceAsStream("/" + fileName + ".gif");
+    if (in != null) {
+      return in;
+    }
+
     throw new FileNotFoundException(
       "\'" + fileName + "\' not found in " + getName()
     );
