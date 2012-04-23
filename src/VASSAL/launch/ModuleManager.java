@@ -40,7 +40,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -279,6 +281,16 @@ public class ModuleManager {
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
     start.initSystemProperties();
+
+    // check whether we need to migrate pre-3.2 preferences
+    final File oldprefs =
+      new File(System.getProperty("user.home"), "VASSAL/Preferences");
+    if (oldprefs.exists()) {
+      final File newprefs = new File(Info.getHomeDir(), "Preferences");
+      if (!newprefs.exists()) {
+        FileUtils.copyFile(oldprefs, newprefs);
+      }
+    }
 
     if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
