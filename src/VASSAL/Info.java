@@ -231,22 +231,25 @@ public final class Info {
 // FIXME: creation of VASSAL's home should be moved someplace else, possibly
 // to the new Application class when it's merged with the trunk.
 //
-// FIXME: Preferences dir should be in something like "Documents and Settings"
-// on Windows?
-//
 // FIXME: We need to check for old location of preferences dir.
     if (homeDir == null) {
-      final String vdir = SystemUtils.IS_OS_WINDOWS ? "VASSAL" : ".VASSAL";
+      String vdir = "VASSAL";
+      if (SystemUtils.IS_OS_MAC_OSX) {
+        vdir = "Library/Application Support/";
+      }
+      else if (SystemUtils.IS_OS_WINDOWS) {
+        vdir = System.getenv("APPDATA") + '/';
+      }
+      else {
+        vdir = ".";
+      }
+      vdir += "VASSAL";
 
       homeDir = new File(System.getProperty("user.home"), vdir); //$NON-NLS-1$
 
       if (!homeDir.exists()) {
-        homeDir.mkdir();
-      }
-      else if (!homeDir.isDirectory()) {
-// FIXME: This is a TERRIBLE idea!!! We shouldn't just delete whatever it is
-// that's blocking us!
-        homeDir.delete();
+// FIXME: What if this fails? This should be done from someplace that
+// can signal failure properly.
         homeDir.mkdir();
       }
     }
