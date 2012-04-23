@@ -61,6 +61,8 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -793,8 +795,10 @@ public class PieceMover extends AbstractBuildable
                DragSourceMotionListener,  DropTargetListener
   {
 	  final static private AbstractDragHandler theDragHandler =
-	        DragSource.isDragImageSupported() ? new DragHandler()
-	                               : new DragHandlerNoImage();  
+	    DragSource.isDragImageSupported() ?
+        (SystemUtils.IS_OS_MAC_OSX ?
+          new DragHandlerMacOSX() : new DragHandler()) :
+        new DragHandlerNoImage();
 
     /** returns the singleton DragHandler instance */
     static public AbstractDragHandler getTheDragHandler() {
@@ -1365,5 +1369,12 @@ public class PieceMover extends AbstractBuildable
     }
 
     public void dragMouseMoved(DragSourceDragEvent e) {}
+  }
+
+  static public class DragHandlerMacOSX extends DragHandler {
+    @Override
+    protected int getOffsetMult() {
+      return 1;
+    }
   }
 }
