@@ -24,7 +24,7 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
  * @author Pieter Geerkens
  *
  */
-public final class HexGridNumbering extends HexGridNumberingX {
+public class HexGridNumbering extends HexGridNumberingX {
   public HexGridNumbering() throws NumberFormatException, IllegalArgumentException, SecurityException {
     super();
   }
