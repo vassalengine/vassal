@@ -32,4 +32,8 @@ public class IllegalBuildException extends RuntimeException {
   public IllegalBuildException(Throwable t) {
     super(t);
   }
+
+  public IllegalBuildException(String s, Throwable t) {
+    super(s, t);
+  }
 }

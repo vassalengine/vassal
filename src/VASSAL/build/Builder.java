@@ -132,7 +132,7 @@ public abstract class Builder {
           t instanceof ExceptionInInitializerError ||
           t instanceof LinkageError) {
         // one of the standard classloading problems occured
-        throw new IllegalBuildException(t);
+        throw new IllegalBuildException("failed to load class " + name, t);
       }
       else if (t instanceof Error) {
         // some unusual problem occurred
