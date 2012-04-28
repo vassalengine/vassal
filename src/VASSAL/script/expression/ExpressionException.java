@@ -24,11 +24,11 @@ public class ExpressionException extends Exception {
   protected String expression;
   protected String error;
 
-  public ExpressionException (String s) {
+  public ExpressionException(String s) {
     this(s, "");
   }
 
-  public ExpressionException (String s, String e) {
+  public ExpressionException(String s, String e) {
     super();
     expression = s;
     error = e;
