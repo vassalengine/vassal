@@ -35,7 +35,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.0-svn"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.0-svn8139"; //$NON-NLS-1$
 
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
@@ -230,22 +230,18 @@ public final class Info {
   public static File getHomeDir() {
 // FIXME: creation of VASSAL's home should be moved someplace else, possibly
 // to the new Application class when it's merged with the trunk.
-//
-// FIXME: We need to check for old location of preferences dir.
     if (homeDir == null) {
-      String vdir = "VASSAL";
       if (SystemUtils.IS_OS_MAC_OSX) {
-        vdir = "Library/Application Support/";
+        homeDir = new File(
+          System.getProperty("user.home"), "Library/Application Support/VASSAL"
+        );
       }
       else if (SystemUtils.IS_OS_WINDOWS) {
-        vdir = System.getenv("APPDATA") + '/';
+        homeDir = new File(System.getenv("APPDATA") + "/VASSAL");
       }
       else {
-        vdir = ".";
+        homeDir = new File(System.getProperty("user.home"), ".VASSAL");
       }
-      vdir += "VASSAL";
-
-      homeDir = new File(System.getProperty("user.home"), vdir); //$NON-NLS-1$
 
       if (!homeDir.exists()) {
 // FIXME: What if this fails? This should be done from someplace that
