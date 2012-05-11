@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -430,49 +431,73 @@ public class ComponentSplitter {
      * Show the hideable component
      */
     public void showComponent() {
-      if (!getHideableComponent().isVisible()) {
-        if (resizeOnVisibilityChange) {
-          Container ancestor = getTopLevelAncestor();
-          if (ancestor != null) {
-            int newLoc = 0;
-            Rectangle screenBounds = Info.getScreenBounds(ancestor);
-            switch (getOrientation()) {
-            case JSplitPane.HORIZONTAL_SPLIT:
-              ancestor.setSize(Math.min(ancestor.getSize().width + getHideableComponent().getPreferredSize().width, screenBounds.width
-                  - ancestor.getLocation().x), ancestor.getSize().height);
-              newLoc = Math.min(getBaseComponent().getSize().width, (int) screenBounds.getWidth() * 2 / 3);
-              break;
-            case JSplitPane.VERTICAL_SPLIT:
-              ancestor.setSize(ancestor.getSize().width, Math.min(ancestor.getSize().height + getHideableComponent().getPreferredSize().height,
-                  screenBounds.height - ancestor.getLocation().y));
-              newLoc = Math.min(getBaseComponent().getSize().height, (int) screenBounds.getHeight() * 2 / 3);
-              break;
-            }
-            ancestor.validate();
-            getHideableComponent().setVisible(true);
-            ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
-            final int divLoc = newLoc;
-            Runnable r = new Runnable() {
-              public void run() {
-                setDividerLocation(divLoc);
-              }
-            };
-            SwingUtilities.invokeLater(r);
-          }
+      if (getHideableComponent().isVisible()) {
+        return;
+      }
+
+      if (resizeOnVisibilityChange) {
+        final Container ancestor = getTopLevelAncestor();
+        if (ancestor == null) {
+          return;
         }
-        else {
-          getHideableComponent().setVisible(true);
-          ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
-          Runnable runnable = new Runnable() {
-            public void run() {
-              setDividerLocation(getPreferredDividerLocation());
-            }
-          };
-          SwingUtilities.invokeLater(runnable);
-          SplitPane split = getTransverseSplit();
-          if (split != null) {
-            split.showTransverseComponent(ComponentSplitter.SplitPane.this);
+
+        final Rectangle screenBounds = Info.getScreenBounds(ancestor);
+        final Point ancestorPos = ancestor.getLocation();
+        final Dimension ancestorSize = ancestor.getSize();
+        final Dimension prefHSize = getHideableComponent().getPreferredSize();
+
+        int w = 0, h = 0, div = 0;
+        switch (getOrientation()) {
+        case JSplitPane.HORIZONTAL_SPLIT:
+          w = Math.min(
+            ancestorSize.width + prefHSize.width,
+            screenBounds.width - ancestorPos.x
+          );
+          h = ancestorSize.height;
+          div = Math.min(
+            getBaseComponent().getSize().width,
+            (int) (screenBounds.width*2.0/3.0)
+          );
+          break;
+        case JSplitPane.VERTICAL_SPLIT:
+          w = ancestorSize.width;
+          h = Math.min(
+            ancestorSize.height + prefHSize.height,
+            screenBounds.height - ancestorPos.y
+          );
+          div = Math.min(
+            getBaseComponent().getSize().height,
+            (int) (screenBounds.height*2.0/3.0)
+          );
+          break;
+        }
+
+        ancestor.setSize(w, h);
+        final int divLoc = div;
+
+        ancestor.validate();
+        getHideableComponent().setVisible(true);
+        ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
+
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            setDividerLocation(divLoc);
           }
+        });
+      }
+      else {
+        getHideableComponent().setVisible(true);
+        ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
+
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            setDividerLocation(getPreferredDividerLocation());
+          }
+        });
+
+        final SplitPane split = getTransverseSplit();
+        if (split != null) {
+          split.showTransverseComponent(ComponentSplitter.SplitPane.this);
         }
       }
     }

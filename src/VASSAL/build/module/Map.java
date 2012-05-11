@@ -636,10 +636,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see DragBuffer
    */
   public void addTo(Buildable b) {
-      useLaunchButton = useLaunchButtonEdit;
+    useLaunchButton = useLaunchButtonEdit;
     idMgr.add(this);
-    GameModule.getGameModule().addCommandEncoder(
-      new ChangePropertyCommandEncoder(this));
+
+    final GameModule g = GameModule.getGameModule();
+    g.addCommandEncoder(new ChangePropertyCommandEncoder(this));
 
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, BoardPicker.class),
@@ -657,8 +658,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       theMap, DnDConstants.ACTION_MOVE, dgl);
     theMap.setDropTarget(PieceMover.DragHandler.makeDropTarget(
       theMap, DnDConstants.ACTION_MOVE, this));
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    GameModule.getGameModule().getToolBar().add(launchButton);
+    g.getGameState().addGameComponent(this);
+    g.getToolBar().add(launchButton);
 
     if (shouldDockIntoMainWindow()) {
       final IntConfigurer config =
@@ -674,15 +675,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 */
 
       mainWindowDock = splitter.splitBottom(
-        splitter.getSplitAncestor(
-          GameModule.getGameModule().getControlPanel(), -1),
-        layeredPane, true);
+        splitter.getSplitAncestor(g.getControlPanel(), -1),
+        layeredPane, true
+      );
 
-      GameModule.getGameModule().addKeyStrokeSource(
+      g.addKeyStrokeSource(
         new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
     }
     else {
-      GameModule.getGameModule().addKeyStrokeSource(
+      g.addKeyStrokeSource(
         new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
     // Fix for bug 1630993: toolbar buttons not appearing
@@ -699,7 +700,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     });
 
     PlayerRoster.addSideChangeListener(this);
-    GameModule.getGameModule().getPrefs().addOption(
+    g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(
         PREFERRED_EDGE_DELAY,
@@ -708,7 +709,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       )
     );
 
-    GameModule.getGameModule().getPrefs().addOption(
+    g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new BooleanConfigurer(
         MOVING_STACKS_PICKUP_UNITS,
@@ -1870,6 +1871,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void setup(boolean show) {
     if (show) {
+      final GameModule g = GameModule.getGameModule();
+
       if (shouldDockIntoMainWindow()) {
         mainWindowDock.showComponent();
         final int height = ((Integer)
@@ -1879,8 +1882,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
           top.setSize(top.getWidth(), height);
         }
         if (toolBar.getParent() == null) {
-          GameModule.getGameModule().getToolBar().addSeparator();
-          GameModule.getGameModule().getToolBar().add(toolBar);
+          g.getToolBar().addSeparator();
+          g.getToolBar().add(toolBar);
         }
         toolBar.setVisible(true);
       }
@@ -1893,7 +1896,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
                 topWindow.setVisible(false);
               }
               else {
-                GameModule.getGameModule().getGameState().setup(false);
+                g.getGameState().setup(false);
               }
             }
           });
@@ -1902,12 +1905,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
           topWindow.setSize(600, 400);
           final PositionOption option =
             new PositionOption(PositionOption.key + getIdentifier(), topWindow);
-          GameModule.getGameModule().getPrefs().addOption(option);
+          g.getPrefs().addOption(option);
         }
         theMap.getTopLevelAncestor().setVisible(!useLaunchButton);
         theMap.revalidate();
       }
-
     }
     else {
       pieces.clear();
