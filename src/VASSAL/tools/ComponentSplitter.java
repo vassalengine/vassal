@@ -445,8 +445,10 @@ public class ComponentSplitter {
         final Point ancestorPos = ancestor.getLocation();
         final Dimension ancestorSize = ancestor.getSize();
         final Dimension prefHSize = getHideableComponent().getPreferredSize();
+        final Dimension prefBSize = getBaseComponent().getPreferredSize();
 
-        int w = 0, h = 0, div = 0;
+        double div = 0.0;
+        int w = 0, h = 0;
         switch (getOrientation()) {
         case JSplitPane.HORIZONTAL_SPLIT:
           w = Math.min(
@@ -454,10 +456,7 @@ public class ComponentSplitter {
             screenBounds.width - ancestorPos.x
           );
           h = ancestorSize.height;
-          div = Math.min(
-            getBaseComponent().getSize().width,
-            (int) (screenBounds.width*2.0/3.0)
-          );
+          div = prefBSize.width/(double)(prefBSize.width + prefHSize.width);
           break;
         case JSplitPane.VERTICAL_SPLIT:
           w = ancestorSize.width;
@@ -465,23 +464,19 @@ public class ComponentSplitter {
             ancestorSize.height + prefHSize.height,
             screenBounds.height - ancestorPos.y
           );
-          div = Math.min(
-            getBaseComponent().getSize().height,
-            (int) (screenBounds.height*2.0/3.0)
-          );
+          div = prefBSize.height/(double)(prefBSize.height + prefHSize.height);
           break;
         }
 
         ancestor.setSize(w, h);
-        final int divLoc = div;
-
         ancestor.validate();
         getHideableComponent().setVisible(true);
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
+        final double divPos = div;
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
-            setDividerLocation(divLoc);
+            setDividerLocation(divPos);
           }
         });
       }
