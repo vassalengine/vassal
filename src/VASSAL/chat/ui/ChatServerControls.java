@@ -63,6 +63,8 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 
+import net.miginfocom.swing.MigLayout;
+
 public class ChatServerControls extends AbstractBuildable {
 
   protected RoomTree currentRoom;
@@ -82,21 +84,29 @@ public class ChatServerControls extends AbstractBuildable {
 
   public ChatServerControls() {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    roomTree = new RoomTree();
-    JScrollPane scroll = new JScrollPane(roomTree);
-    final JPanel roomPanel = new JPanel();
-    roomPanel.setLayout(new BoxLayout(roomPanel, BoxLayout.Y_AXIS));
-    final JPanel b = new JPanel(new BorderLayout());
-    b.add(new JLabel(Resources.getString("Chat.new_game")), BorderLayout.LINE_START);  //$NON-NLS-1$
+    split.setResizeWeight(0.5);
+
+    final JPanel roomPanel = new JPanel(new MigLayout("fill, nogrid"));
+    roomPanel.setBorder(BorderFactory.createTitledBorder(
+      BorderFactory.createRaisedBevelBorder(),
+      Resources.getString("Chat.active_games"))
+    );
+
     newRoom = new JTextField(12);
-    b.add(newRoom, BorderLayout.CENTER);
+    final JLabel newRoomLabel = new JLabel(Resources.getString("Chat.new_game"));
+    newRoomLabel.setLabelFor(newRoom); 
+    roomPanel.add(newRoomLabel, "");
+    roomPanel.add(newRoom, "growx, pushx");
+
     newRoomButton = new JButton("..."); //$NON-NLS-1$
     newRoomButton.setPreferredSize(new Dimension(20, 20));
     newRoomButton.setVisible(false);
-    b.add(newRoomButton, BorderLayout.LINE_END);
-    roomPanel.add(b);
-    roomPanel.add(scroll);
-    roomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.active_games")));  //$NON-NLS-1$
+    roomPanel.add(newRoomButton, "hidemode 3");
+
+    roomTree = new RoomTree();
+    final JScrollPane roomScroll = new JScrollPane(roomTree);
+    roomPanel.add(roomScroll, "newline, spanx, grow, push");
+
     split.setLeftComponent(roomPanel);
     currentRoom = new RoomTree();
     currentRoom.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
@@ -107,7 +117,7 @@ public class ChatServerControls extends AbstractBuildable {
       public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt) throws javax.swing.tree.ExpandVetoException {
       }
     });
-    scroll = new JScrollPane(currentRoom);
+    JScrollPane scroll = new JScrollPane(currentRoom);
     scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.current_game")));  //$NON-NLS-1$
     split.setRightComponent(scroll);
     split.setDividerLocation(160);
@@ -322,7 +332,6 @@ public class ChatServerControls extends AbstractBuildable {
     newRoomButton.removeActionListener(l);
     newRoomButton.setVisible(false);
   }
-
 
   public RoomTree getRoomTree() {
     return roomTree;
