@@ -246,7 +246,7 @@ public final class Info {
       if (!homeDir.exists()) {
 // FIXME: What if this fails? This should be done from someplace that
 // can signal failure properly.
-        homeDir.mkdir();
+        homeDir.mkdirs();
       }
     }
 
