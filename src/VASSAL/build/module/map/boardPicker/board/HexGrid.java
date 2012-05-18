@@ -50,12 +50,6 @@ public class HexGrid extends HexGridX {
   protected boolean alternate = false;
 
   @Deprecated
-  protected double dx = getDx();
-
-  @Deprecated
-  protected double dy = getDy();
-
-  @Deprecated
   protected Point origin = new Point(0, 32);
 
   @Deprecated
