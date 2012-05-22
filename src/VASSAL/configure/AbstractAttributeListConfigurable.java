@@ -190,6 +190,7 @@ extends AbstractConfigurable  implements AttributeList {
   @Override
   public void setAttribute(String key, Object value) {
     Attribute.AbstractAttribute<?> attribute = get(key);
+
     try {
       final Field field = getDeclaredField(key);
       field.setAccessible(true);
@@ -225,6 +226,7 @@ extends AbstractConfigurable  implements AttributeList {
       }
       // *** TODO ** use proper exceptions
     }
+/*
     catch (NoSuchMethodException e) {  // very fatal error
       e.printStackTrace();
       System.exit(0);
@@ -232,6 +234,7 @@ extends AbstractConfigurable  implements AttributeList {
 //    } catch (IllegalAccessException e) {
 //    } catch (InvocationTargetException e) {
     }
+*/
     catch (Exception e) {
         throw new IllegalArgumentException("value of type " + 
             value.getClass().getSimpleName() + " not assignable to attribute " +
