@@ -29,7 +29,6 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -38,12 +37,16 @@ import java.util.regex.Pattern;
 
 import javax.swing.JComponent;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
-import VASSAL.configure.AbstractAttributeListConfigurable;
-import VASSAL.configure.Attribute.*;
 import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
@@ -51,110 +54,282 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Abstract base class for grid numbering classes for hexagonal and rectangular grids
  */
-public abstract class RegularGridNumbering extends AbstractAttributeListConfigurable
-implements GridNumbering {
-  transient protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
-  protected FirstCoord first = FirstCoord.HORIZONTAL_FIRST;
+public abstract class RegularGridNumbering extends AbstractConfigurable implements GridNumbering {
+  protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  protected char first = 'H';
   protected String sep = "";
-  protected CoordType hType = CoordType.NUMERIC;
-  protected CoordType vType = CoordType.NUMERIC;
+  protected char hType = 'N';
+  protected char vType = 'N';
   protected int hLeading = 1;
   protected int vLeading = 1;
   protected int hOff = 1;
   protected int vOff = 1;
-  protected Boolean hDescend = false;
-  protected Boolean vDescend = false;
-  protected Boolean visible = false;
+  protected boolean hDescending = false;
+  protected boolean vDescending = false;
+  protected boolean visible = false;
   protected int fontSize = 9;
   protected Color color = Color.black;
-  protected AngleEnum rotateText = AngleEnum.___0;
+  protected int rotateTextDegrees = 0;
   protected int hDrawOff = 0;
   protected int vDrawOff = 0;
+  protected JComponent visualizer;
   protected String locationFormat = "$" + GRID_LOCATION + "$";
-  transient protected JComponent visualizer;
-  transient protected FormattedString format = new FormattedString();
+  protected FormattedString format = new FormattedString();
 
-  transient public static final String GRID_LOCATION = "gridLocation";
-  transient public static final String ROW = "row";
-  transient public static final String COLUMN = "column";
+  public static final String FIRST = "first";
+  public static final String SEP = "sep";
+  public static final String H_TYPE = "hType";
+  public static final String V_TYPE = "vType";
+  public static final String H_LEADING = "hLeading";
+  public static final String V_LEADING = "vLeading";
+  public static final String H_OFF = "hOff";
+  public static final String V_OFF = "vOff";
+  public static final String V_DESCEND = "vDescend";
+  public static final String H_DESCEND = "hDescend";
+  public static final String FONT_SIZE = "fontSize";
+  public static final String COLOR = "color";
+  public static final String VISIBLE = "visible";
+  public static final String ROTATE_TEXT = "rotateText";
+  public static final String H_DRAW_OFF = "hDrawOff";
+  public static final String V_DRAW_OFF = "vDrawOff";
+  public static final String LOCATION_FORMAT = "locationFormat";
+  public static final String GRID_LOCATION = "gridLocation";
+  public static final String ROW = "row";
+  public static final String COLUMN = "column";
 
-  public enum FirstCoord { HORIZONTAL_FIRST, VERTICAL_FIRST; }
-  public enum CoordType { ALPHABETIC, NUMERIC; }
-  public enum AngleEnum {
-    ___0, __30, __45, __60, __90, _120, _135, _150,
-    _180, _210, _225, _240, _270, _300, _315, _330, _360;
-    private AngleEnum() {
-      valueDegrees = toInt(this.toString());
-      valueRadians = Math.toRadians(valueDegrees);
+  public String getAttributeValueString(String key) {
+    if (FIRST.equals(key)) {
+      return String.valueOf(first);
     }
-    public final int valueDegrees;
-    public final double valueRadians;
-
-    protected static Integer toInt(String string) {
-      return Integer.valueOf(string.replace('_', ' ').trim());
+    else if (SEP.equals(key)) {
+      return sep;
+    }
+    else if (H_TYPE.equals(key)) {
+      return String.valueOf(hType);
+    }
+    else if (V_TYPE.equals(key)) {
+      return String.valueOf(vType);
+    }
+    else if (H_LEADING.equals(key)) {
+      return String.valueOf(hLeading);
+    }
+    else if (V_LEADING.equals(key)) {
+      return String.valueOf(vLeading);
+    }
+    else if (H_OFF.equals(key)) {
+      return String.valueOf(hOff);
+    }
+    else if (V_OFF.equals(key)) {
+      return String.valueOf(vOff);
+    }
+    else if (H_DESCEND.equals(key)) {
+      return String.valueOf(hDescending);
+    }
+    else if (V_DESCEND.equals(key)) {
+      return String.valueOf(vDescending);
+    }
+    else if (FONT_SIZE.equals(key)) {
+      return String.valueOf(fontSize);
+    }
+    else if (COLOR.equals(key)) {
+      return ColorConfigurer.colorToString(color);
+    }
+    else if (VISIBLE.equals(key)) {
+      return String.valueOf(visible);
+    }
+    else if (LOCATION_FORMAT.equals(key)) {
+      return locationFormat;
+    }
+    else if (ROTATE_TEXT.equals(key)) {
+      return String.valueOf(rotateTextDegrees);
+    }
+    else if (H_DRAW_OFF.equals(key)) {
+      return String.valueOf(hDrawOff);
+    }
+    else if (V_DRAW_OFF.equals(key)) {
+      return String.valueOf(vDrawOff);
+    }
+    else {
+      return null;
     }
   }
 
-  /**
-   * The use of EnumCharAttribute and EnumIntAttribute is only required to support
-   * the deprecated paradigm of serializing to a single Character value or an
-   * unadorned integer, respectively, rather than an to enumeration identifier.
-   * This practice is discouraged, as these classes may be removed in a
-   * future release.
-   * @throws NoSuchFieldException
-   */
-  @SuppressWarnings("deprecation")
-  public RegularGridNumbering() {
-    super(17);
-    addAttribute(new EnumCharAttribute<FirstCoord>(FirstCoord.class, FIRST,  "Order:  ") {});
-    addAttribute(SEP, "Separator:  ");
-    addAttribute(new EnumCharAttribute<CoordType>(CoordType.class, H_TYPE,"Horizontal numbering:  ") {});
-    addAttribute(H_LEADING, "Leading zeros in horizontal:  ",
-        new VisibilityCondition() {
-          @Override
-          public boolean shouldBeVisible() { return hType == CoordType.NUMERIC; } });
-    addAttribute(H_OFF, "Starting number in horizontal:  ");
-    addAttribute(H_DESCEND, "Horizontal numbering descending?");
-    addAttribute(new EnumCharAttribute<CoordType>(CoordType.class, V_TYPE,"Vertical numbering:  ") {});
-    addAttribute(V_LEADING, "Leading zeros in vertical:  ",
-        new VisibilityCondition() {
-          @Override
-          public boolean shouldBeVisible() { return vType == CoordType.NUMERIC; } });
-    addAttribute(V_OFF, "Starting number in vertical:  ");
-    addAttribute(V_DESCEND, "Vertical numbering descending?");
-      addAttribute(new FormattedStringAttribute(LOCATION_FORMAT,"Location format:  ",
-          new String[]{GRID_LOCATION, ROW, COLUMN}){
-      });
-    addAttribute(VISIBLE, "Draw Numbering?");
-    addAttribute(FONT_SIZE, "Font size:  ",numberingVisiblity);
-    addAttribute(new ColorAttribute(COLOR, "Color:  ",numberingVisiblity){});
-    addAttribute(new EnumIntAttribute<AngleEnum>(AngleEnum.class, ROTATE_TEXT,
-        "Rotate text (Degrees):  ") {
-    });
-    addAttribute(H_DRAW_OFF, "Text X offset:  ");
-    addAttribute(V_DRAW_OFF, "Text Y offset:  ");
+  public void setAttribute(String key, Object value) {
+    if (FIRST.equals(key)) {
+      first = ((String) value).charAt(0);
     }
+    else if (SEP.equals(key)) {
+      sep = (String) value;
+    }
+    else if (H_TYPE.equals(key)) {
+      hType = ((String) value).charAt(0);
+    }
+    else if (V_TYPE.equals(key)) {
+      vType = ((String) value).charAt(0);
+    }
+    else if (H_LEADING.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      hLeading = ((Integer) value).intValue();
+    }
+    else if (V_LEADING.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      vLeading = ((Integer) value).intValue();
+    }
+    else if (H_OFF.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      hOff = ((Integer) value).intValue();
+    }
+    else if (V_OFF.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      vOff = ((Integer) value).intValue();
+    }
+    else if (H_DESCEND.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      hDescending = ((Boolean) value).booleanValue();
+    }
+    else if (V_DESCEND.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      vDescending = ((Boolean) value).booleanValue();
+    }
+    else if (FONT_SIZE.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      fontSize = ((Integer) value).intValue();
+    }
+    else if (COLOR.equals(key)) {
+      if (value instanceof String) {
+        value = ColorConfigurer.stringToColor((String) value);
+      }
+      color = (Color) value;
+    }
+    else if (VISIBLE.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      visible = ((Boolean) value).booleanValue();
+    }
+    else if (LOCATION_FORMAT.equals(key)) {
+      locationFormat = (String) value;
+    }
+    else if (ROTATE_TEXT.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      rotateTextDegrees = ((Integer) value).intValue();
+    }
+    else if (H_DRAW_OFF.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      hDrawOff = ((Integer) value).intValue();
+    }
+    else if (V_DRAW_OFF.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      vDrawOff = ((Integer) value).intValue();
+    }
+  }
 
-  VisibilityCondition numberingVisiblity = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() { return isVisible(); }
-    };
+  public boolean isVisible() {
+    return visible;
+  }
 
   public abstract int getRow(Point p);
-  public abstract int getColumn(Point p);
-  @Override
-  public boolean isVisible() { return visible; }
-  @Override
-  public void setVisible(boolean isVisible) { visible = isVisible; }
 
-  @Override
+  public abstract int getColumn(Point p);
+
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }
 
-  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
+  }
+
+  public String[] getAttributeNames() {
+    return new String[]{FIRST, SEP, H_TYPE, H_LEADING, H_OFF, H_DESCEND,
+                        V_TYPE, V_LEADING, V_OFF, V_DESCEND, LOCATION_FORMAT, VISIBLE, FONT_SIZE, COLOR,
+                        ROTATE_TEXT, H_DRAW_OFF, V_DRAW_OFF};
+  }
+
+  public String[] getAttributeDescriptions() {
+    return new String[]{"Order:  ",
+                        "Separator:  ",
+                        "Horizontal numbering:  ",
+                        "Leading zeros in horizontal:  ",
+                        "Starting number in horizontal:  ",
+                        "Horizontal numbering descending?",
+                        "Vertical numbering:  ",
+                        "Leading zeros in vertical:  ",
+                        "Starting number in vertical:  ",
+                        "Vertical numbering descending?",
+                        "Location format:  ",
+                        "Draw Numbering?",
+                        "Font size:  ",
+                        "Color:  ",
+                        "Rotate text (Degrees):  ",
+                        "Text X offset:  ",
+                        "Text Y offset:  "};
+  }
+
+  public static class F extends StringEnum {
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{"Horizontal first", "Vertical first"};
+    }
+  }
+
+  public static class T extends StringEnum {
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{"Numerical", "Alphabetic"};
+    }
+  }
+
+  public static class LocationFormatConfig implements ConfigurerFactory {
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION,ROW,COLUMN});
+    }
+  }
+
+  public static class R extends StringEnum {
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{"0", "90", "180", "270"};
+    }
+  }
+
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      F.class,
+      String.class,
+      T.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      T.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      LocationFormatConfig.class,
+      Boolean.class,
+      Integer.class,
+      Color.class,
+      R.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   /**
@@ -162,14 +337,41 @@ implements GridNumbering {
    */
   protected abstract JComponent getGridVisualizer();
 
-  @Override
+  public VisibilityCondition getAttributeVisibility(String name) {
+    if (FONT_SIZE.equals(name)
+        || COLOR.equals(name)) {
+      VisibilityCondition cond = new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return visible;
+        }
+      };
+      return cond;
+    }
+    else if (H_LEADING.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return hType == 'N';
+        }
+      };
+    }
+    else if (V_LEADING.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return vType == 'N';
+        }
+      };
+    }
+    else {
+      return super.getAttributeVisibility(name);
+    }
+  }
+
   public Configurer getConfigurer() {
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     String[] s = getAttributeNames();
     for (int i = 0; i < s.length; ++i) {
       c.getConfigurer(s[i]).addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(PropertyChangeEvent evt) {
           visualizer.repaint();
         }
       });
@@ -182,18 +384,19 @@ implements GridNumbering {
     return "Grid Numbering";
   }
 
-  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GridNumbering.htm");
   }
 
-  protected String getName(int row, int col) {
-    String rowName = getNamePart(row + vOff, vType, vLeading);
-    String colName = getNamePart(col + hOff, hType, hLeading);
-    if (first == FirstCoord.HORIZONTAL_FIRST)
+  protected String getName(int row, int column) {
+    String rowName = getName(row + vOff, vType, vLeading);
+    String colName = getName(column + hOff, hType, hLeading);
+    switch (first) {
+      case 'H':
         return colName + sep + rowName;
-    else
+      default:
         return rowName + sep + colName;
+    }
   }
 
   // This appears to be the most efficient way to accomplish this without
@@ -202,14 +405,13 @@ implements GridNumbering {
   // AAFF is not ambiguous, but AAAA is.  Coordinates like 04AB will fail.
   static final String ALPHABETIC_MATCH = "-?(?:A+|B+|C+|D+|E+|F+|G+|H+|I+|J+|K+|L+|M+|N+|O+|P+|Q+|R+|S+|T+|U+|V+|W+|X+|Y+|Z+)";
 
-  protected String getMatchingPattern(CoordType type, int leading) {
-    if (type == CoordType.ALPHABETIC)
+  protected String getMatchingPattern(char type, int leading) {
+    if (type == 'A')
       return ALPHABETIC_MATCH;
     else
       return "-?[0-9]{" + (leading+1) + ",}";
   }
 
-  @Override
   public Point getLocation(String location) throws BadCoords {
 
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
@@ -226,7 +428,7 @@ implements GridNumbering {
           regex.append(Pattern.quote(token));
         }
         else if (token.equals(GRID_LOCATION)) {
-          if (first == FirstCoord.HORIZONTAL_FIRST) {
+          if (first == 'H') {
             regex.append('(').append(getMatchingPattern(hType, hLeading)).append(')');
             colGroup = ++groupCount;
             if (sep.length() > 0)
@@ -274,28 +476,26 @@ implements GridNumbering {
 
   public abstract Point getCenterPoint(int col, int row);
 
-  @Override
   public String locationName(Point pt) {
     int row = getRow(pt);
     int col = getColumn(pt);
     format.setFormat(locationFormat);
     format.setProperty(GRID_LOCATION, getName(row, col));
-    format.setProperty(ROW, getNamePart(row+vOff, vType, vLeading));
-    format.setProperty(COLUMN, getNamePart(col+hOff, hType, hLeading));
+    format.setProperty(ROW, getName(row+vOff, vType, vLeading));
+    format.setProperty(COLUMN, getName(col+hOff, hType, hLeading));
     return format.getLocalizedText();
   }
 
-  @Override
   public String localizedLocationName(Point pt) {
     return locationName(pt);
   }
 
   public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  @SuppressWarnings("hiding")
-  protected int parseName(String name, CoordType type) {
+  protected int parseName(String name, char type) {
     int value = 0;
-    if (type == CoordType.ALPHABETIC) {
+    switch (type) {
+    case 'A': // Alphabetic
       int index = 0;
       boolean negative = false;
       if (name.startsWith("-")) {
@@ -311,24 +511,25 @@ implements GridNumbering {
       }
       if (negative)
         value *= -1;
-    }
-    else { // Numeric
+      break;
+    default: // Numeric
       value = Integer.parseInt(name);
     }
+
     return value;
   }
 
-  protected String getNamePart(int rowOrColumn, CoordType type, int leading) {
+  protected String getName(int rowOrColumn, char type, int leading) {
     String val = rowOrColumn < 0 ? "-" : "";
     rowOrColumn = Math.abs(rowOrColumn);
-    if (type == CoordType.ALPHABETIC) {
+    switch (type) {
+      case 'A': // Alphabetic
         do {
           val += ALPHABET.charAt(rowOrColumn % 26);
           rowOrColumn -= 26;
         } while (rowOrColumn >= 0);
         return val;
-    }
-    else {
+      default: // Numeric
         while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
           val += "0";
         }
@@ -336,23 +537,37 @@ implements GridNumbering {
     }
   }
 
-  /**
-   * Translate the label center point based on the vector offset (p) and
-   * the rotation factor. By tradition, use a left-handed coordinate system .
+  /*
+   * Translate the label center point based on the x, Y offset and
+   * the rotation factor
    */
   public Point offsetLabelCenter(Point p, double zoom) {
     return offsetLabelCenter(p.x, p.y, zoom);
   }
 
-   /**
-   * Translate the label center point based on the x, Y offset and
-   * the rotation factor. By tradition, use a left-handed coordinate system.
-   */
   public Point offsetLabelCenter(int x, int y, double zoom) {
     Point n = new Point(x, y);
-    n = (Point) AffineTransform.getRotateInstance(-rotateText.valueRadians).transform(n, n);
+    switch (rotateTextDegrees) {
+      case 0:
+        break;
+      case 90:
+        n.x = y;
+        n.y = -x;
+        break;
+      case 180:
+        n.x = -x;
+        n.y = -y;
+        break;
+      case 270:
+        n.x = -y;
+        n.y = x;
+        break;
+      default  :
+        break;
+    }
     n.x += (hDrawOff * zoom);
     n.y += (vDrawOff * zoom);
+
     return n;
   }
 }

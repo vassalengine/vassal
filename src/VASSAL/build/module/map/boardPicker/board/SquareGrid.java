@@ -18,6 +18,12 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -32,7 +38,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
-import static java.lang.Math.*;
 
 import javax.swing.JButton;
 
@@ -48,6 +53,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 public class SquareGrid extends AbstractConfigurable implements GeometricGrid, GridEditor.EditableGrid {
   protected double dx = 48.0;
@@ -58,11 +64,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean edgesLegal = false;
   protected boolean cornersLegal = false;
   protected boolean dotsVisible = false;
-  protected Color color;
+  protected Color color = Color.black;
   protected GridContainer container;
   protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
+  protected boolean snapTo = true;
 
   private GridNumbering gridNumbering;
 
@@ -114,18 +121,19 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return container;
   }
 
-  public static final String DX = "dx";
-  public static final String DY = "dy";
-  public static final String X0 = "x0";
-  public static final String Y0 = "y0";
-  public static final String VISIBLE = "visible";
-  public static final String CORNERS = "cornersLegal";
-  public static final String EDGES = "edgesLegal";
-  public static final String COLOR = "color";
-  public static final String DOTS_VISIBLE = "dotsVisible";
-  public static final String RANGE = "range";
-  public static final String RANGE_MANHATTAN = "Manhattan";
-  public static final String RANGE_METRIC = "Metric";
+  public static final String DX = "dx"; //$NON-NLS-1$
+  public static final String DY = "dy"; //$NON-NLS-1$
+  public static final String X0 = "x0"; //$NON-NLS-1$
+  public static final String Y0 = "y0"; //$NON-NLS-1$
+  public static final String VISIBLE = "visible"; //$NON-NLS-1$
+  public static final String CORNERS = "cornersLegal"; //$NON-NLS-1$
+  public static final String EDGES = "edgesLegal"; //$NON-NLS-1$
+  public static final String COLOR = "color"; //$NON-NLS-1$
+  public static final String DOTS_VISIBLE = "dotsVisible"; //$NON-NLS-1$
+  public static final String RANGE = "range"; //$NON-NLS-1$
+  public static final String RANGE_MANHATTAN = "Manhattan"; //$NON-NLS-1$
+  public static final String RANGE_METRIC = "Metric"; //$NON-NLS-1$
+  public static final String SNAP_TO = "snapTo"; //$NON-NLS-1$
 
   public static class RangeOptions extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
@@ -140,6 +148,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       DX,
       DY,
       RANGE,
+      SNAP_TO,
       EDGES,
       CORNERS,
       VISIBLE,
@@ -150,16 +159,17 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "X offset:  ",
-      "Y offset:  ",
-      "Cell Width:  ",
-      "Cell Height:  ",
-      "Range Calculation Method:  ",
-      "Edges are legal locations?",
-      "Corners are legal locations?",
-      "Show Grid?",
-      "Draw Center Dots?",
-      "Color:  "
+      Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.RectangleGrid.width"), //$NON-NLS-1$
+      Resources.getString("Editor.RectangleGrid.height"), //$NON-NLS-1$
+      Resources.getString("Editor.RectangleGrid.range_method"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
+      Resources.getString("Editor.RectangleGrid.corners"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
+      Resources.getString("Editor.Grid.center_dots"), //$NON-NLS-1$
+      Resources.getString(Resources.COLOR_LABEL),
     };
   }
 
@@ -174,6 +184,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Boolean.class,
       Color.class
     };
   }
@@ -183,6 +194,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return visible;
+        }
+      };
+    }
+    else if (EDGES.equals(name) || CORNERS.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return snapTo;
         }
       };
     }
@@ -201,7 +219,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public static String getConfigureTypeName() {
-    return "Rectangular Grid";
+    return Resources.getString("Editor.RectangleGrid.component_type"); //$NON-NLS-1$
   }
 
   public String getGridName() {
@@ -213,7 +231,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("RectangularGrid.htm");
+    return HelpFile.getReferenceManualPage("RectangularGrid.htm"); //$NON-NLS-1$
   }
 
 
@@ -233,6 +251,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     else if (RANGE.equals(key)) {
       return rangeOption;
     }
+    else if (SNAP_TO.equals(key)) {
+      return String.valueOf(snapTo);
+    }
     else if (CORNERS.equals(key)) {
       return String.valueOf(cornersLegal);
     }
@@ -246,14 +267,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return String.valueOf(dotsVisible);
     }
     else if (COLOR.equals(key)) {
-      return visible ? ColorConfigurer.colorToString(color) : null;
+      return ColorConfigurer.colorToString(color);
     }
     return null;
   }
 
   public void setAttribute(String key, Object val) {
-    if (val == null)
-      return;
     if (X0.equals(key)) {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
@@ -280,6 +299,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
     else if (RANGE.equals(key)) {
       rangeOption = (String) val;
+    }
+    else if (SNAP_TO.equals(key)) {
+      if (val instanceof String) {
+        val = Boolean.valueOf((String) val);
+      }
+      snapTo = ((Boolean) val).booleanValue();
     }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
@@ -315,7 +340,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{SquareGridNumbering.class};
+    return new Class[]{SquareGridNumbering.class};
   }
 
   public Point getLocation(String location) throws BadCoords {
@@ -370,6 +395,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public Point snapTo(Point p) {
+    if (! snapTo) {
+      return p;
+    }
 // nx,ny are the closest points to the half-grid
 // (0,0) is the center of the origin cell
 // (1,0) is the east edge of the origin cell
@@ -431,7 +459,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public boolean isLocationRestricted(Point p) {
-    return true;
+    return snapTo;
   }
 
   public String locationName(Point p) {
@@ -443,7 +471,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public boolean isVisible() {
-    return visible;
+    return visible == true || (gridNumbering != null && gridNumbering.isVisible());
   }
 
   public void setVisible(boolean b) {
@@ -467,7 +495,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   /** Draw the grid even if not marked visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    if (!bounds.intersects(visibleRect)) {
+    if (!bounds.intersects(visibleRect) || color == null) {
       return;
     }
 
@@ -496,7 +524,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
     Point p1 = new Point();
     Point p2 = new Point();
-    g2d.setColor(color == null ? Color.black : color);
+    g2d.setColor(color);
     // x is the location of a vertical line
     for (double x = xmin; x < xmax; x += deltaX) {
       p1.move((int) round(x), region.y);
@@ -525,7 +553,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     boolean buttonExists = config != null;
     Configurer c = super.getConfigurer();
     if (!buttonExists) {
-      JButton b = new JButton("Edit Grid");
+      JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           editGrid();
@@ -548,7 +576,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
   }
 
-  public class SquareGridEditor extends GridEditor {
+  public static class SquareGridEditor extends GridEditor {
     private static final long serialVersionUID = 1L;
 
     public SquareGridEditor(EditableGrid grid) {
