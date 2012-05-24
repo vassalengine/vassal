@@ -5,7 +5,7 @@ http://www.opensource.org.
 
   To run VASSAL using this source distribution, place all .jar files
 in the 'lib' directory in your classpath and launch Java with
-VASSAL.launch.Main as the main class.  See VASSAL's programming 
+VASSAL.launch.ModuleManager as the main class.  See VASSAL's programming 
 tutorial for an overview of how to use the API.
 
   Enjoy!
