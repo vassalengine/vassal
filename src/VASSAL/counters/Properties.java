@@ -117,7 +117,7 @@ public interface Properties {
   public static final String SNAPSHOT = "snapshot";
 
   /**
-   * If Boolean.TRUE, then treat the piece as if it were not rotated. This affects the value returned by
+   * If Boolean.TRUE, then treat the piece as if it were not rotated. This effects the value returned by
    * {@link GamePiece#getShape} and the way the piece is drawn.
    *
    * @see FreeRotator
