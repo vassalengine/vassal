@@ -93,8 +93,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setTitle(getConfigureName());
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
         public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY
-              .equals(e.getPropertyName())) {
+          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
             d.setTitle((String) e.getNewValue());
           }
         }
@@ -110,8 +109,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
         public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY
-              .equals(e.getPropertyName())) {
+          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
             d.setTitle((String) e.getNewValue());
           }
         }
