@@ -417,7 +417,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @param child
    * @return new Child
    */
-  protected Configurable convertChild (Configurable parent, Configurable child) {
+  protected Configurable convertChild(Configurable parent, Configurable child) {
     if (child.getClass() == PieceSlot.class && isAllowedChildClass(parent, CardSlot.class)) {
       return new CardSlot((PieceSlot) child);
     }
@@ -762,22 +762,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   static class Renderer extends javax.swing.tree.DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 
-    public Renderer() {
-    }
-
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-      Configurable c = null;
       if (value instanceof DefaultMutableTreeNode) {
-        c = (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
-        leaf = c.getAllowableConfigureComponents().length == 0;
+        final Configurable c =
+          (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
+        if (c != null) {
+          leaf = c.getAllowableConfigureComponents().length == 0;
+          value = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+                  " [" + getConfigureName(c.getClass()) + "]";
+        }
       }
 
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-      if (c != null) {
-        setText((c.getConfigureName() != null ? c.getConfigureName() : "") + " [" + getConfigureName(c.getClass()) + "]");
-      }
-      return this;
+      return super.getTreeCellRendererComponent(
+        tree, value, sel, expanded, leaf, row, hasFocus
+      );
     }
   }
 
