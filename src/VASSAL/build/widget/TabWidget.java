@@ -94,11 +94,8 @@ public class TabWidget extends Widget
     if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
       final Widget src = (Widget) evt.getSource();
       final int index = widgets.indexOf(src);
-      String name = src.getConfigureName();
-      if (name == null) {
-        name = "";
-      }
-      tab.setTitleAt(index, name);
+      final Object name = evt.getNewValue();
+      tab.setTitleAt(index, name == null ? "" : name.toString());
     }
   }
 
