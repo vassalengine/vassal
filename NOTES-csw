@@ -1,66 +1,79 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.1.15, which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
 <h3>Download</h3>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-linux.tar.bz2' target='_new'>Linux</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-macosx.dmg' target='_new'>Mac OS X</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-windows.exe' target='_new'>Windows</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-other.zip'  target='_new'>Other</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.15-src.zip' target='_new'>Source code</a>
-<h3>Changes since 3.1.0</h3>
-Changes in 3.1.15:
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-linux.tar.bz2' target='_new'>Linux</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-macosx.dmg' target='_new'>Mac OS X</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-windows.exe' target='_new'>Windows</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-other.zip'  target='_new'>Other</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-src.zip' target='_new'>Source code</a>
+<h3>New Features in 3.2</h3>
+* Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
+ 
+* Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards' options in right-click menu in Editor. Specify a folder of images, specify a counter template and Vassal will automatically load the images and generate units. [RFE 1927]
+   
+* Description field added to Toolbar Menu and Multi-Action button components. [RFE 1885]
+   
+* Specify Keystrokes by name - Key Commands can be entered as single Key Strokes as in earlier versions of Vassal, or can be given a 2 or more character names. Named Key Strokes are essentially 'invisible' to users. Vassal guarantees that a unique real keyStroke will be allocated to each uniquely named Keystroke. [RFE 1928]
 
-* Windows installer now suggests JRE 1.6.0_22 for Java upgrades.
-* URLs for version checking and bug reporting switched to vassalengine.org.
-* Starting with this release, all Bug and RFE numbers refer to the ones in our Bugzilla tracker at http://www.vassalengine.org/tracker.
+* Decks can specify by Property Expression which pieces are allowed to be dropped onto them. Pieces which may not be added are returned to where the drag started. [RFE 1935]
+ 
+* Decks can now specify a Hotkey for the Reverse and FaceUp/Down command and can customize the Reverse and Re-shuffle menu command names. [RFE 1938]
+  
+* Counters now support the DeckPosition property. If a piece is not in a Deck, 0 is returned. If a piece is in a Deck, then the position of the piece relative to the top of the Deck is returned. The top piece returns 1, the next piece down returns 2 etc. [RFE 1937]
+    
+* Support for MP3 sound files. [RFE 1934]
 
-The following bugs are fixed in 3.1.15:
+* Fix Display/Color handling for Grids and Numberings. Allow Numbering to be visible when grid not visible in Zones. [RFE 1917]
 
-* 3208: Adjust Windows installer to detect Java 6u22 and later
-* 3179: JNA needs Kernel32 to be public
-* 3095: JPEGs with bad color profiles throw CMMException
-* 2979: CounterGlobalKeyCommand logs its changes separately
-* 2949: IndexOutOfBoundsException in SpecialDiceButton.ResultsIcon.setResults()
-* 2924: Mac OS X: Quartz renderer misrenders fonts
-* 2883: MemoryUtilsImpl is misnamed
-* 2813: NPE in Decorator.setId()
-* 2803: IndexOutOfBoundsException in SpecialDie.getTextValue()
-* 2602: ClassCastException in Decorator.setProperty()
-* 2549: Mac OS X: Failed to create temporary file for jnidispatch library
-* 2463: NPE in Map.getAttributeValueString()
-* 2451: ArrayIndexOutOfBoundsException in Embellishment.getCommonName()
-* ADC2 line definition names are max 25 chars long
-* Incorrect color for empty messages in chat pane
-* Only one connection record is listed per timestamp in server history
+* Implementation of BeanShell allowing arbitrarily complex Java expressions to be used in Property Match Expressions, In-line Java expressions and new Calculated Property trait. [RFE 1801]
+  
+* Display the Log File Comments in the Chat Window when a log file is opened or continued. [RFE 1939]
 
-The following bugs which affect VASSAL on Windows are fixed in Java 6 Update 21. If you are using an earlier version of Java, we strongly recommend upgrading to at least this version.
+* Global Key Commands created on a Map now have an option to affect counters on all Maps, not just the Map they are created on. [RFE 1902]
+  
+* Traits that move a counter (Send To Location, Return to Deck, Moved Fixed Distance, Pivot) now update the same location Oldxxxxxx properties that Drag and Drop movement does. [RFE 1792]
+  
+* Added repeat (loop) option to Trigger Action and Multi-action button. [RFE 1876]
 
-* 2601: NPE in sun.awt.shell.Win32ShellFolderManager2.isFileSystemRoot()
-* 2572: IOException in Win32ShellFolder2.getFileSystemPath0()
-* 2552: NPE in sun.awt.shell.Win32ShellFolder2.pidlsEqual()
+* Ensure all commands generated by a single user action are undone by a single click of the undo action. [RFE 2816016]
+  
+* Option to allow non-owning players to move Restricted Access pieces. [RFE 1789]
 
-Changes in 3.1.14:
+* Add 'Snap to Grid?' option to HexGrid and SquareGrid, defaulting to Yes. Allows Grid Snapping to be turned off for the whole grid. [RFE 2842811]
 
-* RFE: Total player count now appears in the Server Status pane.
+* Streamlined room creation: automatic synchronization on room entry [RFE 1784]
 
-The following bugs are fixed in 3.1.14:
+* New scenario updater [RFE 1899]
 
-* Bug 2944858: Misplaced AreaOfEffect center when board is magnified
-* Bug 2933236: ArrayIndexOutOfBoundsException in StackMetrics.draw()
-* Bug 2912371: Custom step/undo/connect icons not showing in 3.1.13
-* Bug: user.home property is not passed from Module Manager to Player or Editor
-* Bug: Only select marker if original piece was selected. Prevents autoselecting of markers when placed via Global Key Command.
+* Allow Dynamic Property Select Value list to be dynamic [RFE 1926]
 
-For changes prior to 3.1.14, see the change log. For feature changes from 3.0 to 3.1, see the release notes for 3.1.0.
+* All scaling is now high-quality. Low-quality scaling (in hardware) caused too many graphics glitches on Windows.
 
-VASSAL has a new User's Guide! You can view the User's Guide by selecting "User's Guide" from the Help menu in any of VASSAL's components.
+* The Invisible trait now supports adjustable transparency.
 
-The recommended minimum Java version for VASSAL 3.1 has changed. A bug in versions of Java prior to 1.5.0_08 (a.k.a. Java 5 update 8) prevents some images from loading properly. We now recommend that anyone using a version of Java older than 1.5.0_08 upgrade to *at least* 1.5.0_08.
+* Map images are tiled the first time modules are loaded, to create an image cache. This should dramatically reduce the amount of memory needed to run modules.
 
-Furthermore, we recommend that Windows users in particular upgrade to at least Java 1.6.0_21 (a.k.a. Java 6 Update 21), in order to avoid bugs present in earlier versions of Java. Windows users installing VASSAL 3.1.15 with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_22. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
+The following bugs are fixed in 3.2.0-beta1:
 
-Please report all bugs, even if they are bugs which you've already reported against other versions. We take your bug reports very seriously---they're the reason we're able to find and fix bugs.
+* 3040: ClassCastException in CommandServer.run()
+* 2694: Warn (Windows) users to reboot after Java upgrade
+* 2671: BMPs are incompatible with memory-mapped images
+* 2556: ImageOp does not support paths
+
+For changes prior to 3.2.0-beta1, see the change log.
+
+Please report all bugs in 3.2.0-beta1, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+
+<h3>Minimum Requirements</h3>
+VASSAL 3.2 requires the Java Runtime Envrionment to run.
+
+Linux: Java 6 is required for using VASSAL on Linux.
+
+MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is unavailable, and Java 6 for Macs where Java 6 is available.
+
+Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_32. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
 
 <h3>Help us test</h3>
-Should you find any problems/oddities/bugs, please tell us so that we can fix them for the next release of VASSAL.
+This is a beta release, so may still contain some rough edges. Should you find any problems/oddities/bugs, please tell us so that we can fix them before VASSAL 3.2.0 is released. Also, if you've had problems with 3.1.x or a previous 3.2.0 beta, please check and let us know if those problems are resolved in 3.2.0-beta1.
 
 Report bugs here in the Technical Support & Bugs category at the <a href='http://vassalengine.org/forums/viewforum.php?f=3' target='_new'>VASSAL forums</a>, or by email to <a href='mailto:uckelman@nomic.net'>uckelman@nomic.net</a>.
 
