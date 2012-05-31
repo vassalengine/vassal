@@ -1,3 +1,47 @@
+3.1.19 - 9 May 2012
+
+* Windows installer now suggests JRE 1.6.0_32 for Java upgrades.
+
+Bugs fixed:
+
+* 4363: When retiring, cancelling side selection leaves side == null
+* 4259: When retiring, 'Become observer' fails to update other players' rosters
+* 4258: Large image masks in Non-Rectangular trait lock up the GUI
+* 4204: Java 7 has incorrect offset for drag images
+* 4184: Should use DocumentListener to catch updates on Swing text fields
+* 4132: Bad layout for Map window obscures Global Key Command buttons
+* 3075: NegativeArraySizeException when snapshotting large maps 
+* 1924: Put settings directory in system-appropriate location
+* Bad tile-counting when snapshotting maps
+
+3.1.18 - 19 December 2011
+
+* Windows installer now suggests JRE 1.6.0_30 for Java upgrades.
+
+Bugs fixed:
+
+* 4126: PieceMover.dragDropEnd() does not remove DragSourceMotionListener
+* 4106: Send to Location to a counter using a Property Expression not working
+* 3457: Corrupt JPEG causes ArrayIndexOutOfBoundsException
+* 2815: ArrayIndexOutOfBoundsException in Stack.insertPieceAt()
+* 2798: ConcurrentModificationException in PrefsEditor.save()
+* 2715: NPE in Map.setup()
+
+3.1.17 - 21 October 2011
+
+* Windows installer now suggests JRE 1.6.0_27 for Java upgrades.
+
+Bugs fixed:
+
+* 4054: Inserting a GamePiece Layer generates an OutOfBounds error
+* 4051: Allow Cut and Paste between Decks and GamePiece Palette
+* 3987: Updated server fallback IP address to game.vassalengine.org
+* 3986: Counters disappear during Undo
+* 3915: IOException in BrowserSupport when opening PDFs
+* 3910: IOException in BrowserSupport when opening web pages
+* 3280: IllegalArgumentException in StackMetrics.relativePosition()
+* 2798: ConcurrentModificationException in PrefsEditor.save()
+
 3.1.16 - 17 August 2011
 
 * Windows installer now suggests JRE 1.6.0_26 for Java upgrades.
