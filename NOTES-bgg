@@ -9,7 +9,6 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
 [url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-src.zip]Source code[/url]
 
 [size=16][b]New Features in 3.2[/b][/size]
-
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
  
 * Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards' options in right-click menu in Editor. Specify a folder of images, specify a counter template and Vassal will automatically load the images and generate units. [RFE 1927]
