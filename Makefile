@@ -48,11 +48,11 @@ JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 
-VNUM:=3.2.0-beta1
+VNUM:=3.2.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 SVNVERSION:=$(shell git svn log -1 --oneline | grep -oP '^r\K\d+')
 #VERSION:=$(VNUM)-svn$(SVNVERSION)
-VERSION:=$(VNUM)
+VERSION:=$(VNUM)-beta1
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -202,9 +202,8 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
 $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
-	cp -a . $(TMPDIR)/VASSAL-$(VERSION)-src
 #	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
-	git checkout-index -a -f --prefix=$(TMPDIR)/VASSAL-$(VERSION)-src
+	git checkout-index -a -f --prefix=$(TMPDIR)/VASSAL-$(VERSION)-src/
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
