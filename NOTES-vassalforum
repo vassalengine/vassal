@@ -70,6 +70,7 @@ For changes prior to 3.2.0-beta1, see the change log.
 Please report all bugs in 3.2.0-beta1, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
+
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
 
 Linux: Java 6 is required for using VASSAL on Linux.
