@@ -130,6 +130,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public void apply() {
+    buildFilter();
     if (singleMap) {
       apply(map);
     }
@@ -416,7 +417,8 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public PieceFilter getFilter() {
-    return propertiesFilter.getFilter();
+    buildFilter();
+    return filter;
   }
 
   private void buildFilter() {
@@ -486,19 +488,15 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     else if (CHECK_PROPERTY.equals(key)) {
       checkProperty = (String) value;
-      buildFilter();
     }
     else if (CHECK_VALUE.equals(key)) {
       checkValue = (String) value;
-      buildFilter();
     }
     else if (PROPERTIES_FILTER.equals(key)) {
       propertiesFilter.setExpression((String) value);
-      buildFilter();
     }
     else if (CONDITION.equals(key)) {
       condition = (String) value;
-      buildFilter();
     }
     else if (REPORT_SINGLE.equals(key)) {
       if (value instanceof String) {
