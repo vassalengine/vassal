@@ -88,8 +88,7 @@ public class FileArchiveImageTiler {
         IOUtils.closeQuietly(in);
       }
 
-      final String iname = new File(ipath).getName();
-      slicer.slice(src, iname, tpath, tw, th, exec, tileListener);
+      slicer.slice(src, ipath, tpath, tw, th, exec, tileListener);
     }
 
     exec.shutdown();

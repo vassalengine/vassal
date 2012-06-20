@@ -95,26 +95,24 @@ public class TilingHandler {
   }
 
   protected boolean isFresh(FileArchive archive,
-                            FileStore tcache, String iname)
+                            FileStore tcache, String ipath)
                                                            throws IOException {
-    final String apath = DataArchive.IMAGE_DIR + iname;
-
     // look at the first 1:1 tile
-    final String tpath = TileUtils.tileName(iname, 0, 0, 1);
+    final String tpath = TileUtils.tileName(ipath, 0, 0, 1);
 
     // check whether the image is older than the tile
-    final long imtime = archive.getMTime(apath);
+    final long imtime = archive.getMTime(ipath);
 
     return imtime > 0 && // time in archive might be goofy
            imtime <= tcache.getMTime(tpath);
   }
 
-  protected Dimension getImageSize(DataArchive archive, String iname)
+  protected Dimension getImageSize(DataArchive archive, String ipath)
                                                            throws IOException {
     InputStream in = null;
     try {
-      in = archive.getInputStream(DataArchive.IMAGE_DIR + iname);
-      final Dimension id = ImageUtils.getImageSize(iname, in);
+      in = archive.getInputStream(ipath);
+      final Dimension id = ImageUtils.getImageSize(ipath, in);
       in.close();
       return id;
     }
@@ -138,16 +136,18 @@ public class TilingHandler {
     final FileArchive fa = archive.getArchive();
 
     for (String iname : images) {
+      final String ipath = DataArchive.IMAGE_DIR + iname;
+
       // skip images with fresh tiles
-      if (isFresh(fa, tcache, iname)) continue;
+      if (isFresh(fa, tcache, ipath)) continue;
 
       final Dimension idim;
       try {
-        idim = getImageSize(archive, iname);
+        idim = getImageSize(archive, ipath);
       }
       catch (IOException e) {
         // skip images we can't read
-        failed.add(Pair.of(iname, e));
+        failed.add(Pair.of(ipath, e));
         continue;
       }
 
@@ -158,7 +158,7 @@ public class TilingHandler {
       if (t == 0) continue;
 
       tcount += t;
-      multi.add("images/" + iname);
+      multi.add(ipath);
 
       // check whether this image has the most pixels
       if (idim.width * idim.height > maxpix) {

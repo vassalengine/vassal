@@ -62,13 +62,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
                             (((int) iscale) & (((int) iscale)-1)) == 0;
 
     if (invPow2 && sop instanceof SourceOp) {
-      String name = ((SourceOp) sop).getName();
-
-      // strip off leading "images/"
-      if (name.startsWith("images/")) {
-        name = name.substring(7);
-      }
-
+      final String name = ((SourceOp) sop).getName();
       return new SourceOpDiskCacheBitmapImpl(name, tileX, tileY, scale);
     }
     else {
