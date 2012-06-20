@@ -1,11 +1,7 @@
 /*
  * $Id$
  *
-<<<<<<< HEAD
- * Copyright (c) 2010 by Joel Uckelman
-=======
  * Copyright (c) 2010, 2011 by Joel Uckelman
->>>>>>> uckelman-working2
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
