@@ -209,6 +209,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return in;
     }
 
+    //
+    // Ridiculous crap we have to check for backwards compatibility
+    //
+
+    // Maybe it's a resource missing its initial slash. Aauugh!
+    in = getClass().getResourceAsStream("/" + fileName);
+    if (in != null) {
+      return in;
+    }
+
     // Maybe it's an extensionless GIF? Aauugh!
     in = getInputStreamImpl(fileName + ".gif");
     if (in != null) {
@@ -220,6 +230,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (in != null) {
       return in;
     }
+
+    //
+    // End of ridiculous crap
+    //
 
     throw new FileNotFoundException(
       "\'" + fileName + "\' not found in " + getName()
