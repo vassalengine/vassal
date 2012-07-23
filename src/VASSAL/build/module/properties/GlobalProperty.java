@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -61,6 +61,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected FormattedString format = new FormattedString();
   protected PropertySource propertySource;
   protected MutableProperty.Impl property = new MutableProperty.Impl("", this);
+  protected MutablePropertiesContainer parentContainer;
 
   public GlobalProperty() {
     numericVisibility = new VisibilityCondition() {
@@ -184,7 +185,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void addTo(Buildable parent) {
-    property.addTo((MutablePropertiesContainer) parent);
+    parentContainer = (MutablePropertiesContainer) parent; 
+    property.addTo(parentContainer);
     tempToolbar.setDelegate((ToolBarComponent) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -213,8 +215,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     String prefix = sd.nextToken("");
     if (prefix.equals(COMMAND_PREFIX)) {
       String propertyId = sd.nextToken("");
+      String newValue = sd.nextToken("");
+      String containerId = sd.nextToken("");
       if (propertyId.equals(getPropertyId())) {
-        comm = new SetGlobalProperty(this, property.getPropertyValue(), sd.nextToken(""));
+        if (containerId.length() == 0 || containerId.equals(parentContainer.getMutablePropertiesContainerId())) {
+          comm = new SetGlobalProperty(this, property.getPropertyValue(), newValue);
+        }
       }
     }
     return comm;
@@ -227,15 +233,23 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected String getPropertyId() {
     return getConfigureName();
   }
+  
+  protected String getContainerId() {
+    return parentContainer == null ? "" : parentContainer.getMutablePropertiesContainerId();
+  }
 
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetGlobalProperty) {
-      if (((SetGlobalProperty) c).getTargetName().equals(getPropertyId())) {
-        SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
-        se.append(getPropertyId());
-        se.append(((SetGlobalProperty) c).newValue);
-        s = se.getValue();
+      final SetGlobalProperty sgp = (SetGlobalProperty) c;
+      if (sgp.getTargetName().equals(getPropertyId())) {
+        if (getContainerId().equals(sgp.getProperty().getContainerId())) {
+          SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
+          se.append(getPropertyId());
+          se.append(sgp.newValue);
+          se.append(getContainerId());
+          s = se.getValue();
+        }
       }
     }
     return s;
@@ -265,6 +279,10 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       }
     }
 
+    public GlobalProperty getProperty() {
+      return target;
+    }
+    
     protected void executeCommand() {
       target.property.setPropertyValue(newValue);
     }
@@ -346,4 +364,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return property.getPropertyValue();
   }
 
+  public MutablePropertiesContainer getParent() {
+    return parentContainer;
+  }
 }

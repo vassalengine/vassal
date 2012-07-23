@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006-2007 by Rodney Kinney
+ * Copyright (c) 2006-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,6 +45,9 @@ public interface MutablePropertiesContainer {
   /** Find a GlobalProperty object with the given name */
   MutableProperty getMutableProperty(String propertyName);
 
+  /** Return a unique Id for the container */
+  
+  String getMutablePropertiesContainerId();
   /**
    * Simple implementation of {@link MutablePropertiesContainer}
    * @author rkinney
@@ -53,6 +56,19 @@ public interface MutablePropertiesContainer {
   public static class Impl implements MutablePropertiesContainer {
     private Map<String,MutableProperty> props =
       new HashMap<String,MutableProperty>();
+    private String id;
+     
+    public Impl() {
+      this("");
+    }
+    
+    public Impl (String id) {
+      this.id = id;
+    }
+    
+    public String getMutablePropertiesContainerId() {
+      return id;
+    }
 
     public void addMutableProperty(String key, MutableProperty p) {
       props.put(key,p);

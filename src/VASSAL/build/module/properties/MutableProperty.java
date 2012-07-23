@@ -39,6 +39,9 @@ public interface MutableProperty {
   void addMutablePropertyChangeListener(PropertyChangeListener l);
 
   void removeMutablePropertyChangeListener(PropertyChangeListener l);
+  
+  MutablePropertiesContainer getParent();
+  
   public static class Util {
     /**
      * Look for a {@link MutableProperty} in the list of {@link MutablePropertiesContainer}. Return the first one

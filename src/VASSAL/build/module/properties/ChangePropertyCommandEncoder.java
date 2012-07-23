@@ -1,7 +1,7 @@
 /*
  * $Id$
  * *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,10 +45,18 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       String key = st.nextToken(null);
       String oldValue = st.nextToken(null);
       String newValue = st.nextToken(null);
-      if (key != null) {
-        MutableProperty p = container.getMutableProperty(key);
-        if (p != null) {
-          c = new ChangePropertyCommand(p, key, oldValue, newValue);
+      String containerId = st.nextToken("");
+      
+      if (key != null ) {
+        /*
+         * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
+         * behaviour is to execute the change on the first matching property found in any container
+         */
+        if (containerId.length() == 0 || containerId.equals(container.getMutablePropertiesContainerId())) {      
+          MutableProperty p = container.getMutableProperty(key);
+          if (p != null) {
+            c = new ChangePropertyCommand(p, key, oldValue, newValue);
+          }
         }
       }
     }
@@ -59,9 +67,12 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
     String s = null;
     if (c instanceof ChangePropertyCommand) {
       ChangePropertyCommand cpc = (ChangePropertyCommand) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cpc.getPropertyName()).append(cpc.getOldValue()).append(cpc.getNewValue());
-      s = COMMAND_PREFIX+se.getValue();
+      if (container.getMutablePropertiesContainerId().equals(cpc.getProperty().getParent().getMutablePropertiesContainerId())) {
+        SequenceEncoder se = new SequenceEncoder('\t');
+        se.append(cpc.getPropertyName()).append(cpc.getOldValue()).append(cpc.getNewValue())
+          .append(container.getMutablePropertiesContainerId());
+        s = COMMAND_PREFIX+se.getValue();
+      }
     }
     return s;
   }

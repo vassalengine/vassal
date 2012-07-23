@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2012 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -2424,6 +2424,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return p;
   }
 
+  public String getMutablePropertiesContainerId() {
+    return getMapName();
+  }
   /**
    * Each Map must have a unique String id
    *
