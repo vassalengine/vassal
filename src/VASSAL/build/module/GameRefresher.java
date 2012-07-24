@@ -149,7 +149,7 @@ public final class GameRefresher implements GameComponent {
     GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
 
     final Stack oldStack = piece.getParent();
-    final int oldPos = oldStack.indexOf(piece);
+    final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);
 
     // Place the new Piece.
     final Command place = map.placeOrMerge(newPiece, pos);
