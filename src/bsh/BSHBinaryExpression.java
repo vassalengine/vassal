@@ -129,35 +129,36 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
           return Primitive.binaryOperation(lhs, rhs, kind);
         }
         catch (UtilEvalError e) {
-          throw e.toEvalError(this, callstack);
+          /* VASSAL - Try again, converting both sides to Strings, report the original error if it fails */
+          try {
+            return Primitive.binaryOperation(lhs.toString(), rhs.toString(), kind); 
+          }
+          catch (UtilEvalError e2) {
+            throw e.toEvalError(this, callstack);
+          }
         }
       }
     }
     /*
-     * VASSAL - Auto convert boolean and Integer Strings to Primitive types 
+     * VASSAL - Auto convert primitive types to strings when the other side
+     * of the operator is a string.
      */
     else {
       if ((isLhsWrapper || isPrimitiveValue(lhs)) && rhs instanceof String) {
-        final Object newRhs = convert((String) rhs);
-        if (rhs != null) {
-          try {
-            return Primitive.binaryOperation(lhs, newRhs, kind);
-          }
-          catch (UtilEvalError e) {
-            throw e.toEvalError(this, callstack);
-          }
+        try {
+          return Primitive.binaryOperation(lhs.toString(), rhs, kind);
+        }
+        catch (UtilEvalError e) {
+          throw e.toEvalError(this, callstack);
         }
       }
       else if ((isRhsWrapper || isPrimitiveValue(rhs)) && lhs instanceof String) {
-        final Object newLhs = convert((String) lhs);
-        if (lhs != null) {
-          try {
-            return Primitive.binaryOperation(lhs, newLhs, kind);
-          }
-          catch (UtilEvalError e) {
-            throw e.toEvalError(this, callstack);
-          }
-        }     
+        try {
+          return Primitive.binaryOperation(lhs, rhs.toString(), kind);
+        }
+        catch (UtilEvalError e) {
+          throw e.toEvalError(this, callstack);
+        } 
       }
     }
     /*
