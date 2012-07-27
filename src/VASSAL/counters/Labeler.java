@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2012 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -544,7 +544,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
     // If the label has a Control key, then the image of the label is NOT included in the selectable area of the
     // counter
-    if (labelKey != null) {
+    if (! labelKey.isNull()) {
       return innerShape;
     }
     else {
