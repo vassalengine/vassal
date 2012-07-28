@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,6 +37,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
@@ -46,6 +47,7 @@ import VASSAL.tools.imageop.OpIcon;
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
+  private static final String NO_IMAGE = "(No Image)";
   private String imageName = null;
   protected static Font FONT = new Font("Dialog", 0, 11);
   private final JTextArea noImage;
@@ -63,6 +65,7 @@ public class ImagePicker extends JPanel
     noImage.setEditable(false);
     noImage.setLineWrap(true);
     noImage.setWrapStyleWord(true);
+    noImage.setPreferredSize(new Dimension(15, 32));
     icon = new OpIcon();
     imageView = new JLabel(icon);
     imageView.addMouseListener(this);
@@ -74,8 +77,7 @@ public class ImagePicker extends JPanel
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
 
-    select = new JComboBox(
-      GameModule.getGameModule().getDataArchive().getImageNames());
+    select = new JComboBox(ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
     select.addItemListener(this);
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     add(noImage);
@@ -92,7 +94,8 @@ public class ImagePicker extends JPanel
   public void setImageName(String name) {
     imageName = name;
     remove(0);
-    if (name == null || name.length() == 0) {
+    if (name == null || name.trim().length() == 0 || name.equals(NO_IMAGE)) {
+      imageName = "";
       add(noImage,0);
     }
     else {
@@ -103,23 +106,6 @@ public class ImagePicker extends JPanel
       imageScroller.setPreferredSize(d);
 
       add(imageViewer,0);
-/*
-      try {
-        icon.setImage(getImage());
-
-        Dimension d = new Dimension (icon.getIconWidth(), icon.getIconHeight());
-        if (d.width > 400) d.width = 400;
-        if (d.height > 400) d.height = 400;
-        imageScroller.setPreferredSize(d);
-
-        name = imageName;
-        add(imageViewer,0);
-      }
-      catch (java.io.IOException e) {
-        name = null;
-        add(noImage,0);
-      }
-*/
     }
 
     select.removeItemListener(this);
@@ -169,11 +155,11 @@ public class ImagePicker extends JPanel
                 .getArchiveWriter()
                 .addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel(
-         GameModule.getGameModule().getDataArchive().getImageNames()));
+          ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE)));
       setImageName(name);
     }
     else {
-      setImageName(" ");
+      setImageName(NO_IMAGE);
     }
     repaint();
   }
