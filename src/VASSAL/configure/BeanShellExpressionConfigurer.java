@@ -54,6 +54,8 @@ import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
 import VASSAL.script.expression.FunctionBuilder;
+import VASSAL.script.expression.IntBuilder;
+import VASSAL.script.expression.StrBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import bsh.BeanShellExpressionValidator;
@@ -191,6 +193,25 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected JPopupMenu createPopup() {
     JPopupMenu popup = new JPopupMenu();
 
+    final JMenu constantMenu = new JMenu("Constant");
+    final JMenuItem integerItem = new JMenuItem("Number");
+    integerItem.setToolTipText("A number");
+    integerItem.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e) {
+        buildInteger();
+      }});
+    constantMenu.add(integerItem);
+
+    final JMenuItem stringItem = new JMenuItem("String");
+    stringItem.setToolTipText("A character string");
+    stringItem.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e) {
+        buildString();
+      }});
+    constantMenu.add(stringItem);
+    popup.add(constantMenu);
+    
+    
     final JMenu propertyMenu = new JMenu("Property");
 
     final JMenu pieceMenu = new JMenu("Piece Property");
@@ -203,7 +224,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenu globalsMenu = new JMenu("Global Property");
     addGlobalProps(globalsMenu);
     propertyMenu.add(globalsMenu);
-
+    
     final JMenu vassalMenu = new JMenu("Vassal Property");
     addProp(vassalMenu, GlobalOptions.PLAYER_SIDE);
     addProp(vassalMenu, GlobalOptions.PLAYER_NAME);
@@ -223,10 +244,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenu comparisonMenu = new JMenu("Comparison");
     addOperator(comparisonMenu, "==", "Equals");
     addOperator(comparisonMenu, "!=", "Not equals");
-    addOperator(comparisonMenu, ">", "Greater than");
+    addOperator(comparisonMenu, ">",  "Greater than");
     addOperator(comparisonMenu, ">=", "Greater than or equal to");
-    addOperator(comparisonMenu, "<", "Less than");
+    addOperator(comparisonMenu, "<",  "Less than");
     addOperator(comparisonMenu, "<=", "Less than or equal to");
+    addOperator(comparisonMenu, "=~", "Matches Regular Expression");
+    addOperator(comparisonMenu, "!~", "Does not match Regular Expression");
     popup.add(comparisonMenu);
 
     final JMenu logicalMenu = new JMenu("Logical");
@@ -260,6 +283,25 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void buildFunction(String op, String desc, String[] parmDesc) {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new FunctionBuilder(result, (JDialog) p.getTopLevelAncestor(), op, desc, parmDesc, target).setVisible(true);
+    if (result.getValue() != null && result.getValueString().length() > 0) {
+      insertPropertyName(result.getValueString());
+    }
+  }
+  
+  protected void buildInteger() {
+    final StringConfigurer result = new StringConfigurer(null, "", "");
+    new IntBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
+    if (result.getValue() != null && result.getValueString().length() > 0) {
+      insertPropertyName(result.getValueString());
+    }    
+  }
+  
+  protected void buildString() {
+    final StringConfigurer result = new StringConfigurer(null, "", "");
+    new StrBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
+    if (result.getValue() != null && result.getValueString().length() > 0) {
+      insertPropertyName(result.getValueString());
+    }
   }
 
   protected void addOperator(JMenu menu, final String op, String desc) {

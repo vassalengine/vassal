@@ -30,13 +30,12 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -59,17 +58,16 @@ public class FunctionBuilder extends JDialog {
     targetPiece = piece;
     save = target.getValueString();
     this.function = function;
-    JPanel p = new JPanel();
-    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    JPanel p = new JPanel(new MigLayout("wrap 1"));
 
-    p.add(new JLabel(desc));
+    p.add(new JLabel(desc), "align center");
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i]+":  ", "", targetPiece);
       configs.add(config);
-      p.add(config.getControls());
+      p.add(config.getControls(), "align right");
     }
 
-    Box buttonBox = Box.createHorizontalBox();
+    JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -94,7 +92,7 @@ public class FunctionBuilder extends JDialog {
     });
     buttonBox.add(helpButton);
 
-    p.add(buttonBox);
+    p.add(buttonBox, "align center");
     add(p);
 
     pack();

@@ -23,12 +23,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
 import VASSAL.configure.Configurer;
@@ -56,8 +55,7 @@ public class ExpressionBuilder extends JDialog {
     target = c;
     pieceTarget = piece;
     save = target.getValueString();
-    JPanel p = new JPanel();
-    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    JPanel p = new JPanel(new MigLayout("wrap 1"));
 
     String value = target.getValueString();
 
@@ -70,7 +68,7 @@ public class ExpressionBuilder extends JDialog {
 
     p.add(expression.getControls());
 
-    Box buttonBox = Box.createHorizontalBox();
+    JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -95,7 +93,7 @@ public class ExpressionBuilder extends JDialog {
     });
     buttonBox.add(helpButton);
 
-    p.add(buttonBox);
+    p.add(buttonBox, "align center");
     add(p);
 
     pack();
