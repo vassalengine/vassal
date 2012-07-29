@@ -87,39 +87,33 @@ public class BasicModule extends GameModule {
     final DataArchive darch = getDataArchive();
 
     final File f = new File(darch.getName());
-    try {
-      if (!f.exists() || f.length() == 0) {
-        // new module, no buildFile
-        build(null);
-      }
-      else {
-        // existing module
-        BufferedInputStream in = null;
-        try {
-          try {
-            in = new BufferedInputStream(darch.getInputStream(BUILDFILE));
-          }
-          // FIXME: review error message
-          // FIXME: this should be more specific, to separate the case where
-          // we have failed I/O from when we read ok but have no module
-          catch (IOException e) {
-            throw (IOException) new IOException(
-              Resources.getString("BasicModule.not_a_module") //$NON-NLS-1$
-            ).initCause(e);
-          }
-
-          final Document doc = Builder.createDocument(in);
-          build(doc.getDocumentElement());
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
-        }
-      }
+    if (!f.exists() || f.length() == 0) {
+      // new module, no buildFile
+      build(null);
     }
-    // FIXME: review error message
-    catch (IOException e) {
-      throw new IllegalArgumentException(e);
+    else {
+      // existing module
+      BufferedInputStream in = null;
+      try {
+        try {
+          in = new BufferedInputStream(darch.getInputStream(BUILDFILE));
+        }
+        // FIXME: review error message
+        // FIXME: this should be more specific, to separate the case where
+        // we have failed I/O from when we read ok but have no module
+        catch (IOException e) {
+          throw (IOException) new IOException(
+            Resources.getString("BasicModule.not_a_module") //$NON-NLS-1$
+          ).initCause(e);
+        }
+
+        final Document doc = Builder.createDocument(in);
+        build(doc.getDocumentElement());
+        in.close();
+      }
+      finally {
+        IOUtils.closeQuietly(in);
+      }
     }
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
