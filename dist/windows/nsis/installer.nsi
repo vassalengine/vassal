@@ -32,7 +32,7 @@
 !define VNAME "VASSAL (${VERSION})"
 !define IROOT "${VROOT}\${VNAME}"
 !define AROOT "Software\Classes"
-!define JAVA_MINIMUM "1.6.0_22"
+!define JAVA_MINIMUM "1.6.0_33"
 # FIXME: would be better if we read the download URL from our own site
 !define JRE_32_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=66210"
 !define JRE_64_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=66211"
