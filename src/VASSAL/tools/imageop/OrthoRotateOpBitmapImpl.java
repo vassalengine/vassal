@@ -120,29 +120,27 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
         sy1 = Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
         break;
       case 1:
-        // FIXME: test this
         sx0 = tileY*rop.tileSize.height;
         sy0 = tileX*rop.tileSize.width;
         sx1 = Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
         sy1 = Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
         break;
       case 2:
-        sx1 = rop.size.width - tileX*rop.tileSize.width - 1;
-        sy1 = rop.size.height - tileY*rop.tileSize.height - 1;
+        sx1 = rop.size.width - tileX*rop.tileSize.width;
+        sy1 = rop.size.height - tileY*rop.tileSize.height;
         sx0 = rop.size.width -
-                Math.min((tileX+1)*rop.tileSize.width, rop.size.width) -1;
+                Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
         sy0 = rop.size.height -
-                Math.min((tileY+1)*rop.tileSize.height, rop.size.height) - 1;
+                Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
         break;
       case 3:
       default:
-        // FIXME: test this
-        sx1 = rop.size.height - tileY*rop.tileSize.height - 1;
-        sy1 = rop.size.width - tileX*rop.tileSize.width - 1;
+        sx1 = rop.size.height - tileY*rop.tileSize.height;
+        sy1 = rop.size.width - tileX*rop.tileSize.width;
         sx0 = rop.size.height -
-                Math.min((tileY+1)*rop.tileSize.height, rop.size.height) - 1;
+                Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
         sy0 = rop.size.width -
-                Math.min((tileX+1)*rop.tileSize.width, rop.size.width) -1;
+                Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
         break;
       }
 

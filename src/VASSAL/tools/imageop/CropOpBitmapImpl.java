@@ -58,6 +58,14 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
       throw new IllegalArgumentException();
     }
 
+    if (x0 < 0) {
+      throw new IllegalArgumentException("left = " + x0);
+    }
+
+    if (y0 < 0) {
+      throw new IllegalArgumentException("top = " + y0);
+    }
+
     if (x1 <= x0) {
       throw new IllegalArgumentException("left = "+ x0 + ", right = " + x1);
     }
@@ -106,28 +114,21 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
-    try {
-      // match the transparency of the first tile
-      final BufferedImage dst = ImageUtils.createCompatibleImage(
-        size.width, size.height,
-        sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
-      );
+    // match the transparency of the first tile
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+      size.width, size.height,
+      sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
+    );
 
-      final Graphics2D g = dst.createGraphics();
+    final Graphics2D g = dst.createGraphics();
 
-      for (Point tile : tiles) {
-        g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
-      }
-
-      g.dispose();
-
-      return dst;
+    for (Point tile : tiles) {
+      g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
     }
-    catch (ArrayIndexOutOfBoundsException e) {
-      // FIXME: Added for Bug 2807, so we can see what x0, y0, x1, y1 are.
-      System.err.println(x0 + " " + y0 + " " + x1 + " " + y1);
-      throw e;
-    }
+
+    g.dispose();
+
+    return dst;
   }
 
   protected void fixSize() {}
