@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -36,6 +36,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Box;
@@ -307,16 +308,10 @@ public class Footprint extends MovementMarkable {
 // FIXME: This method is inefficient.
     int x1, y1, x2, y2;
     piece.draw(g, x, y, obs, zoom);
-    if (getMap() != null) {
-      recordCurrentPosition();
-    }
 
-    /*
-     * No map, or trail not visible, do nothing!
-     */
-    if (getMap() == null
-        || !isTrailVisible()
-        || getMap().getView() != obs) {
+    // Do nothing when piece is not on a map, we are drawing the map
+    // to something other than its normal view, or the trail is invisible,
+    if (getMap() == null || getMap().getView() != obs || !isTrailVisible()) {
       return;
     }
 
@@ -339,10 +334,9 @@ public class Footprint extends MovementMarkable {
     double mapZoom = zoom;
     if (this.getMap() != null) {
       mapZoom = this.getMap().getZoom();
-    }
-
-    if (zoom != mapZoom) {
-      return;
+      if (zoom != mapZoom) {
+        return;
+      }
     }
 
     currentMap = getMap().getId();
@@ -411,21 +405,24 @@ public class Footprint extends MovementMarkable {
     /*
      * Draw the tracks between trail points
      */
-    for (Point p : pointList) {
-      if (lastP != null) {
-        x1 = (int) (lastP.x * zoom);
-        y1 = (int) (lastP.y * zoom);
-        x2 = (int) (p.x * zoom);
-        y2 = (int) (p.y * zoom);
+    final Iterator<Point> i = pointList.iterator();
+    Point cur = i.next(), next;
+    while (i.hasNext()) {
+      next = i.next();
 
-        drawTrack(g, x1, y1, x2, y2, zoom);
-      }
-      lastP = p;
+      x1 = (int) (cur.x * zoom);
+      y1 = (int) (cur.y * zoom);
+      x2 = (int) (next.x * zoom);
+      y2 = (int) (next.y * zoom);
+
+      drawTrack(g, x1, y1, x2, y2, zoom);
+
+      cur = next;
     }
 
-    if (lastP != null) {
-      x1 = (int) (lastP.x * zoom);
-      y1 = (int) (lastP.y * zoom);
+    if (!here.equals(cur)) {
+      x1 = (int) (cur.x * zoom);
+      y1 = (int) (cur.y * zoom);
       x2 = (int) (here.x * zoom);
       y2 = (int) (here.y * zoom);
 
@@ -473,6 +470,7 @@ public class Footprint extends MovementMarkable {
         }
       }
     }
+
     g2d.setComposite(oldComposite);
     g2d.setStroke(oldStroke);
     g2d.setColor(oldColor);
