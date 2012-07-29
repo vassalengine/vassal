@@ -1,7 +1,7 @@
 # 
 #  $Id$
 # 
-#  Copyright (c) 2008 by Joel Uckelman
+#  Copyright (c) 2008-2012 by Joel Uckelman
 # 
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -34,7 +34,8 @@
 !define AROOT "Software\Classes"
 !define JAVA_MINIMUM "1.6.0_22"
 # FIXME: would be better if we read the download URL from our own site
-!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=52247"
+!define JRE_32_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=66210"
+!define JRE_64_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=66211"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
@@ -53,6 +54,7 @@ SetDatablockOptimize on
 !include "WinMessages.nsh"
 !include "WinVer.nsh"
 !include "WordFunc.nsh"
+!include "x64.nsh"
 
 !addincludedir "dist/windows/nsis"
 !include "GetJavaVersion.nsh"
@@ -703,9 +705,16 @@ Section "-Application" Application
  
   ; install a JRE, if necessary
   ${If} $InstallJRE == 1
-    DetailPrint "Downloading a JRE from ${JRE_URL}"
+    ; choose a 64-bit JRE for 64-bit systems
+    ${If} ${RunningX64}
+      StrCpy $R1 ${JRE_64_URL}
+    ${Else}
+      StrCpy $R1 ${JRE_32_URL}
+    ${EndIf}
+    
+    DetailPrint "Downloading a JRE from $R1"
     StrCpy $0 "$TEMP\jre_installer.exe"
-    NSISdl::download /TIMEOUT=30000 ${JRE_URL} $0
+    NSISdl::download /TIMEOUT=30000 $R1 $0
     Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
     MessageBox MB_OK "Java download failed: $R0"

@@ -42,6 +42,7 @@
 
 !include Util.nsh
 !include WordFunc.nsh
+!include x64.nsh
 
 !verbose push
 !verbose 3
@@ -143,6 +144,24 @@ Found:
 
 !define JAVA_EXE "java.exe"
 
+!macro CheckRegistryJRE
+  ClearErrors
+  ReadRegStr $R1 HKLM "${JRE_ROOT}" "CurrentVersion"
+  ReadRegStr $R0 HKLM "${JRE_ROOT}\$R1" "JavaHome"
+  IfErrors +3
+  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
+  IfFileExists $R0 JREFound
+!macroend
+
+!macro CheckRegistryJDK
+  ClearErrors
+  ReadRegStr $R1 HKLM "${JDK_ROOT}" "CurrentVersion"
+  ReadRegStr $R0 HKLM "${JDK_ROOT}\$R1" "JavaHome"
+  IfErrors +3 
+  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
+  IfFileExists $R0 JREFound
+!macroend
+
 !macro GetJREPath_
   !verbose push
   !verbose ${_GETJAVAVERSION_VERBOSE}
@@ -154,25 +173,19 @@ Found:
   ; check JavaHome
   ClearErrors
   ReadEnvStr $R0 "JAVA_HOME"
-  IfErrors CheckRegistryJRE
+  IfErrors CheckRegistry
   StrCpy $R0 "$R0\bin\${JAVA_EXE}"
-  IfFileExists $R0 JREFound CheckRegistryJRE
+  IfFileExists $R0 JREFound
 
-CheckRegistryJRE:
-  ClearErrors
-  ReadRegStr $R1 HKLM "${JRE_ROOT}" "CurrentVersion"
-  ReadRegStr $R0 HKLM "${JRE_ROOT}\$R1" "JavaHome"
-  IfErrors CheckRegistryJDK
-  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
-  IfFileExists $R0 JREFound CheckRegistryJDK 
-
-CheckRegistryJDK:
-  ClearErrors
-  ReadRegStr $R1 HKLM "${JDK_ROOT}" "CurrentVersion"
-  ReadRegStr $R0 HKLM "${JDK_ROOT}\$R1" "JavaHome"
-  IfErrors JRENotFound
-  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
-  IfFileExists $R0 JREFound JRENotFound
+CheckRegistry:
+  ${If} ${RunningX64}
+    SetRegView 64
+    !insertmacro CheckRegistryJRE
+    !insertmacro CheckRegistryJDK
+  ${EndIf}
+  SetRegView 32
+  !insertmacro CheckRegistryJRE
+  !insertmacro CheckRegistryJDK
 
 JRENotFound:
   StrCpy $R0 ""    
