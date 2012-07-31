@@ -75,10 +75,6 @@ public class TempFileManager {
     if (SystemUtils.IS_OS_WINDOWS) {
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
-          // Clear the references to MappedBufferedImages so that the
-          // MappedDataBufferInts backing them can be garbage collected.
-          Op.clearCache();
-
           // Run the garbage collector and finalize repeatedly, with
           // exponentially increasing pauses, until we succeed at deleting
           // the whole session temp directory or we hit the sleep limit.
