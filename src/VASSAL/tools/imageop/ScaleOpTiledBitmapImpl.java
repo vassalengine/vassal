@@ -181,11 +181,25 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       final int tw = rsop.getTileWidth();
       final int th = rsop.getTileHeight();
 
-      // match the transparency of the first tile
-      final BufferedImage src = ImageUtils.createCompatibleImage(
-        sw, sh,
-        rsop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
-      );
+      BufferedImage src;
+      final boolean src_trans =
+        ImageUtils.isTransparent(rsop.getTile(tiles[0], null));
+
+      // make sure we have an int-type image
+      // and match the transparency of the first tile
+      switch (ImageUtils.getCompatibleImageType(rsop.getTile(tiles[0], null))) {
+      case BufferedImage.TYPE_INT_RGB:
+      case BufferedImage.TYPE_INT_ARGB:
+      case BufferedImage.TYPE_INT_ARGB_PRE:
+      case BufferedImage.TYPE_INT_BGR:
+        src = ImageUtils.createCompatibleImage(sw, sh, src_trans);
+        break;
+      default:
+        src = new BufferedImage(
+          sw, sh, src_trans ?
+            BufferedImage.TYPE_INT_ARGB_PRE : BufferedImage.TYPE_INT_RGB
+        );
+      }
 
       final Graphics2D g = src.createGraphics();
 
@@ -204,7 +218,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
       final int src_type;
-      if (src.getTransparency() == BufferedImage.OPAQUE) {
+      if (!src_trans) {
         src_type = GeneralFilter.OPAQUE;
       }
       else if (src.isAlphaPremultiplied()) {
