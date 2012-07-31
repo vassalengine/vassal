@@ -170,7 +170,7 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   /**
