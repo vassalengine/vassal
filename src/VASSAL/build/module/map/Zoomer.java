@@ -160,6 +160,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public void setZoom(double z) {
+      if (z <= 0.0) {
+        // This should never happen, it's just a kludge to make sure that
+        // we continue having valid data even if our caller is wrong.
+        z = Double.MIN_VALUE;
+      }
+
       cur = Arrays.binarySearch(levels, z);
       if (cur < 0) {
         // if z is not a level, set cur to the next level > z
