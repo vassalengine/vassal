@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2010 by Brent Easton
+ * Copyright (c) 2008-2012 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -478,7 +478,7 @@ public class MassPieceLoader {
           baseImage).append(pieceNode.getName()).getValue();
       final BasicPiece basic = (BasicPiece) GameModule.getGameModule()
           .createPiece(BasicPiece.ID + basicType);
-      GamePiece piece = basic;
+      
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();
@@ -491,11 +491,12 @@ public class MassPieceLoader {
       }
 
       for (int count = 0; count < pieceNode.getCopies(); count++) {
-      // Build the new piece. Note special Handling for Embellishment templates
-      // that will
-      // have actual images added for references to matching images. If an
-      // Embellishment
-      // has no matching images at all, do not add it to the new counter.
+        GamePiece piece = basic;
+        // Build the new piece. Note special Handling for Embellishment templates
+        // that will
+        // have actual images added for references to matching images. If an
+        // Embellishment
+        // has no matching images at all, do not add it to the new counter.
         for (Decorator trait : traits) {
           if (trait instanceof Emb) {
             Emb newLayer = new Emb(trait.getType(), null);
@@ -519,24 +520,24 @@ public class MassPieceLoader {
           }
         }
 
-      // Create the PieceSlot for the new piece
-      PieceSlot slot = null;
-      final Class<?>[] c = target.getAllowableConfigureComponents();
-      for (int i = 0; i < c.length && slot == null; i++) {
-        if (c[i].equals(CardSlot.class)) {
-          slot = new CardSlot();
-          slot.setPiece(piece);
+        // Create the PieceSlot for the new piece
+        PieceSlot slot = null;
+        final Class<?>[] c = target.getAllowableConfigureComponents();
+        for (int i = 0; i < c.length && slot == null; i++) {
+          if (c[i].equals(CardSlot.class)) {
+            slot = new CardSlot();
+            slot.setPiece(piece);
+          }
         }
-      }
-      if (slot == null) {
-        slot = new PieceSlot(piece);
-      }
+        if (slot == null) {
+          slot = new PieceSlot(piece);
+        }
 
-      // Generate a gpid
-      configureTree.updateGpIds(slot);
+        // Generate a gpid
+        configureTree.updateGpIds(slot);
 
-      // Add the new piece to the tree
-      configureTree.externalInsert(target, slot);
+        // Add the new piece to the tree
+        configureTree.externalInsert(target, slot);
       }
     }
   }
