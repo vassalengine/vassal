@@ -70,7 +70,12 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (command.matches(stroke)) {
+      final GameModule gm = GameModule.getGameModule();
+      final boolean loggingPausedByMe = gm.pauseLogging();
       GameModule.getGameModule().fireKeyStroke(globalHotKey);
+      if (loggingPausedByMe) {
+        return gm.resumeLogging();
+      }
     }
     return null;
   }
