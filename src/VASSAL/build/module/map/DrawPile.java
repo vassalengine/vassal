@@ -34,6 +34,7 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -55,10 +56,12 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
-public class DrawPile extends SetupStack {
+public class DrawPile extends SetupStack implements PropertySource {
   protected Deck dummy = new Deck(); // Used for storing type information
   protected boolean reshufflable;
   protected Deck myDeck;
+  protected PropertySource source;
+  
   private VisibilityCondition colorVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isDrawOutline();
@@ -110,6 +113,9 @@ public class DrawPile extends SetupStack {
     super.addTo(parent);
     idMgr.add(this);
     setAttributeTranslatable(NAME, true);
+    if (parent instanceof PropertySource) {
+      source = (PropertySource) parent;
+    }
   }
 
   protected JPopupMenu buildPopup() {
@@ -717,6 +723,7 @@ public class DrawPile extends SetupStack {
   protected Stack initializeContents() {
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
+    myDeck.setPropertySource(source);
     for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
       myDeck.add(i.next());
     }
@@ -749,6 +756,20 @@ public class DrawPile extends SetupStack {
     myI18nData.setAttributeTranslatable(SELECT_DISPLAY_PROPERTY, false);
     myI18nData.setAttributeTranslatable(SELECT_SORT_PROPERTY, false);
     return myI18nData;
+  }
+
+  public Object getProperty(Object key) {
+    if (source != null) {
+      return source.getProperty(key);
+    }
+    return null;
+  }
+
+  public Object getLocalizedProperty(Object key) {
+    if (source != null) {
+      return source.getLocalizedProperty(key);
+    }
+    return null;
   }
 }
 

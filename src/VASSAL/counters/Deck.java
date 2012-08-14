@@ -61,6 +61,7 @@ import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -141,8 +142,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     new ArrayList<DeckGlobalKeyCommand>();
   protected boolean hotkeyOnEmpty;
   protected NamedKeyStroke emptyKey;
-  private boolean restrictOption;
-  private PropertyExpression restrictExpression = new PropertyExpression();
+  protected boolean restrictOption;
+  protected PropertyExpression restrictExpression = new PropertyExpression();
+  protected PropertySource propertySource;
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     public Command decode(String command) {
@@ -172,6 +174,20 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     PlayerRoster.addSideChangeListener(this);
   }
 
+  public Deck (String type, PropertySource source) {
+    this(type);
+    propertySource = source;
+  }
+  
+  public void setPropertySource(PropertySource source) {
+    propertySource = source;
+    if (globalCommands != null) {
+      for (int i = 0; i < globalCommands.size(); i++) {
+        globalCommands.get(i).setPropertySource(propertySource);
+      }
+    }
+  }
+  
   public void sideChanged(String oldSide, String newSide) {
     updateCountsAll();
   }
@@ -195,7 +211,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected void setGlobalCommands(String[] commands) {
     globalCommands = new ArrayList<DeckGlobalKeyCommand>(commands.length);
     for (int i = 0; i < commands.length; i++) {
-      globalCommands.add(new DeckGlobalKeyCommand(commands[i]));
+      globalCommands.add(new DeckGlobalKeyCommand(commands[i], propertySource));
     }
   }
 

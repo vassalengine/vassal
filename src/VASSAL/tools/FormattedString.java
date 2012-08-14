@@ -115,15 +115,16 @@ public class FormattedString {
   }
 
   protected String getText(PropertySource ps, boolean localized){
+    final PropertySource source = (ps==null) ? defaultProperties : ps;
     try {
-      return format.evaluate(ps, props, localized);
+      return format.evaluate(source, props, localized);
     }
     catch (ExpressionException e) {
-      if (ps instanceof EditablePiece) {
-        ErrorDialog.dataError(new BadDataReport((EditablePiece) ps, Resources.getString("Error.expression_error"), format.getExpression(), e));
+      if (source instanceof EditablePiece) {
+        ErrorDialog.dataError(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
       }
-      else if (ps instanceof AbstractConfigurable) {
-        ErrorDialog.dataError(new BadDataReport((AbstractConfigurable) ps, Resources.getString("Error.expression_error"), format.getExpression(), e));
+      else if (source instanceof AbstractConfigurable) {
+        ErrorDialog.dataError(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
       }
       else {
         ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));

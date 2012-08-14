@@ -25,6 +25,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.tools.FormattedString;
@@ -42,11 +43,21 @@ public class GlobalCommand {
   protected int selectFromDeck = -1;
   protected FormattedString reportFormat = new FormattedString();
   protected Loopable owner;
+  protected PropertySource source;
 
   public GlobalCommand(Loopable l) {
+    this (l, null);
+  }
+  
+  public GlobalCommand(Loopable l, PropertySource p) {
     owner = l;
+    source = p;
   }
 
+  public void setPropertySource(PropertySource ps) {
+    source = ps;
+  }
+  
   public void setKeyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
   }
@@ -92,7 +103,7 @@ public class GlobalCommand {
         Map.setChangeReportingEnabled(false);
       }
       RecursionLimiter.startExecution(owner);
-      String reportText = reportFormat.getLocalizedText();
+      String reportText = reportFormat.getLocalizedText(source);
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(
           GameModule.getGameModule().getChatter(), "*" + reportText);

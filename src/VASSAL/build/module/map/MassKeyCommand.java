@@ -127,6 +127,7 @@ public class MassKeyCommand extends AbstractConfigurable
       propertySource = (PropertySource) parent;
     }
     setAttributeTranslatable(NAME, false);
+    globalCommand.setPropertySource(propertySource);
   }
 
   public void apply() {
@@ -145,6 +146,11 @@ public class MassKeyCommand extends AbstractConfigurable
     GameModule.getGameModule().sendAndLog(globalCommand.apply(m, getFilter()));
   }
 
+  public void setPropertySource (PropertySource source) {
+    propertySource = source;
+    globalCommand.setPropertySource(source);
+  }
+  
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

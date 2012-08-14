@@ -55,6 +55,12 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     this();
     decode(code);
   }
+  
+  public DeckGlobalKeyCommand(String code, PropertySource source) {
+    this(code);
+    propertySource = source;
+    globalCommand.setPropertySource(source);
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
@@ -68,6 +74,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       propertySource = (PropertySource) parent;
     }
     ((DrawPile) parent).addGlobalKeyCommand(this);
+    globalCommand.setPropertySource(propertySource);
   }
 
   public void removeFrom(Buildable parent) {
@@ -172,7 +179,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
 
     public Command apply(Deck d, PieceFilter filter) {
-      String reportText = reportFormat.getText();
+      String reportText = reportFormat.getText(source);
       Command c;
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
