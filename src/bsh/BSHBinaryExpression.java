@@ -138,13 +138,35 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
           }
         }
       }
-    }
+    }    
     /*
-     * VASSAL - Auto convert primitive types to strings when the other side
-     * of the operator is a string.
+     * VASSAL Special cases
+     * 1. If one side is an Integer and the other is the null String, replace
+     *    the null String with a 0.
+     * 2. If one side is a Primitive and the other side is a non-null String, convert the Primitive
+     *    to a String so that + will work. 
      */
     else {
-      if ((isLhsWrapper || isPrimitiveValue(lhs)) && rhs instanceof String) {
+      // lhs in an Integer and rhs is the null string
+      if (lhs instanceof Primitive && ((Primitive) lhs).getValue() instanceof Integer && rhs.equals("") ) {
+        try {
+          return Primitive.binaryOperation(lhs, new Primitive(0), kind);
+        }
+        catch (UtilEvalError e) {
+          throw e.toEvalError(this, callstack);
+        }
+      }
+      // lhs is the null string and rhs is an Integer
+      else if (rhs instanceof Primitive && ((Primitive) rhs).getValue() instanceof Integer && lhs.equals("") ) {
+        try {
+          return Primitive.binaryOperation(new Primitive(0), rhs, kind);
+        }
+        catch (UtilEvalError e) {
+          throw e.toEvalError(this, callstack);
+        }
+      }
+      // lhs is primitive, right hand side is string
+      else if ((isLhsWrapper || isPrimitiveValue(lhs)) && rhs instanceof String) {
         try {
           return Primitive.binaryOperation(lhs.toString(), rhs, kind);
         }
@@ -152,6 +174,7 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
           throw e.toEvalError(this, callstack);
         }
       }
+      // lhs is string, rhs is primitiv
       else if ((isRhsWrapper || isPrimitiveValue(rhs)) && lhs instanceof String) {
         try {
           return Primitive.binaryOperation(lhs, rhs.toString(), kind);
