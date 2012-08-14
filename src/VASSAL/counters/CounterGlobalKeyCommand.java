@@ -302,9 +302,9 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   // Implement Loopable
-  // Be careful not to start a new infinite loop.
   public String getComponentName() {
-    return piece.getProperty(BasicPiece.BASIC_NAME).toString();
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
   }
 
   public String getComponentTypeName() {

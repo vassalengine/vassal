@@ -228,10 +228,10 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   // Implement Loopable
   public String getComponentName() {
-    return getDescription();
+    return piece.getName();
   }
 
   public String getComponentTypeName() {
-    return "Prototype";
+    return getDescription();
   }
 }

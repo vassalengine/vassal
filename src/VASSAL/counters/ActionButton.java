@@ -135,7 +135,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   // Implement Loopable
   public String getComponentName() {
-    return Decorator.getOutermost(this).getLocalizedName();
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
   }
 
   public String getComponentTypeName() {

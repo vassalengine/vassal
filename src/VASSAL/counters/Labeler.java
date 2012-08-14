@@ -63,6 +63,9 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -71,7 +74,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 /**
  * Displays a text label, with content specified by the user at runtime.
  */
-public class Labeler extends Decorator implements TranslatablePiece {
+public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public static final String ID = "label;";
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
@@ -94,6 +97,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   private FormattedString nameFormat = new FormattedString("$" + PIECE_NAME + "$ ($" + LABEL + "$)");
   private FormattedString labelFormat = new FormattedString("");
   private static final String PIECE_NAME = "pieceName";
+  private static final String BAD_PIECE_NAME = "PieceName";
   private static final String LABEL = "label";
 
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
@@ -107,6 +111,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   protected int rotateDegrees;
   protected String propertyName;
   protected KeyCommand menuKeyCommand;
+  protected String description;
 
   private Point position = null; // Label position cache
 
@@ -134,14 +139,23 @@ public class Labeler extends Decorator implements TranslatablePiece {
     horizontalOffset = st.nextInt(0);
     verticalJust = st.nextChar('b');
     horizontalJust = st.nextChar('c');
-    nameFormat.setFormat(st.nextToken("$" + PIECE_NAME + "$ ($" + LABEL + "$)"));
+    nameFormat.setFormat(clean(st.nextToken("$" + PIECE_NAME + "$ ($" + LABEL + "$)")));
     final String fontFamily = st.nextToken("Dialog");
     final int fontStyle = st.nextInt(Font.PLAIN);
     font = new Font(fontFamily, fontStyle, fontSize);
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel");
+    description = st.nextToken("");
   }
 
+  /*
+   * Clean up any property names that will cause an infinite loop when used in a label name
+   */
+  protected String clean(String s) {
+    // Cannot use $PieceName$ in a label format, must use $pieceName$
+    return s.replaceAll("$"+BAD_PIECE_NAME+"$", "$"+PIECE_NAME+"$");
+  }
+  
   @Override
   public Object getLocalizedProperty(Object key) {
     if (key.equals(propertyName)) {
@@ -186,7 +200,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
       .append(font.getFamily())
       .append(font.getStyle())
       .append(String.valueOf(rotateDegrees))
-      .append(propertyName);
+      .append(propertyName)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -199,14 +214,25 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public String getName() {
+    String result = "";
     if (label.length() == 0) {
-      return piece.getName();
+      result =  piece.getName();
     }
     else {
       nameFormat.setProperty(PIECE_NAME, piece.getName());
       nameFormat.setProperty(LABEL, getLabel());
-      return nameFormat.getText(Decorator.getOutermost(this));
+      try {
+        RecursionLimiter.startExecution(this);
+        result = nameFormat.getText(Decorator.getOutermost(this));
+      }
+      catch (RecursionLimitException e) {
+        e.printStackTrace();
+      }
+      finally {
+        RecursionLimiter.endExecution();
+      }
     }
+    return result;
   }
 
   public String getLocalizedName() {
@@ -221,6 +247,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return f.getLocalizedText(Decorator.getOutermost(this));
     }
   }
+  
 
 // FIXME: This doesn't belong here. Should be in ImageUtils instead?
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
@@ -610,7 +637,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public String getDescription() {
-    return "Text Label";
+    return "Text Label" + (description.length() > 0 ? (" - "+description) : "");
   }
 
   public HelpFile getHelpFile() {
@@ -646,10 +673,14 @@ public class Labeler extends Decorator implements TranslatablePiece {
     private IntConfigurer rotate;
     private BooleanConfigurer bold, italic;
     private StringConfigurer propertyNameConfig;
+    private StringConfigurer descConfig;
 
     public Ed(Labeler l) {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
+      descConfig = new StringConfigurer(null, "Description:  ", l.description);
+      controls.add(descConfig.getControls());
+      
       initialValue = new StringConfigurer(null, "Text:  ", l.label);
       controls.add(initialValue.getControls());
 
@@ -784,7 +815,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
       if (i == null) i = 0;
 
       se.append(i.toString())
-        .append(propertyNameConfig.getValueString());
+        .append(propertyNameConfig.getValueString())
+        .append(descConfig.getValueString());
 
       return ID + se.getValue();
     }
@@ -827,5 +859,14 @@ public class Labeler extends Decorator implements TranslatablePiece {
     return getI18nData(
         new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand},
         new String[] {"Label Text", "Label Format", "Change Label Command"});
+  }
+
+  public String getComponentTypeName() {
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
+  }
+
+  public String getComponentName() {
+    return getDescription();
   }
 }

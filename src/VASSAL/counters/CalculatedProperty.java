@@ -220,17 +220,14 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     }
   }
 
-  /**
-   * Return this components name.
-   * DO NOT return getName(), as any references to us from another trait will
-   * cause an infinite loop
-   */
+  // Implement Loopable
   public String getComponentName() {
-    return piece.getProperty(BasicPiece.BASIC_NAME)+"-"+name;
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
   }
 
   public String getComponentTypeName() {
-    return "Calculated Property";
+    return getDescription();
   }
 
   /**

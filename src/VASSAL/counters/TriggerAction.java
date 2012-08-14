@@ -602,7 +602,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   // Implement Loopable
   public String getComponentName() {
-    return Decorator.getOutermost(this).getLocalizedName();
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
   }
 
   public String getComponentTypeName() {
