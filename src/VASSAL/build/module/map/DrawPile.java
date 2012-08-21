@@ -731,6 +731,10 @@ public class DrawPile extends SetupStack implements PropertySource {
     return myDeck;
   }
 
+  public void setDeck(Deck deck) {
+    myDeck = deck;
+  }
+  
   protected boolean placeNonStackingSeparately() {
     return false;
   }
@@ -771,5 +775,6 @@ public class DrawPile extends SetupStack implements PropertySource {
     }
     return null;
   }
+
 }
 
