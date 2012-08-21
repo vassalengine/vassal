@@ -112,6 +112,7 @@ import VASSAL.counters.PropertySheet;
 import VASSAL.counters.Replace;
 import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
@@ -945,7 +946,7 @@ public class ADC2Module extends Importer {
     public Obscurable getHiddenDecorator() throws IOException {
       Obscurable p;
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK)); // key command
+      se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK))); // key command
       se.append(getHiddenSymbol().getFileName()); // hide image
       se.append("Hide Piece"); // menu name
       BufferedImage image = getSymbol().getImage();
@@ -1024,7 +1025,7 @@ public class ADC2Module extends Importer {
       final String path = flipClass.getFlipClassTreeConfigurePath();
 
       final SequenceEncoder se = new SequenceEncoder(path, ';');
-      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(2).append(true);
+      se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
 
       flipClass.writeFlipDefinition(gameModule);
 
@@ -1055,7 +1056,7 @@ public class ADC2Module extends Importer {
       String path = flipClass.getFlipClassTreeConfigurePath();
 
         se = new SequenceEncoder(path, ';');
-        se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(2).append(true);
+        se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
 
         flipClass.writeFlipDefinition(gameModule);
 
@@ -1189,7 +1190,7 @@ public class ADC2Module extends Importer {
         .append(StringArrayConfigurer.arrayToString(new String[] {""}))
         .append(false)                     // loop levels
         .append(command)                   // name
-        .append((KeyStroke) null)          // Random key
+        .append((NamedKeyStroke) null)     // Random key
         .append("")                        // Random text
         .append(false)                     // Follow property
         .append("")                        // Property name
@@ -1203,7 +1204,7 @@ public class ADC2Module extends Importer {
     public Obscurable getPieceValueMask() throws IOException {
       if (getOwner().useHiddenPieces()) {
         SequenceEncoder se = new SequenceEncoder(';');
-        se.append(KeyStroke.getKeyStroke('I', InputEvent.CTRL_MASK)); // key command
+        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('I', InputEvent.CTRL_MASK))); // key command
         se.append(getImageName()); // hide image
         se.append("Hide Info"); // menu name
         BufferedImage image = getSymbol().getImage();
@@ -1245,7 +1246,7 @@ public class ADC2Module extends Importer {
           sides = "sides:" + getOwner().getName();
         }
         SequenceEncoder se = new SequenceEncoder(';');
-        se.append(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK)); // key command
+        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK))); // key command
         if (getHiddenSymbol() == null) {
           // TODO Add transparency to background color as well as alpha for unit.
           se.append("Hide Piece"); // command
@@ -2244,7 +2245,7 @@ private PieceWindow pieceWin;
 
     Delete del = new Delete();
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append("Delete").append(KeyStroke.getKeyStroke("DELETE"));
+    se.append("Delete").append(new NamedKeyStroke(KeyStroke.getKeyStroke("DELETE")));
     del.mySetType(Delete.ID + se.getValue());
     del.setInner(gp);
     gp = del;
@@ -2253,7 +2254,7 @@ private PieceWindow pieceWin;
       gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 
     se = new SequenceEncoder(';');
-    se.append(KeyStroke.getKeyStroke('T', InputEvent.CTRL_MASK))
+    se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_MASK)))
       .append("Movement Trail")
       .append(false)
       .append(false)
@@ -2336,7 +2337,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     command.setAttribute(MassKeyCommand.HOTKEY, null);
     command.setAttribute(MassKeyCommand.ICON, imageName);
     command.setAttribute(MassKeyCommand.NAME, "Attacked");
-    command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK));
+    command.setAttribute(MassKeyCommand.KEY_COMMAND, new NamedKeyStroke(KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Attacked_Active = true");
     command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
@@ -2350,7 +2351,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     command.setAttribute(MassKeyCommand.HOTKEY, null);
     command.setAttribute(MassKeyCommand.ICON, imageName);
     command.setAttribute(MassKeyCommand.NAME, "Defended");
-    command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK));
+    command.setAttribute(MassKeyCommand.KEY_COMMAND, new NamedKeyStroke(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Defended_Active = true");
     command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
@@ -2372,7 +2373,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
       charts.setAttribute(ChartWindow.NAME, CHARTS);
       charts.setAttribute(ChartWindow.BUTTON_TEXT, CHARTS);
       charts.setAttribute(ChartWindow.TOOLTIP, CHARTS);
-      charts.setAttribute(ChartWindow.HOTKEY, KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+      charts.setAttribute(ChartWindow.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK)));
 
       TabWidget tab = new TabWidget();
       insertComponent(tab, charts);
@@ -2589,7 +2590,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     deckMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
     deckMap.setAttribute(Map.USE_LAUNCH_BUTTON, Boolean.TRUE);
     deckMap.setAttribute(Map.BUTTON_NAME, DECKS);
-    deckMap.setAttribute(Map.HOTKEY, KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK));
+    deckMap.setAttribute(Map.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
 
     final BoardPicker boardPicker = deckMap.getBoardPicker();
 
@@ -2742,7 +2743,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     forcePoolMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
     forcePoolMap.setAttribute(Map.USE_LAUNCH_BUTTON, Boolean.TRUE);
     forcePoolMap.setAttribute(Map.BUTTON_NAME, TRAY);
-    forcePoolMap.setAttribute(Map.HOTKEY, KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK));
+    forcePoolMap.setAttribute(Map.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)));
 
     final BoardPicker boardPicker = forcePoolMap.getBoardPicker();
 
