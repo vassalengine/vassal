@@ -45,7 +45,12 @@ public class IncrementProperty implements PropertyChanger {
   public String getNewValue(String oldValue) {
     int value = 0;
     try {
-      value = Integer.parseInt(oldValue);
+      if (oldValue == null || oldValue.length() == 0) {
+        value = 0;
+      }
+      else {
+        value = Integer.parseInt(oldValue);
+      }
     }
     catch (NumberFormatException e) {
       ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.non_number_error"),"Increment "+prop.getName()+": oldValue "+"="+oldValue,e));
