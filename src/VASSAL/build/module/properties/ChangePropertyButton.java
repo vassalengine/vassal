@@ -221,4 +221,8 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   public Object getLocalizedProperty(Object key) {
     return property.getLocalizedProperty(key);
   }
+
+  public PropertySource getPropertySource() {
+    return property;
+  }
 }

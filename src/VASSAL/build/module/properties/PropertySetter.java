@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.tools.FormattedString;
 
 /**
@@ -29,10 +30,10 @@ import VASSAL.tools.FormattedString;
  */
 public class PropertySetter implements PropertyChanger {
   private String newValue;
-  private PropertySource propSource;
+  private Constraints propSource;
   private FormattedString format;
 
-  public PropertySetter(String newValue, PropertySource propSource) {
+  public PropertySetter(String newValue, Constraints propSource) {
     this.newValue = newValue;
     this.propSource = propSource;
     if (propSource != null) {
@@ -48,7 +49,7 @@ public class PropertySetter implements PropertyChanger {
     String s = newValue;
     if (format != null) {
       format.setFormat(s);
-      s = format.getText(propSource);
+      s = format.getText(propSource.getPropertySource());
     }
     return s;
   }

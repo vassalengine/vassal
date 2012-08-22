@@ -32,13 +32,13 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected String[] validValues;
   protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
-  protected PropertySource propertySource;
+  protected Constraints propertySource;
   
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
     this (dialogParent, prompt, validValues, null);
   }
   
-  public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, PropertySource propertySource) {
+  public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, Constraints propertySource) {
     super(null, prompt);
     this.validValues = validValues;
     valueExpressions = new Expression[validValues.length];
@@ -54,7 +54,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     for (int i = 0; i < finalValues.length; i++) {
       String value;
       try {
-        value = valueExpressions[i].evaluate(propertySource);
+        value = valueExpressions[i].evaluate(propertySource.getPropertySource());
       }
       catch (ExpressionException e) {
         value = valueExpressions[i].getExpression();
