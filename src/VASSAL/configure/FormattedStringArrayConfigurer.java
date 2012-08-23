@@ -1,7 +1,7 @@
 /*
  * $Id: FormattedStringArrayConfigurer.java 7861 2011-10-01 06:23:11Z swampwallaby $
  *
- * Copyright (c) 2011 by Brent Easton
+ * Copyright (c) 2011-2012 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,9 +22,12 @@ package VASSAL.configure;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
+import VASSAL.counters.GamePiece;
+
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   
   protected FormattedExpressionConfigurer config;
+  protected GamePiece target;
   
   public FormattedStringArrayConfigurer(String key, String name, Object val) {
     super(key, name, val);
@@ -33,10 +36,15 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   public FormattedStringArrayConfigurer(String key, String name) {
     super(key, name);
   }
-    
+
+  public FormattedStringArrayConfigurer(String key, String name, GamePiece target) {
+    this(key, name);
+    this.target = target;
+  }
+  
   protected Component getTextComponent() {
     if (config == null) {
-      config = new FormattedExpressionConfigurer(null, ""); 
+      config = new FormattedExpressionConfigurer(null, "", "", target); 
     }
     return config.getControls();
   }

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006-2008 by Rodney Kinney
+ * Copyright (c) 2006-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,6 +33,7 @@ import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringArrayConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -100,13 +101,13 @@ public class PropertyChangerConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       typeConfig = new StringEnumConfigurer(null, "Type:  ", new String[]{PLAIN_TYPE, INCREMENT_TYPE, PROMPT_TYPE, SELECT_TYPE});
       typeConfig.addPropertyChangeListener(l);
-      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ");
+      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ", "", (GamePiece) constraints);
       valueConfig.addPropertyChangeListener(l);
       promptConfig = new StringConfigurer(null, "Prompt:  ");
       promptConfig.addPropertyChangeListener(l);
-      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ");
+      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ", "", (GamePiece) constraints);
       incrConfig.addPropertyChangeListener(l);
-      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values");
+      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values", (GamePiece) constraints);
       validValuesConfig.addPropertyChangeListener(l);
       controls.add(typeConfig.getControls());
       controls.add(valueConfig.getControls());
