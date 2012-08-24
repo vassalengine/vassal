@@ -279,16 +279,46 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     return getExpression().length() == 0 ? "" : evaluate(GameModule.getGameModule());
   }
 
+  /**
+   * Convert a String value into a wrapped primitive object if possible.
+   * Note this is a non-static copy of BeanShell.wrap(). Callbacks from
+   * beanshell (e.g. getProperty) fail if an attempt is made to call a static method.
+   * 
+   * @param value
+   * @return wrapped value
+   */
+  public Object wrap (String value) {
+    if (value == null) {
+      return "";
+    }
+    else if ("true".equals(value)) {
+      return Boolean.TRUE;
+    }
+    else if ("false".equals(value)) {
+      return Boolean.FALSE;
+    }
+    else {
+      try {
+        return Integer.valueOf(value);
+      }
+      catch (NumberFormatException e) {
+        return value;
+      }
+    }
+  }
+  
   /*****************************************************************
    * Callbacks from BeanShell Expressions to Vassal
    **/
 
   public Object getProperty(String name) {
-    return BeanShell.wrap(source.getProperty(name).toString());
+    final Object value = source.getProperty(name);
+    return wrap(value == null ? "" : value.toString());
   }
 
   public Object getLocalizedProperty(String name) {
-    return BeanShell.wrap(source.getLocalizedProperty(name).toString());
+    final Object value = source.getLocalizedProperty(name);
+    return wrap(value == null ? "" : value.toString());
   }
 
   /**
