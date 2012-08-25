@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -133,17 +134,13 @@ public class MassKeyCommand extends AbstractConfigurable
   public void apply() {
     buildFilter();
     if (singleMap) {
-      apply(map);
+      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter()));
     }
     else {
-      for (Map m : Map.getMapList()) {
-        apply(m);
-      }
+      final List<Map> l = Map.getMapList();
+      GameModule.getGameModule().sendAndLog(
+          globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
     }
-  }
-
-  public void apply(Map m) {
-    GameModule.getGameModule().sendAndLog(globalCommand.apply(m, getFilter()));
   }
 
   public void setPropertySource (PropertySource source) {

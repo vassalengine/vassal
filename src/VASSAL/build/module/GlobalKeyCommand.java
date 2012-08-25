@@ -18,7 +18,7 @@
  */
 package VASSAL.build.module;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
@@ -31,10 +31,7 @@ import VASSAL.configure.VisibilityCondition;
 public class GlobalKeyCommand extends MassKeyCommand {
 
   public void apply() {
-    final ArrayList<Map> l = new ArrayList<Map>();
-    for (Map m : Map.getMapList()) {
-      l.add(m);
-    }
+    final List<Map> l = Map.getMapList();
     GameModule.getGameModule().sendAndLog(
       globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
   }
