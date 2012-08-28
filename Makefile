@@ -168,6 +168,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 #	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 #	svn export $(DOCDIR) $@/Contents/Resources/doc
+	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
