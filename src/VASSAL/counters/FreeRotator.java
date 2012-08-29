@@ -494,12 +494,15 @@ public class FreeRotator extends Decorator
   }
 
   public void endInteractiveRotate() {
-    startMap.getView().setCursor(null);
-    startMap.removeDrawComponent(this);
-    startMap.popMouseListener();
-    startMap.getView().removeMouseMotionListener(this);
-    startMap.enableKeyListeners();
-    drawGhost = false;
+    if (startMap != null) {
+      startMap.getView().setCursor(null);
+      startMap.removeDrawComponent(this);
+      startMap.popMouseListener();
+      startMap.getView().removeMouseMotionListener(this);
+      startMap.enableKeyListeners();
+      drawGhost = false;
+      startMap = null;
+    }
   }
 
   /**
