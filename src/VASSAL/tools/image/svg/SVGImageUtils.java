@@ -66,24 +66,7 @@ public class SVGImageUtils {
    * @throws IOException if the image cannot be read
    */
   public static Dimension getImageSize(InputStream in) throws IOException {
-    // get the SVG
-    final Document doc;
-    try {
-      doc = factory.createDocument(null, in);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
-
-    // get the default image width and height
-    final Element root = doc.getDocumentElement();
-    final int width = (int) (Float.parseFloat(
-      root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
-    final int height = (int) (Float.parseFloat(
-      root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
-
-    return new Dimension(width, height);
+    return getImageSize("", in); 
   }
 
   /**
@@ -112,12 +95,17 @@ public class SVGImageUtils {
 
     // get the default image width and height
     final Element root = doc.getDocumentElement();
-    final int width = (int) (Float.parseFloat(
-      root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
-    final int height = (int) (Float.parseFloat(
-      root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
+    try {
+      final int width = (int) (Float.parseFloat(
+        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
+      final int height = (int) (Float.parseFloat(
+        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
 
-    return new Dimension(width, height);
+      return new Dimension(width, height);
+    }
+    catch (NumberFormatException e) {
+      throw new ImageIOException(name, e);
+    }
   }
 
   /**
