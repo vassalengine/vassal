@@ -329,7 +329,7 @@ public class ImageSaver extends AbstractConfigurable {
       g.setColor(oc);
 
       g.translate(-r.x, -r.y);
-      map.paintRegion(g, r);
+      map.paintRegion(g, r, null);
       g.dispose();
 
       // update the dialog on the EDT
