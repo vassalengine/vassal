@@ -78,9 +78,9 @@ public class BrowserSupport {
             return;
           }
           catch (IOException e) {
+            // We ignore this on Windows, because Desktop seems flaky
             if (!SystemUtils.IS_OS_WINDOWS) {
-              // We ignore this on Windows, because Desktop seems flaky
-              ErrorDialog.bug(e);
+              ReadErrorDialog.error(e, url);
               return;
             }
           }
