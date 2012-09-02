@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -1486,7 +1486,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * An object that parses expression strings from the config window
    */
-  protected static class CountExpression {
+  public static class CountExpression {
     private String fullstring;
     private String name;
     private String expression;

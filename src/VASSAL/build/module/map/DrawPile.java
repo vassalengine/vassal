@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2004 by Rodney Kinney and Michael Blumoehr
+ * Copyright (c) 2000-2012 by Rodney Kinney, Michael Blumoehr, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,6 +24,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JPopupMenu;
 
@@ -34,6 +35,7 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
@@ -56,7 +58,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
-public class DrawPile extends SetupStack implements PropertySource {
+public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource {
   protected Deck dummy = new Deck(); // Used for storing type information
   protected boolean reshufflable;
   protected Deck myDeck;
@@ -774,6 +776,19 @@ public class DrawPile extends SetupStack implements PropertySource {
       return source.getLocalizedProperty(key);
     }
     return null;
+  }
+
+  /**
+   * Implement PropertyNameSource - Expose the numPieces property
+   * and any counting properties.
+   */
+  public List<String> getPropertyNames() {
+    List<String> l = new ArrayList<String>();
+    l.add(getConfigureName()+"_numPieces");
+    for (String ce : dummy.getCountExpressions()) {
+      l.add(getConfigureName()+"_"+(new Deck.CountExpression(ce)).getName());
+    }
+    return l;
   }
 
 }

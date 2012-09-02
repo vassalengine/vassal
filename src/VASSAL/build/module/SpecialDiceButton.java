@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004-2009 by Michael Blumohr, Rodney Kinney, Brent Easton
+ * Copyright (c) 2004-2012 by Michael Blumohr, Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -537,6 +537,15 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     return val;
   }
 
+  /**
+   * Implement PropertyNameSource - Expose roll result property
+   */
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<String>();
+    l.add(getConfigureName()+"_result");
+    return l;
+  }
+  
   public String encode(Command c) {
     if (c instanceof ShowResults) {
       final ShowResults c2 = (ShowResults) c;

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2005 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2005-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License (LGPL) as published by
@@ -371,5 +371,16 @@ public abstract class TurnLevel extends TurnComponent {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(PROP, false);
     return myI18nData;
+  }
+  
+  /**
+   * Implement PropertyNameSource - Expose the name of this level property
+   */
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<String>();
+    if (propertyName.length() > 0) {
+      l.add(propertyName);
+    }
+    return l;
   }
 }

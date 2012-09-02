@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -99,7 +99,7 @@ public class DoActionButton extends AbstractConfigurable
   protected PropertyExpression untilExpression = new PropertyExpression();
   protected NamedKeyStroke preLoopKey = NamedKeyStroke.NULL_KEYSTROKE;
   protected NamedKeyStroke postLoopKey = NamedKeyStroke.NULL_KEYSTROKE;
-  protected boolean hadIndex = false;
+  protected boolean hasIndex = false;
   protected String indexProperty = ""; //$NON-NLS-1$
   protected int indexStart = 1;
   protected int indexStep = 1;
@@ -360,7 +360,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      hadIndex = ((Boolean) o).booleanValue();
+      hasIndex = ((Boolean) o).booleanValue();
       updateLoopPropertyRegistration();
     }
     else if (INDEX_PROPERTY.equals(key)) {
@@ -429,7 +429,7 @@ public class DoActionButton extends AbstractConfigurable
       return NamedHotKeyConfigurer.encode(postLoopKey);
     }
     else if (INDEX.equals(key)) {
-      return String.valueOf(hadIndex);
+      return String.valueOf(hasIndex);
     }
     else if (INDEX_PROPERTY.equals(key)) {
       return indexProperty;
@@ -491,7 +491,7 @@ public class DoActionButton extends AbstractConfigurable
     else if (INDEX_PROPERTY.equals(name) || INDEX_START.equals(name) || INDEX_STEP.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
-          return doLoop && hadIndex;
+          return doLoop && hasIndex;
         }};
     }
     else {
@@ -537,7 +537,7 @@ public class DoActionButton extends AbstractConfigurable
    * is only visible if looping is turned on and an Index Property is specified
    */
   protected void updateLoopPropertyRegistration() {
-    final boolean shouldBeRegistered = doLoop && hadIndex && indexProperty.length() > 0;
+    final boolean shouldBeRegistered = doLoop && hasIndex && indexProperty.length() > 0;
     if (shouldBeRegistered && !loopPropertyRegistered) {
       loopIndexProperty.addTo(GameModule.getGameModule());
       loopPropertyRegistered = true;
@@ -714,4 +714,20 @@ public class DoActionButton extends AbstractConfigurable
   public String getComponentName() {
     return getConfigureName();
   }
+  
+  /**
+   * Implement PropertyNameSource - Expose loop index property if looping turned on
+   */
+  public List<String> getPropertyNames() {
+    if (doLoop && hasIndex) {
+      final ArrayList<String> l = new ArrayList<String>();
+      l.add(indexProperty);
+      return l;
+    }
+    else {
+      return super.getPropertyNames();
+    }
+  }
+  
+  
 }

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007-2009 by Brent Easton
+ * Copyright (c) 2007-2012 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,13 +19,13 @@
 package VASSAL.configure;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -41,12 +41,15 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.map.BoardPicker;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
@@ -58,6 +61,7 @@ import VASSAL.script.expression.IntBuilder;
 import VASSAL.script.expression.StrBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.menu.MenuScroller;
 import bsh.BeanShellExpressionValidator;
 
 /**
@@ -65,6 +69,9 @@ import bsh.BeanShellExpressionValidator;
  */
 public class BeanShellExpressionConfigurer extends StringConfigurer {
 
+  protected static int maxScrollItems = 0;
+  protected static final int MAX_SCROLL_ITEMS = 40;
+  
   protected JPanel expressionPanel;
   protected JPanel detailPanel;
   protected Validator validator;
@@ -222,7 +229,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     propertyMenu.add(pieceMenu);
 
     final JMenu globalsMenu = new JMenu("Global Property");
-    addGlobalProps(globalsMenu);
+    buildGlobalMenu(globalsMenu, GameModule.getGameModule(), true);
     propertyMenu.add(globalsMenu);
     
     final JMenu vassalMenu = new JMenu("Vassal Property");
@@ -284,7 +291,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new FunctionBuilder(result, (JDialog) p.getTopLevelAncestor(), op, desc, parmDesc, target).setVisible(true);
     if (result.getValue() != null && result.getValueString().length() > 0) {
-      insertPropertyName(result.getValueString());
+      insertName(result.getValueString());
     }
   }
   
@@ -292,7 +299,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new IntBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
     if (result.getValue() != null && result.getValueString().length() > 0) {
-      insertPropertyName(result.getValueString());
+      insertName(result.getValueString());
     }    
   }
   
@@ -300,7 +307,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new StrBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
     if (result.getValue() != null && result.getValueString().length() > 0) {
-      insertPropertyName(result.getValueString());
+      insertName(result.getValueString());
     }
   }
 
@@ -309,7 +316,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     item.setToolTipText(desc);
     item.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
-        insertPropertyName(op);
+        insertName(op);
       }});
     menu.add(item);
   }
@@ -319,12 +326,27 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
    * @param propName property name to add
    */
   protected void addProp(JMenu menu, final String propName) {
+    addProp(menu, propName, false);
+  }
+  
+  protected void addProp(JMenu menu, final String propName, boolean sort) {
     final JMenuItem item = new JMenuItem(propName);
     item.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
         insertPropertyName(propName);
       }});
-    menu.add(item);
+    if (sort) {
+      int pos = -1;
+      for (int i = 0; i < menu.getItemCount() && pos < 0; i++) {
+        if (propName.compareTo(menu.getItem(i).getText()) <= 0) {
+          pos = i;
+        }
+      }
+      menu.add(item, pos);
+    }
+    else {
+      menu.add(item);
+    }
   }
 
   /**
@@ -367,70 +389,65 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   /**
    * Create a menu of Global Properties recorded in this module, based on
-   * structure BasicModule -> Map -> Zone
-   * @param menu
+   * the module build structure
    */
-  protected void addGlobalProps(JMenu menu) {
-    final HashMap<String, JMenu> mapMenus = new HashMap<String, JMenu>();
-    final HashMap<String, HashMap<String, JMenu>> zoneHash = new HashMap<String, HashMap<String, JMenu>>();
-
-    for (MutableProperty.Impl prop : MutableProperty.Impl.getAllProperties()) {
-      MutablePropertiesContainer parent = prop.getParent();
-      if (parent instanceof Zone) {
-        final Map m = ((Zone) parent).getMap();
-
-        HashMap<String, JMenu> zh = zoneHash.get(m.getMapName());
-        if (zh == null) {
-          zh = new HashMap<String, JMenu>();
-          zoneHash.put(m.getMapName(), zh);
-        }
-
-        final String name = ((Zone) parent).getName();
-        JMenu zm = zh.get(name);
-        if (zm == null) {
-            zm = new JMenu(name);
-            zh.put(name, zm);
-        }
-        addProp(zm, prop.getName());
-
+  
+  protected void buildGlobalMenu(JMenu parentMenu, AbstractBuildable target, boolean useParentMenu) {
+    final List<Buildable> buildables = target.getBuildables();
+    String menuName = ConfigureTree.getConfigureName(target.getClass());
+    if (target instanceof AbstractConfigurable) {
+      final String n = ((AbstractConfigurable) target).getConfigureName();
+      if (n != null && n.length() > 0) {
+        menuName += " " + n;
+      }      
+    }
+    final JMenu myMenu = new JMenu(menuName);
+        
+    final List<String> propNames = target.getPropertyNames();
+    for (String propName : propNames) {
+      addProp(useParentMenu ? parentMenu : myMenu, propName, true);      
+    }
+    
+    for (Buildable b : buildables) {      
+      if (b instanceof AbstractConfigurable) {
+        // Remove 'filler' menu levels due to intermediate holding components
+        final boolean useParent = (b instanceof GlobalProperties || b instanceof Board ||b instanceof ZonedGrid);
+        buildGlobalMenu(useParentMenu ? parentMenu : myMenu, (AbstractConfigurable) b, useParent);
       }
-      else if (parent instanceof GlobalProperties) {
-        parent  = ((GlobalProperties) parent).getParent();
-        if (parent instanceof Map) {
-          final Map m = (Map) parent;
-          JMenu mm = mapMenus.get(m.getMapName());
-          if (mm == null) {
-            mm = new JMenu(m.getMapName());
-            mapMenus.put(m.getMapName(), mm);
-          }
-          addProp(mm, prop.getName());
-        }
-        else {
-          addProp(menu, prop.getName());
-        }
-      }
-      else {
-        addProp(menu, prop.getName());
+      else if (b instanceof BoardPicker) {
+        buildGlobalMenu(myMenu,(AbstractBuildable) b, true);
       }
     }
-
-    for (String m : mapMenus.keySet()) {
-      final JMenu mapMenu = mapMenus.get(m);
-      final HashMap<String, JMenu> zoneMap = zoneHash.get(m);
-      if (zoneMap != null) {
-        for (String zone : zoneMap.keySet()) {
-          mapMenu.add(zoneMap.get(zone));
+    
+    if (! useParentMenu & myMenu.getItemCount() > 0) {
+      MenuScroller.setScrollerFor(myMenu, getMaxScrollItems(), 100);   
+      int pos = -1;
+      for (int i = 0; i < parentMenu.getItemCount() && pos < 0; i++) {
+        if (myMenu.getText().compareTo(parentMenu.getItem(i).getText()) <= 0) {
+          pos = i;
         }
       }
-      menu.add(mapMenu);
+      parentMenu.add(myMenu, pos);
     }
   }
-
+  
+  protected int getMaxScrollItems() {
+    if (maxScrollItems == 0) {
+      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/20);
+    }
+    return maxScrollItems;
+    
+  }
+  
   /**
    * Insert a property name into the expression
    * @param name property name
    */
   protected void insertPropertyName(String name) {
+    insertName (cleanName(name));
+  }
+  
+  protected void insertName(String name) {
     String work = nameField.getText();
     int pos = nameField.getCaretPosition();
 
@@ -459,6 +476,24 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     nameField.requestFocusInWindow();
   }
 
+  /*
+   * If the property name is not a valid java variable name, it
+   * needs to be returned using the GetProperty() function.
+   */
+  protected String cleanName(String name) {
+    boolean valid = true;
+    for (int i = 0; i < name.length() && valid; i++) {
+      final char c = name.charAt(i);
+      if (i==0) {
+        valid = Character.isJavaIdentifierStart(c);
+      }
+      else {
+        valid = Character.isJavaIdentifierPart(c);
+      }
+    }
+    return valid ? name : "GetProperty(\""+name+"\")";
+  }
+  
   protected void setDetails(String error, List<String> v, List<String> m) {
     errorMessage.setValue(error);
     String s = "Vassal Properties:  " + (v == null ? "" : v.toString());

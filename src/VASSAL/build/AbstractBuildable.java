@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +27,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
+import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.Localization;
@@ -38,7 +39,7 @@ import VASSAL.i18n.Translatable;
  * specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
-public abstract class AbstractBuildable implements Buildable, ValidityChecker {
+public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource {
   protected List<Buildable> buildComponents = new ArrayList<Buildable>();
 
   // Sub-classes can set this reference to perform validity checking
@@ -218,5 +219,12 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
         ((ValidityChecker) child).validate(child, report);
       }
     }
+  }
+  
+  /**
+   * Default implementation of PropertyNameSource - No properties exposed 
+   */
+  public List<String> getPropertyNames() {
+    return new ArrayList<String>();
   }
 }

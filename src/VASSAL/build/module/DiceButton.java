@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -458,5 +459,14 @@ public class DiceButton extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+  
+  /**
+   * Implement PropertyNameSource - Expose roll result property
+   */
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<String>();
+    l.add(getConfigureName()+"_result");
+    return l;
   }
 }

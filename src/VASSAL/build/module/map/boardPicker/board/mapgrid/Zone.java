@@ -36,7 +36,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -519,6 +521,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return value;
   }
 
+  /**
+   * Implement PropertNameSource - expose names of my ZoneProperties
+   */
+  public List<String> getPropertyNames() {
+    List<String> l = new ArrayList<String>();
+    for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
+      l.add(zp.getConfigureName());
+    }
+    return l;
+  }
+  
   /*
    * Return a named Global Property
    *

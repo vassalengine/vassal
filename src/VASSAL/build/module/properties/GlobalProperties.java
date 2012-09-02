@@ -18,7 +18,9 @@
  */
 package VASSAL.build.module.properties;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JToolBar;
@@ -151,5 +153,13 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
    */
   public String getMutablePropertiesContainerId() {
     return parent.getMutablePropertiesContainerId();
+  }
+  
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
+      l.add(prop.getConfigureName());
+    }
+    return l;
   }
 }

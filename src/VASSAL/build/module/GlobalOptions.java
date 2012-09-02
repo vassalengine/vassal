@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,6 +48,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.BasicPreference;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
@@ -389,4 +391,18 @@ public class GlobalOptions extends AbstractConfigurable {
       return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(prefsPrompt));
     }
   }
+  
+  /**
+   * Implement PropertyNameSource - Expose our preference names
+   */
+  public List<String> getPropertyNames() {
+    final ArrayList<String> l = new ArrayList<String>();
+    for (Buildable b : getBuildables()) {
+      if (b instanceof BasicPreference) {
+        l.add(((BasicPreference) b).getVariableName());
+      }
+    }
+    return l;
+  }
+  
 }
