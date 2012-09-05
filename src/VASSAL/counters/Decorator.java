@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,12 +18,15 @@
  */
 package VASSAL.counters;
 
+import java.awt.Component;
 import java.awt.Point;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
@@ -420,5 +423,17 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   public void setOldProperties() {
     setOldProperties(this);
+  }
+  
+  /**
+   * 
+   * Utility method to allow Decorator Editors to repack themselves. c must be one of the
+   * components that make up the Decorator's controls.
+   */
+  public static void repack(Component c) {
+    final Window w = SwingUtilities.getWindowAncestor(c);
+    if (w != null) {
+      w.pack();
+    } 
   }
 }

@@ -47,6 +47,7 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.Delete;
 import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.Embellishment;
+import VASSAL.counters.Embellishment0;
 import VASSAL.counters.Footprint;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
@@ -118,7 +119,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     });
     decoratorFactories.put(Embellishment.ID, new DecoratorFactory() {
       public Decorator createDecorator(String type, GamePiece inner) {
-        return new Embellishment(type, inner);
+        final Embellishment e = new Embellishment(type, inner);
+        if (e.getVersion() == Embellishment.BASE_VERSION) {
+          return new Embellishment0(type, inner);
+        }
+        return e;
       }
     });
     decoratorFactories.put(Embellishment.OLD_ID, new DecoratorFactory() {

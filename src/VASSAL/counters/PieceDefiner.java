@@ -44,6 +44,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.documentation.HelpFile;
@@ -603,9 +604,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-      add(ed.getControls());
+      setLayout(new MigLayout("ins 5","[]push[]push[]"));
+      add(ed.getControls(), "span 3,wrap");
 
+      final JPanel panel = new JPanel(new MigLayout());
       JButton b = new JButton("Ok");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -613,7 +615,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       });
 
-      JPanel panel = new JPanel();
       panel.add(b);
 
       b = new JButton("Cancel");
@@ -635,7 +636,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         panel.add(b);
       }
 
+      add(new JLabel());
       add(panel);
+      add(new JLabel());
+      
       pack();
       setLocationRelativeTo(getOwner());
     }

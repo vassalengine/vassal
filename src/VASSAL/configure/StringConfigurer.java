@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,6 +33,8 @@ import javax.swing.event.DocumentListener;
 public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
+  protected int length;
+  protected static int DEFAULT_LENGHTH = 12;
 
   public StringConfigurer(String key, String name) {
     this(key, name, "");
@@ -40,8 +42,14 @@ public class StringConfigurer extends Configurer {
 
   public StringConfigurer(String key, String name, String val) {
     super(key, name, val);
+    length = DEFAULT_LENGHTH;
   }
 
+  public StringConfigurer(String key, String name, int length) {
+    this (key, name);
+    this.length = length > 0 ? length : DEFAULT_LENGHTH;
+  }
+  
   public String getValueString() {
     return (String) value;
   }
@@ -83,6 +91,7 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-    return new JTextField(12);
+    
+    return new JTextField(length);
   }
 }
