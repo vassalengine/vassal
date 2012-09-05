@@ -943,7 +943,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       offsetControls.add(yOffInput);
       controls.add(offsetControls, "span 2,wrap");
 
-      followConfig = new BooleanConfigurer(null, "Levels follow expression balue?");
+      followConfig = new BooleanConfigurer(null, "Levels follow expression value?");
       controls.add(followConfig.getControls(), "span 2");
 
       final Box levelBox = Box.createHorizontalBox();
