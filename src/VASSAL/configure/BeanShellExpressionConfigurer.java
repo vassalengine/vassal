@@ -433,7 +433,8 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
-      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/20);
+      final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();     
+      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/itemSize.height);
     }
     return maxScrollItems;
     
