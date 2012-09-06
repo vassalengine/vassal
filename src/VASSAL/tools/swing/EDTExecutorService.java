@@ -171,7 +171,6 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   // FIXME: remove for Java 1.6+
   /** {@inheritDoc} */
-  @Override
   public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
                                                   throws InterruptedException {
     if (tasks == null) throw new NullPointerException();
@@ -209,7 +208,6 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   // FIXME: remove for Java 1.6+
   /** {@inheritDoc} */
-  @Override
   public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
                                        long timeout, TimeUnit unit)
                                                   throws InterruptedException {
