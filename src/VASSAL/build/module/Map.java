@@ -72,6 +72,8 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
@@ -238,7 +240,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public Map() {
     getView();
     theMap.addMouseListener(this);
-    toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
+    if (shouldDockIntoMainWindow()) {
+      toolBar.setLayout(new MigLayout("ins 0,gapx 0"));      
+    }
+    else {
+      toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
+    }
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
