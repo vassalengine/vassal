@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta2.
 
 *********************
 Download
@@ -6,23 +6,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-src.zip
 
 
 *********************
@@ -108,8 +108,30 @@ New Features in 3.2
   image cache. This should dramatically reduce the amount of memory
   needed to run modules.
 
-The following bugs are fixed in 3.2.0-beta1:
+* Improved display of properties in the Editor [RFE 4323]:
 
+  - Display all available properties from all components structured in the
+    same way as the components of the module are built instead of all the
+    global properties being dumped in one menu.
+  - Available Global properties now appear without having to start a game.
+    Previously, globals like Deck and Zone properties where not available
+    unless you had started a game.
+  - Property and component names are sorted, except for the Piece Property
+    menu where the traits are displayed in the same order they exist in the
+    counter.
+  - If a menu has too many options to fit on the screen, it is now
+    scrollable, instead of stretching off the screen and leaving some
+    properties inaccessible.
+
+* Improvements to Layer trait [RFE 4717]:
+  - Follow Property name may be a BeanShell expression.
+  - Improved layout for Layer dialog in Editor.
+
+
+The following bugs are fixed in 3.2.0-beta2:
+
+* 4763: Symbolic Dice button window results do not open correctly
+* 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
@@ -117,7 +139,7 @@ The following bugs are fixed in 3.2.0-beta1:
 
 For changes prior to 3.2.0-beta1, see the change log.
 
-Please report all bugs in 3.2.0-beta1, even if they are bugs which
+Please report all bugs in 3.2.0-beta2, even if they are bugs which
 you've already reported against other betas. We take your bug reports
 seriously---they're the reason we've been able to fix so many bugs.
 
@@ -149,7 +171,7 @@ This is a beta release, so may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
 them before VASSAL 3.2.0 is released. Also, if you've had problems with
 3.1.x or a previous 3.2.0 beta, please check and let us know if those
-problems are resolved in 3.2.0-beta1.
+problems are resolved in 3.2.0-beta2.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
