@@ -128,10 +128,24 @@ New Features in 3.2
   - Improved layout for Layer dialog in Editor.
 
 
-The following bugs are fixed in 3.2.0-beta2:
+The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
+
+* Check for resource paths missing initial slash. This fixes the problem
+  with resources like moved.gif not being found.
+
+* Include "images/" in tile names when running TilingHandler. This helps
+  us handle directories nested under images, and archives which have no
+  images directory at all (such as VASL map archives).
+
+* Property filter built incorrectly in MassKeyCommand.
+
+The following bugs in 3.1 are fixed in 3.2.0-beta2:
 
 * 4763: Symbolic Dice button window results do not open correctly
 * 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
+* 4547: Ensure that image data is integer type before casting to DataBufferInt
+* 4402: StackOverflowError from recursively generating counter name with Label
+* 4302: Global Hotkey cannot preserve execution order across server
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
@@ -143,6 +157,8 @@ Please report all bugs in 3.2.0-beta2, even if they are bugs which
 you've already reported against other betas. We take your bug reports
 seriously---they're the reason we've been able to fix so many bugs.
 
+Note that current versions of VASL and VSQL are not compatible with
+VASSAL 3.2.0-beta2. Work to update VASL for 3.2 is ongoing.
 
 *********************
 Minimum Requirements
