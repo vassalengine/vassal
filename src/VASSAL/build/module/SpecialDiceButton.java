@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +117,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   public SpecialDiceButton() {
     dialog = new JDialog(GameModule.getGameModule().getFrame());
+    dialog.setLayout(new MigLayout("ins 0"));
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
@@ -173,9 +177,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private Command reportResults(int[] results) {
     resultsIcon.setResults(results);
     if (reportResultInWindow) {
-      dialog.setVisible(true);
+      dialogLabel.setSize(new Dimension(resultsIcon.width, resultsIcon.height));
+      dialogLabel.setMinimumSize(new Dimension(resultsIcon.width, resultsIcon.height));
       format.setFormat(windowTitleResultFormat);
       dialog.setTitle(format.getLocalizedText());
+      dialog.pack();
+      dialog.setVisible(true);
       dialogLabel.repaint();
     }
     if (reportResultInButton) {
