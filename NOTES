@@ -175,7 +175,7 @@ unavailable, and Java 6 for Macs where Java 6 is available.
 Windows: The recommended minimum Java version for Windows is 1.6.0_21
 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the
 Windows installer will be prompted to update Java if what they have is
-older than 1.6.0_32. After upgrading Java on Windows, you must restart
+older than 1.6.0_35. After upgrading Java on Windows, you must restart
 your computer in order for Java programs to work properly.
 
 

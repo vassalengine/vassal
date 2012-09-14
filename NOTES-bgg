@@ -1,12 +1,12 @@
-[size=18][b]VASSAL 3.2.0-beta1 released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
+[size=18][b]VASSAL 3.2.0-beta2 released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta2.
 
 [size=16][b]Download[/b][/size]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-src.zip]Source code[/url]
 
 [size=16][b]New Features in 3.2[/b][/size]
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
@@ -55,8 +55,35 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
 
 * Map images are tiled the first time modules are loaded, to create an image cache. This should dramatically reduce the amount of memory needed to run modules.
 
-The following bugs are fixed in 3.2.0-beta1:
+* Improved display of properties in the Editor [RFE 4323]:
 
+  - Display all available properties from all components structured in the same way as the components of the module are built instead of all the global properties being dumped in one menu.
+
+  - Available Global properties now appear without having to start a game.  Previously, globals like Deck and Zone properties where not available unless you had started a game.
+
+  - Property and component names are sorted, except for the Piece Property menu where the traits are displayed in the same order they exist in the counter.
+
+  - If a menu has too many options to fit on the screen, it is now scrollable, instead of stretching off the screen and leaving some properties inaccessible.
+
+* Improvements to Layer trait [RFE 4717]:
+  - Follow Property name may be a BeanShell expression.
+  - Improved layout for Layer dialog in Editor.
+
+The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
+
+* Check for resource paths missing initial slash. This fixes the problem with resources like moved.gif not being found.
+
+* Include "images/" in tile names when running TilingHandler. This helps us handle directories nested under images, and archive which have no images directory at all (such as VASL map archives).
+
+* Property filter built incorrectly in MassKeyCommand.
+
+The following bugs in 3.1 are fixed in 3.2.0-beta1:
+
+* 4763: Symbolic Dice button window results do not open correctly
+* 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
+* 4547: Ensure that image data is integer type before casting to DataBufferInt
+* 4402: StackOverflowError from recursively generating counter name with Label
+* 4302: Global Hotkey cannot preserve execution order across server
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
@@ -64,7 +91,9 @@ The following bugs are fixed in 3.2.0-beta1:
 
 For changes prior to 3.2.0-beta1, see the change log.
 
-Please report all bugs in 3.2.0-beta1, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.0-beta2, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+
+Note that current versions of VASL and VSQL are not compatible with VASSAL 3.2.0-beta2. Work to update VASL for 3.2 is ongoing.
 
 [size=16][b]Minimum Requirements[/b][/size]
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
@@ -73,10 +102,10 @@ Linux: Java 6 is required for using VASSAL on Linux.
 
 MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is unavailable, and Java 6 for Macs where Java 6 is available.
 
-Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_32. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
+Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_35. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
 
 [size=16][b]Help us test[/b][/size]
-This is a beta release, so may still contain some rough edges. Should you find any problems/oddities/bugs, please tell us so that we can fix them before VASSAL 3.2.0 is released. Also, if you've had problems with 3.1.x or a previous 3.2.0 beta, please check and let us know if those problems are resolved in 3.2.0-beta1.
+This is a beta release, so may still contain some rough edges. Should you find any problems/oddities/bugs, please tell us so that we can fix them before VASSAL 3.2.0 is released. Also, if you've had problems with 3.1.x or a previous 3.2.0 beta, please check and let us know if those problems are resolved in 3.2.0-beta2.
 
 Report bugs here in the Technical Support & Bugs category at the [url=http://vassalengine.org/forums/viewforum.php?f=3]VASSAL forums[/url] or by email to uckelman@nomic.net.
 
