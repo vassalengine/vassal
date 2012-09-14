@@ -69,6 +69,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   static {
     // 3.2.0
     tags.put("beta1", 8193);
+    tags.put("beta2", 8345);
   }
 
   /**
