@@ -1,3 +1,31 @@
+3.1.20 - 2 September 2012
+
+* Windows installer now suggests JRE 1.6.0_35 for Java upgrades, and installs
+64-bit JREs on 64-bit systems.
+
+Bugs fixed:
+
+* 4745: Snapshot tool fails to force unloaded map tiles to load
+* 4705: Decks behave strangely after loading saved game
+* 4696: Embellishment follows property to display first level when property is
+  null instead of erroring
+* 4639: Movement trail trait erroneously draws dots on unmoved pieces
+* 4599: Cannot return to having no image in BasicPiece trait
+* 4473: TabWidget updates its name using stale values
+* 4459: Property filter built incorrectly in MassKeyCommand
+* 4297: Send Back Command disabled after undo
+* 4244: Dynamic Property Set/Increment expressions cannot access Properties
+  defined above them
+* 4278: Map-level global properties of the same name messed up online
+* 3988: Windows installer does not recognize 64-bit JVMs
+* 3278: Corrupt module should not cause unchecked exception
+* 2807: ArrayIndexOutOfBoundsException in CropOpBitmapImpl.eval()
+* 2719: RotateScaleOpBitmapImpl created with scale == 0
+* 2696: ArrayIndexOutOfBoundsException in Map.popMouseListener()
+* 2573: Negative scale factor passed to RotateScaleOpBitmapImpl
+* 2554: NumberFormatException in SVGImageUtils.getImageSize()
+* 1921: Better adjustment for splitter between log and map panes
+
 3.1.19 - 9 May 2012
 
 * Windows installer now suggests JRE 1.6.0_32 for Java upgrades.
