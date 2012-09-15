@@ -5,6 +5,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta2.
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-windows.exe' target='_new'>Windows</a>
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-other.zip'  target='_new'>Other</a>
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-src.zip' target='_new'>Source code</a>
+<h3>Compatibility Notes</h3>
+* VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.  
+
+* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0-beta2. Work to update VASL for 3.2 is ongoing.
+
 <h3>New Features in 3.2</h3>
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
  
@@ -86,8 +91,6 @@ The following bugs are fixed in 3.2.0-beta2:
 For changes prior to 3.2.0-beta1, see the change log.
 
 Please report all bugs in 3.2.0-beta2, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
-
-Note that current versions of VASL and VSQL are not compatible with VASSAL 3.2.0-beta2. Work to update VASL for 3.2 is ongoing.
 
 <h3>Minimum Requirements</h3>
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
