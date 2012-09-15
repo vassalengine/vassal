@@ -169,6 +169,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 #	svn export $(DOCDIR) $@/Contents/Resources/doc
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
+	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
@@ -178,6 +179,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 #	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
+	cp -a CHANGES LICENSE README $(TMPDIR)/VASSAL-$(VERSION)
 #	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
@@ -191,6 +193,9 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{sh,bat}
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
+	mv $(TMPDIR)/VASSAL-$(VERSION)/CHANGES $(TMPDIR)/VASSAL-$(VERSION)/CHANGES.txt
+	mv $(TMPDIR)/VASSAL-$(VERSION)/LICENSE $(TMPDIR)/VASSAL-$(VERSION)/LICENSE.txt
+	mv $(TMPDIR)/VASSAL-$(VERSION)/README $(TMPDIR)/VASSAL-$(VERSION)/README.txt
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
