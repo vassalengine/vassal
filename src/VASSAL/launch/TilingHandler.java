@@ -30,6 +30,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -193,8 +194,6 @@ public class TilingHandler {
       String.valueOf(tdim.height)
     }));
 
-    args.addAll(multi);
-
     // get the progress dialog
     final ProgressDialog pd = ProgressDialog.createOnEDT(
       ModuleManagerWindow.getInstance(),
@@ -212,6 +211,18 @@ public class TilingHandler {
       errP,
       args.toArray(new String[args.size()])
     );
+
+    // write the image paths to child's stdin, one per line
+    PrintWriter stdin = null;
+    try {
+      stdin = new PrintWriter(proc.stdin);
+      for (String m : multi) {
+        stdin.println(m);
+      }
+    }
+    finally {
+      IOUtils.closeQuietly(stdin);
+    }
 
     Socket csock = null;
     DataInputStream in = null;

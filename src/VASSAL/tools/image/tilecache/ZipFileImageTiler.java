@@ -23,11 +23,15 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -78,7 +82,25 @@ public class ZipFileImageTiler {
       final String tpath = args[1];
       final int tw = Integer.parseInt(args[2]);
       final int th = Integer.parseInt(args[3]);
-      final String[] ipaths = ArrayUtils.copyOfRange(args, 4, args.length);
+
+      // Get the image paths from stdin, one per line
+      final List<String> pl = new ArrayList<String>();
+      BufferedReader stdin = null;
+      try {
+        stdin = new BufferedReader(new InputStreamReader(System.in));
+        String s;
+        while ((s = stdin.readLine()) != null) {
+          pl.add(s);
+        }
+      }
+      catch (IOException e) {
+        logger.error("", e);
+      }
+      finally {
+        IOUtils.closeQuietly(stdin);
+      }
+
+      final String[] ipaths = pl.toArray(new String[pl.size()]);
 
       // TODO: Determine what the optimal number of threads is.
       final Runtime runtime = Runtime.getRuntime();
