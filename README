@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta2.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta3.
 
 *********************
 Download
@@ -6,23 +6,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta2-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-src.zip
 
 *********************
 Compatibility Notes
@@ -35,7 +35,7 @@ Compatibility Notes
   log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
 * Current versions of VASL and VSQL are not compatible with VASSAL
-  3.2.0-beta2. Work to update VASL for 3.2 is ongoing.
+  3.2.0-beta3. Work to update VASL for 3.2 is ongoing.
 
 *********************
 New Features in 3.2
@@ -140,6 +140,12 @@ New Features in 3.2
   - Improved layout for Layer dialog in Editor.
 
 
+The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
+
+* 4696: Embellishment follows property to display first level when property is
+  null instead of erroring
+* 4477: Image tiler invoked with argument list longer than Windows supports
+
 The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 
 * Check for resource paths missing initial slash. This fixes the problem
@@ -165,7 +171,7 @@ The following bugs in 3.1 are fixed in 3.2.0-beta2:
 
 For changes prior to 3.2.0-beta1, see the change log.
 
-Please report all bugs in 3.2.0-beta2, even if they are bugs which
+Please report all bugs in 3.2.0-beta3, even if they are bugs which
 you've already reported against other betas. We take your bug reports
 seriously---they're the reason we've been able to fix so many bugs.
 
@@ -196,7 +202,7 @@ This is a beta release, so may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
 them before VASSAL 3.2.0 is released. Also, if you've had problems with
 3.1.x or a previous 3.2.0 beta, please check and let us know if those
-problems are resolved in 3.2.0-beta2.
+problems are resolved in 3.2.0-beta3.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
