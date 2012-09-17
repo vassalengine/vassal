@@ -499,6 +499,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     try {
       
       val = ex.evaluate(Decorator.getOutermost(this));
+      if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
       
       int v = Integer.parseInt(val) - firstLevelValue + 1;
       if (v <= 0) v = 1;
