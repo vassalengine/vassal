@@ -142,6 +142,7 @@ New Features in 3.2
 
 The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
 
+* 4783: NPE in ServerAddressBook$AddressBookEntry.edit()
 * 4696: Embellishment follows property to display first level when property is
   null instead of erroring
 * 4477: Image tiler invoked with argument list longer than Windows supports
@@ -157,8 +158,10 @@ The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 
 * Property filter built incorrectly in MassKeyCommand.
 
-The following bugs in 3.1 are fixed in 3.2.0-beta2:
+The following bugs in 3.1 are fixed in 3.2.0-beta3:
 
+* 4784: Unable to edit regions within an irregular grid via mouse and arrow
+  keys once created
 * 4763: Symbolic Dice button window results do not open correctly
 * 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
 * 4547: Ensure that image data is integer type before casting to DataBufferInt
