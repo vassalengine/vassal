@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -91,6 +91,10 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return container.getSize();
   }
 
+  public boolean contains(Point p) {
+    return container.contains(p);
+  }
+  
   public void removeGrid(MapGrid grid) {
     if (background == grid) {
       background = null;

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -581,6 +581,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return bounds().getSize();
   }
 
+  public boolean contains(Point p) {
+    return bounds().contains(p);
+  }
+  
   public MapGrid getGrid() {
     return grid;
   }

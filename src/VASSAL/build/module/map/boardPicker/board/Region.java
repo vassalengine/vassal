@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,7 +19,6 @@
 package VASSAL.build.module.map.boardPicker.board;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -201,14 +200,13 @@ public class Region extends AbstractConfigurable {
    */
   public void move(int dx, int dy, JComponent c) {
 
-    int newX = getOrigin().x + dx;
-    int newY = getOrigin().y + dy;
-
-    Dimension d = myGrid.container.getSize();
-
-    if (newX >= 0 && newX < d.width && newY >= 0 && newY < d.height) {
+    final Point newP = new Point (getOrigin());
+    newP.translate(dx, dy);
+    
+    if (myGrid.container.contains(newP)) {
       moveOrigin(dx, dy);
     }
+    
     return;
   }
 
