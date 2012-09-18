@@ -1,7 +1,7 @@
 /*
- * $Id:
+ * $Id$
  *
- * Copyright (c) 2009-2011 by Brent Easton
+ * Copyright (c) 2009-2012 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -627,10 +627,11 @@ public class ServerAddressBook {
     public boolean edit(boolean enabled) {
       if (isEditable()) {
         final ServerConfig config = getEditor(getProperties(), enabled);
-        if (0 == (Integer) Dialogs.showDialog(null,
+        final Integer result = (Integer) Dialogs.showDialog(null,
             Resources.getString("ServerAddressBook.edit_server_configuration"), //$NON-NLS-1$
             config.getControls(), JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-            null, null, null, null)) {
+            null, null, null, null);        
+        if (result != null && result.intValue() == 0) {
           if (enabled) {
             setProperties(config.getProperties());
             saveAddressBook();

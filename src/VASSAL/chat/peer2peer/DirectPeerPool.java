@@ -1,7 +1,7 @@
 /*
- * $Id:
+ * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -287,10 +287,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       queryPanel.add(new JLabel(entries[i].toString()), "wrap");
     }
 
-    if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
+    final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
         queryPanel, JOptionPane.QUESTION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-        null, null, null, null)) {
-
+        null, null, null, null);
+    if (result != null && result.intValue() == 0) {
       for (int i = 0; i < entries.length; i++) {
         addressBook.removeElement(entries[i]);
       }

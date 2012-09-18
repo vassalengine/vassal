@@ -1,6 +1,7 @@
 /*
+ * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -359,8 +360,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
 
   public static Properties configureNewRoom() {
     final JabberRoomConfig config = new JabberRoomConfig();
-    int result = ((Integer) Dialogs.showDialog(null, Resources.getString("Chat.create_new_room"), config, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null, null, null)).intValue(); //$NON-NLS-1$
-    if (result == 0) {
+    final Integer result = ((Integer) Dialogs.showDialog(null, Resources.getString("Chat.create_new_room"), config, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null, null, null)).intValue(); //$NON-NLS-1$
+    if (result != null && result.intValue() == 0) {
       return config.getProperties();
     }
     return null;
