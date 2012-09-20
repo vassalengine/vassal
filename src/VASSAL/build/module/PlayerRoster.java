@@ -66,12 +66,15 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
+  public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
   protected List<PlayerInfo> players = new ArrayList<PlayerInfo>();
   protected List<String> sides = new ArrayList<String>();
   protected String[] untranslatedSides;
   protected LaunchButton retireButton;
   protected List<SideChangeListener> sideChangeListeners =
     new ArrayList<SideChangeListener>();
+  
+  protected String translatedObserver;
 
   public PlayerRoster() {
     ActionListener al = new ActionListener() {
@@ -82,6 +85,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
     retireButton.setVisible(false);
+    
+    translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {
@@ -387,11 +392,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
 
     availableSides.removeAll(alreadyTaken);
-    availableSides.add(0, OBSERVER);
+    availableSides.add(0, translatedObserver);
     sideConfig = new StringEnumConfigurer(null,
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       availableSides.toArray(new String[availableSides.size()]));
-    sideConfig.setValue(OBSERVER);
+    sideConfig.setValue(translatedObserver);
     return sideConfig.getControls();
   }
 
@@ -444,19 +449,23 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
 
     availableSides.removeAll(alreadyTaken);
-    availableSides.add(0, OBSERVER);
+    availableSides.add(0, translatedObserver);
 
     final GameModule g = GameModule.getGameModule();
-    final String newSide = (String) JOptionPane.showInputDialog(
+    String newSide = (String) JOptionPane.showInputDialog(
       g.getFrame(),
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,
       null,
       availableSides.toArray(new String[availableSides.size()]),
-      OBSERVER
+      translatedObserver
     );
 
+    // OBSERVER must always be stored internally in English.
+    if (translatedObserver.equals(newSide)) {
+      newSide = OBSERVER;
+    }
     return newSide;
 /*
     if (newSide != null) {
@@ -581,7 +590,6 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     void sideChanged(String oldSide, String newSide);
   }
 
-  private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   protected StringEnumConfigurer sideConfig;
 
   /**
@@ -635,6 +643,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected String untranslateSide(String side) {
+    if (translatedObserver.equals(side)) {
+      return OBSERVER;
+    }
     if (untranslatedSides != null) {
       for (int i = 0; i < sides.size(); i++) {
         if (sides.get(i).equals(side)) {
@@ -646,6 +657,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected String translateSide(String side) {
+    if (OBSERVER.equals(side)) {
+      return translatedObserver;
+    }
     if (untranslatedSides != null) {
       for (int i = 0; i < untranslatedSides.length; i++) {
         if (untranslatedSides[i].equals(side)) {
