@@ -605,7 +605,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
       setLayout(new MigLayout("ins 5","[]push[]push[]"));
-      add(ed.getControls(), "span 3,wrap");
+      add(ed.getControls(), "span 3,growx,wrap");
 
       final JPanel panel = new JPanel(new MigLayout());
       JButton b = new JButton("Ok");
