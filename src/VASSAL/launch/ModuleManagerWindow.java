@@ -80,6 +80,8 @@ import javax.swing.tree.TreePath;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
@@ -1339,6 +1341,7 @@ public class ModuleManagerWindow extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
+          cleanupTileCache();
         }
       });
 
@@ -1348,6 +1351,20 @@ public class ModuleManagerWindow extends JFrame {
       m.add(newExtensionAction);
       m.add(addExtensionAction);
       return m;
+    }
+
+    public void cleanupTileCache() {
+      final String hstr = DigestUtils.shaHex(
+        metadata.getName() + "_" + metadata.getVersion()
+      );
+
+      final File tdir = new File(Info.getConfDir(), "tiles/" + hstr);
+      try {
+        FileUtils.forceDelete(tdir);
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, tdir);
+      }
     }
 
     /*
