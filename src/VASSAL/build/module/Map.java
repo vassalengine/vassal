@@ -241,7 +241,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     getView();
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
-      toolBar.setLayout(new MigLayout("ins 0,gapx 0"));      
+      toolBar.setLayout(new MigLayout("ins 0,gapx 0,hidemode 3"));
     }
     else {
       toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
