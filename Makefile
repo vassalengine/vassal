@@ -171,6 +171,8 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
+	find $@ -type f -exec chmod 644 \{\} \+
+	find $@ -type d -exec chmod 755 \{\} \+
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
@@ -183,6 +185,8 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 #	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
+	find $(TMPDIR)/VASSAL-$(VERSION) -type f -exec chmod 644 \{\} \+
+	find $(TMPDIR)/VASSAL-$(VERSION) -type d -exec chmod 755 \{\} \+
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
 $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
