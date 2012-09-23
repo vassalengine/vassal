@@ -65,6 +65,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.PNGFileFilter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.swing.ProgressDialog;
 
@@ -174,8 +175,11 @@ public class ImageSaver extends AbstractConfigurable {
   public void writeMapAsImage() {
     // prompt user for image filename
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setSelectedFile(new File(fc.getCurrentDirectory(),
-      GameModule.getGameModule().getLocalizedGameName() + "Map.png"));
+    fc.setSelectedFile(
+      new File(fc.getCurrentDirectory(),
+      GameModule.getGameModule().getLocalizedGameName() + "Map.png")
+    );
+    fc.addChoosableFileFilter(new PNGFileFilter());
 
     final Frame frame =
       (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
