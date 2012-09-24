@@ -365,7 +365,7 @@ public class TilingHandler {
     // fix the max heap
 
     // This was determined empirically. Does it vary across JVMs? No idea.
-    final int maxheap_estimated = (int) (2.71*((4*maxpix) >> 20) + 50);
+    final int maxheap_estimated = (int) (2.85*((4*maxpix) >> 20) + 50);
 
     final int maxheap = Math.min(maxheap_estimated, maxheap_limit);
 
