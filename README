@@ -164,6 +164,7 @@ The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 
 The following bugs in 3.1 are fixed in 3.2.0-beta3:
 
+* 4818: Hide empty TurnTracker launch buttons
 * 4807: Vengine.jar should be readable by group and other
 * 4784: Unable to edit regions within an irregular grid via mouse and arrow
   keys once created
