@@ -375,13 +375,13 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       turnWindow.setWidget(null);
       turnWindow.setVisible(false);
       launchWidget.add(turnWidget, BorderLayout.CENTER);
-      launchWidget.setVisible(GameModule.getGameModule().getGameState().isGameStarted());
+      launchWidget.setVisible(g.getGameState().isGameStarted());
     }
     else {
       launchWidget.setVisible(false);
       launchWidget.remove(turnWidget);
       turnWindow.setWidget(turnWidget);
-      turnWindow.setVisible(GameModule.getGameModule().getGameState().isGameStarted());
+      turnWindow.setVisible(g.getGameState().isGameStarted());
       turnWindow.setFocusable(true);
     }
   }
