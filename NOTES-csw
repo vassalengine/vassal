@@ -60,12 +60,17 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta3.
 * Improved display of properties in the Editor [RFE 4323]:
 
   - Display all available properties from all components structured in the same way as the components of the module are built instead of all the global properties being dumped in one menu.
+
   - Available Global properties now appear without having to start a game.  Previously, globals like Deck and Zone properties where not available unless you had started a game.
+
   - Property and component names are sorted, except for the Piece Property menu where the traits are displayed in the same order they exist in the counter.
+
   - If a menu has too many options to fit on the screen, it is now scrollable, instead of stretching off the screen and leaving some properties inaccessible.
 
 * Improvements to Layer trait [RFE 4717]:
+
   - Follow Property name may be a BeanShell expression.
+
   - Improved layout for Layer dialog in Editor.
 
 The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
@@ -110,7 +115,7 @@ VASSAL 3.2 requires the Java Runtime Envrionment to run.
 
 Linux: Java 6 is required for using VASSAL on Linux.
 
-MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is unavailable, and Java 6 for Macs where Java 6 is available.
+MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8 ) for Macs where Java 6 is unavailable, and Java 6 for Macs where Java 6 is available.
 
 Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_35. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
 
