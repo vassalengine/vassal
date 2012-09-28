@@ -38,6 +38,7 @@ Bugs fixed:
 * 4204: Java 7 has incorrect offset for drag images
 * 4184: Should use DocumentListener to catch updates on Swing text fields
 * 4132: Bad layout for Map window obscures Global Key Command buttons
+* 3976: Double characters appearing for NamedKeyStroke
 * 3075: NegativeArraySizeException when snapshotting large maps 
 * 1924: Put settings directory in system-appropriate location
 * Bad tile-counting when snapshotting maps
