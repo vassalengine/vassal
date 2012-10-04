@@ -140,6 +140,10 @@ New Features in 3.2
   - Improved layout for Layer dialog in Editor.
 
 
+The following bugs in 3.2.0-beta3 are fixed in 3.2.0-beta4:
+
+* 4822: Some trait windows are opening too large
+
 The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
 
 * 4789: ZipFileImageTiler is invoked with too little max heap on Mac OS X
@@ -166,6 +170,8 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 
 * 4818: Hide empty TurnTracker launch buttons
 * 4807: Vengine.jar should be readable by group and other
+* 4793: ChangePropertyButton cannot be cast to GamePiece when creating
+  toolbar button
 * 4784: Unable to edit regions within an irregular grid via mouse and arrow
   keys once created
 * 4775: a context menu containing a single submenu is deviously disallowed
@@ -180,6 +186,7 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 * 3040: ClassCastException in CommandServer.run()
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
+* 2582: Mask and Peek menu entries are not translatable
 * 2556: ImageOp does not support paths
 
 For changes prior to 3.2.0-beta1, see the change log.
