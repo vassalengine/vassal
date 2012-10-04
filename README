@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta3.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta4.
 
 *********************
 Download
@@ -6,23 +6,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta3-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-src.zip
 
 *********************
 Compatibility Notes
@@ -35,7 +35,7 @@ Compatibility Notes
   log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
 * Current versions of VASL and VSQL are not compatible with VASSAL
-  3.2.0-beta3. Work to update VASL for 3.2 is ongoing.
+  3.2.0-beta4. Work to update VASL for 3.2 is ongoing.
 
 *********************
 New Features in 3.2
@@ -162,12 +162,13 @@ The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 
 * Property filter built incorrectly in MassKeyCommand.
 
-The following bugs in 3.1 are fixed in 3.2.0-beta3:
+The following bugs in 3.1 are fixed in 3.2.0-beta4:
 
 * 4818: Hide empty TurnTracker launch buttons
 * 4807: Vengine.jar should be readable by group and other
 * 4784: Unable to edit regions within an irregular grid via mouse and arrow
   keys once created
+* 4775: a context menu containing a single submenu is deviously disallowed
 * 4764: Losing Player Sides when opening module with different language set
 * 4763: Symbolic Dice button window results do not open correctly
 * 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
@@ -183,7 +184,7 @@ The following bugs in 3.1 are fixed in 3.2.0-beta3:
 
 For changes prior to 3.2.0-beta1, see the change log.
 
-Please report all bugs in 3.2.0-beta3, even if they are bugs which
+Please report all bugs in 3.2.0-beta4, even if they are bugs which
 you've already reported against other betas. We take your bug reports
 seriously---they're the reason we've been able to fix so many bugs.
 
@@ -214,7 +215,7 @@ This is a beta release, so may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
 them before VASSAL 3.2.0 is released. Also, if you've had problems with
 3.1.x or a previous 3.2.0 beta, please check and let us know if those
-problems are resolved in 3.2.0-beta3.
+problems are resolved in 3.2.0-beta4.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
