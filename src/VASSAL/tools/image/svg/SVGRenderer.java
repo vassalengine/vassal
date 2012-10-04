@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
@@ -133,6 +134,9 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     // FIXME: review error message
+    catch (BridgeException e) {
+      logger.error("", e);
+    }
     catch (TranscoderException e) {
       logger.error("", e);
     }
@@ -161,6 +165,9 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     // FIXME: review error message
+    catch (BridgeException e) {
+      logger.error("", e);
+    }
     catch (TranscoderException e) {
       logger.error("", e);
     }
