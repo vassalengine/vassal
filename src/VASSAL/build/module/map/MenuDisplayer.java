@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -181,16 +181,16 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         }
       }
 
-      // Promote contents of a single submenu
-      if (commands.size() == 1) {
-        if (commands.get(0) instanceof JMenu) {
-          JMenu submenu = (JMenu) commands.get(0);
-          commands.remove(submenu);
-          for (int i = 0; i < submenu.getItemCount(); i++) {
-            commands.add(submenu.getItem(i));
-          }
-        }
-      }
+      // Promote contents of a single submenu [Removed as per Bug 4775]
+      // if (commands.size() == 1) {
+      //   if (commands.get(0) instanceof JMenu) {
+      //     JMenu submenu = (JMenu) commands.get(0);
+      //     commands.remove(submenu);
+      //     for (int i = 0; i < submenu.getItemCount(); i++) {
+      //       commands.add(submenu.getItem(i));
+      //     }
+      //   }
+      // }
 
       for (JMenuItem item : commands) {
         popup.add(item);
