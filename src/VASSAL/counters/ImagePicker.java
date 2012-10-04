@@ -65,7 +65,7 @@ public class ImagePicker extends JPanel
     noImage.setEditable(false);
     noImage.setLineWrap(true);
     noImage.setWrapStyleWord(true);
-    noImage.setPreferredSize(new Dimension(15, 32));
+    noImage.setMinimumSize(new Dimension(15, 32));
     icon = new OpIcon();
     imageView = new JLabel(icon);
     imageView.addMouseListener(this);
