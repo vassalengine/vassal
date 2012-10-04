@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Brent Easton
+ * Copyright (c) 2008-2012 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
@@ -62,8 +63,19 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     this(key, name, s, (GamePiece) p);
   }
 
+  public FormattedExpressionConfigurer(String key, String name, String s, Constraints p) {
+   this(key, name, s);
+   if (p instanceof GamePiece) {
+     storePiece((GamePiece) p);
+   }
+  }
+  
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
     this(key, name, s);
+    storePiece(p);
+  }
+  
+  protected void storePiece(GamePiece p) {
     if (p instanceof Decorator) {
       final GamePiece gp = Decorator.getOutermost(p);
       if (gp instanceof EditablePiece) {

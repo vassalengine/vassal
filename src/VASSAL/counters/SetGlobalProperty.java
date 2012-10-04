@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2006 by Brent Easton, Rodney Kinney
+ * Copyright (c) 2000-2012 by Brent Easton, Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -274,7 +274,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), m);
+      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
@@ -292,7 +292,7 @@ public class SetGlobalProperty extends DynamicProperty {
       nameBox.add(mapLabel);
       nameBox.add(zoneLabel);
       nameBox.add(new JLabel(" containing property:  "));
-      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName, m);
+      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName, (EditablePiece) m);
       nameBox.add(searchNameConfig.getControls());
       controls.add(nameBox);
       numericConfig = new BooleanConfigurer(null, "Is numeric?", m.isNumeric());

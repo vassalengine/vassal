@@ -33,7 +33,6 @@ import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringArrayConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.counters.GamePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -101,13 +100,13 @@ public class PropertyChangerConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       typeConfig = new StringEnumConfigurer(null, "Type:  ", new String[]{PLAIN_TYPE, INCREMENT_TYPE, PROMPT_TYPE, SELECT_TYPE});
       typeConfig.addPropertyChangeListener(l);
-      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ", "", (GamePiece) constraints);
+      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ", "",  constraints);
       valueConfig.addPropertyChangeListener(l);
       promptConfig = new StringConfigurer(null, "Prompt:  ");
       promptConfig.addPropertyChangeListener(l);
-      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ", "", (GamePiece) constraints);
+      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ", "", constraints);
       incrConfig.addPropertyChangeListener(l);
-      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values", (GamePiece) constraints);
+      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values", constraints);
       validValuesConfig.addPropertyChangeListener(l);
       controls.add(typeConfig.getControls());
       controls.add(valueConfig.getControls());

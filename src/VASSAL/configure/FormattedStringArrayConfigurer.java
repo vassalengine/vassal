@@ -22,6 +22,7 @@ package VASSAL.configure;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
+import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.GamePiece;
 
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
@@ -37,6 +38,13 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     super(key, name);
   }
 
+  public FormattedStringArrayConfigurer(String key, String name, Constraints c) {
+    super(key, name);
+    if (c instanceof GamePiece) {
+      target = (GamePiece) c;
+    }
+  }
+  
   public FormattedStringArrayConfigurer(String key, String name, GamePiece target) {
     this(key, name);
     this.target = target;

@@ -51,7 +51,6 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.PropertyNameSource;
-import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
@@ -97,7 +96,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       target = (EditablePiece) piece;
     }
     else {
-      target = new BasicPiece();
+      target = null;
     }
     strip();
     up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
@@ -221,12 +220,14 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     
     final JMenu propertyMenu = new JMenu("Property");
 
-    final JMenu pieceMenu = new JMenu("Piece Property");
-    addProp(pieceMenu, Properties.MOVED);
-    addProp(pieceMenu, Properties.SELECTED);
-    addProp(pieceMenu, Properties.PIECE_ID);
-    addPieceProps(pieceMenu, target);
-    propertyMenu.add(pieceMenu);
+    if (target != null) {
+      final JMenu pieceMenu = new JMenu("Piece Property");
+      addProp(pieceMenu, Properties.MOVED);
+      addProp(pieceMenu, Properties.SELECTED);
+      addProp(pieceMenu, Properties.PIECE_ID);
+      addPieceProps(pieceMenu, target);
+      propertyMenu.add(pieceMenu);
+    }
 
     final JMenu globalsMenu = new JMenu("Global Property");
     buildGlobalMenu(globalsMenu, GameModule.getGameModule(), true);
