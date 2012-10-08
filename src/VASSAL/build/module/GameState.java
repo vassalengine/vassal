@@ -340,10 +340,11 @@ public class GameState implements CommandEncoder {
       // Check it belongs to this module and matches the version if is a
       // post 3.0 save file
       final SaveMetaData saveData = (SaveMetaData) metaData;
+      String saveModuleVersion = "?";
       if (saveData.getModuleData() != null) {
         loadComments = saveData.getLocalizedDescription();
         final String saveModuleName = saveData.getModuleName();
-        final String saveModuleVersion = saveData.getModuleVersion();
+        saveModuleVersion = saveData.getModuleVersion();
         final String moduleName = GameModule.getGameModule().getGameName();
         final String moduleVersion = GameModule.getGameModule().getGameVersion();
         String message = null;
@@ -366,6 +367,8 @@ public class GameState implements CommandEncoder {
           }
         }
       }
+
+      log.info("Load save game "+f.getPath()+", created with module version "+saveModuleVersion);
 
       if (gameStarted) {
         loadContinuation(f);
