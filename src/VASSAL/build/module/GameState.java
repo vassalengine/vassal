@@ -319,8 +319,10 @@ public class GameState implements CommandEncoder {
    * file should be that returned by {@link #getRestoreCommand}.
    */
   public void loadGame() {
+    final GameModule g = GameModule.getGameModule();
+
     loadComments = "";
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = g.getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
 
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
@@ -345,16 +347,23 @@ public class GameState implements CommandEncoder {
         loadComments = saveData.getLocalizedDescription();
         final String saveModuleName = saveData.getModuleName();
         saveModuleVersion = saveData.getModuleVersion();
-        final String moduleName = GameModule.getGameModule().getGameName();
-        final String moduleVersion = GameModule.getGameModule().getGameVersion();
+        final String moduleName = g.getGameName();
+        final String moduleVersion = g.getGameVersion();
         String message = null;
 
-        if (! saveModuleName.equals(moduleName)) {
-          message = Resources.getString("GameState.load_module_mismatch", f.getName(), saveModuleName, moduleName);
+        if (!saveModuleName.equals(moduleName)) {
+          message = Resources.getString(
+            "GameState.load_module_mismatch",
+            f.getName(), saveModuleName, moduleName
+          );
         }
-        else if (! saveModuleVersion.equals(moduleVersion)) {
-          message = Resources.getString("GameState.load_version_mismatch", f.getName(), saveModuleVersion, moduleVersion);
+        else if (!saveModuleVersion.equals(moduleVersion)) {
+          message = Resources.getString(
+            "GameState.load_version_mismatch",
+            f.getName(), saveModuleVersion, moduleVersion
+          );
         }
+
         if (message != null) {
           if (JOptionPane.showConfirmDialog(
               null,
@@ -362,13 +371,16 @@ public class GameState implements CommandEncoder {
               Resources.getString("GameState.load_mismatch"),
               JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
-            GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));
+            g.warn(Resources.getString("GameState.cancel_load", f.getName()));
             return;
           }
         }
       }
 
-      log.info("Load save game "+f.getPath()+", created with module version "+saveModuleVersion);
+      log.info(
+        "Loading save game " + f.getPath() +
+        ", created with module version " + saveModuleVersion
+      );
 
       if (gameStarted) {
         loadContinuation(f);
