@@ -55,7 +55,7 @@ public class ExpressionBuilder extends JDialog {
     target = c;
     pieceTarget = piece;
     save = target.getValueString();
-    JPanel p = new JPanel(new MigLayout("wrap 1"));
+    JPanel p = new JPanel(new MigLayout("wrap 1,fill"));
 
     String value = target.getValueString();
 
@@ -66,7 +66,7 @@ public class ExpressionBuilder extends JDialog {
       setExpression(convert(value));
     }
 
-    p.add(expression.getControls());
+    p.add(expression.getControls(), "growx");
 
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();

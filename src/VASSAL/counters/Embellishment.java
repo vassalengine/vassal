@@ -917,7 +917,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2","[]rel[]rel[]rel[]"));
+      controls.setLayout(new MigLayout("hidemode 2,fillx","[]rel[]rel[]rel[]"));
 
       nameConfig = new StringConfigurer(null, "Name: ", e.getName());
       controls.add(nameConfig.getControls(), "span 4,wrap,growx");

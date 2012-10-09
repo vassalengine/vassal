@@ -55,13 +55,14 @@ public class StrBuilder extends JDialog {
   }
 
   protected void build(String type) {
+    setLayout(new MigLayout("fillx"));
     
     final JPanel p = new JPanel();
-    p.setLayout(new MigLayout("", "[]rel[]"));
+    p.setLayout(new MigLayout("fillx", "[grow 0]rel[grow 1]"));
 
-    p.add(new JLabel(type+":"));
+    p.add(new JLabel(type+":"), "growx");
     entry = new StringConfigurer("", "");
-    p.add(entry.getControls(), "wrap");
+    p.add(entry.getControls(), "wrap,growx");
     
 
     final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
@@ -82,7 +83,7 @@ public class StrBuilder extends JDialog {
     buttonBox.add(cancelButton);
 
     p.add(buttonBox, "span 2,align center");
-    add(p);
+    add(p, "growx");
 
     pack();
     setLocationRelativeTo(getParent());

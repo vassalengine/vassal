@@ -58,13 +58,15 @@ public class FunctionBuilder extends JDialog {
     targetPiece = piece;
     save = target.getValueString();
     this.function = function;
-    JPanel p = new JPanel(new MigLayout("wrap 1"));
+    setLayout(new MigLayout("fillx,ins 0"));
+    
+    JPanel p = new JPanel(new MigLayout("wrap 1,fillx"));
 
     p.add(new JLabel(desc), "align center");
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i]+":  ", "", targetPiece);
       configs.add(config);
-      p.add(config.getControls(), "align right");
+      p.add(config.getControls(), "align right,growx");
     }
 
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
@@ -93,7 +95,7 @@ public class FunctionBuilder extends JDialog {
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center");
-    add(p);
+    add(p,"growx");
 
     pack();
     setLocationRelativeTo(getParent());

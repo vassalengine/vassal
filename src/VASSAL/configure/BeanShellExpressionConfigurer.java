@@ -41,6 +41,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -128,16 +129,16 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   public java.awt.Component getControls() {
     if (p == null) {
-      expressionPanel = new JPanel();
-      expressionPanel.setLayout(new BoxLayout(expressionPanel, BoxLayout.X_AXIS));
+      expressionPanel = new JPanel(new MigLayout("fillx,ins 0","[][grow][][]"));
+      //expressionPanel.setLayout(new BoxLayout(expressionPanel, BoxLayout.X_AXIS));
       expressionPanel.add(new JLabel(getName()));
       validator = new Validator();
       nameField = new JTextField(30);
-      nameField.setMaximumSize
-        (new Dimension(nameField.getMaximumSize().width,
-                                nameField.getPreferredSize().height));
+      //nameField.setMaximumSize
+      //  (new Dimension(nameField.getMaximumSize().width,
+      //                          nameField.getPreferredSize().height));
       nameField.setText(getValueString());
-      expressionPanel.add(nameField);
+      expressionPanel.add(nameField, "growx");
       nameField.addKeyListener(new KeyAdapter() {
         public void keyReleased(KeyEvent evt) {
           noUpdate = true;
@@ -147,7 +148,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
       });
       expressionPanel.add(validator);
-      expressionPanel.add(extraDetails);
+      expressionPanel.add(extraDetails,"wrap");
       validator.validate();
 
       detailPanel = new JPanel();
