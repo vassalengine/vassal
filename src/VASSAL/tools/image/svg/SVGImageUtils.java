@@ -138,30 +138,33 @@ public class SVGImageUtils {
                           String path, List<String> known) throws IOException {
 
     final HashSet<String> follow = new HashSet<String>();
+    final URL here = new URL("file", null, new File(path).getCanonicalPath());
+
+    Document doc = null;
     try {
-      final URL here = new URL("file", null, new File(path).getCanonicalPath());
-      final Document doc = factory.createDocument(here.toString());
-      final NodeList usenodes = doc.getElementsByTagName("use");
-      for (int i = 0; i < usenodes.getLength(); ++i) {
-        final Element e = (Element) usenodes.item(i);
-        final URL url = new URL(new URL(e.getBaseURI()),
-                                XLinkSupport.getXLinkHref(e));
-        // balk (for now) unless file is available on our filesystem
-        if (url.getProtocol().equals("file")) {
-          final String refpath = url.getPath();
-          if (!known.contains(refpath)) {
-            follow.add(refpath);
-            known.add(refpath);
-          }
-        }
-        else {
-          throw new IOException("unsupported protocol '" +
-                                url.getProtocol() + "' in xlink:href");
-        }
-      }
+      doc = factory.createDocument(here.toString());
     }
     catch (DOMException e) {
       throw (IOException) new IOException().initCause(e);
+    }
+
+    final NodeList usenodes = doc.getElementsByTagName("use");
+    for (int i = 0; i < usenodes.getLength(); ++i) {
+      final Element e = (Element) usenodes.item(i);
+      final URL url = new URL(new URL(e.getBaseURI()),
+                              XLinkSupport.getXLinkHref(e));
+      // balk (for now) unless file is available on our filesystem
+      if (url.getProtocol().equals("file")) {
+        final String refpath = url.getPath();
+        if (!known.contains(refpath)) {
+          follow.add(refpath);
+          known.add(refpath);
+        }
+      }
+      else {
+        throw new IOException("unsupported protocol '" +
+                              url.getProtocol() + "' in xlink:href");
+      }
     }
 
     for (String s : follow) {
