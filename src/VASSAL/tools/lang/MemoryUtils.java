@@ -27,6 +27,7 @@ import VASSAL.tools.jna.Kernel32;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
+
 import com.sun.management.OperatingSystemMXBean;
 
 /**
@@ -49,15 +50,18 @@ public class MemoryUtils {
       // we can handle them in the normal way.
       final Object o = ManagementFactory.getOperatingSystemMXBean();
 
-      if (o instanceof OperatingSystemMXBean) {
-        final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
-        return osb.getTotalPhysicalMemorySize();
+      try {
+        if (o instanceof OperatingSystemMXBean) {
+          final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
+          return osb.getTotalPhysicalMemorySize();
+        }
       }
-      else {
-        // We didn't get a com.sun.management.OperatingSystemMXBean. This
-        // can happen if we're running on a non-Sun JVM.
-        return -1;
+      catch (NoClassDefFoundError e) {
+        // com.sun.management.OperatingSystemMXBean doesn't exist in this JVM
       }
+
+      // We didn't get a com.sun.management.OperatingSystemMXBean.
+      return -1;
     }
     else {
       // FIXME: totalPhysicalMemorySize() doesn't return the correct result
