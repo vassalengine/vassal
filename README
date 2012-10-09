@@ -180,11 +180,14 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 * 4763: Symbolic Dice button window results do not open correctly
 * 4690: Hide Pieces Toolbar button causes Toolbar button icons to move
 * 4547: Ensure that image data is integer type before casting to DataBufferInt
+* 4452: Batik loads com.sun.image.codec.jpeg.TruncatedFileException, which
+  doesn't exist in Java 7
 * 4402: StackOverflowError from recursively generating counter name with Label
 * 4302: Global Hotkey cannot preserve execution order across server
 * 3864: IllegalStateException in ReturnToDeck.promptForDrawPile() when no
   decks exist
 * 3040: ClassCastException in CommandServer.run()
+* 2711: Batik throws DOMException on SVG with flowRoot element
 * 2694: Warn (Windows) users to reboot after Java upgrade
 * 2671: BMPs are incompatible with memory-mapped images
 * 2582: Mask and Peek menu entries are not translatable
