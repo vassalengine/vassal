@@ -56,6 +56,7 @@ import VASSAL.tools.io.IOUtils;
  * @since 3.1.0
  */
 public class SVGImageUtils {
+  // NB: SAXSVGDocumentFactory isn't thread-safe, we have to synchronize on it.
   protected static final SAXSVGDocumentFactory factory =
     new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
 
@@ -82,7 +83,9 @@ public class SVGImageUtils {
     // get the SVG
     final Document doc;
     try {
-      doc = factory.createDocument(null, in);
+      synchronized (factory) {
+        doc = factory.createDocument(null, in);
+      }
       in.close();
     }
     catch (DOMException e) {
@@ -142,7 +145,9 @@ public class SVGImageUtils {
 
     Document doc = null;
     try {
-      doc = factory.createDocument(here.toString());
+      synchronized (factory) {
+        doc = factory.createDocument(here.toString());
+      }
     }
     catch (DOMException e) {
       throw (IOException) new IOException().initCause(e);
