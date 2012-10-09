@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 import VASSAL.build.GameModule;
@@ -113,16 +114,28 @@ public class ArchiveWriter extends DataArchive {
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
     if (name.toLowerCase().endsWith(".svg")) {
-      for (String s : SVGImageUtils.getExternalReferences(path)) {
+      List<String> exrefs = null;
+      try {
+        exrefs = SVGImageUtils.getExternalReferences(path);
+      }
+      catch (IOException e) {
+        ReadErrorDialog.error(e, name);
+        return;
+      }
+
+      for (String s : exrefs) {
         final File f = new File(s);
 
+        byte[] buf = null;
         try {
-          addFile(imageDir + f.getName(),
-                  SVGImageUtils.relativizeExternalReferences(s));
+          buf = SVGImageUtils.relativizeExternalReferences(s);
         }
         catch (IOException e) {
           ReadErrorDialog.error(e, f);
+          continue;
         }
+
+        addFile(imageDir + f.getName(), buf);
       }
     }
     // otherwise just add what we were given

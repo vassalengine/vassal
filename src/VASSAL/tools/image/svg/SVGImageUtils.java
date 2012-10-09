@@ -38,7 +38,9 @@ import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,6 +85,9 @@ public class SVGImageUtils {
       doc = factory.createDocument(null, in);
       in.close();
     }
+    catch (DOMException e) {
+      throw new ImageIOException(name, e);
+    }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
     }
@@ -114,7 +119,8 @@ public class SVGImageUtils {
    *
    * @param path the path of the file to check for external references
    */
-  public static List<String> getExternalReferences(String path) {
+  public static List<String> getExternalReferences(String path)
+                                                           throws IOException {
     final ArrayList<String> reflist = new ArrayList<String>();
     reflist.add(path);
     return getExternalReferences(path, reflist);
@@ -128,8 +134,9 @@ public class SVGImageUtils {
    * @param path the path of the file to check for external references
    * @param known the list of references already found
    */
-  protected static List<String> getExternalReferences(String path,
-                                               List<String> known) {
+  protected static List<String> getExternalReferences(
+                          String path, List<String> known) throws IOException {
+
     final HashSet<String> follow = new HashSet<String>();
     try {
       final URL here = new URL("file", null, new File(path).getCanonicalPath());
@@ -153,9 +160,8 @@ public class SVGImageUtils {
         }
       }
     }
-    // FIXME: review error message
-    catch (IOException ex) {
-//      ErrorLog.warn(ex);
+    catch (DOMException e) {
+      throw (IOException) new IOException().initCause(e);
     }
 
     for (String s : follow) {
@@ -171,7 +177,7 @@ public class SVGImageUtils {
    * @param path the path of the file to be processed
    */
   public static byte[] relativizeExternalReferences(String path)
-      throws IOException {
+                                                           throws IOException {
     // use the GenericDOMImplementation here because
     // SVGDOMImplementation adds unwanted attributes to SVG elements
     final SAXDocumentFactory fac = new SAXDocumentFactory(
@@ -179,11 +185,17 @@ public class SVGImageUtils {
       XMLResourceDescriptor.getXMLParserClassName());
 
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
-    final Document doc = fac.createDocument(here.toString());
-    relativizeElement(doc.getDocumentElement());
-
     final StringWriter sw = new StringWriter();
-    DOMUtilities.writeDocument(doc, sw);
+
+    try {
+      final Document doc = fac.createDocument(here.toString());
+      relativizeElement(doc.getDocumentElement());
+      DOMUtilities.writeDocument(doc, sw);
+    }
+    catch (DOMException e) {
+      throw (IOException) new IOException().initCause(e);
+    }
+
     sw.flush();
     return sw.toString().getBytes();
   }

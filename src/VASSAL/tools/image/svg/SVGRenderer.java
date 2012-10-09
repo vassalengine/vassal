@@ -51,9 +51,12 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 
 import VASSAL.build.GameModule;
@@ -93,6 +96,9 @@ public class SVGRenderer {
         doc = docFactory.createDocument(file, in);
       }
       in.close();
+    }
+    catch (DOMException e) {
+      throw (IOException) new IOException().initCause(e);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -194,6 +200,9 @@ public class SVGRenderer {
         final Document doc = loadDocument(uri, in);
         in.close();
         return doc;
+      }
+      catch (DOMException e) {
+        throw (IOException) new IOException().initCause(e);
       }
       finally {
         IOUtils.closeQuietly(in);
