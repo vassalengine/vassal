@@ -323,6 +323,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     if (label != null && !label.equals(lastCachedLabel)) {
       imagePainter.setSource(null);
       lastCachedLabel = null;
+      position = null;
     }
 
     if (imagePainter.getSource() == null &&
