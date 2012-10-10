@@ -139,6 +139,8 @@ New Features in 3.2
   - Follow Property name may be a BeanShell expression.
   - Improved layout for Layer dialog in Editor.
 
+* Notify user when image loading fails [RFE 1887]
+
 
 The following bugs in 3.2.0-beta3 are fixed in 3.2.0-beta4:
 
