@@ -154,18 +154,15 @@ The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
 * 4696: Embellishment follows property to display first level when property is
   null instead of erroring
 * 4477: Image tiler invoked with argument list longer than Windows supports
-
 * Tiles for removed modules are now removed from tile cache.
 
 The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 
 * Check for resource paths missing initial slash. This fixes the problem
   with resources like moved.gif not being found.
-
 * Include "images/" in tile names when running TilingHandler. This helps
   us handle directories nested under images, and archives which have no
   images directory at all (such as VASL map archives).
-
 * Property filter built incorrectly in MassKeyCommand.
 
 The following bugs in 3.1 are fixed in 3.2.0-beta4:
@@ -185,6 +182,7 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 * 4452: Batik loads com.sun.image.codec.jpeg.TruncatedFileException, which
   doesn't exist in Java 7
 * 4402: StackOverflowError from recursively generating counter name with Label
+* 4322: Bad justification for text labels containing global properties
 * 4302: Global Hotkey cannot preserve execution order across server
 * 4155: NoClassDefFoundError for com.sun.management.OperatingSystemMXBean
 * 3864: IllegalStateException in ReturnToDeck.promptForDrawPile() when no
