@@ -142,6 +142,10 @@ New Features in 3.2
 * Notify user when image loading fails [RFE 1887]
 
 
+The following bugs in 3.2.0-beta4 are fixed in ???:
+
+* 9407: Batik 1.8pre should be compiled for Java 5
+
 The following bugs in 3.2.0-beta3 are fixed in 3.2.0-beta4:
 
 * 4822: Some trait windows are opening too large
