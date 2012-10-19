@@ -172,6 +172,7 @@ The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
 The following bugs in 3.1 are fixed in 3.2.0-beta4:
 
 * 4831: Module revision that created log is not displayed in errorLog
+* 4820: ExecutionException in ImageSaver due to running out of memory
 * 4818: Hide empty TurnTracker launch buttons
 * 4807: Vengine.jar should be readable by group and other
 * 4793: ChangePropertyButton cannot be cast to GamePiece when creating
