@@ -1359,11 +1359,13 @@ public class ModuleManagerWindow extends JFrame {
       );
 
       final File tdir = new File(Info.getConfDir(), "tiles/" + hstr);
-      try {
-        FileUtils.forceDelete(tdir);
-      }
-      catch (IOException e) {
-        WriteErrorDialog.error(e, tdir);
+      if (tdir.exists()) {
+        try {
+          FileUtils.forceDelete(tdir);
+        }
+        catch (IOException e) {
+          WriteErrorDialog.error(e, tdir);
+        }
       }
     }
 
