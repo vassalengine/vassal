@@ -479,13 +479,8 @@ e.printStackTrace();
         al.add("-Xdock:name=" + d_name);
         al.add("-Xdock:icon=" + d_icon);
 
-        // Quartz can cause font rendering problems; turn it off?
-        final Boolean disableQuartz =
-          (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_QUARTZ);
-
-        al.add("-Dapple.awt.graphics.UseQuartz=" +
-          (Boolean.TRUE.equals(disableQuartz) ? "false" : "true")
-        );
+        // Quartz can cause font rendering problems; turn it off
+        al.add("-Dapple.awt.graphics.UseQuartz=false");
       }
       else if (SystemUtils.IS_OS_WINDOWS) {
         // Disable the 2D to Direct3D pipeline?

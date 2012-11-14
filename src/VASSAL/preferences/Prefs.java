@@ -281,16 +281,6 @@ public class Prefs implements Closeable {
       globalPrefs.addOption(d3dConf);
     }
 
-    // Option to disable Quartz renderer
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      final BooleanConfigurer quartzConf = new BooleanConfigurer(
-        DISABLE_QUARTZ,
-        Resources.getString("Prefs.disable_quartz"),
-        Boolean.TRUE
-      );
-      globalPrefs.addOption(quartzConf);
-    }
-
     final BooleanConfigurer wizardConf = new BooleanConfigurer(
       WizardSupport.WELCOME_WIZARD_KEY,
       Resources.getString("WizardSupport.ShowWizard"),
