@@ -37,6 +37,7 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
 
   public PropertyNameExpressionBuilder(Configurer c, JDialog parent, EditablePiece piece) {
     super(c, parent, piece);
+    expression.setValue((BeanShellExpression.convertProperty(target.getValueString())));
   }
 
   /**

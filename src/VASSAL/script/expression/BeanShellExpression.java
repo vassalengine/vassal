@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 Brent Easton
+ * Copyright (c) 2009-2012 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -81,6 +81,40 @@ public class BeanShellExpression extends Expression {
       }
     };
   }
+  
+  /**
+   * Convert a Property name to it's BeanShell equivalent. 
+   * 
+   * @param property name
+   * @return beanshell equivalent
+   */
+  public static String convertProperty (String prop) {
+    // Null Expression
+    if (prop == null || prop.length() == 0) {
+      return "";
+    }
+    
+    // Already a bsh exopression?
+    if (isBeanShellExpression(prop)) {
+      return strip(prop);
+    }
+    
+    // Check it follows Java variable rules
+    boolean ok = Character.isJavaIdentifierStart(prop.charAt(0));
+    if (ok) {
+      for (int i=1; i < prop.length() && ok; i++) {
+        ok = Character.isJavaIdentifierPart(prop.charAt(i));
+      }
+    }
+        
+    // If not a Java variable, wrap it in GetProperty()
+    return ok ? prop : "GetProperty(\""+prop+"\")";
+  }
+  
+  public static boolean isBeanShellExpression(String expr) {
+    return expr.startsWith("{") && expr.endsWith("}");
+  }
+  
   /**
    * Create a BeanShellExpression.
    *

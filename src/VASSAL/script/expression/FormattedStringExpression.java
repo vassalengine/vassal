@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 Brent Easton
+ * Copyright (c) 2009-2012 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -109,7 +109,7 @@ public class FormattedStringExpression extends Expression {
           buffer.append("+");
         }
         if (isProperty && st.hasMoreTokens()) {
-          buffer.append(token);
+          buffer.append(BeanShellExpression.convertProperty(token));
         }
         else {
           buffer.append("\"");

@@ -494,7 +494,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected void checkPropertyLevel() {
     if (!followProperty || propertyName.length() == 0) return;
 
-    final Expression ex = BeanShellExpression.createExpression(propertyName);
+    final Expression ex = BeanShellExpression.createExpression(BeanShellExpression.convertProperty(propertyName));
     String val = "";
     try {
       
