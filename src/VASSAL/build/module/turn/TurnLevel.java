@@ -378,7 +378,7 @@ public abstract class TurnLevel extends TurnComponent {
    */
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<String>();
-    if (propertyName.length() > 0) {
+    if (propertyName != null && propertyName.length() > 0) {
       l.add(propertyName);
     }
     return l;
