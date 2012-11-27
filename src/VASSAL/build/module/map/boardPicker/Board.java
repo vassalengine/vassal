@@ -229,14 +229,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
         boolean tiled = false;
         try {
-          tiled = ts.tileExists(imageFile, 0, 0, 1.0);
+          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);
         }
         catch (ImageIOException e) {
           // ignore, not tiled
         }
 
         if (tiled) {
-          boardImageOp = Op.loadLarge("images/" + imageFile);
+          boardImageOp = Op.loadLarge(imageFile);
         }
         else {
           boardImageOp = Op.load(imageFile);
