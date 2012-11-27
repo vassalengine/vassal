@@ -87,6 +87,13 @@ public class OpCache {
     public int hashCode() {
       return hash;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+      return this.getClass().getName() +
+        "[op=" + op + ",version=" + version + "]";
+    }
   }
 
   protected final ConcurrentMap<Key<?>,Future<?>> cache =
