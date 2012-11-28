@@ -714,7 +714,7 @@ public class DoActionButton extends AbstractConfigurable
   public String getComponentName() {
     return getConfigureName();
   }
-  
+
   /**
    * Implement PropertyNameSource - Expose loop index property if looping turned on
    */
@@ -728,6 +728,6 @@ public class DoActionButton extends AbstractConfigurable
       return super.getPropertyNames();
     }
   }
-  
-  
+
+
 }

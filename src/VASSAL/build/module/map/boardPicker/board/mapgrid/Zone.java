@@ -531,7 +531,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     return l;
   }
-  
+
   /*
    * Return a named Global Property
    *
@@ -540,7 +540,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
-  
+
   public String getMutablePropertiesContainerId() {
     return getMap().getMapName()+":"+getConfigureName();
   }

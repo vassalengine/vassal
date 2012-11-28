@@ -552,7 +552,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     l.add(getConfigureName()+"_result");
     return l;
   }
-  
+
   public String encode(Command c) {
     if (c instanceof ShowResults) {
       final ShowResults c2 = (ShowResults) c;

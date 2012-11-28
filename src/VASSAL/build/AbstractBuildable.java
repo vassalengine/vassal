@@ -220,9 +220,9 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
       }
     }
   }
-  
+
   /**
-   * Default implementation of PropertyNameSource - No properties exposed 
+   * Default implementation of PropertyNameSource - No properties exposed
    */
   public List<String> getPropertyNames() {
     return new ArrayList<String>();

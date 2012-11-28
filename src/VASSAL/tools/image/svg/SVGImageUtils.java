@@ -69,7 +69,7 @@ public class SVGImageUtils {
    * @throws IOException if the image cannot be read
    */
   public static Dimension getImageSize(InputStream in) throws IOException {
-    return getImageSize("", in); 
+    return getImageSize("", in);
   }
 
   /**

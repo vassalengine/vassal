@@ -497,10 +497,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     final Expression ex = BeanShellExpression.createExpression(BeanShellExpression.convertProperty(propertyName));
     String val = "";
     try {
-      
+
       val = ex.evaluate(Decorator.getOutermost(this));
       if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
-      
+
       int v = Integer.parseInt(val) - firstLevelValue + 1;
       if (v <= 0) v = 1;
       if (v > nValues) v = nValues;
@@ -511,7 +511,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
     }
     catch (ExpressionException e) {
-      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty["+propertyName+"]", e);     
+      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty["+propertyName+"]", e);
     }
     return;
   }
@@ -819,7 +819,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public int getVersion() {
     return version;
   }
@@ -906,12 +906,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JLabel decreaseLabel;
     private JLabel resetLabel;
     private JLabel rndLabel;
-    
+
     private JLabel actionLabel;
     private JLabel menuLabel;
     private JLabel keyLabel;
     private JLabel optionLabel;
-    
+
     public Ed(Embellishment e) {
       Box box;
       version = e.version;
@@ -921,7 +921,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       nameConfig = new StringConfigurer(null, "Name: ", e.getName());
       controls.add(nameConfig.getControls(), "span 4,wrap,growx");
-      
+
       alwaysActiveConfig = new BooleanConfigurer(null, "Always active?", e.alwaysActive);
       alwaysActiveConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -953,7 +953,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       firstLevelConfig = new IntConfigurer(null, " Level 1 = ", e.firstLevelValue);
       levelBox.add(firstLevelConfig.getControls());
       controls.add(levelBox, "span 2,wrap");
-      
+
       followConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           showHideFields();
@@ -965,19 +965,19 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final Font boldFont = new Font (defaultFont.getFamily(), Font.BOLD, defaultFont.getSize());
       actionLabel.setFont(boldFont);
       controls.add(actionLabel);
-      
+
       menuLabel = new JLabel("Menu Command");
       menuLabel.setFont(boldFont);
       controls.add(menuLabel, "align center");
-      
+
       keyLabel = new JLabel("Key");
       keyLabel.setFont(boldFont);
       controls.add(keyLabel, "align center");
-      
+
       optionLabel = new JLabel("Option");
       optionLabel.setFont(boldFont);
       controls.add(optionLabel, "align center,wrap");
-      
+
       activateConfig = new NamedHotKeyConfigurer(null, "", e.activateKeyStroke);
       increaseConfig = new NamedHotKeyConfigurer(null, "", e.increaseKeyStroke);
       decreaseConfig = new NamedHotKeyConfigurer(null, "", e.decreaseKeyStroke);
@@ -990,13 +990,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(activateCommand.getControls(), "align center");
       controls.add(activateConfig.getControls(), "wrap");
 
-      increaseLabel = new JLabel("Increase Level"); 
+      increaseLabel = new JLabel("Increase Level");
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(null, "", e.upCommand);
       controls.add(upCommand.getControls(), "align center");
       controls.add(increaseConfig.getControls(), "wrap");
 
-      decreaseLabel = new JLabel("Decrease Level"); 
+      decreaseLabel = new JLabel("Decrease Level");
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(null, "", e.downCommand);
       controls.add(downCommand.getControls(), "align center");
@@ -1008,7 +1008,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(resetCommand.getControls(), "align center");
       controls.add(resetConfig.getControls());
       controls.add(resetLevel.getControls(), "wrap");
-           
+
       rndLabel = new JLabel("Randomize");
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(null, "", e.rndText);
@@ -1083,7 +1083,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       });
       buttonPanel.add(b, "growx");
-      
+
       b = new JButton("Remove Level");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1160,7 +1160,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         activateCommand.getControls().setVisible(true);
         activateConfig.getControls().setVisible(true);
       }
-      
+
       final boolean controlled = !followConfig.booleanValue().booleanValue();
       loop.setEnabled(controlled);
       propertyConfig.getControls().setVisible(!controlled);
@@ -1173,12 +1173,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       decreaseLabel.setVisible(controlled);
       downCommand.getControls().setVisible(controlled);
       decreaseConfig.getControls().setVisible(controlled);
-      
+
       resetLabel.setVisible(controlled);
       resetCommand.getControls().setVisible(controlled);
       resetConfig.getControls().setVisible(controlled);
       resetLevel.getControls().setVisible(controlled);
-      
+
       rndLabel.setVisible(controlled);
       rndCommand.getControls().setVisible(controlled);
       rndKeyConfig.getControls().setVisible(controlled);
@@ -1188,11 +1188,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       menuLabel.setVisible(labelsVisible);
       keyLabel.setVisible(labelsVisible);
       optionLabel.setVisible(labelsVisible);
-      
+
       Decorator.repack(controls);
-      
+
     }
-    
+
     private void updateLevelName() {
       int index = images.getList().getSelectedIndex();
       if (index < 0) {

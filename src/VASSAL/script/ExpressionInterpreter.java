@@ -283,7 +283,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * Convert a String value into a wrapped primitive object if possible.
    * Note this is a non-static copy of BeanShell.wrap(). Callbacks from
    * beanshell (e.g. getProperty) fail if an attempt is made to call a static method.
-   * 
+   *
    * @param value
    * @return wrapped value
    */
@@ -306,7 +306,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
     }
   }
-  
+
   /*****************************************************************
    * Callbacks from BeanShell Expressions to Vassal
    **/

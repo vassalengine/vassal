@@ -185,7 +185,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void addTo(Buildable parent) {
-    parentContainer = (MutablePropertiesContainer) parent; 
+    parentContainer = (MutablePropertiesContainer) parent;
     property.addTo(parentContainer);
     tempToolbar.setDelegate((ToolBarComponent) parent);
     GameModule.getGameModule().addCommandEncoder(this);
@@ -233,7 +233,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected String getPropertyId() {
     return getConfigureName();
   }
-  
+
   protected String getContainerId() {
     return parentContainer == null ? "" : parentContainer.getMutablePropertiesContainerId();
   }
@@ -282,7 +282,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     public GlobalProperty getProperty() {
       return target;
     }
-    
+
     protected void executeCommand() {
       target.property.setPropertyValue(newValue);
     }

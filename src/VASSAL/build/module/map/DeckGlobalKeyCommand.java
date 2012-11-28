@@ -55,7 +55,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     this();
     decode(code);
   }
-  
+
   public DeckGlobalKeyCommand(String code, PropertySource source) {
     this(code);
     propertySource = source;

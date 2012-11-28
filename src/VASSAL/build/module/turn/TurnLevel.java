@@ -372,7 +372,7 @@ public abstract class TurnLevel extends TurnComponent {
     myI18nData.setAttributeTranslatable(PROP, false);
     return myI18nData;
   }
-  
+
   /**
    * Implement PropertyNameSource - Expose the name of this level property
    */

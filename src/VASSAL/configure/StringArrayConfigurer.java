@@ -150,19 +150,19 @@ public class StringArrayConfigurer extends Configurer {
     }
     return textField;
   }
-  
+
   protected String getTextValue() {
     return textField.getText();
   }
-  
+
   protected void setTextValue(String s) {
     textField.setText(s);
   }
-  
+
   protected void addTextActionListener(ActionListener a) {
     textField.addActionListener(a);
   }
-  
+
   public String[] getStringArray() {
     if (value instanceof String[]) {
       return (String[]) value;

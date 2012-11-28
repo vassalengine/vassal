@@ -63,7 +63,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   protected boolean reshufflable;
   protected Deck myDeck;
   protected PropertySource source;
-  
+
   private VisibilityCondition colorVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isDrawOutline();
@@ -736,7 +736,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public void setDeck(Deck deck) {
     myDeck = deck;
   }
-  
+
   protected boolean placeNonStackingSeparately() {
     return false;
   }

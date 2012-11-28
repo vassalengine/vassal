@@ -94,7 +94,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     tempToolbar.setDelegate((ToolBarComponent) parent);
     propertySource = (PropertySource) parent;
     GameModule.getGameModule().addCommandEncoder(
-      new ChangePropertyCommandEncoder(this));    
+      new ChangePropertyCommandEncoder(this));
   }
 
   public void addMutableProperty(String key, MutableProperty p) {
@@ -136,7 +136,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
     return property;
   }
- 
+
   /*
    * Null i18n key prefix for this component
    */
@@ -147,14 +147,14 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public MutablePropertiesContainer getParent() {
     return parent;
   }
-  
+
   /**
    * Use the identity of the owning container (i.e. Module, map or zone)
    */
   public String getMutablePropertiesContainerId() {
     return parent.getMutablePropertiesContainerId();
   }
-  
+
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<String>();
     for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {

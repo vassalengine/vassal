@@ -94,7 +94,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   public boolean contains(Point p) {
     return container.contains(p);
   }
-  
+
   public void removeGrid(MapGrid grid) {
     if (background == grid) {
       background = null;

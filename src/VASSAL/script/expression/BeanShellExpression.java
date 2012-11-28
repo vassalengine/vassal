@@ -81,10 +81,10 @@ public class BeanShellExpression extends Expression {
       }
     };
   }
-  
+
   /**
-   * Convert a Property name to it's BeanShell equivalent. 
-   * 
+   * Convert a Property name to it's BeanShell equivalent.
+   *
    * @param property name
    * @return beanshell equivalent
    */
@@ -93,12 +93,12 @@ public class BeanShellExpression extends Expression {
     if (prop == null || prop.length() == 0) {
       return "";
     }
-    
+
     // Already a bsh exopression?
     if (isBeanShellExpression(prop)) {
       return strip(prop);
     }
-    
+
     // Check it follows Java variable rules
     boolean ok = Character.isJavaIdentifierStart(prop.charAt(0));
     if (ok) {
@@ -106,15 +106,15 @@ public class BeanShellExpression extends Expression {
         ok = Character.isJavaIdentifierPart(prop.charAt(i));
       }
     }
-        
+
     // If not a Java variable, wrap it in GetProperty()
     return ok ? prop : "GetProperty(\""+prop+"\")";
   }
-  
+
   public static boolean isBeanShellExpression(String expr) {
     return expr.startsWith("{") && expr.endsWith("}");
   }
-  
+
   /**
    * Create a BeanShellExpression.
    *

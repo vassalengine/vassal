@@ -46,7 +46,7 @@ public interface MutablePropertiesContainer {
   MutableProperty getMutableProperty(String propertyName);
 
   /** Return a unique Id for the container */
-  
+
   String getMutablePropertiesContainerId();
   /**
    * Simple implementation of {@link MutablePropertiesContainer}
@@ -57,15 +57,15 @@ public interface MutablePropertiesContainer {
     private Map<String,MutableProperty> props =
       new HashMap<String,MutableProperty>();
     private String id;
-     
+
     public Impl() {
       this("");
     }
-    
+
     public Impl (String id) {
       this.id = id;
     }
-    
+
     public String getMutablePropertiesContainerId() {
       return id;
     }

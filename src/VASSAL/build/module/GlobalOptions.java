@@ -391,7 +391,7 @@ public class GlobalOptions extends AbstractConfigurable {
       return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(prefsPrompt));
     }
   }
-  
+
   /**
    * Implement PropertyNameSource - Expose our preference names
    */
@@ -404,5 +404,5 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     return l;
   }
-  
+
 }

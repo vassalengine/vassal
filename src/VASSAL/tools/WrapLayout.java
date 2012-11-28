@@ -176,12 +176,12 @@ public class WrapLayout extends FlowLayout {
 
     dim.height += rowHeight;
   }
-  
+
   /**
   * Trap for recursive failure to fit components
   */
   boolean recursing = false;
-  
+
   /**
    * Lays out the container using the FlowLayout. If the components as laid
    * out do not fit in the size of then cause tree to be layout again unless
@@ -196,7 +196,7 @@ public class WrapLayout extends FlowLayout {
      */
     int maxX = 0;
     int maxY = 0;
-    
+
     for (int i = 0; i < target.getComponentCount(); i++) {
       final Component cmp = target.getComponent(i);
       if (!cmp.isVisible()) {
@@ -213,14 +213,14 @@ public class WrapLayout extends FlowLayout {
         maxY = b.y + b.height;
       }
     }
-    
+
     final Dimension size = target.getSize();
-    
+
     if (maxX > size.width || maxY > size.height) {
       if (recursing) {
         return;
       }
-      
+
       recursing = true;
       target.invalidate();
 

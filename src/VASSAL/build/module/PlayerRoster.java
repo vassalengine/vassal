@@ -73,7 +73,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   protected LaunchButton retireButton;
   protected List<SideChangeListener> sideChangeListeners =
     new ArrayList<SideChangeListener>();
-  
+
   protected String translatedObserver;
 
   public PlayerRoster() {
@@ -85,7 +85,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
     retireButton.setVisible(false);
-    
+
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
 
@@ -214,7 +214,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return;
     }
 
-    final String[] options = allSidesAllocated() ? 
+    final String[] options = allSidesAllocated() ?
       new String[]{
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO)
@@ -226,7 +226,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       };
 
     final int CANCEL = options.length - 1;
-    
+
     final int option = JOptionPane.showOptionDialog(
       GameModule.getGameModule().getFrame(),
       Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()),
@@ -237,7 +237,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       options,
       Resources.getString("PlayerRoster.become_observer") //$NON-NLS-1$
     );
-  
+
     if (option != CANCEL) {
       final String oldSide = getMySide();
 
@@ -249,7 +249,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         newSide = promptForSide();
         if (newSide == null) {
           return;
-        } 
+        }
       }
 
       remove(GameModule.getUserId());
@@ -257,7 +257,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       final PlayerInfo me = new PlayerInfo(
         GameModule.getUserId(),
         GlobalOptions.getInstance().getPlayerId(),
-        newSide 
+        newSide
       );
       final Add a = new Add(this, me.playerId, me.playerName, me.side);
       a.execute();

@@ -49,7 +49,7 @@ public class StringConfigurer extends Configurer {
     this (key, name);
     this.length = length > 0 ? length : DEFAULT_LENGHTH;
   }
-  
+
   public String getValueString() {
     return (String) value;
   }
@@ -91,7 +91,7 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-    
+
     return new JTextField(length);
   }
 }

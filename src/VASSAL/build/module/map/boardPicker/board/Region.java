@@ -202,11 +202,11 @@ public class Region extends AbstractConfigurable {
 
     final Point newP = new Point (getOrigin());
     newP.translate(dx, dy);
-    
+
     if (myGrid.container.contains(newP)) {
       moveOrigin(dx, dy);
     }
-    
+
     return;
   }
 

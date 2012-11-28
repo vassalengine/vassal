@@ -584,7 +584,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public boolean contains(Point p) {
     return bounds().contains(p);
   }
-  
+
   public MapGrid getGrid() {
     return grid;
   }

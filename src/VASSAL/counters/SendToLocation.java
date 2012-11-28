@@ -257,7 +257,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
         }
         else {
-          if (propertyFilter.accept(this, piece)) {  
+          if (propertyFilter.accept(this, piece)) {
             target = piece;
           }
         }

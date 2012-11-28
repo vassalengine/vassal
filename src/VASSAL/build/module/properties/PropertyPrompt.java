@@ -63,7 +63,7 @@ public class PropertyPrompt implements PropertyChanger {
     int getMaximumValue();
 
     int getMinimumValue();
-    
+
     PropertySource getPropertySource();
   }
 

@@ -293,7 +293,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   public PropertySource getPropertySource() {
     return Decorator.getOutermost(this);
   }
-  
+
   public PieceEditor getEditor() {
     return new Ed(this);
   }

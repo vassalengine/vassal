@@ -71,7 +71,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   protected static int maxScrollItems = 0;
   protected static final int MAX_SCROLL_ITEMS = 40;
-  
+
   protected JPanel expressionPanel;
   protected JPanel detailPanel;
   protected Validator validator;
@@ -217,8 +217,8 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       }});
     constantMenu.add(stringItem);
     popup.add(constantMenu);
-    
-    
+
+
     final JMenu propertyMenu = new JMenu("Property");
 
     if (target != null) {
@@ -233,7 +233,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenu globalsMenu = new JMenu("Global Property");
     buildGlobalMenu(globalsMenu, GameModule.getGameModule(), true);
     propertyMenu.add(globalsMenu);
-    
+
     final JMenu vassalMenu = new JMenu("Vassal Property");
     addProp(vassalMenu, GlobalOptions.PLAYER_SIDE);
     addProp(vassalMenu, GlobalOptions.PLAYER_NAME);
@@ -296,15 +296,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       insertName(result.getValueString());
     }
   }
-  
+
   protected void buildInteger() {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new IntBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
     if (result.getValue() != null && result.getValueString().length() > 0) {
       insertName(result.getValueString());
-    }    
+    }
   }
-  
+
   protected void buildString() {
     final StringConfigurer result = new StringConfigurer(null, "", "");
     new StrBuilder(result, (JDialog) p.getTopLevelAncestor()).setVisible(true);
@@ -330,7 +330,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void addProp(JMenu menu, final String propName) {
     addProp(menu, propName, false);
   }
-  
+
   protected void addProp(JMenu menu, final String propName, boolean sort) {
     final JMenuItem item = new JMenuItem(propName);
     item.addActionListener(new ActionListener(){
@@ -393,7 +393,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
    * Create a menu of Global Properties recorded in this module, based on
    * the module build structure
    */
-  
+
   protected void buildGlobalMenu(JMenu parentMenu, AbstractBuildable target, boolean useParentMenu) {
     final List<Buildable> buildables = target.getBuildables();
     String menuName = ConfigureTree.getConfigureName(target.getClass());
@@ -401,16 +401,16 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       final String n = ((AbstractConfigurable) target).getConfigureName();
       if (n != null && n.length() > 0) {
         menuName += " " + n;
-      }      
+      }
     }
     final JMenu myMenu = new JMenu(menuName);
-        
+
     final List<String> propNames = target.getPropertyNames();
     for (String propName : propNames) {
-      addProp(useParentMenu ? parentMenu : myMenu, propName, true);      
+      addProp(useParentMenu ? parentMenu : myMenu, propName, true);
     }
-    
-    for (Buildable b : buildables) {      
+
+    for (Buildable b : buildables) {
       if (b instanceof AbstractConfigurable) {
         // Remove 'filler' menu levels due to intermediate holding components
         final boolean useParent = (b instanceof GlobalProperties || b instanceof Board ||b instanceof ZonedGrid);
@@ -420,9 +420,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         buildGlobalMenu(myMenu,(AbstractBuildable) b, true);
       }
     }
-    
+
     if (! useParentMenu & myMenu.getItemCount() > 0) {
-      MenuScroller.setScrollerFor(myMenu, getMaxScrollItems(), 100);   
+      MenuScroller.setScrollerFor(myMenu, getMaxScrollItems(), 100);
       int pos = -1;
       for (int i = 0; i < parentMenu.getItemCount() && pos < 0; i++) {
         if (myMenu.getText().compareTo(parentMenu.getItem(i).getText()) <= 0) {
@@ -432,16 +432,16 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       parentMenu.add(myMenu, pos);
     }
   }
-  
+
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
-      final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();     
+      final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
       maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/itemSize.height);
     }
     return maxScrollItems;
-    
+
   }
-  
+
   /**
    * Insert a property name into the expression
    * @param name property name
@@ -449,7 +449,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void insertPropertyName(String name) {
     insertName (cleanName(name));
   }
-  
+
   protected void insertName(String name) {
     String work = nameField.getText();
     int pos = nameField.getCaretPosition();
@@ -496,7 +496,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
     return valid ? name : "GetProperty(\""+name+"\")";
   }
-  
+
   protected void setDetails(String error, List<String> v, List<String> m) {
     errorMessage.setValue(error);
     String s = "Vassal Properties:  " + (v == null ? "" : v.toString());

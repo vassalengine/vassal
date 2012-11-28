@@ -178,7 +178,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this(type);
     propertySource = source;
   }
-  
+
   public void setPropertySource(PropertySource source) {
     propertySource = source;
     if (globalCommands != null) {
@@ -187,7 +187,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
   }
-  
+
   public void sideChanged(String oldSide, String newSide) {
     updateCountsAll();
   }
@@ -402,7 +402,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       GameModule.getGameModule().addKeyStrokeListener(reverseListener);
     }
     reverseListener.setKeyStroke(getReverseKey());
-    
+
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
     if (myPile != null) {
       myPile.setDeck(this);

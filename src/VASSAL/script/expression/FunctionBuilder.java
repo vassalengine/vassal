@@ -59,7 +59,7 @@ public class FunctionBuilder extends JDialog {
     save = target.getValueString();
     this.function = function;
     setLayout(new MigLayout("fillx,ins 0"));
-    
+
     JPanel p = new JPanel(new MigLayout("wrap 1,fillx"));
 
     p.add(new JLabel(desc), "align center");

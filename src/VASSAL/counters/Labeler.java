@@ -155,7 +155,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     // Cannot use $PieceName$ in a label format, must use $pieceName$
     return s.replaceAll("$"+BAD_PIECE_NAME+"$", "$"+PIECE_NAME+"$");
   }
-  
+
   @Override
   public Object getLocalizedProperty(Object key) {
     if (key.equals(propertyName)) {
@@ -247,7 +247,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return f.getLocalizedText(Decorator.getOutermost(this));
     }
   }
-  
+
 
 // FIXME: This doesn't belong here. Should be in ImageUtils instead?
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
@@ -681,7 +681,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       descConfig = new StringConfigurer(null, "Description:  ", l.description);
       controls.add(descConfig.getControls());
-      
+
       initialValue = new StringConfigurer(null, "Text:  ", l.label);
       controls.add(initialValue.getControls());
 

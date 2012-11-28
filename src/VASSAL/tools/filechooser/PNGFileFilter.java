@@ -22,7 +22,7 @@ package VASSAL.tools.filechooser;
  * A FileFilter for PNG images. Used by file choosers
  * to filter out files which aren't PNGs.
  *
- * @author Joel Uckelman 
+ * @author Joel Uckelman
  * @since 3.2.0
  */
 public class PNGFileFilter extends ExtensionFileFilter {

@@ -460,7 +460,7 @@ public class DiceButton extends AbstractConfigurable {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
-  
+
   /**
    * Implement PropertyNameSource - Expose roll result property
    */

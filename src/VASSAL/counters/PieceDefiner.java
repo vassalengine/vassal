@@ -639,7 +639,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       add(new JLabel());
       add(panel);
       add(new JLabel());
-      
+
       pack();
       setLocationRelativeTo(getOwner());
     }

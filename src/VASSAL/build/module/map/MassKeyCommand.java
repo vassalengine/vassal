@@ -147,7 +147,7 @@ public class MassKeyCommand extends AbstractConfigurable
     propertySource = source;
     globalCommand.setPropertySource(source);
   }
-  
+
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

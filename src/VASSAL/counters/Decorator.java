@@ -424,9 +424,9 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public void setOldProperties() {
     setOldProperties(this);
   }
-  
+
   /**
-   * 
+   *
    * Utility method to allow Decorator Editors to repack themselves. c must be one of the
    * components that make up the Decorator's controls.
    */
@@ -434,6 +434,6 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     final Window w = SwingUtilities.getWindowAncestor(c);
     if (w != null) {
       w.pack();
-    } 
+    }
   }
 }

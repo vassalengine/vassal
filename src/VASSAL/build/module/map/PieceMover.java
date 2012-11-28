@@ -804,7 +804,7 @@ public class PieceMover extends AbstractBuildable
     static public AbstractDragHandler getTheDragHandler() {
       return theDragHandler;
     }
-    
+
     static public void setTheDragHandler(AbstractDragHandler myHandler) {
         theDragHandler = myHandler;
     }

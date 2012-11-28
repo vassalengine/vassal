@@ -48,7 +48,7 @@ public class GlobalCommand {
   public GlobalCommand(Loopable l) {
     this (l, null);
   }
-  
+
   public GlobalCommand(Loopable l, PropertySource p) {
     owner = l;
     source = p;
@@ -57,7 +57,7 @@ public class GlobalCommand {
   public void setPropertySource(PropertySource ps) {
     source = ps;
   }
-  
+
   public void setKeyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
   }

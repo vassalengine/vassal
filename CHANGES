@@ -39,7 +39,7 @@ Bugs fixed:
 * 4184: Should use DocumentListener to catch updates on Swing text fields
 * 4132: Bad layout for Map window obscures Global Key Command buttons
 * 3976: Double characters appearing for NamedKeyStroke
-* 3075: NegativeArraySizeException when snapshotting large maps 
+* 3075: NegativeArraySizeException when snapshotting large maps
 * 1924: Put settings directory in system-appropriate location
 * Bad tile-counting when snapshotting maps
 
@@ -79,7 +79,7 @@ Bugs fixed:
 
 * 3500: ArrayIndexOutOfBoundsException in TurnComponent.getTurnLevel()
 * 3486: ConfigureTree.isValidParent() should permit subclasses
-* 3479: DynamicProperty.setProperty() casts non-Strings to String 
+* 3479: DynamicProperty.setProperty() casts non-Strings to String
 * 3472: Initial value of DynamicProperty is not evaluated
 * 3463: Infinite recursion if $PieceName$ specified as Text Label
 * 3465: Empty DynamicProperty causes IllegalStateException on loading
@@ -134,7 +134,7 @@ upgrading to at least this version.
 * Bug: Only select marker if original piece was selected. Prevents
   autoselecting of markers when placed via Global Key Command.
 
-3.1.13 - 2 December 2009 
+3.1.13 - 2 December 2009
 
 * Bug 2902254: NPE in {Player,Editor}.PromptLaunchAction.actionPerformed()
 * Bug 2900930: Trigger Actions not disabled when Property Expression fails
@@ -174,8 +174,8 @@ is available.
 * Bug 2835735: ArrayIndexOutOfBoundsException in PieceDefiner
 * Bug 2833840: IllegalArgumentException in FileChooser with Java 1.5
 * Bug 2832499: IllegalArgumentException in PropertySheet
-* Bug 2832472: Inventory: Pieces appear multiple times  
-* Bug 2832471: Inventory: Label for folders cannot contain properties  
+* Bug 2832472: Inventory: Pieces appear multiple times
+* Bug 2832471: Inventory: Label for folders cannot contain properties
 * Bug 2827225: NPE in NodeClient.doInvite()
 * Bug 2826715: NPE in GlobalProperty.encode()
 * Bug 2825175: Game Piece Inventory: "Draw Piece Images?" option is broken
@@ -184,7 +184,7 @@ is available.
 * Bug 2817070: PropertySheet saves empty hotkey as null
 * Bug 2756330: StackOverflowError in BasicPiece.mySetType()
 * Bug 2735630: IllegalArgumentException due to non-UTF8 ZipEntry names
-* Bug 2259361: NPE in FreeRotator - Counter moved or deleted during rotate 
+* Bug 2259361: NPE in FreeRotator - Counter moved or deleted during rotate
 
 3.1.9 - 11 July 2009
 
@@ -262,7 +262,7 @@ is available.
 * Bug 2665174: NPE due to no default UI font
 * Bug 2580669: Module-specific exception classes cannot be logged
 * Bug 2372121: Race condition causes truncated errorLogs in bug reports
-* Bug: 8-bit PNGs with 1-bit alpha have bad transparency 
+* Bug: 8-bit PNGs with 1-bit alpha have bad transparency
 * Bug: HTML help folders with more than one file cannot be opened
 * Bug: close() on a pipe closed from the other end will throw IOException
 
@@ -327,7 +327,7 @@ is available.
 * Bug 2514834: OutOfMemoryError should not be reported as a bug
 * Bug 2503662: NPE on connection with a newly created module
 * Bug 2502717: NPE in PrefsEditor.save()
-* Bug 2501338: IllegalStateException if cannot create extensions directory 
+* Bug 2501338: IllegalStateException if cannot create extensions directory
 * Bug 2499980: User Profile display reverting to pre 3.1 version
 * Bug 2499446: NPE when extension directory does not exist
 * Bug 2499238: Return to Deck stacking issue
@@ -357,7 +357,7 @@ is available.
 * Bug 2372199: NPE in PieceSlot.updateGpId()
 * Bug 2358673: Piece transparency in LOS looks weird at non 100% zoom
 * Bug 2346899: file chooser fails with null owner window in Java 1.5
-* Bug 2344403: gpidSupport not set on pieces coming from PieceDefiner  
+* Bug 2344403: gpidSupport not set on pieces coming from PieceDefiner
 * Bug 2340311: Edit All pieces, no change, should not update pieces
 * Bug 2339611: Try to load PNGs with bad metadata anyway
 * Bug 2319018: Triggering multiple 'Move Fixed Distance' traits doesn't work
@@ -423,7 +423,7 @@ is available.
 * Bug 2042928: NullPointerException in Deck
 * Bug 2038103: NullPointerException in BoardPicker
 * Bug 1926512: Updated Private notes not written to save file
-* Bug 1877899: Return To Deck Stacking Problem 
+* Bug 1877899: Return To Deck Stacking Problem
 * Bug 1866161: Exception when deleting initial elements from tabs
 * Bug 1860941: Do not prompt to start new logfile when already recording
 * Bug 1716080: Piece traits editor allows removal of BasicPiece trait
@@ -437,7 +437,7 @@ is available.
 * Bug: Problem when adding a Place Marker to a Place Marker definition
 * Bug: Transparent SVG has an opaque black background
 * Bug: Some transparent PNGs not loaded properly by ImageIO
-* Bug: Added missing Cancel button, close window handling to several dialogs 
+* Bug: Added missing Cancel button, close window handling to several dialogs
 * Bug: Zooming now correctly maintains view center
 * Bug: Fixed player name bug which falsely reported empty player
 * Bug: LaunchButton return focus to previous focus owner
@@ -544,7 +544,7 @@ properties editor.
 
 * Not released.
 
-3.0.1 - 13 August 2007 
+3.0.1 - 13 August 2007
 
 * Bug: Multi-Action buttons no longer appear as sub-menus within a Toolbar
 menu
@@ -564,7 +564,7 @@ HelpFiles by bundling the contents of a folder
 * Add arbitrary Global Key Commands to the right-click menu of a Deck
 * Copy/Paste traits when editing a GamePiece
 * Preferences to auto-prompt to start log files at Start and End of a
-Replay. 
+Replay.
 * LOS thread enhancements: snap to grid, report action, echo on
 opponent's window
 * Make delay before scrolling at map edge configurable

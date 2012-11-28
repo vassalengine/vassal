@@ -69,12 +69,12 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
      storePiece((GamePiece) p);
    }
   }
-  
+
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
     this(key, name, s);
     storePiece(p);
   }
-  
+
   protected void storePiece(GamePiece p) {
     if (p instanceof Decorator) {
       final GamePiece gp = Decorator.getOutermost(p);

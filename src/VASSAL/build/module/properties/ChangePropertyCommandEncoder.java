@@ -46,13 +46,13 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       String oldValue = st.nextToken(null);
       String newValue = st.nextToken(null);
       String containerId = st.nextToken("");
-      
+
       if (key != null ) {
         /*
          * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
          * behaviour is to execute the change on the first matching property found in any container
          */
-        if (containerId.length() == 0 || containerId.equals(container.getMutablePropertiesContainerId())) {      
+        if (containerId.length() == 0 || containerId.equals(container.getMutablePropertiesContainerId())) {
           MutableProperty p = container.getMutableProperty(key);
           if (p != null) {
             c = new ChangePropertyCommand(p, key, oldValue, newValue);

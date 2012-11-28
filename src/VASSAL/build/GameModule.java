@@ -1056,9 +1056,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String getMutablePropertiesContainerId() {
-    return "Module"; 
+    return "Module";
   }
-  
+
   public Object getLocalizedProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMyLocalizedSide();

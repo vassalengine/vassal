@@ -94,7 +94,7 @@ public class ChatServerControls extends AbstractBuildable {
 
     newRoom = new JTextField(12);
     final JLabel newRoomLabel = new JLabel(Resources.getString("Chat.new_game"));
-    newRoomLabel.setLabelFor(newRoom); 
+    newRoomLabel.setLabelFor(newRoom);
     roomPanel.add(newRoomLabel, "");
     roomPanel.add(newRoom, "growx, pushx");
 

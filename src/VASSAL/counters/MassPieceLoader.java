@@ -478,7 +478,7 @@ public class MassPieceLoader {
           baseImage).append(pieceNode.getName()).getValue();
       final BasicPiece basic = (BasicPiece) GameModule.getGameModule()
           .createPiece(BasicPiece.ID + basicType);
-      
+
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();

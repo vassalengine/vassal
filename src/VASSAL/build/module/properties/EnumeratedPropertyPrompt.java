@@ -33,11 +33,11 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
   protected Constraints propertySource;
-  
+
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
     this (dialogParent, prompt, validValues, null);
   }
-  
+
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, Constraints propertySource) {
     super(null, prompt);
     this.validValues = validValues;
