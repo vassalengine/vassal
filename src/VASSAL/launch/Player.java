@@ -35,6 +35,7 @@ import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -151,6 +152,21 @@ public class Player extends Launcher {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+      // don't permit loading of VASL saved with 3.1 or earlier
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
+      if (data != null && data instanceof ModuleMetaData) {
+        final ModuleMetaData md = (ModuleMetaData) data;
+        if ("VASL".equals(md.getName()) &&
+            Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0)
+        {
+          ErrorDialog.show(
+            "Error.VASL_too_old",
+            Info.getVersion()
+          );
+          return;
+        }
+      }
+
       // register that this module is being used
       if (editing.contains(lr.module)) return;
       Integer count = using.get(lr.module);
