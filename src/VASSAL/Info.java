@@ -35,10 +35,13 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.0-svn8417"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.0-svn8435"; //$NON-NLS-1$
 
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
+
+  // Warn about editing modules, saves, logs written before this version
+  private static final String UPDATE_VERSION =  "3.2";
 
   private static File homeDir;
 
@@ -152,6 +155,10 @@ public final class Info {
 
   public static boolean isModuleTooNew(String version) {
     return compareVersions(version, EXPIRY_VERSION) >= 0;
+  }
+
+  public static boolean hasOldFormat(String version) {
+    return compareVersions(version, UPDATE_VERSION) < 0;
   }
 
   /**

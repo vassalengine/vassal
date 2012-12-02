@@ -40,6 +40,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
@@ -202,6 +203,32 @@ public class Editor extends Launcher {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
+      if (data != null) {
+        final String vv = data.getVassalVersion();
+
+        // don't permit editing of modules significantly newer than us
+        if (Info.isModuleTooNew(vv)) {
+          ErrorDialog.show(
+            "Error.module_too_new",
+            lr.module.getPath(),
+            vv, 
+            Info.getVersion()
+          );
+          return;
+        }
+
+        // warn user if editing this module would update it to our version
+        if (Info.hasOldFormat(vv)) {
+          WarningDialog.show(
+            "Warning.module_will_be_updated",
+            lr.module.getPath(),
+            Info.getVersion(),
+            "3.2"
+          );
+        }
+      }
+
       // register that this module is being edited
       if (editing.contains(lr.module) || using.containsKey(lr.module)) return;
       editing.add(lr.module);
@@ -251,16 +278,6 @@ public class Editor extends Launcher {
       // prompt the user to pick a module
       if (promptForFile() == null) return;
 
-      final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
-      if (data != null && Info.isModuleTooNew(data.getVassalVersion())) {
-        ErrorDialog.show(
-          "Error.module_too_new",
-          lr.module.getPath(),
-          data.getVassalVersion(),
-          Info.getVersion()
-        );
-        return;
-      }
       super.actionPerformed(e);
     }
   }

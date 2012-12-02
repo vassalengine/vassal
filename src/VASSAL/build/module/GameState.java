@@ -47,6 +47,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -77,6 +78,7 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.Dialogs;
 
 /**
  * The GameState represents the state of the game currently being played.
@@ -415,16 +417,41 @@ public class GameState implements CommandEncoder {
 
   /** Prompts the user for a file into which to save the game */
   public void saveGame() {
-    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
+    final GameModule g = GameModule.getGameModule();
+
+    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
 
     final File saveFile = getSaveFile();
     if (saveFile == null) {
-      GameModule.getGameModule().warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
+      g.warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
     }
     else {
+      if (saveFile.exists()) {
+        // warn user if overwriting a save from an old version
+        final AbstractMetaData md = MetaDataFactory.buildMetaData(saveFile);
+        if (md != null && md instanceof SaveMetaData) {
+          if (Info.hasOldFormat(md.getVassalVersion())) {
+            if (Dialogs.showConfirmDialog(
+              g.getFrame(),
+              Resources.getString("Warning.save_will_be_updated_title"),
+              Resources.getString("Warning.save_will_be_updated_heading"),
+              Resources.getString(
+                "Warning.save_will_be_updated_message",
+                saveFile.getPath(),
+                "3.2"
+              ),
+                JOptionPane.WARNING_MESSAGE,
+              JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION)
+            {
+              return;
+            }
+          }
+        }
+      }
+
       try {
         saveGame(saveFile);
-        GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
+        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);

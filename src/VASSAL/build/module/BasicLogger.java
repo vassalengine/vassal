@@ -41,8 +41,11 @@ import javax.swing.KeyStroke;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -64,6 +67,7 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.Dialogs;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
@@ -331,7 +335,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   private File getSaveFile() {
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final GameModule g = GameModule.getGameModule();
+
+    final FileChooser fc = g.getFileChooser();
     fc.addChoosableFileFilter(new LogFileFilter());
 
     String name = fc.getSelectedFile() == null
@@ -349,6 +355,30 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     File file = fc.getSelectedFile();
     if (file.getName().indexOf('.') == -1)
       file = new File(file.getParent(), file.getName() + ".vlog");
+
+    // warn user if overwriting log from an old version
+    if (file.exists()) {
+      final AbstractMetaData md = MetaDataFactory.buildMetaData(file);
+      if (md != null && md instanceof SaveMetaData) {
+        if (Info.hasOldFormat(md.getVassalVersion())) {
+
+          if (Dialogs.showConfirmDialog(
+            g.getFrame(),
+            Resources.getString("Warning.log_will_be_updated_title"),
+            Resources.getString("Warning.log_will_be_updated_heading"),
+            Resources.getString(
+              "Warning.log_will_be_updated_message",
+              file.getPath(),
+              "3.2"
+            ),
+            JOptionPane.WARNING_MESSAGE,
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION)
+          {
+            return null;
+          }
+        }
+      }
+    }
 
     return file;
   }
