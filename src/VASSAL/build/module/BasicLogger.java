@@ -256,22 +256,32 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       prefName = PROMPT_NEW_LOG_END;
       prompt = Resources.getString("BasicLogger.replay_completed");  //$NON-NLS-1$
     }
-    if (((Boolean) GameModule.getGameModule().getPrefs().getValue(prefName)).booleanValue()) {
-      Object[] options = {Resources.getString(Resources.YES), Resources.getString(Resources.NO), Resources.getString("BasicLogger.dont_prompt_again")};  //$NON-NLS-1$
-      int result = JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
-          Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
-          "",  //$NON-NLS-1$
-          JOptionPane.YES_NO_CANCEL_OPTION,
-          JOptionPane.QUESTION_MESSAGE,
-          null,
-          options,
-          options[0]);
+
+    final GameModule g = GameModule.getGameModule();
+
+    if (((Boolean) g.getPrefs().getValue(prefName)).booleanValue()) {
+      Object[] options = {
+        Resources.getString(Resources.YES),
+        Resources.getString(Resources.NO),
+        Resources.getString("BasicLogger.dont_prompt_again")  //$NON-NLS-1$
+      };
+
+      int result = JOptionPane.showOptionDialog(
+        g.getFrame(),
+        Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
+        "",  //$NON-NLS-1$
+        JOptionPane.YES_NO_CANCEL_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]
+      );
 
       if (result == JOptionPane.YES_OPTION) {
          beginOutput();
       }
       else if (result == 2) { // Turn Preference Off
-        GameModule.getGameModule().getPrefs().setValue(prefName, Boolean.FALSE);
+        g.getPrefs().setValue(prefName, Boolean.FALSE);
       }
     }
   }
