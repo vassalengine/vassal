@@ -2,6 +2,14 @@
 
 The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
 
+[size=150][b]IMPORTANT[/b][/size]
+
+* If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
+
+* If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
+
+* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.
+
 [size=150][b]Download[/b][/size]
 
 [url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2]Linux[/url]
