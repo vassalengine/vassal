@@ -1,4 +1,26 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta4.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
+
+********************************************************************************
+IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
+********************************************************************************
+
+* If you save a module, game, or log in VASSAL 3.2, you will NOT be able
+  to open it afterwards with VASSAL 3.1. We recommend keeping a backup
+  copy of any pre-3.2 files you plan to modify in 3.2 until you've
+  verified that everything works to your satisfaction.
+
+* If you found it necessary to set a very large maximum heap (> 512MB)
+  for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2
+  to set a much lower maximum heap and achieve similar or better display
+  performance. 512MB should now be adequate for most modules.
+
+* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2.0. Work to
+  update VASL for 3.2 is ongoing.
+
+********************************************************************************
+IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
+********************************************************************************
+
 
 *********************
 Download
@@ -6,23 +28,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-src.zip
 
 *********************
 Compatibility Notes
@@ -34,8 +56,8 @@ Compatibility Notes
   saves from 3.2 will work in 3.1. Therefore, if you write a module,
   log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
-* Current versions of VASL and VSQL are not compatible with VASSAL
-  3.2.0-beta4. Work to update VASL for 3.2 is ongoing.
+* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0.
+  Work to update VASL for 3.2 is ongoing.
 
 *********************
 New Features in 3.2
@@ -141,36 +163,7 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
-
-The following bugs in 3.2.0-beta4 are fixed in ???:
-
-* 9466: IOException when removing nonexistent tile directory
-* 9407: Batik 1.8pre should be compiled for Java 5
-
-The following bugs in 3.2.0-beta3 are fixed in 3.2.0-beta4:
-
-* 4822: Some trait windows are opening too large
-
-The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
-
-* 4789: ZipFileImageTiler is invoked with too little max heap on Mac OS X
-* 4788: Resizing "Properties" windows doesn't extend text fields
-* 4783: NPE in ServerAddressBook$AddressBookEntry.edit()
-* 4696: Embellishment follows property to display first level when property is
-  null instead of erroring
-* 4477: Image tiler invoked with argument list longer than Windows supports
-* Tiles for removed modules are now removed from tile cache.
-
-The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
-
-* Check for resource paths missing initial slash. This fixes the problem
-  with resources like moved.gif not being found.
-* Include "images/" in tile names when running TilingHandler. This helps
-  us handle directories nested under images, and archives which have no
-  images directory at all (such as VASL map archives).
-* Property filter built incorrectly in MassKeyCommand.
-
-The following bugs in 3.1 are fixed in 3.2.0-beta4:
+The following bugs in 3.1.20 are fixed in 3.2.0:
 
 * 4831: Module revision that created log is not displayed in errorLog
 * 4820: ExecutionException in ImageSaver due to running out of memory
@@ -202,11 +195,11 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 * 2582: Mask and Peek menu entries are not translatable
 * 2556: ImageOp does not support paths
 
-For changes prior to 3.2.0-beta1, see the change log.
+For changes prior to 3.2.0, see the change log.
 
-Please report all bugs in 3.2.0-beta4, even if they are bugs which
-you've already reported against other betas. We take your bug reports
-seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.0, even if they are bugs which you've already
+reported against other versions. We take your bug reports seriously---they're
+the reason we've been able to fix so many bugs.
 
 *********************
 Minimum Requirements
@@ -231,11 +224,8 @@ your computer in order for Java programs to work properly.
 Help us test
 *********************
 
-This is a beta release, so may still contain some rough edges. Should
-you find any problems/oddities/bugs, please tell us so that we can fix
-them before VASSAL 3.2.0 is released. Also, if you've had problems with
-3.1.x or a previous 3.2.0 beta, please check and let us know if those
-problems are resolved in 3.2.0-beta4.
+Should you find any problems/oddities/bugs, please tell us so that we can
+fix them for a future release of VASSAL.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:

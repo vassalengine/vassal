@@ -1,14 +1,14 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta4.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
 <h3>Download</h3>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-linux.tar.bz2' target='_new'>Linux</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-macosx.dmg' target='_new'>Mac OS X</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-windows.exe' target='_new'>Windows</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-other.zip'  target='_new'>Other</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta4-src.zip' target='_new'>Source code</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2' target='_new'>Linux</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-macosx.dmg' target='_new'>Mac OS X</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-windows.exe' target='_new'>Windows</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-other.zip'  target='_new'>Other</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-src.zip' target='_new'>Source code</a>
 <h3>Compatibility Notes</h3>
 * VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
-* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0-beta4. Work to update VASL for 3.2 is ongoing.
+* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.
 
 <h3>New Features in 3.2</h3>
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
@@ -75,29 +75,10 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta4.
 
 * Notify user when image loading fails [RFE 1887]
 
-The following bugs in 3.2.0-beta3 are fixed in 3.2.0-beta4:
-
-* 4822: Some trait windows are opening too large
-
-The following bugs in 3.2.0-beta2 are fixed in 3.2.0-beta3:
-
-* 4789: ZipFileImageTiler is invoked with too little max heap on Mac OS X
-* 4788: Resizing "Properties" windows doesn't extend text fields
-* 4783: NPE in ServerAddressBook$AddressBookEntry.edit()
-* 4696: Embellishment follows property to display first level when property is null instead of erroring
-* 4477: Image tiler invoked with argument list longer than Windows supports
-
-The following bugs in 3.2.0-beta1 are fixed in 3.2.0-beta2:
-
-* Check for resource paths missing initial slash. This fixes the problem with resources like moved.gif not being found.
-
-* Include "images/" in tile names when running TilingHandler. This helps us handle directories nested under images, and archive which have no images directory at all (such as VASL map archives).
-
-* Property filter built incorrectly in MassKeyCommand.
-
-The following bugs in 3.1 are fixed in 3.2.0-beta4:
+The following bugs in 3.1.20 are fixed in 3.2.0:
 
 * 4831: Module revision that created log is not displayed in errorLog
+* 4820: ExecutionException in ImageSaver due to running out of memory
 * 4818: Hide empty TurnTracker launch buttons
 * 4807: Vengine.jar should be readable by group and other
 * 4793: ChangePropertyButton cannot be cast to GamePiece when creating toolbar button
@@ -122,9 +103,9 @@ The following bugs in 3.1 are fixed in 3.2.0-beta4:
 * 2582: Mask and Peek menu entries are not translatable
 * 2556: ImageOp does not support paths
 
-For changes prior to 3.2.0-beta1, see the change log.
+For changes prior to 3.2.0, see the change log.
 
-Please report all bugs in 3.2.0-beta3, even if they are bugs which you've already reported against other betas. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.0, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 <h3>Minimum Requirements</h3>
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
@@ -136,7 +117,7 @@ MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5
 Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_35. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
 
 <h3>Help us test</h3>
-This is a beta release, so may still contain some rough edges. Should you find any problems/oddities/bugs, please tell us so that we can fix them before VASSAL 3.2.0 is released. Also, if you've had problems with 3.1.x or a previous 3.2.0 beta, please check and let us know if those problems are resolved in 3.2.0-beta3.
+Should you find any problems/oddities/bugs, please tell us so that we can fix them for a future release of VASSAL.
 
 Report bugs here in the Technical Support & Bugs category at the <a href='http://vassalengine.org/forums/viewforum.php?f=3' target='_new'>VASSAL forums</a>, or by email to <a href='mailto:uckelman@nomic.net'>uckelman@nomic.net</a>.
 
