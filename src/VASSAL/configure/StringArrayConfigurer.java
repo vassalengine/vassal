@@ -39,6 +39,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
+import net.miginfocom.swing.MigLayout;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
@@ -80,42 +82,28 @@ public class StringArrayConfigurer extends Configurer {
   public Component getControls() {
     if (panel == null) {
       panel = new JPanel();
+      panel.setBorder(new TitledBorder(name));
+      panel.setLayout(new MigLayout("fill"));
+
       Box buttonBox = Box.createHorizontalBox();
       Box leftBox = Box.createVerticalBox();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
       model = new DefaultListModel();
       updateModel();
+
       list = new JList(model);
       list.setPrototypeCellValue("MMMMMMMM");
       list.setVisibleRowCount(2);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      final Component textComponent = getTextComponent();
 
-      ActionListener addAction = new ActionListener() {
+      JButton addButton = new JButton(Resources.getString(Resources.ADD));
+      addButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           String s = getTextValue();
           addValue(s);
           setTextValue("");
         }
-      };
-      ActionListener insertAction = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if (value == null) {
-            addValue(getTextValue());
-          }
-          else {
-            int pos = list.getSelectedIndex();
-            if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
-            setTextValue("");
-            list.setSelectedIndex(pos+1);
-          }
-        }
-      };
-      JButton addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(addAction);
-      addTextActionListener(insertAction);
-      leftBox.add(textComponent);
+      });
       buttonBox.add(addButton);
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
@@ -130,15 +118,34 @@ public class StringArrayConfigurer extends Configurer {
       buttonBox.add(removeButton);
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
+      ActionListener insertAction = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (value == null) {
+            addValue(getTextValue());
+          }
+          else {
+            int pos = list.getSelectedIndex();
+            if (pos < 0) pos = list.getModel().getSize();
+            setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
+            setTextValue("");
+            list.setSelectedIndex(pos+1);
+          }
+        }
+      };
       insertButton.addActionListener(insertAction);
       buttonBox.add(insertButton);
 
+      final Component textComponent = getTextComponent();
+      addTextActionListener(insertAction);
+
+      leftBox.add(textComponent);
       leftBox.add(buttonBox);
+
       JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       pane.setLeftComponent(leftBox);
       pane.setRightComponent(new ScrollPane(list));
-      panel.add(pane);
-      panel.setBorder(new TitledBorder(name));
+
+      panel.add(pane, "grow");
     }
     return panel;
   }

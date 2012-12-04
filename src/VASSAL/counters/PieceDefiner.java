@@ -45,6 +45,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.documentation.HelpFile;
@@ -604,10 +605,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      setLayout(new MigLayout("ins 5","[]push[]push[]"));
-      add(ed.getControls(), "span 3,growx,wrap");
+      setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", ""));
+      add(ed.getControls(), "spanx 3,grow,push,wrap");
 
-      final JPanel panel = new JPanel(new MigLayout());
       JButton b = new JButton("Ok");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -615,7 +615,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       });
 
-      panel.add(b);
+      add(b, "tag ok");
 
       b = new JButton("Cancel");
       b.addActionListener(new ActionListener() {
@@ -624,7 +624,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           dispose();
         }
       });
-      panel.add(b);
+      add(b, "tag cancel");
 
       if (p.getHelpFile() != null) {
         b = new JButton("Help");
@@ -633,12 +633,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
             p.getHelpFile().showWindow(Ed.this);
           }
         });
-        panel.add(b);
+        add(b, "tag help");
       }
-
-      add(new JLabel());
-      add(panel);
-      add(new JLabel());
 
       pack();
       setLocationRelativeTo(getOwner());

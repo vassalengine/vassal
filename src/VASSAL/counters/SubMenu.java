@@ -25,8 +25,10 @@ import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.Box;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -137,17 +139,21 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   public static class Editor implements PieceEditor {
     private StringConfigurer nameConfig;
     private StringArrayConfigurer commandsConfig;
-    private Box box;
+    private JPanel panel = new JPanel();
+
     public Editor(SubMenu p) {
-      nameConfig = new StringConfigurer(null,"Menu name:  ",p.getMenuName());
-      commandsConfig = new StringArrayConfigurer(null,"Sub-commands",p.getSubcommands());
-      box = Box.createVerticalBox();
-      box.add(nameConfig.getControls());
-      box.add(commandsConfig.getControls());
+      nameConfig = new StringConfigurer(null, "Menu name:  ", p.getMenuName());
+      commandsConfig = new StringArrayConfigurer(
+        null, "Sub-commands", p.getSubcommands()
+      );
+
+      panel.setLayout(new MigLayout("fill", "[]rel[]"));
+      panel.add(nameConfig.getControls(), "growx,wrap");
+      panel.add(commandsConfig.getControls(), "grow,push");
     }
 
     public Component getControls() {
-      return box;
+      return panel;
     }
 
     public String getState() {
