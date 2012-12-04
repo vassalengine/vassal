@@ -342,8 +342,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet() {
-    final TreeSet<String> s =
-      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    final TreeSet<String> s = new TreeSet<String>();
     getImageNamesRecursively(s);
     return s;
   }
@@ -358,8 +357,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   protected SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    final TreeSet<String> s = new TreeSet<String>();
 
     if (archive != null) {
       try {
