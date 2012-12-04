@@ -166,6 +166,7 @@ New Features in 3.2
 
 The following bugs in 3.2.0 are fixed in 3.2.1:
 
+* 9596: Sub-commands list in SubMenu properties dialog doesn't resize
 * 9595: DataArchive should not collect image filenames case-insensitively 
 
 The following bugs in 3.1.20 are fixed in 3.2.0:
