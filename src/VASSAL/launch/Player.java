@@ -156,14 +156,21 @@ public class Player extends Launcher {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data != null && data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
-        if ("VASL".equals(md.getName()) &&
-            Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0)
-        {
-          ErrorDialog.show(
-            "Error.VASL_too_old",
-            Info.getVersion()
-          );
-          return;
+        if (Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0) {
+          if ("VASL".equals(md.getName())) {
+            ErrorDialog.show(
+              "Error.VASL_too_old",
+              Info.getVersion()
+            );
+            return;
+          }
+          else if ("VSQL".equals(md.getName())) {
+            ErrorDialog.show(
+              "Error.VSQL_too_old",
+              Info.getVersion()
+            );
+            return;
+          }
         }
       }
 

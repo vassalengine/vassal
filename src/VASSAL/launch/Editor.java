@@ -222,14 +222,21 @@ public class Editor extends Launcher {
         // don't permit loading of VASL saved with 3.1 or earlier
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
-          if ("VASL".equals(md.getName()) &&
-              Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0)
-          {
-            ErrorDialog.show(
-              "Error.VASL_too_old",
-              Info.getVersion()
-            );
-            return;
+          if (Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0) {
+            if ("VASL".equals(md.getName())) {
+              ErrorDialog.show(
+                "Error.VASL_too_old",
+                Info.getVersion()
+              );
+              return;
+            }
+            else if ("VSQL".equals(md.getName())) {
+              ErrorDialog.show(
+                "Error.VSQL_too_old",
+                Info.getVersion()
+              );
+              return;
+            }
           }
         }
 
