@@ -1,4 +1,5 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.1, which
+which fixes several problems found in earlier versions.
 
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
@@ -14,7 +15,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   to set a much lower maximum heap and achieve similar or better display
   performance. 512MB should now be adequate for most modules.
 
-* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2.0. Work to
+* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to
   update VASL for 3.2 is ongoing.
 
 ********************************************************************************
@@ -28,23 +29,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-src.zip
 
 *********************
 Compatibility Notes
@@ -56,7 +57,7 @@ Compatibility Notes
   saves from 3.2 will work in 3.1. Therefore, if you write a module,
   log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
-* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0.
+* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.
   Work to update VASL for 3.2 is ongoing.
 
 *********************
@@ -163,6 +164,10 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.0 are fixed in 3.2.1:
+
+* 9595: DataArchive should not collect image filenames case-insensitively 
+
 The following bugs in 3.1.20 are fixed in 3.2.0:
 
 * 4831: Module revision that created log is not displayed in errorLog
@@ -197,7 +202,7 @@ The following bugs in 3.1.20 are fixed in 3.2.0:
 
 For changes prior to 3.2.0, see the change log.
 
-Please report all bugs in 3.2.0, even if they are bugs which you've already
+Please report all bugs in 3.2.1, even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 
