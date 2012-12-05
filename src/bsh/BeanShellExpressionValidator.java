@@ -161,8 +161,10 @@ public class BeanShellExpressionValidator {
     
     if (node instanceof BSHAmbiguousName) {
       String name = ((BSHAmbiguousName) node).getText().trim();
-      if ((node.parent instanceof BSHMethodInvocation) && ! methods.contains(name)) {
-        methods.add(name);
+      if ((node.parent instanceof BSHMethodInvocation)) {
+        if (! methods.contains(name)) {
+          methods.add(name);
+        }
       }
       else if (! variables.contains(name)) {
         variables.add(name);
