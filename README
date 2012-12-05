@@ -167,7 +167,11 @@ New Features in 3.2
 The following bugs in 3.2.0 are fixed in 3.2.1:
 
 * 9596: Sub-commands list in SubMenu properties dialog doesn't resize
-* 9595: DataArchive should not collect image filenames case-insensitively 
+* 9595: DataArchive should not collect image filenames case-insensitively
+* 9593: NPE in GameRefresher.processGamePiece()
+* 9589: NPE in Embellishment.myGetKeyCommands()
+* 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
+* 9511: NPE in BooleanConfigurer.setValue()
 
 The following bugs in 3.1.20 are fixed in 3.2.0:
 
