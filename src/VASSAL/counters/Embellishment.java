@@ -521,14 +521,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       final GamePiece outer = Decorator.getOutermost(this);
 
-      if (activateCommand.length() > 0 && !alwaysActive) {
+      if (activateCommand != null && activateCommand.length() > 0 && !alwaysActive) {
         KeyCommand k;
         k = new KeyCommand(activateCommand, activateKeyStroke, outer, this);
         k.setEnabled(nValues > 0);
         l.add(k);
       }
 
-      if (upCommand.length() > 0 &&
+      if (upCommand != null && upCommand.length() > 0 &&
           ! increaseKeyStroke.isNull() &&
           nValues > 1 &&
           !followProperty) {
@@ -536,7 +536,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         l.add(up);
       }
 
-      if (downCommand.length() > 0 &&
+      if (downCommand != null && downCommand.length() > 0 &&
           ! decreaseKeyStroke.isNull() &&
           nValues > 1 &&
           !followProperty) {
