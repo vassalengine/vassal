@@ -25,6 +25,9 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdChecker;
@@ -52,6 +55,8 @@ import VASSAL.tools.ErrorDialog;
  */
 public final class GameRefresher implements GameComponent {
 
+  private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
+      
   private Action refreshAction;
   protected GpIdSupport gpIdSupport;
   protected GpIdChecker gpIdChecker;
@@ -144,7 +149,12 @@ public final class GameRefresher implements GameComponent {
 
   private void processGamePiece(GamePiece piece, Command command) {
 
-    final Map map = piece.getMap();
+    final Map map = piece.getMap();    
+    if (map == null) {
+      logger.error("Can't refresh piece "+piece.getName()+": No Map");
+      return;
+    }
+    
     final Point pos = piece.getPosition();
     GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
 
