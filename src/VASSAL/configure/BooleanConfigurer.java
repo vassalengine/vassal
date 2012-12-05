@@ -47,7 +47,7 @@ public class BooleanConfigurer extends Configurer {
   public void setValue(Object o) {
     super.setValue(o);
     if (box != null
-      && !o.equals(Boolean.valueOf(box.isSelected()))) {
+        && !Boolean.valueOf(box.isSelected()).equals(o)) {
       box.setSelected(booleanValue().booleanValue());
     }
   }
