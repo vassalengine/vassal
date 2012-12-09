@@ -23,7 +23,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.Properties;
 
-import net.iharder.Base64;
+import org.apache.commons.codec.binary.Base64;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.CgiServerStatus;
@@ -233,8 +234,9 @@ public abstract class NodeClient implements LockableChatServerConnection,
       msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
         try {
-          msg = ZIP_HEADER
-              + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8"))); //$NON-NLS-1$
+          msg = ZIP_HEADER + Base64.encodeBase64Chunked(
+            Compressor.compress(msg.getBytes("UTF-8"))
+          );
         }
         // FIXME: review error message
         catch (IOException e) {
@@ -464,8 +466,13 @@ public abstract class NodeClient implements LockableChatServerConnection,
     else {
       if (msg.startsWith(ZIP_HEADER)) {
         try {
-          msg = new String(Compressor.decompress(Base64.decode(msg
-              .substring(ZIP_HEADER.length()))), "UTF-8"); //$NON-NLS-1$
+          msg = new String(
+            Compressor.decompress(
+              Base64.decodeBase64(
+               msg.substring(ZIP_HEADER.length()
+              )
+            )
+          ), "UTF-8");
         }
         // FIXME: review error message
         catch (IOException e) {
