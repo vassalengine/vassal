@@ -166,12 +166,14 @@ New Features in 3.2
 
 The following bugs in 3.2.0 are fixed in 3.2.1:
 
+* 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
 * 9596: Sub-commands list in SubMenu properties dialog doesn't resize
 * 9595: DataArchive should not collect image filenames case-insensitively
 * 9593: NPE in GameRefresher.processGamePiece()
 * 9589: NPE in Embellishment.myGetKeyCommands()
 * 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
 * 9511: NPE in BooleanConfigurer.setValue()
+* 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
 
 The following bugs in 3.1.20 are fixed in 3.2.0:
 
