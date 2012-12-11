@@ -1,25 +1,26 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0, which which fixes several problems found in earlier versions.
+
 </p>
 <h2>IMPORTANT</h2>
 <ul>
   <li>If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.</li>
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
-  <li>VASL 5.9.2 and earlier are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.</li>
+  <li>VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
   <li>VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.</li>
-  <li>Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.</li>
+  <li>Current versions of VASL and VSQL are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.</li>
 </ul>
 <h2>New Features in 3.2</h2>
 <ul>
@@ -87,6 +88,19 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in in 3.2.0 are fixed in 3.2.1:
+<ul>
+  <li>9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5</li>
+  <li>9596: Sub-commands list in SubMenu properties dialog doesn't resize</li>
+  <li>9595: DataArchive should not collect image filenames case-insensitively</li>
+  <li>9593: NPE in GameRefresher.processGamePiece()</li>
+  <li>9589: NPE in Embellishment.myGetKeyCommands()</li>
+  <li>9555: NoSuchFieldError in ExpressionInterpreter.evaluate()</li>
+  <li>9511: NPE in BooleanConfigurer.setValue()</li>
+  <li>4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()</li>
+</ul>
+</p>
+<p>
 The following bugs in in 3.1.20 are fixed in 3.2.0:
 <ul>
   <li>4831: Module revision that created log is not displayed in errorLog</li>
@@ -118,7 +132,7 @@ The following bugs in in 3.1.20 are fixed in 3.2.0:
 For changes prior to 3.2.0, see the change log.
 </p>
 <p>
-Please report all bugs in 3.2.0 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.1 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>

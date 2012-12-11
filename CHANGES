@@ -1,3 +1,16 @@
+3.2.1 - 11 December 2012
+
+Bugs fixed:
+
+* 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
+* 9596: Sub-commands list in SubMenu properties dialog doesn't resize
+* 9595: DataArchive should not collect image filenames case-insensitively
+* 9593: NPE in GameRefresher.processGamePiece()
+* 9589: NPE in Embellishment.myGetKeyCommands()
+* 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
+* 9511: NPE in BooleanConfigurer.setValue()
+* 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
+
 3.2.0 - 3 December 2012
 
 * Levels within a Layer can be moved up or down the level list using

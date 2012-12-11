@@ -1,24 +1,24 @@
-[size=18][b]VASSAL 3.2.0 released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
+[size=18][b]VASSAL 3.2.1 released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.2.1, which fixes several problems found in earlier versions.
 
 [size=16][b]IMPORTANT[/b][/size]
 * If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
 
 * If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
 
-* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.
+* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.
 
 [size=16][b]Download[/b][/size]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-src.zip]Source code[/url]
 
 [size=16][b]Compatibility Notes[/b][/size]
 * VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
-* Current versions of VASL and VSQL are not compatible with VASSAL 3.2.0. Work to update VASL for 3.2 is ongoing.
+* Current versions of VASL and VSQL are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.
 
 [size=16][b]New Features in 3.2[/b][/size]
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
@@ -83,6 +83,17 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0.
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.0 are fixed in 3.2.1:
+
+* 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
+* 9596: Sub-commands list in SubMenu properties dialog doesn't resize
+* 9595: DataArchive should not collect image filenames case-insensitively
+* 9593: NPE in GameRefresher.processGamePiece()
+* 9589: NPE in Embellishment.myGetKeyCommands()
+* 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
+* 9511: NPE in BooleanConfigurer.setValue()
+* 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
+
 The following bugs in 3.1.20 are fixed in 3.2.0:
 
 * 4831: Module revision that created log is not displayed in errorLog
@@ -113,7 +124,7 @@ The following bugs in 3.1.20 are fixed in 3.2.0:
 
 For changes prior to 3.2.0, see the change log.
 
-Please report all bugs in 3.2.0, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.1, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=16][b]Minimum Requirements[/b][/size]
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
