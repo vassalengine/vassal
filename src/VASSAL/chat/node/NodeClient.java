@@ -469,10 +469,11 @@ public abstract class NodeClient implements LockableChatServerConnection,
           msg = new String(
             Compressor.decompress(
               Base64.decodeBase64(
-               msg.substring(ZIP_HEADER.length()
+                msg.substring(ZIP_HEADER.length())
               )
-            )
-          ), "UTF-8");
+            ),
+            "UTF-8"
+          );
         }
         // FIXME: review error message
         catch (IOException e) {
