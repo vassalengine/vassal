@@ -234,7 +234,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
         try {
-          msg = ZIP_HEADER + Base64.encodeBase64Chunked(
+          msg = ZIP_HEADER + Base64.encodeBase64String(
             Compressor.compress(msg.getBytes("UTF-8"))
           );
         }
