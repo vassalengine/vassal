@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.0, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.2, which which fixes several problems found in earlier versions.
 
 </p>
 <h2>IMPORTANT</h2>
@@ -11,11 +11,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0, which which fi
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
@@ -88,6 +88,13 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0, which which fi
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in 3.2.1 are fixed in 3.2.2:
+<ul>
+  <li>9637: Faulty base64 encoding when synchronizing with game server</li>
+  <li>9636: Mask trait opens too large if images are large</li>
+</ul>
+</p>
+<p>
 The following bugs in in 3.2.0 are fixed in 3.2.1:
 <ul>
   <li>9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5</li>
@@ -132,7 +139,7 @@ The following bugs in in 3.1.20 are fixed in 3.2.0:
 For changes prior to 3.2.0, see the change log.
 </p>
 <p>
-Please report all bugs in 3.2.1 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.2 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>

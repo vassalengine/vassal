@@ -1,3 +1,10 @@
+3.2.2 - ?? December 2012
+
+Bugs fixed:
+
+* 9637: Faulty base64 encoding when synchronizing with game server
+* 9636: Mask trait opens too large if images are large
+
 3.2.1 - 11 December 2012
 
 Bugs fixed:

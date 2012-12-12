@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.0 released[/b][/size]
+[size=200][b]VASSAL 3.2.2 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.1, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.2, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -13,11 +13,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.1, which which fi
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.1-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-src.zip]Source code[/url]
 
 [size=150][b]Compatibility Notes[/b][/size]
 
@@ -94,6 +94,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.1, which which fi
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.1 are fixed in 3.2.2:
+
+* 9637: Faulty base64 encoding when synchronizing with game server
+* 9636: Mask trait opens too large if images are large
+
 The following bugs in 3.2.0 are fixed in 3.2.1:
 
 * 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
@@ -135,7 +140,7 @@ The following bugs in 3.1.20 are fixed in 3.2.0:
 
 For changes prior to 3.2.0, see the change log.
 
-Please report all bugs in 3.2.1, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.2, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
