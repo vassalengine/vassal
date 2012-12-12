@@ -164,6 +164,11 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.1 are fixed in 3.2.2:
+
+* 9637: Faulty base64 encoding when synchronizing with game server
+* 9636: Mask trait opens too large if images are large
+
 The following bugs in 3.2.0 are fixed in 3.2.1:
 
 * 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
