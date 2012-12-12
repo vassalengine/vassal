@@ -101,8 +101,8 @@ public class ImagePicker extends JPanel
     else {
       icon.setOp(Op.load(imageName));
       Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-      if (d.width > 400) d.width = 400;
-      if (d.height > 400) d.height = 400; else d.height += 4;
+      if (d.width > 200) d.width = 200;
+      if (d.height > 200) d.height = 200; else d.height += 4;
       imageScroller.setPreferredSize(d);
       imageScroller.setMinimumSize(d);
 
