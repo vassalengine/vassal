@@ -224,11 +224,11 @@ Minimum Requirements
 
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
 
-Linux: Java 6 is required for using VASSAL on Linux.
+Linux: Java 6 or later is required for using VASSAL on Linux.
 
 MacOS X: The recommended minimum Java version for using VASSAL on MacOS
 X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is
-unavailable, and Java 6 for Macs where Java 6 is available.
+unavailable, and Java 6 or later for Macs where Java 6 is available.
 
 Windows: The recommended minimum Java version for Windows is 1.6.0_21
 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the
@@ -236,12 +236,11 @@ Windows installer will be prompted to update Java if what they have is
 older than 1.6.0_37. After upgrading Java on Windows, you must restart
 your computer in order for Java programs to work properly.
 
-Note also that the Java 7 installer does not uninstall Java 6, and that
-we've found that having both Java 6 and Java 7 installed simultaneously
-on Windows can cause neither one to work. Therefore, if you've upgraded
-to Java 7 and find that VASSAL will not run, check whether you also
-still have Java 6 installed---removing it and rebooting will most likely
-solve your problem.
+If you've installed Java 7 on Windows and thereafter VASSAL fails to
+launch: The Java 7 installer does not uninstall Java 6, and having both
+installed simultaneously prevents both from working properly. Therefore,
+check whether you also still have Java 6 installed. If so, removing Java
+6 and rebooting will most likely solve your problem.
 
 
 *********************
