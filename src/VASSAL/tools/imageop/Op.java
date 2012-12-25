@@ -66,11 +66,12 @@ public class Op {
     if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);
     }
-    else {
-// FIXME: Using ScaleOpTiledBitmapImpl for all scaling is wrong, because
-// non-map images aren't in the disk cache!
-//      return new ScaleOpBitmapImpl(sop, scale);
+    else if (sop instanceof SourceOpTiledBitmapImpl) {
+      // use the tiled version only for tiled sources
       return new ScaleOpTiledBitmapImpl(sop, scale);
+    }
+    else {
+      return new ScaleOpBitmapImpl(sop, scale);
     }
   }
 
