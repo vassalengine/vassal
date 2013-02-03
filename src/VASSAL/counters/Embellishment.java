@@ -391,7 +391,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(1);
     activationStatus = st.nextToken(value < 0 ? "" : activateKey);
-    activated = st.nextBoolean(activationStatus.length() == activateKey.length());
+    
+    if (st.hasMoreTokens()) {
+      // More than 2 tokens is a 3.2 status. 1st token is value, 4th token is activated
+      st.nextToken();
+      activated = st.nextBoolean(false);
+    }
+    else {
+      // Only 2 tokens indicates a 3.1 style state, calculate activated a la 3.1
+      activated = st.nextBoolean(activationStatus.length() == activateKey.length());
+    }
+    
+   
   }
 
   public String myGetType() {
@@ -462,6 +473,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
+    
+    // The following is bogus, but was introduced into 3.2 as a bug. State should only have been
+    // 3 items, value;activationStatus;activated. Will have to stay as 4 items now.
     se.append(String.valueOf(value));
     return se.append(String.valueOf(value)).append(activationStatus).append(activated).getValue();
   }
