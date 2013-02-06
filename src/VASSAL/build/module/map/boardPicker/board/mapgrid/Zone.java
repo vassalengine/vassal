@@ -542,7 +542,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public String getMutablePropertiesContainerId() {
-    return getMap().getMapName()+":"+getConfigureName();
+    return (getMap() == null ? "" : getMap().getMapName())+":"+getConfigureName();
   }
 
   /*
