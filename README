@@ -164,6 +164,10 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.2 are fixed in 3.2.3:
+
+* 9700: Unit activation improperly recorded
+
 The following bugs in 3.2.1 are fixed in 3.2.2:
 
 * 9637: Faulty base64 encoding when synchronizing with game server
