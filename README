@@ -166,6 +166,8 @@ New Features in 3.2
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
+* 9825: Macs with Retina displays unable to paint map tiles at non-power-
+  of-two zoom levels
 * 9700: Unit activation improperly recorded
 * 9681: NPE in Zone.getMutablePropertiesContainerId()
 
