@@ -21,12 +21,17 @@ package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +39,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
@@ -47,8 +50,6 @@ public class ImageUtils {
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
   private static final double DEGTORAD = -Math.PI/180.0;
-
-  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
 
   private static final GeneralFilter.Filter upscale =
     new GeneralFilter.MitchellFilter();
@@ -327,13 +328,68 @@ public class ImageUtils {
     return dst;
   }
 
+  private static boolean isMacRetina() {
+    final Object o = Toolkit.getDefaultToolkit().getDesktopProperty(
+      "apple.awt.contentScaleFactor"
+    );
+
+    return (o instanceof Number) && ((Number) o).doubleValue() == 2.0;
+  }
+
+  private static boolean isHeadless() {
+    return GraphicsEnvironment.isHeadless();
+  }
+
+  private static GraphicsConfiguration getGraphicsConfiguration() {
+    return GraphicsEnvironment.getLocalGraphicsEnvironment().
+             getDefaultScreenDevice().getDefaultConfiguration();
+  }
+
+  protected static final BufferedImage compatOpaqueImage;
+  protected static final BufferedImage compatTransImage;
+
   protected static final int compatOpaqueImageType;
   protected static final int compatTranslImageType;
 
   static {
-    compatOpaqueImageType = createCompatibleImage(1,1).getType();
-    compatTranslImageType = createCompatibleTranslucentImage(1,1).getType();
+    BufferedImage oimg;
+    BufferedImage timg;
+
+    if (isHeadless()) {
+      oimg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+      timg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    }
+    else {
+      final GraphicsConfiguration gc = getGraphicsConfiguration();
+
+      oimg = gc.createCompatibleImage(1,1, BufferedImage.OPAQUE);
+      timg = gc.createCompatibleImage(1,1, BufferedImage.TRANSLUCENT);
+
+      // Bug workaround: MacOX X machines with Retina displays are incapable
+      // of painting TYPE_INT_ARGB_PRE images, despite that these systems
+      // return that type as the "compatible" image type.
+      if (isMacRetina()) {
+        if (oimg.getType() == BufferedImage.TYPE_INT_ARGB_PRE) {
+          oimg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        if (timg.getType() == BufferedImage.TYPE_INT_ARGB_PRE) {
+          timg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+      }
+    }
+
+    compatOpaqueImage = oimg;
+    compatTransImage = timg;
+
+    compatOpaqueImageType = compatOpaqueImage.getType();
+    compatTranslImageType = compatTransImage.getType();
+
+    System.err.println("compatOpaque == " + compatOpaqueImageType);
+    System.err.println("compatTrans == " + compatTranslImageType);
   }
+
+  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
 
   public static int getCompatibleImageType() {
     return compatOpaqueImageType;
@@ -352,22 +408,43 @@ public class ImageUtils {
   }
 
   public static BufferedImage createCompatibleImage(int w, int h) {
-    return GraphicsUtilities.createCompatibleImage(w, h);
+    final ColorModel cm = compatOpaqueImage.getColorModel();
+    final WritableRaster wr = cm.createCompatibleWritableRaster(w, h);
+    return new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
   }
 
   public static BufferedImage createCompatibleImage(int w, int h,
                                                     boolean transparent) {
     return transparent ?
-      GraphicsUtilities.createCompatibleTranslucentImage(w, h) :
-      GraphicsUtilities.createCompatibleImage(w, h);
+      createCompatibleTranslucentImage(w, h) :
+      createCompatibleImage(w, h);
   }
 
   public static BufferedImage createCompatibleTranslucentImage(int w, int h) {
-    return GraphicsUtilities.createCompatibleTranslucentImage(w, h);
+    final ColorModel cm = compatTransImage.getColorModel();
+    final WritableRaster wr = cm.createCompatibleWritableRaster(w, h);
+    return new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
   }
 
   public static BufferedImage toCompatibleImage(BufferedImage src) {
-    return GraphicsUtilities.toCompatibleImage(src);
+    if ((src.getColorModel().equals(compatOpaqueImage.getColorModel()) &&
+         src.getTransparency() == compatOpaqueImage.getTransparency())
+        ||
+        (src.getColorModel().equals(compatTransImage.getColorModel()) &&
+         src.getTransparency() == compatTransImage.getTransparency()))
+    {
+      return src;
+    }
+
+    final BufferedImage dst = createCompatibleImage(
+      src.getWidth(), src.getHeight(), isTransparent(src)
+    );
+
+    final Graphics2D g = dst.createGraphics();
+    g.drawImage(src, 0, 0, null);
+    g.dispose();
+
+    return dst;
   }
 
   public static boolean isCompatibleImage(BufferedImage img) {
