@@ -384,9 +384,6 @@ public class ImageUtils {
 
     compatOpaqueImageType = compatOpaqueImage.getType();
     compatTranslImageType = compatTransImage.getType();
-
-    System.err.println("compatOpaque == " + compatOpaqueImageType);
-    System.err.println("compatTrans == " + compatTranslImageType);
   }
 
   public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
