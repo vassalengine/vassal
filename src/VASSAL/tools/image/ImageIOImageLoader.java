@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2010 by Joel Uckelman
+ * Copyright (c) 2009-2013 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -103,11 +103,13 @@ public class ImageIOImageLoader implements ImageLoader {
     // Sun Bug 6541476: PNGs with iTXt chunks on Java 1.5
     // Sun Bug 6444360: JPEGs with corrupt color profiles
     // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5
+    // Sun Bug 4712797: YCbCr JPEGs with no JFIF marker
     //
     // http://bugs.sun.com/view_bug.do?bug_id=6788458
     // http://bugs.sun.com/view_bug.do?bug_id=6541476
     // http://bugs.sun.com/view_bug.do?bug_id=6444360
     // http://bugs.sun.com/view_bug.do?bug_id=6404011
+    // http://bugs.sun.com/view_bug.do?bug_id=4712797
     //
     // Someday, when both ImageIO is fixed and everyone's JRE contains
     // that fix, we can do this the simple way.
@@ -116,6 +118,8 @@ public class ImageIOImageLoader implements ImageLoader {
     boolean fix_tRNS = false;
     int tRNS = 0x00000000;
 
+    boolean fix_YCbCr = false;
+
     BufferedImage img = null;
     RereadableInputStream rin = null;
     try {
@@ -123,13 +127,12 @@ public class ImageIOImageLoader implements ImageLoader {
       rin.mark(512);
 
       DataInputStream din = new DataInputStream(rin);
-      PNGDecoder.Chunk ch;
 
       // Is this a PNG?
       if (PNGDecoder.decodeSignature(din)) {
         // The PNG chunks refered to here are defined in the PNG
         // standard, found at http://www.w3.org/TR/PNG/
-        ch = PNGDecoder.decodeChunk(din);
+        PNGDecoder.Chunk ch = PNGDecoder.decodeChunk(din);
 
         // Sanity check: This is not a PNG if IHDR is not the first chunk.
         if (ch.type == PNGDecoder.IHDR) {
@@ -151,12 +154,12 @@ public class ImageIOImageLoader implements ImageLoader {
             // before the first IDAT chunk; therefore, if we find an IDAT
             // we're done.
 
-            DONE: for (;;) {
+            DONE_PNG: for (;;) {
               ch = PNGDecoder.decodeChunk(din);
 
               switch (ch.type) {
-              case PNGDecoder.tRNS: fix_tRNS = true;  break DONE;
-              case PNGDecoder.IDAT: fix_tRNS = false; break DONE;
+              case PNGDecoder.tRNS: fix_tRNS = true;  break DONE_PNG;
+              case PNGDecoder.IDAT: fix_tRNS = false; break DONE_PNG;
               default:
               }
             }
@@ -193,6 +196,72 @@ public class ImageIOImageLoader implements ImageLoader {
           }
         }
       }
+      else {
+        rin.reset();
+        rin.mark(512);
+
+        din = new DataInputStream(rin);
+
+        // Is this a JPEG?
+        if (JPEGDecoder.decodeSignature(din)) {
+          // The case where ImageIO fails is when there is no JFIF marker
+          // and three color components with the same horizontal subsampling.
+          // In this case, ImageIO incorrectly assumes that this image is
+          // RGB instead of YCbCr.
+
+          JPEGDecoder.Chunk ch;
+          fix_YCbCr = true;
+
+          DONE_JPEG: for (;;) {
+            ch = JPEGDecoder.decodeChunk(din);
+
+            switch (ch.type) {
+            case JPEGDecoder.SOF0:
+            case JPEGDecoder.SOF1:
+            case JPEGDecoder.SOF2:
+            case JPEGDecoder.SOF3:
+            case JPEGDecoder.SOF4:
+            case JPEGDecoder.SOF5:
+            case JPEGDecoder.SOF6:
+            case JPEGDecoder.SOF7:
+            case JPEGDecoder.SOF9:
+            case JPEGDecoder.SOF10:
+            case JPEGDecoder.SOF11:
+            case JPEGDecoder.SOF12:
+            case JPEGDecoder.SOF13:
+            case JPEGDecoder.SOF14:
+            case JPEGDecoder.SOF15:
+              // The JPEG standard requires any APP0 to appear before the
+              // first SOF marker, so if we see a SOF marker, we know there
+              // is no APP0 marker to find. Hence, we can check for the bug.
+              fix_YCbCr = 
+                ch.data.length == 15 &&
+                ch.data[5] == 3 &&    // color components
+                (ch.data[7] & 0x0F) == (ch.data[10] & 0x0F) &&
+                (ch.data[7] & 0x0F) == (ch.data[13] & 0x0F);
+              break DONE_JPEG;
+
+            case JPEGDecoder.APP0:
+              if (ch.data.length >= 4 && 
+                  ch.data[0] == 'J' &&
+                  ch.data[1] == 'F' &&
+                  ch.data[2] == 'I' &&
+                  ch.data[3] == 'F') {
+                // We've seen a JFIF, this image is ok.
+                fix_YCbCr = false;
+                break DONE_JPEG;
+              }
+              break;
+                  
+            case JPEGDecoder.EOI:
+              // We've reached the end. This probably shouldn't happen.
+              break DONE_JPEG;
+
+            default:
+            }
+          }
+        }
+      }
 
       // Load the image
       rin.reset();
@@ -216,10 +285,16 @@ public class ImageIOImageLoader implements ImageLoader {
 
     final Reference<BufferedImage> ref = new Reference<BufferedImage>(img);
 
-    // Fix up transparency in type 2 Truecolor images.
     if (fix_tRNS) {
+      // Fix up transparency in type 2 Truecolor images.
       img = null;
       img = fix_tRNS(ref, tRNS, type);
+      ref.obj = img;
+    }
+    else if (fix_YCbCr) {
+      // Fix up color space in misinterpreted JPEGs.
+      img = null;
+      img = fix_YCbCr(ref, type);
       ref.obj = img;
     }
 
@@ -362,6 +437,46 @@ public class ImageIOImageLoader implements ImageLoader {
     // Set all pixels of the transparent color to have alpha 0.
     for (int i = 0; i < data.length; ++i) {
       if (data[i] == tRNS) data[i] = 0x00000000;
+    }
+
+    return img;
+  }
+
+  protected BufferedImage fix_YCbCr(Reference<BufferedImage> ref, int type)
+                                                      throws ImageIOException {
+    BufferedImage img = ref.obj;
+
+    // Ensure that we are working with RGB or ARGB data.
+    if (img.getType() != BufferedImage.TYPE_INT_RGB &&
+        img.getType() != BufferedImage.TYPE_INT_ARGB) {
+
+      if (type != BufferedImage.TYPE_INT_RGB &&
+          type != BufferedImage.TYPE_INT_ARGB) {
+        type = BufferedImage.TYPE_INT_ARGB;
+      }
+
+      img = null;
+      img = tconv.convert(ref, type);
+    }
+
+    // NB: This unmanages the image.
+    final DataBufferInt db = (DataBufferInt) img.getRaster().getDataBuffer();
+    final int[] data = db.getData();
+
+    for (int i = 0; i < data.length; ++i) {
+      final int y  = (data[i] >> 16) & 0xFF;
+      final int pb = ((data[i] >>  8) & 0xFF) - 128;
+      final int pr = ( data[i]        & 0xFF) - 128;
+
+      final int a  = (data[i] >> 24) & 0xFF;
+      final int r = (int) Math.round(y + 1.402*pr);
+      final int g = (int) Math.round(y - 0.34414*pb - 0.71414*pr);
+      final int b = (int) Math.round(y + 1.772*pb);
+
+      data[i] = (a << 24) |
+                ((r < 0 ? 0 : (r > 0xFF ? 0xFF : r)) << 16) |
+                ((g < 0 ? 0 : (g > 0xFF ? 0xFF : g)) <<  8) |
+                 (b < 0 ? 0 : (b > 0xFF ? 0xFF : b));
     }
 
     return img;
