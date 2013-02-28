@@ -1,8 +1,0 @@
-extractList=/docsList
-checksumKey=docsChecksum-3.0
-checksum=3.0.9
-initialPrompt=Select a directory to install the VASSAL documentation
-installDir=3.0/docs
-installDirKey=docsDirectory
-prompt=New Documentation has been downloaded.  Install now?
-required=README.html
