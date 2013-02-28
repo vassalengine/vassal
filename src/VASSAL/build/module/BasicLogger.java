@@ -362,7 +362,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       if (md != null && md instanceof SaveMetaData) {
         if (Info.hasOldFormat(md.getVassalVersion())) {
 
-          if (Dialogs.showConfirmDialog(
+          final int result = Dialogs.showConfirmDialog(
             g.getFrame(),
             Resources.getString("Warning.log_will_be_updated_title"),
             Resources.getString("Warning.log_will_be_updated_heading"),
@@ -372,8 +372,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
               "3.2"
             ),
             JOptionPane.WARNING_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION)
-          {
+            JOptionPane.OK_CANCEL_OPTION
+          );
+
+          switch (result) {
+          case JOptionPane.CANCEL_OPTION:
+          case JOptionPane.CLOSED_OPTION:
             return null;
           }
         }

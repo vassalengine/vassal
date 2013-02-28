@@ -696,6 +696,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
           save();
           break;
         case JOptionPane.CANCEL_OPTION:
+        case JOptionPane.CLOSED_OPTION:
           cancelled = true;
         }
       }

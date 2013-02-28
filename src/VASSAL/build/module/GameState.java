@@ -276,6 +276,7 @@ public class GameState implements CommandEncoder {
         saveGame();
         break;
       case JOptionPane.CANCEL_OPTION:
+      case JOptionPane.CLOSED_OPTION:
         return;
       }
     }
