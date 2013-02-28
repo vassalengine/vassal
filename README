@@ -166,6 +166,9 @@ New Features in 3.2
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
+* 9910: ESC key interpreted as "No" instead of "Cancel" at save prompts
+* 9905: User Guide item missing from Help menu
+* 9882: ImageIO munges colors of 3-component JPEGs without JFIF markers
 * 9825: Macs with Retina displays unable to paint map tiles at non-power-
   of-two zoom levels
 * 9700: Unit activation improperly recorded
