@@ -270,6 +270,7 @@ public class ModuleManagerWindow extends JFrame {
 
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Main.tour"));
+    helpMenu.add(mm.addKey("Help.user_guide"));
     helpMenu.addSeparator();
     helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
     helpMenu.add(mm.addKey("Help.error_log"));
@@ -293,15 +294,24 @@ public class ModuleManagerWindow extends JFrame {
       Prefs.getGlobalPrefs().getEditor().getEditAction());
     mm.addAction("General.quit", shutDownAction);
 
-    URL url = null;
     try {
-      url = new File(Documentation.getDocumentationBaseDir(),
-                     "README.html").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "README.html").toURI().toURL();
+      mm.addAction("General.help", new ShowHelpAction(url, null));
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    mm.addAction("General.help", new ShowHelpAction(url, null));
+
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "userguide/userguide.pdf").toURI().toURL();
+      mm.addAction("Help.user_guide",
+        new ShowHelpAction("Help.user_guide", url, null));
+    }
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
 
     mm.addAction("Main.tour", new LaunchTourAction(this));
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));

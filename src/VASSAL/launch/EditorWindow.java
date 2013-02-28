@@ -171,6 +171,7 @@ public abstract class EditorWindow extends JFrame {
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
       helpMenu.add(mm.addKey("General.help"));
+      helpMenu.add(mm.addKey("Help.user_guide"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
@@ -222,33 +223,41 @@ public abstract class EditorWindow extends JFrame {
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
 
-    URL url = null;
     try {
-      url = new File(Documentation.getDocumentationBaseDir(),
-                     "README.html").toURI().toURL();
-    }
-    catch (MalformedURLException e) {
-      ErrorDialog.bug(e);
-    }
-    mm.addAction("General.help", new ShowHelpAction(url, null));
-
-    url = null;
-    try {
-      File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-      dir = new File(dir, "ReferenceManual/index.htm"); //$NON-NLS-1$
-      url = URLUtils.toURL(dir);
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "README.html").toURI().toURL();
+      mm.addAction("General.help", new ShowHelpAction(url, null));
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
-    final Action helpAction = new ShowHelpAction(url,
-      helpWindow.getClass().getResource("/images/Help16.gif")); //$NON-NLS-1$
-    helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString(
-      "Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "userguide/userguide.pdf").toURI().toURL();
+      mm.addAction("Help.user_guide",
+        new ShowHelpAction("Help.user_guide", url, null));
+    }
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
 
-    mm.addAction("Editor.ModuleEditor.reference_manual", helpAction);
-    toolBar.add(helpAction);
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "ReferenceManual/index.htm").toURI().toURL();
+
+      final ShowHelpAction helpAction = new ShowHelpAction(
+        url,
+        helpWindow.getClass().getResource("/images/Help16.gif")
+      );
+
+      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString(
+        "Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
+      toolBar.add(helpAction);
+    }
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
 

@@ -42,7 +42,12 @@ public class ShowHelpAction extends AbstractAction {
   private URL contents;
 
   public ShowHelpAction(URL contents, URL iconURL) {
-    this(null, contents, iconURL);
+    this((HelpWindow) null, contents, iconURL);
+  }
+
+  public ShowHelpAction(String key, URL contents, URL iconURL) {
+    this(contents, iconURL);
+    putValue(Action.NAME, Resources.getString(key));
   }
 
   public ShowHelpAction(HelpWindow helpWindow, HelpFile contents, URL iconURL) {
