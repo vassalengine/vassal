@@ -204,10 +204,10 @@ public class ImageIOImageLoader implements ImageLoader {
 
         // Is this a JPEG?
         if (JPEGDecoder.decodeSignature(din)) {
-          // The case where ImageIO fails is when there is no JFIF marker
-          // and three color components with the same horizontal subsampling.
-          // In this case, ImageIO incorrectly assumes that this image is
-          // RGB instead of YCbCr.
+          // The case where ImageIO fails is when there is no JFIF marker,
+          // no color profile, and three color components with the same
+          // horizontal subsampling. In this case, ImageIO incorrectly
+          // assumes that this image is RGB instead of YCbCr.
 
           JPEGDecoder.Chunk ch;
           fix_YCbCr = true;
@@ -231,9 +231,10 @@ public class ImageIOImageLoader implements ImageLoader {
             case JPEGDecoder.SOF13:
             case JPEGDecoder.SOF14:
             case JPEGDecoder.SOF15:
-              // The JPEG standard requires any APP0 to appear before the
-              // first SOF marker, so if we see a SOF marker, we know there
-              // is no APP0 marker to find. Hence, we can check for the bug.
+              // The JPEG standard requires any APPn markers to appear before
+              // the first SOF marker, so if we see an SOF marker, we know
+              // there are no APPn markers to find. Hence, we can decide now
+              // whether this JPEG triggers the bug.
               fix_YCbCr = 
                 ch.data.length == 15 &&
                 ch.data[5] == 3 &&    // color components
@@ -252,7 +253,29 @@ public class ImageIOImageLoader implements ImageLoader {
                 break DONE_JPEG;
               }
               break;
-                  
+            
+            case JPEGDecoder.APP2:
+              // Check whether we have a color profile. If so, then ImageIO
+              // can handle decoding the image.
+              if (ch.data.length >= 12 &&
+                  ch.data[0]  == 'I' &&
+                  ch.data[1]  == 'C' &&
+                  ch.data[2]  == 'C' &&
+                  ch.data[3]  == '_' &&
+                  ch.data[4]  == 'P' &&
+                  ch.data[5]  == 'R' &&
+                  ch.data[6]  == 'O' &&
+                  ch.data[7]  == 'F' &&
+                  ch.data[8]  == 'I' &&
+                  ch.data[9]  == 'L' &&
+                  ch.data[10] == 'E' &&
+                  ch.data[11] == 0x00) {
+                // We have a color profile, this image is ok.
+                fix_YCbCr = false;
+                break DONE_JPEG;
+              }
+              break;      
+
             case JPEGDecoder.EOI:
               // We've reached the end. This probably shouldn't happen.
               break DONE_JPEG;

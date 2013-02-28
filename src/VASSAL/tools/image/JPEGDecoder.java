@@ -59,6 +59,7 @@ class JPEGDecoder {
   static final int SOI  = 0xFFD8;
   static final int EOI  = 0xFFD9;
   static final int APP0 = 0xFFE0;
+  static final int APP2 = 0xFFE2;
 
   public static boolean decodeSignature(DataInputStream in) throws IOException {
     return in.readUnsignedShort() == SOI; 
