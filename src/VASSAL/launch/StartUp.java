@@ -97,7 +97,7 @@ public class StartUp {
   public void startErrorLog() {
     // begin the error log
     logger.info("Starting"); //$NON-NLS-1$
-    logger.info("OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.info("OS " + System.getProperty("os.name") + " " + System.getProperty("os.version")); //$NON-NLS-1$ //$NON-NLS-2$
     logger.info("Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
     logger.info("VASSAL version " + Info.getVersion()); //$NON-NLS-1$
   }
