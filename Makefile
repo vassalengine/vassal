@@ -158,32 +158,25 @@ version:
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
-	mkdir -p $@/Contents/{MacOS,Resources}
-	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
+	mkdir -p $@
+	cp -a dist/macosx/Contents $@
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
-	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
-	cp dist/macosx/VASSAL.icns $@/Contents/Resources
-#	svn export $(LIBDIR) $@/Contents/Resources/Java
-	cp -a $(LIBDIR) $@/Contents/Resources/Java
-#	svn export $(DOCDIR) $@/Contents/Resources/doc
+	cp -a $(LIBDIR)/* $@/Contents/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
-	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/Contents/MacOS/JavaApplicationStub
+	chmod 755 $@/Contents/MacOS/JavaAppLauncher
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
-#	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a CHANGES LICENSE README $(TMPDIR)/VASSAL-$(VERSION)
-#	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	find $(TMPDIR)/VASSAL-$(VERSION) -type f -exec chmod 644 \{\} \+
@@ -233,8 +226,8 @@ release: clean Vengine.jar test release-other release-linux release-windows rele
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
-#upload:
-#	scp $(TMPDIR)/VASSAL-$(VERSION){-windows.exe,-macosx.dmg,.zip} nomic.net:www/tmp/vassal
+upload:
+	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
 	$(JDOC) -d $(JDOCDIR) -link http://java.sun.com/javase/6/docs/api -sourcepath $(SRCDIR) -subpackages VASSAL 
