@@ -579,40 +579,40 @@ public class PieceMover extends AbstractBuildable
         }
       }
       else {
-         // Do not add pieces to the Deck that are Obscured to us, or that
-         // the Deck does not want to contain. Removing them from the
-         // draggedPieces list will cause them to be left behind where the
-         // drag started. NB. Pieces that have been dragged from a face-down
-         // Deck will be be Obscued to us, but will be Obscured by the dummy
-         // user Deck.NO_USER
-         if (mergeWith instanceof Deck) {
-           final ArrayList<GamePiece> newList = new ArrayList<GamePiece>(0);
-           for (GamePiece piece : draggedPieces) {
-             if (((Deck) mergeWith).mayContain(piece)) {
-               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
-               if (!isObscuredToMe || (isObscuredToMe && Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY)))) {
-                 newList.add(piece);
-               }
-             }
-           }
+        // Do not add pieces to the Deck that are Obscured to us, or that
+        // the Deck does not want to contain. Removing them from the
+        // draggedPieces list will cause them to be left behind where the
+        // drag started. NB. Pieces that have been dragged from a face-down
+        // Deck will be be Obscued to us, but will be Obscured by the dummy
+        // user Deck.NO_USER
+        if (mergeWith instanceof Deck) {
+          final ArrayList<GamePiece> newList = new ArrayList<GamePiece>(0);
+          for (GamePiece piece : draggedPieces) {
+            if (((Deck) mergeWith).mayContain(piece)) {
+              final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
+              if (!isObscuredToMe || (isObscuredToMe && Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY)))) {
+                newList.add(piece);
+              }
+            }
+          }
 
-           if (newList.size() != draggedPieces.size()) {
-             draggedPieces.clear();
-             for (GamePiece piece : newList) {
-               draggedPieces.add(piece);
-             }
-           }
-         }
-
-         for (GamePiece piece : draggedPieces) {
-            comm = comm.append(movedPiece(piece, mergeWith.getPosition()));
-            comm = comm.append(map.getStackMetrics().merge(mergeWith, piece));
+          if (newList.size() != draggedPieces.size()) {
+            draggedPieces.clear();
+            for (GamePiece piece : newList) {
+              draggedPieces.add(piece);
+            }
           }
         }
 
         for (GamePiece piece : draggedPieces) {
-          KeyBuffer.getBuffer().add(piece);
+          comm = comm.append(movedPiece(piece, mergeWith.getPosition()));
+          comm = comm.append(map.getStackMetrics().merge(mergeWith, piece));
         }
+      }
+
+      for (GamePiece piece : draggedPieces) {
+        KeyBuffer.getBuffer().add(piece);
+      }
 
       // Record each individual piece moved
       for (GamePiece piece : draggedPieces) {
