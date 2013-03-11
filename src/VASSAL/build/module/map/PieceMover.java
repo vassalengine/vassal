@@ -520,7 +520,7 @@ public class PieceMover extends AbstractBuildable
         int size = ((Stack) dragging).getPieceCount();
         for (int i = 0; i < size; i++) {
            draggedPieces.add(((Stack) dragging).getPieceAt(i));
-         }
+        }
       }
       else {
          draggedPieces.add(dragging);
