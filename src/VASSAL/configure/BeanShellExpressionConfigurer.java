@@ -332,6 +332,11 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   }
 
   protected void addProp(JMenu menu, final String propName, boolean sort) {
+    // Ignore any null propNames
+    if (propName == null) {
+      return;
+    }
+    
     final JMenuItem item = new JMenuItem(propName);
     item.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
