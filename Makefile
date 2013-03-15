@@ -158,25 +158,32 @@ version:
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
-	mkdir -p $@
-	cp -a dist/macosx/Contents $@
+	mkdir -p $@/Contents/{MacOS,Resources}
+	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
-	cp -a $(LIBDIR)/* $@/Contents/Java
+	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
+	cp dist/macosx/VASSAL.icns $@/Contents/Resources
+#	svn export $(LIBDIR) $@/Contents/Resources/Java
+	cp -a $(LIBDIR) $@/Contents/Resources/Java
+#	svn export $(DOCDIR) $@/Contents/Resources/doc
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
+	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/Contents/MacOS/JavaAppLauncher
+	chmod 755 $@/Contents/MacOS/JavaApplicationStub
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
+#	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a CHANGES LICENSE README $(TMPDIR)/VASSAL-$(VERSION)
+#	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	find $(TMPDIR)/VASSAL-$(VERSION) -type f -exec chmod 644 \{\} \+
