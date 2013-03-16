@@ -1072,7 +1072,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(faceDownAction);
       }
       if (reversible) {
-        c = new KeyCommand(Resources.getString("Deck.reverse_order"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(reverseCommand, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
