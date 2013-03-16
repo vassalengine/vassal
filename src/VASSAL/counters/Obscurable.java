@@ -61,6 +61,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected static final char BACKGROUND = 'B';
   protected static final char PEEK = 'P';
   protected static final char IMAGE = 'G';
+  protected static final String DEFAULT_PEEK_COMMAND = "Peek";
 
   protected char obscureKey;
   protected NamedKeyStroke keyCommand;
@@ -70,7 +71,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected String obscuredBy;
   protected ObscurableOptions obscuredOptions;
   protected String hideCommand = "Mask";
-  protected String peekCommand = "Peek";
+  protected String peekCommand = DEFAULT_PEEK_COMMAND;
   protected GamePiece obscuredToMeView;
   protected GamePiece obscuredToOthersView;
   protected boolean peeking;
@@ -136,6 +137,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
     maskName = st.nextToken(maskName);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
+    peekCommand = st.nextToken(DEFAULT_PEEK_COMMAND);
     commandsWithPeek = null;
     hide = null;
     peek = null;
@@ -161,6 +163,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
     se.append(maskName);
     se.append(PieceAccessConfigurer.encode(access));
+    se.append(peekCommand);
     return ID + se.getValue();
   }
 
@@ -589,6 +592,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private StringConfigurer obscureCommandInput, maskNameInput;
     private StringEnumConfigurer displayOption;
     private NamedHotKeyConfigurer peekKeyInput;
+    private StringConfigurer peekCommandInput;
     private JPanel controls = new JPanel();
     private String[] optionNames = new String[]{"Background", "Plain", "Inset", "Use Image"};
     private char[] optionChars = new char[]{BACKGROUND, PEEK, INSET, IMAGE};
@@ -667,10 +671,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       box.add(showDisplayOption);
       controls.add(box);
 
-      peekKeyInput = new NamedHotKeyConfigurer(null,"Peek Command:  ",p.peekKey);
+      peekKeyInput = new NamedHotKeyConfigurer(null,"Peek Key:  ",p.peekKey);
       peekKeyInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekKeyInput.getControls());
-
+      
+      peekCommandInput = new StringConfigurer(null, "Peek Command:  ", p.peekCommand);
+      peekCommandInput.getControls().setVisible(p.displayStyle == PEEK);
+      controls.add(peekCommandInput.getControls());
+      
       imagePicker = new ImagePicker();
       imagePicker.setImageName(p.obscuredToOthersImage);
       imagePicker.setVisible(p.displayStyle == IMAGE);
@@ -680,6 +688,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         public void propertyChange(PropertyChangeEvent evt) {
           showDisplayOption.repaint();
           peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
+          peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
           imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
           Window w = SwingUtilities.getWindowAncestor(controls);
           if (w != null) {
@@ -723,6 +732,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       }
       se.append(maskNameInput.getValueString());
       se.append(accessConfig.getValueString());
+      se.append(peekCommandInput.getValueString());
       return ID + se.getValue();
     }
 
