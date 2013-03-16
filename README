@@ -166,6 +166,7 @@ New Features in 3.2
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
+* 9990: Cannot customise Reverse Order text on a Deck
 * 9967: Reversed stacking order when dropping a stack onto an expanded stack
 * 9918: NPE in BeanShellExpressionConfigurer.addProp()
 * 9910: ESC key interpreted as "No" instead of "Cancel" at save prompts
@@ -173,6 +174,7 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
 * 9882: ImageIO munges colors of 3-component JPEGs without JFIF markers
 * 9825: Macs with Retina displays unable to paint map tiles at non-power-
   of-two zoom levels
+* 9823: No entry allowed for Peek command
 * 9700: Unit activation improperly recorded
 * 9681: NPE in Zone.getMutablePropertiesContainerId()
 
