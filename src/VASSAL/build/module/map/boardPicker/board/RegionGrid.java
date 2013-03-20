@@ -112,7 +112,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public void addRegion(Region a) {
     regionList.put(a.getOrigin(), a);
-    if (inConfig) {
+    if (inConfig && regionConfigurer != null) {
         regionConfigurer.view.repaint();
     }
   }
@@ -258,12 +258,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public void configureRegions() {
-    inConfig = true;
     for (Region r : regionList.values()) {
       r.setSelected(false);
     }
     regionConfigurer = new Config(this);
     regionConfigurer.setVisible(true);
+    inConfig = true;
   }
 
   // Force Regions to be drawn when configuring
