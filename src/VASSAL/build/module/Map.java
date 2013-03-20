@@ -58,6 +58,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -207,7 +208,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected MouseListener multicaster = null;
   protected ArrayList<MouseListener> mouseListenerStack =
     new ArrayList<MouseListener>();
-  protected ArrayList<Board> boards = new ArrayList<Board>();
+  protected List<Board> boards = new CopyOnWriteArrayList<Board>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
   protected PieceCollection pieces = new DefaultPieceCollection();

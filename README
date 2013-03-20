@@ -183,6 +183,7 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
    VASSAL.tools.NamedKeyStroke in ADC2 converter
 *  9700: Unit activation improperly recorded
 *  9681: NPE in Zone.getMutablePropertiesContainerId()
+*  9648: ConcurrentModificationException in Map.drawBoardsInRegion()
 *  4803: NoSuchElementException in Footprint.draw()
 
 The following bugs in 3.2.1 are fixed in 3.2.2:
