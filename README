@@ -166,17 +166,24 @@ New Features in 3.2
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
-* 9990: Cannot customise Reverse Order text on a Deck
-* 9967: Reversed stacking order when dropping a stack onto an expanded stack
-* 9918: NPE in BeanShellExpressionConfigurer.addProp()
-* 9910: ESC key interpreted as "No" instead of "Cancel" at save prompts
-* 9905: User Guide item missing from Help menu
-* 9882: ImageIO munges colors of 3-component JPEGs without JFIF markers
-* 9825: Macs with Retina displays unable to paint map tiles at non-power-
-  of-two zoom levels
-* 9823: No entry allowed for Peek command
-* 9700: Unit activation improperly recorded
-* 9681: NPE in Zone.getMutablePropertiesContainerId()
+* 10000: IllegalArgumentException in Embellishment.setValue()
+*  9997: NPE in RegionGrid.addRegion()
+*  9990: Cannot customise Reverse Order text on a Deck
+*  9967: Reversed stacking order when dropping a stack onto an expanded stack
+*  9918: NPE in BeanShellExpressionConfigurer.addProp()
+*  9910: ESC key interpreted as "No" instead of "Cancel" at save prompts
+*  9905: User Guide item missing from Help menu
+*  9882: ImageIO munges colors of 3-component JPEGs without JFIF markers
+*  9864: Toolbar menu w/ Inventory Items autoexpands permanently when
+   switching players
+*  9825: Macs with Retina displays unable to paint map tiles at non-power-
+   of-two zoom levels
+*  9823: No entry allowed for Peek command
+*  9717: ClassCastException: javax.swing.KeyStroke cannot be cast to
+   VASSAL.tools.NamedKeyStroke in ADC2 converter
+*  9700: Unit activation improperly recorded
+*  9681: NPE in Zone.getMutablePropertiesContainerId()
+*  4803: NoSuchElementException in Footprint.draw()
 
 The following bugs in 3.2.1 are fixed in 3.2.2:
 
@@ -196,7 +203,7 @@ The following bugs in 3.2.0 are fixed in 3.2.1:
 
 For changes prior to 3.2.1, see the change log.
 
-Please report all bugs in 3.2.2, even if they are bugs which you've already
+Please report all bugs in 3.2.3, even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 
