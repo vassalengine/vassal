@@ -2685,7 +2685,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
       pile.setAttribute(DrawPile.NAME, pool.name);
       pile.setAttribute(DrawPile.SHUFFLE, DrawPile.USE_MENU);
       pile.setAttribute(DrawPile.SHUFFLE_REPORT_FORMAT, "$playerName$ reshuffles $deckName$");
-      pile.setAttribute(DrawPile.SHUFFLE_HOTKEY, KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
+      pile.setAttribute(DrawPile.SHUFFLE_HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK)));
 
       for (Piece pc : pool.getPieces()) {
         pc.writeToArchive(pile);
