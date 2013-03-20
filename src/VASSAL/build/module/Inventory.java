@@ -781,7 +781,10 @@ public class Inventory extends AbstractConfigurable
 
   protected void setupLaunch() {
     launch.setEnabled(enabledForPlayersSide());
-    launch.setVisible(launch.isEnabled());
+    // Only change button visibilty if it has not already been hidden by a ToolBarMenu
+    if (launch.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
+       launch.setVisible(launch.isEnabled());
+    }
   }
 
   /**

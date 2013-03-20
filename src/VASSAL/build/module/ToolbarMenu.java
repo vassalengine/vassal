@@ -70,6 +70,7 @@ public class ToolbarMenu extends AbstractConfigurable
   public static final String DESCRIPTION = "description"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
+  public static final String HIDDEN_BY_TOOLBAR = "hidden"; //$NON-NLS-1$
   protected List<String> menuItems = new ArrayList<String>();
   protected Map<AbstractButton,JMenuItem> buttonsToMenuMap =
     new HashMap<AbstractButton,JMenuItem>();
@@ -150,7 +151,6 @@ public class ToolbarMenu extends AbstractConfigurable
       }
     }
     else if (BUTTON_TEXT.equals(key)) {
-      setConfigureName((String) value);
       launch.setAttribute(key, value);
     }
     else if(DESCRIPTION.equals(key)) {
@@ -189,8 +189,9 @@ public class ToolbarMenu extends AbstractConfigurable
 
   protected void buildMenu() {
     for (AbstractButton b : buttonsToMenuMap.keySet()) {
+      b.removePropertyChangeListener(this); 
       b.setVisible(true);
-      b.removePropertyChangeListener(this);
+      b.putClientProperty(HIDDEN_BY_TOOLBAR, null);
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
@@ -215,6 +216,8 @@ public class ToolbarMenu extends AbstractConfigurable
         Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
         b.setVisible(false);
+        b.putClientProperty(HIDDEN_BY_TOOLBAR, new Boolean(true));
+        
         if (property instanceof JPopupMenu) {
           // This button corresponds to another ToolbarMenu button.
           // Turn it into a submenu.
@@ -296,4 +299,5 @@ public class ToolbarMenu extends AbstractConfigurable
   public Command getRestoreCommand() {
     return null;
   }
+
 }
