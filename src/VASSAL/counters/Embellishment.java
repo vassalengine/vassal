@@ -178,10 +178,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * @param val
    */
   public void setValue(int val) {
+    int theVal = val;
     if (val >= nValues) {
-      throw new IllegalArgumentException();
+      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer="+val);
+      theVal = nValues;
     }
-    value = value > 0 ? val + 1 : -val - 1;
+    value = value > 0 ? theVal + 1 : -theVal - 1;
   }
 
   public void mySetType(String s) {
