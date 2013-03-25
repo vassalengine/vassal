@@ -186,6 +186,7 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
 *  9648: ConcurrentModificationException in Map.drawBoardsInRegion()
 *  9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
 *  4803: NoSuchElementException in Footprint.draw()
+*  2531: Change Global Property button missing configurable tooltip
 
 The following bugs in 3.2.1 are fixed in 3.2.2:
 

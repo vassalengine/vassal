@@ -47,6 +47,7 @@ import VASSAL.tools.NamedKeyStroke;
  */
 public class ChangePropertyButton extends AbstractConfigurable implements PropertyChangerConfigurer.Constraints {
   public static final String BUTTON_TEXT = "text";
+  public static final String BUTTON_TOOLTIP = "tooltip";
   public static final String BUTTON_ICON = "icon";
   public static final String HOTKEY = "hotkey";
   public static final String PROPERTY_CHANGER = "propChanger";
@@ -63,7 +64,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   protected FormattedString format = new FormattedString();
 
   public ChangePropertyButton() {
-    launch = new LaunchButton("Change", BUTTON_TEXT, HOTKEY, BUTTON_ICON, new ActionListener() {
+    launch = new LaunchButton("Change", BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -101,6 +102,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Button text:  ",
+      "Tooltip Text:  ",
       "Button icon:  ",
       "Hotkey:  ",
       "Report format:  ",
@@ -110,6 +112,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String.class,
       String.class,
       Icon.class,
       NamedKeyStroke.class,
@@ -121,6 +124,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   public String[] getAttributeNames() {
     return new String[] {
       BUTTON_TEXT,
+      BUTTON_TOOLTIP,
       BUTTON_ICON,
       HOTKEY,
       REPORT_FORMAT,
