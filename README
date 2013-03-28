@@ -184,6 +184,7 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
 *  9700: Unit activation improperly recorded
 *  9681: NPE in Zone.getMutablePropertiesContainerId()
 *  9648: ConcurrentModificationException in Map.drawBoardsInRegion()
+*  9589: NPE in Embellishment.myGetKeyCommands()
 *  9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
 *  4803: NoSuchElementException in Footprint.draw()
 *  2531: Change Global Property button missing configurable tooltip
