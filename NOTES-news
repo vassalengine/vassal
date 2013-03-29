@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.2, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which which fixes several problems found in earlier versions.
 
 </p>
 <h2>IMPORTANT</h2>
@@ -11,11 +11,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.2, which which fi
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.2-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
@@ -88,6 +88,30 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.2, which which fi
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in 3.2.2 are fixed in 3.2.3:
+<ul>
+* 10000: IllegalArgumentException in Embellishment.setValue()</li>
+  <li>9997: NPE in RegionGrid.addRegion()</li>
+  <li>9990: Cannot customise Reverse Order text on a Deck</li>
+  <li>9967: Reversed stacking order when dropping a stack onto an expanded stack</li>
+  <li>9918: NPE in BeanShellExpressionConfigurer.addProp()</li>
+  <li>9910: ESC key interpreted as "No" instead of "Cancel" at save prompts</li>
+  <li>9905: User Guide item missing from Help menu</li>
+  <li>9882: ImageIO munges colors of 3-component JPEGs without JFIF markers</li>
+  <li>9864: Toolbar menu w/ Inventory Items autoexpands permanently when switching players</li>
+  <li>9825: Macs with Retina displays unable to paint map tiles at non-power-of-two zoom levels</li>
+  <li>9823: No entry allowed for Peek command</li>
+  <li>9717: ClassCastException: javax.swing.KeyStroke cannot be cast to VASSAL.tools.NamedKeyStroke in ADC2 converter</li>
+  <li>9700: Unit activation improperly recorded</li>
+  <li>9681: NPE in Zone.getMutablePropertiesContainerId()</li>
+  <li>9648: ConcurrentModificationException in Map.drawBoardsInRegion()</li>
+  <li>9589: NPE in Embellishment.myGetKeyCommands()</li>
+  <li>9555: NoSuchFieldError in ExpressionInterpreter.evaluate()</li>
+  <li>4803: NoSuchElementException in Footprint.draw()</li>
+  <li>2531: Change Global Property button missing configurable tooltip</li>
+</ul>
+</p>
+<p>
 The following bugs in 3.2.1 are fixed in 3.2.2:
 <ul>
   <li>9637: Faulty base64 encoding when synchronizing with game server</li>
@@ -108,38 +132,10 @@ The following bugs in in 3.2.0 are fixed in 3.2.1:
 </ul>
 </p>
 <p>
-The following bugs in in 3.1.20 are fixed in 3.2.0:
-<ul>
-  <li>4831: Module revision that created log is not displayed in errorLog</li>
-  <li>4820: ExecutionException in ImageSaver due to running out of memory</li>
-  <li>4818: Hide empty TurnTracker launch buttons</li>
-  <li>4807: Vengine.jar should be readable by group and other</li>
-  <li>4793: ChangePropertyButton cannot be cast to GamePiece when creating toolbar button</li>
-  <li>4784: Unable to edit regions within an irregular grid via mouse and arrow keys once created</li>
-  <li>4775: a context menu containing a single submenu is deviously disallowed</li>
-  <li>4764: Losing Player Sides when opening module with different language set</li>
-  <li>4763: Symbolic Dice button window results do not open correctly</li>
-  <li>4690: Hide Pieces Toolbar button causes Toolbar button icons to move</li>
-  <li>4547: Ensure that image data is integer type before casting to DataBufferInt</li>
-  <li>4452: Batik loads com.sun.image.codec.jpeg.TruncatedFileException, which doesn't exist in Java 7</li>
-  <li>4402: StackOverflowError from recursively generating counter name with Label</li>
-  <li>4322: Bad justification for text labels containing global properties</li>
-  <li>4302: Global Hotkey cannot preserve execution order across server</li>
-  <li>4155: NoClassDefFoundError for com.sun.management.OperatingSystemMXBean</li>
-  <li>3864: IllegalStateException in ReturnToDeck.promptForDrawPile() when no decks exist</li>
-  <li>3745: NPE in SVGImageUtils.getImageSize() in Batik</li>
-  <li>3040: ClassCastException in CommandServer.run()</li>
-  <li>2746: DOMException on malformed SVG input</li>
-  <li>2711: Batik throws DOMException on SVG with flowRoot element</li>
-  <li>2694: Warn (Windows) users to reboot after Java upgrade</li>
-  <li>2671: BMPs are incompatible with memory-mapped images</li>
-  <li>2582: Mask and Peek menu entries are not translatable</li>
-  <li>2556: ImageOp does not support paths</li>
-</ul>
-For changes prior to 3.2.0, see the change log.
+For changes prior to 3.2.1, see the change log.
 </p>
 <p>
-Please report all bugs in 3.2.2 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.3 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>
