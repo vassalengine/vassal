@@ -166,6 +166,7 @@ New Features in 3.2
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
+* 10038: NPE while editing a global property button
 * 10000: IllegalArgumentException in Embellishment.setValue()
 *  9997: NPE in RegionGrid.addRegion()
 *  9990: Cannot customise Reverse Order text on a Deck

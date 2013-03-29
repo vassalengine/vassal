@@ -90,7 +90,8 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which which fi
 <p>
 The following bugs in 3.2.2 are fixed in 3.2.3:
 <ul>
-* 10000: IllegalArgumentException in Embellishment.setValue()</li>
+  <li>10038: NPE while editing a global property button</li>
+  <li>10000: IllegalArgumentException in Embellishment.setValue()</li>
   <li>9997: NPE in RegionGrid.addRegion()</li>
   <li>9990: Cannot customise Reverse Order text on a Deck</li>
   <li>9967: Reversed stacking order when dropping a stack onto an expanded stack</li>
