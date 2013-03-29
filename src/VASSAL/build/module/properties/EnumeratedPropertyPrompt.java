@@ -34,6 +34,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected DialogParent dialogParent;
   protected Constraints propertySource;
 
+  @Deprecated
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
     this (dialogParent, prompt, validValues, null);
   }

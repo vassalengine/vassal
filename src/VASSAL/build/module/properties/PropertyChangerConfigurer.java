@@ -161,8 +161,10 @@ public class PropertyChangerConfigurer extends Configurer {
       p = new IncrementProperty(this, incrConfig.getValueString(), constraints);
       break;
     case ENUM_CODE:
-      p = new EnumeratedPropertyPrompt(constraints,
-        promptConfig.getValueString(), validValuesConfig.getStringArray());
+      p = new EnumeratedPropertyPrompt(
+        constraints, promptConfig.getValueString(),
+        validValuesConfig.getStringArray(), constraints
+      );
       break;
     case PLAIN_CODE:
     default:
