@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -29,23 +29,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-src.zip
 
 *********************
 Compatibility Notes
@@ -164,6 +164,10 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.3 are fixed in 3.2.4:
+
+* 9969: IllegalArgumentException in MapShader.PatternOp ctor
+
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
 * 10038: NPE while editing a global property button
@@ -208,7 +212,7 @@ The following bugs in 3.2.0 are fixed in 3.2.1:
 
 For changes prior to 3.2.1, see the change log.
 
-Please report all bugs in 3.2.3, even if they are bugs which you've already
+Please report all bugs in 3.2.4, even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 

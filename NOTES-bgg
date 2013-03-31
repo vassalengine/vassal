@@ -1,5 +1,5 @@
-[size=18][b]VASSAL 3.2.3 released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which fixes several problems found in earlier versions.
+[size=18][b]VASSAL 3.2.4 released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which fixes several problems found in earlier versions.
 
 [size=16][b]IMPORTANT[/b][/size]
 * If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
@@ -9,11 +9,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which fixes se
 * VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.
 
 [size=16][b]Download[/b][/size]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-src.zip]Source code[/url]
 
 [size=16][b]Compatibility Notes[/b][/size]
 * VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
@@ -83,6 +83,10 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which fixes se
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.3 are fixed in 3.2.4:
+
+* 9969: IllegalArgumentException in MapShader.PatternOp ctor
+
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
 * 10038: NPE while editing a global property button
@@ -122,7 +126,7 @@ The following bugs in 3.2.0 are fixed in 3.2.1:
 * 9511: NPE in BooleanConfigurer.setValue()
 * 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
 
-Please report all bugs in 3.2.3, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.4, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=16][b]Minimum Requirements[/b][/size]
 VASSAL 3.2 requires the Java Runtime Envrionment to run.

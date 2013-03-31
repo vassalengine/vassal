@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.3 released[/b][/size]
+[size=200][b]VASSAL 3.2.4 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -13,11 +13,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which which fi
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.3-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-src.zip]Source code[/url]
 
 [size=150][b]Compatibility Notes[/b][/size]
 
@@ -94,9 +94,13 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.3, which which fi
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.3 are fixed in 3.2.4:
+
+* 9969: IllegalArgumentException in MapShader.PatternOp ctor
+
 The following bugs in 3.2.2 are fixed in 3.2.3:
 
-* 10038: NPE while editing a global property button
+*	10038: NPE while editing a global property button
 * 10000: IllegalArgumentException in Embellishment.setValue()
 *  9997: NPE in RegionGrid.addRegion()
 *  9990: Cannot customise Reverse Order text on a Deck
@@ -135,7 +139,7 @@ The following bugs in 3.2.0 are fixed in 3.2.1:
 
 For changes prior to 3.2.1, see the change log.
 
-Please report all bugs in 3.2.3, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.4, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
