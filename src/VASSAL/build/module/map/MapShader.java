@@ -659,9 +659,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      color = (Color) value;
-      buildShadePattern();
-      buildTexture();
+      // Bug 9969. Color configurer returns null if cancelled, so ignore a null. 
+      // and leave pattern and texture unchanged
+      if (value != null) {
+        color = (Color) value;      
+        buildShadePattern();
+        buildTexture();
+      }
     }
     else if (IMAGE.equals(key)) {
       if (value instanceof File) {
