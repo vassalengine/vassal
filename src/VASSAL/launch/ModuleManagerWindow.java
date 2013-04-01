@@ -119,8 +119,10 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
+import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.UpdateCheckAction;
 
 public class ModuleManagerWindow extends JFrame {
@@ -262,6 +264,34 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
     }, serverStatusConfig.booleanValue()));
+
+    toolsMenu.add(new MenuItemProxy(new AbstractAction(
+                    Resources.getString("ModuleManager.clear_tilecache")) {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent evt) {
+        if (
+          Dialogs.showConfirmDialog(
+            ModuleManagerWindow.this,
+            Resources.getString("ModuleManager.clear_tilecache_title"),
+            Resources.getString("ModuleManager.clear_tilecache_heading"),
+            Resources.getString("ModuleManager.clear_tilecache_message"),
+            JOptionPane.WARNING_MESSAGE,
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
+        {
+          final File tdir = new File(Info.getConfDir(), "tiles");
+          if (tdir.exists()) {
+            try {
+              FileUtils.forceDelete(tdir);
+              FileUtils.forceMkdir(tdir);
+            }
+            catch (IOException e) {
+              WriteErrorDialog.error(e, tdir);
+            }
+          }
+        }
+      }
+    }));
 
     // help menu
     final MenuProxy helpMenu =
