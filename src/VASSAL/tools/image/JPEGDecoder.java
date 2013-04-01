@@ -20,7 +20,10 @@
 package VASSAL.tools.image;
 
 import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+
+import VASSAL.tools.io.IOUtils;
 
 /**
  * A (partial) JPEG decoder.
@@ -31,35 +34,37 @@ import java.io.IOException;
 class JPEGDecoder {
   protected JPEGDecoder() {}
 
-  static final int TEM  = 0xFF01;
-  static final int SOF0 = 0xFFC0;
-  static final int SOF1 = 0xFFC1;
-  static final int SOF2 = 0xFFC2;
-  static final int SOF3 = 0xFFC3;
-  static final int SOF4 = 0xFFC4;
-  static final int SOF5 = 0xFFC5;
-  static final int SOF6 = 0xFFC6;
-  static final int SOF7 = 0xFFC7;
-  static final int SOF8 = 0xFFC8;
-  static final int SOF9 = 0xFFC9;
+  static final int TEM   = 0xFF01;
+  static final int SOF0  = 0xFFC0;
+  static final int SOF1  = 0xFFC1;
+  static final int SOF2  = 0xFFC2;
+  static final int SOF3  = 0xFFC3;
+  static final int SOF4  = 0xFFC4;
+  static final int SOF5  = 0xFFC5;
+  static final int SOF6  = 0xFFC6;
+  static final int SOF7  = 0xFFC7;
+  static final int SOF8  = 0xFFC8;
+  static final int SOF9  = 0xFFC9;
   static final int SOF10 = 0xFFCA;
   static final int SOF11 = 0xFFCB;
   static final int SOF12 = 0xFFCC;
   static final int SOF13 = 0xFFCD;
   static final int SOF14 = 0xFFCE;
   static final int SOF15 = 0xFFCF;
-  static final int RST0 = 0xFFD0;
-  static final int RST1 = 0xFFD1;
-  static final int RST2 = 0xFFD2;
-  static final int RST3 = 0xFFD3;
-  static final int RST4 = 0xFFD4;
-  static final int RST5 = 0xFFD5;
-  static final int RST6 = 0xFFD6;
-  static final int RST7 = 0xFFD7;
-  static final int SOI  = 0xFFD8;
-  static final int EOI  = 0xFFD9;
-  static final int APP0 = 0xFFE0;
-  static final int APP2 = 0xFFE2;
+  static final int RST0  = 0xFFD0;
+  static final int RST1  = 0xFFD1;
+  static final int RST2  = 0xFFD2;
+  static final int RST3  = 0xFFD3;
+  static final int RST4  = 0xFFD4;
+  static final int RST5  = 0xFFD5;
+  static final int RST6  = 0xFFD6;
+  static final int RST7  = 0xFFD7;
+  static final int SOI   = 0xFFD8;
+  static final int EOI   = 0xFFD9;
+  static final int SOS   = 0xFFDA;
+  static final int APP0  = 0xFFE0;
+  static final int APP2  = 0xFFE2;
+  static final int APP14 = 0xFFED;
 
   public static boolean decodeSignature(DataInputStream in) throws IOException {
     return in.readUnsignedShort() == SOI; 
@@ -84,6 +89,10 @@ class JPEGDecoder {
       in.readFully(data);
     }
 
+    // NB: This will blow up after reaching an SOS, due to it being follwed
+    // by raw data instead of another chunk. If we want to find the next
+    // chunk after an SOS, we have to scan for FF xx, where xx != 00.
+
     return new Chunk(type, data);
   }
 
@@ -94,6 +103,28 @@ class JPEGDecoder {
     private Chunk(int type, byte[] data) {
       this.type = type;
       this.data = data;
+    }
+  }
+
+  public static void main(String[] args) throws IOException {
+    DataInputStream in = null;
+    try {
+      in = new DataInputStream(new FileInputStream(args[0]));
+      
+      if (!JPEGDecoder.decodeSignature(in)) {
+        System.out.println("Not a JPEG");
+      }
+
+      JPEGDecoder.Chunk ch;
+      do {
+        ch = JPEGDecoder.decodeChunk(in);
+	      System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
+
+
+      } while (ch.type != JPEGDecoder.EOI);
+    }
+    finally {
+      IOUtils.closeQuietly(in);
     }
   }
 }

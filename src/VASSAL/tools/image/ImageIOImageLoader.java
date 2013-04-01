@@ -276,6 +276,15 @@ public class ImageIOImageLoader implements ImageLoader {
               }
               break;      
 
+            case JPEGDecoder.APP14:
+              // The "Adobe" tag handles color transformation.
+              fix_YCbCr = false;
+              break DONE_JPEG;
+            
+            case JPEGDecoder.SOS:
+              // We've reached a Start of Scan marker. Following this
+              // is not a normal segment, but instead a lot of raw data.
+              // This probably shouldn't happen with a valid JPEG.
             case JPEGDecoder.EOI:
               // We've reached the end. This probably shouldn't happen.
               break DONE_JPEG;
