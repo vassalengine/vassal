@@ -463,7 +463,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
 
-    rootNode = new MyTreeNode (new RootInfo());
+    rootNode = new MyTreeNode(new RootInfo());
 
     for (ModuleInfo moduleInfo : moduleList) {
       final MyTreeNode moduleNode = new MyTreeNode(moduleInfo);
