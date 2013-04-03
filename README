@@ -169,6 +169,7 @@ The following bugs in 3.2.3 are fixed in 3.2.4:
 * 10054: Add option to clear tile cache to Module Manager
 * 10053: JPEGs with APP14 tags are incorrectly color-corrected by fix for
     Bug 9882
+* 10016: P2P Client/Server modes do not work in 3.2.2
 *  9969: IllegalArgumentException in MapShader.PatternOp ctor
 
 The following bugs in 3.2.2 are fixed in 3.2.3:
