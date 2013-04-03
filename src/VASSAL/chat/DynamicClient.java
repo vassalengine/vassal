@@ -52,32 +52,32 @@ public class DynamicClient extends HybridClient {
   }
 
   protected ChatServerConnection buildDelegate() throws IOException {
-    ChatServerConnection c = null;
     final Properties p = ServerAddressBook.getInstance().getCurrentServerProperties();
-    c = ChatServerFactory.build(p);
-    return c;
+    return ChatServerFactory.build(p);
   }
 
-//  private Properties getServerConfig() throws IOException {
-//    HttpRequestWrapper r = new HttpRequestWrapper(serverConfigURL);
-//    Properties p = new Properties();
-//    p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName()); //$NON-NLS-1$ //$NON-NLS-2$
-//    p.put("vassalVersion", VASSAL.Info.getVersion()); //$NON-NLS-1$
-//    List<String> l = r.doGet(p);
-//    if (l.isEmpty()) {
-//      throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
-//    }
-//    p = new Properties();
-//    final StringBuilder buff = new StringBuilder();
-//    for (String s : l) {
-//      buff.append(s).append('\n');
-//    }
-//    p.load(new ByteArrayInputStream(buff.toString().getBytes()));
-//    if (overrides != null) {
-//      p.putAll(overrides);
-//    }
-//    return p;
-//  }
+/*
+  private Properties getServerConfig() throws IOException {
+    HttpRequestWrapper r = new HttpRequestWrapper(serverConfigURL);
+    Properties p = new Properties();
+    p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName()); //$NON-NLS-1$ //$NON-NLS-2$
+    p.put("vassalVersion", VASSAL.Info.getVersion()); //$NON-NLS-1$
+    List<String> l = r.doGet(p);
+    if (l.isEmpty()) {
+      throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
+    }
+    p = new Properties();
+    final StringBuilder buff = new StringBuilder();
+    for (String s : l) {
+      buff.append(s).append('\n');
+    }
+    p.load(new ByteArrayInputStream(buff.toString().getBytes()));
+    if (overrides != null) {
+      p.putAll(overrides);
+    }
+    return p;
+  }
+*/
 
   public void setConnected(final boolean connect) {
     if (connect && !isConnected()) {
