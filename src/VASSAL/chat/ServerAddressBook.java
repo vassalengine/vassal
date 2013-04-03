@@ -314,7 +314,10 @@ public class ServerAddressBook {
     updateButtonVisibility();
     myList.repaint();
   }
-
+  
+  protected Properties getCurrentServerProperties() {
+    return currentEntry.getProperties();
+  }
 
   public void showPopup(JComponent source) {
     final JPopupMenu popup = new JPopupMenu();
