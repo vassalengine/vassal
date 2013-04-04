@@ -118,7 +118,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   // Index of the image to draw. Negative if inactive. 0 is not a valid value.
   protected int value = -1;
 
-  protected String activationStatus = "";
   protected int nValues;
   protected int xOff, yOff;
   protected String imageName[];
@@ -146,7 +145,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   // NamedKeyStroke support
   protected boolean alwaysActive;
-  protected boolean activated;
   protected NamedKeyStroke activateKeyStroke;
   protected NamedKeyStroke increaseKeyStroke;
   protected NamedKeyStroke decreaseKeyStroke;
@@ -391,20 +389,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-    value = st.nextInt(1);
-    activationStatus = st.nextToken(value < 0 ? "" : activateKey);
-    
-    if (st.hasMoreTokens()) {
-      // More than 2 tokens is a 3.2 status. 1st token is value, 4th token is activated
-      st.nextToken();
-      activated = st.nextBoolean(false);
-    }
-    else {
-      // Only 2 tokens indicates a 3.1 style state, calculate activated a la 3.1
-      activated = st.nextBoolean(activationStatus.length() == activateKey.length());
-    }
-    
-   
+    value = st.nextInt(-1);        
   }
 
   public String myGetType() {
@@ -475,11 +460,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    
-    // The following is bogus, but was introduced into 3.2 as a bug. State should only have been
-    // 3 items, value;activationStatus;activated. Will have to stay as 4 items now.
-    se.append(String.valueOf(value));
-    return se.append(String.valueOf(value)).append(activationStatus).append(activated).getValue();
+
+    /* 
+     * Fix for Bug 9700 is to strip back the encoding of State to the simplest case. 
+     * Both Activation status and level is determined by the value parameter.
+     */ 
+    return se.append(String.valueOf(value)).getValue();
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
@@ -595,13 +581,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     final ChangeTracker tracker = new ChangeTracker(this);
 
     if (activateKeyStroke.equals(stroke) && nValues > 0 && !alwaysActive) {
-      activated = ! activated;
-      if (activated) {
-        value = Math.abs(value);
-      }
-      else {
-        value = -Math.abs(value);
-      }
+      value = - value;
+//      activated = ! activated;
+//      if (activated) {
+//        value = Math.abs(value);
+//      }
+//      else {
+//        value = -Math.abs(value);
+//      }
     }
 
     if (!followProperty) {
