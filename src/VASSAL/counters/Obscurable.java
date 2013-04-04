@@ -450,7 +450,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
     // Peek Command
     peek = new KeyCommand(peekCommand, peekKey, outer, this);
-    if (displayStyle == PEEK && peekKey != null) {
+    if (displayStyle == PEEK && peekKey != null && peekCommand.length() > 0) {
       l.add(peek);
     }
 
