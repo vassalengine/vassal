@@ -55,7 +55,12 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     for (int i = 0; i < finalValues.length; i++) {
       String value;
       try {
-        value = valueExpressions[i].evaluate(propertySource.getPropertySource());
+        if (propertySource == null) {
+          value = valueExpressions[i].evaluate(); 
+        }
+        else {
+          value = valueExpressions[i].evaluate(propertySource.getPropertySource());
+        }
       }
       catch (ExpressionException e) {
         value = valueExpressions[i].getExpression();
