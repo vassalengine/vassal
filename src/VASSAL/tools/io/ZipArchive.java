@@ -69,6 +69,11 @@ public class ZipArchive implements FileArchive {
       this.ze = ze;
       this.file = file;
     }
+
+    @Override
+    public String toString() {
+      return getClass().getName() + "[file=\"" + file + "\", ze=\"" + ze + "\"]";
+    }
   }
 
   private final Map<String,Entry> entries = new HashMap<String,Entry>();
@@ -458,6 +463,10 @@ public class ZipArchive implements FileArchive {
 
       for (String name : entries.keySet()) {
         final Entry e = entries.get(name);
+        if (e.file == null) {
+          // Diagnostic output for Bug 9696
+          System.err.println(name + " => " + e);
+        }
 
         // write new or modified file into the temp archive
         FileInputStream in = null;
