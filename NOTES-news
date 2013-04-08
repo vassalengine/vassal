@@ -90,7 +90,13 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which which fi
 <p>
 The following bugs in 3.2.3 are fixed in 3.2.4:
 <ul>
+  <li>10054: Add option to clear tile cache to Module Manager</li>
+  <li>10053: JPEGs with APP14 tags are incorrectly color-corrected by fix for Bug 9882</li>
+  <li>10016: P2P Client/Server modes do not work in 3.2.2</li>
+  <li>10012: NPE in EnumeratedPropertyPrompt.getNewValue()</li>
   <li>9969: IllegalArgumentException in MapShader.PatternOp ctor</li>
+  <li>9823: No entry allowed for Peek command</li>
+  <li>9700: Unit activation improperly recorded</li>
 </ul>
 </p>
 <p>
