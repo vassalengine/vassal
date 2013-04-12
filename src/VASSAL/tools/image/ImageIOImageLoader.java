@@ -276,8 +276,9 @@ public class ImageIOImageLoader implements ImageLoader {
               }
               break;      
 
+            case JPEGDecoder.APP13:
             case JPEGDecoder.APP14:
-              // The "Adobe" tag handles color transformation.
+              // Created by Photoshop, this image is ok.
               fix_YCbCr = false;
               break DONE_JPEG;
             
