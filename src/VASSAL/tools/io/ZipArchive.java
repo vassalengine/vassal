@@ -340,10 +340,10 @@ public class ZipArchive implements FileArchive {
       final Entry e = entries.remove(path);
       if (e != null) {
         modified = true;
-      }
 
-      if (e.file != null) {
-        e.file.delete();
+        if (e.file != null) {
+          e.file.delete();
+        }
       }
 
       return e != null;
