@@ -211,7 +211,9 @@ public class ZipArchive implements FileArchive {
       openIfClosed();
 
       final Entry e = entries.get(path);
-      if (e == null) throw new FileNotFoundException(path + " not in archive");
+      if (e == null) {
+        throw new FileNotFoundException(path + " not in archive");
+      }
 
       InputStream in = null;
       if (e.file != null) {
@@ -360,8 +362,7 @@ public class ZipArchive implements FileArchive {
       }
 
       // delete all temporary files
-      for (String name : entries.keySet()) {
-        final Entry e = entries.get(name);
+      for (Entry e : entries.values()) {
         if (e.file != null) {
           e.file.delete();
         }
@@ -570,12 +571,7 @@ public class ZipArchive implements FileArchive {
     r.lock();
     try {
       openIfClosed();
-
-      final ArrayList<String> names = new ArrayList<String>();
-      for (String n : entries.keySet()) {
-        names.add(n);
-      }
-      return names;
+      return new ArrayList<String>(entries.keySet());
     }
     finally {
       r.unlock();
