@@ -267,25 +267,22 @@ public class ZipArchive implements FileArchive {
 
       modified = true;
 
-      // update the entries map
-      Entry e = entries.get(path);
-      if (e == null) {
-        e = new Entry(null, null);
-        entries.put(path, e);
-      }
-
       // set up new ZipEntry
       final ZipEntry ze = new ZipEntry(path);
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
-      e.ze = ze;
-
-      // clean up old temp file
-      if (e.file != null) {
-        e.file.delete();
-      }
 
       // create new temp file
-      e.file = TempFileManager.getInstance().createTempFile("zip", ".tmp");
+      final File tf =
+        TempFileManager.getInstance().createTempFile("zip", ".tmp");
+
+      // set up new Entry
+      final Entry e = new Entry(ze, tf);
+      final Entry old = entries.put(path, e);
+
+      // clean up old temp file
+      if (old != null && old.file != null) {
+        old.file.delete();
+      }
 
       return new ZipArchiveOutputStream(
         new FileOutputStream(e.file), new CRC32(), e.ze
