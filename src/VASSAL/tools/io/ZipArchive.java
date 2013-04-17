@@ -220,9 +220,11 @@ public class ZipArchive implements FileArchive {
         in = new FileInputStream(e.file);
       }
       else if (zipFile != null) {
+        // NB: Undocumented, but ZipFile.getInputStream can return null!
         in = zipFile.getInputStream(e.ze);
       }
-      else {
+
+      if (in == null) {
         throw new FileNotFoundException(path + " not in archive");
       }
 
@@ -462,12 +464,9 @@ public class ZipArchive implements FileArchive {
         }
       }
 
-      for (String name : entries.keySet()) {
-        final Entry e = entries.get(name);
-        if (e.file == null) {
-          // Diagnostic output for Bug 9696
-          System.err.println(name + " => " + e);
-        }
+      for (Entry e : entries.values()) {
+        // skip removed or unmodified files
+        if (e == null || e.file == null) continue;
 
         // write new or modified file into the temp archive
         FileInputStream in = null;
