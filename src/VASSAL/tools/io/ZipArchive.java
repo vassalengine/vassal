@@ -632,6 +632,10 @@ public class ZipArchive implements FileArchive {
   private class ZipArchiveInputStream extends FilterInputStream {
     public ZipArchiveInputStream(InputStream in) {
       super(in);
+
+      if (in == null) {
+        throw new NullPointerException("in == null");
+      }
     }
 
     private boolean closed = false;
@@ -663,6 +667,19 @@ public class ZipArchive implements FileArchive {
     public ZipArchiveOutputStream(OutputStream out,
                                   Checksum cksum, ZipEntry e) {
       super(out, cksum);
+
+      if (out == null) {
+        throw new NullPointerException("out == null");
+      }
+
+      if (cksum == null) {
+        throw new NullPointerException("cksum == null");
+      }
+
+      if (e == null) {
+        throw new NullPointerException("e == null");
+      }
+
       entry = e;
     }
 
