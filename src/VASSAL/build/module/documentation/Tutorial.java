@@ -20,6 +20,7 @@ package VASSAL.build.module.documentation;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
@@ -236,6 +237,9 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   public InputStream getTutorialContents() throws IOException {
+    if (fileName == null) {
+      throw new FileNotFoundException("Tutorial has null filename");
+    }
     return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }
 
