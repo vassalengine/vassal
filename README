@@ -166,6 +166,7 @@ New Features in 3.2
 
 The following bugs in 3.2.4 are fixed in 3.2.5:
 
+* 10083: Refesh Counters cannot refresh counters from a 3.1 Module/save game
 * 10075: JPEGs with APP14 tags are incorrectly color-corrected by fix for
     Bug 10053
 * 10052: NPE when Tutorial filename is null
