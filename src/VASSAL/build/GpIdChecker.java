@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 by Brent Easton
+ * Copyright (c) 2011-2013 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.AddPiece;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -39,6 +38,7 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
+  protected boolean useName = false;
   final HashMap<String, SlotElement> goodSlots = new HashMap<String, SlotElement>();
   final ArrayList<SlotElement> errorSlots = new ArrayList<SlotElement>();
 
@@ -49,6 +49,11 @@ public class GpIdChecker {
   public GpIdChecker(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
     maxId = -1;
+  }
+  
+  public GpIdChecker(boolean useName) {
+    this();
+    this.useName = useName;
   }
 
   /**
@@ -150,24 +155,36 @@ public class GpIdChecker {
 
   /**
    * Locate the SlotElement that matches oldPiece and return a new GamePiece
-   * create from that Slot.
+   * created from that Slot.
    *
    *
    *
    * @param oldPiece
    * @return
-   */
+   */  
   public GamePiece createUpdatedPiece (GamePiece oldPiece) {
+    // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
-    if (gpid == null) {
-      return oldPiece;
+    if (gpid != null && gpid.length() > 0) {
+      final SlotElement element = goodSlots.get(gpid);
+      if (element != null) {
+         return element.createPiece(oldPiece);
+      }
     }
-    final SlotElement element = goodSlots.get(gpid);
-    if (element == null) {
-      // No matching PieceSlot found.
-      return oldPiece;
+
+    // Failed to find a slot by gpid, try by matching piece name if option selected
+    if (useName) {
+      final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
+      for (SlotElement el : goodSlots.values()) {
+        final GamePiece newPiece = el.getPiece();
+        final String newPieceName = Decorator.getInnermost(newPiece).getName();
+        if (oldPieceName.equals(newPieceName)) {
+          return el.createPiece(oldPiece);
+        }
+      }
     }
-    return element.createPiece(oldPiece);
+    
+    return oldPiece;
   }
 
 
@@ -215,6 +232,15 @@ public class GpIdChecker {
         marker.updateGpId();
       }
     }
+    
+    public GamePiece getPiece() {
+      if (slot == null) {
+        return marker;
+      }
+      else {
+        return slot.getPiece();
+      }
+    }
 
     /**
      * Create a new GamePiece based on this Slot Element. Use oldPiece
@@ -224,12 +250,9 @@ public class GpIdChecker {
      * @return New Piece
      */
     public GamePiece createPiece(GamePiece oldPiece) {
-      GamePiece newPiece;
-      newPiece = (slot != null) ? slot.getPiece() : marker.createMarker();
+      GamePiece newPiece = (slot != null) ? slot.getPiece() : marker.createMarker();
       // The following two steps create a complete new GamePiece with all
       // prototypes expanded
-     // newPiece = ((AddPiece) GameModule.getGameModule()
-     //     .decode(GameModule.getGameModule().encode(new AddPiece(newPiece)))).getTarget();
       newPiece = PieceCloner.getInstance().clonePiece(newPiece);
       copyState(oldPiece, newPiece);
       newPiece.setProperty(Properties.PIECE_ID, getGpId());
