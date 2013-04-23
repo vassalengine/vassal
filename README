@@ -166,6 +166,8 @@ New Features in 3.2
 
 The following bugs in 3.2.4 are fixed in 3.2.5:
 
+* 10099: Counter Detail Viewer displays top card in face down deck as face up
+* 10097: 'Away from Keyboard' and 'Looking for Game' icons are wrong size
 * 10083: Refesh Counters cannot refresh counters from a 3.1 Module/save game
 * 10075: JPEGs with APP14 tags are incorrectly color-corrected by fix for
     Bug 10053
@@ -211,23 +213,7 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
 *  4803: NoSuchElementException in Footprint.draw()
 *  2531: Change Global Property button missing configurable tooltip
 
-The following bugs in 3.2.1 are fixed in 3.2.2:
-
-* 9637: Faulty base64 encoding when synchronizing with game server
-* 9636: Mask trait opens too large if images are large
-
-The following bugs in 3.2.0 are fixed in 3.2.1:
-
-* 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
-* 9596: Sub-commands list in SubMenu properties dialog doesn't resize
-* 9595: DataArchive should not collect image filenames case-insensitively
-* 9593: NPE in GameRefresher.processGamePiece()
-* 9589: NPE in Embellishment.myGetKeyCommands()
-* 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
-* 9511: NPE in BooleanConfigurer.setValue()
-* 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
-
-For changes prior to 3.2.1, see the change log.
+For changes prior to 3.2.3, see the change log.
 
 Please report all bugs in 3.2.5 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
