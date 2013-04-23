@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2003-2009 by David Sullivan, Rodney Kinney,
+ * Copyright (c) 2003-2013 by David Sullivan, Rodney Kinney,
  * Brent Easton, and Joel Uckelman.
  *
  * This library is free software; you can redistribute it and/or
@@ -247,6 +247,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
 
+    Object owner = null;
+    
     fixBounds(pieces);
 
     if (bounds.width > 0) {
@@ -280,8 +282,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         Rectangle pieceBounds = getBounds(piece);
         if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
         g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
+        final Stack parent = piece.getParent();        
+        if (parent instanceof Deck) {
+          owner = piece.getProperty(Properties.OBSCURED_BY);
+          final boolean faceDown = ((Deck) parent).isFaceDown();
+          piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
+        }
         piece.draw(g, bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset, bounds.y - (int) (pieceBounds.y * graphicsZoom) + borderWidth, comp,
             graphicsZoom);
+        if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
         if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
         g.setClip(oldClip);
 
