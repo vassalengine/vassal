@@ -172,6 +172,7 @@ The following bugs in 3.2.4 are fixed in 3.2.5:
 * 10075: JPEGs with APP14 tags are incorrectly color-corrected by fix for
     Bug 10053
 * 10052: NPE when Tutorial filename is null
+* 10016: P2P Client/Server modes do not work in 3.2.2
 *  9696: NPE in ZipArchive.writeToDisk()
 *  9694: NPE in ZipArchive.remove()
 *  9654: NPE in ZipArchive$ZipArchiveInputStream.close()
