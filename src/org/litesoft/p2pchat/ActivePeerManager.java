@@ -45,17 +45,17 @@ import java.util.*;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 08/04/13 Close Peer on removal
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
  */
-@SuppressWarnings("unchecked")
 public class ActivePeerManager
   implements ActivePeersSupport, PendingPeersSupport {
   private MyInfo zMyInfo;
   private UserDialog zUserDialog;
   private PendingPeerManager zPendingPeerManager;
-  private Vector zListofPeers = new Vector();
+  private Vector<ActivePeer> zListofPeers = new Vector<ActivePeer>();
   private int zPeerCnt = 0;
 
   public ActivePeerManager(MyInfo pMyInfo, UserDialog pUserDialog, PendingPeerManager pPendingPeerManager) {
@@ -69,6 +69,7 @@ public class ActivePeerManager
   public synchronized void removeActivePeer(ActivePeer pRequester) {
     IllegalArgument.ifNull("Requester", pRequester);
     zListofPeers.removeElement(pRequester);
+    pRequester.close();
   }
 
   public synchronized void clear() {
@@ -88,18 +89,18 @@ public class ActivePeerManager
 
   public synchronized void sendToAllCHAT(String pMessage) {
     IllegalArgument.ifNull("Message", pMessage);
-    for (Enumeration it = zListofPeers.elements(); it.hasMoreElements();)
+    for (Enumeration<ActivePeer> it = zListofPeers.elements(); it.hasMoreElements();)
       ((ActivePeer) it.nextElement()).sendCHAT(pMessage);
   }
 
   public synchronized void sendToAllNAME() {
-    for (Enumeration it = zListofPeers.elements(); it.hasMoreElements();)
+    for (Enumeration<ActivePeer> it = zListofPeers.elements(); it.hasMoreElements();)
       ((ActivePeer) it.nextElement()).sendNAME();
   }
 
   public synchronized ActivePeer getPeerListenerByID(String pID) {
     if (pID != null)
-      for (Enumeration it = zListofPeers.elements(); it.hasMoreElements();) {
+      for (Enumeration<ActivePeer> it = zListofPeers.elements(); it.hasMoreElements();) {
         ActivePeer peer = (ActivePeer) it.nextElement();
         if (pID.equals(peer.getPeerInfo().getID()))
           return peer;
@@ -109,7 +110,7 @@ public class ActivePeerManager
 
   public synchronized ActivePeer getPeerListenerByInfo(PeerInfo info) {
     if (info != null) {
-      for (Enumeration it = zListofPeers.elements(); it.hasMoreElements();) {
+      for (Enumeration<ActivePeer> it = zListofPeers.elements(); it.hasMoreElements();) {
         ActivePeer peer = (ActivePeer) it.nextElement();
         if (info.equals(peer.getPeerInfo())) {
           return peer;
@@ -121,13 +122,13 @@ public class ActivePeerManager
 
   public synchronized boolean isAlreadyConnected(PeerInfo pPeerInfo) {
     if (pPeerInfo != null)
-      for (Enumeration it = zListofPeers.elements(); it.hasMoreElements();)
+      for (Enumeration<ActivePeer> it = zListofPeers.elements(); it.hasMoreElements();)
         if (((ActivePeer) it.nextElement()).getPeerInfo().equals(pPeerInfo))
           return true;
 
     return false;
   }
-
+  
   public synchronized void addActivePeer(PeerInfo pPeerInfo, InputStream pInputStream, OutputStream pOutputStream) {
     IllegalArgument.ifNull("PeerInfo", pPeerInfo);
     IllegalArgument.ifNull("InputStream", pInputStream);

@@ -1,7 +1,7 @@
 /*
  * $Id:
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,6 +30,9 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
+import VASSAL.chat.messageboard.Message;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.i18n.Resources;
 
 /**
@@ -39,25 +42,20 @@ public class P2PClientFactory extends ChatServerFactory {
   private static final Logger logger =
     LoggerFactory.getLogger(ChatServerFactory.class);
 
-  public static final String P2P_TYPE="peer2peer"; //$NON-NLS-1$
+  public static final String P2P_TYPE = "peer2peer"; //$NON-NLS-1$
   public static final String P2P_LISTEN_PORT = "listenPort"; //$NON-NLS-1$
   public static final String P2P_MODE_KEY = "mode"; //$NON-NLS-1$
   public static final String P2P_SERVER_MODE = "server"; //$NON-NLS-1$
   public static final String P2P_CLIENT_MODE = "client"; //$NON-NLS-1$
+  public static final String P2P_SERVER_IP = "serverIp"; //$NON-NLS-1$
+  public static final String P2P_SERVER_PORT = "serverPort"; //$NON-NLS-1$
+  public static final String P2P_SERVER_NAME = "serverName"; //$NON-NLS-1$
+  public static final String P2P_SERVER_PW = "serverPw"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties param) {
-    HttpMessageServer httpMessageServer = new HttpMessageServer(new PeerPoolInfo() {
-        public String getModuleName() {
-          return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
-        }
 
-        public String getUserName() {
-          return GameModule.getUserId();
-        }
-
-    });
-
-
+    final HttpMessageServer httpMessageServer = new P2PMessageServer();
+    
     final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -68,5 +66,32 @@ public class P2PClientFactory extends ChatServerFactory {
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return server;
+  }
+  
+  class P2PMessageServer extends HttpMessageServer {
+
+    public P2PMessageServer() {
+      super(new PeerPoolInfo() {
+        public String getModuleName() {
+          return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
+        }
+
+        public String getUserName() {
+          return GameModule.getUserId();
+        }
+      });
+    }
+    
+    public Command getWelcomeMessage() {
+      return new NullCommand();
+    }
+    
+    public Message[] getMessages() {
+      return null;
+    }
+    
+    public void postMessage(String content) {
+      return;    
+    }
   }
 }

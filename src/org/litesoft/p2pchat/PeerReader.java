@@ -1,6 +1,9 @@
 package org.litesoft.p2pchat;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Vector;
 
 // Copyright Status:
@@ -44,19 +47,19 @@ import java.util.Vector;
 
 /**
  * @author  Devin Smith and George Smith
- * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
- * @version 0.2 01/28/02 Refactored and Added Licence
+ * @version 0.2 04/20/13 Add thread name, change history.
  * @version 0.1 12/27/01 Initial Version
  */
-@SuppressWarnings("unchecked")
+
 public class PeerReader extends Thread {
-  private Vector zLines = new Vector();
+  private Vector<String> zLines = new Vector<String>();
   private BufferedReader zReader;
   private boolean isOpen = true;
 
   public PeerReader(InputStream pIs) {
     IllegalArgument.ifNull("Is", pIs);
     zReader = new BufferedReader(new InputStreamReader(pIs));
+    setName("Peer Reader Thread");
     start();
   }
 

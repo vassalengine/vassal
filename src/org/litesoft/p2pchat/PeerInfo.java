@@ -43,6 +43,7 @@ import java.io.IOException;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 04/07/13 Added support for Network Password
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
@@ -52,9 +53,10 @@ public class PeerInfo {
   private String zChatName;
   private String zAddresses;
   private Integer zPort = null;
-  private String[] zOldChatNames = null;
+  private String[] zOldChatNames = null;  
   private static final String NO_CHATNAME = "(?)";
   private int failureCount = 0;
+  private String zNetworkPw = "";
   public PeerInfo(String pChatName, String pAddresses) {
     zChatName = (pChatName != null) ? pChatName : NO_CHATNAME;
     IllegalArgument.ifNull("Addresses", zAddresses = pAddresses);
@@ -64,12 +66,18 @@ public class PeerInfo {
     this(pChatName, pAddresses);
     zPort = pPort;
   }
+  
+  public PeerInfo(String pChatName, String pAddresses, int pPort, String pNetworkPw) {
+    this (pChatName, pAddresses, pPort);
+    zNetworkPw = pNetworkPw;
+  }
 
   public void updateWith(PeerInfo pPeerInfo) {
     if (pPeerInfo != null) {
       setChatName(pPeerInfo.getChatName());
       setAddresses(pPeerInfo.getAddresses());
       setPort(pPeerInfo.getPort());
+      setNetworkPw(pPeerInfo.getNetworkPw());
     }
   }
 
@@ -87,14 +95,37 @@ public class PeerInfo {
       chatName = pFormatted.substring(spaceAt + 1);
     }
     String addresses = pFormatted.substring(0, colonAt);
+    
+//    int port = 0;
+//    try {
+//      port = Integer.parseInt(pFormatted.substring(colonAt + 1, spaceAt));
+//    }
+//    catch (NumberFormatException shouldNotHappenSoWeIgnoreThisMessage) {
+//      return null;
+//    }
+//    return new PeerInfo(chatName, addresses, port);
+    
+    final String rest = pFormatted.substring(colonAt+1, spaceAt);
+    final int slashAt = rest.indexOf('/');
+    String portStr, networkPw;
+    if (slashAt == -1) {
+      portStr = rest;
+      networkPw = "";
+    }
+    else {
+      portStr = rest.substring(0, slashAt);
+      networkPw = rest.substring(slashAt+1);
+    }
+    
     int port = 0;
     try {
-      port = Integer.parseInt(pFormatted.substring(colonAt + 1, spaceAt));
+      port = Integer.parseInt(portStr);
     }
     catch (NumberFormatException shouldNotHappenSoWeIgnoreThisMessage) {
       return null;
     }
-    return new PeerInfo(chatName, addresses, port);
+    return new PeerInfo(chatName, addresses, port, networkPw);
+    
   }
 
   public boolean isAddressable() {
@@ -154,7 +185,15 @@ public class PeerInfo {
   }
 
   public String format() {
-    return zAddresses + ":" + zPort + " " + zChatName;
+    return zAddresses + ":" + zPort + "/" + zNetworkPw + " " + zChatName;
+  }
+  
+  public void setNetworkPw(String pw) {
+    zNetworkPw = pw;
+  }
+  
+  public String getNetworkPw () {
+    return zNetworkPw;
   }
 
 /*

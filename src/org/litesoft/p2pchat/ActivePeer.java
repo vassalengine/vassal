@@ -43,6 +43,9 @@ import java.io.*;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 04/07/13 Added name for thread
+ *                       Close PeerReader & PeerWriter on close
+ *                       Add DONE message type
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
@@ -53,6 +56,7 @@ public class ActivePeer extends Thread {
   public static final String PMSG = "PMSG ";
   public static final String NAME = "NAME ";
   public static final String PEER = "PEER ";
+  public static final String DONE = "DONE ";
 
   private MyInfo zMyInfo;
   private UserDialog zUserDialog;
@@ -80,6 +84,7 @@ public class ActivePeer extends Thread {
     IllegalArgument.ifNull("PeerInfo", zPeerInfo = pPeerInfo);
     zReader = reader;
     zWriter = writer;
+    setName("Active Peer Thread");
     start();
   }
 
@@ -100,13 +105,22 @@ public class ActivePeer extends Thread {
     IllegalArgument.ifNull("Message", pMessage);
     send(formatCHAT(pMessage));
   }
-
+  
+  public void finish() {
+    send(DONE);
+  }
+  
   public void run() {
     send(formatHELO());
 
-    for (String line; null != (line = zReader.readLine());)
+    for (String line; null != (line = zReader.readLine());) {
       processCommand(line);
-
+      if (line.equals(DONE)) {
+        break;
+      }
+    }
+    
+    close();
     zActivePeersSupport.removeActivePeer(this);
     zUserDialog.showDisconnect(zPeerInfo);
   }
@@ -119,7 +133,6 @@ public class ActivePeer extends Thread {
   private void processCommand(String pLine) {
     if (pLine.trim().length() == 0)
       return;
-
     String cmdParams;
 
     try {

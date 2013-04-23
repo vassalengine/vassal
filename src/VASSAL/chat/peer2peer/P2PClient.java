@@ -1,7 +1,7 @@
 /*
  * $Id:
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,6 +32,7 @@ import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerEncoder;
@@ -39,6 +40,7 @@ import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.chat.SimpleStatus;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
@@ -53,6 +55,7 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.PropertiesEncoder;
 
 public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog, PlayerEncoder {
   private SimplePlayer me;
@@ -73,7 +76,6 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private SynchEncoder synchEncoder;
   private PropertyChangeListener nameChangeListener;
   private Properties params;
-  private boolean serverMode;
 
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
     this(encoder, msgSvr, welcomeMessageServer, pool, new Properties());
@@ -104,11 +106,6 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         setUserInfo(p);
       }
     };
-    serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
-  }
-
-  protected boolean isServerMode() {
-    return serverMode;
   }
 
   public RoomManager getRoomMgr() {
@@ -192,7 +189,15 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public void setConnected(boolean connect) {
     if (connect) {
       try {
-        MyInfo info = new MyInfo(null, 5050);
+        Integer port;
+        try {
+          port = new Integer(params.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
+        }
+        catch (NumberFormatException ex) {
+          port = new Integer(5050);
+        }
+        MyInfo info = new MyInfo(null, port);
+        info.setNetworkPw(params.getProperty(P2PClientFactory.P2P_SERVER_PW));
         P2PPlayer p = new P2PPlayer(info);
         p.updateStatus();
         p.setName(me.getName());
@@ -204,12 +209,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
           peerMgr = new ActivePeerManager(info, this, ppm);
         }
         roomMgr.update(((P2PPlayer) me).getInfo());
-        if (isServerMode()) {
-          fireStatus(Resources.getString("Peer2Peer.server_connection_established")); //$NON-NLS-1$
-        }
-        else {
-          fireStatus(Resources.getString("Peer2Peer.client_connection_established")); //$NON-NLS-1$
-        }
+        fireStatus(Resources.getString("Peer2Peer.server_connection_established", params.getProperty(P2PClientFactory.P2P_LISTEN_PORT))); //$NON-NLS-1$
         propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.getRooms());
         propSupport.firePropertyChange(ROOM, null, getRoom());
         welcomeMessageServer.getWelcomeMessage().execute();
@@ -235,6 +235,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       connected = false;
       propSupport.firePropertyChange(CONNECTED, Boolean.TRUE, Boolean.FALSE);
       fireStatus(Resources.getString("Peer2Peer.disconnected")); //$NON-NLS-1$ //$NON-NLS-2$
+      ppm.finish();
     }
   }
 
@@ -323,7 +324,30 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public synchronized void showHELO(PeerInfo pPeerInfo) {
-    // We have received a connection request
+    // We have received a connection request    
+    final Chatter chatter = GameModule.getGameModule().getChatter();
+    final ActivePeer peer = peerMgr.getPeerListenerByInfo(pPeerInfo);
+    Properties props;
+    String name, ip, details;
+    try {
+      props = new PropertiesEncoder(pPeerInfo.getChatName()).getProperties();
+      name = props.getProperty(SimpleStatus.NAME);
+      ip = props.getProperty(SimpleStatus.IP);
+      details = name+" ("+ip+")";
+    }
+    catch (IOException ex) {
+      details = "";
+    }
+    
+    // Does the password of the new Peer match ours?
+    if (! pPeerInfo.getNetworkPw().equals(params.getProperty(P2PClientFactory.P2P_SERVER_PW))) {
+      new Chatter.DisplayText(chatter, Resources.getString("Peer2Peer.bad_password", details)).execute(); 
+      peer.finish();  
+      return;  
+    }
+
+    new Chatter.DisplayText(chatter, Resources.getString("Peer2Peer.connected", details)).execute(); 
+
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
     propSupport.firePropertyChange(ROOM, null, getRoom());
   }
@@ -331,6 +355,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public void initializeControls(ChatServerControls controls) {
     playerStatusControls.initializeControls(controls);
     roomControls.initializeControls(controls);
+    controls.hideRoomControls();
     final GameModule g = GameModule.getGameModule();
     me.setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
     g.getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);

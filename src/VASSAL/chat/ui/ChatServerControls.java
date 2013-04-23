@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,7 +32,6 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -69,6 +68,7 @@ public class ChatServerControls extends AbstractBuildable {
 
   protected RoomTree currentRoom;
   protected JTextField newRoom;
+  protected JLabel newRoomLabel;
   protected JToolBar toolbar;
   protected RoomTree roomTree;
   protected JButton newRoomButton;
@@ -86,14 +86,14 @@ public class ChatServerControls extends AbstractBuildable {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setResizeWeight(0.5);
 
-    final JPanel roomPanel = new JPanel(new MigLayout("fill, nogrid"));
+    final JPanel roomPanel = new JPanel(new MigLayout("fill, nogrid, hidemode 3"));
     roomPanel.setBorder(BorderFactory.createTitledBorder(
       BorderFactory.createRaisedBevelBorder(),
       Resources.getString("Chat.active_games"))
     );
 
     newRoom = new JTextField(12);
-    final JLabel newRoomLabel = new JLabel(Resources.getString("Chat.new_game"));
+    newRoomLabel = new JLabel(Resources.getString("Chat.new_game"));
     newRoomLabel.setLabelFor(newRoom);
     roomPanel.add(newRoomLabel, "");
     roomPanel.add(newRoom, "growx, pushx");
@@ -333,6 +333,11 @@ public class ChatServerControls extends AbstractBuildable {
     newRoomButton.setVisible(false);
   }
 
+  public void hideRoomControls() {
+    newRoom.setVisible(false);
+    newRoomLabel.setVisible(false);
+  }
+  
   public RoomTree getRoomTree() {
     return roomTree;
   }

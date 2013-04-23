@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -57,6 +57,7 @@ public class P2PPlayer extends SimplePlayer {
   public void setStats(Player p) {
     setName(p.getName());
     setStatus(p.getStatus());
+    setId(p.getId());
     setProps();
   }
 

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-20011 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,7 +39,6 @@ import VASSAL.tools.ThrowableUtils;
 public class DynamicClient extends HybridClient {
   public static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
   public static final String JABBER_URL = "http://www.vassalengine.org/util/getJabberServerImpl"; //$NON-NLS-1$
-  private String serverConfigURL;
   private boolean connecting;
   private Properties overrides;
 
@@ -48,7 +47,6 @@ public class DynamicClient extends HybridClient {
   }
 
   public DynamicClient(String serverConfigURL) {
-    this.serverConfigURL = serverConfigURL;
   }
 
   protected ChatServerConnection buildDelegate() throws IOException {
@@ -124,7 +122,6 @@ public class DynamicClient extends HybridClient {
   public void setOverrides(Properties override) {
     this.overrides = override;
     if (JabberClientFactory.JABBER_SERVER_TYPE.equals(overrides.getProperty(JabberClientFactory.TYPE_KEY))) {
-      serverConfigURL = JABBER_URL;
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2012 by Brent Easton
+ * Copyright (c) 2009-2013 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -396,7 +396,22 @@ public class ServerAddressBook {
   }
 
   private void addServer() {
-    final AddressBookEntry e = new JabberEntry();
+    final JPopupMenu popup = new JPopupMenu();
+    final JMenuItem p2pItem = new JMenuItem(Resources.getString("ServerAddressBook.peer_server"));
+    p2pItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        addEntry(new PeerServerEntry());        
+      }});
+    final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
+    jabItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        addEntry(new JabberEntry());        
+      }});
+    popup.add(p2pItem);
+    popup.add(jabItem);
+    popup.show(addButton, 0, 0);
+  }
+  private void addEntry(AddressBookEntry e) {
     if (e.edit()) {
       addressBook.addElement(e);
       saveAddressBook();
@@ -414,12 +429,27 @@ public class ServerAddressBook {
 
   private void loadAddressBook() {
     decodeAddressBook(addressConfig.getValueString());
+    
+    // Remove any PeerClientEntry's, these are obsolete
+    final DefaultListModel newAddressBook = new DefaultListModel();
+    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+      if (entry instanceof LegacyEntry) {
+        newAddressBook.add(0, entry);
+      }
+      else if (! (entry instanceof PeerClientEntry)) {
+        newAddressBook.addElement(entry);
+      }
+    }
+    addressBook = newAddressBook;
+      
+    
     // Ensure that the Address Book has the basic
     // servers in it.
     boolean legacy = false;
     boolean jabber = false;
     boolean peerServer = false;
-    boolean peerClient = false;
+    // boolean peerClient = false;
     boolean updated = false;
 
     for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
@@ -433,9 +463,9 @@ public class ServerAddressBook {
       else if (entry instanceof PeerServerEntry) {
         peerServer = true;
       }
-      else if (entry instanceof PeerClientEntry) {
-        peerClient = true;
-      }
+//      else if (entry instanceof PeerClientEntry) {
+//        peerClient = true;
+//      }
     }
     if (!jabber) {
       final AddressBookEntry entry = new VassalJabberEntry();
@@ -452,10 +482,10 @@ public class ServerAddressBook {
       addressBook.addElement(new PeerServerEntry());
       updated = true;
     }
-    if (!peerClient) {
-      addressBook.addElement(new PeerClientEntry());
-      updated = true;
-    }
+//    if (!peerClient) {
+//      addressBook.addElement(new PeerClientEntry());
+//      updated = true;
+//    }
     if (updated) {
       saveAddressBook();
     }
@@ -920,32 +950,37 @@ public class ServerAddressBook {
   }
 
   /**
-   * Address Book Entry for a Peer to Peer connection in Server Mode
+   * Address Book Entry for a Peer to Peer connection 
    *
    */
   private class PeerServerEntry extends AddressBookEntry {
 
+    private JTextField listenPort = new JTextField();
+    private JTextField serverPw = new JTextField();
+    
     public PeerServerEntry() {
       super();
       setDescription(Resources.getString("ServerAddressBook.peer_server")); //$NON-NLS-1$
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
+      setProperty(P2PClientFactory.P2P_LISTEN_PORT, "5050"); //$NON-NLS-1$
+      setProperty(P2PClientFactory.P2P_SERVER_PW, "xyzzy"); //$NON-NLS-1$
     }
 
     public PeerServerEntry(Properties props) {
       super(props);
     }
 
-    public String toString() {
-      return getDescription();
+    public String toString() {     
+      return Resources.getString("ServerAddressBook.peer_server") + " ["+getProperty(DESCRIPTION_KEY)+"]";
     }
 
     public boolean isRemovable() {
-      return false;
+      return true;
     }
 
     protected boolean isDescriptionEditable() {
-      return false;
+      return true;
     }
 
     protected String getIconName() {
@@ -955,15 +990,37 @@ public class ServerAddressBook {
     protected void setAdditionalProperties(Properties p) {
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
+      listenPort.setText(p.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
+      serverPw.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PW));
     }
 
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, P2P_TYPE);
       props.setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
+      props.setProperty(P2PClientFactory.P2P_LISTEN_PORT, listenPort.getText());
+      props.setProperty(P2PClientFactory.P2P_SERVER_PW, serverPw.getText());
     }
 
     protected void addAdditionalControls(JComponent c, boolean enabled) {
+      listenPort.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.listen_port"))); //$NON-NLS-1$
+      c.add(listenPort, "wrap, growx, push"); //$NON-NLS-1$
 
+      serverPw.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_password"))); //$NON-NLS-1$
+      c.add(serverPw, "wrap, growx, push"); //$NON-NLS-1$
+         
+      c.add(new JLabel(Resources.getString("Peer2Peer.internet_address"))); //$NON-NLS-1$
+      final JTextField externalIP = new JTextField(getExternalAddress());
+      externalIP.setEditable(false);
+      c.add(externalIP, "wrap, growx, push"); //$NON-NLS-1$
+
+      if (!getLocalAddress().equals(getExternalAddress())) {
+        c.add(new JLabel(Resources.getString("Peer2Peer.local_address"))); //$NON-NLS-1$
+        final JTextField localIP = new JTextField(getLocalAddress());
+        localIP.setEditable(false);
+        c.add(localIP, "wrap, growx, push"); //$NON-NLS-1$
+      }
     }
 
   }
@@ -972,16 +1029,24 @@ public class ServerAddressBook {
    * Address Book Entry for a Peer to Peer connection in Client Mode
    *
    */
-  private class PeerClientEntry extends AddressBookEntry {
+  @Deprecated private class PeerClientEntry extends AddressBookEntry {
 
     private JTextField listenPort = new JTextField();
+    private JTextField serverName = new JTextField();
+    private JTextField serverPort = new JTextField();
+    private JTextField serverIp = new JTextField();
 
+    @SuppressWarnings("unused")
     public PeerClientEntry() {
       super();
       setDescription(Resources.getString("ServerAddressBook.peer_client")); //$NON-NLS-1$
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
       setProperty(P2PClientFactory.P2P_LISTEN_PORT, "5050"); //$NON-NLS-1$
+      setProperty(P2PClientFactory.P2P_SERVER_NAME, ""); //$NON-NLS-1$
+      setProperty(P2PClientFactory.P2P_SERVER_PORT, "5050"); //$NON-NLS-1$
+      setProperty(P2PClientFactory.P2P_SERVER_IP, ""); //$NON-NLS-1$
+      
     }
 
     public PeerClientEntry(Properties props) {
@@ -989,11 +1054,37 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return getDescription();
+      final String listenPort = getProperty(P2PClientFactory.P2P_LISTEN_PORT);
+      final String serverName = getProperty(P2PClientFactory.P2P_SERVER_NAME);
+      final String serverIp = getProperty(P2PClientFactory.P2P_SERVER_IP);
+      final String serverPort = getProperty(P2PClientFactory.P2P_SERVER_PORT);
+      
+      final StringBuffer desc = new StringBuffer(Resources.getString("ServerAddressBook.peer_client"));
+      
+      if (serverIp.length() == 0) {
+        desc.append(" [");
+        desc.append(Resources.getString("ServerAddressBook.listening", listenPort));
+        desc.append("]");
+      }
+      else {
+        if (serverName.length() > 0) {
+          desc.append(" - ");
+          desc.append(serverName);
+        }
+        if (serverIp.length() > 0) {
+          desc.append(" [");
+          desc.append(serverIp);
+          desc.append(":");
+          desc.append(serverPort);
+          desc.append("]");
+        }
+      }
+      
+      return desc.toString();
     }
 
     public boolean isRemovable() {
-      return false;
+      return true;
     }
 
     protected boolean isDescriptionEditable() {
@@ -1008,17 +1099,36 @@ public class ServerAddressBook {
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
       listenPort.setText(p.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
+      serverIp.setText(p.getProperty(P2PClientFactory.P2P_SERVER_IP));
+      serverPort.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PORT));
+      serverName.setText(p.getProperty(P2PClientFactory.P2P_SERVER_NAME));
+      setDescription(toString());
     }
 
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, P2P_TYPE);
       props.setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
       props.setProperty(P2PClientFactory.P2P_LISTEN_PORT, listenPort.getText());
+      props.setProperty(P2PClientFactory.P2P_SERVER_IP, serverIp.getText());
+      props.setProperty(P2PClientFactory.P2P_SERVER_PORT, serverPort.getText());
+      props.setProperty(P2PClientFactory.P2P_SERVER_NAME, serverName.getText());
     }
 
     protected void addAdditionalControls(JComponent c, boolean enabled) {
+      serverName.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_name"))); //$NON-NLS-1$
+      c.add(serverName, "wrap, growx, push"); //$NON-NLS-1$
+
+      serverIp.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_ip"))); //$NON-NLS-1$
+      c.add(serverIp, "wrap, growx, push"); //$NON-NLS-1$
+      
+      serverPort.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_port"))); //$NON-NLS-1$
+      c.add(serverPort, "wrap, growx, push"); //$NON-NLS-1$
+      
       listenPort.setEditable(enabled);
-      c.add(new JLabel(Resources.getString("ServerAddressBook.listen_port"))); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.invite_port"))); //$NON-NLS-1$
       c.add(listenPort, "wrap, growx, push"); //$NON-NLS-1$
 
       c.add(new JLabel(Resources.getString("Peer2Peer.internet_address"))); //$NON-NLS-1$
@@ -1059,7 +1169,7 @@ public class ServerAddressBook {
 
       if (value instanceof AddressBookEntry) {
         final AddressBookEntry e = (AddressBookEntry) value;
-        setIcon(e.getIcon(LEAF_ICON_SIZE));
+        setIcon(e.getIcon(LEAF_ICON_SIZE));       
         if (e.isCurrent()) {
           setFont(highlightFont);
           setText(e.toString() + Resources.getString("ServerAddressBook.current")); //$NON-NLS-1$

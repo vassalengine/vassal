@@ -1,7 +1,10 @@
 package org.litesoft.p2pchat;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Vector;
 
 // Copyright Status:
 //
@@ -44,13 +47,13 @@ import java.util.*;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 04/07/13 Added name for thread, general clean up
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
  */
-@SuppressWarnings("unchecked")
 public class PeerWriter extends Thread {
-  private Vector zLines = new Vector();
+  private Vector<String> zLines = new Vector<String>();
   private boolean isOpen = true;
   private BufferedWriter zWriter;
   private long pingInterval = 15L*60L*1000L;
@@ -58,6 +61,7 @@ public class PeerWriter extends Thread {
   public PeerWriter(OutputStream pOs) {
     IllegalArgument.ifNull("Os", pOs);
     zWriter = new BufferedWriter(new OutputStreamWriter(pOs));
+    setName("Peer Writer Thread");
     start();
   }
 

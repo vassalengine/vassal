@@ -1,6 +1,6 @@
 package org.litesoft.p2pchat;
 
-import java.net.*;
+import java.net.Socket;
 
 
 // Copyright Status:
@@ -44,6 +44,7 @@ import java.net.*;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 04/06/13 Return if interrupted on wait() to allow PPM to clean up
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
@@ -61,6 +62,8 @@ public class PendingPeerLinkedList {
         wait();
       }
       catch (InterruptedException e) {
+        // PPM has asked us to stop. It will handle the null return value
+        return null;
       }
     }
     PendingPeerNode retval = zHead;
@@ -70,7 +73,7 @@ public class PendingPeerLinkedList {
     return retval;
   }
 
-  public synchronized void add(Socket pSocket, PeerInfo pInfo) {
+  public synchronized void add(Socket pSocket, PeerInfo pInfo) {    
     IllegalArgument.ifNull("Info", pInfo);
     add(new PendingPeerNode(pSocket, pInfo));
   }
@@ -82,4 +85,6 @@ public class PendingPeerLinkedList {
       zTail = zTail.appendNode(pPendingPeerNode);
     notifyAll();
   }
+  
+
 }

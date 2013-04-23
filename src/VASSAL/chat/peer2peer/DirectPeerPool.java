@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2012 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -80,7 +80,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     params = new Properties();
     params.putAll(param);
     serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
-    inviteButton = new JButton(Resources.getString("Peer2Peer.invite_players")); //$NON-NLS-1$
+    inviteButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     inviteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         frame.setVisible(true);
@@ -92,15 +92,13 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
   public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
     listenPort = 5050;
-    if (!isServerMode()) {
-      String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
-      if (port != null && port.length() > 0) {
-        try {
-          listenPort = Integer.parseInt(port);
-        }
-        catch (NumberFormatException e) {
-          // No error;
-        }
+    String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
+    if (port != null && port.length() > 0) {
+      try {
+        listenPort = Integer.parseInt(port);
+      }
+      catch (NumberFormatException e) {
+        // No error;
       }
     }
 
@@ -158,28 +156,12 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     frame.setLayout(new MigLayout());
 
-//    frame.add(new WTextArea(Resources.getString("Peer2Peer.connection_info")), "growx, span 4, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
-
-//    final JPanel detailPanel = new JPanel(new MigLayout("", ""));
-//    detailPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
-//    if (!localIp.equals(internetIp)) {
-//      detailPanel.add(new JLabel(Resources.getString("Peer2Peer.local_address",localIp, String.valueOf(listenPort))), "align center, push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
-//    }
-//    detailPanel.add(new JLabel(Resources.getString("Peer2Peer.internet_address",internetIp, String.valueOf(listenPort))), "align center,push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
-//    if (serverPw != null && serverPw.length() > 0) {
-//      detailPanel.add(new JLabel(Resources.getString("Peer2Peer.server_passwd", serverPw)), "align center, push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
-//    }
-//    else {
-//      detailPanel.add(new JLabel(Resources.getString("Peer2Peer.no_password")), "align center, push, wrap"); //$NON-NLS-1$ //$NON-NLS-2$
-//    }
-//    frame.add(detailPanel, "span 4, growx, push, wrap");
-
     frame.add(new WTextArea(Resources.getString("Peer2Peer.other_players_address")), "growx, span 4,wrap"); //$NON-NLS-1$ //$NON-NLS-2$
 
     final JScrollPane scroll = new JScrollPane(addressList);
     frame.add(scroll, "span 4, grow, push, w 300, h 400, wrap"); //$NON-NLS-1$
 
-    invitePeerButton = new JButton(Resources.getString("Chat.invite")); //$NON-NLS-1$
+    invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     invitePeerButton.setToolTipText(Resources.getString("Peer2Peer.invite_button_tooltip")); //$NON-NLS-1$))
     invitePeerButton.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
@@ -325,11 +307,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     String description;
     String address;
     String port;
-    String passwd;
     JTextField descriptionField;
     JTextField addressField;
     JTextField portField;
-    JTextField passwdField;
 
     public Entry () {
       this("", "", "5050", "");
@@ -339,7 +319,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       this.description =description;
       this.address = address;
       this.port = port;
-      this.passwd = passwd;
     }
 
     public Entry (String s) {
@@ -358,12 +337,12 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       return port;
     }
 
-    public String getPasswd() {
-      return passwd;
-    }
+//    public String getPasswd() {
+//      return passwd;
+//    }
 
     public String toString() {
-      return description + " [" + address + ":" + port + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+      return description + " [" + address + ":" + port; // + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     private void decode(String s) {
@@ -371,7 +350,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       description = sd.nextToken(""); //$NON-NLS-1$
       address = sd.nextToken(""); //$NON-NLS-1$
       port = sd.nextToken("5050"); //$NON-NLS-1$
-      passwd = sd.nextToken(""); //$NON-NLS-1$
     }
 
     public String encode() {
@@ -379,7 +357,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       se.append(description);
       se.append(address);
       se.append(port);
-      se.append(passwd);
       return se.getValue();
     }
 
@@ -391,7 +368,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       descriptionField = new JTextField(description);
       addressField = new JTextField(address);
       portField = new JTextField(port);
-      passwdField = new JTextField(passwd);
 
       final JPanel editPanel = new JPanel(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       editPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
@@ -400,8 +376,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       editPanel.add(addressField, "wrap, grow, push"); //$NON-NLS-1$
       editPanel.add(new JLabel(Resources.getString("ServerAddressBook.port"))); //$NON-NLS-1$
       editPanel.add(portField, "wrap, grow, push"); //$NON-NLS-1$
-      editPanel.add(new JLabel(Resources.getString("Prefs.password_label"))); //$NON-NLS-1$
-      editPanel.add(passwdField, "wrap, grow, push"); //$NON-NLS-1$
 
       if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.add_peer_connection"), //$NON-NLS-1$
           editPanel, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
@@ -409,7 +383,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         description = descriptionField.getText();
         address = addressField.getText();
         port = portField.getText();
-        passwd = passwdField.getText();
         return true;
       }
       return false;

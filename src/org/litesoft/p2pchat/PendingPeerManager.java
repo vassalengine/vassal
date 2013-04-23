@@ -49,6 +49,7 @@ import java.net.Socket;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.4 04/06/13 Add finish() to cleanly stop the PPM thread
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
@@ -59,6 +60,7 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
   private PendingPeerLinkedList zPendingPeers = new PendingPeerLinkedList();
   private PendingPeersSupport zPendingPeersSupport = null;
   private int maxRetries = 3;
+  private boolean finish = false;
 
   public PendingPeerManager(UserDialog pUserDialog) {
     IllegalArgument.ifNull("UserDialog", zUserDialog = pUserDialog);
@@ -91,6 +93,9 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
   public void run() {
     while (true) {
       final PendingPeerNode next = zPendingPeers.next();
+      if (finish) {
+        return;
+      }
       Runnable runnable = new Runnable() {
         public void run() {
           handleNewPeerClient(next);
@@ -99,7 +104,12 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
       new Thread(runnable).start();
     }
   }
-
+  
+  public void finish() {
+    finish = true;
+    interrupt();
+  }
+  
   private void handleNewPeerClient(PendingPeerNode pPendingPeerNode) {
     PeerInfo peerInfo = pPendingPeerNode.getPeerInfo();
     if (zPendingPeersSupport.isAlreadyConnected(peerInfo)) {
