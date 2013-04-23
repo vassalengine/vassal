@@ -191,10 +191,10 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       try {
         Integer port;
         try {
-          port = new Integer(params.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
+          port = Integer.valueOf(params.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
         }
         catch (NumberFormatException ex) {
-          port = new Integer(5050);
+          port = Integer.valueOf(5050);
         }
         MyInfo info = new MyInfo(null, port);
         info.setNetworkPw(params.getProperty(P2PClientFactory.P2P_SERVER_PW));
