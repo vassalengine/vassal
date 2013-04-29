@@ -60,9 +60,9 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.script.expression.BeanShellExpression;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
+import VASSAL.script.expression.SinglePropertyExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -107,6 +107,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   protected boolean followProperty;
   protected String propertyName = "";
+  protected Expression followPropertyExpression;
   protected int firstLevelValue;
 
   // random layers
@@ -495,12 +496,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   protected void checkPropertyLevel() {
     if (!followProperty || propertyName.length() == 0) return;
+    
+    if (followPropertyExpression == null) {
+      followPropertyExpression = new SinglePropertyExpression(propertyName); 
+    }
 
-    final Expression ex = BeanShellExpression.createExpression(BeanShellExpression.convertProperty(propertyName));
     String val = "";
     try {
 
-      val = ex.evaluate(Decorator.getOutermost(this));
+      val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
       if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
 
       int v = Integer.parseInt(val) - firstLevelValue + 1;
@@ -739,6 +743,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
+      System.out.println(name + IMAGE);
       checkPropertyLevel();
       if (value > 0) {
         return imageName[Math.abs(value) - 1];
@@ -747,6 +752,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         return "";
     }
     else if (key.equals(name + NAME)) {
+      System.out.println(name + NAME);
       checkPropertyLevel();
       if (value > 0) {
         return strip(commonName[Math.abs(value) - 1]);
@@ -755,13 +761,16 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         return "";
     }
     else if (key.equals(name + LEVEL)) {
+      System.out.println(name + LEVEL);
       checkPropertyLevel();
       return String.valueOf(value);
     }
     else if (key.equals(name + ACTIVE)) {
+      System.out.println(name + ACTIVE);
       return String.valueOf(isActive());
     }
     else if (key.equals(Properties.VISIBLE_STATE)) {
+      System.out.println(name + Properties.VISIBLE_STATE);
       String s = String.valueOf(super.getProperty(key));
       if (drawUnderneathWhenSelected) {
         s += getProperty(Properties.SELECTED);
