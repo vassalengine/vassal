@@ -60,6 +60,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.BeanShellExpression;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.script.expression.SinglePropertyExpression;
@@ -498,7 +499,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (!followProperty || propertyName.length() == 0) return;
     
     if (followPropertyExpression == null) {
-      followPropertyExpression = new SinglePropertyExpression(propertyName); 
+      followPropertyExpression = BeanShellExpression.createExpression(propertyName);
     }
 
     String val = "";

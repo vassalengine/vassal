@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009-2012 Brent Easton
+ * Copyright (c) 2009-2013 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,6 +19,8 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
+
+import bsh.BeanShellExpressionValidator;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.properties.PropertySource;
@@ -151,6 +153,12 @@ public class BeanShellExpression extends Expression {
       return new StringExpression(expr.substring(1, expr.length() - 1));
     }
 
+    // A Single Property reference?
+    if (BeanShellExpressionValidator.isSinglePropertyName(expr)) {
+      return new SinglePropertyExpression(expr);
+    }
+    
+    // Return a geberalised Beanshell expression
     return new BeanShellExpression(expr);
 
   }

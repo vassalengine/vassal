@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2012 by Brent Easton, Rodney Kinney
+ * Copyright (c) 2000-2013 by Brent Easton, Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -44,6 +44,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
+import VASSAL.configure.PropertyNameExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.tools.FormattedString;
@@ -241,7 +242,7 @@ public class SetGlobalProperty extends DynamicProperty {
   }
   protected static class Ed implements PieceEditor {
     protected StringConfigurer descConfig;
-    protected FormattedExpressionConfigurer nameConfig;
+    protected PropertyNameExpressionConfigurer nameConfig;
     protected BooleanConfigurer numericConfig;
     protected IntConfigurer minConfig;
     protected IntConfigurer maxConfig;
@@ -274,7 +275,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
+      nameConfig = new PropertyNameExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);

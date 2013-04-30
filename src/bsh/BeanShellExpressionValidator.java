@@ -1,7 +1,7 @@
 /*
  * $Id: BeanShellExpressionValidator.java,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
  *
- * Copyright (c) 2008-2009 by Brent Easton
+ * Copyright (c) 2008-2013 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,8 +31,6 @@ import java.util.List;
  *
  */
 public class BeanShellExpressionValidator {
-  
-  private static final long serialVersionUID = 1L;
   
   protected String expression;
   protected List<String> variables = new ArrayList<String>();
@@ -95,7 +93,7 @@ public class BeanShellExpressionValidator {
    * @return Expression validity
    */
   protected boolean validate() {
-    String expr = stripBraces(expression);
+    final String expr = stripBraces(expression);
     
     setError("");
     try {
@@ -105,7 +103,7 @@ public class BeanShellExpressionValidator {
           return true;
         } 
         else {
-          SimpleNode node = p.popNode();
+          final SimpleNode node = p.popNode();
           if (! processNode(node)) {
             return false;
           }
@@ -130,7 +128,7 @@ public class BeanShellExpressionValidator {
    * @param s Expression
    * @return stripped expression
    */
-  protected String stripBraces(String s) {
+  public static String stripBraces(String s) {
     String expr = s;
     if (s.trim().startsWith("{") && s.trim().endsWith("}")) {
       final int start = s.indexOf("{");
@@ -154,13 +152,13 @@ public class BeanShellExpressionValidator {
    * Assignemnts are not allowed in an expression, so flag as an error
    * @param node Parser Node
    */
-  public boolean processNode (SimpleNode node) {
+  protected boolean processNode (SimpleNode node) {
     if (node == null) {
       return true;
     }
     
     if (node instanceof BSHAmbiguousName) {
-      String name = ((BSHAmbiguousName) node).getText().trim();
+      final String name = ((BSHAmbiguousName) node).getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
           methods.add(name);
@@ -185,4 +183,32 @@ public class BeanShellExpressionValidator {
     }
     return true;
   }  
+  
+  /**
+   * Does this expression represent a single property name?
+   * @return
+   */
+  public static boolean isSinglePropertyName(String exp) {
+    try {
+      final String expr = stripBraces(exp);
+      final Parser p = new Parser(new StringReader(expr + ";"));
+      if (p.Line()) {
+        return false;
+      } 
+      final SimpleNode node = p.popNode();
+      if (!p.Line()) {
+        return false;
+      } 
+      if (node instanceof BSHPrimaryExpression && node.firstToken.equals(node.lastToken) && node.children != null && node.children.length == 1) {
+        final SimpleNode child = node.getChild(0);
+        if (child instanceof BSHAmbiguousName && child.children == null) {
+          return true;
+        }
+      }
+    }
+    catch (Exception ex) {
+      return false;
+    }
+    return false;
+  }
 }

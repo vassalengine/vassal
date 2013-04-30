@@ -1,7 +1,7 @@
 /*
  * $Id: PropertyNameExpressionBuilder.java 7725 2011-07-31 18:51:43Z uckelman $
  *
- * Copyright (c) 2008-2012 by Brent Easton
+ * Copyright (c) 2008-2013 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@ import javax.swing.JDialog;
 
 import VASSAL.configure.Configurer;
 import VASSAL.counters.EditablePiece;
+import bsh.BeanShellExpressionValidator;
 
 /**
  * A Builder for a field that can contain a property Name or a beanshell expression.
@@ -45,6 +46,21 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
    */
   public String convert(String s) {
     return "{" + s + "}";
+  }
+  
+  /**
+   * Save entered expression to the target.
+   * If a single property name has been entered, then return it as a simple name, not as an expression
+   */
+  public void save() {
+    final String expr = expression.getValueString().trim();
+    if (BeanShellExpressionValidator.isSinglePropertyName(expr)) {
+      target.setValue(expr);
+      dispose();
+    }
+    else {
+      super.save();
+    }
   }
 
 }
