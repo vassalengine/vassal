@@ -171,6 +171,8 @@ The following bugs in 3.2.4 are fixed in 3.2.5:
 * 10125: Expression Builder should return a Property Name, not expression in
     the Set Global Property trait
 * 10124: Comparisons with GetProperty() calls do not work correctly 
+* 10107: NPE in ServerAddressBook.PeerClientEntry.toString()
+* 10101: NPE in MassPieceLoader.MyTreeTableModel.setValueAt()
 * 10099: Counter Detail Viewer displays top card in face down deck as face up
 * 10097: 'Away from Keyboard' and 'Looking for Game' icons are wrong size
 * 10083: Refesh Counters cannot refresh counters from a 3.1 Module/save game
