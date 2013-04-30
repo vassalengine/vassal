@@ -744,7 +744,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
-      System.out.println(name + IMAGE);
       checkPropertyLevel();
       if (value > 0) {
         return imageName[Math.abs(value) - 1];
@@ -753,7 +752,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         return "";
     }
     else if (key.equals(name + NAME)) {
-      System.out.println(name + NAME);
       checkPropertyLevel();
       if (value > 0) {
         return strip(commonName[Math.abs(value) - 1]);
@@ -762,16 +760,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         return "";
     }
     else if (key.equals(name + LEVEL)) {
-      System.out.println(name + LEVEL);
       checkPropertyLevel();
       return String.valueOf(value);
     }
     else if (key.equals(name + ACTIVE)) {
-      System.out.println(name + ACTIVE);
       return String.valueOf(isActive());
     }
     else if (key.equals(Properties.VISIBLE_STATE)) {
-      System.out.println(name + Properties.VISIBLE_STATE);
       String s = String.valueOf(super.getProperty(key));
       if (drawUnderneathWhenSelected) {
         s += getProperty(Properties.SELECTED);
