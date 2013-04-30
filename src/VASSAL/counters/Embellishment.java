@@ -63,7 +63,6 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.BeanShellExpression;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
-import VASSAL.script.expression.SinglePropertyExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -286,6 +285,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st2 =
       new SequenceEncoder.Decoder(st.nextToken(), ';');
     activateKey = st2.nextToken().toUpperCase();
+    if (activateKey != null && activateKey.length() > 0) {
+      activateKeyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke(activateKey));
+    }
     activateModifiers = InputEvent.CTRL_MASK;
     if (st2.hasMoreTokens()) {
       resetCommand = st2.nextToken();
@@ -340,6 +342,30 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
     }
     loopLevels = true;
+    
+    alwaysActive = activateKey.length() == 0;
+    if (activateKey.length() == 0) {
+      activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
+    }
+    else {
+      activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
+    }
+
+    if (upKey.length() == 0) {
+      increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
+    }
+    else {
+      increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
+    }
+      
+    if (downKey.length() == 0) {
+      decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
+    }
+    else {
+      decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
+    }
+    version = CURRENT_VERSION;
+    
   }
 
   public String getLocalizedName() {
