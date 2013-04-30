@@ -166,7 +166,10 @@ New Features in 3.2
 
 The following bugs in 3.2.4 are fixed in 3.2.5:
 
+* 10129: Pre-3.0 modules broken under 3.2
 * 10128: Slow Follow Property handling in Embellishment
+* 10125: Expression Builder should return a Property Name, not expression in
+    the Set Global Property trait
 * 10124: Comparisons with GetProperty() calls do not work correctly 
 * 10099: Counter Detail Viewer displays top card in face down deck as face up
 * 10097: 'Away from Keyboard' and 'Looking for Game' icons are wrong size
