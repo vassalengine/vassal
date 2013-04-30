@@ -313,12 +313,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
   public Object getProperty(String name) {
     final Object value = source.getProperty(name);
-    return value == null ? "" : value.toString();
+    return value == null ? "" : wrap(value.toString());
   }
 
   public Object getLocalizedProperty(String name) {
     final Object value = source.getLocalizedProperty(name);
-    return value == null ? "" : value.toString();
+    return value == null ? "" : wrap(value.toString());
   }
 
   /**
