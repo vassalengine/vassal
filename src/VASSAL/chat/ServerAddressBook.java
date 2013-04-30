@@ -1061,17 +1061,17 @@ public class ServerAddressBook {
       
       final StringBuffer desc = new StringBuffer(Resources.getString("ServerAddressBook.peer_client"));
       
-      if (serverIp.length() == 0) {
+      if (serverIp == null || serverIp.length() == 0) {
         desc.append(" [");
         desc.append(Resources.getString("ServerAddressBook.listening", listenPort));
         desc.append("]");
       }
       else {
-        if (serverName.length() > 0) {
+        if (serverName != null && serverName.length() > 0) {
           desc.append(" - ");
           desc.append(serverName);
         }
-        if (serverIp.length() > 0) {
+        if (serverIp != null && serverIp.length() > 0) {
           desc.append(" [");
           desc.append(serverIp);
           desc.append(":");
