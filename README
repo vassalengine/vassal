@@ -16,7 +16,12 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   performance. 512MB should now be adequate for most modules.
 
 * VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to
-  update VASL for 3.2 is ongoing.
+  update VASL for 3.2 is nearly finished.
+
+* If some images display with incorrect colors, clear your tile cache (under
+  Tools > Clear Tile Cache in the Module Manager) and reload the module. If
+  the images still display with incorrect colors, PLEASE contact us
+  indicating with which module you're seeing a problem.
 
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
@@ -58,7 +63,7 @@ Compatibility Notes
   log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
 * Current versions of VASL and VSQL are not compatible with VASSAL 3.2.
-  Work to update VASL for 3.2 is ongoing.
+  Work to update VASL for 3.2 is nearly finished.
 
 *********************
 New Features in 3.2

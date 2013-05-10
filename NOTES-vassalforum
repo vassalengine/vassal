@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.4 released[/b][/size]
+[size=200][b]VASSAL 3.2.5 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.5, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -13,11 +13,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which which fi
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.4-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-src.zip]Source code[/url]
 
 [size=150][b]Compatibility Notes[/b][/size]
 
@@ -94,6 +94,24 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.4, which which fi
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.4 are fixed in 3.2.5:
+
+* 10129: Pre-3.0 modules broken under 3.2
+* 10128: Slow Follow Property handling in Embellishment
+* 10125: Expression Builder should return a Property Name, not expression in the Set Global Property trait
+* 10124: Comparisons with GetProperty() calls do not work correctly 
+* 10107: NPE in ServerAddressBook.PeerClientEntry.toString()
+* 10101: NPE in MassPieceLoader.MyTreeTableModel.setValueAt()
+* 10099: Counter Detail Viewer displays top card in face down deck as face up
+* 10097: 'Away from Keyboard' and 'Looking for Game' icons are wrong size
+* 10083: Refesh Counters cannot refresh counters from a 3.1 Module/save game
+* 10075: JPEGs with APP14 tags are incorrectly color-corrected by fix for Bug 10053
+* 10052: NPE when Tutorial filename is null
+* 10016: P2P Client/Server modes do not work in 3.2.2
+*  9696: NPE in ZipArchive.writeToDisk()
+*  9694: NPE in ZipArchive.remove()
+*  9654: NPE in ZipArchive$ZipArchiveInputStream.close()
+
 The following bugs in 3.2.3 are fixed in 3.2.4:
 
 * 10054: Add option to clear tile cache to Module Manager
@@ -127,25 +145,9 @@ The following bugs in 3.2.2 are fixed in 3.2.3:
 *  4803: NoSuchElementException in Footprint.draw()
 *  2531: Change Global Property button missing configurable tooltip
 
-The following bugs in 3.2.1 are fixed in 3.2.2:
+For changes prior to 3.2.3, see the change log.
 
-* 9637: Faulty base64 encoding when synchronizing with game server
-* 9636: Mask trait opens too large if images are large
-
-The following bugs in 3.2.0 are fixed in 3.2.1:
-
-* 9600: UnsupportedClassVersionError for net.iharder.Base64 on Java 5
-* 9596: Sub-commands list in SubMenu properties dialog doesn't resize
-* 9595: DataArchive should not collect image filenames case-insensitively
-* 9593: NPE in GameRefresher.processGamePiece()
-* 9589: NPE in Embellishment.myGetKeyCommands()
-* 9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
-* 9511: NPE in BooleanConfigurer.setValue()
-* 4159: NPE in javax.swing.BoxLayout.preferredLayoutSize()
-
-For changes prior to 3.2.1, see the change log.
-
-Please report all bugs in 3.2.4, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.5, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
