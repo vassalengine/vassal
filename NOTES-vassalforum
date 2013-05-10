@@ -9,7 +9,9 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.5, which which fi
 
 * If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
 
-* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.
+* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is nearly finished.
+
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.5.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 [size=150][b]Download[/b][/size]
 

@@ -23,6 +23,14 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   the images still display with incorrect colors, PLEASE contact us
   indicating with which module you're seeing a problem.
 
+* If you are using MacOS X 10.8.3 or later, you may see the message
+  "VASSAL-3.2.5.app is damaged and can’t be opened. You should move it to
+  the Trash." The problem is NOT that your download was corrupt, but rather
+  that MacOS is preventing you from running VASSAL. To start VASSAL, control-
+  click or right-click the app bundle's icon and select Open from the menu.
+  You'll see a dialog asking whether you want to open VASSAL. Select "Open".
+  Thereafter, you should be able to start VASSAL normally.
+
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
 ********************************************************************************
