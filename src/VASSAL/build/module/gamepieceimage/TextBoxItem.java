@@ -194,12 +194,9 @@ public class TextBoxItem extends TextItem {
       }
     }
 
-    if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    }
-    else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
-    }
+    Graphics2D g2d = ((Graphics2D) g);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
+      RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 
     if (bg != null) {
       g.setColor(bg);

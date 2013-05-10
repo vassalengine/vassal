@@ -237,12 +237,9 @@ public class TextItem extends Item {
     }
 
     Graphics2D g2d = ((Graphics2D) g);
-    if (isAntialias()) {
-      g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    }
-    else {
-      g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-    }
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
+      RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
+
     AffineTransform saveXForm = null;
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
