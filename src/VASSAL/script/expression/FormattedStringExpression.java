@@ -54,7 +54,7 @@ public class FormattedStringExpression extends Expression {
         if (!isProperty || ! st.hasMoreTokens()) {
           buffer.append(token);
         }
-        else if (properties.containsKey(token)) {
+        else if (properties != null && properties.containsKey(token)) {
           final String value = properties.get(token);
           if (value != null) {
             buffer.append(value);
