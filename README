@@ -15,7 +15,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   to set a much lower maximum heap and achieve similar or better display
   performance. 512MB should now be adequate for most modules.
 
-* VASL 5.9.2 and earlier are not compatible with VASSAL 3.2. Work to
+* VASL 5.9.3 and earlier are not compatible with VASSAL 3.2. Work to
   update VASL for 3.2 is nearly finished.
 
 * If some images display with incorrect colors, clear your tile cache (under
