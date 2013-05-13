@@ -118,7 +118,7 @@ public class MovePiece extends Command {
           GamePiece under = GameModule.getGameModule().getGameState().getPieceForId(newUnderneathId);
           if (under != null
               && under.getPosition().equals(newPosition)) {
-            newMap.getStackMetrics().merge(under, piece);
+            newMap.getStackMetrics().placeOrMerge(under, piece);
           }
           else {
             if (newMap.apply(mergeFinder) == null) {
