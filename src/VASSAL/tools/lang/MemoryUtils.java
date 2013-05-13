@@ -22,10 +22,9 @@ import java.lang.management.ManagementFactory;
 
 import org.apache.commons.lang.SystemUtils;
 
-import VASSAL.tools.jna.Kernel32;
-
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.ptr.PointerByReference;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -75,12 +74,12 @@ public class MemoryUtils {
       final Kernel32.MEMORYSTATUSEX mstat = new Kernel32.MEMORYSTATUSEX();
 
       if (Kernel32.INSTANCE.GlobalMemoryStatusEx(mstat)) {
-        return mstat.ullTotalPhys;
+        return mstat.ullTotalPhys.longValue();
       }
       else {
         // GlobalMemoryStatusEx failed
         final PointerByReference lpBuffer = new PointerByReference();
-        final int errno = Native.getLastError();
+        final int errno = Kernel32.INSTANCE.GetLastError();
         final int msglen = Kernel32.INSTANCE.FormatMessage(
           Kernel32.FORMAT_MESSAGE_ALLOCATE_BUFFER |
           Kernel32.FORMAT_MESSAGE_FROM_SYSTEM,
