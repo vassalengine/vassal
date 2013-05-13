@@ -179,8 +179,9 @@ New Features in 3.2
 
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
-* 10155: NPE in FormattedStringExpression.evaluate
+* 10155: NPE in FormattedStringExpression.evaluate()
 * 10072: NPE in SynchCommand.executeCommand()
+*  2714: NPE in StackMetrics.merge()
 
 The following bugs in 3.2.4 are fixed in 3.2.5:
 
