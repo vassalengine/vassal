@@ -180,6 +180,8 @@ New Features in 3.2
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
 * 10155: NPE in FormattedStringExpression.evaluate()
+* 10125: Expression Builder should return a Property Name, not expression in
+    the Set Global Property trait
 * 10072: NPE in SynchCommand.executeCommand()
 *  2714: NPE in StackMetrics.merge()
 
