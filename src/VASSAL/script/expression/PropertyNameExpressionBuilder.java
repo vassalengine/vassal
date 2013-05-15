@@ -22,7 +22,6 @@ import javax.swing.JDialog;
 
 import VASSAL.configure.Configurer;
 import VASSAL.counters.EditablePiece;
-import bsh.BeanShellExpressionValidator;
 
 /**
  * A Builder for a field that can contain a property Name or a beanshell expression.
@@ -54,13 +53,21 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
    */
   public void save() {
     final String expr = expression.getValueString().trim();
-    if (BeanShellExpressionValidator.isSinglePropertyName(expr)) {
+    if (BeanShellExpression.isJavaIdentifier(expr)) {
       target.setValue(expr);
       dispose();
+      return;
     }
-    else {
-      super.save();
+    
+    if (expr.startsWith("GetProperty(\"") && expr.endsWith("\")") &&
+        (expr.length() - expr.replaceAll("\"", "").length()) == 2) {
+      target.setValue(expr.substring(13, expr.length()-2));
+      dispose();
+      return;    
     }
+    
+    super.save();    
+      
   }
 
 }

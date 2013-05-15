@@ -161,6 +161,29 @@ public abstract class Expression {
     return new PropertyMatchExpression(t);
 
   }
+  
+  /**
+   * Factory method to create a Beanshell expression of a value that
+   * is known to be a property name. 
+   * Used to convert values such as the Follow proprty field in Embellishment 
+   * 
+   */
+  public static Expression createSimplePropertyExpression (String s) {
+   
+    // A null expression?
+    if (s == null || s.trim().length() == 0) {
+      return new NullExpression();
+    }
+    
+    final String t = s.trim();
+
+    // BeanShell expression?
+    if (t.startsWith("{") && t.endsWith("}")) {
+      return new BeanShellExpression(t.substring(1, t.length() - 1));
+    }
+    
+    return new SinglePropertyExpression(t);
+  }
 
   @Override
   public int hashCode() {

@@ -20,8 +20,6 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
-import bsh.BeanShellExpressionValidator;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.GamePiece;
@@ -117,6 +115,26 @@ public class BeanShellExpression extends Expression {
     return expr.startsWith("{") && expr.endsWith("}");
   }
 
+  public static boolean isJavaIdentifier(String s) {
+    if (s == null || s.length() == 0) {
+      return false;
+    }
+    
+    for (int i = 0; i < s.length(); i++) {
+      if (i == 0) {
+        if (! Character.isJavaIdentifierStart(s.charAt(0))) {
+          return false;
+        }
+      }
+      else {
+        if (! Character.isJavaIdentifierPart(s.charAt(i))) {
+          return false;
+        }
+      }
+    }
+    
+    return true;      
+  }
   /**
    * Create a BeanShellExpression.
    *
@@ -152,13 +170,8 @@ public class BeanShellExpression extends Expression {
         && expr.indexOf('"', 1) == expr.length() - 1) {
       return new StringExpression(expr.substring(1, expr.length() - 1));
     }
-
-    // A Single Property reference?
-    if (BeanShellExpressionValidator.isSinglePropertyName(expr)) {
-      return new SinglePropertyExpression(expr);
-    }
     
-    // Return a geberalised Beanshell expression
+    // Return a generalised Beanshell expression
     return new BeanShellExpression(expr);
 
   }

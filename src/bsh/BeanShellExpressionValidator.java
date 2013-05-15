@@ -184,31 +184,4 @@ public class BeanShellExpressionValidator {
     return true;
   }  
   
-  /**
-   * Does this expression represent a single property name?
-   * @return
-   */
-  public static boolean isSinglePropertyName(String exp) {
-    try {
-      final String expr = stripBraces(exp);
-      final Parser p = new Parser(new StringReader(expr + ";"));
-      if (p.Line()) {
-        return false;
-      } 
-      final SimpleNode node = p.popNode();
-      if (!p.Line()) {
-        return false;
-      } 
-      if (node instanceof BSHPrimaryExpression && node.firstToken.equals(node.lastToken) && node.children != null && node.children.length == 1) {
-        final SimpleNode child = node.getChild(0);
-        if (child instanceof BSHAmbiguousName && child.children == null) {
-          return true;
-        }
-      }
-    }
-    catch (Exception ex) {
-      return false;
-    }
-    return false;
-  }
 }
