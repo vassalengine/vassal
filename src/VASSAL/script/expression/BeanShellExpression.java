@@ -119,22 +119,20 @@ public class BeanShellExpression extends Expression {
     if (s == null || s.length() == 0) {
       return false;
     }
-    
-    for (int i = 0; i < s.length(); i++) {
-      if (i == 0) {
-        if (! Character.isJavaIdentifierStart(s.charAt(0))) {
-          return false;
-        }
-      }
-      else {
-        if (! Character.isJavaIdentifierPart(s.charAt(i))) {
-          return false;
-        }
+   
+    if (!Character.isJavaIdentifierStart(s.charAt(0))) {
+     return false;
+    }
+
+    for (int i = 1; i < s.length(); ++i) {
+      if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+        return false;
       }
     }
-    
+ 
     return true;      
   }
+
   /**
    * Create a BeanShellExpression.
    *
