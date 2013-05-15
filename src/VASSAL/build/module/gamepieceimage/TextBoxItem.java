@@ -27,6 +27,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JTextPane;
@@ -198,6 +199,14 @@ public class TextBoxItem extends TextItem {
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
       RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 
+    AffineTransform saveXForm = null;
+    if (getRotation() != 0) {
+      saveXForm = g2d.getTransform();
+      AffineTransform newXForm =
+        AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth()/2, getLayout().getVisualizerHeight()/2);
+      g2d.transform(newXForm);
+    }
+
     if (bg != null) {
       g.setColor(bg);
       g.fillRect(r.x, r.y, r.width, r.height);
@@ -221,7 +230,11 @@ public class TextBoxItem extends TextItem {
     l.paint(big);
     big.dispose();
 
-    g.drawImage(img, origin.x+1, origin.y+1, null);
+    g2d.drawImage(img, origin.x+1, origin.y+1, null);
+
+    if (saveXForm != null) {
+      g2d.setTransform(saveXForm);
+    }
   }
 
   public String getType() {
