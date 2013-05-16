@@ -179,6 +179,7 @@ New Features in 3.2
 
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
+* 10167: Improve efficiency of SELECTED handling
 * 10165: Rotation is not applied to Text Boxes in Game Piece Layouts
 * 10155: NPE in FormattedStringExpression.evaluate()
 * 10125: Expression Builder should return a Property Name, not expression in
