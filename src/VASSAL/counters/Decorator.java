@@ -48,6 +48,7 @@ import VASSAL.tools.SequenceEncoder;
 public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource {
   protected GamePiece piece;
   private Decorator dec;
+  private boolean selected = false;
 
   public Decorator() {
   }
@@ -96,6 +97,9 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState()+piece.getProperty(key);
     }
+    else if (Properties.SELECTED.equals(key)) {
+      return selected;
+    }
     else {
       return piece.getProperty(key);
     }
@@ -114,6 +118,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return getProperty(key);
     }
+    /**
+     * Return local cached copy of Selection Status
+     */
+    else if (Properties.SELECTED.equals(key)) {
+      return isSelected();
+    }
     else {
       return piece.getLocalizedProperty(key);
     }
@@ -125,6 +135,18 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     else if (Properties.OUTER.equals(key)) {
       dec = (Decorator) val;
+    }
+    /**
+     * Cache Selection status and pass it on to all inner traits.
+     */
+    else if (Properties.SELECTED.equals(key)) {
+      if (val instanceof Boolean) {
+        setSelected(((Boolean) val).booleanValue());
+      }
+      else {
+        setSelected(false);
+      }
+      piece.setProperty(key, val);
     }
     else {
       piece.setProperty(key, val);
@@ -436,4 +458,18 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       w.pack();
     }
   }
+  
+  
+  /**
+   * Support Selection status locally
+   */
+  
+  protected void setSelected(boolean b) {
+    selected = b;
+  }
+  
+  protected boolean isSelected() {
+    return selected;
+  }
+  
 }
