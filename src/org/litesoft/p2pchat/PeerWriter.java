@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Vector;
 
 // Copyright Status:
@@ -47,6 +48,7 @@ import java.util.Vector;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.5 05/17/13 Specify UTF-8 charset
  * @version 0.4 04/07/13 Added name for thread, general clean up
  * @version 0.3 02/02/02 Added IllegalArgument.ifNull for all public params that may not be null
  * @version 0.2 01/28/02 Refactored and Added Licence
@@ -60,7 +62,7 @@ public class PeerWriter extends Thread {
 
   public PeerWriter(OutputStream pOs) {
     IllegalArgument.ifNull("Os", pOs);
-    zWriter = new BufferedWriter(new OutputStreamWriter(pOs));
+    zWriter = new BufferedWriter(new OutputStreamWriter(pOs,Charset.forName("UTF-8")));
     setName("Peer Writer Thread");
     start();
   }

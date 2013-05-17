@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Vector;
 
 // Copyright Status:
@@ -47,6 +48,7 @@ import java.util.Vector;
 
 /**
  * @author  Devin Smith and George Smith
+ * @version 0.3 05/17/13 Specify UTF-8 charset
  * @version 0.2 04/20/13 Add thread name, change history.
  * @version 0.1 12/27/01 Initial Version
  */
@@ -58,7 +60,7 @@ public class PeerReader extends Thread {
 
   public PeerReader(InputStream pIs) {
     IllegalArgument.ifNull("Is", pIs);
-    zReader = new BufferedReader(new InputStreamReader(pIs));
+    zReader = new BufferedReader(new InputStreamReader(pIs,Charset.forName("UTF-8")));
     setName("Peer Reader Thread");
     start();
   }
