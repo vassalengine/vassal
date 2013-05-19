@@ -496,15 +496,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    final boolean drawBelow = drawUnderneathWhenSelected && Boolean.TRUE.equals(getProperty(Properties.SELECTED));
+    final boolean drawUnder = drawUnderneathWhenSelected && Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     
-    if (!drawBelow) {
+    if (!drawUnder) {
       piece.draw(g, x, y, obs, zoom);
     }
-
+    
     checkPropertyLevel();
 
     if (!isActive()) {
+      if (drawUnder) {
+        piece.draw(g, x, y, obs, zoom);
+      }
       return;
     }
 
@@ -515,7 +518,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       imagePainter[i].draw(g, x + (int)(zoom*r.x), y + (int)(zoom*r.y), zoom, obs);
     }
 
-    if (drawBelow) {
+    if (drawUnder) {
       piece.draw(g, x, y, obs, zoom);
     }
   }
