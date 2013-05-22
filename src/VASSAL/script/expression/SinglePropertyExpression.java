@@ -30,7 +30,12 @@ import VASSAL.build.module.properties.PropertySource;
 public class SinglePropertyExpression extends Expression {
 
   public SinglePropertyExpression (String ex) {
-    setExpression(ex);
+    if (ex.startsWith("$") && ex.endsWith("$")) {
+      setExpression(ex.substring(1, ex.length()-1));
+    }
+    else {
+      setExpression(ex);
+    }
   }
   
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized)
