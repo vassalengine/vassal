@@ -61,7 +61,7 @@ public class P2PClientFactory extends ChatServerFactory {
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);
-        logger.error("", mess);
+        logger.info(mess);
       }
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());

@@ -333,7 +333,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       props = new PropertiesEncoder(pPeerInfo.getChatName()).getProperties();
       name = props.getProperty(SimpleStatus.NAME);
       ip = props.getProperty(SimpleStatus.IP);
-      details = name+" ("+ip+")";
+      details = name+" ("+ip+":"+pPeerInfo.getPort()+")";
     }
     catch (IOException ex) {
       details = "";
@@ -346,7 +346,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       return;  
     }
 
-    new Chatter.DisplayText(chatter, Resources.getString("Peer2Peer.connected", details)).execute(); 
+    fireStatus(Resources.getString("Peer2Peer.connected", details));
 
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
     propSupport.firePropertyChange(ROOM, null, getRoom());
