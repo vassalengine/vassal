@@ -1,3 +1,19 @@
+3.2.6 - 23 May 2013
+
+* 10184: Test Mode Counter Refresh created duplicate counters
+* 10174: NPE in DirectPeerPool.Entry.edit()
+* 10170: Incorrect LAN address reported under Linux
+* 10169: Non-latin characters are lost on P2P connections between
+    different OS's
+* 10167: Improve efficiency of SELECTED handling
+* 10165: Rotation is not applied to Text Boxes in Game Piece Layouts
+* 10155: NPE in FormattedStringExpression.evaluate()
+* 10128: Slow Follow Property handling in Embellishment
+* 10125: Expression Builder should return a Property Name, not expression in
+    the Set Global Property trait
+* 10072: NPE in SynchCommand.executeCommand()
+*  2714: NPE in StackMetrics.merge()
+
 3.2.5 - 10 May 2013
 
 * 10129: Pre-3.0 modules broken under 3.2

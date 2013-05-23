@@ -179,6 +179,7 @@ New Features in 3.2
 
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
+* 10184: Test Mode Counter Refresh created duplicate counters
 * 10174: NPE in DirectPeerPool.Entry.edit()
 * 10170: Incorrect LAN address reported under Linux
 * 10169: Non-latin characters are lost on P2P connections between

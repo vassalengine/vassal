@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.5 released[/b][/size]
+[size=200][b]VASSAL 3.2.6 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.5, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.6, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -11,15 +11,15 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.5, which which fi
 
 * VASL 5.9.3 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is nearly finished.
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.5.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.6.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.5-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-src.zip]Source code[/url]
 
 [size=150][b]Compatibility Notes[/b][/size]
 
@@ -96,6 +96,20 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.5, which which fi
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.5 are fixed in 3.2.6:
+
+* 10184: Test Mode Counter Refresh created duplicate counters
+* 10174: NPE in DirectPeerPool.Entry.edit()
+* 10170: Incorrect LAN address reported under Linux
+* 10169: Non-latin characters are lost on P2P connections between different OS's
+* 10167: Improve efficiency of SELECTED handling
+* 10165: Rotation is not applied to Text Boxes in Game Piece Layouts
+* 10155: NPE in FormattedStringExpression.evaluate()
+* 10128: Slow Follow Property handling in Embellishment
+* 10125: Expression Builder should return a Property Name, not expression in the Set Global Property trait
+* 10072: NPE in SynchCommand.executeCommand()
+*  2714: NPE in StackMetrics.merge()
+
 The following bugs in 3.2.4 are fixed in 3.2.5:
 
 * 10129: Pre-3.0 modules broken under 3.2
@@ -124,32 +138,9 @@ The following bugs in 3.2.3 are fixed in 3.2.4:
 *  9823: No entry allowed for Peek command
 *  9700: Unit activation improperly recorded
 
-The following bugs in 3.2.2 are fixed in 3.2.3:
+For changes prior to 3.2.4, see the change log.
 
-*	10038: NPE while editing a global property button
-* 10000: IllegalArgumentException in Embellishment.setValue()
-*  9997: NPE in RegionGrid.addRegion()
-*  9990: Cannot customise Reverse Order text on a Deck
-*  9967: Reversed stacking order when dropping a stack onto an expanded stack
-*  9918: NPE in BeanShellExpressionConfigurer.addProp()
-*  9910: ESC key interpreted as "No" instead of "Cancel" at save prompts
-*  9905: User Guide item missing from Help menu
-*  9882: ImageIO munges colors of 3-component JPEGs without JFIF markers
-*  9864: Toolbar menu w/ Inventory Items autoexpands permanently when switching players
-*  9825: Macs with Retina displays unable to paint map tiles at non-power-of-two zoom levels
-*  9823: No entry allowed for Peek command
-*  9717: ClassCastException: javax.swing.KeyStroke cannot be cast to VASSAL.tools.NamedKeyStroke in ADC2 converter
-*  9700: Unit activation improperly recorded
-*  9681: NPE in Zone.getMutablePropertiesContainerId()
-*  9648: ConcurrentModificationException in Map.drawBoardsInRegion()
-*  9589: NPE in Embellishment.myGetKeyCommands()
-*  9555: NoSuchFieldError in ExpressionInterpreter.evaluate()
-*  4803: NoSuchElementException in Footprint.draw()
-*  2531: Change Global Property button missing configurable tooltip
-
-For changes prior to 3.2.3, see the change log.
-
-Please report all bugs in 3.2.5, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.6, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
