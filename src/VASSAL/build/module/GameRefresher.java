@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -167,10 +167,15 @@ public final class GameRefresher implements GameComponent {
 
     /*
      * 3. Generate the commands to update the pieces
-     */
+     */   
     for (GamePiece piece : pieces) {
-      processGamePiece(piece, command);
-    }    
+      if (isTestMode()) {
+        testGamePiece(piece);
+      }
+      else {
+        processGamePiece(piece, command);
+      }
+    }
     
     if (isTestMode()) {
       dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
@@ -251,6 +256,23 @@ public final class GameRefresher implements GameComponent {
           command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
         }
       }
+    }
+  }
+  
+  private void testGamePiece(GamePiece piece) {
+    
+    final Map map = piece.getMap();
+    if (map == null) {
+      logger.error("Can't refresh piece " + piece.getName() + ": No Map");
+      return;
+    }
+    
+    if (gpIdChecker.findUpdatedPiece(piece)) {
+      updatedCount++;
+    }
+    else {
+      notFoundCount++;      
+      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
     }
   }
 

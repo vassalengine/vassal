@@ -188,6 +188,31 @@ public class GpIdChecker {
   }
 
 
+  public boolean findUpdatedPiece (GamePiece oldPiece) {
+    // Find a slot with a matching gpid
+    final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
+    if (gpid != null && gpid.length() > 0) {
+      final SlotElement element = goodSlots.get(gpid);
+      if (element != null) {
+         return true;
+      }
+    }
+
+    // Failed to find a slot by gpid, try by matching piece name if option selected
+    if (useName) {
+      final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
+      for (SlotElement el : goodSlots.values()) {
+        final GamePiece newPiece = el.getPiece();
+        final String newPieceName = Decorator.getInnermost(newPiece).getName();
+        if (oldPieceName.equals(newPieceName)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
 
   /**
    * Wrapper class for components that contain a GpId - They will all be either
