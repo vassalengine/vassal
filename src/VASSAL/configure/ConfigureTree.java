@@ -68,6 +68,10 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.MassPieceLoader;
@@ -708,7 +712,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean insert(Configurable parent, Configurable child, int index) {
-    DefaultMutableTreeNode childNode = buildTreeNode(child);
+    Configurable theChild = child;
+    // Convert subclasses of GlobalProperty to an actual GlobalProperty before inserting into the GlobalProperties container
+    if (parent.getClass() == GlobalProperties.class && child.getClass() == ZoneProperty.class) {
+      theChild = new GlobalProperty((GlobalProperty) child);
+    } 
+    if (parent.getClass() == Zone.class && child.getClass() == GlobalProperty.class) {
+      theChild = new ZoneProperty((GlobalProperty) child);
+    }
+    DefaultMutableTreeNode childNode = buildTreeNode(theChild);
     DefaultMutableTreeNode parentNode = getTreeNode(parent);
     Configurable[] oldContents = parent.getConfigureComponents();
     boolean succeeded = true;
@@ -720,7 +732,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       // FIXME: review error message
       catch (IllegalBuildException err) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(child) + " before " + getConfigureName(oldContents[i]),
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(theChild) + " before " + getConfigureName(oldContents[i]),
             "Illegal configuration", JOptionPane.ERROR_MESSAGE);
         for (int j = index; j < i; ++j) {
           parent.add(oldContents[j]);
@@ -731,8 +743,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       moveToBack.add(oldContents[i]);
     }
     try {
-      child.addTo(parent);
-      parent.add(child);
+      theChild.addTo(parent);
+      parent.add(theChild);
       parentNode.insert(childNode, index);
       int[] childI = new int[1];
       childI[0] = index;
@@ -904,8 +916,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Class<?> c[] = parent.getAllowableConfigureComponents();
       for (int i = 0; i < c.length; ++i) {
         if (c[i].isAssignableFrom(child.getClass()) ||
-            ((c[i] == CardSlot.class) && (child.getClass() == PieceSlot.class))) { // Allow PieceSlots to be pasted to Decks
-          return true;
+            ((c[i] == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
+            ((c[i] == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
+            ) {
+              return true;
         }
       }
     }

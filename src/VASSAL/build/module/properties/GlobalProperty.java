@@ -71,6 +71,16 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     };
   }
 
+  public GlobalProperty(GlobalProperty p) {
+    this();
+    setConfigureName(p.getConfigureName());
+    description = p.description;
+    initialValue = p.initialValue;
+    numeric = p.numeric;
+    minValue = p.minValue;
+    maxValue = p.maxValue;
+  }
+  
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name",

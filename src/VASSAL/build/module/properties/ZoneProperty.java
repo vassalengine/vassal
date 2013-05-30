@@ -40,6 +40,10 @@ public class ZoneProperty extends GlobalProperty {
     super();
   }
 
+  public ZoneProperty(GlobalProperty p) {
+    super(p);
+  }
+  
   public static String getConfigureTypeName() {
     return "Global Property";
   }
