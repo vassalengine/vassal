@@ -722,17 +722,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
 
       // write and close global prefs
-      try {
-        p = getGlobalPrefs();
-        p.write();
-        p.close();
-      }
-      catch (IOException e) {
-        WriteErrorDialog.error(e, p.getFile());
-      }
-      finally {
-        IOUtils.closeQuietly(p);
-      }
+      // Bug 10179 - Global prefs are now written out each time a preference is changed
+      // try {
+      //   p = getGlobalPrefs();
+      //   p.write();
+      //   p.close();
+      // }
+      // catch (IOException e) {
+      //   WriteErrorDialog.error(e, p.getFile());
+      // }
+      // finally {
+      //  IOUtils.closeQuietly(p);
+      // }
 
       // close the module
       try {

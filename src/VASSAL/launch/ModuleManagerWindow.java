@@ -115,7 +115,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -189,18 +188,19 @@ public class ModuleManagerWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         if (!AbstractLaunchAction.shutDown()) return;
 
-        final Prefs gl = Prefs.getGlobalPrefs();
-        try {
-          gl.write();
-          gl.close();
-        }
-        catch (IOException ex) {
-          WriteErrorDialog.error(ex, gl.getFile());
-        }
-        finally {
-          IOUtils.closeQuietly(gl);
-        }
-
+        // Bug 10179 - Global prefs are now written out each time a preference is changed
+        // final Prefs gl = Prefs.getGlobalPrefs();
+        // try {
+        //   gl.write();
+        //   gl.close();
+        // }
+        // catch (IOException ex) {
+        //   WriteErrorDialog.error(ex, gl.getFile());
+        // }
+        // finally {
+        //   IOUtils.closeQuietly(gl);
+        // }
+         
         logger.info("Exiting");
         System.exit(0);
       }

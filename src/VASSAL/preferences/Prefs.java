@@ -58,7 +58,7 @@ public class Prefs implements Closeable {
   private Map<String, Configurer> options = new HashMap<String, Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
-  private String name;
+  protected String name;
   private Set<String> changed = new HashSet<String>();
   private PropertyChangeListener changeListener;
 
@@ -67,13 +67,17 @@ public class Prefs implements Closeable {
     this.name = name;
     this.changeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        changed.add(evt.getPropertyName());
+        handleValueChange(evt);
       }
     };
     editor.addPrefs(this);
     init(name);
   }
 
+  protected void handleValueChange(PropertyChangeEvent evt) {
+    changed.add(evt.getPropertyName());
+  }
+  
   public PrefsEditor getEditor() {
     return editor;
   }
@@ -167,7 +171,7 @@ public class Prefs implements Closeable {
     }
   }
 
-  private void read() {
+  protected void read() {
     FileArchive fa = null;
     try {
       fa = editor.getFileArchive();
@@ -246,7 +250,7 @@ public class Prefs implements Closeable {
       final File prefsFile = new File(Info.getHomeDir(), "Preferences");
 
       try {
-        globalPrefs = new Prefs(
+        globalPrefs = new GlobalPrefs(
           new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
         );
       }
