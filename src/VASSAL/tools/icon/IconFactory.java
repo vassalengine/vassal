@@ -35,6 +35,9 @@ import java.util.jar.JarFile;
 
 import javax.swing.Icon;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.IllegalBuildException;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -49,12 +52,14 @@ import VASSAL.tools.io.IOUtils;
  */
 public final class IconFactory {
 
+  private static final Logger logger = LoggerFactory.getLogger(IconFactory.class);
+  
   static final String FILE = "file:"; //$NON-NLS-1$
   static final String JAR = "jar:"; //$NON-NLS-1$
 
   private static final JarArchive jar = new JarArchive();
 
-  private static IconFactory instance;
+  private static IconFactory instance = new IconFactory();
   private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<String, IconFamily>();
   private static final Object preloadLock = new Object();
   private Thread preloadThread;
@@ -81,8 +86,6 @@ public final class IconFactory {
    * Create a new IconFactory.
    */
   public IconFactory () {
-// FIXME: Why do this? Have a final INSTANCE instead.
-    setInstance(this);
 
 // FIXME: Maybe send this off to an executor?
 // FIXME: preloadThread is never set to null, cannot be gc'd
@@ -275,6 +278,7 @@ public final class IconFactory {
       //Build a URL to the Vassal images folder. It is guaranteed to exist
       // in any version of Vassal
       imageUrl = jar.getURL(DataArchive.IMAGE_DIR);
+      logger.info("VASSAL images folder found at "+imageUrl);
       // Determine if we are running locally under a debugger, or
       // from an installation package. If running an installed version
       // of Vassal, the images URL will start with "jar:".
@@ -317,6 +321,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
+            logger.info("Icon family "+familyName+" created for "+imageName); 
           }
           family.setSizeIconPath(size, "/" + path + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -348,6 +353,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
+            logger.info("Icon family "+familyName+" created for "+imageName);  
           }
           family.setScalableIconPath("/" + scalablePath + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -387,6 +393,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
+            logger.info("Icon family "+familyName+" created for "+imageName);          
           }
           family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
           iconFamilies.put(familyName, family);
@@ -400,6 +407,7 @@ public final class IconFactory {
             IconFamily family = iconFamilies.get(familyName);
             if (family == null) {
               family = new IconFamily(familyName);
+              logger.info("Icon family "+familyName+" created for "+imageName); 
             }
             family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
             iconFamilies.put(familyName, family);

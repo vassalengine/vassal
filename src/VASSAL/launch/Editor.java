@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2013 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -43,7 +43,6 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.menu.MacOSXMenuManager;
@@ -69,7 +68,6 @@ public class Editor extends Launcher {
 
   protected void launch() throws IOException {
     IPCMessage msg = null;
-    new IconFactory();  // Initialise the Icon Factory
 
     switch (lr.mode) {
     case EDIT:

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2013 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -42,7 +42,6 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -67,7 +66,6 @@ public class Player extends Launcher {
   }
 
   protected void launch() throws IOException {
-    new IconFactory();  // Initialise the Icon Factory
     if (lr.builtInModule) {
       GameModule.init(createModule(createDataArchive()));
 
