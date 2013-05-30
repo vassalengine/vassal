@@ -177,6 +177,11 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.6 are fixed in 3.2.7:
+
+* 10179: Module manager is overwriting P2P server preferences
+* 10135: ClassCastException: GlobalProperties cannot be cast to Zone
+
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
 * 10184: Test Mode Counter Refresh created duplicate counters
