@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -72,7 +72,6 @@ public class ReportState extends Decorator implements TranslatablePiece {
   protected String[] cycleReportFormat;
   protected NamedKeyStroke[] cycleDownKeys;
   protected int cycleIndex = -1;
-  protected Map oldMap;
   protected String description;
 
   public ReportState() {
@@ -111,17 +110,6 @@ public class ReportState extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  // We perform the inner commands first so that their effects will be reported
-  public Command keyEvent(KeyStroke stroke) {
-    oldMap = getMap();
-    format.clearProperties();
-    format.setProperty(OLD_MAP_NAME, getMap() == null ? null : getMap().getConfigureName());
-    format.setProperty(OLD_LOCATION_NAME, getMap() == null ? null : getMap().locationName(getPosition()) );
-    Command c = piece.keyEvent(stroke);
-    return c == null ? myKeyEvent(stroke)
-        : c.append(myKeyEvent(stroke));
-  }
-
   public Command myKeyEvent(KeyStroke stroke) {
     GamePiece outer = getOutermost(this);
 
@@ -130,6 +118,8 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     format.setProperty(MAP_NAME, getMap() == null ? null : getMap().getConfigureName());
     format.setProperty(LOCATION_NAME, getMap() == null ? null : getMap().locationName(getPosition()));
+    format.setProperty(OLD_MAP_NAME, (String) getProperty(BasicPiece.OLD_MAP));
+    format.setProperty(OLD_LOCATION_NAME, (String) getProperty(BasicPiece.OLD_LOCATION_NAME));
 
     Command c = null;
 
@@ -191,9 +181,6 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
           if (getMap() != null) {
             format.setFormat(getMap().getChangeFormat());
-          }
-          else if (oldMap != null) {
-            format.setFormat(oldMap.getChangeFormat());
           }
           else if (!Map.isChangeReportingEnabled()) {
             format.setFormat("");
