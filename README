@@ -179,6 +179,8 @@ New Features in 3.2
 
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
+* 10211: $oldLocation$ for Report Format is not set on Send To Location on
+  same map
 * 10179: Module manager is overwriting P2P server preferences
 * 10135: ClassCastException: GlobalProperties cannot be cast to Zone
 
