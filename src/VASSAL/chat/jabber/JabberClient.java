@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -383,6 +383,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     // messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     // serverStatusControls.initializeControls(controls);
+    controls.setRoomControlsVisible(true);
     GameModule.getGameModule().addCommandEncoder(synchEncoder);
     GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
     GameModule.getGameModule().addCommandEncoder(soundEncoder);

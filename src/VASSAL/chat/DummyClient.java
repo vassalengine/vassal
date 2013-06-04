@@ -98,6 +98,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
   public void initializeControls(ChatServerControls controls) {
     msgControls.initializeControls(controls);
     statusControls.initializeControls(controls);
+    controls.setRoomControlsVisible(true);
   }
 
   public void uninitializeControls(ChatServerControls controls) {

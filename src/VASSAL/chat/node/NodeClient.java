@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -589,6 +589,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     serverStatusControls.initializeControls(controls);
+    controls.setRoomControlsVisible(true);
     final GameModule g = GameModule.getGameModule();
     g.addCommandEncoder(synchEncoder);
     g.addCommandEncoder(privateChatEncoder);
