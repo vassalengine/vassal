@@ -179,10 +179,13 @@ New Features in 3.2
 
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
+* 10229: ArrayIndexOutOfBoundsException in RandomTextButton.DR
+* 10217: Lose New Room selection field when changing from P2P to VASSAL server
 * 10211: $oldLocation$ for Report Format is not set on Send To Location on
   same map
 * 10179: Module manager is overwriting P2P server preferences
 * 10135: ClassCastException: GlobalProperties cannot be cast to Zone
+*  3548: NumberFormatException in RandomTextButton.DR
 
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
