@@ -113,7 +113,13 @@ public class RandomTextButton extends DiceButton {
       // take the face value from user defined faces
       if (isNumeric) {
         try {
-          roll = Integer.parseInt(m_faces[roll - 1]) + plus;
+          if (roll <= m_faces.length) {
+            roll = Integer.parseInt(m_faces[roll - 1]) + plus;
+          }
+          else {
+            ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
+            roll = plus;
+          }
         }
         catch (NumberFormatException ex) {
           ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll-1]));
@@ -127,7 +133,13 @@ public class RandomTextButton extends DiceButton {
       }
       else {
         if (!isNumeric)
-          result.append(m_faces[roll - 1]);
+          if (roll <= m_faces.length) {
+            result.append(m_faces[roll - 1]);
+          }
+          else {
+            ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
+            result.append("0");
+          }
         else
           result.append(roll);
         if (i < nDice - 1)
