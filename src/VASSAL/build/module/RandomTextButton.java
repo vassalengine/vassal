@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -32,6 +33,7 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -110,7 +112,13 @@ public class RandomTextButton extends DiceButton {
 
       // take the face value from user defined faces
       if (isNumeric) {
-        roll = Integer.parseInt(m_faces[roll - 1]) + plus;
+        try {
+          roll = Integer.parseInt(m_faces[roll - 1]) + plus;
+        }
+        catch (NumberFormatException ex) {
+          ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll-1]));
+          roll = 1;
+        }
       }
 
       // no totals if text output
