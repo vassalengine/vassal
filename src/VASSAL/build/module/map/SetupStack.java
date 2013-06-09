@@ -191,8 +191,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   @Override
   public void validate(Buildable target, ValidationReport report) {
     if (isUseGridLocation()) {
-      if (location == null)
+      if (location == null) {
         report.addWarning(getConfigureName() + Resources.getString("SetupStack.null_location"));
+      }
       else {
         try {
           getConfigureBoard().getGrid().getLocation(location);
