@@ -374,15 +374,21 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
-    org.w3c.dom.Element el = doc.createElement(getClass().getName());
-    String s = getConfigureName();
+    final org.w3c.dom.Element el = doc.createElement(getClass().getName());
+    final String s = getConfigureName();
     if (s != null) {
       el.setAttribute(NAME, s);
     }
     el.setAttribute(GP_ID, gpId+"");
     el.setAttribute(WIDTH, getPreferredSize().width + "");
     el.setAttribute(HEIGHT, getPreferredSize().height + "");
-    el.appendChild(doc.createTextNode(c == null ? pieceDefinition : GameModule.getGameModule().encode(new AddPiece(c))));
+
+    if (c != null || pieceDefinition != null) {
+      el.appendChild(doc.createTextNode(
+        c == null ? pieceDefinition :
+          GameModule.getGameModule().encode(new AddPiece(c))
+      ));
+    }
     return el;
   }
 
