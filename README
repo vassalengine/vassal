@@ -186,6 +186,7 @@ The following bugs in 3.2.6 are fixed in 3.2.7:
 * 10179: Module manager is overwriting P2P server preferences
 * 10135: ClassCastException: GlobalProperties cannot be cast to Zone
 *  3548: NumberFormatException in RandomTextButton.DR
+*  2630: Editor crashes on close attempt when PieceDefiner is open
 
 The following bugs in 3.2.5 are fixed in 3.2.6:
 
