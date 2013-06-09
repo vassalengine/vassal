@@ -406,8 +406,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           edit(index);
         }
       }
-    }
-    );
+    });
     inUsePanel.add(propsButton);
 
 
