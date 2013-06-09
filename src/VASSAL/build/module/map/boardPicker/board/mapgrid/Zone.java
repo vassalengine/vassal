@@ -294,11 +294,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     while (se.hasMoreTokens()) {
       String token = se.nextToken();
       isProperty = !isProperty;
-      if (token.length() > 0) {
-        if (!isProperty || !se.hasMoreTokens())
+
+      if (!token.isEmpty()) {
+        if (!isProperty || !se.hasMoreTokens()) {
           regex.append(Pattern.quote(token));
-        else if (token.equals(NAME))
+        }
+        else if (token.equals(NAME)) {
           regex.append(Pattern.quote(getConfigureName()));
+        }
         else if (token.equals(GRID_LOCATION) && getGrid() != null) {
           regex.append("(.*)");
           ++groupCount;
@@ -306,10 +309,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       }
     }
 
-    if (regex.length() == 0)
+    if (regex.length() == 0) {
       throw new BadCoords(); // nothing to match!
-    Pattern pattern = Pattern.compile(regex.toString());
-    Matcher matcher = pattern.matcher(location);
+    }
+
+    final Pattern pattern = Pattern.compile(regex.toString());
+    final Matcher matcher = pattern.matcher(location);
     if (!matcher.matches()) {
       throw new BadCoords();
     }
@@ -330,12 +335,15 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       // no grid to match against
       // try the geographic mean
       p = new Point(0, 0);
-      for (int i = 0; i < myPolygon.npoints; ++i)
+      for (int i = 0; i < myPolygon.npoints; ++i) {
         p.translate(myPolygon.xpoints[i], myPolygon.ypoints[i]);
+      }
       p.x /= myPolygon.npoints;
       p.y /= myPolygon.npoints;
-      if (contains(p))
+
+      if (contains(p)) {
         return p;
+      }
       else {
         // concave polygon
         // default to the first point
