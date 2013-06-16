@@ -43,6 +43,8 @@ OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
 InstallDir "$PROGRAMFILES\VASSAL"
 InstallDirRegKey HKLM "${IROOT}" "InstallLocation"
 
+RequestExecutionLevel admin
+
 # compression
 SetCompress auto
 SetCompressor /SOLID lzma
@@ -659,7 +661,7 @@ FunctionEnd
 
 
 Function launchApp
-  Exec "$INSTDIR\VASSAL.exe"
+  Exec '"$WINDIR\explorer.exe" "$INSTDIR\VASSAL.exe"'
 FunctionEnd
 
 
