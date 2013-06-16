@@ -661,6 +661,8 @@ FunctionEnd
 
 
 Function launchApp
+  ; Launch via explorer.exe becuase it is already running as the user,
+  ; not as admin, which will launch us as user also.
   Exec '"$WINDIR\explorer.exe" "$INSTDIR\VASSAL.exe"'
 FunctionEnd
 
