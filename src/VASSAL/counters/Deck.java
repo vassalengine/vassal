@@ -404,7 +404,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseListener.setKeyStroke(getReverseKey());
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
-    if (myPile != null) {
+    if (myPile != null && myPile.getDeck() == null) {
       myPile.setDeck(this);
     }
   }
