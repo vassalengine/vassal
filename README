@@ -179,6 +179,7 @@ New Features in 3.2
 
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
+* 10249: Deck loses position over loading multiple player logs
 * 10229: ArrayIndexOutOfBoundsException in RandomTextButton.DR
 * 10217: Lose New Room selection field when changing from P2P to VASSAL server
 * 10211: $oldLocation$ for Report Format is not set on Send To Location on
