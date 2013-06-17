@@ -268,7 +268,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public String playerToString(Player p) {
-    return ((P2PPlayer) p).getId();
+    return ((SimplePlayer) p).getId();
   }
 
   public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener l) {
