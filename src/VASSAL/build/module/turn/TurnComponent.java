@@ -24,8 +24,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Generic Turn Component
@@ -47,8 +50,14 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   protected TurnLevel getTurnLevel(int i) {
-    if (i >= levels.size()) {
-      return null;
+    if (levels.size() == 0) {
+      ErrorDialog.bug(new Exception(Resources.getString("TurnTracker.level_error", i, levels.size())));      
+    }
+    else {
+      if (i >= levels.size()) {   
+        ErrorDialog.dataError(new BadDataReport(Resources.getString("TurnTracker.level_error", i, levels.size()), getConfigureName()));      
+        return levels.get(levels.size()-1);
+      }
     }
     return levels.get(i);
   }
