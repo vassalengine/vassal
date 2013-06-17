@@ -18,6 +18,7 @@
  */
 package VASSAL.chat.peer2peer;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.plaf.ColorUIResource;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -399,7 +399,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       setEditable(false);
       setLineWrap(true);
       setWrapStyleWord(true);
-      setBackground((ColorUIResource) UIManager.get("OptionPane.background"));
+      setBackground(UIManager.getColor("OptionPane.background"));
     }
   }
 }
