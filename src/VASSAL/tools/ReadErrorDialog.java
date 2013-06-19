@@ -81,4 +81,19 @@ public class ReadErrorDialog {
   public static void error(IOException e, File file) {
     error(e, e, file.getPath());
   }
+
+  public static void errorNoI18N(IOException e, String filename) {
+    ErrorDialog.showDisableable(
+      null,
+      e,
+      (Object) (e.getClass().getName() + "@" + filename),
+      "Unable to Read File",
+      "Unable to Read File",
+      "VASSAL was unable to read the file '" + filename + "'."
+    );
+  }
+
+  public static void errorNoI18N(IOException e, File file) {
+    errorNoI18N(e, file.getPath());
+  }
 }

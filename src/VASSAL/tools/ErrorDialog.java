@@ -194,6 +194,18 @@ public class ErrorDialog {
     );
   }
 
+  public static Future<?> showDisableableNoI18N(
+    Throwable thrown,
+    Object key,
+    String title,
+    String heading,
+    String message)
+  {
+    return ProblemDialog.showDisableableNoI18N(
+      JOptionPane.ERROR_MESSAGE, thrown, key, title, heading, message
+    );
+  }
+
   public static Future<?> showDetails(
     String details,
     String messageKey,

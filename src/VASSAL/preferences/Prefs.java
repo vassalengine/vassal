@@ -191,7 +191,7 @@ public class Prefs implements Closeable {
       fa.close();
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, fa.getName());
+      ReadErrorDialog.errorNoI18N(e, fa.getName());
     }
     finally {
       IOUtils.closeQuietly(fa);

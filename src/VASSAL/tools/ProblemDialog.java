@@ -180,6 +180,31 @@ public class ProblemDialog {
     });
   }
 
+  public static Future<?> showDisableableNoI18N(
+    final int messageType,
+    final Throwable thrown,
+    final Object key,
+    final String title,
+    final String heading,
+    final String message)
+  {
+    if (thrown != null) logger.error("", thrown);
+
+    return DialogUtils.enqueue(new Runnable() {
+      public void run() {
+        Dialogs.showMessageDialog(
+          getFrame(),
+          title,
+          heading,
+          message,
+          messageType,
+          key,
+          "Don't show this again"
+        );
+      }
+    });
+  }
+
   public static Future<?> showDetails(
     int messageType,
     String details,
