@@ -101,7 +101,7 @@ public class NodePlayer extends SimplePlayer {
       p1.put(SimpleStatus.CRC,crc);
     }
     Properties p = p1;
-    p.put(ID,id);
+    p.put(ID,id == null ? "" : id);
     return p;
   }
 }
