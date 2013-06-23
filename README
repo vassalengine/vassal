@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.6, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.7, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -24,7 +24,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   indicating with which module you're seeing a problem.
 
 * If you are using MacOS X 10.8.3 or later, you may see the message
-  "VASSAL-3.2.6.app is damaged and can’t be opened. You should move it to
+  "VASSAL-3.2.7.app is damaged and can’t be opened. You should move it to
   the Trash." The problem is NOT that your download was corrupt, but rather
   that MacOS is preventing you from running VASSAL. To start VASSAL, control-
   click or right-click the app bundle's icon and select Open from the menu.
@@ -42,23 +42,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-src.zip
 
 *********************
 Compatibility Notes
@@ -233,20 +233,9 @@ The following bugs in 3.2.4 are fixed in 3.2.5:
 *  9694: NPE in ZipArchive.remove()
 *  9654: NPE in ZipArchive$ZipArchiveInputStream.close()
 
-The following bugs in 3.2.3 are fixed in 3.2.4:
+For changes prior to 3.2.5, see the change log.
 
-* 10054: Add option to clear tile cache to Module Manager
-* 10053: JPEGs with APP14 tags are incorrectly color-corrected by fix for
-    Bug 9882
-* 10016: P2P Client/Server modes do not work in 3.2.2
-* 10012: NPE in EnumeratedPropertyPrompt.getNewValue()
-*  9969: IllegalArgumentException in MapShader.PatternOp ctor
-*  9823: No entry allowed for Peek command
-*  9700: Unit activation improperly recorded
-
-For changes prior to 3.2.4, see the change log.
-
-Please report all bugs in 3.2.6 even if they are bugs which you've already
+Please report all bugs in 3.2.7 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 

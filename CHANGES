@@ -1,3 +1,23 @@
+3.2.7 - 23 June 2014
+
+* 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
+* 10256: StackOverflowError when Preferences can't be read
+* 10249: Deck loses position over loading multiple player logs
+* 10229: ArrayIndexOutOfBoundsException in RandomTextButton.DR
+* 10217: Lose New Room selection field when changing from P2P to VASSAL server
+* 10211: $oldLocation$ for Report Format is not set on Send To Location on
+  same map
+* 10179: Module manager is overwriting P2P server preferences
+* 10135: ClassCastException: GlobalProperties cannot be cast to Zone
+* 10070: ClassCastException in DirectPeerPool.WTextArea()
+*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
+*  9650: NPE in NodePlayer.toProperties()
+*  3934: Windows installer launches VASSAL with admin privileges
+*  3548: NumberFormatException in RandomTextButton.DR
+*  2713: ClassCastException in P2PClient.playerToString()
+*  2630: Editor crashes on close attempt when PieceDefiner is open
+*  2545: NPE in TurnTracker$SetDialog.addChildControls()
+
 3.2.6 - 23 May 2013
 
 * 10184: Test Mode Counter Refresh created duplicate counters

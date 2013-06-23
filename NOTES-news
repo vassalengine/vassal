@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.6, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.7, which which fixes several problems found in earlier versions.
 
 </p>
 <h2>IMPORTANT</h2>
@@ -8,16 +8,16 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.6, which which fi
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
   <li>VASL 5.9.3 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is nearly finished.</li>
   <li>If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.</li>
-  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.6.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
+  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.7.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.6-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
@@ -90,6 +90,27 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.6, which which fi
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in 3.2.6 are fixed in 3.2.7:
+<ul>
+ <li>10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java</li>
+ <li>10256: StackOverflowError when Preferences can't be read</li>
+ <li>10249: Deck loses position over loading multiple player logs</li>
+ <li>10229: ArrayIndexOutOfBoundsException in RandomTextButton.DR</li>
+ <li>10217: Lose New Room selection field when changing from P2P to VASSAL server</li>
+ <li>10211: $oldLocation$ for Report Format is not set on Send To Location on same map</li>
+ <li>10179: Module manager is overwriting P2P server preferences</li>
+ <li>10135: ClassCastException: GlobalProperties cannot be cast to Zone</li>
+ <li>10070: ClassCastException in DirectPeerPool.WTextArea()</li>
+ <li>9833: UnsatisfiedLinkError because JNA DLL cannot be read</li>
+ <li>9650: NPE in NodePlayer.toProperties()</li>
+ <li>3934: Windows installer launches VASSAL with admin privileges</li>
+ <li>3548: NumberFormatException in RandomTextButton.DR</li>
+ <li>2713: ClassCastException in P2PClient.playerToString()</li>
+ <li>2630: Editor crashes on close attempt when PieceDefiner is open</li>
+ <li>2545: NPE in TurnTracker$SetDialog.addChildControls()</li>
+</ul>
+</p>
+<p>
 The following bugs in 3.2.5 are fixed in 3.2.6:
 <ul>
   <li>10184: Test Mode Counter Refresh created duplicate counters</li>
@@ -126,22 +147,10 @@ The following bugs in 3.2.4 are fixed in 3.2.5:
 </ul>
 </p>
 <p>
-The following bugs in 3.2.3 are fixed in 3.2.4:
-<ul>
-  <li>10054: Add option to clear tile cache to Module Manager</li>
-  <li>10053: JPEGs with APP14 tags are incorrectly color-corrected by fix for Bug 9882</li>
-  <li>10016: P2P Client/Server modes do not work in 3.2.2</li>
-  <li>10012: NPE in EnumeratedPropertyPrompt.getNewValue()</li>
-  <li>9969: IllegalArgumentException in MapShader.PatternOp ctor</li>
-  <li>9823: No entry allowed for Peek command</li>
-  <li>9700: Unit activation improperly recorded</li>
-</ul>
+For changes prior to 3.2.5, see the change log.
 </p>
 <p>
-For changes prior to 3.2.4, see the change log.
-</p>
-<p>
-Please report all bugs in 3.2.6 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.7 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>
@@ -155,7 +164,7 @@ Linux: Java 6 or later is required for using VASSAL on Linux.
 MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is unavailable, and Java 6 or later for Macs where Java 6 is available.
 </p>
 <p>
-Windows: The recommended minimum Java version for Windows is 1.6.0_21 (a.k.a. Java 6 Update 21). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_35. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
+Windows: The recommended minimum Java version for Windows is 1.6.0_45 (a.k.a. Java 6 Update 45). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_45. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
 </p>
 <p>
 If you've installed Java 7 on Windows and thereafter VASSAL fails to launch: The Java 7 installer does not uninstall Java 6, and having both installed simultaneously prevents both from working properly. Therefore, check whether you also still have Java 6 installed. If so, removing Java 6 and rebooting will most likely solve your problem.
