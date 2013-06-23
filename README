@@ -190,6 +190,7 @@ The following bugs in 3.2.6 are fixed in 3.2.7:
 * 10135: ClassCastException: GlobalProperties cannot be cast to Zone
 * 10070: ClassCastException in DirectPeerPool.WTextArea()
 *  9833: UnsatisfiedLinkError because JNA DLL cannot be read
+*  9650: NPE in NodePlayer.toProperties()
 *  3934: Windows installer launches VASSAL with admin privileges
 *  3548: NumberFormatException in RandomTextButton.DR
 *  2713: ClassCastException in P2PClient.playerToString()
