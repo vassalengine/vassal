@@ -19,7 +19,9 @@
 
 package VASSAL.launch;
 
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.lang.SystemUtils;
@@ -66,30 +68,44 @@ public class StartUp {
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    if (!SystemUtils.IS_OS_WINDOWS) {
-      // use native LookAndFeel
-      // NB: This must be after Mac-specific properties
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
-      catch (ClassNotFoundException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (IllegalAccessException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (InstantiationException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (UnsupportedLookAndFeelException e) {
-        ErrorDialog.bug(e);
-      }
-    }
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        public void run() {
+          if (!SystemUtils.IS_OS_WINDOWS) {
+            // use native LookAndFeel
+            // NB: This must be after Mac-specific properties
+            try {
+              UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName()
+              );
+            }
+            catch (ClassNotFoundException e) {
+              ErrorDialog.bug(e);
+            }
+            catch (IllegalAccessException e) {
+              ErrorDialog.bug(e);
+            }
+            catch (InstantiationException e) {
+              ErrorDialog.bug(e);
+            }
+            catch (UnsupportedLookAndFeelException e) {
+              ErrorDialog.bug(e);
+            }
+          }
 
-    // Ensure consistent behavior in NOT consuming "mousePressed" events
-    // upon a JPopupMenu closing (added for Windows L&F, but others might
-    // also be affected.
-    UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
+          // Ensure consistent behavior in NOT consuming "mousePressed" events
+          // upon a JPopupMenu closing (added for Windows L&F, but others might
+          // also be affected.
+          UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
+        }
+      });
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (InvocationTargetException e) {
+      ErrorDialog.bug(e);
+    }
   }
 
   protected void initSystemSpecificProperties() {}
