@@ -179,6 +179,8 @@ New Features in 3.2
 
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
+* 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
+* 10256: StackOverflowError when Preferences can't be read
 * 10249: Deck loses position over loading multiple player logs
 * 10229: ArrayIndexOutOfBoundsException in RandomTextButton.DR
 * 10217: Lose New Room selection field when changing from P2P to VASSAL server
@@ -259,10 +261,10 @@ MacOS X: The recommended minimum Java version for using VASSAL on MacOS
 X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is
 unavailable, and Java 6 or later for Macs where Java 6 is available.
 
-Windows: The recommended minimum Java version for Windows is 1.6.0_21
-(a.k.a. Java 6 Update 21). Windows users installing VASSAL with the
+Windows: The recommended minimum Java version for Windows is 1.6.0_45
+(a.k.a. Java 6 Update 45). Windows users installing VASSAL with the
 Windows installer will be prompted to update Java if what they have is
-older than 1.6.0_37. After upgrading Java on Windows, you must restart
+older than 1.6.0_45. After upgrading Java on Windows, you must restart
 your computer in order for Java programs to work properly.
 
 If you've installed Java 7 on Windows and thereafter VASSAL fails to
