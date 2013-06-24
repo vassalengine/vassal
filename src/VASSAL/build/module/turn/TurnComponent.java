@@ -51,11 +51,11 @@ public class TurnComponent extends AbstractConfigurable {
 
   protected TurnLevel getTurnLevel(int i) {
     if (levels.size() == 0) {
-      ErrorDialog.bug(new Exception(Resources.getString("TurnTracker.level_error", i, levels.size())));      
+      ErrorDialog.bug(new Exception(Resources.getString("TurnTracker.level_error", getConfigureName(), i, levels.size())));      
     }
     else {
       if (i >= levels.size()) {   
-        ErrorDialog.dataError(new BadDataReport(Resources.getString("TurnTracker.level_error", i, levels.size()), getConfigureName()));      
+        ErrorDialog.dataError(new BadDataReport(Resources.getString("TurnTracker.level_error", getConfigureName(), getConfigureName(), i, levels.size()), getConfigureName()));      
         return levels.get(levels.size()-1);
       }
     }
