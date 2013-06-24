@@ -177,6 +177,10 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.7 are fixed in 3.2.8:
+
+* 2545: NPE in TurnTracker$SetDialog.addChildControls()
+
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
 * 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
