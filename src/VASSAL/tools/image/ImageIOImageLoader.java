@@ -104,12 +104,14 @@ public class ImageIOImageLoader implements ImageLoader {
     // Sun Bug 6444360: JPEGs with corrupt color profiles
     // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5
     // Sun Bug 4712797: YCbCr JPEGs with no JFIF marker
+    // Sun Bug 4776576: YCbCr JPEFs with no JFIF marker
     //
     // http://bugs.sun.com/view_bug.do?bug_id=6788458
     // http://bugs.sun.com/view_bug.do?bug_id=6541476
     // http://bugs.sun.com/view_bug.do?bug_id=6444360
     // http://bugs.sun.com/view_bug.do?bug_id=6404011
     // http://bugs.sun.com/view_bug.do?bug_id=4712797
+    // http://bugs.sun.com/view_bug.do?bug_id=4776576
     //
     // Someday, when both ImageIO is fixed and everyone's JRE contains
     // that fix, we can do this the simple way.
@@ -206,8 +208,8 @@ public class ImageIOImageLoader implements ImageLoader {
         if (JPEGDecoder.decodeSignature(din)) {
           // The case where ImageIO fails is when there is no JFIF marker,
           // no color profile, and three color components with the same
-          // horizontal subsampling. In this case, ImageIO incorrectly
-          // assumes that this image is RGB instead of YCbCr.
+          // subsampling. In this case, ImageIO incorrectly assumes that
+          // this image is RGB instead of YCbCr.
 
           JPEGDecoder.Chunk ch;
           fix_YCbCr = true;
@@ -238,8 +240,8 @@ public class ImageIOImageLoader implements ImageLoader {
               fix_YCbCr = 
                 ch.data.length == 15 &&
                 ch.data[5] == 3 &&    // color components
-                (ch.data[7] & 0x0F) == (ch.data[10] & 0x0F) &&
-                (ch.data[7] & 0x0F) == (ch.data[13] & 0x0F);
+                ch.data[7] == ch.data[10] &&
+                ch.data[7] == ch.data[13];
               break DONE_JPEG;
 
             case JPEGDecoder.APP0:
