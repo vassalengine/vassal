@@ -110,6 +110,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  // We perform the inner commands first so that their effects will be reported
+  public Command keyEvent(KeyStroke stroke) {
+    Command c = piece.keyEvent(stroke);
+    return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
+  }
+  
   public Command myKeyEvent(KeyStroke stroke) {
     GamePiece outer = getOutermost(this);
 
