@@ -184,6 +184,8 @@ The following bugs in 3.2.7 are fixed in 3.2.8:
 * 10279: Report State failed to perform inner commands before its own command
 * 2545: NPE in TurnTracker$SetDialog.addChildControls()
 
+* Reverted fix for 2714: NPE in StackMetrics.merge()
+
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
 * 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
