@@ -181,8 +181,8 @@ The following bugs in 3.2.7 are fixed in 3.2.8:
 
 * 10317: 3-component JPEGs without JFIF markers where color components are
   differently subsampled are incorrectly color-corrected by fix for Bug 9882
+* 10298: Exception: TurnTracker.level_error in TurnComponent.getTurnLevel()
 * 10279: Report State failed to perform inner commands before its own command
-* 2545: NPE in TurnTracker$SetDialog.addChildControls()
 
 * Reverted fix for 2714: NPE in StackMetrics.merge()
 
