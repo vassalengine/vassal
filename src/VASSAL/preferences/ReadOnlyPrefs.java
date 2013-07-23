@@ -21,56 +21,46 @@ package VASSAL.preferences;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import VASSAL.Info;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.io.IOUtils;
 
 /**
- * A simple prefernces class which permits reading stored values.
+ * A simple preferences class which permits reading stored values.
  *
  * @author Joel Uckelman
  * @since 3.1.0
  */
 public class ReadOnlyPrefs {
   protected Properties storedValues = new Properties();
-  protected String name;
 
   /**
    * @param name the module name of the preferences to read
    */
   public ReadOnlyPrefs(String name) {
-    this.name = name;
+    this(new File(Info.getPrefsDir(), Prefs.sanitize(name)));
+  }
 
-    final File zipfile = new File(Info.getHomeDir(), "Preferences");
-
-    ZipFile zip = null;
+  protected ReadOnlyPrefs(File file) {
     BufferedInputStream in = null;
     try {
-      zip = new ZipFile(zipfile);
-      final ZipEntry entry = zip.getEntry(name);
-      if (entry == null)
-        throw new FileNotFoundException(name + " does not exist");
-
-      in = new BufferedInputStream(zip.getInputStream(entry));
+      in = new BufferedInputStream(new FileInputStream(file));
       storedValues.load(in);
       in.close();
-      zip.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, zipfile.getPath() + "/!" + name);
+      ReadErrorDialog.error(e, file);
     }
     finally {
       IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(zip);
     }
   }
 
@@ -91,6 +81,6 @@ public class ReadOnlyPrefs {
    * @return a global preferences object
    */
   public static ReadOnlyPrefs getGlobalPrefs() {
-    return new ReadOnlyPrefs("VASSAL");
+    return new ReadOnlyPrefs(new File(Info.getPrefsDir(), "V_Global"));
   }
 }

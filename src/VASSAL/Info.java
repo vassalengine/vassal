@@ -35,7 +35,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.6"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.8-svn8790"; //$NON-NLS-1$
 
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
@@ -231,6 +231,10 @@ public final class Info {
 
   public static File getTempDir() {
     return new File(getHomeDir(), "tmp");
+  }
+
+  public static File getPrefsDir() {
+    return new File(getConfDir(), "prefs");
   }
 
 // FIXME: this is a misleading name for this function

@@ -27,6 +27,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.ZipArchive;
 
 public class PrefsEditor {
@@ -58,25 +58,14 @@ public class PrefsEditor {
   private List<Configurer> options = new ArrayList<Configurer>();
   private List<Configurer> extras = new ArrayList<Configurer>();
   private boolean iterating = false;
-  private Map<Configurer, Object> savedValues;
-  private List<Prefs> prefs;
-  private JTabbedPane optionsTab;
+  private Map<Configurer,Object> savedValues = new HashMap<Configurer,Object>();
+  private List<Prefs> prefs = new ArrayList<Prefs>();
+  private JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
-  private FileArchive archive;
+  private File pfile;
   private Action editAction;
 
-  public PrefsEditor(FileArchive archive) {
-    savedValues = new HashMap<Configurer, Object>();
-    this.archive = archive;
-    prefs = new ArrayList<Prefs>();
-    optionsTab = new JTabbedPane();
-  }
-
-  /** @deprecated Use {@link PrefsEditor(FileArchive)} instead. */
-  @Deprecated
-  public PrefsEditor(ArchiveWriter archive) throws IOException {
-    this(new ZipArchive(archive.getName()));
-  }
+  public PrefsEditor() {}
 
   public void initDialog(Frame parent) {
     if (dialog == null) {
@@ -148,7 +137,10 @@ public class PrefsEditor {
       setupDialog.add(p);
       setupDialog.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-      setupDialog.setLocation(d.width / 2 - setupDialog.getSize().width / 2, d.height / 2 - setupDialog.getSize().height / 2);
+      setupDialog.setLocation(
+        d.width / 2 - setupDialog.getSize().width / 2,
+        d.height / 2 - setupDialog.getSize().height / 2
+      );
       setupDialog.setVisible(true);
       setupDialog.removeAll();
     }
@@ -195,10 +187,6 @@ public class PrefsEditor {
     }
   }
 
-  public FileArchive getFileArchive() {
-    return archive;
-  }
-
   protected synchronized void cancel() {
     for (Configurer c : options) {
       c.setValue(savedValues.get(c));
@@ -220,12 +208,7 @@ public class PrefsEditor {
     options.addAll(extras);
     extras.clear();
 
-    try {
-      write();
-    }
-    catch (IOException e) {
-      WriteErrorDialog.error(e, archive.getName());
-    }
+    write();
 
     dialog.setVisible(false);
   }
@@ -251,12 +234,18 @@ public class PrefsEditor {
     return editAction;
   }
 
-  public void write() throws IOException {
-    for (Prefs p : prefs) p.save();
-    archive.flush();
+  public void write() {
+    for (Prefs p : prefs) {
+      try {
+        p.save();
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, p.getFile());
+      }
+    }
   }
 
-  public void close() throws IOException {
-    archive.close();
+  public void close() {
+    write();
   }
 }

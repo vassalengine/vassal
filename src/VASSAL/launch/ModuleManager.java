@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
@@ -58,6 +59,7 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -282,13 +284,58 @@ public class ModuleManager {
 
     start.initSystemProperties();
 
-    // check whether we need to migrate pre-3.2 preferences
-    final File oldprefs =
-      new File(System.getProperty("user.home"), "VASSAL/Preferences");
-    if (oldprefs.exists()) {
-      final File newprefs = new File(Info.getHomeDir(), "Preferences");
-      if (!newprefs.exists()) {
-        FileUtils.copyFile(oldprefs, newprefs);
+    // try to migrate old preferences if there are no current ones
+    final File pdir = Info.getPrefsDir();
+    if (!pdir.exists()) {
+      // Check the 3.2.0 through 3.2.7 location
+      File pzip = new File(Info.getHomeDir(), "Preferences");
+      if (!pzip.exists()) {
+        // Check the pre-3.2 location.
+        pzip = new File(System.getProperty("user.home"), "VASSAL/Preferences");
+      }
+
+      if (pzip.exists()) {
+        FileUtils.forceMkdir(pdir);
+
+        final byte[] buf = new byte[4096];
+
+        try {
+          final ZipArchive za = new ZipArchive(pzip);
+          try {
+            for (String f : za.getFiles()) {
+              final File ofile = new File(
+                pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f)
+              );
+
+              InputStream in = null;
+              try {
+                in = za.getInputStream(f);
+
+                OutputStream out = null;
+                try {
+                  out = new FileOutputStream(ofile);
+                  IOUtils.copy(in, out, buf);
+                  out.close();
+                }
+                finally {
+                  IOUtils.closeQuietly(out);
+                }
+ 
+                in.close();
+              }
+              finally {
+                IOUtils.closeQuietly(in);
+              }
+            }
+            za.close();
+          }
+          finally {
+            IOUtils.closeQuietly(za);
+          }
+        }
+        catch (IOException e) {
+          logger.error("Failed to convert legacy preferences file.", e); 
+        }
       }
     }
 
@@ -453,8 +500,7 @@ public class ModuleManager {
     final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 
-    final File prefsFile = new File(Info.getHomeDir(), "Preferences");
-    final boolean isFirstTime = !prefsFile.exists();
+    final boolean isFirstTime = !Info.getPrefsDir().exists();
 
     if (isFirstTime) new FirstTimeDialog(window).setVisible(true);
   }

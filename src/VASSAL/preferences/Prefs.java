@@ -18,20 +18,22 @@
  */
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 
 import VASSAL.Info;
@@ -41,9 +43,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.ZipArchive;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
@@ -54,36 +54,44 @@ public class Prefs implements Closeable {
   public static final String MODULES_DIR_KEY = "modulesDir"; // $NON_NLS-1$
   public static final String DISABLE_D3D = "disableD3d";
   public static final String DISABLE_QUARTZ = "disableD3d";
+
   private static Prefs globalPrefs;
+
   private Map<String, Configurer> options = new HashMap<String, Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
-  protected String name;
-  private Set<String> changed = new HashSet<String>();
-  private PropertyChangeListener changeListener;
+  private File file;
 
   public Prefs(PrefsEditor editor, String name) {
-    this.editor = editor;
-    this.name = name;
-    this.changeListener = new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        handleValueChange(evt);
-      }
-    };
-    editor.addPrefs(this);
-    init(name);
+    this(editor, new File(Info.getPrefsDir(), sanitize(name)));
   }
 
-  protected void handleValueChange(PropertyChangeEvent evt) {
-    changed.add(evt.getPropertyName());
+  protected Prefs(PrefsEditor editor, File file) {
+    this.editor = editor;
+    this.file = file; 
+
+    read();
+
+    // FIXME: Use stringPropertyNames() in 1.6+
+    // for (String key : storedValues.stringPropertyNames()) {
+    for (Enumeration<?> e = storedValues.keys(); e.hasMoreElements();) {
+      final String key = (String) e.nextElement();
+      final String value = storedValues.getProperty(key);
+      final Configurer c = options.get(key);
+      if (c != null) {
+        c.setValue(value);
+      }
+    }
+
+    editor.addPrefs(this);
   }
-  
+
   public PrefsEditor getEditor() {
     return editor;
   }
 
   public File getFile() {
-    return new File(editor.getFileArchive().getName());
+    return file;
   }
 
   public void addOption(Configurer o) {
@@ -116,7 +124,6 @@ public class Prefs implements Closeable {
         editor.addOption(category, o, prompt);
       }
     }
-    o.addPropertyChangeListener(changeListener);
   }
 
   public void setValue(String option, Object value) {
@@ -148,53 +155,50 @@ public class Prefs implements Closeable {
     return storedValues.getProperty(key);
   }
 
-  public void init(String moduleName) {
-    name = moduleName;
-    read();
-
-    try {
-      editor.close();
-    }
-    catch (IOException e) {
-// FIXME
-    }
-
-    // FIXME: Use stringPropertyNames() in 1.6+
-    // for (String key : storedValues.stringPropertyNames()) {
-    for (Enumeration<?> e = storedValues.keys(); e.hasMoreElements();) {
-      final String key = (String) e.nextElement();
-      final String value = storedValues.getProperty(key);
-      final Configurer c = options.get(key);
-      if (c != null) {
-        c.setValue(value);
+  public static String sanitize(String str) {
+    /*
+      Java gives us no way of checking whether a string is a valid
+      filename on the filesystem we're using. Filenames matching
+      [0-9A-Za-z_]+ are safe pretty much everywhere. Any code point
+      in [0-9A-Za-z] is passed through; every other code point c is
+      escaped as "_hex(c)_". This mapping is a surjection and will
+      produce filenames safe on every sane filesystem, so long as the
+      input strings are not too long.
+    */
+    final StringBuilder sb = new StringBuilder(); 
+    for (int i = 0; i < str.length(); ++i) {
+      final int cp = str.codePointAt(i);
+      if (('0' <= cp && cp <= '9') ||
+          ('A' <= cp && cp <= 'Z') ||
+          ('a' <= cp && cp <= 'z')) {
+        sb.append((char) cp);
+      }
+      else {
+        sb.append('_')
+          .append(Integer.toHexString(cp).toUpperCase())
+          .append('_');
       }
     }
+
+    return sb.toString();
   }
 
   protected void read() {
-    FileArchive fa = null;
+    InputStream in = null;
     try {
-      fa = editor.getFileArchive();
-      if (fa.contains(name)) {
-        BufferedInputStream in = null;
-        try {
-          in = new BufferedInputStream(fa.getInputStream(name));
-          storedValues.clear();
-          storedValues.load(in);
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
-        }
-      }
-
-      fa.close();
+      in = new BufferedInputStream(new FileInputStream(file));
+      storedValues.clear();
+      storedValues.load(in);
+      in.close();
+    }
+    catch (FileNotFoundException e) {
+      // First time for this module, not an error.
     }
     catch (IOException e) {
-      ReadErrorDialog.errorNoI18N(e, fa.getName());
+      ReadErrorDialog.errorNoI18N(e, file);
     }
     finally {
-      IOUtils.closeQuietly(fa);
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -202,39 +206,40 @@ public class Prefs implements Closeable {
    * Store this set of preferences in the editor, but don't yet save to disk
    */
   public void save() throws IOException {
+    // collect the key-value pairs
+    storedValues.clear();
+
     for (Configurer c : options.values()) {
-      if (changed.contains(c.getKey())) {
-        final String val = c.getValueString();
-        if (val != null) {
-          storedValues.put(c.getKey(), val);
-        }
-        else {
-          storedValues.remove(c.getKey());
-        }
+      final String val = c.getValueString();
+      if (val != null) {
+        storedValues.put(c.getKey(), val);
       }
     }
 
-    FileArchive fa = editor.getFileArchive();
+    // ensure that the prefs dir exists
+    if (!Info.getPrefsDir().exists()) {
+      FileUtils.forceMkdir(Info.getPrefsDir());
+    }
+
+    // write the key-value pairs 
     OutputStream out = null;
     try {
-      out = fa.getOutputStream(name);
+      out = new BufferedOutputStream(new FileOutputStream(file));
       storedValues.store(out, null);
       out.close();
     }
     finally {
       IOUtils.closeQuietly(out);
     }
-
-    changed.clear();
   }
 
   /** Save these preferences and write to disk. */
   public void write() throws IOException {
-    editor.write();
+    save();
   }
 
   public void close() throws IOException {
-    editor.close();
+    save();
     if (this == globalPrefs) {
       globalPrefs = null;
     }
@@ -247,16 +252,9 @@ public class Prefs implements Closeable {
    */
   public static Prefs getGlobalPrefs() {
     if (globalPrefs == null) {
-      final File prefsFile = new File(Info.getHomeDir(), "Preferences");
-
-      try {
-        globalPrefs = new GlobalPrefs(
-          new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
-        );
-      }
-      catch (IOException e) {
-        ReadErrorDialog.error(e, prefsFile);
-      }
+      final PrefsEditor ed = new PrefsEditor();
+      // The underscore prevents collisions with module prefs
+      globalPrefs = new Prefs(ed, new File(Info.getPrefsDir(), "V_Global"));
 
       final DirectoryConfigurer c =
         new DirectoryConfigurer(MODULES_DIR_KEY, null);
