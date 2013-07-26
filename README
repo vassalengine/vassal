@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.7, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -24,7 +24,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   indicating with which module you're seeing a problem.
 
 * If you are using MacOS X 10.8.3 or later, you may see the message
-  "VASSAL-3.2.7.app is damaged and can’t be opened. You should move it to
+  "VASSAL-3.2.8.app is damaged and can’t be opened. You should move it to
   the Trash." The problem is NOT that your download was corrupt, but rather
   that MacOS is preventing you from running VASSAL. To start VASSAL, control-
   click or right-click the app bundle's icon and select Open from the menu.
@@ -42,23 +42,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.7-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-src.zip
 
 *********************
 Compatibility Notes
@@ -179,6 +179,7 @@ New Features in 3.2
 
 The following bugs in 3.2.7 are fixed in 3.2.8:
 
+* 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
 * 10317: 3-component JPEGs without JFIF markers where color components are
   differently subsampled are incorrectly color-corrected by fix for Bug 9882
 * 10298: Exception: TurnTracker.level_error in TurnComponent.getTurnLevel()
@@ -188,7 +189,7 @@ The following bugs in 3.2.7 are fixed in 3.2.8:
 *  2727: NPE in ReadOnlyPrefs ctor
 *  2587: Manager and Player preferences get out of step
 
-* Reverted fix for 2714: NPE in StackMetrics.merge()
+* Reverted bad fix for 2714: NPE in StackMetrics.merge()
 
 The following bugs in 3.2.6 are fixed in 3.2.7:
 
@@ -226,29 +227,9 @@ The following bugs in 3.2.5 are fixed in 3.2.6:
 * 10072: NPE in SynchCommand.executeCommand()
 *  2714: NPE in StackMetrics.merge()
 
-The following bugs in 3.2.4 are fixed in 3.2.5:
+For changes prior to 3.2.6, see the change log.
 
-* 10129: Pre-3.0 modules broken under 3.2
-* 10128: Slow Follow Property handling in Embellishment
-* 10125: Expression Builder should return a Property Name, not expression in
-    the Set Global Property trait
-* 10124: Comparisons with GetProperty() calls do not work correctly 
-* 10107: NPE in ServerAddressBook.PeerClientEntry.toString()
-* 10101: NPE in MassPieceLoader.MyTreeTableModel.setValueAt()
-* 10099: Counter Detail Viewer displays top card in face down deck as face up
-* 10097: 'Away from Keyboard' and 'Looking for Game' icons are wrong size
-* 10083: Refesh Counters cannot refresh counters from a 3.1 Module/save game
-* 10075: JPEGs with APP14 tags are incorrectly color-corrected by fix for
-    Bug 10053
-* 10052: NPE when Tutorial filename is null
-* 10016: P2P Client/Server modes do not work in 3.2.2
-*  9696: NPE in ZipArchive.writeToDisk()
-*  9694: NPE in ZipArchive.remove()
-*  9654: NPE in ZipArchive$ZipArchiveInputStream.close()
-
-For changes prior to 3.2.5, see the change log.
-
-Please report all bugs in 3.2.7 even if they are bugs which you've already
+Please report all bugs in 3.2.8 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 

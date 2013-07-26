@@ -1,3 +1,17 @@
+3.2.8 - ??
+
+* 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
+* 10317: 3-component JPEGs without JFIF markers where color components are
+  differently subsampled are incorrectly color-corrected by fix for Bug 9882
+* 10298: Exception: TurnTracker.level_error in TurnComponent.getTurnLevel()
+* 10279: Report State failed to perform inner commands before its own command
+* 10266: ConcurrentModificationException at Prefs.save()
+*  3294: IOException writing preferences at startup on Mac OS
+*  2727: NPE in ReadOnlyPrefs ctor
+*  2587: Manager and Player preferences get out of step
+
+* Reverted bad fix for 2714: NPE in StackMetrics.merge()
+
 3.2.7 - 23 June 2014
 
 * 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
