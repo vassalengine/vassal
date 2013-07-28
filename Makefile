@@ -6,7 +6,6 @@
 #
 # Before building, you will need to install (at least) the following packages:
 #
-# ant
 # Launch4j (http://launch4j.sourceforge.net)
 # NSIS     (http://nsis.sourceforge.net)
 #
