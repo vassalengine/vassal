@@ -40,7 +40,7 @@
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
 
-InstallDir "$PROGRAMFILES\VASSAL"
+InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
 InstallDirRegKey HKLM "${IROOT}" "InstallLocation"
 
 RequestExecutionLevel admin
@@ -347,11 +347,6 @@ FunctionEnd
 Function leaveSetupType
   ; read the install type from the Custom radio button
   ${NSD_GetState} $CustomSetup $CustomSetup
-
-  ; custom setups install to a versioned directory, by default
-  ${If} $CustomSetup == 1
-    StrCpy $INSTDIR "$PROGRAMFILES\VASSAL-${VERSION}"
-  ${EndIf}
 FunctionEnd
 
 
