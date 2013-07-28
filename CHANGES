@@ -12,7 +12,7 @@
 
 * Reverted bad fix for 2714: NPE in StackMetrics.merge()
 
-3.2.7 - 23 June 2014
+3.2.7 - 23 June 2013
 
 * 10261: Off-EDT UIManager.setLookAndFeel() causes lag on Apple Java
 * 10256: StackOverflowError when Preferences can't be read
