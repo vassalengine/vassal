@@ -1,4 +1,4 @@
-3.2.8 - ??
+3.2.8 - 28 July 2013
 
 * 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
 * 10317: 3-component JPEGs without JFIF markers where color components are
