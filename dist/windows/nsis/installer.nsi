@@ -520,7 +520,7 @@ FunctionEnd
 
 
 Function leaveUninstallOld
-  ; find the uninstallers for old versions to be removed
+  ; collect the old versions to be removed from the remove list box
   SendMessage $RemoveListBox ${LB_GETCOUNT} 0 0 $1
   ${For} $0 0 $1
     System::Call "user32::SendMessage(i $RemoveListBox,i ${LB_GETTEXT},i r0, t .r2)i .r4"
