@@ -875,8 +875,8 @@ Section Uninstall
 
   ${If} ${RunningX64}
     ; kill the 32-bit registry tree if empty
-    DeleteRegKey HKLM /ifempty "Software\Wow6432Node\vassalengine.org\VASSAL"
-    DeleteRegKey HKLM /ifempty "Software\Wow6432Node\vassalengine.org"
+    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
+    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
   ${EndIf}
 
   ; remove file associations
