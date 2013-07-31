@@ -1,21 +1,21 @@
-# 
+#
 #  $Id$
-# 
+#
 #  Copyright (c) 2008-2012 by Joel Uckelman
-# 
+#
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
 #  License (LGPL) as published by the Free Software Foundation.
-# 
+#
 #  This library is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 #  Library General Public License for more details.
-# 
+#
 #  You should have received a copy of the GNU Library General Public
 #  License along with this library; if not, copies are available
 #  at http://www.opensource.org.
-# 
+#
 
 #
 # General Configuration
@@ -27,10 +27,11 @@
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
 !define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
-!define UROOT "Software\Microsoft\Windows\CurrentVersion\Uninstall\VASSAL (${VERSION})"
+!define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VROOT "Software\vassalengine.org\VASSAL"
 !define VNAME "VASSAL (${VERSION})"
 !define IROOT "${VROOT}\${VNAME}"
+!define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
 !define JAVA_MINIMUM "1.6.0_45"
 # FIXME: would be better if we read the download URL from our own site
@@ -40,8 +41,8 @@
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
 
-InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
-InstallDirRegKey HKLM "${IROOT}" "InstallLocation"
+; InstDir is set in .onInit based on the architecture
+InstallDir ""
 
 RequestExecutionLevel admin
 
@@ -175,7 +176,7 @@ Page custom preConfirm leaveConfirm
   Pop $0
 
   ; if the mutex already existed, find the installer running before us
-  ${If} $0 != 0 
+  ${If} $0 != 0
     StrLen $0 "${_MUTEX}"
     IntOp $0 $0 + 1
 
@@ -189,7 +190,7 @@ loop:
     System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
     ${If} $2 == "${_MUTEX}"
       ; bring it to the front and die
-      System::Call "user32::ShowWindow(i r1,i 9) i."  
+      System::Call "user32::ShowWindow(i r1,i 9) i."
       System::Call "user32::SetForegroundWindow(i r1) i."
       Abort
     ${EndIf}
@@ -209,10 +210,10 @@ loop:
 
   ; no PSAPI on Windows 9x and ME, so don't try there
   ${IfNot} ${IsNT}
-    Goto cannot_check 
+    Goto cannot_check
   ${EndIf}
 
-check_processes:  
+check_processes:
   ; allocate a buffer
   System::Alloc 1024
   Pop $R9
@@ -223,7 +224,7 @@ check_processes:
     System::Free $R9
     Goto cannot_check
   ${EndIf}
- 
+
   IntOp $R2 $R1 / 4 ; Divide by sizeof(DWORD) to get number of processes
   StrCpy $R4 0      ; R4 is our counter variable
 
@@ -272,7 +273,7 @@ check_processes:
     ${EndIf}
 
     System::Free $R7
- 
+
 next_iteration:
     IntOp $R4 $R4 + 1 ; Add 1 to our counter
     IntOp $R9 $R9 + 4 ; Add sizeof(int) to our buffer address
@@ -305,12 +306,30 @@ Var RemoveOtherVersions
 # Functions
 #
 Function un.onInit
+  ${If} ${RunningX64}
+    SetRegView 64
+  ${Else}
+    SetRegView 32
+  ${EndIf}
+
   ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
+  ${If} ${RunningX64}
+    SetRegView 64
+    ${If} $InstDir == "" ; /D= was not used on the command line
+      StrCpy $InstDir "$PROGRAMFILES64\VASSAL-${VERSION}"
+    ${EndIf}
+  ${Else}
+    SetRegView 32
+    ${If} $InstDir == "" ; /D= was not used on the command line
+      StrCpy $InstDir "$PROGRAMFILES32\VASSAL-${VERSION}"
+    ${EndIf}
+  ${EndIf}
+
   ${ForceSingleton} "VASSAL-installer"
   ${WaitForVASSALToClose}
 FunctionEnd
@@ -362,7 +381,7 @@ Function preUninstallOld
     ; remove all versions in Standard setup
     ; find all versions of VASSAL
     StrCpy $R0 0
-    ${Do} 
+    ${Do}
       EnumRegKey $0 HKLM "${VROOT}" $R0
       StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
       IntOp $R0 $R0 + 1
@@ -414,9 +433,9 @@ Function preUninstallOld
 
   ; populate the keep list
   StrCpy $R0 0
-  ${Do} 
+  ${Do}
     EnumRegKey $1 HKLM "${VROOT}" $R0
-    
+
     ${If} $1 != ""
       ${If} $1 == "${VNAME}"
         ; automatically uninstall existing copies of this version
@@ -426,7 +445,7 @@ Function preUninstallOld
         SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
         Pop $0
       ${EndIf}
-      
+
       IntOp $R0 $R0 + 1
     ${EndIf}
   ${LoopUntil} $1 == ""
@@ -463,7 +482,7 @@ Function adjustButtons
     StrCpy $0 0
   ${Else}
     StrCpy $0 1
-  ${EndIf}    
+  ${EndIf}
   EnableWindow $RemoveButton $0
 
   SendMessage $RemoveListBox ${LB_GETCURSEL} 0 0 $0
@@ -471,7 +490,7 @@ Function adjustButtons
     StrCpy $0 0
   ${Else}
     StrCpy $0 1
-  ${EndIf}    
+  ${EndIf}
   EnableWindow $KeepButton $0
 FunctionEnd
 
@@ -496,7 +515,7 @@ FunctionEnd
 
 Function leaveUninstallOld
   ; find the uninstallers for old versions to be removed
-  SendMessage $RemoveListBox ${LB_GETCOUNT} 0 0 $1 
+  SendMessage $RemoveListBox ${LB_GETCOUNT} 0 0 $1
   ${For} $0 0 $1
     System::Call "user32::SendMessage(i $RemoveListBox,i ${LB_GETTEXT},i r0, t .r2)i .r4"
     StrCpy $RemoveOtherVersions "$RemoveOtherVersions$2$\n"
@@ -511,7 +530,7 @@ Function preJavaCheck
   Push $R1
   Push $R2
 
-  StrCpy $InstallJRE 0  ; set default 
+  StrCpy $InstallJRE 0  ; set default
 
   ${GetJavaVersion} $1
   ${VersionConvert} "$1" "_" $R1
@@ -532,7 +551,7 @@ Function preJavaCheck
   ${Else}
     StrCpy $0 "The installer has found version $1 of the Java Runtime Environment (JRE) installed on your computer."
   ${EndIf}
- 
+
   StrCpy $1 "We recommend running VASSAL with a JRE no older than version ${JAVA_MINIMUM}.$\n$\n$\n"
 
   ${If} $CustomSetup == 1
@@ -561,14 +580,14 @@ FunctionEnd
 
 Function leaveJavaCheck
   ${If} $CustomSetup == 1
-    ; read whether to install a JRE from the check box 
+    ; read whether to install a JRE from the check box
     ${NSD_GetState} $InstallJRE $InstallJRE
   ${EndIf}
 FunctionEnd
 
 
 Function preDirectory
-  ${SkipIfNotCustom} 
+  ${SkipIfNotCustom}
 FunctionEnd
 
 
@@ -582,7 +601,7 @@ Function preShortcuts
 
   ; set shortcuts defaults
   StrCpy $AddDesktopSC 1
-  StrCpy $AddStartMenuSC 1 
+  StrCpy $AddStartMenuSC 1
   StrCpy $AddQuickLaunchSC 1
 
   ; present user with choices in a custom install
@@ -667,41 +686,48 @@ FunctionEnd
 #
 Section "-Application" Application
   SectionIn RO
- 
+
   ; remove old versions of VASSAL, if requested
   ${If} $RemoveOtherVersions != ""
     ; split version strings on '\n'
     ; there must be at least one '\n', or WordFind finds no words
-    StrCpy $0 1   ; word indices are 1-based 
+    StrCpy $0 1   ; word indices are 1-based
     ${Do}
-      ${WordFind} "$RemoveOtherVersions" "$\n" "E+$0" $1 
+      ${WordFind} "$RemoveOtherVersions" "$\n" "E+$0" $1
       IfErrors done notdone
       done:
         ${Break}
-      
+
       notdone:
         DetailPrint "Uninstall: $1"
-      
+
+        ; check that the uninstall key exists, otherwise clean up
+        ReadRegStr $2 HKLM "${UNINST}\$1" ""
+        IfErrors 0 +3
+        DeleteRegKey HKLM "${VROOT}\$1"
+        Goto next
+
         ; get old install and uninstaller paths
-        ReadRegStr $2 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "InstallLocation"
-        ReadRegStr $3 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "UninstallString"
+        ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
+        ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
 
         ; copy the uninstaller to $TEMP
         CopyFiles "$3" "$TEMP"
         ${GetFileName} $3 $3
 
-        ; run the uninstaller silently 
+        ; run the uninstaller silently
         ExecWait '"$TEMP\$3" /S _?=$2'
-        IfErrors +2 0
+        IfErrors 0 +2
+        DetailPrint "Failed: $1"
+
         Delete "$TEMP\$3"   ; remove the uninstaller copy
-        Goto +2
-        DetailPrint "Failed: $1" 
+
+      next:
         ClearErrors
- 
         IntOp $0 $0 + 1
     ${Loop}
   ${EndIf}
- 
+
   ; install a JRE, if necessary
   ${If} $InstallJRE == 1
     ; choose a 64-bit JRE for 64-bit systems
@@ -710,7 +736,7 @@ Section "-Application" Application
     ${Else}
       StrCpy $R1 ${JRE_32_URL}
     ${EndIf}
-    
+
     DetailPrint "Downloading a JRE from $R1"
     StrCpy $0 "$TEMP\jre_installer.exe"
     NSISdl::download /TIMEOUT=30000 $R1 $0
@@ -721,7 +747,7 @@ Section "-Application" Application
 
     ${If} $CustomSetup == 1
       ; provide a full JRE installer
-      ExecWait $0 
+      ExecWait $0
     ${Else}
       ; provide a JRE installer requiring no user interaction
       ; options reference: http://java.sun.com/javase/6/docs/technotes/guides/deployment/deployment-guide/silent.html
@@ -737,7 +763,7 @@ Section "-Application" Application
 
   ; write keys to the registry
   WriteRegStr HKLM "${IROOT}" "InstallLocation" "$INSTDIR"
-  
+
   ; write registry keys for uninstaller
   WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
   WriteRegStr HKLM "${UROOT}" "DisplayVersion" "${VERSION}"
@@ -826,7 +852,7 @@ Section Uninstall
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
-  
+
   ; delete the Start Menu items
   ReadRegStr $0 HKLM "${UROOT}" "StartMenuShortcut"
   ${If} $0 != ""
@@ -841,6 +867,12 @@ Section Uninstall
   DeleteRegKey HKLM "${IROOT}"
   DeleteRegKey HKLM "${UROOT}"
 
+  ${If} ${RunningX64}
+    ; kill the 32-bit registry tree if empty
+    DeleteRegKey HKLM /ifempty "Software\Wow6432Node\vassalengine.org\VASSAL"
+    DeleteRegKey HKLM /ifempty "Software\Wow6432Node\vassalengine.org"
+  ${EndIf}
+
   ; remove file associations
   DeleteRegKey HKLM "${AROOT}\.vmod"
   DeleteRegKey HKLM "${AROOT}\VASSALModule"
@@ -853,11 +885,10 @@ Section Uninstall
 
   ; notify Windows that file associations have changed
   ${RefreshShellIcons}
-  
+
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"
 
-  ; delete VASSAL if empty
-  RMDir "$PROGRAMFILES\VASSAL" 
+  ; delete VASSAL from start menu if empty
   RMDir "$SMPROGRAMS\VASSAL"
-SectionEnd 
+SectionEnd
