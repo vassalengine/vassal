@@ -154,6 +154,19 @@ Page custom preConfirm leaveConfirm
 # Macros
 #
 
+
+; sets registry to architecture-appropriate one
+!macro SetNativeRegView
+  ${If} ${RunningX64}
+    SetRegView 64
+  ${Else}
+    SetRegView 32
+  ${EndIf}
+!macroend
+
+!define SetNativeRegView "!insertmacro SetNativeRegView"
+
+
 ; skips a page in a Standard install
 !macro SkipIfNotCustom
   ${If} $CustomSetup == 0
@@ -306,26 +319,19 @@ Var RemoveOtherVersions
 # Functions
 #
 Function un.onInit
-  ${If} ${RunningX64}
-    SetRegView 64
-  ${Else}
-    SetRegView 32
-  ${EndIf}
-
+  ${SetNativeRegView}
   ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
-  ${If} ${RunningX64}
-    SetRegView 64
-    ${If} $InstDir == "" ; /D= was not used on the command line
+  ${SetNativeRegView}
+
+  ${If} $InstDir == "" ; /D= was not used on the command line
+    ${If} ${RunningX64}
       StrCpy $InstDir "$PROGRAMFILES64\VASSAL-${VERSION}"
-    ${EndIf}
-  ${Else}
-    SetRegView 32
-    ${If} $InstDir == "" ; /D= was not used on the command line
+    ${Else}
       StrCpy $InstDir "$PROGRAMFILES32\VASSAL-${VERSION}"
     ${EndIf}
   ${EndIf}
