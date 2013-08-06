@@ -305,6 +305,23 @@ bail_out:
 
 !define WaitForVASSALToClose "!insertmacro WaitForVASSALToClose"
 
+
+
+!macro FindVASSALVersions
+  StrCpy $R0 0
+  ${Do}
+    EnumRegKey $0 HKLM "${VROOT}" $R0
+    ${WordFind} "$RemoveOtherVersions" "$\n" "E/$R0" $1
+    IfErrors 0 +2
+    StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
+    ClearErrors
+    IntOp $R0 $R0 + 1
+  ${LoopUntil} $0 == ""
+!macroend
+
+!define FindVASSALVersions "!insertmacro FindVASSALVersions"
+
+
 #
 # Setup Option Variables
 #
@@ -383,30 +400,21 @@ Var RemoveButton
 Function preUninstallOld
   StrCpy $RemoveOtherVersions ""
 
-  ${If} $CustomSetup != 1
-    ; remove all versions in Standard setup
-    ; find all versions of VASSAL
-    StrCpy $R0 0
-    ${Do}
-      EnumRegKey $0 HKLM "${VROOT}" $R0
-      StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
-      IntOp $R0 $R0 + 1
-    ${LoopUntil} $0 == ""
-  ${EndIf}
+  ; find all versions of VASSAL, checking the 32- and 64-bit hives
+  SetRegView 32
+  ${FindVASSALVersions}
+  SetRegView 64
+  ${FindVASSALVersions}
+  ${SetNativeRegView}
 
+  ; remove all versions in Standard setup, skip this page
   ${SkipIfNotCustom}
 
-  EnumRegKey $0 HKLM "${VROOT}" 0
-  ${If} $0 == ""
-    ; skip this page if we find no other versions
+  ${If} $RemoveOtherVersions == ""
+    ; no versions installed, skip this page
+  ${OrIf} $RemoveOtherVersions == "${VNAME}$\n"
+    ; only this version installed, remove it and skip this page
     Abort
-  ${ElseIf} $0 == "${VNAME}"
-    ; remove this version and skip this page if we find only this version
-    EnumRegKey $0 HKLM "${VROOT}" 1
-    ${If} $0 == ""
-      StrCpy $RemoveOtherVersions "${VNAME}$\n"
-      Abort
-    ${EndIf}
   ${EndIf}
 
   !insertmacro MUI_HEADER_TEXT "Remove Old Versions" "Uninstalling previous versions of VASSAL"
@@ -438,23 +446,25 @@ Function preUninstallOld
   Pop $RemoveListBox
 
   ; populate the keep list
+  StrCpy $R1 "$RemoveOtherVersions"
+  StrCpy $RemoveOtherVersions ""
   StrCpy $R0 0
   ${Do}
-    EnumRegKey $1 HKLM "${VROOT}" $R0
+    IntOp $R0 $R0 + 1
+    ${WordFind} "$R1" "$\n" "E+$R0" $1
+    IfErrors 0 +3
+    ClearErrors
+    ${Break}
 
-    ${If} $1 != ""
-      ${If} $1 == "${VNAME}"
-        ; automatically uninstall existing copies of this version
-        StrCpy $RemoveOtherVersions "${VNAME}$\n"
-      ${Else}
-        ; add entries for versions which are not this one
-        SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
-        Pop $0
-      ${EndIf}
-
-      IntOp $R0 $R0 + 1
+    ${If} $1 == "${VNAME}"
+      ; automatically uninstall existing copies of this version
+      StrCpy $RemoveOtherVersions "${VNAME}$\n"
+    ${Else}
+      ; add entries for versions which are not this one
+      SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
+      Pop $0
     ${EndIf}
-  ${LoopUntil} $1 == ""
+  ${Loop}
 
   ; ready the buttons
   SendMessage $KeepListBox ${LB_SETCURSEL} 0 0
@@ -697,41 +707,48 @@ Section "-Application" Application
   ${If} $RemoveOtherVersions != ""
     ; split version strings on '\n'
     ; there must be at least one '\n', or WordFind finds no words
-    StrCpy $0 1   ; word indices are 1-based
+    StrCpy $0 0   ; word indices are 1-based
     ${Do}
+      IntOp $0 $0 + 1
       ${WordFind} "$RemoveOtherVersions" "$\n" "E+$0" $1
-      IfErrors done notdone
-      done:
-        ${Break}
+      IfErrors 0 +2
+      ${Break}
 
-      notdone:
-        DetailPrint "Uninstall: $1"
+      DetailPrint "Uninstall: $1"
 
-        ; check that the uninstall key exists, otherwise clean up
-        ReadRegStr $2 HKLM "${UNINST}\$1" ""
-        IfErrors 0 +3
-        DeleteRegKey HKLM "${VROOT}\$1"
-        Goto next
+      ; look for 64-bit install
+      ${If} ${RunningX64}
+        SetRegView 64
 
         ; get old install and uninstaller paths
         ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
         ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
-
-        ; copy the uninstaller to $TEMP
-        CopyFiles "$3" "$TEMP"
-        ${GetFileName} $3 $3
-
-        ; run the uninstaller silently
-        ExecWait '"$TEMP\$3" /S _?=$2'
-        IfErrors 0 +2
-        DetailPrint "Failed: $1"
-
-        Delete "$TEMP\$3"   ; remove the uninstaller copy
-
-      next:
+        IfErrors 0 found
         ClearErrors
-        IntOp $0 $0 + 1
+      ${EndIf}
+
+      ; look for 32-bit install
+      SetRegView 32
+      ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
+      ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
+      IfErrors 0 found
+      ClearErrors
+      ${Continue}
+
+    found:
+      ; copy the uninstaller to $TEMP
+      CopyFiles "$3" "$TEMP"
+      ${GetFileName} $3 $3
+
+      ; run the uninstaller silently
+      ExecWait '"$TEMP\$3" /S _?=$2'
+      IfErrors 0 +2
+      DetailPrint "Failed: $1"
+      ClearErrors
+
+      Delete "$TEMP\$3"   ; remove the uninstaller copy
     ${Loop}
+    ${SetNativeRegView}
   ${EndIf}
 
   ; install a JRE, if necessary
