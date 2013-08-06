@@ -30,7 +30,6 @@
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VROOT "Software\vassalengine.org\VASSAL"
 !define VNAME "VASSAL (${VERSION})"
-!define IROOT "${VROOT}\${VNAME}"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
 !define JAVA_MINIMUM "1.6.0_45"
@@ -784,9 +783,6 @@ Section "-Application" Application
   ; set the files to bundle
   !include "${TMPDIR}/install_files.inc"
 
-  ; write keys to the registry
-  WriteRegStr HKLM "${IROOT}" "InstallLocation" "$INSTDIR"
-
   ; write registry keys for uninstaller
   WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
   WriteRegStr HKLM "${UROOT}" "DisplayVersion" "${VERSION}"
@@ -887,7 +883,6 @@ Section Uninstall
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   ; delete registry keys
-  DeleteRegKey HKLM "${IROOT}"
   DeleteRegKey HKLM "${UROOT}"
 
   ${If} ${RunningX64}
