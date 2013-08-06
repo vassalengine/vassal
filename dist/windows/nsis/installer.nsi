@@ -194,20 +194,20 @@ Page custom preConfirm leaveConfirm
     IntOp $0 $0 + 1
 
     ; loop until we find the other installer
-loop:
-    FindWindow $1 '#32770' '' 0 $1
-    ${If} $1 == 0
-      Abort
-    ${EndIf}
+    ${Do}
+      FindWindow $1 '#32770' '' 0 $1
+      ${If} $1 == 0
+        Abort
+      ${EndIf}
 
-    System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-    ${If} $2 == "${_MUTEX}"
-      ; bring it to the front and die
-      System::Call "user32::ShowWindow(i r1,i 9) i."
-      System::Call "user32::SetForegroundWindow(i r1) i."
-      Abort
-    ${EndIf}
-    Goto loop
+      System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
+      ${If} $2 == "${_MUTEX}"
+        ; bring it to the front and die
+        System::Call "user32::ShowWindow(i r1,i 9) i."
+        System::Call "user32::SetForegroundWindow(i r1) i."
+        Abort
+      ${EndIf}
+    ${Loop}
   ${EndIf}
 !macroend
 
