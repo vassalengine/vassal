@@ -730,11 +730,11 @@ Section "-Application" Application
       SetRegView 32
       ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
       ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
-      IfErrors 0 found
-      ClearErrors
-      ${Continue}
+      IfErrors cleanup found
 
     found:
+      IfFileExists "$3" 0 cleanup
+
       ; copy the uninstaller to $TEMP
       CopyFiles "$3" "$TEMP"
       ${GetFileName} $3 $3
@@ -746,7 +746,22 @@ Section "-Application" Application
       ClearErrors
 
       Delete "$TEMP\$3"   ; remove the uninstaller copy
+
+    cleanup:
+      ClearErrors
+
+      ; clean up leftover reg keys
+      ${If} ${RunningX64}
+        SetRegView 64
+        DeleteRegKey HKLM "${VROOT}\$1"
+        DeleteRegKey HKLM "${UNINST}\$1"
+      ${EndIf}
+
+      SetRegView 32
+      DeleteRegKey HKLM "${VROOT}\$1"
+      DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
+
     ${SetNativeRegView}
   ${EndIf}
 
@@ -890,6 +905,10 @@ Section Uninstall
     DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
     DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
   ${EndIf}
+
+  ; kill the registry tree if empty
+  DeleteRegKey /ifempty HKLM "Software\vassalengine.org\VASSAL"
+  DeleteRegKey /ifempty HKLM "Software\\vassalengine.org"
 
   ; remove file associations
   DeleteRegKey HKLM "${AROOT}\.vmod"
