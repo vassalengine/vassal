@@ -177,6 +177,11 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.8 are fixed in 3.2.9:
+
+* 10468: VASSAL.sh doesn't work if path includes spaces
+* 10369: Windows installer doesn't find older installs on 64-bit systems
+
 The following bugs in 3.2.7 are fixed in 3.2.8:
 
 * 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
