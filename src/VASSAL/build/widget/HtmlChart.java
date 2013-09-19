@@ -236,20 +236,35 @@ public class HtmlChart extends Widget implements MouseListener {
 
   public class HtmlChartHyperlinkListener implements HyperlinkListener {
     public void hyperlinkUpdate(HyperlinkEvent event) {
-      if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        if ((!isURL() && event.getDescription().indexOf('/') < 0) ||
-            event.getURL() == null) {
-          setFile(event.getDescription());
+      if (event.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
+        return;
+      }
+
+      final String desc = event.getDescription();
+      if ((!isURL() && desc.indexOf('/') < 0) || event.getURL() == null) {
+        final int hash = desc.lastIndexOf("#");
+        if (hash < 0) {
+          // no anchor
+          setFile(desc);
         }
-        else {
-          try {
-            htmlWin.setPage(event.getURL());
-          }
-          catch (IOException ex) {
-            ReadErrorDialog.error(ex, event.getURL().toString());
-          }
-          htmlWin.revalidate();
+        else if (hash > 0) {
+          // browse to the part before the anchor
+          setFile(desc.substring(0, hash));
         }
+
+        if (hash != -1) {
+          // we have an anchor
+          htmlWin.scrollToReference(desc.substring(hash+1));
+        }
+      }
+      else {
+        try {
+          htmlWin.setPage(event.getURL());
+        }
+        catch (IOException ex) {
+          ReadErrorDialog.error(ex, event.getURL().toString());
+        }
+        htmlWin.revalidate();
       }
     }
   }
