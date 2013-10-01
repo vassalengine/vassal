@@ -23,6 +23,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -310,9 +312,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   private int drawColoredText(Graphics g, int x, int y, TabExpander ex, Document doc,
                               int p0, int p1, Element elem) throws BadLocationException {
-    Segment s = new Segment();
+    final Segment s = new Segment();
     doc.getText(p0, p1 - p0, s);
     g.setColor(getColor(elem));
+
+    final Graphics2D g2d = (Graphics2D) g;
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
     return Utilities.drawTabbedText(s, x, y, g, ex, p0);
   }
 
