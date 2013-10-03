@@ -44,7 +44,7 @@ import VASSAL.tools.SequenceEncoder;
  * set the option to always on, always off, or let the players determine it with a Preferences setting.
  */
 public class ObscurableOptions implements CommandEncoder, GameComponent {
-  private static ObscurableOptions instance = new ObscurableOptions();
+  private static final ObscurableOptions instance = new ObscurableOptions();
 
   public static final String COMMAND_ID = "UNMASK\t"; //$NON-NLS-1$
   public static final String PREFS_KEY = "OpponentUnmaskable"; //$NON-NLS-1$
