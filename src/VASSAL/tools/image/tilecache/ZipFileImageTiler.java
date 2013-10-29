@@ -124,16 +124,22 @@ public class ZipFileImageTiler {
       final TileSlicer slicer = new TileSlicerImpl();
       final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
 
-      final int port = Integer.parseInt(System.getProperty("VASSAL.port"));
+      final String portProp = System.getProperty("VASSAL.port");
 
       Socket sock = null;
       DataOutputStream dout = null;
-      try {
-        final InetAddress lo = InetAddress.getByName(null);
-        sock = new Socket(lo, port);
-        sock.shutdownInput();
 
-        dout = new DataOutputStream(sock.getOutputStream());
+      try {
+        if (portProp != null) {
+          final int port = Integer.parseInt(portProp);
+          final InetAddress lo = InetAddress.getByName(null);
+          sock = new Socket(lo, port);
+          sock.shutdownInput();
+          dout = new DataOutputStream(sock.getOutputStream());
+        }
+        else {
+          dout = new DataOutputStream(System.err);
+        }
 
         final DataOutputStream out = dout;
 
@@ -179,7 +185,9 @@ public class ZipFileImageTiler {
         }
 
         dout.close();
-        sock.close();
+        if (sock != null) {
+          sock.close();
+        }
       }
       catch (IOException e) {
         logger.error("", e);
