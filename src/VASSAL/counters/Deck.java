@@ -1267,6 +1267,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   public Command sendToDeck() {
     Command c = null;
+    nextDraw = null;
     DrawPile target = DrawPile.findDrawPile(reshuffleTarget);
     if (target != null) {
       if (reshuffleMsgFormat.length() > 0) {
