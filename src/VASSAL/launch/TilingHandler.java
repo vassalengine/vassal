@@ -42,6 +42,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -360,12 +361,15 @@ public class TilingHandler {
     makeHashDirs();
 
     final int tcount = s.first;
-    final int maxpix = s.second;
+    final int max_data_mbytes = (4*s.second) >> 20;
 
     // fix the max heap
 
-    // This was determined empirically. Does it vary across JVMs? No idea.
-    final int maxheap_estimated = (int) (2.85*((4*maxpix) >> 20) + 50);
+    // This was determined empirically.
+    final int maxheap_estimated =
+      SystemUtils.IS_OS_MAC_OSX && SystemUtils.IS_JAVA_1_6 ?
+        (int) (2.36*max_data_mbytes + 100) :
+        (int) (1.66*max_data_mbytes + 150);
 
     final int maxheap = Math.min(maxheap_estimated, maxheap_limit);
 
