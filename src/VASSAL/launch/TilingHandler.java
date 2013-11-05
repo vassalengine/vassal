@@ -367,7 +367,8 @@ public class TilingHandler {
 
     // This was determined empirically.
     final int maxheap_estimated =
-      SystemUtils.IS_OS_MAC_OSX && SystemUtils.IS_JAVA_1_6 ?
+      SystemUtils.IS_OS_MAC_OSX &&
+      (SystemUtils.IS_JAVA_1_6 || SystemUtils.IS_JAVA_1_5) ?
         (int) (2.36*max_data_mbytes + 100) :
         (int) (1.66*max_data_mbytes + 150);
 
