@@ -366,11 +366,7 @@ public class TilingHandler {
     // fix the max heap
 
     // This was determined empirically.
-    final int maxheap_estimated =
-      SystemUtils.IS_OS_MAC_OSX &&
-      (SystemUtils.IS_JAVA_1_6 || SystemUtils.IS_JAVA_1_5) ?
-        (int) (2.36*max_data_mbytes + 100) :
-        (int) (1.66*max_data_mbytes + 150);
+    final int maxheap_estimated = (int) (1.66*max_data_mbytes + 150);
 
     final int maxheap = Math.min(maxheap_estimated, maxheap_limit);
 
