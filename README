@@ -186,6 +186,9 @@ The following bugs in 3.2.8 are fixed in 3.2.9:
 * 10493: HTMLCharts do not follow anchors
 * 10468: VASSAL.sh doesn't work if path includes spaces
 * 10369: Windows installer doesn't find older installs on 64-bit systems
+* 10158: UnsatisfiedLinkError: Can't find dependent libraries via
+  MemoryUtils.getPhysicalMemory
+*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
 
 The following bugs in 3.2.7 are fixed in 3.2.8:
 

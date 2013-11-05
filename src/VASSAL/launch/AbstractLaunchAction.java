@@ -100,9 +100,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected static final int FAILSAFE_MAXIMUM_HEAP = 128;
 
   static {
-    // determine how much physical RAM this machine has
+    // Determine how much physical RAM this machine has
+    // Assume 4GB if we can't determine how much RAM there is
     final long physMemoryBytes = MemoryUtils.getPhysicalMemory();
-    PHYS_MEMORY = physMemoryBytes < 0 ? -1 : (int)(physMemoryBytes >> 20);
+    PHYS_MEMORY = physMemoryBytes < 0 ? 4096 : (int)(physMemoryBytes >> 20);
   }
 
   protected final Window window;
@@ -377,7 +378,7 @@ e.printStackTrace();
 // since the heap sizes are set in different places for those two
 // actions.
       // maximum heap must fit in physical RAM
-      if (maximumHeap > PHYS_MEMORY && PHYS_MEMORY > 0) {
+      if (maximumHeap > PHYS_MEMORY) {
         initialHeap = FAILSAFE_INITIAL_HEAP;
         maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
