@@ -162,7 +162,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
-	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
+	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
 #	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
@@ -172,7 +172,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/Contents/MacOS/JavaApplicationStub
+	chmod 755 $@/Contents/MacOS/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<

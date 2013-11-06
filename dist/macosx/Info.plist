@@ -5,6 +5,8 @@ com/DTDs/PropertyList-1.0.dtd">
 <dict>
   <key>CFBundleName</key>
   <string>VASSAL</string>
+  <key>CFBundleDisplayName</key>
+  <string>VASSAL</string>
   <key>CFBundleIdentifier</key>
   <string>org.vassalengine.VASSAL</string>
   <key>CFBundleVersion</key>
@@ -12,11 +14,11 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleShortVersionString</key>
   <string>%NUMVERSION%</string>
   <key>NSHumanReadableCopyright</key>
-  <string>2009, The VASSAL Team</string>
+  <string>2013, The VASSAL Team</string>
   <key>CFBundleIconFile</key>
   <string>VASSAL.icns</string>
   <key>CFBundleExecutable</key>
-  <string>JavaApplicationStub</string>
+  <string>VASSAL.sh</string>
   <key>CFBundleAllowMixedLocalizations</key>
   <string>true</string>
   <key>CFBundleDevelopmentRegion</key>
@@ -42,23 +44,5 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>Editor</string>
     </dict>
   </array>
-  <key>Java</key>
-  <dict>
-    <key>WorkingDirectory</key>
-    <string>$APP_PACKAGE</string>
-    <key>MainClass</key>
-    <string>VASSAL.launch.ModuleManager</string>
-    <key>JVMVersion</key>
-    <string>1.5+</string>
-    <key>ClassPath</key>
-    <array>
-      <string>$JAVAROOT/Vengine.jar</string>
-    </array>
-    <key>Properties</key>
-    <dict>
-      <key>apple.awt.graphics.UseQuartz</key>
-      <string>false</string>
-    </dict>
-  </dict>
 </dict>
 </plist>
