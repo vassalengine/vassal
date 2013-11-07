@@ -1,12 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
-# get the root directory of the bundle
+# get the root directory of the bundle and go there
 APP_ROOT="$(dirname "$0")/../.."
+cd "$APP_ROOT"
 
-#
 # find a JRE to use
-#
-
 # try Java 7
 JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
 if [ ! -x "$JAVA" ]; then
@@ -24,4 +22,4 @@ if [ ! -x "$JAVA" ]; then
 fi
 
 # fire it up
-"$JAVA" -classpath "$APP_ROOT/Contents/Resources/Java/Vengine.jar" -Dapple.awt.graphics.UseQuartz=false -Xdock:name=VASSAL -Xdock:icon="$APP_ROOT/Contents/Resources/VASSAL.icns" VASSAL.launch.ModuleManager "$@"
+"$JAVA" -classpath Contents/Resources/Java/Vengine.jar -Dapple.awt.graphics.UseQuartz=false -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "$@"
