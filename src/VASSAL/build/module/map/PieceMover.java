@@ -603,16 +603,16 @@ public class PieceMover extends AbstractBuildable
             }
           }
         }
-       
+
         // Add the remaining dragged counters to the target.
         // If mergeWith is a single piece (not a Stack), then we are merging
         // into an expanded Stack and the merge order must be reversed to
-        // maintain the order of the merging pieces. 
+        // maintain the order of the merging pieces.
         if (mergeWith instanceof Stack) {
           for (int i = 0; i < draggedPieces.size(); ++i) {
             comm = comm.append(movedPiece(draggedPieces.get(i), mergeWith.getPosition()));
             comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPieces.get(i)));
-          }   
+          }
         }
         else {
           for (int i = draggedPieces.size()-1; i >= 0; --i) {

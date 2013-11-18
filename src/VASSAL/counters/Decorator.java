@@ -458,18 +458,18 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       w.pack();
     }
   }
-  
-  
+
+
   /**
    * Support Selection status locally
    */
-  
+
   protected void setSelected(boolean b) {
     selected = b;
   }
-  
+
   protected boolean isSelected() {
     return selected;
   }
-  
+
 }

@@ -55,7 +55,7 @@ public class P2PClientFactory extends ChatServerFactory {
   public ChatServerConnection buildServer(Properties param) {
 
     final HttpMessageServer httpMessageServer = new P2PMessageServer();
-    
+
     final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -67,7 +67,7 @@ public class P2PClientFactory extends ChatServerFactory {
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return server;
   }
-  
+
   class P2PMessageServer extends HttpMessageServer {
 
     public P2PMessageServer() {
@@ -81,17 +81,17 @@ public class P2PClientFactory extends ChatServerFactory {
         }
       });
     }
-    
+
     public Command getWelcomeMessage() {
       return new NullCommand();
     }
-    
+
     public Message[] getMessages() {
       return null;
     }
-    
+
     public void postMessage(String content) {
-      return;    
+      return;
     }
   }
 }

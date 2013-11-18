@@ -740,7 +740,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public Deck getDeck() {
     return myDeck;
   }
-  
+
   protected boolean placeNonStackingSeparately() {
     return false;
   }

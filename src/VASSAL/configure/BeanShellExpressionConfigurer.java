@@ -336,7 +336,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     if (propName == null) {
       return;
     }
-    
+
     final JMenuItem item = new JMenuItem(propName);
     item.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {

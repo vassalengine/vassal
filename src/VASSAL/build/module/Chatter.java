@@ -81,7 +81,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String OTHER_CHAT_COLOR = "otherChatColor"; //$NON-NLS-1$
   protected static final String GAME_MSG_COLOR = "gameMessageColor"; //$NON-NLS-1$
   protected static final String SYS_MSG_COLOR = "systemMessageColor"; //$NON-NLS-1$
-  
+
   protected Color gameMsg;
   protected Color systemMsg;
   protected Color myChat;
@@ -194,10 +194,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     chatFont.fireUpdate();
     mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
-    
+
     //Bug 10179 - Do not re-read Chat colors each time the Chat Window is repainted.
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
-    
+
     final ColorConfigurer gameMsgColor = new ColorConfigurer(
       GAME_MSG_COLOR,
       Resources.getString("Chatter.game_messages_preference"),
@@ -220,7 +220,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
     globalPrefs.getOption(SYS_MSG_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
-        systemMsg = (Color) e.getNewValue();        
+        systemMsg = (Color) e.getNewValue();
       }
     });
 
@@ -233,7 +233,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
     globalPrefs.getOption(MY_CHAT_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
-        myChat = (Color) e.getNewValue();        
+        myChat = (Color) e.getNewValue();
       }
     });
 
@@ -246,7 +246,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     globalPrefs.getOption(OTHER_CHAT_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
-        otherChat = (Color) e.getNewValue();        
+        otherChat = (Color) e.getNewValue();
       }
     });
   }

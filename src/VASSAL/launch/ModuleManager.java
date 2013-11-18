@@ -320,7 +320,7 @@ public class ModuleManager {
                 finally {
                   IOUtils.closeQuietly(out);
                 }
- 
+
                 in.close();
               }
               finally {
@@ -334,7 +334,7 @@ public class ModuleManager {
           }
         }
         catch (IOException e) {
-          logger.error("Failed to convert legacy preferences file.", e); 
+          logger.error("Failed to convert legacy preferences file.", e);
         }
       }
     }

@@ -212,7 +212,7 @@ public class ModuleManagerWindow extends JFrame {
         // finally {
         //   IOUtils.closeQuietly(gl);
         // }
-         
+
         logger.info("Exiting");
         System.exit(0);
       }

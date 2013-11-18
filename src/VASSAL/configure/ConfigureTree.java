@@ -716,7 +716,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // Convert subclasses of GlobalProperty to an actual GlobalProperty before inserting into the GlobalProperties container
     if (parent.getClass() == GlobalProperties.class && child.getClass() == ZoneProperty.class) {
       theChild = new GlobalProperty((GlobalProperty) child);
-    } 
+    }
     if (parent.getClass() == Zone.class && child.getClass() == GlobalProperty.class) {
       theChild = new ZoneProperty((GlobalProperty) child);
     }

@@ -380,14 +380,14 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.add_peer_connection"), //$NON-NLS-1$
           editPanel, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
           null, null, null, null);
-          
+
       if (result != null && result == 0) {
         description = descriptionField.getText();
         address = addressField.getText();
         port = portField.getText();
         return true;
       }
-      
+
       return false;
     }
   }

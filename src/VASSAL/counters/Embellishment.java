@@ -341,7 +341,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
     }
     loopLevels = true;
-    
+
     alwaysActive = activateKey.length() == 0;
     if (activateKey.length() == 0) {
       activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
@@ -356,7 +356,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     else {
       increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
     }
-      
+
     if (downKey.length() == 0) {
       decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
     }
@@ -364,7 +364,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
     }
     version = CURRENT_VERSION;
-    
+
   }
 
   public String getLocalizedName() {
@@ -416,7 +416,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-    value = st.nextInt(-1);        
+    value = st.nextInt(-1);
   }
 
   public String myGetType() {
@@ -488,20 +488,20 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
 
-    /* 
-     * Fix for Bug 9700 is to strip back the encoding of State to the simplest case. 
+    /*
+     * Fix for Bug 9700 is to strip back the encoding of State to the simplest case.
      * Both Activation status and level is determined by the value parameter.
-     */ 
+     */
     return se.append(String.valueOf(value)).getValue();
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     final boolean drawUnder = drawUnderneathWhenSelected && Boolean.TRUE.equals(getProperty(Properties.SELECTED));
-    
+
     if (!drawUnder) {
       piece.draw(g, x, y, obs, zoom);
     }
-    
+
     checkPropertyLevel();
 
     if (!isActive()) {
@@ -528,7 +528,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   protected void checkPropertyLevel() {
     if (!followProperty || propertyName.length() == 0) return;
-    
+
     if (followPropertyExpression == null) {
       followPropertyExpression = Expression.createSimplePropertyExpression(propertyName);
     }

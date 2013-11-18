@@ -248,7 +248,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
 
     Object owner = null;
-    
+
     fixBounds(pieces);
 
     if (bounds.width > 0) {
@@ -282,7 +282,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         Rectangle pieceBounds = getBounds(piece);
         if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
         g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
-        final Stack parent = piece.getParent();        
+        final Stack parent = piece.getParent();
         if (parent instanceof Deck) {
           owner = piece.getProperty(Properties.OBSCURED_BY);
           final boolean faceDown = ((Deck) parent).isFaceDown();

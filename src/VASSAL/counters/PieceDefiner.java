@@ -212,7 +212,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     return changed;
   }
 
-  /** 
+  /**
    * This method is called from within the constructor to initialize the form.
    */
   private void initComponents() {

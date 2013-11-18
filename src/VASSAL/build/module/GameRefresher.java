@@ -59,9 +59,9 @@ import VASSAL.tools.ErrorDialog;
 /**
  * GameRefresher Replace all counters in the same game with the current version
  * of the counters defined in the module
- * 
+ *
  * Note: Counters that are Hidden or Obscured to us cannot be updated.
- * 
+ *
  */
 public final class GameRefresher implements GameComponent {
 
@@ -99,13 +99,13 @@ public final class GameRefresher implements GameComponent {
   public boolean isTestMode() {
     return testMode;
   }
-  
+
   public void start() {
     dialog = new RefreshDialog(this);
     dialog.setVisible(true);
     dialog = null;
   }
-  
+
   public void execute(boolean testMode, boolean useName) {
     this.testMode = testMode;
 
@@ -149,7 +149,7 @@ public final class GameRefresher implements GameComponent {
               && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
             pieces.add(0, p);
           }
-          else {         
+          else {
             notOwnedCount++;
           }
         }
@@ -167,7 +167,7 @@ public final class GameRefresher implements GameComponent {
 
     /*
      * 3. Generate the commands to update the pieces
-     */   
+     */
     for (GamePiece piece : pieces) {
       if (isTestMode()) {
         testGamePiece(piece);
@@ -176,7 +176,7 @@ public final class GameRefresher implements GameComponent {
         processGamePiece(piece, command);
       }
     }
-    
+
     if (isTestMode()) {
       dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
       if (notOwnedCount > 0) {
@@ -190,7 +190,7 @@ public final class GameRefresher implements GameComponent {
       final String player = GlobalOptions.getInstance().getPlayerId();
       final Chatter chatter = theModule.getChatter();
       final Command msg = new Chatter.DisplayText(chatter, "----------");
-      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));      
+      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
       msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
 
       if (notOwnedCount > 0) {
@@ -203,7 +203,7 @@ public final class GameRefresher implements GameComponent {
       msg.append(new Chatter.DisplayText(chatter, "----------"));
       msg.execute();
       command.append(msg);
-      
+
       // Send the update to other clients
       theModule.sendAndLog(command);
     }
@@ -227,17 +227,17 @@ public final class GameRefresher implements GameComponent {
 
     // Remove the old Piece if different
     if (piece.equals(newPiece)) {
-      notFoundCount++;      
+      notFoundCount++;
       logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
     }
     else {
       updatedCount++;
-      
+
       if (! isTestMode()) {
         // Place the new Piece.
         final Command place = map.placeOrMerge(newPiece, pos);
         command.append(place);
-      
+
         // Delete the old piece
         final Command remove = new RemovePiece(Decorator.getOutermost(piece));
         remove.execute();
@@ -258,20 +258,20 @@ public final class GameRefresher implements GameComponent {
       }
     }
   }
-  
+
   private void testGamePiece(GamePiece piece) {
-    
+
     final Map map = piece.getMap();
     if (map == null) {
       logger.error("Can't refresh piece " + piece.getName() + ": No Map");
       return;
     }
-    
+
     if (gpIdChecker.findUpdatedPiece(piece)) {
       updatedCount++;
     }
     else {
-      notFoundCount++;      
+      notFoundCount++;
       logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
     }
   }
@@ -291,8 +291,8 @@ public final class GameRefresher implements GameComponent {
     private static final long serialVersionUID = 1L;
     private GameRefresher refresher;
     private JTextArea results;
-    private JCheckBox nameCheck;   
-    
+    private JCheckBox nameCheck;
+
     RefreshDialog (GameRefresher refresher) {
       this.refresher = refresher;
       setTitle(Resources.getString("GameRefresher.refresh_counters"));
@@ -308,58 +308,58 @@ public final class GameRefresher implements GameComponent {
         }
       });
       setLayout(new MigLayout("wrap 1","[center]"));
-      
+
       final JPanel buttonPanel = new JPanel(new MigLayout());
-      
+
       final JButton testButton = new JButton(Resources.getString("General.test"));
       testButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          test();          
+          test();
         }});
-      
+
       final JButton runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          run();          
+          run();
         }});
-      
+
       final JButton exitButton = new JButton(Resources.getString("General.exit"));
       exitButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          exit();          
+          exit();
         }});
-      
+
       buttonPanel.add(testButton);
       buttonPanel.add(runButton);
       buttonPanel.add(exitButton);
-      
+
       add(buttonPanel);
-      
+
       results = new JTextArea(7, 40);
       results.setEditable(false);
       add(results);
-      
+
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
       add(nameCheck);
-      
+
       pack();
     }
-    
+
      protected void exit() {
        setVisible(false);
      }
-     
+
      protected void test() {
        results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
        refresher.execute (true, nameCheck.isSelected());
      }
-     
+
      protected void run() {
        results.setText("");
        refresher.execute (false, nameCheck.isSelected());
        exit();
      }
-     
+
      public void addMessage(String mess) {
        results.setText(results.getText()+"\n"+mess);
      }

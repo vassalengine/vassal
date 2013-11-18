@@ -50,7 +50,7 @@ public class GpIdChecker {
     this.gpIdSupport = gpIdSupport;
     maxId = -1;
   }
-  
+
   public GpIdChecker(boolean useName) {
     this();
     this.useName = useName;
@@ -161,7 +161,7 @@ public class GpIdChecker {
    *
    * @param oldPiece
    * @return
-   */  
+   */
   public GamePiece createUpdatedPiece (GamePiece oldPiece) {
     // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
@@ -183,7 +183,7 @@ public class GpIdChecker {
         }
       }
     }
-    
+
     return oldPiece;
   }
 
@@ -209,10 +209,10 @@ public class GpIdChecker {
         }
       }
     }
-    
+
     return false;
   }
-  
+
 
   /**
    * Wrapper class for components that contain a GpId - They will all be either
@@ -257,7 +257,7 @@ public class GpIdChecker {
         marker.updateGpId();
       }
     }
-    
+
     public GamePiece getPiece() {
       if (slot == null) {
         return marker;

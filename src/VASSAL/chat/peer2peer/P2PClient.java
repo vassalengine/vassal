@@ -324,7 +324,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public synchronized void showHELO(PeerInfo pPeerInfo) {
-    // We have received a connection request    
+    // We have received a connection request
     final Chatter chatter = GameModule.getGameModule().getChatter();
     final ActivePeer peer = peerMgr.getPeerListenerByInfo(pPeerInfo);
     Properties props;
@@ -338,12 +338,12 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     catch (IOException ex) {
       details = "";
     }
-    
+
     // Does the password of the new Peer match ours?
     if (! pPeerInfo.getNetworkPw().equals(params.getProperty(P2PClientFactory.P2P_SERVER_PW))) {
-      new Chatter.DisplayText(chatter, Resources.getString("Peer2Peer.bad_password", details)).execute(); 
-      peer.finish();  
-      return;  
+      new Chatter.DisplayText(chatter, Resources.getString("Peer2Peer.bad_password", details)).execute();
+      peer.finish();
+      return;
     }
 
     fireStatus(Resources.getString("Peer2Peer.connected", details));

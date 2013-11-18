@@ -53,7 +53,7 @@ import VASSAL.tools.io.IOUtils;
 public final class IconFactory {
 
   private static final Logger logger = LoggerFactory.getLogger(IconFactory.class);
-  
+
   static final String FILE = "file:"; //$NON-NLS-1$
   static final String JAR = "jar:"; //$NON-NLS-1$
 
@@ -321,7 +321,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName); 
+            logger.info("Icon family "+familyName+" created for "+imageName);
           }
           family.setSizeIconPath(size, "/" + path + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -353,7 +353,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName);  
+            logger.info("Icon family "+familyName+" created for "+imageName);
           }
           family.setScalableIconPath("/" + scalablePath + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -393,7 +393,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName);          
+            logger.info("Icon family "+familyName+" created for "+imageName);
           }
           family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
           iconFamilies.put(familyName, family);
@@ -407,7 +407,7 @@ public final class IconFactory {
             IconFamily family = iconFamilies.get(familyName);
             if (family == null) {
               family = new IconFamily(familyName);
-              logger.info("Icon family "+familyName+" created for "+imageName); 
+              logger.info("Icon family "+familyName+" created for "+imageName);
             }
             family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
             iconFamilies.put(familyName, family);

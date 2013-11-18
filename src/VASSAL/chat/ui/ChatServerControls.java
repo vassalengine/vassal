@@ -337,7 +337,7 @@ public class ChatServerControls extends AbstractBuildable {
     newRoom.setVisible(visible);
     newRoomLabel.setVisible(visible);
   }
-  
+
   public RoomTree getRoomTree() {
     return roomTree;
   }

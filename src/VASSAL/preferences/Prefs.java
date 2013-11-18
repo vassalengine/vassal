@@ -68,7 +68,7 @@ public class Prefs implements Closeable {
 
   protected Prefs(PrefsEditor editor, File file) {
     this.editor = editor;
-    this.file = file; 
+    this.file = file;
 
     read();
 
@@ -165,7 +165,7 @@ public class Prefs implements Closeable {
       produce filenames safe on every sane filesystem, so long as the
       input strings are not too long.
     */
-    final StringBuilder sb = new StringBuilder(); 
+    final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < str.length(); ++i) {
       final int cp = str.codePointAt(i);
       if (('0' <= cp && cp <= '9') ||
@@ -221,7 +221,7 @@ public class Prefs implements Closeable {
       FileUtils.forceMkdir(Info.getPrefsDir());
     }
 
-    // write the key-value pairs 
+    // write the key-value pairs
     OutputStream out = null;
     try {
       out = new BufferedOutputStream(new FileOutputStream(file));

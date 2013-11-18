@@ -674,11 +674,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       peekKeyInput = new NamedHotKeyConfigurer(null,"Peek Key:  ",p.peekKey);
       peekKeyInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekKeyInput.getControls());
-      
+
       peekCommandInput = new StringConfigurer(null, "Peek Command:  ", p.peekCommand);
       peekCommandInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekCommandInput.getControls());
-      
+
       imagePicker = new ImagePicker();
       imagePicker.setImageName(p.obscuredToOthersImage);
       imagePicker.setVisible(p.displayStyle == IMAGE);

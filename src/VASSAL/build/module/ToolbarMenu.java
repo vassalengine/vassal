@@ -189,7 +189,7 @@ public class ToolbarMenu extends AbstractConfigurable
 
   protected void buildMenu() {
     for (AbstractButton b : buttonsToMenuMap.keySet()) {
-      b.removePropertyChangeListener(this); 
+      b.removePropertyChangeListener(this);
       b.setVisible(true);
       b.putClientProperty(HIDDEN_BY_TOOLBAR, null);
     }
@@ -217,7 +217,7 @@ public class ToolbarMenu extends AbstractConfigurable
         b.addPropertyChangeListener(this);
         b.setVisible(false);
         b.putClientProperty(HIDDEN_BY_TOOLBAR, new Boolean(true));
-        
+
         if (property instanceof JPopupMenu) {
           // This button corresponds to another ToolbarMenu button.
           // Turn it into a submenu.

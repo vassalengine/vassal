@@ -80,7 +80,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     minValue = p.minValue;
     maxValue = p.maxValue;
   }
-  
+
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name",

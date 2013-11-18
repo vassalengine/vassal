@@ -119,7 +119,7 @@ public class BeanShellExpression extends Expression {
     if (s == null || s.length() == 0) {
       return false;
     }
-   
+
     if (!Character.isJavaIdentifierStart(s.charAt(0))) {
      return false;
     }
@@ -129,8 +129,8 @@ public class BeanShellExpression extends Expression {
         return false;
       }
     }
- 
-    return true;      
+
+    return true;
   }
 
   /**
@@ -168,7 +168,7 @@ public class BeanShellExpression extends Expression {
         && expr.indexOf('"', 1) == expr.length() - 1) {
       return new StringExpression(expr.substring(1, expr.length() - 1));
     }
-    
+
     // Return a generalised Beanshell expression
     return new BeanShellExpression(expr);
 

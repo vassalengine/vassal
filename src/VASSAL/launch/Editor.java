@@ -211,7 +211,7 @@ public class Editor extends Launcher {
           ErrorDialog.show(
             "Error.module_too_new",
             lr.module.getPath(),
-            vv, 
+            vv,
             Info.getVersion()
           );
           return;

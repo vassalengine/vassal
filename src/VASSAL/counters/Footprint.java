@@ -306,7 +306,7 @@ public class Footprint extends MovementMarkable {
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
 // FIXME: This method is inefficient.
-    
+
     int x1, y1, x2, y2;
     piece.draw(g, x, y, obs, zoom);
 
@@ -331,7 +331,7 @@ public class Footprint extends MovementMarkable {
     if (pointList.isEmpty()) {
       return;
     }
-    
+
     /*
      * If we are asked to be drawn at a different zoom from the current map zoom
      * setting, then don't draw the trail as it will be in the wrong place.

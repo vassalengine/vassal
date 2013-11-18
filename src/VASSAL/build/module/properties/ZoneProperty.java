@@ -43,7 +43,7 @@ public class ZoneProperty extends GlobalProperty {
   public ZoneProperty(GlobalProperty p) {
     super(p);
   }
-  
+
   public static String getConfigureTypeName() {
     return "Global Property";
   }

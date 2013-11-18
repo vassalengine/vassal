@@ -46,7 +46,7 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
   public String convert(String s) {
     return "{" + s + "}";
   }
-  
+
   /**
    * Save entered expression to the target.
    * If a single property name has been entered, then return it as a simple name, not as an expression
@@ -58,16 +58,16 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
       dispose();
       return;
     }
-    
+
     if (expr.startsWith("GetProperty(\"") && expr.endsWith("\")") &&
         (expr.length() - expr.replaceAll("\"", "").length()) == 2) {
       target.setValue(expr.substring(13, expr.length()-2));
       dispose();
-      return;    
+      return;
     }
-    
-    super.save();    
-      
+
+    super.save();
+
   }
 
 }
