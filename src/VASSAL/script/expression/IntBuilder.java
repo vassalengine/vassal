@@ -19,7 +19,7 @@
 
 /*
  * StrBuilder.
- * Build an integer constant. Allow user to enter anything and clean it up by removing 
+ * Build an integer constant. Allow user to enter anything and clean it up by removing
  * non number characters
  */
 
@@ -37,32 +37,32 @@ public class IntBuilder extends StrBuilder {
     target = c;
     build("Number");
   }
-  
-  
+
+
   protected void save() {
     boolean negative = false;
     final StringBuilder result = new StringBuilder();
     String value = entry.getValueString();
-    
+
     if (value.startsWith("-")) {
       value = value.substring(1);
       negative = true;
     }
-        
+
     for (int i = 0; i < value.length(); i++) {
       final char c = value.charAt(i);
       if (c >= '0' && c <= '9') {
         result.append(c);
       }
     }
-    
+
     value = (negative ? "-" : "") + result.toString();
     if (value.length() == 0 || value.equals("-")) {
       value = "0";
     }
-    
+
     target.setValue(value);
     dispose();
   }
-   
+
 }

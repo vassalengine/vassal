@@ -25,7 +25,7 @@ import VASSAL.build.module.properties.PropertySource;
 
 /**
  * An expression consisting of a single property name
- * 
+ *
  */
 public class SinglePropertyExpression extends Expression {
 
@@ -37,7 +37,7 @@ public class SinglePropertyExpression extends Expression {
       setExpression(ex);
     }
   }
-  
+
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized)
       throws ExpressionException {
     String value = null;
@@ -56,7 +56,7 @@ public class SinglePropertyExpression extends Expression {
     }
     catch (Exception ex) {
       throw new ExpressionException(getExpression(), ex.getMessage());
-    }    
+    }
     return value == null ? "" : value;
   }
 

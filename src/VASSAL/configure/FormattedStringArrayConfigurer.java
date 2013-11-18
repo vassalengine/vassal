@@ -26,10 +26,10 @@ import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.GamePiece;
 
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
-  
+
   protected FormattedExpressionConfigurer config;
   protected GamePiece target;
-  
+
   public FormattedStringArrayConfigurer(String key, String name, Object val) {
     super(key, name, val);
   }
@@ -44,27 +44,27 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
       target = (GamePiece) c;
     }
   }
-  
+
   public FormattedStringArrayConfigurer(String key, String name, GamePiece target) {
     this(key, name);
     this.target = target;
   }
-  
+
   protected Component getTextComponent() {
     if (config == null) {
-      config = new FormattedExpressionConfigurer(null, "", "", target); 
+      config = new FormattedExpressionConfigurer(null, "", "", target);
     }
     return config.getControls();
   }
-  
+
   protected String getTextValue() {
     return config.getValueString();
   }
-  
+
   protected void setTextValue(String s) {
     config.setValue(s);
   }
-  
+
   protected void addTextActionListener(ActionListener a) {
     return;
   }

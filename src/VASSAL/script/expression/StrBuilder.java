@@ -20,7 +20,7 @@
 /*
  * StrBuilder.
  * Build a string constant. Allow user to enter a string and clean it up, add " if necessary and
- * escape internal ". 
+ * escape internal ".
  */
 
 package VASSAL.script.expression;
@@ -43,27 +43,27 @@ public class StrBuilder extends JDialog {
   private static final long serialVersionUID = 1L;
   protected StringConfigurer target;
   protected StringConfigurer entry;
-  
+
   public StrBuilder(StringConfigurer c, JDialog parent) {
     super(parent, "String Builder", true);
     target = c;
     build("String");
   }
-  
+
   public StrBuilder(JDialog parent, String string, boolean b) {
     super(parent, string, b);
   }
 
   protected void build(String type) {
     setLayout(new MigLayout("fillx"));
-    
+
     final JPanel p = new JPanel();
     p.setLayout(new MigLayout("fillx", "[grow 0]rel[grow 1]"));
 
     p.add(new JLabel(type+":"), "growx");
     entry = new StringConfigurer("", "");
     p.add(entry.getControls(), "wrap,growx");
-    
+
 
     final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     final JButton okButton = ButtonFactory.getOkButton();
@@ -93,21 +93,21 @@ public class StrBuilder extends JDialog {
          cancel();
       }
     });
-    
+
   }
-  
+
   protected void save() {
     String result = entry.getValueString();
     if (result.startsWith("\"") && result.endsWith("\"")) {
-      result = result.substring(1, result.length()-1);      
+      result = result.substring(1, result.length()-1);
     }
     result = result.replace("\"", "\\\"");
     target.setValue("\""+result+"\"");
     dispose();
   }
-  
+
   protected void cancel() {
     dispose();
   }
-  
+
 }

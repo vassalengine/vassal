@@ -67,20 +67,20 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
- * 
- * Embellishment has been extensively re-written for Vassal 3.2 changing 
+ *
+ * Embellishment has been extensively re-written for Vassal 3.2 changing
  * both the behavior and the visual look of the configurer. A version
- * number has been added to distinguish between the two versions. 
+ * number has been added to distinguish between the two versions.
  * Note, there is also a much older Embellishment trait with a type of emb
- * 
- * When editing a module, the old versions will be automatically converted to 
+ *
+ * When editing a module, the old versions will be automatically converted to
  * the new version. One feature (multiple keystrokes for a command) cannot
- * be converted. 
- *  
- * This class contains the complete code of the original version 0 
+ * be converted.
+ *
+ * This class contains the complete code of the original version 0
  * emb2 Embellishment to support editing of unconverted version 0 Embellishments
  * and run-time support for modules containing unconverted traits.
- * 
+ *
  * This is essentially the latest 3.1 version of Embellishment
  */
 public class Embellishment0 extends Decorator implements TranslatablePiece {
@@ -100,11 +100,11 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     protected FormattedString resetLevel = new FormattedString("1");
     protected boolean loopLevels;
     protected KeyStroke resetKey;
-    
+
     protected boolean followProperty;
     protected String propertyName = "";
     protected int firstLevelValue;
-    
+
     // random layers
     // protected KeyCommand rndCommand;
     protected KeyStroke rndKey;
@@ -128,7 +128,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     protected KeyCommand[] commands;
     protected KeyCommand up = null;
     protected KeyCommand down = null;
-    
+
     // Shape cache
     protected Rectangle lastBounds = null;
     protected Area lastShape = null;
@@ -156,7 +156,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     /**
      * Set the current level - First level = 0 Does not change the active status
-     * 
+     *
      * @param val
      */
     public void setValue(int val) {
@@ -202,7 +202,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         followProperty = st.nextBoolean(false);
         propertyName = st.nextToken("");
         firstLevelValue = st.nextInt(1);
-        
+
         value = activateKey.length() > 0 ? -1 : 1;
         nValues = imageName.length;
         size = new Rectangle[imageName.length];
@@ -220,7 +220,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     /**
      * This original way of representing the type causes problems because it's not
      * extensible
-     * 
+     *
      * @param s
      */
     private void originalSetType(String s) {
@@ -289,11 +289,11 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     public String getLocalizedName() {
       return getName(true);
     }
-    
+
     public String getName() {
       return getName(false);
     }
-    
+
     public String getName(boolean localized) {
       checkPropertyLevel(); // Name Change?
       String name = null;
@@ -324,7 +324,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
       return name;
     }
-   
+
     public void mySetState(String s) {
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       value = st.nextInt(1);
@@ -399,9 +399,9 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     public void draw(Graphics g, int x, int y, Component obs, double zoom) {
       piece.draw(g, x, y, obs, zoom);
-      
+
       checkPropertyLevel();
-      
+
       if (!isActive()) {
         return;
       }
@@ -440,7 +440,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
       return;
     }
-    
+
     public KeyCommand[] myGetKeyCommands() {
       if (commands == null) {
         final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
@@ -583,7 +583,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           imageName[value-1].length() == 0 ||
           imagePainter[value-1] == null ||
           imagePainter[value-1].getSource() == null) return null;
-      
+
       return imagePainter[value-1].getSource().getImage();
     }
 
@@ -597,11 +597,11 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       if (value > 0) {
         final int i = value - 1;
 
-        if (i >= size.length) { 
+        if (i >= size.length) {
           // Occurs when adding a layer with a name, but no image
           return new Rectangle();
         }
-        
+
         if (size[i] == null) {
           if (imagePainter[i] != null) {
             size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
@@ -611,24 +611,24 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
             size[i] = new Rectangle();
           }
         }
-   
+
         return size[i];
       }
       else {
         return new Rectangle();
       }
     }
-    
+
     /**
      * Return the Shape of the counter by adding the shape of this layer to the shape of all inner traits.
-     * Minimize generation of new Area objects. 
+     * Minimize generation of new Area objects.
      */
     public Shape getShape() {
       final Shape innerShape = piece.getShape();
-      
+
       if (value > 0 && !drawUnderneathWhenSelected) {
         final Rectangle r = getCurrentImageBounds();
-        
+
         // If the label is completely enclosed in the current counter shape, then we can just return
         // the current shape
         if (innerShape.contains(r.x, r.y, r.width, r.height)) {
@@ -636,13 +636,13 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         }
         else {
           final Area a = new Area(innerShape);
-          
+
           // Cache the Area object generated. Only recreate if the layer position or size has changed
           if (!r.equals(lastBounds)) {
             lastShape = new Area(r);
-            lastBounds = new Rectangle(r);          
+            lastBounds = new Rectangle(r);
           }
-          
+
           a.add(lastShape);
           return a;
         }
@@ -711,9 +711,9 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         return getProperty(key);
       }
       else if (key.equals(name + NAME)) {
-        
+
         checkPropertyLevel();
-        if (value > 0) {      
+        if (value > 0) {
           return strip(getLocalizedCommonName(Math.abs(value) - 1));
         }
         else
@@ -721,7 +721,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
       return super.getLocalizedProperty(key);
     }
-    
+
     protected String strip (String s) {
       if (s == null) {
         return null;
@@ -734,12 +734,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
       return s;
     }
-    
+
     /** Get the name of this level (alone) */
     protected String getCommonName(boolean localized, int i) {
       return localized ? getLocalizedCommonName(i) : commonName[i];
     }
-    
+
     /** Get the localized name of this level (alone) */
     protected String getLocalizedCommonName(int i) {
       final String name = commonName[i];
@@ -753,7 +753,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
       return translation;
     }
-    
+
     public HelpFile getHelpFile() {
       return HelpFile.getReferenceManualPage("Layer.htm");
     }
@@ -919,7 +919,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
         followConfig = new BooleanConfigurer(null, "Levels follow Property Value?");
         checkBoxes.add(followConfig.getControls());
-        
+
         final Box levelBox = Box.createHorizontalBox();
         propertyConfig = new StringConfigurer(null, "Property Name:  ");
         levelBox.add(propertyConfig.getControls());
