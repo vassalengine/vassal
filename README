@@ -173,6 +173,7 @@ New Features in 3.2
 
 The following bugs in 3.2.8 are fixed in 3.2.9:
 
+* 10628: Game state not set to unmodified after a save
 * 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
 * 10590: Cards painted in wrong location when Deck is sent after using
   "Draw specific cards" but without drawing cards
