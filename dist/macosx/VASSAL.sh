@@ -5,11 +5,11 @@ APP_ROOT="$(dirname "$0")/../.."
 cd "$APP_ROOT"
 
 # find a JRE to use
-# try Java 7
-JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
+# try Java 6
+JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
 if [ ! -x "$JAVA" ]; then
-  # try Java 6
-  JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
+  # try Java 7
+  JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
   if [ ! -x "$JAVA" ]; then
     # try whatever's on the PATH
     JAVA="$(which java)"
