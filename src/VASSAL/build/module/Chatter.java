@@ -198,57 +198,85 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     //Bug 10179 - Do not re-read Chat colors each time the Chat Window is repainted.
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
 
+    //
+    // game message color
+    //
     final ColorConfigurer gameMsgColor = new ColorConfigurer(
       GAME_MSG_COLOR,
       Resources.getString("Chatter.game_messages_preference"),
       Color.magenta
     );
-    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsgColor); //$NON-NLS-1$
+
     gameMsg = (Color) globalPrefs.getValue(GAME_MSG_COLOR);
-    globalPrefs.getOption(GAME_MSG_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
+    gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         gameMsg = (Color) e.getNewValue();
       }
     });
 
+    globalPrefs.addOption(
+      Resources.getString("Chatter.chat_window"), gameMsgColor
+    );
+
+    //
+    // system message color
+    //
     final ColorConfigurer systemMsgColor = new ColorConfigurer(
       SYS_MSG_COLOR,
       Resources.getString("Chatter.system_message_preference"),
       new Color(160, 160, 160)
     );
-    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), systemMsgColor); //$NON-NLS-1$
+
     systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
-    globalPrefs.getOption(SYS_MSG_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
+    systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         systemMsg = (Color) e.getNewValue();
       }
     });
 
+    globalPrefs.addOption(
+      Resources.getString("Chatter.chat_window"), systemMsgColor
+    );
+
+    //
+    // my message color
+    //
     final ColorConfigurer myChatColor = new ColorConfigurer(
       MY_CHAT_COLOR,
       Resources.getString("Chatter.my_text_preference"),
       Color.gray
     );
-    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), myChatColor); //$NON-NLS-1$
+
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
-    globalPrefs.getOption(MY_CHAT_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
+    myChatColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         myChat = (Color) e.getNewValue();
       }
     });
 
+    globalPrefs.addOption(
+      Resources.getString("Chatter.chat_window"), myChatColor
+    );
+
+    //
+    // other message color
+    //
     final ColorConfigurer otherChatColor = new ColorConfigurer(
       OTHER_CHAT_COLOR,
       Resources.getString("Chatter.other_text_preference"),
       Color.black
     );
-    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor); //$NON-NLS-1$
+
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
-    globalPrefs.getOption(OTHER_CHAT_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
+    otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         otherChat = (Color) e.getNewValue();
       }
     });
+
+    globalPrefs.addOption(
+      Resources.getString("Chatter.chat_window"), otherChatColor
+    );
   }
 
   public void add(Buildable b) {
