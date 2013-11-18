@@ -670,6 +670,8 @@ public class GameState implements CommandEncoder {
     }
 
     Launcher.getInstance().sendSaveCmd(f);
+
+    setModified(false);
   }
 
   public void loadGameInBackground(final File f) {
