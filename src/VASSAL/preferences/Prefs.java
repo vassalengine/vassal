@@ -236,6 +236,7 @@ public class Prefs implements Closeable {
       }
    
       // write back the key-value pairs
+      ch.truncate(0);
       final OutputStream out = Channels.newOutputStream(ch);
       storedValues.store(out, null);
       out.flush();
