@@ -19,15 +19,17 @@
 package VASSAL.preferences;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -205,31 +207,42 @@ public class Prefs implements Closeable {
   /**
    * Store this set of preferences in the editor, but don't yet save to disk
    */
-  public void save() throws IOException {
-    // collect the key-value pairs
+  public void save() throws IOException { 
     storedValues.clear();
-
-    for (Configurer c : options.values()) {
-      final String val = c.getValueString();
-      if (val != null) {
-        storedValues.put(c.getKey(), val);
-      }
-    }
 
     // ensure that the prefs dir exists
     if (!Info.getPrefsDir().exists()) {
       FileUtils.forceMkdir(Info.getPrefsDir());
     }
 
-    // write the key-value pairs
-    OutputStream out = null;
+    RandomAccessFile raf = null;
     try {
-      out = new BufferedOutputStream(new FileOutputStream(file));
+      raf = new RandomAccessFile(file, "rw");
+      final FileChannel ch = raf.getChannel();
+
+      // lock the prefs file
+      final FileLock lock = ch.lock();
+
+      // read the old key-value pairs
+      final InputStream in = Channels.newInputStream(ch);
+      storedValues.load(in);
+
+      // merge in the current key-value pairs
+      for (Configurer c : options.values()) {
+        final String val = c.getValueString();
+        if (val != null) {
+          storedValues.put(c.getKey(), val);
+        }
+      }
+   
+      // write back the key-value pairs
+      final OutputStream out = Channels.newOutputStream(ch);
       storedValues.store(out, null);
-      out.close();
+      out.flush();
     }
     finally {
-      IOUtils.closeQuietly(out);
+      // also closes the channel, the streams, and releases the lock
+      IOUtils.closeQuietly(raf);
     }
   }
 
