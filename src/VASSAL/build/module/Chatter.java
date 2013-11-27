@@ -207,7 +207,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.magenta
     );
 
-    gameMsg = (Color) globalPrefs.getValue(GAME_MSG_COLOR);
     gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         gameMsg = (Color) e.getNewValue();
@@ -218,6 +217,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Resources.getString("Chatter.chat_window"), gameMsgColor
     );
 
+    gameMsg = (Color) globalPrefs.getValue(GAME_MSG_COLOR);
+
     //
     // system message color
     //
@@ -227,7 +228,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       new Color(160, 160, 160)
     );
 
-    systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
     systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         systemMsg = (Color) e.getNewValue();
@@ -238,6 +238,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Resources.getString("Chatter.chat_window"), systemMsgColor
     );
 
+    systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
+
     //
     // my message color
     //
@@ -247,7 +249,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.gray
     );
 
-    myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
     myChatColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         myChat = (Color) e.getNewValue();
@@ -258,6 +259,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Resources.getString("Chatter.chat_window"), myChatColor
     );
 
+    myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
+
     //
     // other message color
     //
@@ -267,7 +270,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.black
     );
 
-    otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         otherChat = (Color) e.getNewValue();
@@ -277,6 +279,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     globalPrefs.addOption(
       Resources.getString("Chatter.chat_window"), otherChatColor
     );
+
+    otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
   }
 
   public void add(Buildable b) {
@@ -401,7 +405,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     Color col = null;
     try {
       final String s = elem.getDocument().getText(
-        elem.getStartOffset(), elem.getEndOffset() - elem.getStartOffset());
+        elem.getStartOffset(), elem.getEndOffset() - elem.getStartOffset()
+      ).trim();
 
       if (s.length() > 0) {
         switch (s.charAt(0)) {
