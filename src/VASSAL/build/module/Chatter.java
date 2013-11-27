@@ -376,7 +376,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     protected int drawUnselectedText(Graphics g, int x, int y,
                                      int p0, int p1) throws BadLocationException {
-      Element root = getElement();
+      final Element root = getElement();
       return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
     }
   }
@@ -425,6 +425,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     catch (BadLocationException e) {
       ErrorDialog.bug(e);
     }
+
     return col == null ? Color.black : col;
   }
 
