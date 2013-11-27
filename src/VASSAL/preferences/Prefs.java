@@ -207,7 +207,7 @@ public class Prefs implements Closeable {
   /**
    * Store this set of preferences in the editor, but don't yet save to disk
    */
-  public void save() throws IOException { 
+  public void save() throws IOException {
     storedValues.clear();
 
     // ensure that the prefs dir exists
@@ -234,7 +234,7 @@ public class Prefs implements Closeable {
           storedValues.put(c.getKey(), val);
         }
       }
-   
+
       // write back the key-value pairs
       ch.truncate(0);
       final OutputStream out = Channels.newOutputStream(ch);
