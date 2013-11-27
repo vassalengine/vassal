@@ -114,9 +114,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         input.setText(""); //$NON-NLS-1$
       }
     });
-    input.setMaximumSize
-        (new Dimension(input.getMaximumSize().width,
-                       input.getPreferredSize().height));
+    input.setMaximumSize(new Dimension(input.getMaximumSize().width,
+                                       input.getPreferredSize().height));
     scroll.setViewportView(conversation);
     add(scroll);
     add(input);
@@ -182,8 +181,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    FontConfigurer chatFont = new FontConfigurer
-        ("ChatFont", Resources.getString("Chatter.chat_font_preference")); //$NON-NLS-1$ //$NON-NLS-2$
+    final FontConfigurer chatFont = new FontConfigurer(
+      "ChatFont", Resources.getString("Chatter.chat_font_preference")
+    );
     chatFont.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         setFont((Font) evt.getNewValue());
