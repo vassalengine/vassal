@@ -175,7 +175,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	chmod 755 $@/Contents/MacOS/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
-	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
+	genisoimage -V VASSAL-$(VERSION) -R -apple -root VASSAL-$(VERSION).app -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
