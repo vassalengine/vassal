@@ -21,5 +21,13 @@ if [ ! -x "$JAVA" ]; then
   fi
 fi
 
+# filter out the -psn_* option added by Finder
+ARGS=()
+for ARG in "$@"; do
+  if [[ "$ARG" != -psn_* ]]; then
+    ARGS+=($(printf '%q' "$ARG"))
+  fi
+done
+
 # fire it up
-"$JAVA" -classpath Contents/Resources/Java/Vengine.jar -Dapple.awt.graphics.UseQuartz=false -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "$@"
+exec "$JAVA" -classpath Contents/Resources/Java/Vengine.jar -Dapple.awt.graphics.UseQuartz=false -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
