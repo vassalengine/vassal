@@ -75,6 +75,49 @@ public class ImageIOImageLoader implements ImageLoader {
   protected static final Set<Integer> skip_iTXt =
     Collections.singleton(PNGDecoder.iTXt);
 
+  // Used to indicate whether this version of Java has the JPEG color
+  // correction bug.
+  protected static final boolean YCbCrBug;
+
+  static {
+    BufferedImage img = null;
+
+    InputStream in = null;
+    try {
+      // We intentionally bypass the normal image loading system
+      // in order to see how ImageIO loads the test image.
+      in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg");
+      img = ImageIO.read(new MemoryCacheImageInputStream(in));
+      in.close();
+    }
+    catch (IOException e) {
+      // this should not happen
+      throw new IllegalStateException();
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+
+    if (img == null) {
+      // this should not happen
+      throw new IllegalStateException();
+    }
+
+    // The pixel in the image is supposed to be black. If the pixel is
+    // green, then ImageIO is misinterpreting the YCbCr data as RGB.
+    switch (img.getRGB(0,0)) {
+    case 0xFF000000:
+      YCbCrBug = false;
+      break;
+    case 0xFF008700:
+      YCbCrBug = true;
+      break;
+    default:
+      // This JVM is broken in an unexpected way!
+      throw new IllegalStateException();
+    }
+  }
+
   /**
    * Loads an image.
    *
@@ -198,7 +241,7 @@ public class ImageIOImageLoader implements ImageLoader {
           }
         }
       }
-      else {
+      else if (YCbCrBug) {
         rin.reset();
         rin.mark(512);
 
