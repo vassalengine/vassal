@@ -237,7 +237,7 @@ public class ImageIOImageLoader implements ImageLoader {
               // the first SOF marker, so if we see an SOF marker, we know
               // there are no APPn markers to find. Hence, we can decide now
               // whether this JPEG triggers the bug.
-              fix_YCbCr = 
+              fix_YCbCr =
                 ch.data.length == 15 &&
                 ch.data[5] == 3 &&    // color components
                 ch.data[7] == ch.data[10] &&
@@ -245,7 +245,7 @@ public class ImageIOImageLoader implements ImageLoader {
               break DONE_JPEG;
 
             case JPEGDecoder.APP0:
-              if (ch.data.length >= 4 && 
+              if (ch.data.length >= 4 &&
                   ch.data[0] == 'J' &&
                   ch.data[1] == 'F' &&
                   ch.data[2] == 'I' &&
@@ -255,7 +255,7 @@ public class ImageIOImageLoader implements ImageLoader {
                 break DONE_JPEG;
               }
               break;
-            
+
             case JPEGDecoder.APP2:
               // Check whether we have a color profile. If so, then ImageIO
               // can handle decoding the image.
@@ -276,14 +276,14 @@ public class ImageIOImageLoader implements ImageLoader {
                 fix_YCbCr = false;
                 break DONE_JPEG;
               }
-              break;      
+              break;
 
             case JPEGDecoder.APP13:
             case JPEGDecoder.APP14:
               // Created by Photoshop, this image is ok.
               fix_YCbCr = false;
               break DONE_JPEG;
-            
+
             case JPEGDecoder.SOS:
               // We've reached a Start of Scan marker. Following this
               // is not a normal segment, but instead a lot of raw data.
@@ -499,7 +499,7 @@ public class ImageIOImageLoader implements ImageLoader {
     final int[] data = db.getData();
 
     for (int i = 0; i < data.length; ++i) {
-      final int y  = (data[i] >> 16) & 0xFF;
+      final int y  =  (data[i] >> 16) & 0xFF;
       final int pb = ((data[i] >>  8) & 0xFF) - 128;
       final int pr = ( data[i]        & 0xFF) - 128;
 
