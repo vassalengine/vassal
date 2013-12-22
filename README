@@ -187,9 +187,6 @@ The following bugs in 3.2.8 are fixed in 3.2.9:
 *  9897: Mac bundle fails to find non-Apple JVMs
 *  9833: UnsatisfiedLinkError because JNA DLL cannot be read
 
-* Reverted JPEG color correction workaround for Bugs 9882, 10053, 10075,
-  10317, since current JVMs seem not to need it.
-
 The following bugs in 3.2.7 are fixed in 3.2.8:
 
 * 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
