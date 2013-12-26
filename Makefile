@@ -170,13 +170,13 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
-	chmod 755 $@/Contents/MacOS/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app
 	ln -s /Applications $@/Applications
 	cp dist/macosx/.DS_Store $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
+	chmod 755 $@/VASSAL-$(VERSION).app/Contents/MacOS/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL-$(VERSION) -D -R -apple -no-pad -o $@ $<
