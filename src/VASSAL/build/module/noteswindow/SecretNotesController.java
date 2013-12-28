@@ -316,7 +316,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           case COL_REVEALED:
             width = 60;
             break;
-          default :
+          default:
             width = 100;
             break;
         }
