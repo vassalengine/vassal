@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.8 released[/b][/size]
+[size=200][b]VASSAL 3.2.9 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.9, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -9,17 +9,17 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which which fi
 
 * If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
 
-* VASL 5.9.3 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is nearly finished.
+* VASL 6.0 is compatible with VASSAL 3.2. VASL users, please upgrade!
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.8.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.9.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-src.zip]Source code[/url]
 
 [size=150][b]Compatibility Notes[/b][/size]
 
@@ -96,6 +96,20 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which which fi
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.8 are fixed in 3.2.9:
+
+* 10641: Module Manager clobbers global preferences set in Editor, Player
+* 10628: Game state not set to unmodified after a save
+* 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
+* 10590: Cards painted in wrong location when Deck is sent after using "Draw specific cards" but without drawing cards
+* 10518: Text is not antialiased in chat pane on Linux
+* 10493: HTMLCharts do not follow anchors
+* 10468: VASSAL.sh doesn't work if path includes spaces
+* 10369: Windows installer doesn't find older installs on 64-bit systems
+* 10158: UnsatisfiedLinkError: Can't find dependent libraries via MemoryUtils.getPhysicalMemory
+*  9897: Mac bundle fails to find non-Apple JVMs
+*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
+
 The following bugs in 3.2.7 are fixed in 3.2.8:
 
 * 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
@@ -128,23 +142,9 @@ The following bugs in 3.2.6 are fixed in 3.2.7:
 *  2630: Editor crashes on close attempt when PieceDefiner is open
 *  2545: NPE in TurnTracker$SetDialog.addChildControls()
 
-The following bugs in 3.2.5 are fixed in 3.2.6:
+For changes prior to 3.2.7, see the change log.
 
-* 10184: Test Mode Counter Refresh created duplicate counters
-* 10174: NPE in DirectPeerPool.Entry.edit()
-* 10170: Incorrect LAN address reported under Linux
-* 10169: Non-latin characters are lost on P2P connections between different OS's
-* 10167: Improve efficiency of SELECTED handling
-* 10165: Rotation is not applied to Text Boxes in Game Piece Layouts
-* 10155: NPE in FormattedStringExpression.evaluate()
-* 10128: Slow Follow Property handling in Embellishment
-* 10125: Expression Builder should return a Property Name, not expression in the Set Global Property trait
-* 10072: NPE in SynchCommand.executeCommand()
-*  2714: NPE in StackMetrics.merge()
-
-For changes prior to 3.2.6, see the change log.
-
-Please report all bugs in 3.2.8, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.9, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 

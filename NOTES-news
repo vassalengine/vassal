@@ -1,23 +1,23 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.9, which which fixes several problems found in earlier versions.
 
 </p>
 <h2>IMPORTANT</h2>
 <ul>
   <li>If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.</li>
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
-  <li>VASL 5.9.3 and earlier are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is nearly finished.</li>
+  <li>VASL 6.0 is compatible with VASSAL 3.2. VASL users, please upgrade!</li>
   <li>If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.</li>
-  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.8.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
+  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.9.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.8-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.9-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
@@ -90,6 +90,22 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.8, which which fi
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in 3.2.8 are fixed in 3.2.9:
+<ul>
+ <li>10641: Module Manager clobbers global preferences set in Editor, Player</li>
+ <li>10628: Game state not set to unmodified after a save</li>
+ <li>10594: Max heap estimate sometimes too low for image tiler on Mac OS X</li>
+ <li>10590: Cards painted in wrong location when Deck is sent after using "Draw specific cards" but without drawing cards</li>
+ <li>10518: Text is not antialiased in chat pane on Linux</li>
+ <li>10493: HTMLCharts do not follow anchors</li>
+ <li>10468: VASSAL.sh doesn't work if path includes spaces</li>
+ <li>10369: Windows installer doesn't find older installs on 64-bit systems</li>
+ <li>10158: UnsatisfiedLinkError: Can't find dependent libraries via MemoryUtils.getPhysicalMemory</li>
+ <li>9897: Mac bundle fails to find non-Apple JVMs</li>
+ <li>9833: UnsatisfiedLinkError because JNA DLL cannot be read</li>
+</ul>
+</p>
+<p>
 The following bugs in 3.2.7 are fixed in 3.2.8:
 <ul>
  <li>10342: IOException in ZipArchive.writeToDisk() while writing Preferences file</li>
@@ -125,26 +141,11 @@ The following bugs in 3.2.6 are fixed in 3.2.7:
 </ul>
 </p>
 <p>
-The following bugs in 3.2.5 are fixed in 3.2.6:
-<ul>
-  <li>10184: Test Mode Counter Refresh created duplicate counters</li>
-  <li>10174: NPE in DirectPeerPool.Entry.edit()</li>
-  <li>10170: Incorrect LAN address reported under Linux</li>
-  <li>10169: Non-latin characters are lost on P2P connections between different OS's</li>
-  <li>10167: Improve efficiency of SELECTED handling</li>
-  <li>10165: Rotation is not applied to Text Boxes in Game Piece Layouts</li>
-  <li>10155: NPE in FormattedStringExpression.evaluate()</li>
-  <li>10128: Slow Follow Property handling in Embellishment</li>
-  <li>10125: Expression Builder should return a Property Name, not expression in the Set Global Property trait</li>
-  <li>10072: NPE in SynchCommand.executeCommand()</li>
-  <li>2714: NPE in StackMetrics.merge()</li>
-</ul>
+<p>
+For changes prior to 3.2.7, see the change log.
 </p>
 <p>
-For changes prior to 3.2.6, see the change log.
-</p>
-<p>
-Please report all bugs in 3.2.8 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.9 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>
