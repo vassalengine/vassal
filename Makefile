@@ -173,7 +173,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app
 	ln -s /Applications $@/Applications
-	cp dist/macosx/.DS_Store $@
+#	cp dist/macosx/.DS_Store $@
 	mkdir -p $@/.background
 	cp dist/macosx/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
