@@ -25,8 +25,6 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.9, which which fi
 
 * VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
-* Current versions of VASL are not compatible with VASSAL 3.2. Work to update VASL for 3.2 is ongoing.
-
 [size=150][b]New Features in 3.2[/b][/size]
 
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
