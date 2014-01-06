@@ -105,7 +105,8 @@ public class ImageIOImageLoader implements ImageLoader {
 
     // The pixel in the image is supposed to be black. If the pixel is
     // green, then ImageIO is misinterpreting the YCbCr data as RGB.
-    switch (img.getRGB(0,0)) {
+    final int pixel = img.getRGB(0,0);
+    switch (pixel) {
     case 0xFF000000:
       YCbCrBug = false;
       break;
@@ -114,7 +115,9 @@ public class ImageIOImageLoader implements ImageLoader {
       break;
     default:
       // This JVM is broken in an unexpected way!
-      throw new IllegalStateException();
+      throw new IllegalStateException(
+        "Unexpected pixel value 0x" + String.format("%08x", pixel)
+      );
     }
   }
 
