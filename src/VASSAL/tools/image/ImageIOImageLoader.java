@@ -108,6 +108,7 @@ public class ImageIOImageLoader implements ImageLoader {
     final int pixel = img.getRGB(0,0);
     switch (pixel) {
     case 0xFF000000:
+    case 0xFF008080:
       YCbCrBug = false;
       break;
     case 0xFF008700:
