@@ -77,10 +77,7 @@ public class ImageIOImageLoader implements ImageLoader {
 
   // Used to indicate whether this version of Java has the JPEG color
   // correction bug.
-
-  protected enum JPEGBugs { None, YCbCrBug, WeirdBug }
-
-  protected static final JPEGBugs JPEGBug;
+  protected static final boolean YCbCrBug;
 
   static {
     BufferedImage img = null;
@@ -107,21 +104,15 @@ public class ImageIOImageLoader implements ImageLoader {
     }
 
     // The pixel in the image is supposed to be black. If the pixel is
-    // green, then ImageIO is misinterpreting the YCbCr data as RGB. If
-    // the pixel is tuqouise, then ImageIO is misinterpreting the color
-    // data in some other regular way we haven't identified yet. We've
-    // seen this latter thing happen only with 1.7.0_21 and 1.7.0_25 on
-    // Linux so far...
+    // green, then ImageIO is misinterpreting the YCbCr data as RGB.
     final int pixel = img.getRGB(0,0);
     switch (pixel) {
     case 0xFF000000:
-      JPEGBug = JPEGBugs.None;
-      break;
     case 0xFF008080:
-      JPEGBug = JPEGBugs.WeirdBug;
+      YCbCrBug = false;
       break;
     case 0xFF008700:
-      JPEGBug = JPEGBugs.YCbCrBug;
+      YCbCrBug = true;
       break;
     default:
       // This JVM is broken in an unexpected way!
@@ -176,7 +167,7 @@ public class ImageIOImageLoader implements ImageLoader {
     boolean fix_tRNS = false;
     int tRNS = 0x00000000;
 
-    boolean fix_JPEG = false;
+    boolean fix_YCbCr = false;
 
     BufferedImage img = null;
     RereadableInputStream rin = null;
@@ -254,7 +245,7 @@ public class ImageIOImageLoader implements ImageLoader {
           }
         }
       }
-      else if (JPEGBug != JPEGBugs.None) {
+      else if (YCbCrBug) {
         rin.reset();
         rin.mark(512);
 
@@ -268,7 +259,7 @@ public class ImageIOImageLoader implements ImageLoader {
           // this image is RGB instead of YCbCr.
 
           JPEGDecoder.Chunk ch;
-          fix_JPEG = true;
+          fix_YCbCr = true;
 
           DONE_JPEG: for (;;) {
             ch = JPEGDecoder.decodeChunk(din);
@@ -293,7 +284,7 @@ public class ImageIOImageLoader implements ImageLoader {
               // the first SOF marker, so if we see an SOF marker, we know
               // there are no APPn markers to find. Hence, we can decide now
               // whether this JPEG triggers the bug.
-              fix_JPEG =
+              fix_YCbCr =
                 ch.data.length == 15 &&
                 ch.data[5] == 3 &&    // color components
                 ch.data[7] == ch.data[10] &&
@@ -307,7 +298,7 @@ public class ImageIOImageLoader implements ImageLoader {
                   ch.data[2] == 'I' &&
                   ch.data[3] == 'F') {
                 // We've seen a JFIF, this image is ok.
-                fix_JPEG = false;
+                fix_YCbCr = false;
                 break DONE_JPEG;
               }
               break;
@@ -329,7 +320,7 @@ public class ImageIOImageLoader implements ImageLoader {
                   ch.data[10] == 'E' &&
                   ch.data[11] == 0x00) {
                 // We have a color profile, this image is ok.
-                fix_JPEG = false;
+                fix_YCbCr = false;
                 break DONE_JPEG;
               }
               break;
@@ -337,7 +328,7 @@ public class ImageIOImageLoader implements ImageLoader {
             case JPEGDecoder.APP13:
             case JPEGDecoder.APP14:
               // Created by Photoshop, this image is ok.
-              fix_JPEG = false;
+              fix_YCbCr = false;
               break DONE_JPEG;
 
             case JPEGDecoder.SOS:
@@ -382,17 +373,10 @@ public class ImageIOImageLoader implements ImageLoader {
       img = fix_tRNS(ref, tRNS, type);
       ref.obj = img;
     }
-    else if (fix_JPEG) {
+    else if (fix_YCbCr) {
       // Fix up color space in misinterpreted JPEGs.
       img = null;
-      switch (JPEGBug) {
-      case YCbCrBug:
-        img = fix_YCbCr(ref, type);
-        break;
-      case WeirdBug:
-        img = fix_Weird(ref, type);
-        break;
-      }      
+      img = fix_YCbCr(ref, type);
       ref.obj = img;
     }
 
@@ -566,50 +550,10 @@ public class ImageIOImageLoader implements ImageLoader {
       final int pb = ((data[i] >>  8) & 0xFF) - 128;
       final int pr = ( data[i]        & 0xFF) - 128;
 
-      final int a = (data[i] >> 24) & 0xFF;
+      final int a  = (data[i] >> 24) & 0xFF;
       final int r = (int) Math.round(y + 1.402*pr);
       final int g = (int) Math.round(y - 0.34414*pb - 0.71414*pr);
       final int b = (int) Math.round(y + 1.772*pb);
-
-      data[i] = (a << 24) |
-                ((r < 0 ? 0 : (r > 0xFF ? 0xFF : r)) << 16) |
-                ((g < 0 ? 0 : (g > 0xFF ? 0xFF : g)) <<  8) |
-                 (b < 0 ? 0 : (b > 0xFF ? 0xFF : b));
-    }
-
-    return img;
-  }
-
-  protected BufferedImage fix_Weird(Reference<BufferedImage> ref, int type)
-                                                      throws ImageIOException {
-    BufferedImage img = ref.obj;
-
-    // Ensure that we are working with RGB or ARGB data.
-    if (img.getType() != BufferedImage.TYPE_INT_RGB &&
-        img.getType() != BufferedImage.TYPE_INT_ARGB) {
-
-      if (type != BufferedImage.TYPE_INT_RGB &&
-          type != BufferedImage.TYPE_INT_ARGB) {
-        type = BufferedImage.TYPE_INT_ARGB;
-      }
-
-      img = null;
-      img = tconv.convert(ref, type);
-    }
-
-    // NB: This unmanages the image.
-    final DataBufferInt db = (DataBufferInt) img.getRaster().getDataBuffer();
-    final int[] data = db.getData();
-
-    for (int i = 0; i < data.length; ++i) {
-      final int y = (data[i] >> 16) & 0xFF; 
-      final int pb = (data[i] >>  8) & 0xFF;
-      final int pr =  data[i]        & 0xFF;
-
-      final int a = (data[i] >> 24) & 0xFF;
-      final int r = (int)Math.round(y +               1.381096*pr - 173.897890);
-      final int g = (int)Math.round(y - 0.323847*pb - 0.699357*pr + 130.932234);
-      final int b = (int)Math.round(y + 1.772450*pb               - 226.332779);
 
       data[i] = (a << 24) |
                 ((r < 0 ? 0 : (r > 0xFF ? 0xFF : r)) << 16) |
