@@ -104,13 +104,17 @@ public class ImageIOImageLoader implements ImageLoader {
     }
 
     // The pixel in the image is supposed to be black. If the pixel is
-    // green, then ImageIO is misinterpreting the YCbCr data as RGB.
+    // green, then ImageIO is misinterpreting the YCbCr data as RGB. If
+    // the pixel is turquoise, then ImageIO is misinterpreting the color
+    // in yet another way, which will also lead to same YCbCr mangling.
+    // (So far the turquoise pixel happens only with 1.7.0_21 and 1.7.0_25
+    // JVMs on Linux...)
     final int pixel = img.getRGB(0,0);
     switch (pixel) {
     case 0xFF000000:
-    case 0xFF008080:
       YCbCrBug = false;
       break;
+    case 0xFF008080:
     case 0xFF008700:
       YCbCrBug = true;
       break;
