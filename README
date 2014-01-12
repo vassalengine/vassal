@@ -173,6 +173,10 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.9 are fixed in 3.2.10:
+
+* 10723: IllegalStateException in ImageIOImageLoader.<clinit>
+
 The following bugs in 3.2.8 are fixed in 3.2.9:
 
 * 10641: Module Manager clobbers global preferences set in Editor, Player
