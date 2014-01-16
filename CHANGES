@@ -1,3 +1,7 @@
+3.2.10 - 16 January 2014
+
+* 10723: IllegalStateException in ImageIOImageLoader.<clinit>
+
 3.2.9 - 1 January 2014
 
 * 10641: Module Manager clobbers global preferences set in Editor, Player
