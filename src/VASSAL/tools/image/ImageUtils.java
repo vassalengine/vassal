@@ -328,12 +328,18 @@ public class ImageUtils {
     return dst;
   }
 
-  private static boolean isMacRetina() {
+  protected static final boolean IS_MAC_RETINA;
+
+  static {
     final Object o = Toolkit.getDefaultToolkit().getDesktopProperty(
       "apple.awt.contentScaleFactor"
     );
 
-    return (o instanceof Number) && ((Number) o).doubleValue() == 2.0;
+    IS_MAC_RETINA = (o instanceof Number) && ((Number) o).doubleValue() == 2.0;
+  }
+
+  public static boolean isMacRetina() {
+    return IS_MAC_RETINA;
   }
 
   private static boolean isHeadless() {
