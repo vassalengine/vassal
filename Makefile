@@ -12,14 +12,8 @@
 # Also you might possibly need mingw32 for use with launch4j, depending on
 # the architecture of your machine.
 # 
-# For intellectual property reasons, nsis will not work out of the box on
-# Linux. (It will fail with "Invalid command:  System::Call"). To remedy
-# this, you can either: 
-#
-# 1) Install nsis on a Windows system, and copy the Plugins\System.dll file
-# into /usr/share/nsis/plugins, or
-#
-# 2) Get both the (Windows) binary and source for NSIS and build with scons:
+# If your Linux distribution does not package nsis, you can build it. Get
+# both the (Windows) binary and source for NSIS and build with scons:
 #
 # scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all \
 #       NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip \
@@ -33,6 +27,11 @@
 #
 # If you want to build the Apple ICNS file, you will need librsvg2 and
 # png2icns.
+#
+# If you want to build Apple DMGs, you will need genisoimage and
+# libdmg-hfsplus. The latter can be obtained from:
+#
+# 	https://github.com/vasi/libdmg-hfsplus.git
 #
 
 SHELL:=/bin/bash
@@ -67,6 +66,8 @@ JDOC:=$(JAVAPATH)/javadoc
 JAVA:=$(JAVAPATH)/java
 
 NSIS:=makensis
+#DMG:=dmg
+DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
@@ -180,8 +181,11 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.ap
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
+$(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
+	
+$(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
+	$(DMG) dmg $< $@
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
