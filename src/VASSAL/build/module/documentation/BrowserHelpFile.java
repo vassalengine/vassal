@@ -333,9 +333,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected void packFile(File packed, String prefix, ZipOutputStream out)
                                                           throws IOException {
       if (packed.isDirectory()) {
-        final ZipEntry entry = new ZipEntry(packed.getName()+"/"); //$NON-NLS-1$
-        out.putNextEntry(entry);
-
         for (File f : packed.listFiles()) {
           packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
         }
