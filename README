@@ -173,6 +173,11 @@ New Features in 3.2
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.10 are fixed in 3.2.11:
+
+* 10797: Display installation instructions in DMG root window for Mac OS X
+* 10796: Create compressed DMG for Mac OS X
+
 The following bugs in 3.2.9 are fixed in 3.2.10:
 
 * 10723: IllegalStateException in ImageIOImageLoader.<clinit>
