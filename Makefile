@@ -156,7 +156,7 @@ version:
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
+$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(JARS) $(TMPDIR)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
@@ -171,17 +171,17 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL-$(VERSION).app
+$(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app
 	ln -s /Applications $@/Applications
-#	cp dist/macosx/.DS_Store $@
+	cp dist/macosx/.DS_Store $@
 	mkdir -p $@/.background
 	cp dist/macosx/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/VASSAL-$(VERSION).app/Contents/MacOS/VASSAL.sh
+	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
-	genisoimage -V VASSAL-$(VERSION) -D -R -apple -no-pad -o $@ $<
+	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
