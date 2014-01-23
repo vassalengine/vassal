@@ -39,6 +39,7 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
@@ -58,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.image.ImageUtils;
@@ -229,6 +231,22 @@ public class SVGRenderer {
                              String uri,
                              TranscoderOutput output)
                              throws TranscoderException {
+      if (ImageUtils.isMacRetina()) {
+        final Element g = document.createElementNS(
+          SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
+        );
+        g.setAttributeNS(null, "transform", "rotate(0.000001)");
+      
+        // interpose this <g> element between <svg> and its children
+        final Element svg = document.getDocumentElement();
+        Node n = null;
+        while ((n = svg.getFirstChild()) != null) {
+          g.appendChild(n);
+        }
+
+        svg.appendChild(g);
+      }
+
       // Sets up root, curTxf & curAoi
       super.transcode(document, uri, output);
 
