@@ -175,6 +175,7 @@ New Features in 3.2
 
 The following bugs in 3.2.10 are fixed in 3.2.11:
 
+* 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
 * 10797: Display installation instructions in DMG root window for Mac OS X
 * 10796: Create compressed DMG for Mac OS X
 
