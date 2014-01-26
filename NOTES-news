@@ -92,6 +92,7 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which f
 The following bugs in 3.2.10 are fixed in 3.2.11:
 <ul>
   <li>10809: First-time dialog is too tall on very short screens</li>
+  <li>10807: NPE in ColorManager.getColorSwatch()</li>
   <li>10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()</li>
   <li>10797: Display installation instructions in DMG root window for Mac OS X</li>
   <li>10796: Create compressed DMG for Mac OS X</li>
