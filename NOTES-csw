@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which fixes several problems found in earlier versions.
 
 <h3>IMPORTANT</h3>
 * If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
@@ -9,14 +9,14 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which f
 
 * If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.10.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.11.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 <h3>Download</h3>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-linux.tar.bz2' target='_new'>Linux</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-macosx.dmg' target='_new'>Mac OS X</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-windows.exe' target='_new'>Windows</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-other.zip'  target='_new'>Other</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-src.zip' target='_new'>Source code</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-linux.tar.bz2' target='_new'>Linux</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-macosx.dmg' target='_new'>Mac OS X</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-windows.exe' target='_new'>Windows</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-other.zip'  target='_new'>Other</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-src.zip' target='_new'>Source code</a>
 <h3>Compatibility Notes</h3>
 * VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
 
@@ -85,6 +85,14 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which f
 
 * Notify user when image loading fails [RFE 1887]
 
+The following bugs in 3.2.10 are fixed in 3.2.11:
+
+* 10809: First-time dialog is too tall on very short screens
+* 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
+* 10797: Display installation instructions in DMG root window for Mac OS X
+* 10796: Create compressed DMG for Mac OS X
+* 10793: Text in SVG is not rendered on Macs with Retina displays
+
 The following bugs in 3.2.9 are fixed in 3.2.10:
 
 * 10723: IllegalStateException in ImageIOImageLoader.<clinit>
@@ -103,22 +111,9 @@ The following bugs in 3.2.8 are fixed in 3.2.9:
 *  9897: Mac bundle fails to find non-Apple JVMs
 *  9833: UnsatisfiedLinkError because JNA DLL cannot be read
 
-The following bugs in 3.2.7 are fixed in 3.2.8:
+For changes prior to 3.2.9, see the change log.
 
-* 10342: IOException in ZipArchive.writeToDisk() while writing Preferences file
-* 10317: 3-component JPEGs without JFIF markers where color components are differently subsampled are incorrectly color-corrected by fix for Bug 9882
-* 10298: Exception: TurnTracker.level_error in TurnComponent.getTurnLevel()
-* 10279: Report State failed to perform inner commands before its own command
-* 10266: ConcurrentModificationException at Prefs.save()
-*  3294: IOException writing preferences at startup on Mac OS
-*  2727: NPE in ReadOnlyPrefs ctor
-*  2587: Manager and Player preferences get out of step
-
-* Reverted bad fix for 2714: NPE in StackMetrics.merge()
-
-For changes prior to 3.2.8, see the change log.
-
-Please report all bugs in 3.2.10, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.11, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 <h3>Minimum Requirements</h3>
 VASSAL 3.2 requires the Java Runtime Envrionment to run.

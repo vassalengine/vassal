@@ -1,3 +1,11 @@
+3.2.11 - ??
+
+* 10809: First-time dialog is too tall on very short screens
+* 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
+* 10797: Display installation instructions in DMG root window for Mac OS X
+* 10796: Create compressed DMG for Mac OS X
+* 10793: Text in SVG is not rendered on Macs with Retina displays
+
 3.2.10 - 16 January 2014
 
 * 10723: IllegalStateException in ImageIOImageLoader.<clinit>

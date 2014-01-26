@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which fixes several problems found in earlier versions.
 
 </p>
 <h2>IMPORTANT</h2>
@@ -8,16 +8,16 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which f
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
   <li>VASL 6.0 is compatible with VASSAL 3.2. VASL users, please upgrade!</li>
   <li>If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.</li>
-  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.10.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
+  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.11.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.10-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-src.zip">Source</a></li>
 </ul>
 <h2>Compatibility Notes</h2>
 <ul>
@@ -89,6 +89,16 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.10, which which f
   <li>Notify user when image loading fails [RFE 1887]</li>
 </ul>
 <p>
+The following bugs in 3.2.10 are fixed in 3.2.11:
+<ul>
+  <li>10809: First-time dialog is too tall on very short screens</li>
+  <li>10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()</li>
+  <li>10797: Display installation instructions in DMG root window for Mac OS X</li>
+  <li>10796: Create compressed DMG for Mac OS X</li>
+  <li>10793: Text in SVG is not rendered on Macs with Retina displays</li>
+</ul>
+</p>
+<p>
 The following bugs in 3.2.9 are fixed in 3.2.10:
 <ul>
  <li>10723: IllegalStateException in ImageIOImageLoader.&lt;clinit&gt;</li>
@@ -111,24 +121,10 @@ The following bugs in 3.2.8 are fixed in 3.2.9:
 </ul>
 </p>
 <p>
-The following bugs in 3.2.7 are fixed in 3.2.8:
-<ul>
- <li>10342: IOException in ZipArchive.writeToDisk() while writing Preferences file</li>
- <li>10317: 3-component JPEGs without JFIF markers where color components are differently subsampled are incorrectly color-corrected by fix for Bug 9882</li>
- <li>10298: Exception: TurnTracker.level_error in TurnComponent.getTurnLevel()</li>
- <li>10279: Report State failed to perform inner commands before its own command</li>
- <li>10266: ConcurrentModificationException at Prefs.save()</li>
- <li>3294: IOException writing preferences at startup on Mac OS</li>
- <li>2727: NPE in ReadOnlyPrefs ctor</li>
- <li>2587: Manager and Player preferences get out of step</li>
- <li>Reverted bad fix for 2714: NPE in StackMetrics.merge()</li>
-</ul>
+For changes prior to 3.2.9, see the change log.
 </p>
 <p>
-For changes prior to 3.2.8, see the change log.
-</p>
-<p>
-Please report all bugs in 3.2.10 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.11 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>Minimum Requirements</h2>
