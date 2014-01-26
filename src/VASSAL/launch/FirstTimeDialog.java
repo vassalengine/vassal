@@ -20,12 +20,16 @@ package VASSAL.launch;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Locale;
@@ -42,10 +46,15 @@ import javax.swing.JPanel;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.ImageIOException;
 
 /**
  * A dialog for first-time users.
@@ -54,6 +63,9 @@ import VASSAL.tools.ErrorDialog;
  */
 public class FirstTimeDialog extends JDialog {
   private static final long serialVersionUID = 1L;
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(FirstTimeDialog.class);
 
   public FirstTimeDialog(Frame parent) {
     super(parent, true);
@@ -65,8 +77,7 @@ public class FirstTimeDialog extends JDialog {
       }
     });
 
-    final JLabel about = new JLabel(
-      new ImageIcon(getClass().getResource("/images/Splash.png")));
+    final JLabel about = new JLabel();
 
     final JLabel welcome = new JLabel();
     welcome.setFont(new Font("SansSerif", 1, 40));  //$NON-NLS-1$
@@ -167,8 +178,47 @@ public class FirstTimeDialog extends JDialog {
     layout.linkSize(new Component[]{tour, jump, help});
 
     add(panel);
-
     pack();
+
+    // load the splash image
+    BufferedImage img = null;
+    try {
+      img = ImageUtils.getImageResource("/images/Splash.png");
+    }
+    catch (ImageIOException e) {
+      logger.error("", e);
+    }
+
+    if (img != null) {
+      // ensure that the dialog fits on the screen
+      final Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                                                  .getMaximumWindowBounds();
+      final Dimension dsize = getSize();
+      final Dimension remainder = new Dimension(
+        Math.max(screen.width - dsize.width, 0),
+        Math.max(screen.height - dsize.height, 0)
+      );
+
+      if (remainder.width == 0 || remainder.height == 0) {
+        // no room for the image, do nothing
+      }
+      else if (remainder.width >= img.getWidth() &&
+               remainder.height >= img.getHeight()) {
+        // the whole image fits, use it as-is
+        about.setIcon(new ImageIcon(img));
+      }
+      else {
+        // downscale the image to fit
+        final double scale = Math.min(
+          remainder.width  / (double) img.getWidth(),
+          remainder.height / (double) img.getHeight()
+        );
+        about.setIcon(new ImageIcon(ImageUtils.transform(img, scale, 0.0)));;
+      }
+
+      pack();
+    }
+
     setMinimumSize(getSize());
     setLocationRelativeTo(null);
   }
