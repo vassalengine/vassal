@@ -2,13 +2,12 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <outfile>VASSAL.exe</outfile>
-  <errTitle></errTitle>
+  <errTitle>VASSAL</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
   <supportUrl>http://forums.vassalengine.org</supportUrl>
-  <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
   <icon>VASSAL.ico</icon>
   <classPath>
@@ -16,9 +15,7 @@
     <cp>lib\Vengine.jar</cp>
   </classPath>
   <jre>
-    <path></path>
     <minVersion>1.5.0</minVersion>
-    <dontUsePrivateJres>false</dontUsePrivateJres>
   </jre>
   <versionInfo>
     <fileVersion>%NUMVERSION%.0</fileVersion>
