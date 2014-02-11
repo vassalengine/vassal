@@ -11,12 +11,16 @@ if [ ! -x "$JAVA" ]; then
   # try Java 7
   JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
   if [ ! -x "$JAVA" ]; then
-    # try whatever's on the PATH
-    JAVA="$(which java)"
+    # try Java 5
+    JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Commands/java"
     if [ ! -x "$JAVA" ]; then
-      # you seem not to have Java
-      osascript -e 'tell app "System Events" to display alert "VASSAL requires Java in order to run. Please install Java before starting VASSAL." as critical buttons {"OK"}'
-      exit 1
+      # try whatever's on the PATH
+      JAVA="$(which java)"
+      if [ ! -x "$JAVA" ]; then
+        # you seem not to have Java
+        osascript -e 'tell app "System Events" to display alert "VASSAL requires Java in order to run. Please install Java before starting VASSAL." as critical buttons {"OK"}'
+        exit 1
+      fi
     fi
   fi
 fi
