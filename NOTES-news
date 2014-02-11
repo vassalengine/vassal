@@ -91,6 +91,8 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which f
 <p>
 The following bugs in 3.2.10 are fixed in 3.2.11:
 <ul>
+  <li>10852: New launcher script does not find Java 5 on old Macs</li>
+  <li>10848: Failure to launch on newer versions of Windows due to old Launch4j</li>
   <li>10809: First-time dialog is too tall on very short screens</li>
   <li>10807: NPE in ColorManager.getColorSwatch()</li>
   <li>10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()</li>

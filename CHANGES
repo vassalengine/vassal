@@ -1,5 +1,7 @@
 3.2.11 - ??
 
+* 10852: New launcher script does not find Java 5 on old Macs
+* 10848: Failure to launch on newer versions of Windows due to old Launch4j
 * 10809: First-time dialog is too tall on very short screens
 * 10807: NPE in ColorManager.getColorSwatch()
 * 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
