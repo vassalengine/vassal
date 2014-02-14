@@ -17,8 +17,40 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which f
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-windows.exe' target='_new'>Windows</a>
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-other.zip'  target='_new'>Other</a>
 * <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-src.zip' target='_new'>Source code</a>
-<h3>Compatibility Notes</h3>
-* VASSAL 3.2 is backwards compatible. VASSAL 3.1 is NOT forwards compatible. This means that modules, logs, and saves from VASSAL 3.1 should work in 3.2, but there is no guarantee that modules, logs, and saves from 3.2 will work in 3.1. Therefore, if you write a module, log, or save file in 3.2 DO NOT expect to be able to load it in 3.1.
+
+<h3>Recent Changes</h3>
+The following bugs in 3.2.10 are fixed in 3.2.11:
+
+* 10852: New launcher script does not find Java 5 on old Macs
+* 10848: Failure to launch on newer versions of Windows due to old Launch4j
+* 10809: First-time dialog is too tall on very short screens
+* 10807: NPE in ColorManager.getColorSwatch()
+* 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
+* 10797: Display installation instructions in DMG root window for Mac OS X
+* 10796: Create compressed DMG for Mac OS X
+* 10793: Text in SVG is not rendered on Macs with Retina displays
+
+The following bugs in 3.2.9 are fixed in 3.2.10:
+
+* 10723: IllegalStateException in ImageIOImageLoader.<clinit>
+
+The following bugs in 3.2.8 are fixed in 3.2.9:
+
+* 10641: Module Manager clobbers global preferences set in Editor, Player
+* 10628: Game state not set to unmodified after a save
+* 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
+* 10590: Cards painted in wrong location when Deck is sent after using "Draw specific cards" but without drawing cards
+* 10518: Text is not antialiased in chat pane on Linux
+* 10493: HTMLCharts do not follow anchors
+* 10468: VASSAL.sh doesn't work if path includes spaces
+* 10369: Windows installer doesn't find older installs on 64-bit systems
+* 10158: UnsatisfiedLinkError: Can't find dependent libraries via MemoryUtils.getPhysicalMemory
+*  9897: Mac bundle fails to find non-Apple JVMs
+*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
+
+For changes prior to 3.2.9, see the change log.
+
+Please report all bugs in 3.2.11, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 <h3>New Features in 3.2</h3>
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
@@ -85,39 +117,6 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which f
 
 * Notify user when image loading fails [RFE 1887]
 
-The following bugs in 3.2.10 are fixed in 3.2.11:
-
-* 10852: New launcher script does not find Java 5 on old Macs
-* 10848: Failure to launch on newer versions of Windows due to old Launch4j
-* 10809: First-time dialog is too tall on very short screens
-* 10807: NPE in ColorManager.getColorSwatch()
-* 10798: ZipException in BrowserHelpFile.ConfigSupport.packFile()
-* 10797: Display installation instructions in DMG root window for Mac OS X
-* 10796: Create compressed DMG for Mac OS X
-* 10793: Text in SVG is not rendered on Macs with Retina displays
-
-The following bugs in 3.2.9 are fixed in 3.2.10:
-
-* 10723: IllegalStateException in ImageIOImageLoader.<clinit>
-
-The following bugs in 3.2.8 are fixed in 3.2.9:
-
-* 10641: Module Manager clobbers global preferences set in Editor, Player
-* 10628: Game state not set to unmodified after a save
-* 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
-* 10590: Cards painted in wrong location when Deck is sent after using "Draw specific cards" but without drawing cards
-* 10518: Text is not antialiased in chat pane on Linux
-* 10493: HTMLCharts do not follow anchors
-* 10468: VASSAL.sh doesn't work if path includes spaces
-* 10369: Windows installer doesn't find older installs on 64-bit systems
-* 10158: UnsatisfiedLinkError: Can't find dependent libraries via MemoryUtils.getPhysicalMemory
-*  9897: Mac bundle fails to find non-Apple JVMs
-*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
-
-For changes prior to 3.2.9, see the change log.
-
-Please report all bugs in 3.2.11, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
-
 <h3>Minimum Requirements</h3>
 VASSAL 3.2 requires the Java Runtime Envrionment to run.
 
@@ -132,7 +131,7 @@ If you've installed Java 7 on Windows and thereafter VASSAL fails to launch: The
 <h3>Help us test</h3>
 Should you find any problems/oddities/bugs, please tell us so that we can fix them for a future release of VASSAL.
 
-Report bugs here in the Technical Support & Bugs category at the <a href='http://vassalengine.org/forums/viewforum.php?f=3' target='_new'>VASSAL forums</a>, or by email to <a href='mailto:uckelman@nomic.net'>uckelman@nomic.net</a>.
+Report bugs here in the Technical Support & Bugs category at the <a href='http://vassalengine.org/forums/viewforum.php?f=3' target='_new'>VASSAL forums</a>, or by email to <a href='mailto:bugs@vassalengine.org'>bugs@vassalengine.org</a>.
 
 Cheers,
 

@@ -1,4 +1,4 @@
-3.2.11 - ??
+3.2.11 - 14 February 2014
 
 * 10852: New launcher script does not find Java 5 on old Macs
 * 10848: Failure to launch on newer versions of Windows due to old Launch4j
