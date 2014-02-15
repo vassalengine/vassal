@@ -4,19 +4,23 @@
 APP_ROOT="$(dirname "$0")/../.."
 cd "$APP_ROOT"
 
-# find a JRE to use
-# try Apple's Java
+# find Java
+# try Apple's JRE
 JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java"
 if [ ! -x "$JAVA" ]; then
-  # try Oracle's Java 7
-  JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
+  # try Apple's JDK
+  JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Commands/java"
   if [ ! -x "$JAVA" ]; then
-    # try whatever's on the PATH as a last resort
-    JAVA="$(which java)"
+    # try Oracle's Java 7
+    JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
     if [ ! -x "$JAVA" ]; then
-      # you seem not to have Java
-      osascript -e 'tell app "System Events" to display alert "VASSAL requires Java in order to run. Please install Java before starting VASSAL." as critical buttons {"OK"}'
-      exit 1
+      # try whatever's on the PATH as a last resort
+      JAVA="$(which java)"
+      if [ ! -x "$JAVA" ]; then
+        # you seem not to have Java
+        osascript -e 'tell app "System Events" to display alert "VASSAL requires Java in order to run. Please install Java before starting VASSAL." as critical buttons {"OK"}'
+        exit 1
+      fi
     fi
   fi
 fi
