@@ -48,6 +48,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 
+import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
 /**
@@ -272,8 +273,7 @@ public class ZipArchive implements FileArchive {
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
 
       // create new temp file
-      final File tf =
-        TempFileManager.getInstance().createTempFile("zip", ".tmp");
+      final File tf = File.createTempFile("zip", ".tmp", Info.getTempDir());
 
       // set up new Entry
       final Entry e = new Entry(ze, tf);

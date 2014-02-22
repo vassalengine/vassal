@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
-import VASSAL.tools.imageop.Op;
 
 /**
  * Handles temporary files. <code>TempFileManager</code> cleans up
@@ -57,7 +56,10 @@ import VASSAL.tools.imageop.Op;
  *
  * @since 3.1.0
  * @author Joel Uckelman
+ * @deprecated Create temporary files with {@link File.createTempFile()}
+ * in {@link VASSAL.Info.getTempDir()}.
  */
+@Deprecated
 public class TempFileManager {
   private static final Logger logger =
     LoggerFactory.getLogger(TempFileManager.class);

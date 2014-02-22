@@ -48,6 +48,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
+
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
@@ -83,7 +86,6 @@ import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.TempFileManager;
 
 /**
  * The map board itself.
@@ -176,23 +178,26 @@ public class MapBoard extends Importer {
     protected Rectangle writeImageToArchive() throws IOException {
       // write image to archive
       final BufferedImage image = getLayerImage();
-      if (image != null) {
-        final Rectangle r = getCropRectangle(image);
-        if (r.width == 0 || r.height == 0) {
-          return null;
-        }
-        final File f =
-          TempFileManager.getInstance().createTempFile("map", ".png");
-        ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
+      if (image == null) {
+        return null;
+      }
 
+      final Rectangle r = getCropRectangle(image);
+      if (r.width == 0 || r.height == 0) {
+        return null;
+      }
+
+      final File f = File.createTempFile("map", ".png", Info.getTempDir());
+      try {
+        ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
         imageName = getUniqueImageFileName(getName(), ".png");
         GameModule.getGameModule()
                   .getArchiveWriter()
                   .addImage(f.getPath(), imageName);
         return r;
       }
-      else {
-        return null;
+      finally {
+        FileUtils.forceDelete(f);
       }
     }
 
