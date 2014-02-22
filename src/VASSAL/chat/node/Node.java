@@ -86,6 +86,11 @@ public class Node implements MsgSender {
   }
 
   public void add(Node child) {
+    // FIXME: added this to find out what is calling add(null)
+    if (child == null) {
+      throw new NullPointerException("child == null");
+    }
+
     if (child.parent != null) {
       child.parent.remove(child);
     }
