@@ -362,7 +362,7 @@ public class ZipArchive implements FileArchive {
 
       // delete all temporary files
       for (Entry e : entries.values()) {
-        if (e.file != null) {
+        if (e != null && e.file != null) {
           e.file.delete();
         }
       }
@@ -506,6 +506,13 @@ public class ZipArchive implements FileArchive {
 
         err += " Data written to " + tmpFile.getAbsolutePath() + " instead.";
         throw (IOException) new IOException(err).initCause(e);
+      }
+    }
+
+    // Delete all temporary files
+    for (Entry e : entries.values()) {
+      if (e != null && e.file != null) {
+        e.file.delete();
       }
     }
 
