@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.12, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -23,7 +23,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   indicating with which module you're seeing a problem.
 
 * If you are using MacOS X 10.8.3 or later, you may see the message
-  "VASSAL-3.2.11.app is damaged and can’t be opened. You should move it to
+  "VASSAL-3.2.12.app is damaged and can’t be opened. You should move it to
   the Trash." The problem is NOT that your download was corrupt, but rather
   that MacOS is preventing you from running VASSAL. To start VASSAL, control-
   click or right-click the app bundle's icon and select Open from the menu.
@@ -41,28 +41,33 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-src.zip
 
 
 *********************
 Recent Changes
 *********************
+
+The following bugs in 3.2.11 are fixed in 3.2.12:
+
+* 10886: Java fails to exit after temporary directory cleanup on Windows
+* 10867: New Mac launcher script does not find Apple JDKs
 
 The following bugs in 3.2.10 are fixed in 3.2.11:
 
@@ -79,25 +84,9 @@ The following bugs in 3.2.9 are fixed in 3.2.10:
 
 * 10723: IllegalStateException in ImageIOImageLoader.<clinit>
 
-The following bugs in 3.2.8 are fixed in 3.2.9:
+For changes prior to 3.2.10, see the change log.
 
-* 10641: Module Manager clobbers global preferences set in Editor, Player
-* 10628: Game state not set to unmodified after a save
-* 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
-* 10590: Cards painted in wrong location when Deck is sent after using
-  "Draw specific cards" but without drawing cards
-* 10518: Text is not antialiased in chat pane on Linux
-* 10493: HTMLCharts do not follow anchors
-* 10468: VASSAL.sh doesn't work if path includes spaces
-* 10369: Windows installer doesn't find older installs on 64-bit systems
-* 10158: UnsatisfiedLinkError: Can't find dependent libraries via
-  MemoryUtils.getPhysicalMemory
-*  9897: Mac bundle fails to find non-Apple JVMs
-*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
-
-For changes prior to 3.2.9, see the change log.
-
-Please report all bugs in 3.2.11 even if they are bugs which you've already
+Please report all bugs in 3.2.12 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 
