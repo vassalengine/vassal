@@ -200,19 +200,6 @@ public class ModuleManagerWindow extends JFrame {
           IOUtils.closeQuietly(gp);
         }
 
-        // Bug 10179 - Global prefs are now written out each time a preference is changed
-        // final Prefs gl = Prefs.getGlobalPrefs();
-        // try {
-        //   gl.write();
-        //   gl.close();
-        // }
-        // catch (IOException ex) {
-        //   WriteErrorDialog.error(ex, gl.getFile());
-        // }
-        // finally {
-        //   IOUtils.closeQuietly(gl);
-        // }
-
         logger.info("Exiting");
         System.exit(0);
       }
