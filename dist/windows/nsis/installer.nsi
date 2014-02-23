@@ -761,9 +761,9 @@ Section "-Application" Application
       DeleteRegKey HKLM "${VROOT}\$1"
       DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
-
-    ${SetNativeRegView}
   ${EndIf}
+
+  ${SetNativeRegView}
 
   ; install a JRE, if necessary
   ${If} $InstallJRE == 1
@@ -794,6 +794,8 @@ Section "-Application" Application
     Delete $0
     DetailPrint "Installed a JRE"
   ${EndIf}
+
+  ${SetNativeRegView}
 
   ; set the files to bundle
   !include "${TMPDIR}/install_files.inc"
@@ -872,6 +874,8 @@ SectionEnd
 # Uninstall Section
 #
 Section Uninstall
+  ${SetNativeRegView}
+
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"
 
