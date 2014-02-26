@@ -763,8 +763,6 @@ Section "-Application" Application
     ${Loop}
   ${EndIf}
 
-  ${SetNativeRegView}
-
   ; install a JRE, if necessary
   ${If} $InstallJRE == 1
     ; choose a 64-bit JRE for 64-bit systems
@@ -912,20 +910,28 @@ Section Uninstall
 
   ; kill the registry tree if empty
   DeleteRegKey /ifempty HKLM "Software\vassalengine.org\VASSAL"
-  DeleteRegKey /ifempty HKLM "Software\\vassalengine.org"
+  DeleteRegKey /ifempty HKLM "Software\vassalengine.org"
 
-  ; remove file associations
-  DeleteRegKey HKLM "${AROOT}\.vmod"
-  DeleteRegKey HKLM "${AROOT}\VASSALModule"
+  ; remove file associations if they are ours
+  ReadRegStr $0 HKLM "${AROOT}\VASSALModule\shell\open\command" ""
+  ${If} $0 != ""
+    ; the file associations are ours if they start with our $INSTDIR
+    StrLen $1 "$INSTDIR\"
+    StrCpy $0 $0 $1 0
+    ${If} $0 == "$INSTDIR\"
+      DeleteRegKey HKLM "${AROOT}\.vmod"
+      DeleteRegKey HKLM "${AROOT}\VASSALModule"
 
-  DeleteRegKey HKLM "${AROOT}\.vlog"
-  DeleteRegKey HKLM "${AROOT}\VASSALGameLog"
+      DeleteRegKey HKLM "${AROOT}\.vlog"
+      DeleteRegKey HKLM "${AROOT}\VASSALGameLog"
 
-  DeleteRegKey HKLM "${AROOT}\.vsav"
-  DeleteRegKey HKLM "${AROOT}\VASSALSavedGame"
+      DeleteRegKey HKLM "${AROOT}\.vsav"
+      DeleteRegKey HKLM "${AROOT}\VASSALSavedGame"
 
-  ; notify Windows that file associations have changed
-  ${RefreshShellIcons}
+      ; notify Windows that file associations have changed
+      ${RefreshShellIcons}
+    ${EndIf}
+  ${EndIf}
 
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"
