@@ -5,11 +5,11 @@ APP_ROOT="$(dirname "$0")/../.."
 cd "$APP_ROOT"
 
 # find Java
-# try Apple's JRE
-JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java"
+# try Apple's Java 6
+JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
 if [ ! -x "$JAVA" ]; then
-  # try Apple's JDK
-  JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Commands/java"
+  # try Apple's Java 5
+  JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Commands/java"
   if [ ! -x "$JAVA" ]; then
     # try Oracle's Java 7
     JAVA="/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
