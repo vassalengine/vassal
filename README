@@ -66,8 +66,9 @@ Recent Changes
 
 The following bugs in 3.2.11 are fixed in 3.2.12:
 
+* 10897: Windows uninstaller unconditionally removes file associations
 * 10886: Java fails to exit after temporary directory cleanup on Windows
-* 10867: New Mac launcher script does not find Apple JDKs
+* 10867: Mac launcher script does not find some Apple JDKs
 
 The following bugs in 3.2.10 are fixed in 3.2.11:
 
