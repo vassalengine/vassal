@@ -7,7 +7,7 @@
   <chdir>.</chdir>
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
-  <supportUrl>http://forums.vassalengine.org</supportUrl>
+  <supportUrl>http://www.vassalengine.org/forum</supportUrl>
   <stayAlive>false</stayAlive>
   <icon>VASSAL.ico</icon>
   <classPath>
