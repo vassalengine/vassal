@@ -349,7 +349,10 @@ public class ModuleManager {
     });
 
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
-    new Thread(new SocketListener(serverSocket), "socket listener").start();
+    final Thread socketListener = new Thread(
+      new SocketListener(serverSocket), "socket listener");
+    socketListener.setDaemon(true);
+    socketListener.start();
 
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
 
