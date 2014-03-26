@@ -30,6 +30,9 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   You'll see a dialog asking whether you want to open VASSAL. Select "Open".
   Thereafter, you should be able to start VASSAL normally.
 
+* Oracle's Java 7 has very poor rendering performance on some MacOS X
+  systems. If you are experiencing this, please use Apple's Java 6 instead.
+
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
 ********************************************************************************
