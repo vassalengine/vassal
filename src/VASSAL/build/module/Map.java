@@ -1517,6 +1517,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
             highlighter.draw(stack[i], g, pt.x, pt.y, c, getZoom());
           }
         }
+/*
+        // draw bounding box for debugging
+        final Rectangle bb = stack[i].boundingBox();
+        g.drawRect(pt.x + bb.x, pt.y + bb.y, bb.width, bb.height);
+*/
       }
       g2d.setComposite(oldComposite);
     }
