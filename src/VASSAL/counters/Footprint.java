@@ -207,6 +207,7 @@ public class Footprint extends MovementMarkable {
 
   public void setProperty(Object key, Object val) {
     if (Properties.MOVED.equals(key)) {
+System.out.println("MOVED!");
       setMoved(Boolean.TRUE.equals(val));
       piece.setProperty(key, val); // Pass on to MovementMarkable
     }
@@ -252,15 +253,10 @@ public class Footprint extends MovementMarkable {
   }
 
   protected void recordCurrentPosition() {
-    final Point where = this.getPosition();
-    if (pointList.isEmpty()) {
-      addPoint(where);
-    }
-    else {
-      final Point last = pointList.get(pointList.size()-1);
-      if (!last.equals(where)) { // Don't add the same point twice
-        addPoint(where);
-      }
+    final Point here = this.getPosition();
+    if (pointList.isEmpty() ||
+        !pointList.get(pointList.size()-1).equals(here)) {
+      addPoint(here);
     }
   }
 
