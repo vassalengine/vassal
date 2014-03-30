@@ -266,8 +266,8 @@ public class Footprint extends MovementMarkable {
 
   protected void clearTrail() {
     pointList.clear();
-    addPoint(getPosition());
     myBoundingBox = null;
+    addPoint(getPosition());
     localVisibility = initiallyVisible;
     globalVisibility = initiallyVisible;
   }
@@ -283,6 +283,7 @@ public class Footprint extends MovementMarkable {
   protected void addPoint(Point p) {
     pointList.add(p);
 
+/*
     getMyBoundingBox();
 
     if (p.x + circleRadius > maxX) maxX = p.x + circleRadius;
@@ -291,6 +292,30 @@ public class Footprint extends MovementMarkable {
     if (p.y - circleRadius < minY) minY = p.y - circleRadius;
 
     myBoundingBox = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+*/
+  }
+
+  private Rectangle getBB() {
+    final Rectangle bb = piece.boundingBox();
+    final Point pos = piece.getPosition();
+
+    bb.x += pos.x;
+    bb.y += pos.y;
+
+    final int circleDiameter = 2*circleRadius;
+    final Rectangle pr = new Rectangle();
+
+    for (final Point p: pointList) {
+      pr.setBounds(
+        p.x - circleRadius, p.y - circleRadius, circleDiameter, circleDiameter
+      );
+      bb.add(pr);
+    }
+
+    bb.x -= pos.x;
+    bb.y -= pos.y;
+
+    return bb;
   }
 
   public void redraw() {
@@ -486,9 +511,9 @@ public class Footprint extends MovementMarkable {
    * Override this method to do something different (eg. display an Icon)
    */
   protected void drawPoint(Graphics g, Point p, double zoom, int elementCount) {
-    final int x = (int) ((p.x - circleRadius) * zoom);
-    final int y = (int) ((p.y - circleRadius) * zoom);
-    final int radius = (int) (circleRadius * 2 * zoom);
+    final int x = (int)((p.x - circleRadius) * zoom);
+    final int y = (int)((p.y - circleRadius) * zoom);
+    final int radius = (int)(2 * circleRadius * zoom);
     g.setColor(fillColor);
     g.fillOval(x, y, radius, radius);
     g.setColor(lineColor);
@@ -558,15 +583,19 @@ public class Footprint extends MovementMarkable {
    * Return the boundingBox including the trail
    */
   public Rectangle getMyBoundingBox() {
+/*
     if (myBoundingBox == null) {
+      myBoundingBox = piece.boundingBox();
+
       final Point p = piece.getPosition();
-      myBoundingBox = new Rectangle(p.x, p.y, 60, 60);
-      minX = myBoundingBox.x;
-      minY = myBoundingBox.y;
-      maxX = myBoundingBox.x + myBoundingBox.width;
-      maxY = myBoundingBox.y + myBoundingBox.height;
+      minX = p.x + myBoundingBox.x;
+      minY = p.y + myBoundingBox.y;
+      maxX = p.x + myBoundingBox.x + myBoundingBox.width;
+      maxY = p.y + myBoundingBox.y + myBoundingBox.height;
     }
     return myBoundingBox;
+*/
+    return getBB();
   }
 
   public Shape getShape() {
