@@ -304,10 +304,8 @@ public class Footprint extends MovementMarkable {
     return "Movement trail";
   }
 
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
 // FIXME: This method is inefficient.
-
-    int x1, y1, x2, y2;
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
 
     // Do nothing when piece is not on a map, we are drawing the map
@@ -320,7 +318,7 @@ public class Footprint extends MovementMarkable {
      * If we have changed Maps, then start a new trail. Note that this check is
      * here because setMoved is called before the piece has been moved.
      */
-    String currentMap = getMap().getId();
+    final String currentMap = getMap().getId();
     if (!currentMap.equals(startMapId)) {
       startMapId = currentMap;
       clearTrail();
@@ -339,13 +337,12 @@ public class Footprint extends MovementMarkable {
      */
     double mapZoom = zoom;
     if (this.getMap() != null) {
-      mapZoom = this.getMap().getZoom();
+      mapZoom = getMap().getZoom();
       if (zoom != mapZoom) {
         return;
       }
     }
 
-    currentMap = getMap().getId();
     final Graphics2D g2d = (Graphics2D) g;
     final boolean selected = Boolean.TRUE.equals(
       Decorator.getOutermost(this).getProperty(Properties.SELECTED));
@@ -369,25 +366,26 @@ public class Footprint extends MovementMarkable {
     final int edgeWidth =
       Integer.parseInt(getMap().getAttributeValueString(Map.EDGE_WIDTH));
 
-    final int edgeClipHeight =
-      (edgeHeight < edgeDisplayBuffer) ? edgeHeight : edgeDisplayBuffer;
-    final int edgeClipWidth =
-      (edgeWidth < edgeDisplayBuffer) ? edgeWidth : edgeDisplayBuffer;
+    final int edgeClipHeight = Math.min(edgeHeight, edgeDisplayBuffer);
+    final int edgeClipWidth = Math.min(edgeWidth, edgeDisplayBuffer);
 
     final int clipX = edgeWidth - edgeClipWidth;
     final int clipY = edgeHeight - edgeClipHeight;
-    final int width = mapWidth - (2 * edgeWidth) + 2 * edgeClipWidth;
-    final int height = mapHeight - (2 * edgeHeight) + 2 * edgeClipHeight;
+    final int width = mapWidth - 2*(edgeWidth + edgeClipWidth);
+    final int height = mapHeight - 2*(edgeHeight + edgeClipHeight);
 
-    final Rectangle newClip = new Rectangle((int) (clipX * zoom),
-                                            (int) (clipY * zoom),
-                                            (int) (width * zoom),
-                                            (int) (height * zoom));
-    final Rectangle circleRect =
-      new Rectangle(edgeWidth - edgePointBuffer,
-                    edgeHeight - edgePointBuffer,
-                    mapWidth + 2 * edgePointBuffer,
-                    mapHeight + 2 * edgePointBuffer);
+    final Rectangle newClip = new Rectangle(
+      (int) (clipX * zoom),
+      (int) (clipY * zoom),
+      (int) (width * zoom),
+      (int) (height * zoom)
+    );
+    final Rectangle circleRect = new Rectangle(
+      edgeWidth - edgePointBuffer,
+      edgeHeight - edgePointBuffer,
+      mapWidth + 2 * edgePointBuffer,
+      mapHeight + 2 * edgePointBuffer
+    );
     final Rectangle visibleRect = getMap().getView().getVisibleRect();
 
     final Shape oldClip = g2d.getClip();
@@ -401,7 +399,7 @@ public class Footprint extends MovementMarkable {
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
-    final float thickness = Math.max(1.0f,(float)(zoom*lineWidth));
+    final float thickness = Math.max(1.0f, (float)(zoom*lineWidth));
     g2d.setStroke(new BasicStroke(thickness));
     g2d.setColor(lineColor);
 
@@ -410,15 +408,16 @@ public class Footprint extends MovementMarkable {
     /*
      * Draw the tracks between trail points
      */
+    int x1, y1, x2, y2;
     final Iterator<Point> i = pointList.iterator();
     Point cur = i.next(), next;
     while (i.hasNext()) {
       next = i.next();
 
-      x1 = (int) (cur.x * zoom);
-      y1 = (int) (cur.y * zoom);
-      x2 = (int) (next.x * zoom);
-      y2 = (int) (next.y * zoom);
+      x1 = (int)(cur.x * zoom);
+      y1 = (int)(cur.y * zoom);
+      x2 = (int)(next.x * zoom);
+      y2 = (int)(next.y * zoom);
 
       drawTrack(g, x1, y1, x2, y2, zoom);
 
@@ -426,10 +425,10 @@ public class Footprint extends MovementMarkable {
     }
 
     if (!here.equals(cur)) {
-      x1 = (int) (cur.x * zoom);
-      y1 = (int) (cur.y * zoom);
-      x2 = (int) (here.x * zoom);
-      y2 = (int) (here.y * zoom);
+      x1 = (int)(cur.x * zoom);
+      y1 = (int)(cur.y * zoom);
+      x2 = (int)(here.x * zoom);
+      y2 = (int)(here.y * zoom);
 
       drawTrack(g, x1, y1, x2, y2, zoom);
     }
@@ -438,16 +437,16 @@ public class Footprint extends MovementMarkable {
      * And draw the points themselves.
      */
     int elementCount = -1;
-    for (Point p : pointList) {
-      elementCount++;
+    for (final Point p : pointList) {
+      ++elementCount;
 
       if (circleRect.contains(p) && !p.equals(here)) {
         drawPoint(g, p, zoom, elementCount);
 
         // Is there an Icon to draw in the circle?
         Image image = getTrailImage(elementCount);
-        x1 = (int) ((p.x - circleRadius) * zoom);
-        y1 = (int) ((p.y - circleRadius) * zoom);
+        x1 = (int)((p.x - circleRadius) * zoom);
+        y1 = (int)((p.y - circleRadius) * zoom);
         if (selected && image != null) {
           if (zoom == 1.0) {
             g.drawImage(image, x1, y1, obs);
@@ -463,10 +462,10 @@ public class Footprint extends MovementMarkable {
         final String text = getTrailText(elementCount);
         if (selected && text != null) {
           if (font == null || lastZoom != mapZoom) {
-            x1 = (int) (p.x * zoom);
-            y1 = (int) (p.y * zoom);
+            x1 = (int)(p.x * zoom);
+            y1 = (int)(p.y * zoom);
             final Font font =
-              new Font("Dialog", Font.PLAIN, (int) (circleRadius * 1.4 * zoom));
+              new Font("Dialog", Font.PLAIN, (int)(circleRadius * 1.4 * zoom));
             Labeler.drawLabel(g, text, x1, y1, font, Labeler.CENTER,
                               Labeler.CENTER, lineColor, null, null);
 
