@@ -102,7 +102,6 @@ public class Footprint extends MovementMarkable {
   protected static final float LINE_WIDTH = 1.0f;
 
   // Local Variables
-  protected int minX, minY, maxX, maxY;
   protected Rectangle myBoundingBox;
   protected Font font;
   protected double lastZoom;
@@ -210,6 +209,7 @@ public class Footprint extends MovementMarkable {
 System.out.println("MOVED!");
       setMoved(Boolean.TRUE.equals(val));
       piece.setProperty(key, val); // Pass on to MovementMarkable
+      myBoundingBox = null;
     }
     else {
       super.setProperty(key, val);
@@ -247,7 +247,6 @@ System.out.println("MOVED!");
     }
     else {
       clearTrail();
-      myBoundingBox = null;
     }
     redraw();
   }
@@ -258,11 +257,13 @@ System.out.println("MOVED!");
         !pointList.get(pointList.size()-1).equals(here)) {
       addPoint(here);
     }
+    else {
+      myBoundingBox = null;
+    }
   }
 
   protected void clearTrail() {
     pointList.clear();
-    myBoundingBox = null;
     addPoint(getPosition());
     localVisibility = initiallyVisible;
     globalVisibility = initiallyVisible;
@@ -278,17 +279,7 @@ System.out.println("MOVED!");
    */
   protected void addPoint(Point p) {
     pointList.add(p);
-
-/*
-    getMyBoundingBox();
-
-    if (p.x + circleRadius > maxX) maxX = p.x + circleRadius;
-    if (p.x - circleRadius < minX) minX = p.x - circleRadius;
-    if (p.y + circleRadius > maxY) maxY = p.y + circleRadius;
-    if (p.y - circleRadius < minY) minY = p.y - circleRadius;
-
-    myBoundingBox = new Rectangle(minX, minY, maxX - minX, maxY - minY);
-*/
+    myBoundingBox = null;
   }
 
   private Rectangle getBB() {
@@ -570,28 +561,37 @@ System.out.println("MOVED!");
    * just return the standard piece bounding box
    */
   public Rectangle boundingBox() {
-    final Rectangle r = piece.boundingBox();
-    if (isTrailVisible() && getMap() != null) r.add(getMyBoundingBox());
-    return r;
+    return isTrailVisible() && getMap() != null ?
+      new Rectangle(getMyBoundingBox()) : piece.boundingBox();
   }
 
   /**
    * Return the boundingBox including the trail
    */
   public Rectangle getMyBoundingBox() {
-/*
     if (myBoundingBox == null) {
-      myBoundingBox = piece.boundingBox();
+      final Rectangle bb = piece.boundingBox();
+      final Point pos = piece.getPosition();
 
-      final Point p = piece.getPosition();
-      minX = p.x + myBoundingBox.x;
-      minY = p.y + myBoundingBox.y;
-      maxX = p.x + myBoundingBox.x + myBoundingBox.width;
-      maxY = p.y + myBoundingBox.y + myBoundingBox.height;
+      bb.x += pos.x;
+      bb.y += pos.y;
+
+      final int circleDiameter = 2*circleRadius;
+      final Rectangle pr = new Rectangle();
+
+      for (final Point p: pointList) {
+        pr.setBounds(
+          p.x - circleRadius, p.y - circleRadius, circleDiameter, circleDiameter
+        );
+        bb.add(pr);
+      }
+
+      bb.x -= pos.x;
+      bb.y -= pos.y;
+
+      myBoundingBox = bb;
     }
     return myBoundingBox;
-*/
-    return getBB();
   }
 
   public Shape getShape() {
