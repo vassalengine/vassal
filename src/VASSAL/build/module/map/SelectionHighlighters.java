@@ -67,12 +67,12 @@ public class SelectionHighlighters extends AbstractConfigurable {
   }
 
   public void removeHighlighter(SelectionHighlighter highlighter) {
-    highlighters.add(highlighter);
+    highlighters.remove(highlighter);
     removeFromMap(highlighter);
   }
 
   public void addHighlighter(SelectionHighlighter highlighter) {
-    highlighters.remove(highlighter);
+    highlighters.add(highlighter);
     addToMap(highlighter);
   }
 
