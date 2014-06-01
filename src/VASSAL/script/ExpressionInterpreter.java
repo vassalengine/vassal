@@ -336,12 +336,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       Stack s = ((GamePiece) ps).getParent();
       if (s != null) {
         for (int i = 0; i < s.getPieceCount(); i++) {
+          
           try {
             result +=
               Integer.valueOf(s.getPieceAt(i).getProperty(property).toString());
           }
-          catch (NumberFormatException e) {
-            //
+          catch (Exception e) {
+            // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
           }
         }
       }
