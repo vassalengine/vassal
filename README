@@ -75,6 +75,7 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 10897: Windows uninstaller unconditionally removes file associations
 * 10886: Java fails to exit after temporary directory cleanup on Windows
 * 10867: Mac launcher script does not find some Apple JDKs
+* 10686: Using String.isEmpty() is Java-5 incompatible
 * 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
 
 The following bugs in 3.2.10 are fixed in 3.2.11:
