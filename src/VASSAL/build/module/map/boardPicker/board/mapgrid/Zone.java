@@ -295,7 +295,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       String token = se.nextToken();
       isProperty = !isProperty;
 
-      if (!token.isEmpty()) {
+      if (token.length() > 0) {
         if (!isProperty || !se.hasMoreTokens()) {
           regex.append(Pattern.quote(token));
         }
