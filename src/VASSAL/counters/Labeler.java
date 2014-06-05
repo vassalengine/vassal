@@ -220,7 +220,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
     else {
       nameFormat.setProperty(PIECE_NAME, piece.getName());
-      nameFormat.setProperty(LABEL, getLabel());
+      //
+      // Bug 9483
+      // Don't evaluate the label while reporting an infinite loop
+      // Can cause further looping so that the infinite loop report 
+      // never finishes before a StackOverflow occurs
+      //
+      if (! RecursionLimiter.isReportingInfiniteLoop()) {
+        nameFormat.setProperty(LABEL, getLabel());
+      }
       try {
         RecursionLimiter.startExecution(this);
         result = nameFormat.getText(Decorator.getOutermost(this));

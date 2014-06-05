@@ -26,6 +26,7 @@ package VASSAL.tools;
 public class RecursionLimiter {
   protected static final int RECURSION_LIMIT = 50;
   protected static int recursionDepth = 0;
+  protected static boolean reporting = false;
 
   public static void startExecution(Loopable looper)
                                               throws RecursionLimitException {
@@ -43,6 +44,7 @@ public class RecursionLimiter {
    * @param e
    */
   public static void infiniteLoop(RecursionLimitException e) {
+    reporting = true;
     ErrorDialog.showDetails(
       e,
       ThrowableUtils.getStackTrace(e),
@@ -50,6 +52,11 @@ public class RecursionLimiter {
       e.getComponentTypeName(),
       e.getComponentName()
     );
+    reporting = false;
+  }
+  
+  public static boolean isReportingInfiniteLoop() {
+    return reporting;
   }
 
   public static interface Loopable {
