@@ -374,7 +374,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public void finish() {
-    String newSide = untranslateSide(sideConfig.getValueString());
+    final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
       Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
@@ -434,7 +434,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     int allocatedSideCount = 0;
     for (PlayerInfo p : players) {
       if (!OBSERVER.equals(p.getSide())) {
-        allocatedSideCount++;
+        ++allocatedSideCount;
       }
     }
     return sides.size() == allocatedSideCount;
