@@ -72,6 +72,8 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 11084: Additional Selection Highlighters do not work
 * 11083: SumStack() function fails if unit in stack does not define Property
 * 10957: Movement trails trait has incorrect bounding box
+* 10925: IllegalArgumentException due to intransitive Comparator in
+    KeyBuffer.sort()
 * 10897: Windows uninstaller unconditionally removes file associations
 * 10886: Java fails to exit after temporary directory cleanup on Windows
 * 10867: Mac launcher script does not find some Apple JDKs
