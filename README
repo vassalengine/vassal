@@ -79,6 +79,7 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 10867: Mac launcher script does not find some Apple JDKs
 * 10686: Using String.isEmpty() is Java-5 incompatible
 * 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
+* 10260: Added missing documentation for Mass Piece Loader
 *  9483: StackOverflowError while processing InfiniteLoop
 *  2815: NPE in ExtensionsManager.getExtensionsDirectory()
 
