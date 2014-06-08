@@ -83,7 +83,7 @@ public class ExtensionsManager {
         dir = ensureExists(dir);
       }
       extensionsDir = dir;
-      if ( extensionsDir == null ) {
+      if (extensionsDir == null) {
         return null;
       }
     }
@@ -104,11 +104,11 @@ public class ExtensionsManager {
    * @return Directory as <code>File</code> object; otherwise <code>null</code> if an error occurs.
    */
   protected File ensureExists(File dir) {
-    if ( dir.exists() && !dir.isDirectory() ) {
+    if (dir.exists() && !dir.isDirectory()) {
       WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir);
       return null;
     }
-    else if ( !dir.exists() && !dir.mkdirs() ) {
+    else if (!dir.exists() && !dir.mkdirs()) {
       WriteErrorDialog.error(new IOException("Could not create " + dir), dir);
       return null;
     }
@@ -139,14 +139,14 @@ public class ExtensionsManager {
     File newExt;
     if (active) {
       final File extensionsDirectory = getExtensionsDirectory(true);
-      if ( extensionsDirectory == null ) {
+      if (extensionsDirectory == null) {
         return extension;
       }
       newExt = new File(extensionsDirectory, extension.getName());
     }
     else {
       final File inactiveExtensionsDirectory = getInactiveExtensionsDirectory(true);
-      if ( inactiveExtensionsDirectory == null ) {
+      if (inactiveExtensionsDirectory == null) {
         return extension;
       }
       newExt = new File(inactiveExtensionsDirectory, extension.getName());
@@ -157,7 +157,7 @@ public class ExtensionsManager {
 
   private List<File> getExtensions(File dir) {
     final List<File> extensions = new ArrayList<File>(0);
-    if ( dir != null && dir.exists() ) {
+    if (dir != null && dir.exists()) {
       File[] files = dir.listFiles(filter);
       if (files == null) {
         ReadErrorDialog.error(new IOException(), dir);
