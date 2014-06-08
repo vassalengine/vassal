@@ -71,7 +71,7 @@ public class ExtensionsManager {
   }
 
   public File getExtensionsDirectory(boolean mustExist) {
-    if (extensionsDir == null) {
+    if (extensionsDir == null && moduleFile != null) {
       File dir;
       String dirName = moduleFile.getPath();
       int index = dirName.lastIndexOf('.');
