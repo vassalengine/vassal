@@ -44,6 +44,7 @@ public final class Info {
   private static final String UPDATE_VERSION =  "3.2";
 
   private static File homeDir;
+  private static File tmpDir;
 
   /** The path to the JVM binary. */
   public static final String javaBinPath =
@@ -230,7 +231,15 @@ public final class Info {
   }
 
   public static File getTempDir() {
-    return new File(getHomeDir(), "tmp");
+    if (tmpDir == null) {
+      tmpDir = new File(getHomeDir(), "tmp");
+
+      if (!tmpDir.exists()) {
+        tmpDir.mkdirs();
+      }
+    }
+
+    return tmpDir;
   }
 
   public static File getPrefsDir() {
