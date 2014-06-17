@@ -412,20 +412,13 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return true;
     }
 
-    // If we are already recorded as a player (i.e. in Saved Game), then
-    // the step is only finished if we are not the Observer.
+    // Otherwise we are finished if we are already recorded as a player
     final PlayerInfo newPlayerInfo = new PlayerInfo(
       GameModule.getUserId(),
       GlobalOptions.getInstance().getPlayerId(), null
     );
 
-    if (players.contains(newPlayerInfo)) {
-      final PlayerInfo pi = players.get(players.indexOf(newPlayerInfo));
-      return ! OBSERVER.equals(pi.getSide());
-    }
-
-    // Step is not finished
-    return false;
+    return players.contains(newPlayerInfo);
   }
 
   /**
