@@ -25,14 +25,26 @@ Piece</a></small> <small>&gt; <b>Does not Stack</b></small><br>
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">The 'Does not stack' trait means that a
-piece
-will not form stacks with other pieces.&nbsp; If the "Ignore grid" box
-is selected, then this piece will not snap to the nearest grid
-location.&nbsp; The "select piece" option controls how the piece is
-selected: either normally, never (can never be selected), only when the shift key is down (shift-click to
-select the piece), or only when the Alt and shift keys are down (alt-click to select the piece).  
-The "move piece" option controls how the piece is moved:  either normally, never (cannot be moved once placed) or only if selected (select piece, then click and drag to move).<br>
+            <td valign="top">
+The 'Does Not Stack' trait's primary function is that it prevent a piece from forming stacks with other pieces on the board.<br>
+<br>
+The trait also controls how players interact with the piece when trying to manually select or move it. Any selection
+or movement limitations do not apply when the piece is moved automatically by other commands.<br>
+			<br>
+			<b>Select Piece:&nbsp</b>This option controls what happens when a player tries to select a piece. Options are:
+			<ul>
+				<li><i>normally&nbsp;</i>The piece can be selected normally.</li>
+				<li><i>when shift-key down&nbsp;</i>A player must hold the Shift key down to select the piece.</li>
+				<li><i>when alt-key down&nbsp;</i>A player must hold the Alt key down to select the piece.</li>
+				<li><i>never&nbsp;</i>The piece can never be selected by a player.</li>
+			</ul>
+			<b>Move Piece:&nbsp</b>This option controls what happens when a player tries to move a selected piece. Options are:
+			<ul>
+				<li><i>normally&nbsp;</i>The piece can be moved normally.</li>
+				<li><i>only if selected&nbsp;</i>The piece can only by moved if it is selected.</li>
+				<li><i>never&nbsp;</i>The piece can never be moved manually by a player.</li>
+			</ul>
+			<b>Ignore grid when moving?&nbsp</b>Select this option to prevent the piece from snapping to the nearest grid location when it is moved<br/>
             <br>
             <b>EXAMPLE:</b> Use non-stacking pieces to represent
 playing

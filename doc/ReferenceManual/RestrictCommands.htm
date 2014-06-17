@@ -22,10 +22,11 @@
       <table cellpadding="2" cellspacing="2" border="0" width="100%">
         <tbody>
           <tr>
-            <td valign="top">This trait allows you to disable or completely remove certain keyboard commands from a piece when certain conditions apply.<br><br>
+            <td valign="top">This trait allows you to disable or completely remove certain keyboard commands from the 
+            right-click menu of a piece when certain conditions apply.<br><br>
 	    <b>Name:</b> A name for identification purposes<br>
-	    <b>Restriction:</b> Select <em>Hide</em> to remove a command from the right-click menu entirely.  Select <em>Disable</em> to disable (gray out) the command.  In either case, the restricted action will not be invoked with its corresponding keyboard combination is pressed.<br>
-	    <b>Restrict when properties match:</b> The commands will be restricted when the <a href="Properties.htm">properties</a> of this piece match the given expression<br>
+	    <b>Restriction:</b> Select <em>Hide</em> to remove a command from the right-click menu entirely.  Select <em>Disable</em> to disable (gray out) the command.  In either case, the restricted action will not be invoked when its corresponding keyboard combination is pressed.<br>
+	    <b>Restrict when properties match:</b> The commands will be restricted when the <a href="Properties.htm">properties</a> of this piece match the given <a href="PropertyMatchExpression.htm">Property Match Expression</a><br>
 	    <b>Restrict these Key Commands:</b> Specify the keyboard commands that will be hidden/disabled.  The corresponding right-click menu item (if any) will also be restricted.<br>
             <br>
             <span style="font-style: italic;">Example:</span> A piece may remove certain commands based on where it is on the map by matching the <a href="BasicPiece.htm">CurrentZone</a> property.  A piece with a <a href="Layer.htm#Properties">Layer</a> specifying a damage level may disable commands based on the Level property of that Layer.<br>

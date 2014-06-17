@@ -40,6 +40,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -84,8 +85,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   protected FormattedString loopCount = new FormattedString("1"); //$NON-NLS-1$
   protected boolean index = false;
   protected String indexProperty = ""; //$NON-NLS-1$
-  protected int indexStart = 1;
-  protected int indexStep = 1;
+  protected FormattedString indexStart = new FormattedString("1");
+  protected FormattedString indexStep = new FormattedString("1");
   protected int indexValue = 0;
   protected GamePiece outer;
 
@@ -145,8 +146,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       .append(loopCount.getFormat())
       .append(index)
       .append(indexProperty)
-      .append(indexStart)
-      .append(indexStep);
+      .append(indexStart.getFormat())
+      .append(indexStep.getFormat());
 
     return ID + se.getValue();
   }
@@ -205,7 +206,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     // 5. Looping
 
     // Set up Index Property
-    indexValue = indexStart;
+    indexValue = parse("Index Property Start Value", indexStart, outer);
+    final int step = parse ("Index Property increment value", indexStep, outer);
 
     // Issue the Pre-loop key
     executeKey(c, preLoopKey);
@@ -263,7 +265,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       }
 
       // Increment the Index Variable
-      indexValue += indexStep;
+      indexValue += step;
 
     }
 
@@ -278,6 +280,18 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return c;
   }
 
+  private int parse (String desc, FormattedString s, GamePiece outer) {
+    int i = 0;
+    String val = s.getText(outer, "0");
+    try {
+      i = Integer.parseInt(val);
+    }
+    catch (NumberFormatException e) {
+      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
+    }
+    return i;
+  }
+  
   protected boolean isIndex() {
     return loop && index && indexProperty != null && indexProperty.length() > 0;
   }
@@ -394,8 +408,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     loopCount.setFormat(st.nextToken("")); //$NON-NLS-1$
     index = st.nextBoolean(false);
     indexProperty = st.nextToken(""); //$NON-NLS-1$
-    indexStart = st.nextInt(1);
-    indexStep = st.nextInt(1);
+    indexStart.setFormat(st.nextToken("1"));
+    indexStep.setFormat(st.nextToken("1"));
   }
 
   /**
@@ -451,8 +465,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     private FormattedStringConfigurer loopCountConfig;
     private BooleanConfigurer indexConfig;
     private StringConfigurer indexPropertyConfig;
-    private IntConfigurer indexStartConfig;
-    private IntConfigurer indexStepConfig;
+    private FormattedStringConfigurer indexStartConfig;
+    private FormattedStringConfigurer indexStepConfig;
 
     public Ed(TriggerAction piece) {
 
@@ -500,9 +514,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       loopTypeConfig.addPropertyChangeListener(updateListener);
       box.add(loopTypeConfig.getControls());
 
-      loopCountConfig = new FormattedStringConfigurer(null,
-          Resources.getString("Editor.LoopControl.loop_how_many")); //$NON-NLS-1$
-      loopCountConfig.setValue(piece.loopCount.getFormat());
+      loopCountConfig = new FormattedExpressionConfigurer(null,
+          Resources.getString("Editor.LoopControl.loop_how_many"), piece.loopCount.getFormat(), piece); //$NON-NLS-1$
       box.add(loopCountConfig.getControls());
 
       whileExpressionConfig = new PropertyExpressionConfigurer(null,
@@ -532,12 +545,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
           Resources.getString("Editor.LoopControl.index_name"), piece.indexProperty); //$NON-NLS-1$
       box.add(indexPropertyConfig.getControls());
 
-      indexStartConfig = new IntConfigurer(null,
-          Resources.getString("Editor.LoopControl.index_start"), piece.indexStart); //$NON-NLS-1$
+      indexStartConfig = new FormattedExpressionConfigurer(null,
+          Resources.getString("Editor.LoopControl.index_start"), piece.indexStart.getFormat(), piece); //$NON-NLS-1$
       box.add(indexStartConfig.getControls());
 
-      indexStepConfig = new IntConfigurer(null,
-          Resources.getString("Editor.LoopControl.index_step"), piece.indexStep); //$NON-NLS-1$
+      indexStepConfig = new FormattedExpressionConfigurer(null,
+          Resources.getString("Editor.LoopControl.index_step"), piece.indexStep.getFormat(), piece); //$NON-NLS-1$
       box.add(indexStepConfig.getControls());
 
       updateVisibility();

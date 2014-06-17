@@ -288,7 +288,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       box.add(tf);
       controls.add(box);
       promptText = new StringConfigurer(null,"Prompt for destination deck:  ",p.selectDeckPrompt);
-      prompt = new JCheckBox("Choose destination deck at game time");
+      prompt = new JCheckBox("Choose destination deck at game time?");
       controls.add(prompt);
       controls.add(promptText.getControls());
       promptText.getControls().setVisible(p.deckId == null || p.deckId.length() == 0);

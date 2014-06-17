@@ -49,15 +49,16 @@ Piece</a></small> <small>&gt; <b>Restricted Access</b></small><br>
 
             <tr>
 
-              <td valign="top"> Specify the side to which this piece belongs
-in the Properties of this trait.&nbsp; The sides must be one of those listed
+              <td valign="top"> Specify the side(s) to which this piece belongs.&nbsp; 
+              The sides must be one of those listed
 in the <a href="GameModule.htm#Definition_of_Player_Sides">Definition of
 Player Sides.</a> &nbsp;Only players playing one of the specified sides will
 be able to modify this GamePiece. &nbsp;Other players will not see menu items
 corresponding to traits appearing before this trait in the list of traits
 for the Game Piece, and the corresponding keyboard commands will do nothing.<br>
             <br>
-If <span style="font-weight: bold;">Also belongs to initially-placing player</span>
+<b>Belongs to side</b>&nbsp;Enter the list of sides to which this piece belongs.<br>
+<b>Also belongs to initially-placing player</b>&nbsp;When this option 
 is checked, then the player who initially clicks on the piece or first
 places it on any map will become the owner, in addition to listed
 sides. &nbsp;It is a good idea to specify at least one side when using
@@ -66,8 +67,10 @@ not be able to be removed. &nbsp;If, during a game, a player hits the <span styl
 button to become an observer, then all pieces owned by that player
 become owned by nobody, even if the player was already an observer.
 &nbsp;If you are creating a <a href="GameModule.htm#PredefinedSetup">Pre-defined Setup</a>, always <span style="font-style: italic;">Retire</span> before saving so that players loading the game, rather than you, will own the pieces in the setup.<br>
-
-            <br>
+          
+<b>Prevent non-owning players from moving piece?</b>&nbsp;Use this option to prevent non-owning players from moving
+the piece, as well as disabling access to the piece commands. <br> 
+			<br>            
 
 Pieces in a Game Piece Palette can be manipulated by anybody so long as no
 game is in progress.<br>

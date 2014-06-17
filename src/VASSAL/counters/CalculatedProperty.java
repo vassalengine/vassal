@@ -114,7 +114,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   }
 
   public HelpFile getHelpFile() {
-      return null;
+      return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
   }
 
   public void mySetType(String type) {

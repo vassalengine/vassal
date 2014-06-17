@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Property Match Expressions</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <b>&nbsp;Property Match Expressions</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr width="100%" size="2">
+      <h2>Property Match Expressions<br>
+      </h2>
+      <img src="images/PropertyMatchExpression.png" title="" alt=""
+ ><br>
+      <br>
+A Property Match Expression is a special type of <a href="Expression.htm">Expression</a> that is used to
+select a set of counters to be operated on 
+(<a href="Map.htm#GlobalKeyCommand">Module</a>, 
+ <a href="Map.htm#GlobalKeyCommand">Map</a>, 
+  <a href="DeckGlobalKeyCommand.htm">Deck</a> or 
+  <a href="GlobalKeyCommand.htm">Counter</a> Global Key Commands) or to test if some condition is true before
+taking action (<a href="TriggerAction.htm">Trigger Action</a>, <a href="RestrictCommands.htm">Restrict Commands</a>).<br>
+<br>
+
+Just as there are two type of <a href="Expression.htm">Expressions</a>, there are two types of Property Match Expressions.
+<a href="#beanshell">BeanShell Expressions</a>
+are identified by being surrounded by curly braces {}. They are very powerful and can
+be arbitrarily complex. <a href="#old">Old-Style Expressions</a> are identified by not
+being surrounded by the curly braces {}. Simple Expressions are less powerful than
+BeanShell expressions and are supported to provide compatibility with earlier versions 
+of Vassal.<br>
+<br>
+When Property Match Expressions are used in a Global Key Command trait attached to a piece, there is
+a special format that must be used to match properties in the target pieces against properties in the
+piece that is generating the command. Any Property name enclosed in $ signs (e.g. $nation$) will be evaluated 
+against the calling piece and replaced before the property Match is performed against other pieces.<br>
+<br>
+
+<a name="beanshell"></a><b>BeanShell Property Match Expressions</b><br>
+BeanShell Property Match Expressions use the same syntax as <a href="Expression.htm#beanshell">BeanShell Expressions</a>.
+They use the full syntax and capabilities of the BeanShell language and can be arbitrarily complex.<br> 
+<br>
+<pre>
+    {MaxHeight &lt; (CurrentHeight + Growth) && Age > $myAge$}
+    {Nation == (If (unitType=="Infantry", unitNation, formationNation))}
+</pre>
+<br>
+
+<a name="old"><b>Old-style Property Match Expressions</b><br>
+<img src="images/PropertyMatchExpression2.png"><br>
+Old-style Property Match Expressions are not surrounded by the curly braces and have a much restricted
+syntax compared to their BeanShell equivalent.
+<ul>
+	<li>The left-hand side of each comparison MUST be a property name.</li>
+	<li>The right-hand side of each comparison MUST be a string NOT surrounded by quotes.</li>
+	<li>The Equals operator is = not ==.</li> 
+	<li>Parentheses () may NOT be used to create more complex expressions.</li>
+	<li>Operators and functions may NOT be used to create more complex expressions.</li>
+</ul>
+
+</table>
+<a href="Properties.htm">Properties</a> 
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+</body>
+</html>

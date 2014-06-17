@@ -28,17 +28,17 @@ This trait attaches a <a href="Properties.htm">Property</a> to a Game
 Piece and allows you to define commands to change the value of the
 property during play.<br>
       <br>
-      <span style="font-weight: bold;">Name</span>&nbsp; The name
+      <span style="font-weight: bold;">Name:</span>&nbsp; The name
 of the property.<br>
-      <span style="font-weight: bold;">Value</span> The
+      <span style="font-weight: bold;">Value:</span> The
 value of the property at the start of a new game.<br>
       <span style="font-weight: bold;"></span><span
- style="font-weight: bold;">Is Numeric</span> If true,
+ style="font-weight: bold;">Is Numeric?</span> If true,
 then changes to the value of the property will be restricted to integer
 values.<br>
-      <span style="font-weight: bold;">Minimum Value</span>&nbsp;
+      <span style="font-weight: bold;">Minimum Value:</span>&nbsp;
 Numeric values will be restricted to no less than this number.<br>
-      <span style="font-weight: bold;">Maximum Value</span>&nbsp;
+      <span style="font-weight: bold;">Maximum Value:</span>&nbsp;
 Numeric values will be restricted to no more than this number.<br>
       <span style="font-weight: bold;">Wrap Around</span>&nbsp;
 If true, then when incrementing this numeric property, values will wrap
@@ -47,21 +47,19 @@ around from the maximum to the minimum.<br>
 any number of commands to the right-click drop-down menu for this Game
 Piece.&nbsp; Hit the <span style="font-style: italic;">New</span>
 button to add a new command and the <span style="font-style: italic;">Remove</span>
-button to remove one.&nbsp; For each command, specify the text of the
-drop-down menu entry and the keyboard shortcut.&nbsp; The<span
- style="font-weight: bold;"></span> <span style="font-style: italic;">type</span>
-defines how
-the property value should change:&nbsp; <span
- style="font-style: italic;">Set value directly</span> sets the
-property to a fixed value, after substituting values of other <a
- href="Properties.htm">Properties</a> defined for this Game
-Piece.&nbsp; <span style="font-style: italic;">Increment numeric value</span>
-adds a
-fixed value to the property, after substituting values of
-Properties.&nbsp; <span style="font-style: italic;">Prompt user</span>
-pops up a dialog for the user to type in a new value.&nbsp; <span
- style="font-style: italic;">Prompt user to select from list</span>
-pops up a dialog with a drop-down menu for the user to select from.
+button to remove one.&nbsp; For each command:<br>
+<br>
+&nbsp;&nbsp;<b>Menu Command:</b>&nbsp;Right-click menu text for the command.<br>
+&nbsp;&nbsp;<b>Key Command:</b>&nbsp;Keyboard shortcut for the command.<br>
+&nbsp;&nbsp;<b>Type:</b>&nbsp;Select the way in which this command will change the property:
+<ul>
+	<li><i>Set value directly:</i>&nbsp;Set the property directly to the value of the <a href="Expression.htm">Expression</a> entered in the <b>New Value</b> field.</li>
+	<li><i>Increment numeric value:</i>&nbsp;Increment the value of the property by the  value of the <a href="Expression.htm">Expression</a> entered in the <b>Increment by</b> field.</li>
+	<li><i>Prompt user:</i>&nbsp;Pop up a dialog and ask the user for a new value for the property. They will be prompted for a new value using the text prompt entered in the <b>Prompt</b> field.</li>
+	<li><i>Prompt user to select from list:</i>&nbsp;Similar to <i>Prompt User</i> but displays a list of items to select from in a drop-down menu. The items in the list can be generated dynamically by  <a href="Expression.htm">Expressions</a>. </b></li>
+</ul>
+<br>
+<b>SEE ALSO:</b><a href="PropertyMarker.htm">Marker</a>,<a href="SetGlobalProperty.htm">Set Global Property</a>  
       <hr size="2" width="100%"> </td>
     </tr>
     <tr>

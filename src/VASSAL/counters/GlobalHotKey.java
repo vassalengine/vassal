@@ -104,7 +104,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   }
 
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("GlobalHotKey.htm");
   }
 
   public void mySetType(String type) {

@@ -31,8 +31,11 @@ itself give a game piece any particular behavior.&nbsp; The property
 must be recognized by some other class in the module.&nbsp; Markers are
 used by <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> and <a
  href="Map.htm#GamePieceLayers">Game Piece Layers</a> components and
-often by custom Java classes used in a module.<br>
+in many other traits within <a href="Expression.htm">Expressions</a>.<br>
             <br>
+<b>Property Name:</b>&nbsp;The name of the property.<br>
+<b>Property Value:</b>&nbsp;The value of the property.<br>
+<br>            
 You can combine multiple name-value pairs by separating the names and
 values with a comma (','). To use a comma in a name or value, precede
 it with a backslash ('\').<br>
@@ -45,6 +48,7 @@ single Marker.&nbsp; A Marker with name "owner,status" and value
 "sigmund,unknown" would also return "unknown" from
 getProperty("status").<br>
             <br>
+<b>SEE ALSO:</b><a href="DynamicProperty.htm">Dynamic Property</a>,<a href="SetGlobalProperty.htm">Set Global Property</a>              
             </td>
             <td valign="top"><img src="images/PropertyMarker.png" alt=""
  > <br>

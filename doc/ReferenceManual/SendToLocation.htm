@@ -33,23 +33,25 @@
         <tbody>
           <tr>
             <td valign="top">Adds a command that moves a piece directly to another location.
+            		<p>
 					<p><b>Command Name</b> the menu text in the piece's right-click menu.
 					<p><b>Keyboard command</b> The keyboard shortcut for the command
 					<p><b>Send Back Command Name</b> The menu text for an "undo" command to return the piece to its original location.
 					<p><b>Send Back Keyboard Command</b> The keyboard shortcut for the "undo" command
+					<p>
 					<p><b>Destination</b><br>
 					<table>
 					   <tr>
 		      			<td><i>Location on Selected Map</i></td>
-		      			<td>An (x,y) position on the selected map, optionally offset as described below;</td>
+		      			<td>An (x,y) position on a specific map, optionally offset as described below;</td>
 		   			</tr>
 		   			<tr>
 		      			<td><i>Zone on Selected Map</i></td>
-		      			<td>The center of a Zone on the selected map, optionally offset as described below;</td>
+		      			<td>The center of a Zone on a map, optionally offset as described below;</td>
 		   			</tr>
 		   			<tr>
 		      			<td><i>Region on Selected Map</i></td>
-		      			<td>The named Region on the selected map, optionally offset as described below;</td>
+		      			<td>The named Region on a map, optionally offset as described below;</td>
 		   			</tr>
 		   			<tr>
 		      			<td><i>Another counter selected by properties</i></td>
@@ -58,26 +60,30 @@
 		   			</tr>
 		   			<tr>
 		      			<td><i>Grid Location on Selected Map</i></td>
-		      			<td>A named location on the selected map using the appropriate grid numbering. 
+		      			<td>A named location on a map using the appropriate grid numbering. 
 		      				No additional offset is available at this time, as it is intended that this 
 		      				be an offset in grid units instead of pixels, which is not yet implemented.</td>
 		   			</tr>
 					</table>
-
-					<b>Map</b> The Map Window that the piece will be sent to.  
-						If unspecified, then the piece's current map is used.
-					<p><b>Board</b> The board that the piece will be sent to.  Positions below are 
+					<br/>
+					
+					<b>Map</b> An <a href="Expression.htm">Expression</a> specifying the Map Window name that the piece will be sent to.  
+						If unspecified, then the piece's current map is used. Use the Select button to select a Map Window currently defined in the module.
+					<p><b>Board</b> An <a href="Expression.htm">Expression</a> specifying name of the board that the piece will be sent to.  Positions below are 
 						relative to the board's position. If no board is specified, positions are relative
-						to the Map Window.
-					<p><b>X position</b> A <a href="MessageFormat.htm">Message Format</a> specifying the 
+						to the Map Window. Use the Select button to select a Board currently defined in the module.
+				    <p><b>Zone Name</b> An <a href="Expression.htm">Expression</a> specifying the Zone name that the piece will be sent to.
+				    <p><b>Region Name</b> An <a href="Expression.htm">Expression</a> specifying the Region name that the piece will be sent to.
+				    <p><b>Grid Location</b> The Grid Location that the piece will be sent to.      
+				    <p><b>Property Match</b> A <a href="PropertyMatchExpression.htm">Property Match Expression</a> that selects a counter that the piece will be sent to.
+					<p><b>X position</b> An <a href="Expression.htm">Expression</a> specifying the 
 						horizontal position of the destination point in pixels.
-					<p><b>Y position</b> A <a href="MessageFormat.htm">Message Format</a> specifying the 
+					<p><b>Y position</b> An <a href="Expression.htm">Expression</a> specifying the 
 						vertical position of the destination point in pixels.
-					<p><b>Y position</b> The vertical position of the destination point in pixels.
-					<p><b>Additional offset</b> The value of these two <a href="MessageFormat.htm">Message 
-						Formats</a> will be multiplied together and added to the position specified above 
+					<p><b>Additional offset</b> The value of these two <a href="Expression.htm">Expressions</a> will be multiplied together and added to the position specified above 
 						to give the final destination position for the piece.<br>
-
+						
+					<br/>
 					<p><b>EXAMPLE:</b> 
 					<br>A game may require that damaged units are returned to a Damaged pool for repairs.  
 						Different boxes in the pool represent the amount of time before the unit is fully 

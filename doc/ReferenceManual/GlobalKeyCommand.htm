@@ -30,6 +30,7 @@ key command to to other pieces, similar to the <a
  href="Map.htm#GlobalKeyCommand">Global Key Command</a> component of a
 Map Window.<br>
             <br>
+            <span style="font-weight: bold;">Description:&nbsp; </span>A description of this trait that appears in the Piece definer list<br>
             <span style="font-weight: bold;">Command name:&nbsp; </span>Name
 of the right-click menu item<br>
             <span style="font-weight: bold;">Keyboard command:</span>&nbsp;
@@ -37,8 +38,14 @@ Keyboard shortcut of the menu item that initiates the command<br>
             <span style="font-weight: bold;">Global Key Command:</span>&nbsp;
 The key command that will be applied to other pieces<br>
             <span style="font-weight: bold;">Matching Properties:</span>&nbsp;
-The key command will only be applied to pieces with the specified <a
- href="Properties.htm">Properties</a>.<br>
+The key command will only be applied to pieces that match the specified <a href="PropertyMatchExpression.htm">Property Match Expression</a>.
+Note that the properties named in the expression are evaluated against the target pieces. If you want
+to compare a property in the target pieces against the value of a property in this piece, then use $property$.
+All $...$ property references will be evaluated against this piece before testing against other pieces. (see example below)<br>
+			<span style="font-weight: bold;">Within a Deck, apply to:</span>&nbsp;
+Select how the Global Key Command will be applied to pieces in a Deck. Options are <i>All pieces</i>, <i>No pieces</i>,
+or <i>Fixed number of pieces</i>. If <i>Fixed number of pieces</i> is selected, a field appears to allow entry of the
+number of pieces in the deck to affect<br>
             <span style="font-weight: bold;">Restrict Range:</span> If
 selected, the command will only apply to pieces located within a
 specified distance of this piece.<a href="Properties.htm"></a><br>
@@ -49,6 +56,8 @@ the command applied to them.&nbsp; If the pieces are on a board with a <a
 Grid</a>, then the distance is in units of the grid.&nbsp; Otherwise,
 the distance is measured in screen pixels.<br>
             <span style="font-weight: bold;">Fixed Range:</span> If selected, then the range is specified as a fixed number.  If unselected, then the range will be given by the value of the named <a href="Properties.htm">property</a>.<br>
+            <span style="font-weight: bold;">Range Property:</span>&nbsp;
+The name of a Property that contains the range to use when Fixed Range is not selected.<br>
             <span style="font-weight: bold;"></span><span
  style="font-weight: bold;">Suppress individual
 reports:</span>&nbsp; If selected, then any auto-reporting of the

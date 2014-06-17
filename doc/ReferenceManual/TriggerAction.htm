@@ -25,28 +25,53 @@ Action</strong></small><br>
         <tbody>
           <tr>
             <td valign="top">
-            <p>This trait alters the behavior of a piece, but not its
-look.&nbsp; Using it, you can combine multiple keyboard commands into
-one, or automatically fire keyboard commands in response to other
-keyboard commands when certain conditions apply.<br>
+            <br/>
+            <p>Trigger Action is a multi-purpose trait that alters the behavior of a piece, but not its
+look.&nbsp;You can use it to combine multiple keyboard commands into
+one, to automatically fire keyboard commands in response to other
+keyboard commands when certain conditions apply, or to fire off multiple keyboard commands at a time.<br>
             </p>
-            <b>Trigger Name:</b> Short name for identification purposes.<br>
-            <b>Trigger when properties match:</b> The corresponding key
-commands will be performed only if the piece matches this <a
- href="Properties.htm">Property</a> expression (after the triggering
+            <br/>
+            <p><b>Description:&nbsp;</b> Short name for identification purposes.<br>
+            <p><b>Trigger when properties match:&nbsp;</b> The Trigger Action will only generate new Key
+commands if the piece matches this <a href="PropertyMatchExpression.htm">Property Expression</a>(after the triggering
 keyboard commands have finished)<br>
-            <span style="font-weight: bold;">Menu Command</span><b>:</b>
+            <p><b>Menu Command:&nbsp;</b>
 Adds an item to the piece's right-click menu that will fire the
 triggered commands (provided the property expression is matched).<br>
-            <span style="font-weight: bold;">KeyStroke</span><b>:</b>
+            <p><b>Keyboard Command:&nbsp;</b>
 The keyboard command corresponding to the menu item.<br>
-            <b>Watch for these Keystrokes:</b> After the user types any
+            <p><b>Watch for these Keystrokes:&nbsp;</b>After the user types any
 of these key commands, fire the triggered commands if the property
 expression is matched. <br>
-            <b>Perform these Keystrokes:</b> The key commands to invoke
+            <p><b>Perform these Keystrokes:&nbsp;</b>The key commands to invoke
 after one of the above key commands is observed and the property
 expression is matched.<br>
+			<p><b>Repeat this set of KeyStrokes (Loop)?&nbsp;</b>Allows you to generate the specified KeyStrokes
+multiple times.
+			<p><b>Repeat fixed number of times&nbsp;</b>This loop option allows you to repeat the set of key strokes 
+a specified number times.
+			<p><b>Repeat while condition is true&nbsp;</b>This loop option allows you to repeat the set of key strokes 
+while a <a href="PropertyMatchExpression.htm">Property Expression</a> remains true.
+			<p><b>Repeat until condition is true&nbsp;</b>This loop option allows you to repeat the set of key strokes 
+until a <a href="PropertyMatchExpression.htm">Property Expression</a> becomes true.
+			<p><b>Loop how many times?&nbsp;</b>An <a href="Expression.htm">Expression</a> that defines how many times
+to generate the set of KeyStrokes (for a fixed loop).
+			<p><b>Loop while/until condition is true:&nbsp;</b>Enter the <a href="PropertyMatchExpression.htm">Property Expression</a>
+that controls how long to keep looping (for a while or until loop).
+			<p><b>Perform this KeyStroke once before looping starts:&nbsp;</b>For all loop types, enter a KeyStroke that
+will be performed once before the looping process commences.
+			<p><b>Perform this KeyStroke once after looping complete:&nbsp;</b>For all loop types, enter a KeyStroke that
+will be performed once after the looping process finishes.
+			<p><b>Create a Loop Index Property?&nbsp;</b>For all loop types, allows you to create a Property whose value
+will changes as the looping process proceeds.
+			<p><b>Index Property Name:&nbsp;</b>The name of the property that will be created.
+			<p><b>Index Property start value:&nbsp;</b>An <a href="Expression.htm">Expression</a> that sets the value
+of the index property prior to looping commencing. The expression must evaluate to a whole number.
+			<p><b>Index Property increment value:&nbsp;</b>An <a href="Expression.htm">Expression</a> that defines how much
+will be added to the Index Property at the start of each loop. The expression must evaluate to a whole number.
             <br>
+            <br/>
             <span style="font-weight: bold;">Example:</span>&nbsp; A
 piece has a <a href="Layer.htm">Layer</a> to track action points and a
             <a href="Translate.htm">Move Fixed Distance</a> trait to
@@ -64,11 +89,12 @@ affect the hit-point layer and respond by activating the wounded layer
 by matching the property expression for when the hit points are &lt; 2
 and the wound level is not active.<br>
             </td>
-            <td valign="top"><img alt="" src="images/TriggerAction.png"
- ><br>
+            <td valign="top"><img alt="" src="images/TriggerAction.png"><br>
             <br>
-            <img alt="" src="images/TriggerAction2.png"
- ><br>
+            <img alt="" src="images/TriggerAction2.png"><br>
+            <br>
+            <img alt="" src="images/TriggerAction3.png"><br>
+            <img alt="" src="images/TriggerAction4.png"><br>
             </td>
           </tr>
         </tbody>

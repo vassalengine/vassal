@@ -145,7 +145,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("NonRectangular.htm");
   }
 
   public PieceEditor getEditor() {

@@ -26,12 +26,22 @@ Fixed Distance</span><b></b></small><br>
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">Defines a command to move the piece a
-fixed distance upwards and to the right.&nbsp; The distances are specified using <a href="MessageFormat.htm">Message Formats</a>. The two numbers specified in the advanced options are multiplied together and added to the basic distance to get the final distance moved.  If the&nbsp; piece is
-part of a stack, and the stack is not expanded, and the <span
- style="font-style: italic;">Move entire Stack</span> option is
-selected, then the command will move the entire stack.<br>
-<b>Example:</b> An army unit can conduct a forced march for extra movement.  The amount of additional movement depends on its supply, which is tracked by a <a href="Layer.htm">Layer</a> trait.  The Move Fixed Distance trait is given an additional offset of one hex times the value of the supply level.
+            <td valign="top">
+Defines a command to move the piece a Fixed distance upwards and to the right.<br/>
+<br/>
+<b>Description:&nbsp;</b>A description for this trait that appears in the Piece Definer window.<br/>
+<b>Command Name:&nbsp;</b>Command name that appears on the piece right-click menu.<br/>
+<b>Keyboard shortcut:&nbsp;</b>Keyboard shortcut of the menu item that initiates the command.<br/>
+<b>Distance to the right:&nbsp;</b>An <a href="Expression.htm">Expression</a> specifying the distance to move the piece to the right. Use negative numbers to move the piece to the left.<br/>
+<b>Distance upwards:&nbsp;</b>An <a href="Expression.htm">Expression</a> specifying the distance to move the piece upwards.<br/>
+<b>Move entire stack:&nbsp;</b>Check this option to cause the entire stack containing the piece to be moved, if the stack is not expanded.<br>
+<b>Advanced Options:&nbsp;</b>Check this option to display additional options to give more control over the movement. 
+The two numbers specified in the <a href="Expression.htm">Expressions</a> for movement right, and the two numbers
+for movement left are multiplied together and added to the left/up distances defined in the basic options.<br/>
+<br>
+<br>
+<b>EXAMPLE:</b> An army unit can conduct a forced march for extra movement.  The amount of additional movement depends on its supply, which is tracked by a <a href="Layer.htm">Layer</a> trait.  The Move Fixed Distance trait is given an additional offset of one hex times the value of the supply level.
+            <br>
             <br>
             <b>NOTE: </b>If this piece has a <a href="Rotate.htm">Can
 Rotate</a> trait listed <span style="font-style: italic;">before</span>
