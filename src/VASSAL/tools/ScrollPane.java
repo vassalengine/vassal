@@ -37,123 +37,123 @@ import javax.swing.JScrollPane;
  @author Joel Uckelman
  @see javax.swing.JScrollPane
  @see VASSAL.tools.AdjustableSpeedScrollPane
- */
+*/
 public class ScrollPane extends JScrollPane {
-   private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-   /**
-     Creates an empty (no viewport view) ScrollPane where both horizontal
-     and vertical scrollbars appear when needed.
-   */
-   public ScrollPane() {
-      this(null, VERTICAL_SCROLLBAR_AS_NEEDED,
-                 HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   }
+  /**
+    Creates an empty (no viewport view) ScrollPane where both horizontal
+    and vertical scrollbars appear when needed.
+  */
+  public ScrollPane() {
+    this(null, VERTICAL_SCROLLBAR_AS_NEEDED,
+        HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  }
 
-   /**
-     Creates a ScrollPane that displays the contents of the specified
-     component, where both horizontal and vertical scrollbars appear whenever
-     the component's contents are larger than the view.
+  /**
+    Creates a ScrollPane that displays the contents of the specified
+    component, where both horizontal and vertical scrollbars appear whenever
+    the component's contents are larger than the view.
 
-     @param view the component to display in the scrollpane's viewport
-   */
-   public ScrollPane(Component view) {
-      this(view, VERTICAL_SCROLLBAR_AS_NEEDED,
-                 HORIZONTAL_SCROLLBAR_AS_NEEDED);
-   }
+    @param view the component to display in the scrollpane's viewport
+  */
+  public ScrollPane(Component view) {
+    this(view, VERTICAL_SCROLLBAR_AS_NEEDED,
+        HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  }
 
-   /**
-     Creates an empty (no viewport view) ScrollPane with specified scrollbar
-     policies. The available policy settings are listed at
-     {@link JScrollPane#setVerticalScrollBarPolicy} and
-     {@link JScrollPane#setHorizontalScrollBarPolicy}.
+  /**
+    Creates an empty (no viewport view) ScrollPane with specified scrollbar
+    policies. The available policy settings are listed at
+    {@link JScrollPane#setVerticalScrollBarPolicy} and
+    {@link JScrollPane#setHorizontalScrollBarPolicy}.
 
-     @param vsbPolicy an integer that specifies the vertical scrollbar policy
-     @param hsbPolicy an integer that specifies the horizontal scrollbar policy
-   */
-   public ScrollPane(int vsbPolicy, int hsbPolicy) {
-      this(null, vsbPolicy, hsbPolicy);
-   }
+    @param vsbPolicy an integer that specifies the vertical scrollbar policy
+    @param hsbPolicy an integer that specifies the horizontal scrollbar policy
+  */
+  public ScrollPane(int vsbPolicy, int hsbPolicy) {
+    this(null, vsbPolicy, hsbPolicy);
+  }
 
-   /**
-     Creates a ScrollPane that displays the view component in a viewport with
-     the specified scrollbar policies. The available policy settings are
-     listed at {@link JScrollPane#setVerticalScrollBarPolicy} and
-     {@link JScrollPane#setHorizontalScrollBarPolicy}.
+  /**
+    Creates a ScrollPane that displays the view component in a viewport with
+    the specified scrollbar policies. The available policy settings are
+    listed at {@link JScrollPane#setVerticalScrollBarPolicy} and
+    {@link JScrollPane#setHorizontalScrollBarPolicy}.
 
-     @param view the component to display in the scrollpane's viewport
-     @param vsbPolicy an integer that specifies the vertical scrollbar policy
-     @param hsbPolicy an integer that specifies the horizontal scrollbar policy
-   */
-   public ScrollPane(Component view, int vsbPolicy, int hsbPolicy) {
-      super(view, vsbPolicy, hsbPolicy);
+    @param view the component to display in the scrollpane's viewport
+    @param vsbPolicy an integer that specifies the vertical scrollbar policy
+    @param hsbPolicy an integer that specifies the horizontal scrollbar policy
+  */
+  public ScrollPane(Component view, int vsbPolicy, int hsbPolicy) {
+    super(view, vsbPolicy, hsbPolicy);
 
-      // clear existing MouseWheelListeners
-      MouseWheelListener[] listeners;
+    // clear existing MouseWheelListeners
+    MouseWheelListener[] listeners;
 
-      listeners = getMouseWheelListeners();
-      for (int i = 0; i < listeners.length; ++i)
-         removeMouseWheelListener(listeners[i]);
+    listeners = getMouseWheelListeners();
+    for (int i = 0; i < listeners.length; ++i)
+      removeMouseWheelListener(listeners[i]);
 
-      listeners = viewport.getMouseWheelListeners();
-      for (int i = 0; i < listeners.length; ++i)
-         viewport.removeMouseWheelListener(listeners[i]);
+    listeners = viewport.getMouseWheelListeners();
+    for (int i = 0; i < listeners.length; ++i)
+      viewport.removeMouseWheelListener(listeners[i]);
 
-      listeners = verticalScrollBar.getMouseWheelListeners();
-      for (int i = 0; i < listeners.length; ++i)
-         verticalScrollBar.removeMouseWheelListener(listeners[i]);
+    listeners = verticalScrollBar.getMouseWheelListeners();
+    for (int i = 0; i < listeners.length; ++i)
+      verticalScrollBar.removeMouseWheelListener(listeners[i]);
 
-      listeners = horizontalScrollBar.getMouseWheelListeners();
-      for (int i = 0; i < listeners.length; ++i)
-         horizontalScrollBar.removeMouseWheelListener(listeners[i]);
+    listeners = horizontalScrollBar.getMouseWheelListeners();
+    for (int i = 0; i < listeners.length; ++i)
+      horizontalScrollBar.removeMouseWheelListener(listeners[i]);
 
-      // add our own MouseWheelListeners
-      // NB: block scrolling isn't used with the mouse wheel
-      viewport.addMouseWheelListener(new MouseWheelListener() {
-         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.getScrollAmount() == 0) return;
+    // add our own MouseWheelListeners
+    // NB: block scrolling isn't used with the mouse wheel
+    viewport.addMouseWheelListener(new MouseWheelListener() {
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getScrollAmount() == 0) return;
 
-            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-               JScrollBar bar = e.isControlDown() ?
-                                  horizontalScrollBar :
-                                  verticalScrollBar;
-               if (bar == null || !bar.isVisible()) return;
+        if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+          JScrollBar bar = e.isControlDown() ?
+            horizontalScrollBar :
+            verticalScrollBar;
+          if (bar == null || !bar.isVisible()) return;
 
-               bar.setValue(
-                    bar.getValue() +
-                    e.getUnitsToScroll() *
-                    bar.getUnitIncrement()
-               );
-            }
-         }
-      });
+          bar.setValue(
+            bar.getValue() +
+            e.getUnitsToScroll() *
+            bar.getUnitIncrement()
+          );
+        }
+      }
+    });
 
-      verticalScrollBar.addMouseWheelListener(new MouseWheelListener() {
-         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.getScrollAmount() == 0) return;
+    verticalScrollBar.addMouseWheelListener(new MouseWheelListener() {
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getScrollAmount() == 0) return;
 
-            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-               verticalScrollBar.setValue(
-                    verticalScrollBar.getValue() +
-                    e.getUnitsToScroll() *
-                    verticalScrollBar.getUnitIncrement()
-               );
-            }
-         }
-      });
+        if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+          verticalScrollBar.setValue(
+            verticalScrollBar.getValue() +
+            e.getUnitsToScroll() *
+            verticalScrollBar.getUnitIncrement()
+          );
+        }
+      }
+    });
 
-      horizontalScrollBar.addMouseWheelListener(new MouseWheelListener() {
-         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.getScrollAmount() == 0) return;
+    horizontalScrollBar.addMouseWheelListener(new MouseWheelListener() {
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getScrollAmount() == 0) return;
 
-            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-               horizontalScrollBar.setValue(
-                    horizontalScrollBar.getValue() +
-                    e.getUnitsToScroll() *
-                    horizontalScrollBar.getUnitIncrement()
-               );
-            }
-         }
-      });
-   }
+        if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+          horizontalScrollBar.setValue(
+            horizontalScrollBar.getValue() +
+            e.getUnitsToScroll() *
+            horizontalScrollBar.getUnitIncrement()
+          );
+        }
+      }
+    });
+  }
 }
