@@ -115,8 +115,7 @@ public class ScrollPane extends JScrollPane {
 
         if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
           final JScrollBar bar = e.isControlDown() ?
-            horizontalScrollBar :
-            verticalScrollBar;
+            horizontalScrollBar : verticalScrollBar;
           if (bar == null || !bar.isVisible()) return;
 
           bar.setValue(
