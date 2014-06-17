@@ -82,7 +82,8 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 10260: Added missing documentation for Mass Piece Loader
 *  9483: StackOverflowError while processing InfiniteLoop
 *  2815: NPE in ExtensionsManager.getExtensionsDirectory()
-
+*   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
+ 
 The following bugs in 3.2.10 are fixed in 3.2.11:
 
 * 10852: New launcher script does not find Java 5 on old Macs
