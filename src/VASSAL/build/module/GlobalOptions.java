@@ -53,6 +53,7 @@ import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
 import VASSAL.preferences.IntegerPreference;
+import VASSAL.preferences.Prefs;
 import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.ErrorDialog;
@@ -98,13 +99,16 @@ public class GlobalOptions extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     instance = this;
 
+    final GameModule gm = GameModule.getGameModule();
+    final Prefs prefs = gm.getPrefs();
+
     // should this moudule use a combined main window?
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
       Boolean.TRUE
     );
-    GameModule.getGameModule().getPrefs().addOption(combConf);
+    prefs.addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
 
     // the initial heap size for this module
@@ -113,7 +117,7 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
       Integer.valueOf(256)
     );
-    GameModule.getGameModule().getPrefs().addOption(initHeapConf);
+    prefs.addOption(initHeapConf);
 
     // the maximum heap size for this module
     final IntConfigurer maxHeapConf = new IntConfigurer(
@@ -121,9 +125,9 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       Integer.valueOf(512)
     );
-    GameModule.getGameModule().getPrefs().addOption(maxHeapConf);
+    prefs.addOption(maxHeapConf);
 
-    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
+    validator = new SingleChildInstance(gm, getClass());
   }
 
   public static GlobalOptions getInstance() {
