@@ -83,7 +83,7 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 10260: Added missing documentation for Mass Piece Loader
 *  9888: Added missing documentation for ExpressionBuilder
 *  9483: StackOverflowError while processing InfiniteLoop
-*  2815: NPE in ExtensionsManager.getExtensionsDirectory()
+*  2518: NPE in ExtensionsManager.getExtensionsDirectory()
 *   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
  
 The following bugs in 3.2.10 are fixed in 3.2.11:
