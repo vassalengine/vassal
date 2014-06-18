@@ -808,7 +808,7 @@ public class PieceMover extends AbstractBuildable
                DragSourceMotionListener,  DropTargetListener
   {
 	  static private AbstractDragHandler theDragHandler =
-      !SystemUtils.IS_OS_WINDOWS && DragSource.isDragImageSupported() ?
+	    DragSource.isDragImageSupported() ?
         (SystemUtils.IS_OS_MAC_OSX ?
           new DragHandlerMacOSX() : new DragHandler()) :
         new DragHandlerNoImage();
