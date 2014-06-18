@@ -819,7 +819,7 @@ public class PieceMover extends AbstractBuildable
     }
 
     static public void setTheDragHandler(AbstractDragHandler myHandler) {
-        theDragHandler = myHandler;
+      theDragHandler = myHandler;
     }
 
     final static int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
