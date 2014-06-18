@@ -948,23 +948,24 @@ public class PieceMover extends AbstractBuildable
      * @return
      */
     BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
-      Component target, boolean setSize) {
-       // FIXME: Should be an ImageOp.
-        dragCursorZoom = zoom;
+      Component target, boolean setSize)
+    {
+      // FIXME: Should be an ImageOp.
+      dragCursorZoom = zoom;
 
-        final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
+      final List<Point> relativePositions = buildBoundingBox(zoom, doOffset);
 
-        final int w = boundingBox.width + EXTRA_BORDER * 2;
-        final int h = boundingBox.height + EXTRA_BORDER * 2;
+      final int w = boundingBox.width + EXTRA_BORDER * 2;
+      final int h = boundingBox.height + EXTRA_BORDER * 2;
 
-        BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
+      BufferedImage image = ImageUtils.createCompatibleTranslucentImage(w, h);
 
-        drawDragImage(image, target, relativePositions, zoom);
+      drawDragImage(image, target, relativePositions, zoom);
 
-        if (setSize) dragCursor.setSize(w, h);
-        image = featherDragImage(image, w, h, EXTRA_BORDER);
+      if (setSize) dragCursor.setSize(w, h);
+      image = featherDragImage(image, w, h, EXTRA_BORDER);
 
-        return image;
+      return image;
     }
 
     /**
