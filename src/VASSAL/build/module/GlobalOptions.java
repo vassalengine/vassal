@@ -102,7 +102,8 @@ public class GlobalOptions extends AbstractConfigurable {
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
-      Boolean.TRUE);
+      Boolean.TRUE
+    );
     GameModule.getGameModule().getPrefs().addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
 
@@ -110,14 +111,16 @@ public class GlobalOptions extends AbstractConfigurable {
     final IntConfigurer initHeapConf = new IntConfigurer(
       INITIAL_HEAP,
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      Integer.valueOf(256));
+      Integer.valueOf(256)
+    );
     GameModule.getGameModule().getPrefs().addOption(initHeapConf);
 
     // the maximum heap size for this module
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      Integer.valueOf(512));
+      Integer.valueOf(512)
+    );
     GameModule.getGameModule().getPrefs().addOption(maxHeapConf);
 
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
