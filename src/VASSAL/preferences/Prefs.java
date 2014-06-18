@@ -55,7 +55,6 @@ public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; // $NON_NLS-1$
   public static final String DISABLE_D3D = "disableD3d";
-  public static final String DISABLE_QUARTZ = "disableD3d";
 
   private static Prefs globalPrefs;
 
