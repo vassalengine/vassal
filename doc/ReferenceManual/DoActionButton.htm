@@ -47,21 +47,34 @@
 
             <td valign="top">The Action Button combines a number of different actions into a single button.
 			When the button is pressed, or receives its Hotkey, it can display a message to the Chat Window, Play a
-			sound, or send a list of Hotkeys to othre components.<br>
+			sound, or send a list of Hotkeys to other components.<br>
 
             <br>
 
-			<span style="font-weight: bold;">Description:&nbsp; </span>An identifying name for this button.<br>			
-            <span style="font-weight: bold;">Button text:&nbsp; </span>The text of the button to be added to the toolbar.&nbsp;<br>
-            <span style="font-weight: bold;">Button Tooltip text:&nbsp; </span>The tooltip text of the button to be added to the toolbar.&nbsp;<br>
-            <span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
-            <span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard shortcut for the toolbar button.<br>
- 		    <span style="font-weight: bold;">Display Message?&nbsp; </span>Select to display a message to the Chat Window when the button is activated.<br>
-            <span style="font-weight: bold;">Report Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to report to the chat line.<br>
- 		    <span style="font-weight: bold;">Play a sound?&nbsp; </span>Select to play a sound clip when the button is activated.<br>
-			<span style="font-weight: bold;">Sound Clip:&nbsp; </span>The Sound clip file to be played.<br>				
- 		    <span style="font-weight: bold;">Send Hotkeys?&nbsp; </span>Select to send hotkeys to other components when the button is activated.<br>			
-			<span style="font-weight: bold;">Hot Keys:&nbsp; </span>The list of Hotkeys to be sent. Use the New button to add another key, or the Remove buttons to remove existing keys.<br>	
+			<b>Description:&nbsp; </b>An identifying name for this button.<br>			
+            <b>Button text:&nbsp; </b>The text of the button to be added to the toolbar.&nbsp;<br>
+            <b>Button Tooltip text:&nbsp; </b>The tooltip text of the button to be added to the toolbar.&nbsp;<br>
+            <b>Button Icon:&nbsp; </b>Icon for the toolbar button.<br>
+            <b>Hotkey:&nbsp; </b>Keyboard shortcut for the toolbar button.<br>
+ 		    <b>Display Message?&nbsp; </b>Select to display a message to the Chat Window when the button is activated.<br>
+            <b>Report Format:&nbsp; </b><a href="MessageFormat.htm">Message Format</a> to report to the chat line.<br>
+ 		    <b>Play a sound?&nbsp; </b>Select to play a sound clip when the button is activated.<br>
+			<b>Sound Clip:&nbsp; </b>The Sound clip file to be played.<br>				
+ 		    <b>Send Hotkeys?&nbsp; </b>Select to send Hotkeys to other components when the button is activated.<br>			
+			<b>Hot Keys:&nbsp; </b>The list of Hotkeys to be sent. Use the New button to add another key, or the Remove buttons to remove existing keys.<br>
+			<b>Repeat this set of actions (Loop)?&nbsp;</b>Allows you to perform the specified actions multiple times.<br>
+			<b>Repeat fixed number of times&nbsp;</b>This loop option allows you to repeat the set of actions a specified number of times.<br>
+			<b>Repeat while condition is true&nbsp;</b>This loop option allows you to repeat the set of actions while a <a href="PropertyMatchExpression.htm">Property Expression</a> remains true.<br>
+			<b>Repeat until condition is true&nbsp;</b>This loop option allows you to repeat the set of actions until a <a href="PropertyMatchExpression.htm">Property Expression</a> becomes true.<br>
+			<b>Loop how many times?&nbsp;</b>An <a href="Expression.htm">Expression</a> that defines how many times to generate the set of actions (for a fixed loop).<br>
+			<b>Loop while/until condition is true:&nbsp;</b>Enter the <a href="PropertyMatchExpression.htm">Property Expression</a> that controls how long to keep looping (for a while or until loop).<br>
+			<b>Perform this KeyStroke once before looping starts:&nbsp;</b>For all loop types, enter a HotKey that will be performed once before the looping process commences.<br>
+			<b>Perform this KeyStroke once after looping complete:&nbsp;</b>For all loop types, enter a HotKey that will be performed once after the looping process finishes.<br>
+			<b>Create a Loop Index Property?&nbsp;</b>For all loop types, allows you to create a Property whose value will changes as the looping process proceeds.<br>
+			<b>Index Property Name:&nbsp;</b>The name of the property that will be created.
+			<b>Index Property start value:&nbsp;</b>An <a href="Expression.htm">Expression</a> that sets the value of the index property prior to looping commencing. The expression must evaluate to a whole number.<br>
+			<b>Index Property increment value:&nbsp;</b>An <a href="Expression.htm">Expression</a> that defines how much will be added to the Index Property at the start of each loop. The expression must evaluate to a whole number.<br>
+            <br>	
             </td>
 
             <td valign="top"><img src="images/DoActionButton.png" alt=""> <br>
