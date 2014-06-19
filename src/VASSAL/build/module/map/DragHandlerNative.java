@@ -25,7 +25,7 @@ import java.awt.dnd.DragSourceDragEvent;
  *
  * @Author Pieter Geerkens
  */
-public class DragHandlerImage extends DragHandler {
+public class DragHandlerNative extends DragHandler {
   @Override
   public void dragGestureRecognized(DragGestureEvent dge) {
     if (dragGestureRecognizedPrep(dge) == null) return;

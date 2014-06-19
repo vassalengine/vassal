@@ -18,7 +18,7 @@
  */
 package VASSAL.build.module.map;
 
-public class DragHandlerImageMacOSX extends DragHandlerImage {
+public class DragHandlerNativeMacOSX extends DragHandlerNative {
   @Override
   protected int getOffsetMult() {
     return 1;

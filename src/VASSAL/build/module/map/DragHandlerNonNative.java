@@ -39,7 +39,7 @@ import VASSAL.build.module.Map;
 * @version 0.4.2
 *
 */
-public class DragHandlerNoImage extends DragHandler {
+public class DragHandlerNonNative extends DragHandler {
   @Override
   public void dragGestureRecognized(DragGestureEvent dge) {
     final Point mousePosition = dragGestureRecognizedPrep(dge);
