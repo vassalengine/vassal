@@ -108,12 +108,14 @@ public class ShapeItem extends Item {
         o = Integer.valueOf((String) o);
       }
       width = ((Integer) o).intValue();
+      if (width < 1) width = 1;
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
+      if (height < 1) height = 1;
     }
     else if (SHAPE.equals(key)) {
       shape = (String) o;
@@ -123,6 +125,7 @@ public class ShapeItem extends Item {
         o = Integer.valueOf((String) o);
       }
       bevel = ((Integer) o).intValue();
+      if (bevel < 0) bevel = 0;
     }
     else {
       super.setAttribute(key, o);
@@ -137,16 +140,16 @@ public class ShapeItem extends Item {
   public String getAttributeValueString(String key) {
 
     if (WIDTH.equals(key)) {
-      return width + ""; //$NON-NLS-1$
+      return String.valueOf(width);
     }
     else if (HEIGHT.equals(key)) {
-      return height + ""; //$NON-NLS-1$
+      return String.valueOf(height);
     }
     else if (SHAPE.equals(key)) {
       return shape;
     }
     else if (BEVEL.equals(key)) {
-      return bevel + ""; //$NON-NLS-1$
+      return String.valueOf(bevel);
     }
     else {
       return super.getAttributeValueString(key);

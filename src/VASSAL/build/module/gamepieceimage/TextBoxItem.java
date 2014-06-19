@@ -121,12 +121,14 @@ public class TextBoxItem extends TextItem {
         o = Integer.valueOf((String) o);
       }
       width = ((Integer) o).intValue();
+      if (width < 1) width = 1;
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
+      if (height < 1) height = 1;
     }
     else if (USE_HTML.equals(key)) {
       if (o instanceof String) {
