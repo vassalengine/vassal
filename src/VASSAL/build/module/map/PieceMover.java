@@ -770,13 +770,13 @@ public class PieceMover extends AbstractBuildable
 
   /** @deprecated Use {@link DragHandlerNoImage} instead. */
   @Deprecated
-  static public class DragHandlerNoImage extends VASSAL.build.module.map.DragHandlerNoImage {}
+  static public class DragHandlerNoImage extends VASSAL.build.module.map.DragHandlerNonNative {}
 
-  /** @deprecated Use {@link DragHandlerImage} instead. */
+  /** @deprecated Use {@link DragHandlerNative} instead. */
   @Deprecated
-  static public class DragHandler extends DragHandlerImage {}
+  static public class DragHandler extends DragHandlerNative {}
 
   /** @deprecated Use {@link DragHandlerImageMacOSX} instead. */
   @Deprecated
-  static public class DragHandlerMacOSX extends DragHandlerImageMacOSX {}
+  static public class DragHandlerMacOSX extends DragHandlerNativeMacOSX {}
 }
