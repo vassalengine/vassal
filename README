@@ -72,6 +72,7 @@ The following bugs in 3.2.11 are fixed in 3.2.12:
 * 11085: Side selection dialog displayed twice when observer chosen
 * 11084: Additional Selection Highlighters do not work
 * 11083: SumStack() function fails if unit in stack does not define Property
+* 11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height
 * 10957: Movement trails trait has incorrect bounding box
 * 10925: IllegalArgumentException due to intransitive Comparator in
     KeyBuffer.sort()
