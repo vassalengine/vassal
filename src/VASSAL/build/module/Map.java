@@ -89,6 +89,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DefaultPieceCollection;
+import VASSAL.build.module.map.DragHandler;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.Drawable;
 import VASSAL.build.module.map.ForwardToChatter;
@@ -664,7 +665,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(
       theMap, DnDConstants.ACTION_MOVE, dgl);
-    theMap.setDropTarget(PieceMover.DragHandler.makeDropTarget(
+    theMap.setDropTarget(DragHandler.makeDropTarget(
       theMap, DnDConstants.ACTION_MOVE, this));
     g.getGameState().addGameComponent(this);
     g.getToolBar().add(launchButton);
