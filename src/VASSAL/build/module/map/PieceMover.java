@@ -19,18 +19,8 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -776,108 +766,17 @@ public class PieceMover extends AbstractBuildable
 
   /** @deprecated Use {@link DragHandler} instead. */
   @Deprecated
-  static public class AbstractDragHandler extends VASSAL.build.module.map.DragHandler {
-    private VASSAL.build.module.map.DragHandler theRealDragHandler =
-      VASSAL.build.module.map.DragHandler.getTheDragHandler();
-    static private final AbstractDragHandler shim = new AbstractDragHandler();
-
-    static public AbstractDragHandler getTheDragHandler() {
-      return shim;
-    }
-
-    static public void setTheDragHandler(AbstractDragHandler myHandler) {
-      VASSAL.build.module.map.DragHandler.setTheDragHandler(shim);
-      shim.theRealDragHandler = myHandler;
-    }
-
-    static public DropTarget makeDropTarget(Component theComponent, int dndContents, DropTargetListener dropTargetListener) {
-      return VASSAL.build.module.map.DragHandler.makeDropTarget(
-        theComponent, dndContents, dropTargetListener
-      );
-    }
-
-    static public void removeDropTarget(Component theComponent) {
-      VASSAL.build.module.map.DragHandler.removeDropTarget(theComponent);
-    }
-
-    protected int getOffsetMult() {
-      return theRealDragHandler.getOffsetMult();
-    }
-
-    public void setDrawWinToOwnerOf(Component newDropWin) {
-      theRealDragHandler.setDrawWinToOwnerOf(newDropWin);
-    }
-
-    public void dragGestureRecognized(DragGestureEvent dge) {
-      theRealDragHandler.dragGestureRecognized(dge);
-    }
-
-    public void dragDropEnd(DragSourceDropEvent e) {
-      theRealDragHandler.dragDropEnd(e);
-    }
-
-    public void dragEnter(DragSourceDragEvent e) {
-      theRealDragHandler.dragEnter(e);
-    }
-
-    public void dragExit(DragSourceEvent e) {
-      theRealDragHandler.dragExit(e);
-    }
-
-    public void dragOver(DragSourceDragEvent e) {
-      theRealDragHandler.dragOver(e);
-    }
-
-    public void dropActionChanged(DragSourceDragEvent e) {
-      theRealDragHandler.dropActionChanged(e);
-    }
-
-    public void dragMouseMoved(DragSourceDragEvent e) {
-      theRealDragHandler.dragMouseMoved(e);
-    }
-
-    public void dragEnter(DropTargetDragEvent e) {
-      theRealDragHandler.dragEnter(e);
-    }
-
-    public void drop(DropTargetDropEvent e) {
-      theRealDragHandler.drop(e);
-    }
-
-    public void dragExit(DropTargetEvent e) {
-      theRealDragHandler.dragExit(e);
-    }
-
-    public void dragOver(DropTargetDragEvent e) {
-      theRealDragHandler.dragOver(e);
-    }
-
-    public void dropActionChanged(DropTargetDragEvent e) {
-      theRealDragHandler.dropActionChanged(e);
-    }
-  }
+  static public class AbstractDragHandler extends DragHandler {}
 
   /** @deprecated Use {@link DragHandlerNoImage} instead. */
   @Deprecated
-  static public class DragHandlerNoImage extends AbstractDragHandler {
-    public DragHandlerNoImage() {
-      AbstractDragHandler.setTheDragHandler(new DragHandlerNonNative());
-    }
-  }
+  static public class DragHandlerNoImage extends VASSAL.build.module.map.DragHandlerNonNative {}
 
   /** @deprecated Use {@link DragHandlerNative} instead. */
   @Deprecated
-  static public class DragHandler extends AbstractDragHandler {
-    public DragHandler() {
-      AbstractDragHandler.setTheDragHandler(new DragHandlerNative());
-    }
-  }
+  static public class DragHandler extends DragHandlerNative {}
 
   /** @deprecated Use {@link DragHandlerImageMacOSX} instead. */
   @Deprecated
-  static public class DragHandlerMacOSX extends AbstractDragHandler {
-    public DragHandlerMacOSX() {
-      AbstractDragHandler.setTheDragHandler(new DragHandlerNativeMacOSX());
-    }
-  }
+  static public class DragHandlerMacOSX extends DragHandlerNativeMacOSX {}
 }
