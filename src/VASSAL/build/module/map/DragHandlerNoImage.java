@@ -73,7 +73,6 @@ public class DragHandlerNoImage extends DragHandler {
     }
   }
 
-  @Override
   public void dragEnter(DropTargetDragEvent e) {
     final Component newDropWin = e.getDropTargetContext().getComponent();
     if (newDropWin != dropWin) {
@@ -88,7 +87,6 @@ public class DragHandlerNoImage extends DragHandler {
     super.dragEnter(e);
   }
 
-  @Override
   public void drop(DropTargetDropEvent e) {
     removeDragCursor();
     super.drop(e);

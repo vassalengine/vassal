@@ -92,6 +92,7 @@ public abstract class DragHandler
   final static int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
   final static int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
 
+
   protected JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
 //      private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
