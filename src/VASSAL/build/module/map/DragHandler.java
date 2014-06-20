@@ -77,8 +77,8 @@ public abstract class DragHandler
   static private DragHandler theDragHandler =
       DragSource.isDragImageSupported() ?
       (SystemUtils.IS_OS_MAC_OSX ?
-        new DragHandlerNativeMacOSX() : new DragHandlerNative()) :
-        new DragHandlerNonNative();
+        new DragHandlerImageMacOSX() : new DragHandlerImage()) :
+        new DragHandlerNoImage();
 
   /** returns the singleton DragHandler instance */
   static public DragHandler getTheDragHandler() {

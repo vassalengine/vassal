@@ -19,9 +19,6 @@
 package VASSAL.build.module;
 
 import java.awt.Container;
-import java.awt.dnd.DragSource;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,8 +33,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import org.apache.commons.lang.SystemUtils;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -45,9 +40,6 @@ import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.DragHandler;
-import VASSAL.build.module.map.DragHandlerNative;
-import VASSAL.build.module.map.DragHandlerNonNative;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -79,7 +71,6 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
-  public static final String BUG_10295 = "bug10295";
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -135,33 +126,6 @@ public class GlobalOptions extends AbstractConfigurable {
       Integer.valueOf(512)
     );
     prefs.addOption(maxHeapConf);
-
-    // Bug 10295: Sometimes, for unknown reasons, the native drag handler
-    // fails to draw images properly on Windows. This lets the user select
-    // the drag handler to use.
-    if (SystemUtils.IS_OS_WINDOWS) {
-      final BooleanConfigurer bug10295Conf = new BooleanConfigurer(
-        BUG_10295,
-        Resources.getString("GlobalOptions.bug10295"),
-        Boolean.FALSE
-      );
-
-      if (Boolean.TRUE.equals(bug10295Conf.getValue())) {
-        DragHandler.setTheDragHandler(new DragHandlerNonNative());
-      }
-
-      bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
-          DragHandler.setTheDragHandler(
-            (Boolean.TRUE.equals(e.getNewValue()) ||
-             !DragSource.isDragImageSupported()) ?
-              new DragHandlerNonNative() : new DragHandlerNative()
-          );
-        }
-      });
-
-      prefs.addOption(bug10295Conf);
-    }
 
     validator = new SingleChildInstance(gm, getClass());
   }
