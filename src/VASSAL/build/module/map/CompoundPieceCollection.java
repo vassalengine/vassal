@@ -99,8 +99,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   public GamePiece[] getAllPieces() {
-      return getPieces(true);
-
+    return getPieces(true);
   }
 
   public int indexOf(GamePiece p) {
