@@ -1,3 +1,24 @@
+3.2.12 - 21 June 2014
+
+* 11085: Side selection dialog displayed twice when observer chosen
+* 11084: Additional Selection Highlighters do not work
+* 11083: SumStack() function fails if unit in stack does not define Property
+* 11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height
+* 10957: Movement trails trait has incorrect bounding box
+* 10925: IllegalArgumentException due to intransitive Comparator in
+    KeyBuffer.sort()
+* 10897: Windows uninstaller unconditionally removes file associations
+* 10886: Java fails to exit after temporary directory cleanup on Windows
+* 10867: Mac launcher script does not find some Apple JDKs
+* 10686: Using String.isEmpty() is Java 5 incompatible
+* 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
+* 10260: Added missing documentation for Mass Piece Loader
+*  9889: Added missing documentation for Module Level Action Button
+*  9888: Added missing documentation for ExpressionBuilder
+*  9483: StackOverflowError while processing InfiniteLoop
+*  2518: NPE in ExtensionsManager.getExtensionsDirectory()
+*   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
+
 3.2.11 - 14 February 2014
 
 * 10852: New launcher script does not find Java 5 on old Macs

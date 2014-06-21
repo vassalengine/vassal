@@ -1,26 +1,46 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.11, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.12, which which fixes several problems found in earlier versions.
 
 <h3>IMPORTANT</h3>
 * If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
 
 * If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
 
-* VASL 6.0 is compatible with VASSAL 3.2. VASL users, please upgrade!
+* VASL 6 is compatible with VASSAL 3.2. VASL users, please upgrade!
 
 * If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.11.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.12.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 * Oracle's Java 7 has very poor rendering performance on some MacOS X systems. If you are experiencing this, please use Apple's Java 6 instead.
 
 <h3>Download</h3>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-linux.tar.bz2' target='_new'>Linux</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-macosx.dmg' target='_new'>Mac OS X</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-windows.exe' target='_new'>Windows</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-other.zip'  target='_new'>Other</a>
-* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.11-src.zip' target='_new'>Source code</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-linux.tar.bz2' target='_new'>Linux</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-macosx.dmg' target='_new'>Mac OS X</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-windows.exe' target='_new'>Windows</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-other.zip'  target='_new'>Other</a>
+* <a href='http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.12-src.zip' target='_new'>Source code</a>
 
 <h3>Recent Changes</h3>
+The following bugs in 3.2.11 are fixed in 3.2.12:
+
+* 11085: Side selection dialog displayed twice when observer chosen
+* 11084: Additional Selection Highlighters do not work
+* 11083: SumStack() function fails if unit in stack does not define Property
+* 11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height
+* 10957: Movement trails trait has incorrect bounding box
+* 10925: IllegalArgumentException due to intransitive Comparator in KeyBuffer.sort()
+* 10897: Windows uninstaller unconditionally removes file associations
+* 10886: Java fails to exit after temporary directory cleanup on Windows
+* 10867: Mac launcher script does not find some Apple JDKs
+* 10686: Using String.isEmpty() is Java 5 incompatible
+* 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
+* 10260: Added missing documentation for Mass Piece Loader
+*  9889: Added missing documentation for Module Level Action Button
+*  9888: Added missing documentation for ExpressionBuilder
+*  9483: StackOverflowError while processing InfiniteLoop
+*  2518: NPE in ExtensionsManager.getExtensionsDirectory()
+*   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
+
 The following bugs in 3.2.10 are fixed in 3.2.11:
 
 * 10852: New launcher script does not find Java 5 on old Macs
@@ -36,23 +56,9 @@ The following bugs in 3.2.9 are fixed in 3.2.10:
 
 * 10723: IllegalStateException in ImageIOImageLoader.<clinit>
 
-The following bugs in 3.2.8 are fixed in 3.2.9:
+For changes prior to 3.2.10, see the change log.
 
-* 10641: Module Manager clobbers global preferences set in Editor, Player
-* 10628: Game state not set to unmodified after a save
-* 10594: Max heap estimate sometimes too low for image tiler on Mac OS X
-* 10590: Cards painted in wrong location when Deck is sent after using "Draw specific cards" but without drawing cards
-* 10518: Text is not antialiased in chat pane on Linux
-* 10493: HTMLCharts do not follow anchors
-* 10468: VASSAL.sh doesn't work if path includes spaces
-* 10369: Windows installer doesn't find older installs on 64-bit systems
-* 10158: UnsatisfiedLinkError: Can't find dependent libraries via MemoryUtils.getPhysicalMemory
-*  9897: Mac bundle fails to find non-Apple JVMs
-*  9833: UnsatisfiedLinkError because JNA DLL cannot be read
-
-For changes prior to 3.2.9, see the change log.
-
-Please report all bugs in 3.2.11, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.12, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 <h3>New Features in 3.2</h3>
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
