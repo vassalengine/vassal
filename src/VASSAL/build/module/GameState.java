@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
@@ -762,15 +764,48 @@ public class GameState implements CommandEncoder {
    * in the game. Used when saving a game.
    */
   public Command getRestorePiecesCommand() {
-    final ArrayList<GamePiece> pieceList = new ArrayList<GamePiece>();
-    for (GamePiece p : pieces.values()) {
-      int index = 0;
-      if (p.getParent() == null) {
-        index = pieceList.size();
+    // TODO remove stacks that were empty when the game was loaded and are still empty now
+    final List<GamePiece> pieceList = new ArrayList<GamePiece>(pieces.values());
+    Collections.sort(pieceList, new Comparator<GamePiece>() {
+      private final Map<GamePiece,Integer> indices = new HashMap<GamePiece,Integer>();
+
+      public int compare(GamePiece a, GamePiece b) {
+        final VASSAL.build.module.Map amap = a.getMap(), bmap = b.getMap();
+
+        if (amap == null) {
+          return bmap == null ?
+            // order by id if neither piece is on a map
+            a.getId().compareTo(b.getId()) :
+            // nonnull map sorts before null map
+            -1;
+        }
+        else if (bmap == null) {
+          // null map sorts after nonnull map
+          return 1;
+        }
+        else if (amap == bmap) {
+          // same map, sort according to piece list
+
+          // Cache indices because indexOf() is linear;
+          // otherwise sorting would be quadratic.
+          Integer ai = indices.get(a);
+          if (ai == null) {
+            indices.put(a, ai = amap.getPieceCollection().indexOf(a));
+          }
+
+          Integer bi = indices.get(b);
+          if (bi == null) {
+            indices.put(b, bi = bmap.getPieceCollection().indexOf(b));
+          }
+
+          return ai - bi;
+        }
+        else {
+          // different maps, order by map
+          return amap.getId().compareTo(bmap.getId());
+        }
       }
-      // TODO remove stacks that were empty when the game was loaded and are still empty now
-      pieceList.add(index, p);
-    }
+    });
 
     final Command c = new NullCommand();
     for (GamePiece p : pieceList) {
