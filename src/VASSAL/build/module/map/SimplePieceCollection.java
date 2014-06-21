@@ -18,23 +18,19 @@
  */
 package VASSAL.build.module.map;
 
+import java.util.ArrayList;
+
 import VASSAL.counters.GamePiece;
-import VASSAL.tools.ArrayUtils;
 
 /** Stores {@link VASSAL.counters.GamePiece}s in a simple array */
 public class SimplePieceCollection implements PieceCollection {
-  private int capacity = 100, incr = 25;
-  private GamePiece pieces[] = new GamePiece[capacity];
-  private int pieceCount = 0;
+  private final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
 
   /**
    * Returns the index of a piece.  When painting the map, pieces
    * are drawn in order of index */
   public int indexOf(GamePiece p) {
-    for (int i = 0; i < pieceCount; ++i)
-      if (pieces[i] == p)
-        return (i);
-    return -1;
+    return pieces.indexOf(p);
   }
 
   public boolean canMerge(GamePiece p1, GamePiece p2) {
@@ -42,17 +38,11 @@ public class SimplePieceCollection implements PieceCollection {
   }
 
   public void add(GamePiece p) {
-    if (pieceCount >= capacity) {
-      capacity += incr;
-      GamePiece oldStack[] = pieces;
-      pieces = new GamePiece[capacity];
-      System.arraycopy(oldStack, 0, pieces, 0, pieceCount);
-    }
-    pieces[pieceCount++] = p;
+    pieces.add(p);
   }
 
   public void clear() {
-    pieceCount = 0;
+    pieces.clear();
   }
 
   public void remove(GamePiece p) {
@@ -60,7 +50,7 @@ public class SimplePieceCollection implements PieceCollection {
   }
 
   public GamePiece[] getPieces() {
-    return ArrayUtils.copyOf(pieces, pieceCount);
+    return pieces.toArray(new GamePiece[pieces.size()]);
   }
 
   public GamePiece[] getAllPieces() {
@@ -69,22 +59,15 @@ public class SimplePieceCollection implements PieceCollection {
 
   private void removePieceAt(int gone) {
     if (gone >= 0) {
-      for (int i = gone; i < pieceCount - 1; ++i)
-        pieces[i] = pieces[i + 1];
-      pieceCount--;
+      pieces.remove(gone);
     }
   }
 
-  public void reposition(GamePiece s, int pos) {
-    int index = indexOf(s);
-    if (index >= 0) {
-      for (int i = index; i < pieceCount - 1; ++i) {
-        pieces[i] = pieces[i + 1];
-      }
-      for (int i = pieceCount - 1; i > pos; --i) {
-        pieces[i] = pieces[i - 1];
-      }
-      pieces[pos] = s;
+  public void reposition(GamePiece p, int pos) {
+    final int i = pieces.indexOf(p);
+    if (i >= 0) {
+      pieces.remove(i);
+      pieces.add(pos, p);
     }
   }
 
@@ -93,6 +76,10 @@ public class SimplePieceCollection implements PieceCollection {
   }
 
   public void moveToFront(GamePiece p) {
-    reposition(p, pieceCount - 1);
+    final int i = pieces.indexOf(p);
+    if (i >= 0) {
+      pieces.remove(p);
+      pieces.add(p);
+    }
   }
 }
