@@ -133,12 +133,11 @@ public class ImageIOImageLoader implements ImageLoader {
   //
   //   http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6986863
   //
-  // java.awt.color.ICC_Profile.getInstance() isn't thread safe (!), but
-  // is called from com.sun.imageio.plugins.jpeg.JPEGImageReader.getWidth().
-  // This means that not only is JPEGImageReader.getWidth() not thread-safe,
-  // but it's not even thread-safe across different instances of
-  // JPEGImageReader. Nobody will ever be trying to load more than one JPEG
-  // at a time, right? WTF?!
+  // java.awt.color.ICC_Profile.getInstance() is static but isn't thread
+  // safe (!) and is called from JPEGImageReader.getWidth(). This means that
+  // not only is JPEGImageReader.getWidth() not thread-safe, but it's not
+  // even thread-safe across different instances of JPEGImageReader. Nobody
+  // will ever be trying to load more than one JPEG at a time, right? WTF?!
   //
   // To mitigate this, we attempt to turn off ProfileDeferralMgr, which will
   // stop calls to ProfileDeferralMgr.activateProfiles(), which is where the
