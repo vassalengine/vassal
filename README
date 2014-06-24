@@ -70,6 +70,8 @@ Recent Changes
 The following bugs in 3.2.12 are fixed in 3.2.13:
 
 * 10946: Z-order of pieces is not preserved in saves
+*  4752: ConcurrentModificationException in
+    sun.awt.color.ProfileDeferralMgr.activateProfiles()
 
 The following bugs in 3.2.11 are fixed in 3.2.12:
 
