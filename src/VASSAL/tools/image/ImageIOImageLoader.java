@@ -26,6 +26,9 @@ import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -123,6 +126,75 @@ public class ImageIOImageLoader implements ImageLoader {
       throw new IllegalStateException(
         "Unexpected pixel value 0x" + String.format("%08x", pixel)
       );
+    }
+  }
+
+  // Workaround for Sun Bug 6986863:
+  //
+  //   http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6986863
+  //
+  // java.awt.color.ICC_Profile.getInstance() isn't thread safe (!), but
+  // is called from com.sun.imageio.plugins.jpeg.JPEGImageReader.getWidth().
+  // This means that not only is JPEGImageReader.getWidth() not thread-safe,
+  // but it's not even thread-safe across different instances of
+  // JPEGImageReader. Nobody will ever be trying to load more than one JPEG
+  // at a time, right? WTF?!
+  //
+  // To mitigate this, we attempt to turn off ProfileDeferralMgr, which will
+  // stop calls to ProfileDeferralMgr.activateProfiles(), which is where the
+  // race happens.
+  static {
+    // Try to find the ProfileDeferralMgr. It's is not a public part of the
+    // JDK and it changed packages at some point, so we look both places,
+    // newer location first.
+    Class <?> c = null;
+    try {
+      c = Class.forName("sun.java2d.cmm.ProfileDeferralMgr");
+    }
+    catch (ClassNotFoundException e) {
+      try {
+        c = Class.forName("sun.awt.color.ProfileDeferralMgr");
+      }
+      catch (ClassNotFoundException ignore) {
+        // No ProfileDeferralMgr, so probably no bug either.
+      }
+    }
+
+    if (c != null) {
+      Field df = null;
+      try {
+        df = c.getField("deferring");
+      }
+      catch (NoSuchFieldException ignore) {
+        // Nothing we can do
+      }
+
+      if (df != null) {
+        try {
+          if (df.getBoolean(null)) {
+            Method am = null;
+            try {
+              am = c.getMethod("activateProfiles");
+            }
+            catch (NoSuchMethodException ignore) {
+              // Nothing we can do
+            }
+
+            if (am != null) {
+              try {
+                am.invoke(null);
+                df.setBoolean(null, false);
+              }
+              catch (InvocationTargetException ignore) {
+                // Nothing we can do
+              }
+            }
+          }
+        }
+        catch (IllegalAccessException ignore) {
+          // Nothing we can do
+        }
+      }
     }
   }
 
