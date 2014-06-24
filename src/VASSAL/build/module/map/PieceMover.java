@@ -786,10 +786,8 @@ public class PieceMover extends AbstractBuildable
   // start of the drag choppy.
   static {
     try {
-      Class.forName(MovementReporter.class.getName(),
-                    true, MovementReporter.class.getClassLoader());
-      Class.forName(KeyBuffer.class.getName(),
-                    true, KeyBuffer.class.getClassLoader());
+      Class.forName(MovementReporter.class.getName());
+      Class.forName(KeyBuffer.class.getName());
     }
     catch (ClassNotFoundException e) {
       throw new IllegalStateException(e); // impossible
