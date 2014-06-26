@@ -48,6 +48,7 @@ public interface MutablePropertiesContainer {
   /** Return a unique Id for the container */
 
   String getMutablePropertiesContainerId();
+
   /**
    * Simple implementation of {@link MutablePropertiesContainer}
    * @author rkinney
@@ -62,7 +63,7 @@ public interface MutablePropertiesContainer {
       this("");
     }
 
-    public Impl (String id) {
+    public Impl(String id) {
       this.id = id;
     }
 
