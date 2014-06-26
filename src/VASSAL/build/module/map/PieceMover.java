@@ -523,7 +523,7 @@ public class PieceMover extends AbstractBuildable
         }
       }
       else {
-         draggedPieces.add(dragging);
+        draggedPieces.add(dragging);
       }
 
       if (offset != null) {
