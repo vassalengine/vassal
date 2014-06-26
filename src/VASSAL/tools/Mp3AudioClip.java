@@ -33,56 +33,74 @@ import VASSAL.tools.io.IOUtils;
 public class Mp3AudioClip implements AudioClip {
 
   protected String name;
-  protected Player player;
-  protected InputStream stream;
+  protected Player player = null;
+  protected InputStream stream = null;
 
   public Mp3AudioClip(String name) {
     this.name = name;
   }
 
   public void play() {
+    // load the stream
+    stream = null;
     try {
       stream = GameModule.getGameModule().getDataArchive().getInputStream(name);
+    }
+    catch (FileNotFoundException e) {
+      ErrorDialog.dataError(new BadDataReport(
+        Resources.getString("Error.not_found", name), "", e));
+      return;
+    }
+    catch (IOException e) {
+      ErrorDialog.bug(e);
+      return;
+    }
+
+    // create the player
+    player = null;
+    try {
       player = new Player(stream);
     }
     catch (JavaLayerException e) {
       ErrorDialog.bug(e);
-    }
-    catch (FileNotFoundException e) {
-      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.not_found", name), "", e));
-    }
-    catch (IOException e) {
-      ErrorDialog.bug(e);
+      return;
     }
     finally {
-      IOUtils.closeQuietly(stream);
+      if (player == null) {
+        // close the stream if player ctor fails
+        // otherwise, keep it open for the thread to close
+        IOUtils.closeQuietly(stream);
+      }
     }
 
     // run in new thread to play in background
     new Thread() {
-        public void run() {
-          try {
-            if (player != null) {
-              player.play();
-            }
-          }
-          catch (JavaLayerException e) {
-            ErrorDialog.bug(e);
-          }
+      public void run() {
+        try {
+          player.play();
         }
+        catch (JavaLayerException e) {
+          ErrorDialog.bug(e);
+        }
+        finally {
+          IOUtils.closeQuietly(stream);
+        }
+      }
     }.start();
   }
 
   public void stop() {
     if (player != null) {
-      player.close();
-      IOUtils.closeQuietly(stream);
+      try {
+        player.close();
+      }
+      finally {
+        IOUtils.closeQuietly(stream);
+      }
     }
   }
 
   public void loop() {
     // Not used by Vassal
   }
-
-
 }
