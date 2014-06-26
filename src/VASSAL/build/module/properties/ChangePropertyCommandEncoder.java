@@ -68,8 +68,10 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
     if (c instanceof ChangePropertyCommand) {
       ChangePropertyCommand cpc = (ChangePropertyCommand) c;
       if (container.getMutablePropertiesContainerId().equals(cpc.getProperty().getParent().getMutablePropertiesContainerId())) {
-        SequenceEncoder se = new SequenceEncoder('\t');
-        se.append(cpc.getPropertyName()).append(cpc.getOldValue()).append(cpc.getNewValue())
+        final SequenceEncoder se = new SequenceEncoder('\t');
+        se.append(cpc.getPropertyName())
+          .append(cpc.getOldValue())
+          .append(cpc.getNewValue())
           .append(container.getMutablePropertiesContainerId());
         s = COMMAND_PREFIX+se.getValue();
       }
