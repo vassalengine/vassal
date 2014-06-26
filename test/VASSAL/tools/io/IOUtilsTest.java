@@ -21,14 +21,11 @@ package VASSAL.tools.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.ZipFile;
@@ -128,81 +125,6 @@ public class IOUtilsTest {
   }
 
   @Test
-  public void testCloseQuietlyCloseableOk() throws IOException {
-    final Closeable c = context.mock(Closeable.class);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(c).close();
-      }
-    });
-
-    IOUtils.closeQuietly(c);
-  }
-
-  @Test
-  public void testCloseQuietlyCloseableThrows() throws IOException {
-    final Closeable c = context.mock(Closeable.class);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(c).close(); will(throwException(new IOException()));
-      }
-    });
-
-    IOUtils.closeQuietly(c);
-  }
-
-  @Test
-  public void testCloseQuietlyCloseableNull() {
-    IOUtils.closeQuietly((Closeable) null);
-  }
-
-  @Test
-  public void testCloseQuietlyServerSocketOpen() throws IOException {
-    final ServerSocket s = new ServerSocket(0);
-    assertFalse(s.isClosed());
-    IOUtils.closeQuietly(s);
-    assertTrue(s.isClosed());
-  }
-
-  @Test
-  public void testCloseQuietlyServerSocketClosed() throws IOException {
-    final ServerSocket s = new ServerSocket(0);
-    s.close();
-    assertTrue(s.isClosed());
-    IOUtils.closeQuietly(s);
-    assertTrue(s.isClosed());
-  }
-
-  @Test
-  public void testCloseQuietlyServerSocketNull() {
-    IOUtils.closeQuietly((ServerSocket) null);
-  }
-
-  @Test
-  public void testCloseQuietlySocketOpen() {
-    final Socket s = new Socket();
-    assertFalse(s.isClosed());
-    IOUtils.closeQuietly(s);
-    assertTrue(s.isClosed());
-  }
-
-  @Test
-  public void testCloseQuietlySocketClosed() throws IOException {
-    final Socket s = new Socket();
-    s.close();
-    assertTrue(s.isClosed());
-    IOUtils.closeQuietly(s);
-    assertTrue(s.isClosed());
-  }
-
-  @Test
-  public void testCloseQuietlySocketNull() {
-    IOUtils.closeQuietly((Socket) null);
-  }
-
-  @Test
   public void testCloseQuietlyZipFileOpen() throws IOException {
     final ZipFile zf = new ZipFile("test/VASSAL/tools/io/test.zip");
     IOUtils.closeQuietly(zf);
@@ -256,52 +178,5 @@ public class IOUtilsTest {
   @Test
   public void testCloseQuietlyImageInputStreamNull() {
     IOUtils.closeQuietly((ImageInputStream) null);
-  }
-
-  @Test
-  public void testReadFull() throws IOException {
-    final byte[] expected = new byte[100];
-    Arrays.fill(expected, (byte) 1);
-
-    final InputStream in = new ByteArrayInputStream(expected);
-    final byte[] actual = new byte[100];
-    final int count = IOUtils.read(in, actual);
-
-    assertEquals(expected.length, count);
-    assertArrayEquals(expected, actual);
-  }
-
-  @Test
-  public void testReadShort() throws IOException {
-    final byte[] expected = new byte[50];
-    Arrays.fill(expected, (byte) 1);
-
-    final InputStream in = new ByteArrayInputStream(expected);
-    final byte[] actual = new byte[100];
-    final int count = IOUtils.read(in, actual);
-
-    assertEquals(50, count);
-    assertArrayEquals(expected, Arrays.copyOfRange(actual, 0, count));
-    assertArrayEquals(new byte[50], Arrays.copyOfRange(actual, count, 100));
-  }
-
-  @Test
-  public void testReadNone() throws IOException {
-    final InputStream in = new ByteArrayInputStream(new byte[0]);
-    final byte[] buf = new byte[1];
-    final int count = IOUtils.read(in, buf);
-
-    assertEquals(-1, count);
-    assertArrayEquals(new byte[1], buf);
-  }
-
-  @Test
-  public void testReadClosed() throws IOException {
-    final InputStream in = new ClosedInputStream();
-    final byte[] buf = new byte[1];
-    final int count = IOUtils.read(in, buf);
-
-    assertEquals(-1, count);
-    assertArrayEquals(new byte[1], buf);
   }
 }
