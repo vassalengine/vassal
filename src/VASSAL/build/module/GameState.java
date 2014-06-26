@@ -303,12 +303,12 @@ public class GameState implements CommandEncoder {
       GameModule.getGameModule().appendToTitle(null);
     }
 
-    gameStarted = gameStarted && this.gameStarting;
+    gameStarted &= this.gameStarting;
     for (GameComponent gc : gameComponents) {
       gc.setup(this.gameStarting);
     }
 
-    gameStarted = gameStarted || this.gameStarting;
+    gameStarted |= this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
   }
 
