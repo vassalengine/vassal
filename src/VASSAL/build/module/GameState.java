@@ -769,6 +769,16 @@ public class GameState implements CommandEncoder {
     Collections.sort(pieceList, new Comparator<GamePiece>() {
       private final Map<GamePiece,Integer> indices = new HashMap<GamePiece,Integer>();
 
+      // Cache indices because indexOf() is linear;
+      // otherwise sorting would be quadratic.
+      private int indexOf(GamePiece p, VASSAL.build.module.Map m) {
+        Integer pi = indices.get(p);
+        if (pi == null) {
+          indices.put(p, pi = m.getPieceCollection().indexOf(p));
+        }
+        return pi;
+      }
+
       public int compare(GamePiece a, GamePiece b) {
         final VASSAL.build.module.Map amap = a.getMap(), bmap = b.getMap();
 
@@ -785,20 +795,7 @@ public class GameState implements CommandEncoder {
         }
         else if (amap == bmap) {
           // same map, sort according to piece list
-
-          // Cache indices because indexOf() is linear;
-          // otherwise sorting would be quadratic.
-          Integer ai = indices.get(a);
-          if (ai == null) {
-            indices.put(a, ai = amap.getPieceCollection().indexOf(a));
-          }
-
-          Integer bi = indices.get(b);
-          if (bi == null) {
-            indices.put(b, bi = bmap.getPieceCollection().indexOf(b));
-          }
-
-          return ai - bi;
+          return indexOf(a, amap) - indexOf(b, bmap);
         }
         else {
           // different maps, order by map
