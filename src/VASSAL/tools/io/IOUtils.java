@@ -18,7 +18,6 @@
  */
 package VASSAL.tools.io;
 
-import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,8 +25,6 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.util.zip.ZipFile;
 
@@ -119,65 +116,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   }
 
   /**
-   * Close a {@link Closeable} unconditionally. Equivalent to
-   * calling <code>c.close()</code> when <code>c</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param c a (possibly <code>null</code>) <code>Closeable</code>
-   */
-  public static void closeQuietly(Closeable c) {
-    if (c == null) return;
-
-    try {
-      c.close();
-    }
-    catch (IOException e) {
-      // ignore
-    }
-  }
-
-  /**
-   * Close a {@link ServerSocket} unconditionally. Equivalent to
-   * calling <code>s.close()</code> when <code>s</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param s a (possibly <code>null</code>) <code>ServerSocket</code>
-   */
-  // FIXME: Remove in Java 1.6+, when ServerSocket implements Closeable
-  public static void closeQuietly(ServerSocket s) {
-    if (s == null) return;
-
-    try {
-      s.close();
-    }
-    catch (IOException e) {
-      // ignore
-    }
-  }
-
-  /**
-   * Close a {@link Socket} unconditionally. Equivalent to
-   * calling <code>s.close()</code> when <code>s</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param s a (possibly <code>null</code>) <code>Socket</code>
-   */
-  // FIXME: Remove in Java 1.6+, when Socket implements Closeable
-  public static void closeQuietly(Socket s) {
-    if (s == null) return;
-
-    try {
-      s.close();
-    }
-    catch (IOException e) {
-      // ignore
-    }
-  }
-
-  /**
    * Close an {@link ObjectInput} unconditionally. Equivalent to
    * calling <code>o.close()</code> when <code>o</code> is nonnull.
    * {@link IOException}s are swallowed, as there is generally
@@ -257,30 +195,5 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
       // an IOException if the stream is already closed. This is always done
       // via ImageInputStreamImpl.checkClosed().
     }
-  }
-
-  /**
-   * Reads from an {@link InputStream} to a byte array. This will always
-   * completely fill the byte array, unless there are no more bytes to
-   * read from the stream.
-   *
-   * @param in the input stream from which to read
-   * @param buf the byte array to fill
-   * @return the number of bytes read, of <code>-1</code> if at the end of
-   * the stream
-   *
-   * @throws IOException if one occurs while reading
-   */
-  public static int read(InputStream in, byte[] buf) throws IOException {
-    int num;
-    int off = 0;
-    while (off < buf.length &&
-            (num = in.read(buf, off, buf.length-off)) != -1) {
-      off += num;
-    }
-
-    // This will read at least one byte if there are any to be read,
-    // so bytes read cannot be zero.
-    return off == 0 ? -1 : off;
   }
 }
