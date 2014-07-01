@@ -69,46 +69,55 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return dummy.isDrawOutline();
     }
   };
+
   private VisibilityCondition reshuffleVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return reshufflable;
     }
   };
+
   private VisibilityCondition faceDownFormatVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.getFaceDownOption().equals(USE_MENU);
     }
   };
+
   private VisibilityCondition reverseFormatVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isReversible();
     }
   };
+
   private VisibilityCondition shuffleFormatVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.getShuffleOption().equals(USE_MENU);
     }
   };
+
   private VisibilityCondition expressionCountingVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.doesExpressionCounting();
     }
   };
+
   private VisibilityCondition hotkeyOnEmptyVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isHotkeyOnEmpty();
     }
   };
+
   private VisibilityCondition selectionAllowedVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isAllowSelectDraw();
     }
   };
+
   private VisibilityCondition restrictExpressionVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isRestrictOption();
     }
   };
+
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
 
   public void addTo(Buildable parent) {
@@ -147,7 +156,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static DrawPile findDrawPile(String id) {
     return (DrawPile) idMgr.findInstance(id);
   }
-
 
   public final static String WIDTH = "width";
   public final static String HEIGHT = "height";
@@ -361,6 +369,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return new GamePieceFormattedStringConfigurer(key, name);
     }
   }
+
   public String getAttributeValueString(String key) {
     if (WIDTH.equals(key)) {
       return String.valueOf(dummy.getSize().width);
@@ -794,6 +803,4 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     return l;
   }
-
 }
-
