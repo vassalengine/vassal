@@ -417,7 +417,15 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return StringArrayConfigurer.arrayToString(dummy.getCountExpressions());
     }
     else if (RESHUFFLABLE.equals(key)) {
-      return String.valueOf(dummy.getReshuffleCommand().length() > 0);
+      // We check all of these due to Bug 11112 making the value of
+      // reshufflable unreliable in modules created prior to 3.2.13.
+      return String.valueOf(
+        reshufflable ||
+        dummy.getReshuffleCommand().length() > 0 ||
+        dummy.getReshuffleTarget().length() > 0 ||
+        dummy.getReshuffleMsgFormat().length() > 0 ||
+        dummy.getReshuffleKey() != null
+      );
     }
     else if (RESHUFFLE_COMMAND.equals(key)) {
       return dummy.getReshuffleCommand();
@@ -471,7 +479,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return super.getAttributeValueString(key);
     }
   }
-
 
   public void setAttribute(String key, Object value) {
     if (value == null) {
@@ -579,6 +586,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       reshufflable = "true".equals(value) || Boolean.TRUE.equals(value);
       if (!reshufflable) {
         dummy.setReshuffleCommand("");
+        dummy.setReshuffleKey(null);
+        dummy.setReshuffleTarget("");
+        dummy.setReshuffleMsgFormat("");
       }
     }
     else if (RESHUFFLE_COMMAND.equals(key)) {
@@ -659,7 +669,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       super.setAttribute(key, value);
     }
   }
-
 
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
