@@ -28,7 +28,6 @@
 
 !define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
-!define VROOT "Software\vassalengine.org\VASSAL"
 !define VNAME "VASSAL (${VERSION})"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
@@ -309,11 +308,14 @@ bail_out:
 !macro FindVASSALVersions
   StrCpy $R0 0
   ${Do}
-    EnumRegKey $0 HKLM "${VROOT}" $R0
-    ${WordFind} "$RemoveOtherVersions" "$\n" "E/$R0" $1
-    IfErrors 0 +2
-    StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
-    ClearErrors
+    EnumRegKey $0 HKLM "${UNINST}" $R0
+    StrCpy $R1 "$0" 8
+    ${If} $R1 == "VASSAL ("
+      ${WordFind} "$RemoveOtherVersions" "$\n" "E/$R0" $1
+      IfErrors 0 +2
+      StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
+      ClearErrors
+    ${EndIf}
     IntOp $R0 $R0 + 1
   ${LoopUntil} $0 == ""
 !macroend
@@ -753,12 +755,10 @@ Section "-Application" Application
       ; clean up leftover reg keys
       ${If} ${RunningX64}
         SetRegView 64
-        DeleteRegKey HKLM "${VROOT}\$1"
         DeleteRegKey HKLM "${UNINST}\$1"
       ${EndIf}
 
       SetRegView 32
-      DeleteRegKey HKLM "${VROOT}\$1"
       DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
   ${EndIf}
