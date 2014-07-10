@@ -69,6 +69,7 @@ Recent Changes
 
 The following bugs in 3.2.12 are fixed in 3.2.13:
 
+* 11148: Windows installer fails to uninstall old versions since 3.2.9
 * 11112: DrawPile "Include command to send entire deck" does not persist if
     no "Send Menu text" is set
 * 10946: Z-order of pieces is not preserved in saves
