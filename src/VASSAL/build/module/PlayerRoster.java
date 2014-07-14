@@ -665,6 +665,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {Resources.getString("Editor.button_text_label"), Resources.getString("Editor.tooltip_text_label"), Resources.getString("Editor.PlayerRoster.sides_label")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    return new String[] {
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.tooltip_text_label"),
+      Resources.getString("Editor.PlayerRoster.sides_label")
+    };
   }
 }
