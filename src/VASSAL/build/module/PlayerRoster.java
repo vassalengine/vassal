@@ -338,10 +338,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   public String encode(Command c) {
     if (c instanceof Add) {
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(((Add) c).id);
-      se.append(((Add) c).name);
-      se.append(((Add) c).side);
+      final Add a = (Add) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
+      se.append(a.id).append(a.name).append(a.side);
       return COMMAND_PREFIX + se.getValue();
     }
     else {
