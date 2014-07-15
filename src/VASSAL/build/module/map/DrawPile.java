@@ -424,7 +424,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         dummy.getReshuffleCommand().length() > 0 ||
         dummy.getReshuffleTarget().length() > 0 ||
         dummy.getReshuffleMsgFormat().length() > 0 ||
-        dummy.getReshuffleKey() != null
+        dummy.getReshuffleKey() != NamedKeyStroke.NULL_KEYSTROKE
       );
     }
     else if (RESHUFFLE_COMMAND.equals(key)) {
@@ -586,7 +586,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       reshufflable = "true".equals(value) || Boolean.TRUE.equals(value);
       if (!reshufflable) {
         dummy.setReshuffleCommand("");
-        dummy.setReshuffleKey(null);
+        dummy.setReshuffleKey(NamedKeyStroke.NULL_KEYSTROKE);
         dummy.setReshuffleTarget("");
         dummy.setReshuffleMsgFormat("");
       }
