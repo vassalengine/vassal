@@ -76,6 +76,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   protected String translatedObserver;
 
+  private boolean pickedSide = false;
+
   public PlayerRoster() {
     ActionListener al = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -370,6 +372,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       players.clear();
     }
     retireButton.setVisible(gameStarting && getMySide() != null);
+    pickedSide = false;
   }
 
   public void finish() {
@@ -380,6 +383,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
     retireButton.setVisible(getMySide() != null);
+    pickedSide = true;
   }
 
   public Component getControls() {
@@ -405,19 +409,29 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   // Implement GameSetupStep
   public boolean isFinished() {
+    if (pickedSide) {
+      return true;
+    }
 
     // Step is always finished if all sides are allocated
     if (allSidesAllocated()) {
       return true;
     }
 
-    // Otherwise we are finished if we are already recorded as a player
+    // If we are already recorded as a player (i.e. in Saved Game), then
+    // the step is only finished if we are not the Observer.
     final PlayerInfo newPlayerInfo = new PlayerInfo(
       GameModule.getUserId(),
       GlobalOptions.getInstance().getPlayerId(), null
     );
 
-    return players.contains(newPlayerInfo);
+    final int i = players.indexOf(newPlayerInfo);
+    if (i != -1) {
+      return !OBSERVER.equals(players.get(i).getSide());
+    }
+
+    // Step is not finished
+    return false;
   }
 
   /**
