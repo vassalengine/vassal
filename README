@@ -77,6 +77,7 @@ The following bugs in 3.2.12 are fixed in 3.2.13:
 *  4752: ConcurrentModificationException in
     sun.awt.color.ProfileDeferralMgr.activateProfiles()
 *  4505: BitstreamException in Mp3AudioClip$1.run()
+*  2686: IllegalArgumentException in GeneralFilter.zoom()
 
 The following bugs in 3.2.11 are fixed in 3.2.12:
 
