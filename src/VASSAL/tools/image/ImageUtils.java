@@ -175,6 +175,12 @@ public class ImageUtils {
         src = coerceToIntType(src);
 
         final Rectangle sbox = transform(getBounds(src), scale, 0.0);
+
+        // return null image if scaling makes source vanish
+        if (sbox.width == 0 || sbox.height == 0) {
+          return NULL_IMAGE;
+        }
+
         final BufferedImage dst =
           GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
 
