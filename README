@@ -74,6 +74,8 @@ The following bugs in 3.2.12 are fixed in 3.2.13:
 * 11112: DrawPile "Include command to send entire deck" does not persist if
     no "Send Menu text" is set
 * 10946: Z-order of pieces is not preserved in saves
+* 10100: IllegalArgumentException: Piece is not on this map at
+    VASSAL.build.module.Map.selectionBoundsOf()
 *  4752: ConcurrentModificationException in
     sun.awt.color.ProfileDeferralMgr.activateProfiles()
 *  4505: BitstreamException in Mp3AudioClip$1.run()
