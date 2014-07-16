@@ -435,7 +435,9 @@ public class Translate extends Decorator implements TranslatablePiece {
           }
         }
         comm.append(c);
-        move.map.ensureVisible(move.map.selectionBoundsOf(move.piece));
+        if (move.piece.getMap() == move.map) {
+          move.map.ensureVisible(move.map.selectionBoundsOf(move.piece));
+        }
         pieces.remove(move.piece);
         move.map.repaint();
       }
