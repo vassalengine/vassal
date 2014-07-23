@@ -440,12 +440,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
+    final String slashname = name.replace('.', '/');
+    byte[] data = null;
+
     InputStream stream = null;
     try {
-      final String slashname = name.replace('.', '/');
       stream = getInputStream(slashname + ".class");
-      final byte[] data = IOUtils.toByteArray(stream);
-      return defineClass(name, data, 0, data.length, cs);
+      data = IOUtils.toByteArray(stream);
     }
     catch (IOException e) {
       throw new ClassNotFoundException("Unable to load class " + name, e);
@@ -453,6 +454,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     finally {
       IOUtils.closeQuietly(stream);
     }
+
+    return defineClass(name, data, 0, data.length, cs);
   }
 
 /////////////////////////////////////////////////////////////////////
