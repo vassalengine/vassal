@@ -21,8 +21,11 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -48,9 +51,14 @@ public class ErrorDialog {
   private static final Logger logger =
     LoggerFactory.getLogger(ErrorDialog.class);
 
-  private static final BugHandler[] bughandlers = {
-    new Bug2694Handler()
-  };
+  private static final List<BugHandler> bughandlers =
+    Collections.synchronizedList(new ArrayList<BugHandler>(
+      Arrays.asList(new Bug2694Handler())
+    ));
+
+  public static void addBugHandler(BugHandler bh) {
+    bughandlers.add(bh);
+  }
 
 // FIXME: make method which takes Throwable but doesn't use it for details
 
@@ -65,10 +73,12 @@ public class ErrorDialog {
     }
 
     // use a bug handler if one matches
-    for (BugHandler bh : bughandlers) {
-      if (bh.accept(thrown)) {
-        bh.handle(thrown);
-        return;
+    synchronized (bughandlers) {
+      for (BugHandler bh : bughandlers) {
+        if (bh.accept(thrown)) {
+          bh.handle(thrown);
+          return;
+        }
       }
     }
 
