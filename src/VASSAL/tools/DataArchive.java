@@ -52,6 +52,7 @@ import java.util.TreeSet;
 import java.util.zip.ZipFile;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import sun.applet.AppletAudioClip;
 import VASSAL.tools.image.ImageUtils;
@@ -453,6 +454,21 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
     finally {
       IOUtils.closeQuietly(stream);
+    }
+
+    final int minor = (data[4] << 8) | data[5];
+    final int major = (data[6] << 8) | data[7];
+
+    if (major > 49 || (major == 49 && minor != 0)) {
+      ProblemDialog.showDisableable(
+        JOptionPane.WARNING_MESSAGE,
+        null,
+        null,
+        cs,
+        "Incompatible Custom Code",
+        "The Custom Code In This Module Should Be Recompiled",
+        "This module contains custom Java code (" + name + ") which was not compiled to be Java 5 compatible. As a result, this module will not run on all versions of Java which VASSAL itself supports.\n\nPlease check whether there is an updated version of this module. If not, please contact the maintainer of this module and request that it be fixed."
+      );
     }
 
     return defineClass(name, data, 0, data.length, cs);
