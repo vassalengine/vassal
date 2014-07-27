@@ -67,6 +67,10 @@ Source code:
 Recent Changes
 *********************
 
+The following bugs in 3.2.13 are fixed in 3.2.14:
+
+* 11275: Warn user when module contains incompatible class files
+
 The following bugs in 3.2.12 are fixed in 3.2.13:
 
 * 11193: Side selection fix for Bug 11085 misassigned observer
