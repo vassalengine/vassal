@@ -1,3 +1,18 @@
+3.2.13 - 27 July 2014
+
+* 11193: Side selection fix for Bug 11085 misassigned observer
+* 11148: Windows installer fails to uninstall old versions since 3.2.9
+* 11112: DrawPile "Include command to send entire deck" does not persist if
+    no "Send Menu text" is set
+* 10946: Z-order of pieces is not preserved in saves
+* 10100: IllegalArgumentException: Piece is not on this map at
+    VASSAL.build.module.Map.selectionBoundsOf()
+*  4752: ConcurrentModificationException in
+    sun.awt.color.ProfileDeferralMgr.activateProfiles()
+*  4505: BitstreamException in Mp3AudioClip$1.run()
+*  3253: ConcurrentModificationException in GameState.getRestorePiecesCommand()
+*  2686: IllegalArgumentException in GeneralFilter.zoom()
+
 3.2.12 - 21 June 2014
 
 * 11085: Side selection dialog displayed twice when observer chosen
