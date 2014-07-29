@@ -418,36 +418,11 @@ e.printStackTrace();
         ));
       }
 
-/*
-      final SignalServer ssrv = ModuleManager.getInstance().getSignalServer();
-      final int port = ssrv.getPort();
-
-      final SettableFuture<ObjectOutputStream> conn =
-        new SimpleFuture<ObjectOutputStream>();
-
-      final EventListener<ConnectionSignal> clistener =
-                                        new EventListener<ConnectionSignal>() {
-        public void receive(Object src, ConnectionSignal sig) {
-          if (sig.pid == id) {
-            ssrv.removeEventListener(ConnectionSignal.class, this);
-            conn.set(sig.out);
-          }
-        }
-      };
-
-      ssrv.addEventListener(ConnectionSignal.class, clistener);
-*/
-
-
       // create a socket for communicating which the child process
       final InetAddress lo = InetAddress.getByName(null);
       serverSocket = new ServerSocket(0, 0, lo);
 
       final int port = serverSocket.getLocalPort();
-
-
-
-
 
       // build the argument list
       final ArrayList<String> al = new ArrayList<String>();

@@ -242,11 +242,6 @@ public class ModuleManager {
     return instance;
   }
 
-/*
-  private final ServerSocket signalServerSocket;
-  private final SignalServer signalServer;
-*/
-
   private final long key;
 
   private FileOutputStream lout;
@@ -396,55 +391,7 @@ public class ModuleManager {
       Integer.valueOf(512)
     );
     globalPrefs.addOption("Importer", maxHeapConf);
-
-
-
-
-
-/*
-    final InetAddress lo = InetAddress.getByName(null);
-    signalServerSocket = new ServerSocket(0, 0, lo);
-
-    final MultiplexedSignalSource mss = new DefaultMultiplexedSignalSource();
-    final SignalDispatcher sd = new SignalDispatcher(mss);
-
-    sd.addEventListener(
-      AbstractLaunchAction.NotifyOpenModuleOk.class,
-      new AbstractLaunchAction.NotifyOpenModuleOkListener()
-    );
-
-    sd.addEventListener(
-      AbstractLaunchAction.NotifyNewModuleOk.class,
-      new AbstractLaunchAction.NotifyNewModuleOkListener()
-    );
-
-    sd.addEventListener(
-      AbstractLaunchAction.NotifyImportModuleOk.class,
-      new AbstractLaunchAction.NotifyImportModuleOkListener()
-    );
-
-    sd.addEventListener(
-      AbstractLaunchAction.NotifyOpenModuleFailed.class,
-      new AbstractLaunchAction.NotifyOpenModuleFailedListener()
-    );
-
-    sd.addEventListener(
-      AbstractLaunchAction.NotifySaveFileOk.class,
-      new AbstractLaunchAction.NotifySaveFileOkListener()
-    );
-
-    final SignalSender ss = new SignalSender();
-
-    signalServer = new SignalServer(signalServerSocket, mss, sd, ss);
-    new Thread(signalServer, "comm server").start();
-*/
   }
-
-/*
-  public SignalServer getSignalServer() {
-    return signalServer;
-  }
-*/
 
   private class SocketListener implements Runnable {
     private final ServerSocket serverSocket;
