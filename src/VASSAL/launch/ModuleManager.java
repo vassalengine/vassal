@@ -393,6 +393,11 @@ public class ModuleManager {
     globalPrefs.addOption("Importer", maxHeapConf);
   }
 
+  public void shutDown() throws IOException {
+    lock.release();
+    lout.close();
+  }
+
   private class SocketListener implements Runnable {
     private final ServerSocket serverSocket;
 

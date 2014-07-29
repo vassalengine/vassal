@@ -200,6 +200,13 @@ public class ModuleManagerWindow extends JFrame {
           IOUtils.closeQuietly(gp);
         }
 
+        try {
+          ModuleManager.getInstance().shutDown();
+        }
+        catch (IOException ex) {
+          ErrorDialog.bug(ex);
+        }
+
         logger.info("Exiting");
         System.exit(0);
       }
