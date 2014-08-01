@@ -357,23 +357,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUseList.setCellRenderer(r);
     inUseList.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent evt) {
-        Object o = inUseList.getSelectedValue();
-        int index = inUseList.getSelectedIndex();
+        final Object o = inUseList.getSelectedValue();
         propsButton.setEnabled(o instanceof EditablePiece);
-        if (inUseModel.size() > 1) {
-          removeButton.setEnabled(index > 0);
-          copyButton.setEnabled(index > 0);
-        }
-        else if (inUseModel.size() == 1) {
-          removeButton.setEnabled(index == 0 &&
-            !(inUseModel.getElementAt(0) instanceof BasicPiece));
-          copyButton.setEnabled(index == 0);
-        }
-        else {
-          removeButton.setEnabled(false);
-          copyButton.setEnabled(false);
-        }
-        copyButton.setEnabled(index > 0);
+
+        final int index = inUseList.getSelectedIndex();
+        final boolean copyAndRemove = inUseModel.size() > 0 &&
+          (index > 0 || !(inUseModel.getElementAt(0) instanceof BasicPiece));
+        copyButton.setEnabled(copyAndRemove);
+        removeButton.setEnabled(copyAndRemove);
+
         pasteButton.setEnabled(clipBoard != null);
         moveUpButton.setEnabled(index > 1);
         moveDownButton.setEnabled(index > 0
