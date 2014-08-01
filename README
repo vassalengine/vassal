@@ -69,6 +69,7 @@ Recent Changes
 
 The following bugs in 3.2.13 are fixed in 3.2.14:
 
+* 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
 * 11275: Warn user when module contains incompatible class files
 
 The following bugs in 3.2.12 are fixed in 3.2.13:
