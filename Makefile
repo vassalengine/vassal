@@ -73,11 +73,9 @@ LAUNCH4J:=~/java/launch4j/launch4j
 
 #SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 #CLASSES:=$(SOURCES:.java=.class)
-JARS:=Vengine.jar
 
 vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
-vpath %.jar $(LIBDIR)
 
 #all: $(CLASSDIR) $(CLASSES) i18n icons images help
 all: $(CLASSDIR) fast-compile i18n bsh icons images help
@@ -115,6 +113,8 @@ bsh: $(CLASSDIR)
 fast-compile: version $(CLASSDIR)
 	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
 
+jar: $(LIBDIR)/Vengine.jar
+
 test:
 	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
 	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -l '@Test' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
@@ -125,15 +125,15 @@ test:
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
-Vengine.jar: all $(TMPDIR)
+$(LIBDIR)/Vengine.jar: all $(TMPDIR)
 	cp dist/Vengine.mf $(TMPDIR)
 	(echo -n 'Class-Path: ' ; \
 		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
 		sed -e '/Vengine.jar/d' -e '/^  $$/d' \
 	) >>$(TMPDIR)/Vengine.mf
-	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
-	cd $(LIBDIR) ; $(JAR) i $@ ; cd ..
-	chmod 664 $(LIBDIR)/$@
+	$(JAR) cvfm $@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
+	cd $(LIBDIR) ; $(JAR) i $(@F) ; cd ..
+	chmod 664 $@
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
@@ -158,7 +158,7 @@ version:
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(JARS) $(TMPDIR)
+$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
@@ -188,7 +188,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
 	$(DMG) dmg $< $@
 
-$(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 #	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
@@ -199,7 +199,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	find $(TMPDIR)/VASSAL-$(VERSION) -type f -exec chmod 644 \{\} \+
 	find $(TMPDIR)/VASSAL-$(VERSION) -type d -exec chmod 755 \{\} \+
 	chmod 755 $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe,sh}
-	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
+	cd $(TMPDIR) ; zip -9rv $(@F) VASSAL-$(VERSION) ; cd ..
 
 $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
 	cp dist/VASSAL.sh $(TMPDIR)/VASSAL-$(VERSION)
@@ -226,7 +226,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
 #	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
 	git checkout-index -a -f --prefix=$(TMPDIR)/VASSAL-$(VERSION)-src/
-	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
+	cd $(TMPDIR) ; zip -9rv $(@F) VASSAL-$(VERSION)-src ; cd ..
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
@@ -238,7 +238,7 @@ release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
 release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
-release: clean Vengine.jar test release-other release-linux release-windows release-macosx
+release: clean jar test release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
@@ -255,4 +255,4 @@ clean-javadoc:
 clean: clean-release
 	$(RM) -r $(CLASSDIR)/*
 
-.PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version
+.PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version jar
