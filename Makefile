@@ -133,6 +133,7 @@ Vengine.jar: all $(TMPDIR)
 	) >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
 	cd $(LIBDIR) ; $(JAR) i $@ ; cd ..
+	chmod 664 $(LIBDIR)/$@
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
