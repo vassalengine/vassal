@@ -47,8 +47,7 @@ all platforms, and is free, open-source software.
 cp -p %SOURCE1 .
 
 %build
-make Vengine.jar
-chmod a+r lib/Vengine.jar
+make jar
 
 %install
 #make some install dirs
