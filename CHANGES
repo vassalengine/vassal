@@ -950,3 +950,109 @@ opponent's window
 * Send To Location - specify Zone, other piece's location
 * Shift clicking on map should not deselect counters
 
+2.9 - 9 November 2006
+
+* GlobalHotKey trait fires toolbar hotkeys from a Game Piece menu
+* SetGlobalProperty trait changes a Global Property from a Game Piece
+* Define Global Properties for Zones
+* Overlay a Zone with semi-tranparent patterns based on a Zone's properties
+* Combine multiple toolbar actions into a single button
+* New properties: last die-roll, number of cards in deck
+* Apply Global Key Commands to a portion of a deck (Allows single-click
+  dealing of decks)
+* Define customizable highlighter for selected pieces, based on GamePiece
+  properties
+* Graphical editor for placing At-Start Stacks
+
+2.8 - 7 September 2006
+
+* Play Sound trait plays an audible sound triggered by a Game Piece action.
+* Action Button trait places a virtual button on a piece, letting you invoke
+  an arbitrary action by clicking with the mouse.
+* Mouse-over Stack Viewer can draw pieces as if they were not rotated
+* Global Preferences let you set global properties whose value can be
+  specified by the player during game time.
+
+2.7 - 14 July 2006
+
+* Game Piece Inventory window component shows the pieces in play organized
+  by location, piece properties, or any other grouping you choose.
+* Tabbed maps: place any number of maps together under a set of tabs in a
+  single window.
+* Restricted Commands trait disables commands on a piece under conditions
+  that you define.
+* Decks can be saved to and loaded from a file for Collectible Card Game
+  support.
+
+2.6 - 14 April 2006
+
+* New Toolbar Menu component lets you move organize buttons from the toolbar
+  into customizable drop-down menus.
+* Global Properties let you define properties globally on a Map or Module
+* Dynamic Properties trait lets you define keyboard commands to change
+  properties on game pieces
+* Game Piece Layer Control lets you to enable/disable/cycle-through the
+  Layers that hold pieces on a Map
+* Ability to enable/disable Game Piece Layers
+* Greater control over the mouse-over stack viewer
+* Share Invisible/Masked pieces between sides
+* "Send back" command for "Send to Location" trait
+* Improved editor for configuring map grids
+* Automatically invoke specified keyboard commands on a piece placed on the
+  map via a "Place Marker" command
+
+2.5 - 5 February 2006
+
+* Game Piece Images: a flexible and convenient way to build images from
+  scratch for use in game pieces.
+* New 'Last Move Highlighter' component highlights the last piece moved
+  on a map.
+* Non-stacking pieces can be made selectable but not movable
+
+2.4 - 24 November 2005
+
+* New Map Shading component for overlaying a map with semi-transparent
+  color or image. Usable in combination with Area of Effect trait.
+* Trigger Action trait fires multiple key events in response to a single
+  key event.
+* Right-click menu commands apply to all selected pieces
+
+2.3 - 6 November 2005
+
+* New tool for updating saved games to be compatible with a new module
+  version
+* Module updater accessible through module edit window
+
+2.2
+
+* Rotate pieces to a random facing.
+* Select a random level within a Layer.
+* Make pieces transparent when showing the Line of Sight thread
+
+2.1
+
+* Global Key Commands that are much more powerful. Apply to all maps at
+  once. Place them in the right-click menus of individual pieces. Select
+  targets based on level value in a Layer, map position, and more.
+* Customizable buttons for step/undo/server-controls buttons in toolbar.
+* Replace With' trait will match label values, Layer status, etc. with the
+  original piece.
+* 'Area of Effect' trait highlights an area surrounding a game piece, for
+  showing zones of control, etc.
+
+1.8 - 26 December 2004
+
+1.7 - 27 September 2004
+
+1.4.4 - 14 August 2004
+
+1.3.4.3 - 19 March 2004
+
+1.3.1.1 - 8 January 2004
+
+1.2.3 - 1 October 2003
+
+1.1.14 - 7 July 2003
+
+1.1.8 - 28 March 2003
+
