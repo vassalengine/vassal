@@ -755,9 +755,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     final ArrayList<GamePiece> newContents = new ArrayList<GamePiece>();
     DragBuffer.getBuffer().clear();
+    final Random rng = GameModule.getGameModule().getRNG();
 // FIXME: check whether this is a good shuffle
     for (int count = getPieceCount(); count > 0; --count) {
-      int i = (int) (GameModule.getGameModule().getRNG().nextFloat() * indices.size());
+      final int i = rng.nextInt(indices.size());
       int index = indices.get(i);
       indices.remove(i);
       newContents.add(getPieceAt(index));

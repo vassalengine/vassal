@@ -169,7 +169,7 @@ public class DiceButton extends AbstractConfigurable {
     }
 
     for (int i = 0; i < nDice; ++i) {
-      int roll = (int) (ran.nextFloat() * nSides + 1) + plus;
+      final roll = ran.nextInt(0, nSides) + 1 + plus;
       if (dice != null) {
         dice[i] = roll;
       }
