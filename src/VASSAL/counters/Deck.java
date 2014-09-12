@@ -752,21 +752,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Command shuffle() {
     DragBuffer.getBuffer().clear();
 
-    final int n = getPieceCount();
+    final List<GamePiece> l = Arrays.asList(contents);
+    Collections.shuffle(l, GameModule.getGameModule().getRNG());
 
-    final ArrayList<GamePiece> dst = new ArrayList<GamePiece>(
-      Collections.nCopies(n, (GamePiece) null)
-    );
-
-    final Random rng = GameModule.getGameModule().getRNG();
-
-    for (int i = 0; i < n; ++i) {
-      final int j = rng.nextInt(i+1);
-      dst.set(i, dst.get(j));
-      dst.set(j, getPieceAt(i));
-    }
-
-    return setContents(dst).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+    return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
   /**
@@ -792,9 +781,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
+
+        final Random rng = GameModule.getGameModule().getRNG();
+
         while (count-- > 0 && indices.size() > 0) {
-          final int i =
-            GameModule.getGameModule().getRNG().nextInt(indices.size());
+          final int i = rng.nextInt(indices.size());
           final int index = indices.get(i);
           indices.remove(i);
           final GamePiece p = getPieceAt(index);
