@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -749,21 +750,23 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Shuffle the contents of the Deck */
   public Command shuffle() {
-    final ArrayList<Integer> indices = new ArrayList<Integer>();
-    for (int i = 0; i < getPieceCount(); ++i) {
-      indices.add(i);
-    }
-    final ArrayList<GamePiece> newContents = new ArrayList<GamePiece>();
     DragBuffer.getBuffer().clear();
+
+    final int n = getPieceCount();
+
+    final ArrayList<GamePiece> dst = new ArrayList<GamePiece>(
+      Collections.nCopies(n, (GamePiece) null)
+    );
+
     final Random rng = GameModule.getGameModule().getRNG();
-// FIXME: check whether this is a good shuffle
-    for (int count = getPieceCount(); count > 0; --count) {
-      final int i = rng.nextInt(indices.size());
-      int index = indices.get(i);
-      indices.remove(i);
-      newContents.add(getPieceAt(index));
+
+    for (int i = 0; i < n; ++i) {
+      final int j = rng.nextInt(i+1);
+      dst.set(i, dst.get(j));
+      dst.set(j, getPieceAt(i));
     }
-    return setContents(newContents).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+
+    return setContents(dst).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
   /**
