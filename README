@@ -72,6 +72,7 @@ The following bugs in 3.2.13 are fixed in 3.2.14:
 * 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
 * 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
 * 11275: Warn user when module contains incompatible class files
+*  2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()
 
 The following bugs in 3.2.12 are fixed in 3.2.13:
 

@@ -71,6 +71,16 @@ public class StartUp {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
+          if (SystemUtils.IS_OS_MAC_OSX) {
+            // Bug 2505: JEditorPane.registerEditorKitForContentType()
+            // sometimes throws an NPE becuase the context class loader is
+            // null. This is a JDK bug, but we can work around it by setting
+            // the EDT's context ClassLoader explicitly.
+            Thread.currentThread().setContextClassLoader(
+              ClassLoader.getSystemClassLoader()
+            );
+          }
+
           if (!SystemUtils.IS_OS_WINDOWS) {
             // use native LookAndFeel
             // NB: This must be after Mac-specific properties
