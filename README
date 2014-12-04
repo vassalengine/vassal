@@ -69,6 +69,7 @@ Recent Changes
 
 The following bugs in 3.2.13 are fixed in 3.2.14:
 
+* 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
 * 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
 * 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
 * 11275: Warn user when module contains incompatible class files
