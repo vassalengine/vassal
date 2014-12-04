@@ -53,6 +53,8 @@ import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
 import org.apache.batik.util.XMLResourceDescriptor;
 
+import org.apache.commons.lang.SystemUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,7 +233,7 @@ public class SVGRenderer {
                              String uri,
                              TranscoderOutput output)
                              throws TranscoderException {
-      if (ImageUtils.isMacRetina()) {
+      if (SystemUtils.IS_OS_MAC_OSX) {
         final Element g = document.createElementNS(
           SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
         );
