@@ -1,3 +1,13 @@
+3.2.14 - 16 December 2014
+
+* 11667: Changing directory to $INSTALL_DIR before launching java breaks
+    relative paths for VASSAL.sh
+* 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
+* 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
+* 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
+* 11275: Warn user when module contains incompatible class files
+*  2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()
+
 3.2.13 - 27 July 2014
 
 * 11193: Side selection fix for Bug 11085 misassigned observer

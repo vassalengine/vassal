@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.13, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 4.2.14, which which fixes several problems found in earlier versions.
 </p>
 <h2>IMPORTANT</h2>
 <ul>
@@ -7,20 +7,31 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.13, which which f
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
   <li>VASL 6 is compatible with VASSAL 3.2. VASL users, please upgrade!</li>
   <li>If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.</li>
-  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.13.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
-  <li>Oracle's Java 7 has very poor rendering performance on some MacOS X systems. If you are experiencing this, please use Apple's Java 6 instead.</li>
+  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.14.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
+  <li>Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-src.zip">Source</a></li>
 </ul>
 
 <h2>Recent Changes</h2>
+<p>
+The following bugs in 3.2.13 are fixed in 3.2.14:
+<ul>
+  <li>11667: Changing directory to $INSTALL_DIR before launching java breaks relative paths for VASSAL.sh</li>
+  <li>11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite</li>
+  <li>11404: Some uses of the PRNG introduce a minuscule amount of modulo bias</li>
+  <li>11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()</li>
+  <li>11275: Warn user when module contains incompatible class files</li>
+  <li>2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()</li>
+</ul>
+</p>
 <p>
 The following bugs in 3.2.12 are fixed in 3.2.13:
 <ul>
@@ -36,32 +47,10 @@ The following bugs in 3.2.12 are fixed in 3.2.13:
 </ul>
 </p>
 <p>
-The following bugs in 3.2.11 are fixed in 3.2.12:
-<ul>
-  <li>11085: Side selection dialog displayed twice when observer chosen</li>
-  <li>11084: Additional Selection Highlighters do not work</li>
-  <li>11083: SumStack() function fails if unit in stack does not define Property</li>
-  <li>11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height</li>
-  <li>10957: Movement trails trait has incorrect bounding box</li>
-  <li>10925: IllegalArgumentException due to intransitive Comparator in KeyBuffer.sort()</li>
-  <li>10897: Windows uninstaller unconditionally removes file associations</li>
-  <li>10886: Java fails to exit after temporary directory cleanup on Windows</li>
-  <li>10867: Mac launcher script does not find some Apple JDKs</li>
-  <li>10686: Using String.isEmpty() is Java 5 incompatible</li>
-  <li>10295: No Drag Cursors when dragging units on Windows 7 using Java 7</li>
-  <li>10260: Added missing documentation for Mass Piece Loader</li>
-  <li>9889: Added missing documentation for Module Level Action Button</li>
-  <li>9888: Added missing documentation for ExpressionBuilder</li>
-  <li>9483: StackOverflowError while processing InfiniteLoop</li>
-  <li>2518: NPE in ExtensionsManager.getExtensionsDirectory()</li>
-  <li>602: Horizontal wheel scrolling modifier should be Shift, not Ctrl</li>
-</ul>
+For changes prior to 3.2.13, see the change log.
 </p>
 <p>
-For changes prior to 3.2.12, see the change log.
-</p>
-<p>
-Please report all bugs in 3.2.13 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.14 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>New Features in 3.2</h2>

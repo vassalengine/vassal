@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.13, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.14, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -23,15 +23,16 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   indicating with which module you're seeing a problem.
 
 * If you are using MacOS X 10.8.3 or later, you may see the message
-  "VASSAL-3.2.13.app is damaged and can’t be opened. You should move it to
+  "VASSAL-3.2.14.app is damaged and can’t be opened. You should move it to
   the Trash." The problem is NOT that your download was corrupt, but rather
   that MacOS is preventing you from running VASSAL. To start VASSAL, control-
   click or right-click the app bundle's icon and select Open from the menu.
   You'll see a dialog asking whether you want to open VASSAL. Select "Open".
   Thereafter, you should be able to start VASSAL normally.
 
-* Oracle's Java 7 has very poor rendering performance on some MacOS X
-  systems. If you are experiencing this, please use Apple's Java 6 instead.
+* Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X
+  systems, particularly Yosemite. If you are experiencing this, please use
+  Apple's Java 6 instead.
 
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
@@ -44,23 +45,23 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-src.zip
 
 
 *********************
@@ -69,6 +70,8 @@ Recent Changes
 
 The following bugs in 3.2.13 are fixed in 3.2.14:
 
+* 11667: Changing directory to $INSTALL_DIR before launching java breaks
+   relative paths for VASSAL.sh
 * 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
 * 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
 * 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
@@ -90,30 +93,9 @@ The following bugs in 3.2.12 are fixed in 3.2.13:
 *  3253: ConcurrentModificationException in GameState.getRestorePiecesCommand()
 *  2686: IllegalArgumentException in GeneralFilter.zoom()
 
-The following bugs in 3.2.11 are fixed in 3.2.12:
+For changes prior to 3.2.13, see the change log.
 
-* 11085: Side selection dialog displayed twice when observer chosen
-* 11084: Additional Selection Highlighters do not work
-* 11083: SumStack() function fails if unit in stack does not define Property
-* 11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height
-* 10957: Movement trails trait has incorrect bounding box
-* 10925: IllegalArgumentException due to intransitive Comparator in
-    KeyBuffer.sort()
-* 10897: Windows uninstaller unconditionally removes file associations
-* 10886: Java fails to exit after temporary directory cleanup on Windows
-* 10867: Mac launcher script does not find some Apple JDKs
-* 10686: Using String.isEmpty() is Java 5 incompatible
-* 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
-* 10260: Added missing documentation for Mass Piece Loader
-*  9889: Added missing documentation for Module Level Action Button
-*  9888: Added missing documentation for ExpressionBuilder
-*  9483: StackOverflowError while processing InfiniteLoop
-*  2518: NPE in ExtensionsManager.getExtensionsDirectory()
-*   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
- 
-For changes prior to 3.2.12, see the change log.
-
-Please report all bugs in 3.2.13 even if they are bugs which you've already
+Please report all bugs in 3.2.14 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 

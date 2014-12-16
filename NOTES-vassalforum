@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.2.13 released[/b][/size]
+[size=200][b]VASSAL 3.2.14 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.13, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.14, which which fixes several problems found in earlier versions.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -11,19 +11,28 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.13, which which f
 
 * VASL 6 is compatible with VASSAL 3.2. VASL users, please upgrade!
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.13.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.14.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
-* Oracle's Java 7 has very poor rendering performance on some MacOS X systems. If you are experiencing this, please use Apple's Java 6 instead.
+* Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.13-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.14-src.zip]Source code[/url]
 
 [size=150][b]Recent Changes[/b][/size]
+The following bugs in 3.2.13 are fixed in 3.2.14:
+
+* 11667: Changing directory to $INSTALL_DIR before launching java breaks relative paths for VASSAL.sh
+* 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
+* 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
+* 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
+* 11275: Warn user when module contains incompatible class files
+*  2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()
+
 The following bugs in 3.2.12 are fixed in 3.2.13:
 
 * 11193: Side selection fix for Bug 11085 misassigned observer
@@ -36,29 +45,9 @@ The following bugs in 3.2.12 are fixed in 3.2.13:
 *  3253: ConcurrentModificationException in GameState.getRestorePiecesCommand()
 *  2686: IllegalArgumentException in GeneralFilter.zoom()
 
-The following bugs in 3.2.11 are fixed in 3.2.12:
+For changes prior to 3.2.13, see the change log.
 
-* 11085: Side selection dialog displayed twice when observer chosen
-* 11084: Additional Selection Highlighters do not work
-* 11083: SumStack() function fails if unit in stack does not define Property
-* 11060: Symbol.NatoUnitSymbolSet.createImage() creates images with zero height
-* 10957: Movement trails trait has incorrect bounding box
-* 10925: IllegalArgumentException due to intransitive Comparator in KeyBuffer.sort()
-* 10897: Windows uninstaller unconditionally removes file associations
-* 10886: Java fails to exit after temporary directory cleanup on Windows
-* 10867: Mac launcher script does not find some Apple JDKs
-* 10686: Using String.isEmpty() is Java 5 incompatible
-* 10295: No Drag Cursors when dragging units on Windows 7 using Java 7
-* 10260: Added missing documentation for Mass Piece Loader
-*  9889: Added missing documentation for Module Level Action Button
-*  9888: Added missing documentation for ExpressionBuilder
-*  9483: StackOverflowError while processing InfiniteLoop
-*  2518: NPE in ExtensionsManager.getExtensionsDirectory()
-*   602: Horizontal wheel scrolling modifier should be Shift, not Ctrl
-
-For changes prior to 3.2.11, see the change log.
-
-Please report all bugs in 3.2.13, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.14, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]New Features in 3.2[/b][/size]
 
