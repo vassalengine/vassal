@@ -12,8 +12,6 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.14, which fixes s
 
 * If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.14.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
-* Oracle's Java 7 has very poor rendering performance on some MacOS X systems. If you are experiencing this, please use Apple's Java 6 instead.
-
 * Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.
 
 [size=16][b]Download[/b][/size]
