@@ -112,11 +112,11 @@ public class ExtensionsLoader implements CommandEncoder {
         final String msg = getLoadedMessage(ext.getName(), ext.getVersion());
         loadedExtensions.add(extname);
         GameModule.getGameModule().warn(msg);
-        System.err.println("-- "+msg);
+        logger.info(msg);
 
         if (idMsg.length() > 0) {
           GameModule.getGameModule().warn(idMsg);
-          System.err.println(idMsg);
+          logger.info(idMsg);
         }
         success = true;
       }
