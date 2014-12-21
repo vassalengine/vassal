@@ -68,6 +68,10 @@ Source code:
 Recent Changes
 *********************
 
+The following bugs in 3.2.14 are fixed in 3.2.15:
+
+* 11769: NPE in Deck.getState()
+
 The following bugs in 3.2.13 are fixed in 3.2.14:
 
 * 11667: Changing directory to $INSTALL_DIR before launching java breaks
