@@ -4,7 +4,7 @@
 # Execute this file to launch VASSAL on MacOS or Linux
 #
 
-# Find where VASSAL is installed, dereferencing symlinks
+# Find absolute path where VASSAL is installed
 INSTALL_DIR=$(cd "$(dirname "$0")"; pwd)
 
 # Launch VASSSAL
