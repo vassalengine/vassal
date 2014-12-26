@@ -1,3 +1,8 @@
+3.2.15 - 25 December 2014
+
+* 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 
+* 11769: NPE in Deck.getState()
+
 3.2.14 - 16 December 2014
 
 * 11667: Changing directory to $INSTALL_DIR before launching java breaks
