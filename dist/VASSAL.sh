@@ -5,7 +5,7 @@
 #
 
 # Find where VASSAL is installed, dereferencing symlinks
-INSTALL_DIR=$(dirname "$(readlink "$0" || echo "$0")")
+INSTALL_DIR=$(cd "$(dirname "$0")"; pwd)
 
 # Launch VASSSAL
-java -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.ModuleManager "$@"
+java -Duser.dir="$INSTALL_DIR" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.ModuleManager "$@"

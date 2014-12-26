@@ -436,6 +436,10 @@ e.printStackTrace();
       final String userHome = System.getProperty("user.home");
       if (userHome != null) al.add("-Duser.home=" + userHome);
 
+      // pass on the user's working dir, if it's set
+      final String userDir = System.getProperty("user.dir");
+      if (userDir != null) al.add("-Duser.dir=" + userDir);
+
       // set the classpath
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
