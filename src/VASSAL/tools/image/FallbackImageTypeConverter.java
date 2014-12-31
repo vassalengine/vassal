@@ -76,7 +76,7 @@ public class FallbackImageTypeConverter implements ImageTypeConverter {
 
   private boolean tryConvertingInMemory(Reference<BufferedImage> ref) {
     /*
-     *  Having an OutOfMemoryException while converting in memory is
+     * Having an OutOfMemoryException while converting in memory is
      * apparently catastrophic on Apple's Java 6 JVM (and possibly also
      * on their Java 5 JVM as well). In-memory tiling also uses far more
      * memory than it should on Apple's Java 6 JVM due to
