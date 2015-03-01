@@ -204,7 +204,7 @@ public class Prefs implements Closeable {
   }
 
   /**
-   * Store this set of preferences in the editor, but don't yet save to disk
+   * Store this set of preferences
    */
   public void save() throws IOException {
     storedValues.clear();
