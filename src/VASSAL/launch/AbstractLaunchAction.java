@@ -440,6 +440,10 @@ e.printStackTrace();
       final String userDir = System.getProperty("user.dir");
       if (userDir != null) al.add("-Duser.dir=" + userDir);
 
+      // pass on VASSAL's home dir, if it's set
+      final String vHome = System.getProperty("VASSAL.home");
+      if (vHome != null) al.add("-DVASSAL.home=" + vHome);
+
       // set the classpath
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));

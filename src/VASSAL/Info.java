@@ -35,7 +35,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.15"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.16-svn9183"; //$NON-NLS-1$
 
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
@@ -43,8 +43,36 @@ public final class Info {
   // Warn about editing modules, saves, logs written before this version
   private static final String UPDATE_VERSION =  "3.2";
 
-  private static File homeDir;
-  private static File tmpDir;
+  private static final File homeDir;
+  private static final File tmpDir;
+
+  // Directory setup
+  static {
+    File f;
+
+    if (SystemUtils.IS_OS_MAC_OSX) {
+      f = new File(
+        System.getProperty("user.home"), "Library/Application Support/VASSAL"
+      );
+    }
+    else if (SystemUtils.IS_OS_WINDOWS) {
+      f = new File(System.getenv("APPDATA") + "/VASSAL");
+    }
+    else {
+      f = new File(System.getProperty("user.home"), ".VASSAL");
+    }
+
+    homeDir = f;
+    tmpDir = new File(homeDir, "tmp");
+
+    if (!homeDir.exists()) {
+      homeDir.mkdirs();
+    }
+
+    if (!tmpDir.exists()) {
+      tmpDir.mkdirs();
+    }
+  }
 
   /** The path to the JVM binary. */
   public static final String javaBinPath =
@@ -213,9 +241,6 @@ public final class Info {
     return getDocDir();
   }
 
-// FIXME: we should have something like
-// getBinDir(), getDocDir(), getConfDir(), getTmpDir()
-
   public static File getBinDir() {
     return new File(System.getProperty("user.dir"));
   }
@@ -231,14 +256,6 @@ public final class Info {
   }
 
   public static File getTempDir() {
-    if (tmpDir == null) {
-      tmpDir = new File(getHomeDir(), "tmp");
-
-      if (!tmpDir.exists()) {
-        tmpDir.mkdirs();
-      }
-    }
-
     return tmpDir;
   }
 
@@ -248,28 +265,6 @@ public final class Info {
 
 // FIXME: this is a misleading name for this function
   public static File getHomeDir() {
-// FIXME: creation of VASSAL's home should be moved someplace else, possibly
-// to the new Application class when it's merged with the trunk.
-    if (homeDir == null) {
-      if (SystemUtils.IS_OS_MAC_OSX) {
-        homeDir = new File(
-          System.getProperty("user.home"), "Library/Application Support/VASSAL"
-        );
-      }
-      else if (SystemUtils.IS_OS_WINDOWS) {
-        homeDir = new File(System.getenv("APPDATA") + "/VASSAL");
-      }
-      else {
-        homeDir = new File(System.getProperty("user.home"), ".VASSAL");
-      }
-
-      if (!homeDir.exists()) {
-// FIXME: What if this fails? This should be done from someplace that
-// can signal failure properly.
-        homeDir.mkdirs();
-      }
-    }
-
     return homeDir;
   }
 
