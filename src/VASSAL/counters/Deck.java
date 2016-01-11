@@ -750,11 +750,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Shuffle the contents of the Deck */
   public Command shuffle() {
+    final GamePiece[] a = new GamePiece[pieceCount];
+    System.arraycopy(contents, 0, a, 0, pieceCount);
+    final List<GamePiece> l = Arrays.asList(a);
     DragBuffer.getBuffer().clear();
-
-    final List<GamePiece> l = Arrays.asList(contents).subList(0, pieceCount);
     Collections.shuffle(l, GameModule.getGameModule().getRNG());
-
     return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
