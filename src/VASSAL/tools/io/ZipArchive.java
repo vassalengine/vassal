@@ -444,8 +444,9 @@ public class ZipArchive implements FileArchive {
             // We can't reuse entries for compressed files because there's
             // no way to reset all fields to acceptable values.
             if (ze.getMethod() == ZipEntry.DEFLATED) {
-              ze = new ZipEntry(ze.getName());
-              ze.setTime(ze.getTime());
+              final ZipEntry nze = new ZipEntry(ze.getName());
+              nze.setTime(ze.getTime());
+              ze = nze;
             }
 
             out.putNextEntry(ze);
@@ -469,6 +470,7 @@ public class ZipArchive implements FileArchive {
         FileInputStream in = null;
         try {
           in = new FileInputStream(e.file);
+          e.ze.setTime(e.file.lastModified());
           out.putNextEntry(e.ze);
           IOUtils.copy(in, out, buf);
           in.close();
