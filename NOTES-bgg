@@ -1,5 +1,5 @@
-[size=18][b]VASSAL 3.2.15 released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.2.15, which fixes several problems found in earlier versions.
+[size=18][b]VASSAL 3.2.16 released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.2.16, which fixes several problems found in earlier versions.
 
 [size=16][b]IMPORTANT[/b][/size]
 * If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
@@ -10,35 +10,31 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.15, which fixes s
 
 * If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.
 
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.15.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
+* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.16.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu.  You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
 
 * Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.
 
 [size=16][b]Download[/b][/size]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-src.zip]Source code[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-linux.tar.bz2]Linux[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-macosx.dmg]Mac OS X[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-windows.exe]Windows[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-other.zip]Other[/url]
+[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-src.zip]Source code[/url]
 
 [size=16][b]Recent Changes[/b][/size]
+The following bugs in 3.2.15 are fixed in 3.2.16:
+
+* 12524: Images retile unnecessarily due to bad timestamp
+* 12522: Deck shuffling logged incorrectly
+
 The following bugs in 3.2.14 are fixed in 3.2.15:
 
 * 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 
 * 11769: NPE in Deck.getState()
 
-The following bugs in 3.2.13 are fixed in 3.2.14:
+For changes prior to 3.2.15, see the change log.
 
-* 11667: Changing directory to $INSTALL_DIR before launching java breaks relative paths for VASSAL.sh
-* 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
-* 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
-* 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
-* 11275: Warn user when module contains incompatible class files
-*  2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()
-
-For changes prior to 3.2.14, see the change log.
-
-Please report all bugs in 3.2.15, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.16, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=16][b]New Features in 3.2[/b][/size]
 * Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]

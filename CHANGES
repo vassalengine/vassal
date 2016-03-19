@@ -1,3 +1,8 @@
+3.2.16 - ??
+
+* 12524: Images retile unnecessarily due to bad timestamp
+* 12522: Deck shuffling logged incorrectly
+
 3.2.15 - 25 December 2014
 
 * 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 

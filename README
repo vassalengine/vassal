@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.2.15, which
+The VASSAL Team is happy to announce the release of VASSAL 3.2.16, which
 which fixes several problems found in earlier versions.
 
 ********************************************************************************
@@ -23,7 +23,7 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
   indicating with which module you're seeing a problem.
 
 * If you are using MacOS X 10.8.3 or later, you may see the message
-  "VASSAL-3.2.15.app is damaged and can’t be opened. You should move it to
+  "VASSAL-3.2.16.app is damaged and can’t be opened. You should move it to
   the Trash." The problem is NOT that your download was corrupt, but rather
   that MacOS is preventing you from running VASSAL. To start VASSAL, control-
   click or right-click the app bundle's icon and select Open from the menu.
@@ -45,47 +45,42 @@ Download
 
 For Linux:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-linux.tar.bz2
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-linux.tar.bz2
 
 For Mac OS X:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-macosx.dmg
 
 For Windows:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-windows.exe
 
 For other operating systems:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-other.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-other.zip
 
 Source code:
 
-  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-src.zip
 
 
 *********************
 Recent Changes
 *********************
 
+The following bugs in 3.2.15 are fixed in 3.2.16:
+
+* 12524: Images retile unnecessarily due to bad timestamp
+* 12522: Deck shuffling logged incorrectly
+
 The following bugs in 3.2.14 are fixed in 3.2.15:
 
 * 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 
 * 11769: NPE in Deck.getState()
 
-The following bugs in 3.2.13 are fixed in 3.2.14:
+For changes prior to 3.2.15, see the change log.
 
-* 11667: Changing directory to $INSTALL_DIR before launching java breaks
-   relative paths for VASSAL.sh
-* 11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite
-* 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
-* 11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()
-* 11275: Warn user when module contains incompatible class files
-*  2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()
-
-For changes prior to 3.2.14, see the change log.
-
-Please report all bugs in 3.2.15 even if they are bugs which you've already
+Please report all bugs in 3.2.16 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 
