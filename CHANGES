@@ -1,4 +1,4 @@
-3.2.16 - ??
+3.2.16 - 1 April 2016
 
 * 12524: Images retile unnecessarily due to bad timestamp
 * 12522: Deck shuffling logged incorrectly
