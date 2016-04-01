@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.2.15, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.16, which which fixes several problems found in earlier versions.
 </p>
 <h2>IMPORTANT</h2>
 <ul>
@@ -7,20 +7,27 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.15, which which f
   <li>If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.</li>
   <li>VASL 6 is compatible with VASSAL 3.2. VASL users, please upgrade!</li>
   <li>If some images display with incorrect colors, clear your tile cache (under Tools > Clear Tile Cache in the Module Manager) and reload the module. If the images still display with incorrect colors, PLEASE contact us indicating with which module you're seeing a problem.</li>
-  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.15.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
+  <li>If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.16.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.</li>
   <li>Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-linux.tar.bz2" target="_blank">Linux</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-macosx.dmg">Mac OS X</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-windows.exe">Windows</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-other.zip">Other</a></li>
-	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.15-src.zip">Source</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-linux.tar.bz2" target="_blank">Linux</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-macosx.dmg">Mac OS X</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-windows.exe">Windows</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-other.zip">Other</a></li>
+	<li><a href="http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.16-src.zip">Source</a></li>
 </ul>
 
 <h2>Recent Changes</h2>
+<p>
+The following bugs in 3.2.14 are fixed in 3.2.16:
+<ul>
+  <li>12524: Images retile unnecessarily due to bad timestamp</li>
+  <li>12522: Deck shuffling logged incorrectly</li>
+</ul>
+</p>
 <p>
 The following bugs in 3.2.14 are fixed in 3.2.15:
 <ul>
@@ -29,21 +36,10 @@ The following bugs in 3.2.14 are fixed in 3.2.15:
 </ul>
 </p>
 <p>
-The following bugs in 3.2.13 are fixed in 3.2.14:
-<ul>
-  <li>11667: Changing directory to $INSTALL_DIR before launching java breaks relative paths for VASSAL.sh</li>
-  <li>11631: Text in SVG is not rendered by Java 6 on Mac OS X Yosemite</li>
-  <li>11404: Some uses of the PRNG introduce a minuscule amount of modulo bias</li>
-  <li>11281: ArrayIndexOutOfBoundsException in PieceDefiner$11.actionPerformed()</li>
-  <li>11275: Warn user when module contains incompatible class files</li>
-  <li>2505: NPE in javax.swing.JEditorPane.registerEditorKitForContentType()</li>
-</ul>
+For changes prior to 3.2.15, see the change log.
 </p>
 <p>
-For changes prior to 3.2.14, see the change log.
-</p>
-<p>
-Please report all bugs in 3.2.15 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
+Please report all bugs in 3.2.16 even if they are bugs which you've already reported against other versions. We take your bug reports seriously&mdash;they're the reason we've been able to fix so many bugs.
 </p>
 
 <h2>New Features in 3.2</h2>
