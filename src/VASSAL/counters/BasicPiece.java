@@ -438,7 +438,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
     Command comm = null;
     final GamePiece outer = Decorator.getOutermost(this);
-    if (KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK).equals(stroke)) {
+    if (cloneKey != 0 && KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK).equals(stroke)) {
       final GamePiece newPiece = ((AddPiece) GameModule.getGameModule().decode(GameModule.getGameModule().encode(new AddPiece(outer)))).getTarget();
       newPiece.setId(null);
       GameModule.getGameModule().getGameState().addPiece(newPiece);
@@ -463,7 +463,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         }
       }
     }
-    else if (KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
+    else if (deleteKey != 0 && KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         String s = "* " + outer.getLocalizedName();
