@@ -94,8 +94,9 @@ public class GameState implements CommandEncoder {
   protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
   protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
-  protected Action loadGame, saveGame, newGame, closeGame;
+  protected Action loadGame, saveGame, saveGameAs, newGame, closeGame;
   protected String lastSave;
+  protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
 
@@ -129,6 +130,17 @@ public class GameState implements CommandEncoder {
     // some languages
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
+    saveGameAs = new AbstractAction(Resources.getString("GameState.save_game_as")) {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        saveGameAs();
+      }
+    };
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
+    saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
+
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -157,9 +169,11 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game", loadGame);
     mm.addAction("GameState.save_game", saveGame);
+    mm.addAction("GameState.save_game_as", saveGameAs);
     mm.addAction("GameState.close_game", closeGame);
 
     saveGame.setEnabled(gameStarting);
+    saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
   }
 
@@ -290,6 +304,7 @@ public class GameState implements CommandEncoder {
 
     newGame.setEnabled(!gameStarting);
     saveGame.setEnabled(gameStarting);
+    saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
 
     if (gameStarting) {
@@ -310,6 +325,9 @@ public class GameState implements CommandEncoder {
 
     gameStarted |= this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
+    if (!gameStarting) {
+      lastSaveFile = null;
+    }
   }
 
   /** Return true if a game is currently in progress */
@@ -393,6 +411,8 @@ public class GameState implements CommandEncoder {
       else {
         loadGameInBackground(f);
       }
+
+      lastSaveFile = f;
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
@@ -417,9 +437,60 @@ public class GameState implements CommandEncoder {
     return GameModule.getGameModule().encode(getRestoreCommand());
   }
 
+  protected boolean checkForOldSaveFile(File f) {
+    if (f.exists()) {
+      // warn user if overwriting a save from an old version
+      final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
+      if (md != null && md instanceof SaveMetaData) {
+        if (Info.hasOldFormat(md.getVassalVersion())) {
+          return Dialogs.showConfirmDialog(
+            GameModule.getGameModule().getFrame(),
+            Resources.getString("Warning.save_will_be_updated_title"),
+            Resources.getString("Warning.save_will_be_updated_heading"),
+            Resources.getString(
+              "Warning.save_will_be_updated_message",
+              f.getPath(),
+              "3.2"
+            ),
+              JOptionPane.WARNING_MESSAGE,
+            JOptionPane.OK_CANCEL_OPTION) != JOptionPane.CANCEL_OPTION;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /** Saves the game to an existing file, or prompts for a new one. */
+  public void saveGame() {
+    final GameModule g = GameModule.getGameModule();
+
+    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
+
+    if (lastSaveFile != null) {
+      if (!checkForOldSaveFile(lastSaveFile)) {
+        return;
+      }
+
+      try {
+        saveGame(lastSaveFile);
+        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, lastSaveFile);
+/*
+        Logger.log(err);
+        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
+*/
+      }
+    }
+    else {
+      saveGameAs();
+    }
+  }
 
   /** Prompts the user for a file into which to save the game */
-  public void saveGame() {
+  public void saveGameAs() {
     final GameModule g = GameModule.getGameModule();
 
     g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
@@ -429,31 +500,13 @@ public class GameState implements CommandEncoder {
       g.warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
     }
     else {
-      if (saveFile.exists()) {
-        // warn user if overwriting a save from an old version
-        final AbstractMetaData md = MetaDataFactory.buildMetaData(saveFile);
-        if (md != null && md instanceof SaveMetaData) {
-          if (Info.hasOldFormat(md.getVassalVersion())) {
-            if (Dialogs.showConfirmDialog(
-              g.getFrame(),
-              Resources.getString("Warning.save_will_be_updated_title"),
-              Resources.getString("Warning.save_will_be_updated_heading"),
-              Resources.getString(
-                "Warning.save_will_be_updated_message",
-                saveFile.getPath(),
-                "3.2"
-              ),
-                JOptionPane.WARNING_MESSAGE,
-              JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION)
-            {
-              return;
-            }
-          }
-        }
+      if (!checkForOldSaveFile(saveFile)) {
+        return;
       }
 
       try {
         saveGame(saveFile);
+        lastSaveFile = saveFile;
         g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {

@@ -1,5 +1,6 @@
 3.2.17 - ???
 
+* 12527: "Save Game" behaves as "Save As"
 * 12526: Switching desktop on Mac OS X 10.11.3 sometimes clones the currently
     selected unit
 

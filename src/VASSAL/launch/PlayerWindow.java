@@ -77,6 +77,7 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game"));
     fileMenu.add(mm.addKey("GameState.save_game"));
+    fileMenu.add(mm.addKey("GameState.save_game_as"));
     fileMenu.add(mm.addKey("GameState.close_game"));
     fileMenu.addSeparator();
     fileMenu.add(mm.addKey("BasicLogger.begin_logfile"));
