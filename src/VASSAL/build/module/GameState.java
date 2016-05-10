@@ -325,9 +325,6 @@ public class GameState implements CommandEncoder {
 
     gameStarted |= this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
-    if (!gameStarting) {
-      lastSaveFile = null;
-    }
   }
 
   /** Return true if a game is currently in progress */
