@@ -164,7 +164,7 @@ public abstract class DieServer {
       String val = getReportPrefix(desc);
       int total = 0;
       for (int j = 0; j < nDice; ++j) {
-        int result = (int) (ran.nextFloat() * nSides + 1) + plus;
+        final int result = ran.nextInt(nSides) + 1 + plus;
         if (reportTotal) {
           total += result;
         }

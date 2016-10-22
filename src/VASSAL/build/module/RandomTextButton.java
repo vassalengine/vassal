@@ -108,7 +108,7 @@ public class RandomTextButton extends DiceButton {
     final StringBuilder result = new StringBuilder();
     int total = addToTotal;
     for (int i = 0; i < nDice; ++i) {
-      int roll = (int) (ran.nextFloat() * nSides + 1);
+      int roll = ran.nextInt(nSides) + 1;
 
       // take the face value from user defined faces
       if (isNumeric) {
