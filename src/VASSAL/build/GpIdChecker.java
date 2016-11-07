@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2013 by Brent Easton
+ * Copyright (c) 2011-2016 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,6 +39,7 @@ public class GpIdChecker {
   protected GpIdSupport gpIdSupport;
   protected int maxId;
   protected boolean useName = false;
+  protected boolean extensionsLoaded = false;
   final HashMap<String, SlotElement> goodSlots = new HashMap<String, SlotElement>();
   final ArrayList<SlotElement> errorSlots = new ArrayList<SlotElement>();
 
@@ -51,9 +52,11 @@ public class GpIdChecker {
     maxId = -1;
   }
 
+  // This constructor is used by the GameRefresher to refresh a game with extensions possibly loaded
   public GpIdChecker(boolean useName) {
     this();
     this.useName = useName;
+    this.extensionsLoaded = true;
   }
 
   /**
@@ -105,10 +108,16 @@ public class GpIdChecker {
   protected void testGpId(String id, SlotElement element) {
     /*
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
-     *  the Extension Id. Remove the Extension Id and just process the numerid part.
+     *  the Extension Id. Remove the Extension Id and just process the numeric part.
+     *  
+     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be 
+     *  extensions loaded, so retain the extension prefix to ensure a correct
+     *  unique slot id check.
      */
-    if (id.contains(":")) {
-      id = id.split(":")[1];
+    if (! extensionsLoaded) {
+      if (id.contains(":")) {
+        id = id.split(":")[1];
+      }
     }
 
     if (id == null || id.length() == 0) {   // gpid not generated yet?
@@ -119,10 +128,16 @@ public class GpIdChecker {
         errorSlots.add(element);
       }
       try {
-        final int iid = Integer.parseInt(id);
-        goodSlots.put(id, element);         // gpid is good.
-        if (iid >= maxId) {
-          maxId = iid+1;
+        if (extensionsLoaded) {
+          goodSlots.put(id, element);
+          System.out.println("Add Id "+id);
+        }
+        else {
+          final int iid = Integer.parseInt(id);
+          goodSlots.put(id, element);         // gpid is good.
+          if (iid >= maxId) {
+            maxId = iid+1;
+          }
         }
       }
       catch (Exception e) {
