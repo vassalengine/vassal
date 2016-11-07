@@ -41,6 +41,8 @@ import VASSAL.tools.image.ImageUtils;
 // FIXME: check that parentless dialogs get the right icons
 
 public class ApplicationIcons {
+  
+  public static final String VASSAL_ICON_LARGE = "VASSAL-256x256.png";
 
   private ApplicationIcons() {}
 
@@ -97,7 +99,7 @@ public class ApplicationIcons {
               dst,  // 24x24
               ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
               ImageUtils.getImageResource("/icons/48x48/VASSAL.png"),
-              ImageUtils.getImageResource("/images/VASSAL-256x256.png")
+              ImageUtils.getImageResource("/images/"+VASSAL_ICON_LARGE)
             );
           }
           else {
