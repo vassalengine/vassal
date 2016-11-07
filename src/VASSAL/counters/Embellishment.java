@@ -798,9 +798,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return String.valueOf(isActive());
     }
     else if (key.equals(Properties.VISIBLE_STATE)) {
-      checkPropertyLevel();
       String s = String.valueOf(super.getProperty(key));
-      s += value;
       if (drawUnderneathWhenSelected) {
         s += getProperty(Properties.SELECTED);
       }

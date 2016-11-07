@@ -36,7 +36,6 @@ package bsh;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 /**
     Wrapper for primitive types in Bsh.  This is package public because it 
@@ -470,9 +469,6 @@ public final class Primitive implements ParserConstants, java.io.Serializable
 
             case PLUS:
                 return lhs + rhs;
-                
-            case MATCH:
-                return new Boolean(Pattern.matches(rhs, lhs));
                 
             default:
                 throw new InterpreterError(

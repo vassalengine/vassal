@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.build.IllegalBuildException;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.JarArchive;
@@ -278,11 +277,7 @@ public final class IconFactory {
     try {
       //Build a URL to the Vassal images folder. It is guaranteed to exist
       // in any version of Vassal
-      // Bug 9670 BUT there may also be an images folder in another Jar file in the Classloader path before the Vengine.jar
-      // so look for an Icon we know must exist there.
-      // imageUrl = jar.getURL(DataArchive.IMAGE_DIR
-      imageUrl = jar.getURL(DataArchive.IMAGE_DIR+ApplicationIcons.VASSAL_ICON_LARGE);
-      imageUrl = new URL (imageUrl.toString().substring(0, imageUrl.toString().length() - ApplicationIcons.VASSAL_ICON_LARGE.length()));
+      imageUrl = jar.getURL(DataArchive.IMAGE_DIR);
       logger.info("VASSAL images folder found at "+imageUrl);
       // Determine if we are running locally under a debugger, or
       // from an installation package. If running an installed version
