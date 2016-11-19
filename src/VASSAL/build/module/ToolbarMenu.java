@@ -216,7 +216,7 @@ public class ToolbarMenu extends AbstractConfigurable
         Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
         b.setVisible(false);
-        b.putClientProperty(HIDDEN_BY_TOOLBAR, new Boolean(true));
+        b.putClientProperty(HIDDEN_BY_TOOLBAR, Boolean.TRUE);
 
         if (property instanceof JPopupMenu) {
           // This button corresponds to another ToolbarMenu button.
