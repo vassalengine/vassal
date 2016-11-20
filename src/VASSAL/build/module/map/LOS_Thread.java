@@ -493,8 +493,8 @@ public class LOS_Thread extends AbstractConfigurable implements
         }
       }
     }
-    lastAnchor = mapAnchor;
-    lastArrow = mapArrow;
+    lastAnchor = anchor;
+    lastArrow = arrow;
   }
 
   public boolean drawAboveCounters() {
@@ -682,8 +682,8 @@ public class LOS_Thread extends AbstractConfigurable implements
         lastLocation = location;
       }
 
-      Point mapAnchor = map.mapCoordinates(lastAnchor);
-      Point mapArrow = map.mapCoordinates(lastArrow);
+      Point mapAnchor = lastAnchor;
+      Point mapArrow = lastArrow;
       int fudge = (int) (1.0 / map.getZoom() * 2);
       Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x)-fudge,
           Math.min(mapAnchor.y, mapArrow.y)-fudge,
