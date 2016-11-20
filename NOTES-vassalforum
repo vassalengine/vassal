@@ -31,6 +31,7 @@ The following bugs in 3.2.16 are fixed in 3.2.17:
 * 12527: "Save Game" behaves as "Save As"
 * 12526: Switching desktop on Mac OS X 10.11.3 sometimes clones the currently selected unit
 * 12518: Rotated Layer following property does not update if property changes
+* 11649: Persistent LOS thread not working with zoom different from 100%
 * 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
 *  9670: IllegalStateException: Icon Family VASSAL not found in ServerAddressBook.getCurrentIcon
 
