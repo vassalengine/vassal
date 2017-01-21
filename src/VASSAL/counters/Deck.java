@@ -378,7 +378,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
     }
     shuffleListener.setKeyStroke(getShuffleKey());
 
@@ -389,7 +388,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
 
@@ -400,7 +398,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(reverseListener);
     }
     reverseListener.setKeyStroke(getReverseKey());
 
@@ -410,6 +407,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  public void setup(boolean gameStarting) {
+    if (gameStarting) {
+      GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
+      GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
+      GameModule.getGameModule().addKeyStrokeListener(reverseListener);
+    }
+    else {
+      GameModule.getGameModule().removeKeyStrokeListener(shuffleListener);
+      GameModule.getGameModule().removeKeyStrokeListener(reshuffleListener);
+      GameModule.getGameModule().removeKeyStrokeListener(reverseListener);
+    }
+  }
+  
   public String getFaceDownOption() {
     return faceDownOption;
   }

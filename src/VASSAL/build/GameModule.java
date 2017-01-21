@@ -395,6 +395,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  public void removeKeyStrokeListener (KeyStrokeListener l) {
+    if (l != null) {
+      keyStrokeListeners.remove(l);
+      for (KeyStrokeSource s : keyStrokeSources) {
+        l.removeKeyStrokeSource(s);
+      }
+    }
+  }
+  
   @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {

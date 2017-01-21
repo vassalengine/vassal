@@ -812,4 +812,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     return l;
   }
+  
+  public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
+    if (myDeck != null) {
+      myDeck.setup(gameStarting);
+    }
+  }
 }
