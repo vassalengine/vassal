@@ -38,6 +38,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
+import sun.java2d.cmm.ProfileDeferralMgr;
+
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
 import VASSAL.tools.lang.Reference;
@@ -143,59 +145,8 @@ public class ImageIOImageLoader implements ImageLoader {
   // stop calls to ProfileDeferralMgr.activateProfiles(), which is where the
   // race happens.
   static {
-    // Try to find the ProfileDeferralMgr. It's is not a public part of the
-    // JDK and it changed packages at some point, so we look both places,
-    // newer location first.
-    Class <?> c = null;
-    try {
-      c = Class.forName("sun.java2d.cmm.ProfileDeferralMgr");
-    }
-    catch (ClassNotFoundException e) {
-      try {
-        c = Class.forName("sun.awt.color.ProfileDeferralMgr");
-      }
-      catch (ClassNotFoundException ignore) {
-        // No ProfileDeferralMgr, so probably no bug either.
-      }
-    }
-
-    if (c != null) {
-      Field df = null;
-      try {
-        df = c.getField("deferring");
-      }
-      catch (NoSuchFieldException ignore) {
-        // Nothing we can do
-      }
-
-      if (df != null) {
-        try {
-          if (df.getBoolean(null)) {
-            Method am = null;
-            try {
-              am = c.getMethod("activateProfiles");
-            }
-            catch (NoSuchMethodException ignore) {
-              // Nothing we can do
-            }
-
-            if (am != null) {
-              try {
-                am.invoke(null);
-                df.setBoolean(null, false);
-              }
-              catch (InvocationTargetException ignore) {
-                // Nothing we can do
-              }
-            }
-          }
-        }
-        catch (IllegalAccessException ignore) {
-          // Nothing we can do
-        }
-      }
-    }
-  }
+    ProfileDeferralMgr.deferring = false;
+   }
 
   /**
    * Loads an image.
