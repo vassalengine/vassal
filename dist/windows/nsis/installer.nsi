@@ -32,9 +32,6 @@
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
 !define JAVA_MINIMUM "1.6.0_45"
-# FIXME: would be better if we read the download URL from our own site
-!define JRE_32_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=76208"
-!define JRE_64_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=76209"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
@@ -58,7 +55,6 @@ SetDatablockOptimize on
 !include "x64.nsh"
 
 !addincludedir "dist/windows/nsis"
-!include "GetJavaVersion.nsh"
 
 #
 # Modern UI 2 setup
@@ -88,9 +84,6 @@ Page custom preSetupType leaveSetupType
 
 ; Uninstall Old Versions page
 Page custom preUninstallOld leaveUninstallOld
-
-; Java Check page
-Page custom preJavaCheck leaveJavaCheck
 
 ; Select Install Directory page
 !define MUI_PAGE_CUSTOMFUNCTION_PRE preDirectory
@@ -330,7 +323,6 @@ Var CustomSetup
 Var AddDesktopSC
 Var AddStartMenuSC
 Var AddQuickLaunchSC
-Var InstallJRE
 Var RemoveOtherVersions
 
 #
@@ -540,69 +532,6 @@ Function leaveUninstallOld
 FunctionEnd
 
 
-Function preJavaCheck
-  ; save registers
-  Push $0
-  Push $1
-  Push $R1
-  Push $R2
-
-  StrCpy $InstallJRE 0  ; set default
-
-  ${GetJavaVersion} $1
-  ${VersionConvert} "$1" "_" $R1
-  ${VersionConvert} "${JAVA_MINIMUM}" "_" $R2
-  ${VersionCompare} "$R1" "$R2" $2
-
-  ${If} $2 < 2   ; JAVA_VERSION >= JAVA_MINIMUM
-    Abort        ; then skip this page, installed Java is ok
-  ${Endif}
-
-  !insertmacro MUI_HEADER_TEXT "Installing Java" "Download and install a JRE for VASSAL"
-
-  nsDialogs::Create /NOUNLOAD 1018
-  Pop $0
-
-  ${If} $1 == ""
-    StrCpy $0 "The installer has not found a Java Runtime Environment (JRE) installed on your computer."
-  ${Else}
-    StrCpy $0 "The installer has found version $1 of the Java Runtime Environment (JRE) installed on your computer."
-  ${EndIf}
-
-  StrCpy $1 "We recommend running VASSAL with a JRE no older than version ${JAVA_MINIMUM}.$\n$\n$\n"
-
-  ${If} $CustomSetup == 1
-    ${NSD_CreateLabel} 0 0 100% 24u "$0 $1If you have a JRE which the installer has not detected, or if you wish to install a JRE yourself, unselect this option."
-    Pop $0
-
-    ${NSD_CreateCheckBox} 15u 32u 100% 12u "Install a Java Runtime Environment"
-    Pop $InstallJRE
-    SendMessage $InstallJRE ${BM_SETCHECK} ${BST_CHECKED} 1
-  ${Else}
-    ${NSD_CreateLabel} 0 0 100% 100% "$0 $1The installer will download and install a suitable JRE for you. Please select the defaults when the JRE installer appears."
-    Pop $0
-
-    StrCpy $InstallJRE 1
-  ${EndIf}
-
-  nsDialogs::Show
-
-  ; restore registers
-  Pop $R2
-  Pop $R1
-  Pop $1
-  Pop $0
-FunctionEnd
-
-
-Function leaveJavaCheck
-  ${If} $CustomSetup == 1
-    ; read whether to install a JRE from the check box
-    ${NSD_GetState} $InstallJRE $InstallJRE
-  ${EndIf}
-FunctionEnd
-
-
 Function preDirectory
   ${SkipIfNotCustom}
 FunctionEnd
@@ -761,36 +690,6 @@ Section "-Application" Application
       SetRegView 32
       DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
-  ${EndIf}
-
-  ; install a JRE, if necessary
-  ${If} $InstallJRE == 1
-    ; choose a 64-bit JRE for 64-bit systems
-    ${If} ${RunningX64}
-      StrCpy $R1 ${JRE_64_URL}
-    ${Else}
-      StrCpy $R1 ${JRE_32_URL}
-    ${EndIf}
-
-    DetailPrint "Downloading a JRE from $R1"
-    StrCpy $0 "$TEMP\jre_installer.exe"
-    NSISdl::download /TIMEOUT=30000 $R1 $0
-    Pop $R0 ; Get the return value
-    StrCmp $R0 "success" +3
-    MessageBox MB_OK "Java download failed: $R0"
-    Quit
-
-    ${If} $CustomSetup == 1
-      ; provide a full JRE installer
-      ExecWait $0
-    ${Else}
-      ; provide a JRE installer requiring no user interaction
-      ; options reference: http://java.sun.com/javase/6/docs/technotes/guides/deployment/deployment-guide/silent.html
-      ExecWait "$0 /qr ADDLOCAL=ALL"
-    ${EndIf}
-
-    Delete $0
-    DetailPrint "Installed a JRE"
   ${EndIf}
 
   ${SetNativeRegView}
