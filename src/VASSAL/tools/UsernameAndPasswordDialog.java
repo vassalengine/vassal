@@ -28,13 +28,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import javax.swing.LayoutStyle;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.PasswordConfigurer;
@@ -149,37 +148,37 @@ public class UsernameAndPasswordDialog extends JDialog {
     layout.linkSize(ok, cancel);
 */
 
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
 
     layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.LEADING, true)
-        .add(nc)
-        .add(p1)
-        .add(p2)
-        .add(note)
-        .add(layout.createSequentialGroup()
-          .add(0, 0, Integer.MAX_VALUE)
-          .add(error)
-          .add(0, 0, Integer.MAX_VALUE))
-        .add(layout.createSequentialGroup()
-          .add(0, 0, Integer.MAX_VALUE)
-          .add(ok)
-          .add(cancel)));
+      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
+        .addComponent(nc)
+        .addComponent(p1)
+        .addComponent(p2)
+        .addComponent(note)
+        .addGroup(layout.createSequentialGroup()
+          .addGap(0, 0, Integer.MAX_VALUE)
+          .addComponent(error)
+          .addGap(0, 0, Integer.MAX_VALUE))
+        .addGroup(layout.createSequentialGroup()
+          .addGap(0, 0, Integer.MAX_VALUE)
+          .addComponent(ok)
+          .addComponent(cancel)));
 
     layout.setVerticalGroup(
       layout.createSequentialGroup()
-        .add(nc)
-        .add(p1)
-        .add(p2)
-        .add(note)
-        .add(error)
-        .addPreferredGap(LayoutStyle.UNRELATED,
+        .addComponent(nc)
+        .addComponent(p1)
+        .addComponent(p2)
+        .addComponent(note)
+        .addComponent(error)
+        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                          GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .add(
-          layout.createParallelGroup(GroupLayout.BASELINE, false)
-            .add(ok)
-            .add(cancel)));
+        .addGroup(
+          layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
+            .addComponent(ok)
+            .addComponent(cancel)));
 
     layout.linkSize(new Component[]{ok, cancel});
 

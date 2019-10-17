@@ -21,15 +21,14 @@ package VASSAL.tools.swing;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import javax.swing.LayoutStyle;
 
 import VASSAL.tools.DialogUtils;
 
@@ -149,20 +148,20 @@ public class Dialogs {
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
 
-      layout.setAutocreateGaps(true);
-      layout.setAutocreateContainerGaps(false);
+      layout.setAutoCreateGaps(true);
+      layout.setAutoCreateContainerGaps(false);
 
       layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(content)
-          .add(disableCheck));
+        layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
+          .addComponent(content)
+          .addComponent(disableCheck));
 
       layout.setVerticalGroup(
         layout.createSequentialGroup()
-          .add(content)
-          .addPreferredGap(LayoutStyle.UNRELATED,
+          .addComponent(content)
+          .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                            GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-          .add(disableCheck));
+          .addComponent(disableCheck));
 
       content = panel;
     }
@@ -208,19 +207,19 @@ public class Dialogs {
     final GroupLayout layout = new GroupLayout(panel);
     panel.setLayout(layout);
 
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(false);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(false);
 
     layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.LEADING, true)
-        .add(titleLabel)
-        .add(descriptionLabel));
+      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
+        .addComponent(titleLabel)
+        .addComponent(descriptionLabel));
 
     layout.setVerticalGroup(
       layout.createSequentialGroup()
-        .add(titleLabel)
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(descriptionLabel));
+        .addComponent(titleLabel)
+        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+        .addComponent(descriptionLabel));
 
     return panel;
   }

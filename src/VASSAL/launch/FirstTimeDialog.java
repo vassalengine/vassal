@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,9 +43,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import javax.swing.LayoutStyle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,40 +139,40 @@ public class FirstTimeDialog extends JDialog {
     final GroupLayout layout = new GroupLayout(panel);
     panel.setLayout(layout);
 
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
 
     layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.CENTER, true)
-        .add(about)
-        .add(welcome)
-        .add(layout.createSequentialGroup()
-          .add(tour)
-          .add(jump)
-          .add(help))
-        .add(layout.createSequentialGroup()
-          .add(0, 0, Integer.MAX_VALUE)
-          .add(lang)
-          .add(langbox)
-          .add(0, 0, Integer.MAX_VALUE)));
+      layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+        .addComponent(about)
+        .addComponent(welcome)
+        .addGroup(layout.createSequentialGroup()
+          .addComponent(tour)
+          .addComponent(jump)
+          .addComponent(help))
+        .addGroup(layout.createSequentialGroup()
+          .addGap(0, 0, Integer.MAX_VALUE)
+          .addComponent(lang)
+          .addComponent(langbox)
+          .addGap(0, 0, Integer.MAX_VALUE)));
 
     layout.setVerticalGroup(
       layout.createSequentialGroup()
-        .add(about)
-        .addPreferredGap(LayoutStyle.UNRELATED,
+        .addComponent(about)
+        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                          GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .add(welcome)
-        .addPreferredGap(LayoutStyle.UNRELATED,
+        .addComponent(welcome)
+        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                          GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
-          .add(tour)
-          .add(jump)
-          .add(help))
-        .addPreferredGap(LayoutStyle.UNRELATED,
+        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
+          .addComponent(tour)
+          .addComponent(jump)
+          .addComponent(help))
+        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                          GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
-          .add(lang)
-          .add(langbox)));
+        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
+          .addComponent(lang)
+          .addComponent(langbox)));
 
     layout.linkSize(new Component[]{tour, jump, help});
 
