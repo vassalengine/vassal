@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -20,14 +21,12 @@ import VASSAL.tools.concurrent.listener.DefaultMultiEventListenerSupport;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.concurrent.listener.MultiEventListenerSupport;
 
-import com.google.common.util.concurrent.ValueFuture;
-
 public class IPCMessenger {
 
   protected final AtomicLong next_id = new AtomicLong(0L);
 
-  protected final Map<Long,ValueFuture<IPCMessage>> waiting =
-    new ConcurrentHashMap<Long,ValueFuture<IPCMessage>>();
+  protected final Map<Long,CompletableFuture<IPCMessage>> waiting =
+    new ConcurrentHashMap<Long,CompletableFuture<IPCMessage>>();
 
   protected final BlockingQueue<IPCMessage> outqueue =
     new LinkedBlockingQueue<IPCMessage>();
@@ -63,9 +62,9 @@ public class IPCMessenger {
     lsup.addEventListener(IPCMessage.class, new EventListener<IPCMessage>() {
       public void receive(Object src, IPCMessage msg) {
         if (msg.isReply()) {
-          final ValueFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
+          final CompletableFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
           if (f == null) throw new IllegalStateException(msg.toString());
-          f.set(msg);
+          f.complete(msg);
         }
       }
     });
@@ -112,12 +111,12 @@ public class IPCMessenger {
 
     msg.setId(next_id.getAndIncrement());
 
-    final ValueFuture<IPCMessage> f = ValueFuture.<IPCMessage>create();
+    final CompletableFuture<IPCMessage> f = new CompletableFuture<IPCMessage>();
     if (msg.expectsReply()) {
       waiting.put(msg.getId(), f);
     }
     else {
-      f.set(null);
+      f.complete(null);
     }
 
     outqueue.offer(msg);
