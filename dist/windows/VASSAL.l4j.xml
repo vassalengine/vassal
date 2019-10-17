@@ -15,7 +15,7 @@
     <cp>lib\Vengine.jar</cp>
   </classPath>
   <jre>
-    <minVersion>1.5.0</minVersion>
+    <path>jre</path>
   </jre>
   <versionInfo>
     <fileVersion>%NUMVERSION%.0</fileVersion>

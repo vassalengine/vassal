@@ -33,6 +33,9 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
+# Prior to building the Windows release, unpack the JDK to bundle into the
+# directory specified in WINJDK.
+#
 
 SHELL:=/bin/bash
 
@@ -45,6 +48,7 @@ TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
+WINJDK:=jdk-win
 
 VNUM:=3.2.18
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
@@ -58,12 +62,13 @@ CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':'):$(shell echo $
 JAVAPATH:=/usr/bin
 
 JC:=$(JAVAPATH)/javac
-JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
-				 -sourcepath $(SRCDIR)
+JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -source 1.9 -target 1.9
+#JCFLAGS:=-d $(CLASSDIR) -nowarn -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -source 1.9 -target 1.9
 
 JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
 JAVA:=$(JAVAPATH)/java
+JDEPS:=$(JAVAPATH)/jdeps
 
 NSIS:=makensis
 #DMG:=dmg
@@ -212,6 +217,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 	mv $(TMPDIR)/VASSAL-$(VERSION)/CHANGES $(TMPDIR)/VASSAL-$(VERSION)/CHANGES.txt
 	mv $(TMPDIR)/VASSAL-$(VERSION)/LICENSE $(TMPDIR)/VASSAL-$(VERSION)/LICENSE.txt
 	mv $(TMPDIR)/VASSAL-$(VERSION)/README $(TMPDIR)/VASSAL-$(VERSION)/README.txt
+	$(WINJDK)/bin/jlink.exe --module-path $(WINJKD)/bin/jmods --no-header-files --no-man-pages --strip-debug --add-modules `$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package'` --compress=2 --output $(TMPDIR)/VASSAL-$(VERSION)/jre
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
