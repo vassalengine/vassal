@@ -18,11 +18,10 @@
  */
 package VASSAL.launch;
 
+import java.awt.Desktop;
+import java.awt.desktop.OpenFilesEvent;
+import java.awt.desktop.OpenFilesHandler;
 import java.io.File;
-
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 public class ModuleManagerMacOSXStartUp extends MacOSXStartUp {
   @Override
@@ -32,29 +31,17 @@ public class ModuleManagerMacOSXStartUp extends MacOSXStartUp {
   }
 
   protected void setupApplicationListeners() {
-    final Application app = Application.getApplication();
-    app.addApplicationListener(new ApplicationAdapter() {
+    final Desktop app = Desktop.getDesktop();
+    app.setOpenFileHandler(new OpenFilesHandler() {
       @Override
-      public void handleOpenFile(ApplicationEvent e) {
-        final String filename = e.getFilename();
+      public void openFiles(OpenFilesEvent e) {
+        final String filename = e.getFiles().get(0).toString();
         if (filename.endsWith(".vmod")) {
           final LaunchRequest lr = new LaunchRequest();
           lr.mode = LaunchRequest.Mode.LOAD;
           lr.module = new File(filename);
           ModuleManager.getInstance().execute(lr);
-          e.setHandled(true);
         }
-        else {
-          e.setHandled(false);
-        }
-      }
-
-      @Override
-      public void handleReOpenApplication(ApplicationEvent e) {
-        final LaunchRequest lr = new LaunchRequest();
-        lr.mode = LaunchRequest.Mode.MANAGE;
-        ModuleManager.getInstance().execute(lr);
-        e.setHandled(true);
       }
     });
   }

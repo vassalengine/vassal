@@ -19,16 +19,20 @@
 
 package VASSAL.tools.menu;
 
+import java.awt.Desktop;
+import java.awt.desktop.AboutHandler;
+import java.awt.desktop.AboutEvent;
+import java.awt.desktop.PreferencesHandler;
+import java.awt.desktop.PreferencesEvent;
+import java.awt.desktop.QuitHandler;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitResponse;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 /**
  * @author Joel Uckelman
@@ -63,58 +67,31 @@ public class MacOSXMenuManager extends MenuManager {
     // Quit, Preferences, and About go on the special application menu
 
     if ("General.quit".equals(key)) {
-      final Application app = Application.getApplication();
-      app.addApplicationListener(new ApplicationAdapter() {
+      final Desktop app = Desktop.getDesktop();
+      app.setQuitHandler(new QuitHandler() {
         @Override
-        public void handleQuit(ApplicationEvent e) {
-          e.setHandled(false);
+        public void handleQuitRequestWith(QuitEvent e, QuitResponse resp) {
           action.actionPerformed(null);
+          // the action handles exiting; if we're here, it was cancelled
+          resp.cancelQuit();
         }
       });
-
-      // no need to track enabled state, quit is always active
     }
     else if ("Prefs.edit_preferences".equals(key)) {
-      final Application app = Application.getApplication();
-      app.addApplicationListener(new ApplicationAdapter() {
+      final Desktop app = Desktop.getDesktop();
+      app.setPreferencesHandler(new PreferencesHandler() {
         @Override
-        public void handlePreferences(ApplicationEvent e) {
-          e.setHandled(true);
+        public void handlePreferences(PreferencesEvent e) {
           action.actionPerformed(null);
-        }
-      });
-
-      app.addPreferencesMenuItem();
-      app.setEnabledPreferencesMenu(action.isEnabled());
-
-      // track the enabled state of the prefs action
-      action.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
-          if ("enabled".equals(e.getPropertyName())) {
-            app.setEnabledPreferencesMenu((Boolean) e.getNewValue());
-          }
         }
       });
     }
     else if ("AboutScreen.about_vassal".equals(key)) {
-      final Application app = Application.getApplication();
-      app.addApplicationListener(new ApplicationAdapter() {
+      final Desktop app = Desktop.getDesktop();
+      app.setAboutHandler(new AboutHandler() {
         @Override
-        public void handleAbout(ApplicationEvent e) {
-          e.setHandled(true);
+        public void handleAbout(AboutEvent e) {
           action.actionPerformed(null);
-        }
-      });
-
-      app.addAboutMenuItem();
-      app.setEnabledAboutMenu(action.isEnabled());
-
-      // track the enabled state of the prefs action
-      action.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
-          if ("enabled".equals(e.getPropertyName())) {
-            app.setEnabledAboutMenu((Boolean) e.getNewValue());
-          }
         }
       });
     }
