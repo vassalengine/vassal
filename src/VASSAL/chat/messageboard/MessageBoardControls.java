@@ -33,9 +33,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-
-import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;

@@ -19,8 +19,7 @@
 package VASSAL.tools.version;
 
 import java.io.IOException;
-
-import org.jdesktop.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 import VASSAL.Info;
 

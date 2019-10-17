@@ -44,8 +44,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

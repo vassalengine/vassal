@@ -44,8 +44,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;

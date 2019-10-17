@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-import org.jdesktop.swingworker.SwingWorker;
+import javax.swing.SwingWorker;
 
 import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.i18n.Resources;

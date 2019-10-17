@@ -47,10 +47,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
 
