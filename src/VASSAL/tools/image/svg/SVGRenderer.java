@@ -34,12 +34,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;

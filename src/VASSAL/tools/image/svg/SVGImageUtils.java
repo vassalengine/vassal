@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
