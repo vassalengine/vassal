@@ -61,7 +61,7 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;

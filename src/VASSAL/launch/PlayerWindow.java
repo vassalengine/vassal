@@ -29,7 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;

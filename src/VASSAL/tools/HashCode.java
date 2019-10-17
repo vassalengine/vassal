@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @deprecated Use {@link org.apache.commons.lang.builder.HashCodeBuilder}
+ * @deprecated Use {@link org.apache.commons.lang3.builder.HashCodeBuilder}
  * instead.
  */
 @Deprecated

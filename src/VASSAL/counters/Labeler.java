@@ -48,7 +48,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;

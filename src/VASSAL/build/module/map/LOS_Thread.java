@@ -36,7 +36,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;

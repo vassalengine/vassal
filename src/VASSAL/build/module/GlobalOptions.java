@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;

@@ -20,7 +20,7 @@ package VASSAL.tools.filechooser;
 
 import java.io.File;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.tools.ArrayUtils;
 

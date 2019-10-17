@@ -27,7 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.tools.ScrollPane;

@@ -39,7 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;

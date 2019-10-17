@@ -19,7 +19,7 @@
 
 package VASSAL.property;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Represents a named property with a specified type.

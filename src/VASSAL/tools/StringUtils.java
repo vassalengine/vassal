@@ -29,7 +29,7 @@ import com.google.common.base.Strings;
  *
  * @author Joel Uckelman
  * @since 3.1.0
- * @deprecated Use {@link org.apache.commons.lang.StringUtils} instead.
+ * @deprecated Use {@link org.apache.commons.lang3.StringUtils} instead.
  */
 @Deprecated
 public class StringUtils {

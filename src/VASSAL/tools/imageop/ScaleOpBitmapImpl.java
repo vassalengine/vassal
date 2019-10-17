@@ -27,7 +27,7 @@ import java.awt.image.WritableRaster;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import VASSAL.tools.image.GeneralFilter;
 import VASSAL.tools.image.ImageUtils;

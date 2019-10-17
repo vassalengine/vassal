@@ -28,8 +28,6 @@ import javax.imageio.ImageIO;
 
 import VASSAL.tools.io.IOUtils;
 
-import org.apache.commons.lang.SystemUtils;
-
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -123,31 +121,6 @@ public class ImageIOImageLoaderTest {
     assertImageContentEquals(expected, actual);
   }
 
-  @Test(expected=BrokenImageException.class)
-  public void testLoadRGB_JPEG_NonRGB_Color_Profile() throws IOException {
-    final String afile = "test/VASSAL/tools/image/WatervilleDuelpark.jpg";
-
-    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
-    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
-
-    final BufferedImage actual = read(loader, afile);
-  }
-
-  @Test(expected=BrokenImageException.class)
-  public void testLoadLCMS_Error() throws IOException {
-    // this appears to be fixed in Java >= 1.7
-    if (SystemUtils.isJavaVersionAtLeast(1.7f)) {
-      throw new BrokenImageException("bogus");
-    }
-
-    final String afile = "test/VASSAL/tools/image/09.jpg";
-
-    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
-    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
-
-    final BufferedImage actual = read(loader, afile);
-  }
-
   protected Dimension size(ImageLoader loader, String file) throws IOException {
     FileInputStream in = null;
     try {
@@ -180,20 +153,5 @@ public class ImageIOImageLoaderTest {
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
     final Dimension ad = size(loader, junk);
-  }
-
-  @Test(expected=BrokenImageException.class)
-  public void testSizeLCMS_Error() throws IOException {
-    // this appears to be fixed in Java >= 1.7
-    if (SystemUtils.isJavaVersionAtLeast(1.7f)) {
-      throw new BrokenImageException("bogus");
-    }
-
-    final String afile = "test/VASSAL/tools/image/09.jpg";
-
-    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
-    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
-
-    final Dimension ad = size(loader, afile);
   }
 }

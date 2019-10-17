@@ -24,7 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

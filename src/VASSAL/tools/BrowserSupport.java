@@ -26,13 +26,7 @@ import java.net.URISyntaxException;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-
-import org.apache.commons.lang.SystemUtils;
-
-// FIXME: Remove BrowserLauncher when we move to Java 1.6+.
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * Utility class for displaying an external browser window.
@@ -40,67 +34,34 @@ import org.apache.commons.lang.SystemUtils;
  * @author rkinney
  */
 public class BrowserSupport {
-
-  private static final BrowserLauncher browserLauncher;
-
-  static {
-    BrowserLauncher bl = null;
-
-    if (SystemUtils.IS_JAVA_1_5) {
-      try {
-        bl = new BrowserLauncher();
-      }
-      catch (BrowserLaunchingInitializingException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (UnsupportedOperatingSystemException e) {
-        ErrorDialog.bug(e);
-      }
-    }
-
-    browserLauncher = bl;
-  }
-
   public static void openURL(String url) {
     //
-    // This method is irritatingly complex, because:
-    // * There is no java.awt.Desktop in Java 1.5.
-    // * java.awt.Desktop seems not to work sometimes on Windows.
-    // * BrowserLauncher failes sometimes on Linux, and isn't supported
-    //   anymore.
+    // This method is irritatingly complex because
+    // java.awt.Desktop seems not to work sometimes on Windows.
     //
-    if (!SystemUtils.IS_JAVA_1_5) {
-      if (Desktop.isDesktopSupported()) {
-        final Desktop desktop = Desktop.getDesktop();
-        if (desktop.isSupported(Desktop.Action.BROWSE)) {
-          try {
-            desktop.browse(new URI(url));
-            return;
-          }
-          catch (IOException e) {
-            // We ignore this on Windows, because Desktop seems flaky
-            if (!SystemUtils.IS_OS_WINDOWS) {
-              ReadErrorDialog.error(e, url);
-              return;
-            }
-          }
-          catch (IllegalArgumentException e) {
-            ErrorDialog.bug(e);
-            return;
-          }
-          catch (URISyntaxException e) {
-            ErrorDialog.bug(e);
+    if (Desktop.isDesktopSupported()) {
+      final Desktop desktop = Desktop.getDesktop();
+      if (desktop.isSupported(Desktop.Action.BROWSE)) {
+        try {
+          desktop.browse(new URI(url));
+          return;
+        }
+        catch (IOException e) {
+          // We ignore this on Windows, because Desktop seems flaky
+          if (!SystemUtils.IS_OS_WINDOWS) {
+            ReadErrorDialog.error(e, url);
             return;
           }
         }
+        catch (IllegalArgumentException e) {
+          ErrorDialog.bug(e);
+          return;
+        }
+        catch (URISyntaxException e) {
+          ErrorDialog.bug(e);
+          return;
+        }
       }
-    }
-
-    if (browserLauncher != null) {
-      browserLauncher.openURLinBrowser(url);
-    }
-    else {
-      ErrorDialog.show("BrowserSupport.unable_to_launch", url);
     }
   }
 

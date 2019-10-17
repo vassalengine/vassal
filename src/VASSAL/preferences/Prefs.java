@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.Info;
 import VASSAL.build.module.WizardSupport;

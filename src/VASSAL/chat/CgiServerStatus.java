@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.math.LongRange;
+import org.apache.commons.lang3.Range;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
@@ -108,7 +108,7 @@ public class CgiServerStatus implements ServerStatus {
 
   private SortedMap<Long,List<String[]>> records =
     new TreeMap<Long,List<String[]>>();
-  private List<LongRange> requests = new ArrayList<LongRange>();
+  private List<Range<Long>> requests = new ArrayList<Range<Long>>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
     if (time <= 0) return getStatus();
@@ -116,32 +116,32 @@ public class CgiServerStatus implements ServerStatus {
     final long now = System.currentTimeMillis();
 
     // start with new interval
-    final LongRange req = new LongRange(now - time, now);
-    final ArrayList<LongRange> toRequest = new ArrayList<LongRange>();
+    final Range<Long> req = Range.between(now - time, now);
+    final ArrayList<Range<Long>> toRequest = new ArrayList<Range<Long>>();
     toRequest.add(req);
 
     // subtract each old interval from new interval
-    for (LongRange y : requests) {
-      for (ListIterator<LongRange> i = toRequest.listIterator(); i.hasNext();) {
-        final LongRange x = i.next();
+    for (Range<Long> y : requests) {
+      for (ListIterator<Range<Long>> i = toRequest.listIterator(); i.hasNext();) {
+        final Range<Long> x = i.next();
 
-        if (!x.overlapsRange(y)) continue; // no overlap, nothing to subtract
+        if (!x.isOverlappedBy(y)) continue; // no overlap, nothing to subtract
 
         // otherwise, remove x and add what remains after subtracting y
         i.remove();
 
-        final long xl = x.getMinimumLong();
-        final long xr = x.getMaximumLong();
-        final long yl = y.getMinimumLong();
-        final long yr = y.getMaximumLong();
+        final long xl = x.getMinimum();
+        final long xr = x.getMaximum();
+        final long yl = y.getMinimum();
+        final long yr = y.getMaximum();
 
-        if (xl < yl && yl <= xr) i.add(new LongRange(xl, yl));
-        if (xl <= yr && yr < xr) i.add(new LongRange(yr, xr));
+        if (xl < yl && yl <= xr) i.add(Range.between(xl, yl));
+        if (xl <= yr && yr < xr) i.add(Range.between(yr, xr));
       }
     }
 
     // now toRequest contains the intervals we are missing; request those
-    for (LongRange i : toRequest) {
+    for (Range<Long> i : toRequest) {
       for (String s : getInterval(i)) {
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
@@ -175,16 +175,16 @@ public class CgiServerStatus implements ServerStatus {
     // Note: This is simple, but quadratic in the number of intervals.
     // For large numbers of intervals, use an interval tree instead.
     for (int i = 0; i < requests.size(); i++) {
-      final LongRange a = requests.get(i);
+      final Range<Long> a = requests.get(i);
       for (int j = i+1; j < requests.size(); j++) {
-        final LongRange b = requests.get(j);
-        if (a.overlapsRange(b)) {
-          final long al = a.getMinimumLong();
-          final long ar = a.getMaximumLong();
-          final long bl = b.getMinimumLong();
-          final long br = b.getMaximumLong();
+        final Range<Long> b = requests.get(j);
+        if (a.isOverlappedBy(b)) {
+          final long al = a.getMinimum();
+          final long ar = a.getMaximum();
+          final long bl = b.getMinimum();
+          final long br = b.getMaximum();
 
-          requests.set(i, new LongRange(Math.min(al, bl),
+          requests.set(i, Range.between(Math.min(al, bl),
                                         Math.max(ar, br)));
           requests.remove(j--);
         }
@@ -195,8 +195,8 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<String,ServerStatus.ModuleSummary>();
 
-    for (List<String[]> l : records.subMap(req.getMinimumLong(),
-                                           req.getMaximumLong()).values()) {
+    for (List<String[]> l : records.subMap(req.getMinimum(),
+                                           req.getMaximum()).values()) {
       for (String[] r : l) {
         final String moduleName = r[0];
         final String roomName = r[1];
@@ -230,10 +230,10 @@ public class CgiServerStatus implements ServerStatus {
     return e;
   }
 
-  private List<String> getInterval(LongRange i) {
+  private List<String> getInterval(Range<Long> i) {
     final Properties p = new Properties();
-    p.setProperty("start", Long.toString(i.getMinimumLong())); //$NON-NLS-1$
-    p.setProperty("end", Long.toString(i.getMaximumLong())); //$NON-NLS-1$
+    p.setProperty("start", Long.toString(i.getMinimum())); //$NON-NLS-1$
+    p.setProperty("end", Long.toString(i.getMaximum())); //$NON-NLS-1$
 
     try {
       return request.doGet("getConnectionHistory", p); //$NON-NLS-1$

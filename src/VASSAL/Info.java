@@ -25,7 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
