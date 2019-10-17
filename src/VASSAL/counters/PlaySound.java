@@ -18,7 +18,6 @@
  */
 package VASSAL.counters;
 
-import java.applet.AudioClip;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -40,6 +39,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.AudioClip;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;

@@ -18,41 +18,61 @@
  */
 package VASSAL.tools;
 
-import java.applet.AudioClip;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.AudioClip;
 import VASSAL.tools.io.IOUtils;
 
 public class Mp3AudioClip implements AudioClip {
 
-  protected String name;
+  protected URL url = null;
+  protected String name = null;
   protected Player player = null;
   protected InputStream stream = null;
 
-  public Mp3AudioClip(String name) {
+  public Mp3AudioClip(String name) throws IOException {
     this.name = name;
+  }
+
+  public Mp3AudioClip(URL url) throws IOException {
+    this.url = url;
+  }
+
+  protected InputStream getStream() {
+    try {
+      if (name != null) {
+        try {
+          return GameModule.getGameModule().getDataArchive().getInputStream(name);
+        }
+        catch (FileNotFoundException e) {
+          ErrorDialog.dataError(new BadDataReport(
+            Resources.getString("Error.not_found", name), "", e));
+        }
+      }
+      else {
+        return url.openStream();
+      }
+    }
+    catch (IOException e) {
+      ErrorDialog.bug(e);
+    }
+    return null;
   }
 
   public void play() {
     // load the stream
-    stream = null;
-    try {
-      stream = GameModule.getGameModule().getDataArchive().getInputStream(name);
-    }
-    catch (FileNotFoundException e) {
-      ErrorDialog.dataError(new BadDataReport(
-        Resources.getString("Error.not_found", name), "", e));
-      return;
-    }
-    catch (IOException e) {
-      ErrorDialog.bug(e);
+    stream = getStream();
+    if (stream == null) {
       return;
     }
 
@@ -98,9 +118,5 @@ public class Mp3AudioClip implements AudioClip {
         IOUtils.closeQuietly(stream);
       }
     }
-  }
-
-  public void loop() {
-    // Not used by Vassal
   }
 }

@@ -18,13 +18,12 @@
  */
 package VASSAL.configure;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,13 +35,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.AudioClip;
+import VASSAL.tools.AudioSystemClip;
+import VASSAL.tools.Mp3AudioClip;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.io.IOUtils;
 
 /**
- * Configurer for specifying an AudioClip. This class is intended to allow
+ * Configurer for specifying a Clip. This class is intended to allow
  * players to override a default sound with their own sound file on their
  * local file system.
  */
@@ -156,7 +159,23 @@ public class SoundConfigurer extends Configurer {
   protected AudioClipFactory createAudioClipFactory() {
     return new AudioClipFactory() {
       public AudioClip getAudioClip(URL url) {
-        return Applet.newAudioClip(url);
+        try {
+          final InputStream in = url.openStream();
+          try {
+            if (url.toString().toLowerCase().endsWith(".mp3")) {
+              return new Mp3AudioClip(url);
+            }
+            else {
+              return new AudioSystemClip(in);
+            }
+          }
+          finally {
+            IOUtils.closeQuietly(in);
+          }
+        }
+        catch (IOException e) {
+          return null;
+        }
       }
     };
   }

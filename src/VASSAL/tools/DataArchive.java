@@ -21,7 +21,6 @@ package VASSAL.tools;
 ////////////////////////////////////////////////////////
 // These imports are used in deprecated methods only. //
 ////////////////////////////////////////////////////////
-import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -54,7 +53,6 @@ import java.util.zip.ZipFile;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import sun.applet.AppletAudioClip;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
@@ -126,13 +124,14 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         InputStream stream = null;
         try {
           stream = getInputStream(path);
-          clip = new AppletAudioClip(IOUtils.toByteArray(stream));
-          soundCache.put(path,clip);
+          clip = new AudioSystemClip(stream);
         }
         finally {
           IOUtils.closeQuietly(stream);
         }
       }
+
+      soundCache.put(path, clip);
     }
     return clip;
   }

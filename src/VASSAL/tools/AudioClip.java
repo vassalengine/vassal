@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006-2008 by Joel Uckelman
+ * Copyright (c) 2019 by Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,20 +16,9 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools.filechooser;
+package VASSAL.tools;
 
-/**
- * A FileFilter for AIFF, AU, and WAV files. Used by file choosers to
- * filter out files which aren't audio files.
- *
- * @author Joel Uckelman
- */
-public class AudioFileFilter extends ExtensionFileFilter {
-  public static final String[] types = {
-    ".aiff", ".au", ".mp3", ".wav"
-  };
-
-  public AudioFileFilter() {
-    super("Audio files", types);
-  }
+public interface AudioClip {
+  public void play();
+  public void stop(); 
 }
