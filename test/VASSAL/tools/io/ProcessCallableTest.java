@@ -19,6 +19,8 @@
 
 package VASSAL.tools.io;
 
+import VASSAL.Info;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -39,7 +41,7 @@ public class ProcessCallableTest {
     final byte[] eerr = "Veldt jynx grimps waqf zho buck.\n".getBytes();
 
     final ProcessBuilder pb = new ProcessBuilder(
-      "java",
+      Info.javaBinPath,
       "-cp",
       System.getProperty("java.class.path"),
       "VASSAL.tools.io.ProcessCallableTestEchoer"

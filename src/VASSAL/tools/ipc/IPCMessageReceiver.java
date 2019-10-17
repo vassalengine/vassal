@@ -1,5 +1,6 @@
 package VASSAL.tools.ipc;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInput;
@@ -54,6 +55,9 @@ class IPCMessageReceiver implements Runnable {
     }
     catch (OptionalDataException e) {
       throw new IllegalStateException(e);
+    }
+    catch (EOFException e) {
+      /// this is normal, happens on close
     }
     catch (IOException e) {
 // FIXME: should communicate this outward somehow
