@@ -48,7 +48,9 @@ TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
-WINJDK:=jdk-win
+
+WINJMODS:=jdk-win/jmods
+OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
@@ -69,6 +71,7 @@ JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
 JAVA:=$(JAVAPATH)/java
 JDEPS:=$(JAVAPATH)/jdeps
+JLINK:=$(JAVAPATH)/jlink
 
 NSIS:=makensis
 #DMG:=dmg
@@ -150,6 +153,9 @@ $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 version:
 	sed -ri 's/ VERSION = ".*"/ VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
 
+$(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
+	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package' | tr -d '\n' >$@
+
 #dist/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
 #	rsvg -w 48 -h 48 -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-48.png
@@ -163,13 +169,14 @@ version:
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)
+$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
+	$(JLINK) --module-path $(OSXJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
 #	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
@@ -186,6 +193,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.ap
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
+	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
@@ -211,13 +219,13 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
 	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe}
 	tar cjvf $@ -C $(TMPDIR) VASSAL-$(VERSION)
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
 	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{sh,bat}
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	mv $(TMPDIR)/VASSAL-$(VERSION)/CHANGES $(TMPDIR)/VASSAL-$(VERSION)/CHANGES.txt
 	mv $(TMPDIR)/VASSAL-$(VERSION)/LICENSE $(TMPDIR)/VASSAL-$(VERSION)/LICENSE.txt
 	mv $(TMPDIR)/VASSAL-$(VERSION)/README $(TMPDIR)/VASSAL-$(VERSION)/README.txt
-	$(WINJDK)/bin/jlink.exe --module-path $(WINJKD)/bin/jmods --no-header-files --no-man-pages --strip-debug --add-modules `$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package'` --compress=2 --output $(TMPDIR)/VASSAL-$(VERSION)/jre
+	$(JLINK) --module-path $(WINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $(TMPDIR)/VASSAL-$(VERSION)/jre
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
