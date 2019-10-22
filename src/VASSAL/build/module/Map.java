@@ -1507,7 +1507,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
         Point pt = componentCoordinates(stack[i].getPosition());
-        if (stack[i] instanceof Stack) {
+        if (stack[i].getClass() == Stack.class) {
           getStackMetrics().draw(
             (Stack) stack[i], pt, g, this, getZoom(), visibleRect);
         }
