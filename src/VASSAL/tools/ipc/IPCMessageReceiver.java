@@ -57,7 +57,7 @@ class IPCMessageReceiver implements Runnable {
       throw new IllegalStateException(e);
     }
     catch (EOFException e) {
-      /// this is normal, happens on close
+      // this is normal, happens on close
     }
     catch (IOException e) {
 // FIXME: should communicate this outward somehow
