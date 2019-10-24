@@ -51,6 +51,9 @@ public class AudioSystemClip implements AudioClip {
         clip = AudioSystem.getClip();
         clip.open(ais);
       }
+      catch (IllegalArgumentException e) {
+        throw new IOException(e);
+      }
       catch (LineUnavailableException e) {
         throw new IOException(e); 
       }
@@ -71,9 +74,13 @@ public class AudioSystemClip implements AudioClip {
         catch (UnsupportedAudioFileException e) {
           throw new IOException(e);
         }
+
         try {
           clip = AudioSystem.getClip();
           clip.open(ais);
+        }
+        catch (IllegalArgumentException e) {
+          throw new IOException(e);
         }
         catch (LineUnavailableException e) {
           throw new IOException(e);
