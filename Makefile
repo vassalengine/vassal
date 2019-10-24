@@ -194,6 +194,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.ap
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
+	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/lib/jspawnhelper
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
