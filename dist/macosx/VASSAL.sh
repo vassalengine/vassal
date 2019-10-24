@@ -13,4 +13,4 @@ for ARG in "$@"; do
 done
 
 # fire it up
-exec Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar -Dapple.awt.graphics.UseQuartz=false -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
+exec Contents/MacOS/jre/bin/java -classpath Contents/Resources/Java/Vengine.jar  -Xdock:name=VASSAL -Xdock:icon=Contents/Resources/VASSAL.icns VASSAL.launch.ModuleManager "${ARGS[@]}"
