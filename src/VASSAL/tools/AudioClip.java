@@ -20,5 +20,4 @@ package VASSAL.tools;
 
 public interface AudioClip {
   public void play();
-  public void stop(); 
 }

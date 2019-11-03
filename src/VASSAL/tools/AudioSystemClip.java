@@ -99,8 +99,4 @@ public class AudioSystemClip implements AudioClip {
     clip.setFramePosition(0);
     clip.start();
   }
-
-  public void stop() {
-    clip.stop();
-  }
 }

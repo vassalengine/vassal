@@ -108,15 +108,4 @@ public class Mp3AudioClip implements AudioClip {
       }
     }.start();
   }
-
-  public void stop() {
-    if (player != null) {
-      try {
-        player.close();
-      }
-      finally {
-        IOUtils.closeQuietly(stream);
-      }
-    }
-  }
 }
