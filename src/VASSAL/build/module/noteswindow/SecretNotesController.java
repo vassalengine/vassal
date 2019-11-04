@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,11 +84,11 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
   // Date formatter to save and restore date/times in the save file
   public static final DateFormat INTERNAL_DATE_FORMATTER =
-      DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.US);
+    new SimpleDateFormat("m/d/yy h:mm a");
 
   // Date formatter to display date/time to the player
   public static final DateFormat LOCAL_DATE_FORMATTER =
-      DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
+    DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
 
   public SecretNotesController() {
     notes = new ArrayList<SecretNote>();
