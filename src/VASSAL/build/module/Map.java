@@ -1457,8 +1457,10 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
 
   /**
-   * Painting the map is done in three steps: 1) draw each of the {@link Board}s on the map. 2) draw all of the
-   * counters on the map. 3) draw all of the {@link Drawable} components on the map
+   * Painting the map is done in three steps:
+   * 1) draw each of the {@link Board}s on the map.
+   * 2) draw all of the counters on the map.
+   * 3) draw all of the {@link Drawable} components on the map
    *
    * @see #addDrawComponent
    * @see #setBoards
