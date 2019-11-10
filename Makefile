@@ -49,6 +49,8 @@ JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 
+JDOCLINK:=file:///usr/share/javadoc/java-13-openjdk-13.0.0.33-1.rolling.fc30.x86_64/api
+
 WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
 
@@ -262,7 +264,7 @@ upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link http://java.sun.com/javase/6/docs/api -sourcepath $(SRCDIR) -subpackages VASSAL 
+	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -sourcepath $(SRCDIR) -subpackages VASSAL
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
