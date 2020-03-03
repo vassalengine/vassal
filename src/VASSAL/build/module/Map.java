@@ -2575,7 +2575,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
 
     public void update(Graphics g) {
-      // To avoid flicker, don't clear the display first *
+      // To avoid flicker, don't clear the display first
       paint(g);
     }
 
