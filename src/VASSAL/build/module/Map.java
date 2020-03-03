@@ -1455,21 +1455,6 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     theMap.repaint();
   }
 
-
-  /**
-   * Painting the map is done in three steps:
-   * 1) draw each of the {@link Board}s on the map.
-   * 2) draw all of the counters on the map.
-   * 3) draw all of the {@link Drawable} components on the map
-   *
-   * @see #addDrawComponent
-   * @see #setBoards
-   * @see #addPiece
-   */
-  public void paint(Graphics g) {
-    paint(g, 0, 0);
-  }
-
   public void paintRegion(Graphics g, Rectangle visibleRect) {
     paintRegion(g, visibleRect, theMap);
   }
@@ -1556,16 +1541,6 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         drawable.draw(g, this);
       }
     }
-  }
-
-  /**
-   * Paint the map at the given offset, i.e. such that (xOffset, yOffset) is in the upper left corner
-   */
-  public void paint(Graphics g, int xOffset, int yOffset) {
-    drawBoards(g, xOffset, yOffset, getZoom(), theMap);
-    drawDrawable(g, false);
-    drawPieces(g, xOffset, yOffset);
-    drawDrawable(g, true);
   }
 
   public Highlighter getHighlighter() {
