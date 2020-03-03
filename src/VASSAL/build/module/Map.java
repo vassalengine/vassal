@@ -79,6 +79,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -237,6 +238,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   };
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
+
+  protected static final double os_scale = Info.getSystemScaling();
 
   public Map() {
     getView();
@@ -605,7 +608,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return the current zoom factor for the map
    */
   public double getZoom() {
-    return zoom == null ? 1.0 : zoom.getZoomFactor();
+    return (zoom == null ? 1.0 : zoom.getZoomFactor()) * os_scale;
   }
 
   /**
