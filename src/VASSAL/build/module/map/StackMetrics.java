@@ -270,16 +270,14 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
-         e.hasMoreElements();) {
+         e.hasMoreElements();)
+    {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       int nextX = x + (int) (zoom * (positions[index].x - x));
       int nextY = y + (int) (zoom * (positions[index].y - y));
       if (stack.isExpanded() || !e.hasMoreElements()) {
-        next.draw(g,
-                  nextX,
-                  nextY,
-                  obs, zoom);
+        next.draw(g, nextX, nextY, obs, zoom);
       }
       else {
         drawUnexpanded(next, g, nextX, nextY, obs, zoom);
@@ -288,20 +286,14 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              selectedVisible);
-         e.hasMoreElements();) {
+         e.hasMoreElements();)
+    {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       int nextX = x + (int) (zoom * (positions[index].x - x));
       int nextY = y + (int) (zoom * (positions[index].y - y));
-      next.draw(g,
-                nextX,
-                nextY,
-                obs, zoom);
-      highlighter.draw
-          (next, g,
-           nextX,
-           nextY,
-           obs, zoom);
+      next.draw(g, nextX, nextY, obs, zoom);
+      highlighter.draw(next, g, nextX, nextY, obs, zoom);
     }
   }
 
@@ -324,16 +316,14 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
-         e.hasMoreElements();) {
+         e.hasMoreElements();)
+    {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       Point pt = map.componentCoordinates(positions[index]);
       if (bounds == null || isVisible(region, bounds[index])) {
         if (stack.isExpanded() || !e.hasMoreElements()) {
-          next.draw(g,
-                    pt.x,
-                    pt.y,
-                    map.getView(), zoom);
+          next.draw(g, pt.x, pt.y, map.getView(), zoom);
         }
         else {
           drawUnexpanded(next, g, pt.x, pt.y, map.getView(), zoom);
@@ -343,20 +333,14 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              selectedVisible);
-         e.hasMoreElements();) {
+         e.hasMoreElements();)
+    {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       if (bounds == null || isVisible(region, bounds[index])) {
         Point pt = map.componentCoordinates(positions[index]);
-        next.draw(g,
-                  pt.x,
-                  pt.y,
-                  map.getView(), zoom);
-        highlighter.draw
-            (next, g,
-             pt.x,
-             pt.y,
-             map.getView(), zoom);
+        next.draw(g, pt.x, pt.y, map.getView(), zoom);
+        highlighter.draw(next, g, pt.x, pt.y, map.getView(), zoom);
       }
     }
   }
@@ -383,8 +367,8 @@ public class StackMetrics extends AbstractConfigurable {
       Graphics2D g2d = (Graphics2D) g;
       g.setColor(blankColor);
       Shape s = p.getShape();
-      AffineTransform t = AffineTransform.getScaleInstance(zoom,zoom);
-      t.translate(x/zoom,y/zoom);
+      AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+      t.translate(x/zoom, y/zoom);
       s = t.createTransformedShape(s);
       g2d.fill(s);
       g.setColor(Color.black);

@@ -386,18 +386,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       Rectangle bounds,
       Rectangle visibleRect,
       double scale,
-      boolean reversed) {
+      boolean reversed)
+  {
       if (visible) {
         forceDraw(g, bounds, visibleRect, scale, reversed);
       }
   }
+
   public void forceDraw(
       Graphics g,
       Rectangle bounds,
       Rectangle visibleRect,
       double scale,
-      boolean reversed) {
-
+      boolean reversed)
+  {
     for (Region r : regionList.values()) {
       r.draw(g, bounds, visibleRect, scale, reversed);
     }

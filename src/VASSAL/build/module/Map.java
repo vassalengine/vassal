@@ -951,18 +951,20 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * @see #componentCoordinates
    */
   public Point mapCoordinates(Point p) {
+    final double zoom = getZoom();
     p = new Point(p);
-    p.x /= getZoom();
-    p.y /= getZoom();
+    p.x /= zoom;
+    p.y /= zoom;
     return p;
   }
 
   public Rectangle mapRectangle(Rectangle r) {
+    final double zoom = getZoom();
     r = new Rectangle(r);
-    r.x /= getZoom();
-    r.y /= getZoom();
-    r.width /= getZoom();
-    r.height /= getZoom();
+    r.x /= zoom;
+    r.y /= zoom;
+    r.width /= zoom;
+    r.height /= zoom;
     return r;
   }
 
@@ -972,18 +974,20 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * @see #mapCoordinates
    */
   public Point componentCoordinates(Point p) {
+    final double zoom = getZoom();
     p = new Point(p);
-    p.x *= getZoom();
-    p.y *= getZoom();
+    p.x *= zoom;
+    p.y *= zoom;
     return p;
   }
 
   public Rectangle componentRectangle(Rectangle r) {
+    final double zoom = getZoom();
     r = new Rectangle(r);
-    r.x *= getZoom();
-    r.y *= getZoom();
-    r.width *= getZoom();
-    r.height *= getZoom();
+    r.x *= zoom;
+    r.y *= zoom;
+    r.width *= zoom;
+    r.height *= zoom;
     return r;
   }
 

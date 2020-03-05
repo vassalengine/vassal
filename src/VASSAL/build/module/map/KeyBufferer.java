@@ -29,6 +29,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JComponent;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -155,19 +157,20 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   public void mouseReleased(MouseEvent evt) {
-    if (selection != null) {
-      selection.setLocation(map.mapCoordinates(selection.getLocation()));
-      selection.width /= map.getZoom();
-      selection.height /= map.getZoom();
-      PieceVisitorDispatcher d = createDragSelector(!evt.isControlDown(), evt.isAltDown());
-      // RFE 1659481 Don't clear the entire selection buffer if either shift
-      // or control is down - we select/deselect lassoed counters instead
-      if (!evt.isShiftDown() && !evt.isControlDown()) {
-        KeyBuffer.getBuffer().clear();
-      }
-      map.apply(d);
-      repaintSelectionRect();
+    if (selection == null) {
+      return;
     }
+
+    PieceVisitorDispatcher d = createDragSelector(
+      !evt.isControlDown(), evt.isAltDown(), map.mapRectangle(selection)
+    );
+    // RFE 1659481 Don't clear the entire selection buffer if either shift
+    // or control is down - we select/deselect lassoed counters instead
+    if (!evt.isShiftDown() && !evt.isControlDown()) {
+      KeyBuffer.getBuffer().clear();
+    }
+    map.apply(d);
+    repaintSelectionRect();
     selection = null;
   }
 
@@ -177,17 +180,25 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    *
    * @return
    */
-  protected PieceVisitorDispatcher createDragSelector(boolean selecting, boolean altDown) {
-    return new PieceVisitorDispatcher(new KBDeckVisitor(selecting, altDown));
+  protected PieceVisitorDispatcher createDragSelector(
+    boolean selecting,
+    boolean altDown,
+    Rectangle mapsel)
+  {
+    return new PieceVisitorDispatcher(
+      new KBDeckVisitor(selecting, altDown, mapsel)
+    );
   }
 
   public class KBDeckVisitor implements DeckVisitor {
     boolean selecting = false;
     boolean altDown = false;
+    Rectangle mapsel;
 
-    public KBDeckVisitor(boolean b, boolean c) {
+    public KBDeckVisitor(boolean b, boolean c, Rectangle ms) {
       selecting = b;
       altDown = c;
+      mapsel = ms;
     }
 
     public Object visitDeck(Deck d) {
@@ -210,7 +221,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
             }
           }
         }
-        else if (selection.contains(s.getPosition())) {
+        else if (mapsel.contains(s.getPosition())) {
           for (int i = 0, n = s.getPieceCount(); i < n; ++i) {
             if (selecting) {
               KeyBuffer.getBuffer().add(s.getPieceAt(i));
@@ -227,7 +238,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Handle non-stacked units, including Does Not Stack units
     // Does Not Stack units deselect normally once selected
     public Object visitDefault(GamePiece p) {
-      if (selection.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
+      if (mapsel.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
         if (selecting) {
           final EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
           final boolean altSelect = (altDown && filter instanceof Immobilized.UseAlt);
@@ -272,56 +283,65 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     final int ht = thickness / 2 + thickness % 2;
     final int ht2 = 2*ht;
 
+    final JComponent view = map.getView();
+
     // left
-    map.getView().repaint(selection.x - ht,
-                          selection.y - ht,
-                          ht2,
-                          selection.height + ht2);
+    view.repaint(selection.x - ht,
+                 selection.y - ht,
+                 ht2,
+                 selection.height + ht2);
     // right
-    map.getView().repaint(selection.x + selection.width - ht,
-                          selection.y - ht,
-                          ht2,
-                          selection.height + ht2);
+    view.repaint(selection.x + selection.width - ht,
+                 selection.y - ht,
+                 ht2,
+                 selection.height + ht2);
     // top
-    map.getView().repaint(selection.x - ht,
-                          selection.y - ht,
-                          selection.width + ht2,
-                          ht2);
+    view.repaint(selection.x - ht,
+                 selection.y - ht,
+                 selection.width + ht2,
+                 ht2);
     // bottom
-    map.getView().repaint(selection.x - ht,
-                          selection.y + selection.width - ht,
-                          selection.width + ht2,
-                          ht2);
+    view.repaint(selection.x - ht,
+                 selection.y + selection.width - ht,
+                 selection.width + ht2,
+                 ht2);
   }
 
   /**
    * Sets the new location of the selection rectangle.
    */
   public void mouseDragged(MouseEvent e) {
-    if (selection != null) {
-      repaintSelectionRect();
-
-      selection.x = Math.min(e.getX(), anchor.x);
-      selection.y = Math.min(e.getY(), anchor.y);
-      selection.width = Math.abs(e.getX() - anchor.x);
-      selection.height = Math.abs(e.getY() - anchor.y);
-
-      repaintSelectionRect();
+    if (selection == null) {
+      return;
     }
+
+    repaintSelectionRect();
+
+    final int ex = e.getX();
+    final int ey = e.getY();
+
+    selection.x = Math.min(ex, anchor.x);
+    selection.y = Math.min(ey, anchor.y);
+    selection.width = Math.abs(ex - anchor.x);
+    selection.height = Math.abs(ey - anchor.y);
+
+    repaintSelectionRect();
   }
 
   public void mouseMoved(MouseEvent e) {
   }
 
   public void draw(Graphics g, Map map) {
-    if (selection != null) {
-      final Graphics2D g2d = (Graphics2D) g;
-      final Stroke str = g2d.getStroke();
-      g2d.setStroke(new BasicStroke(thickness));
-      g2d.setColor(color);
-      g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
-      g2d.setStroke(str);
+    if (selection == null) {
+      return;
     }
+
+    final Graphics2D g2d = (Graphics2D) g;
+    final Stroke str = g2d.getStroke();
+    g2d.setStroke(new BasicStroke(thickness));
+    g2d.setColor(color);
+    g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
+    g2d.setStroke(str);
   }
 
   public boolean drawAboveCounters() {
