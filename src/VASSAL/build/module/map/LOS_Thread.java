@@ -134,7 +134,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected boolean visible;
   protected boolean drawRange;
   protected int rangeScale;
-  protected double rangeRounding=0.5;
+  protected double rangeRounding = 0.5;
   protected boolean hideCounters;
   protected int hideOpacity = 0;
   protected String fixedColor;
