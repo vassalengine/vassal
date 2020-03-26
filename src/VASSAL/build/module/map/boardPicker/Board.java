@@ -328,6 +328,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
+  protected static final double os_scale = Info.getSystemScaling();
+
   public void drawRegion(final Graphics g,
                          final Point location,
                          Rectangle visibleRect,
@@ -359,8 +361,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
                                           visibleRect.height);
         final int ow = op.getTileWidth();
         final int oh = op.getTileHeight();
-
-        final double os_scale = Info.getSystemScaling();
 
         final Point[] tiles = op.getTileIndices(r);
         for (Point tile : tiles) {

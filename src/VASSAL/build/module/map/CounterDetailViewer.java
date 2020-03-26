@@ -246,6 +246,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawGraphics(g, pt, comp, a);
   }
 
+  protected static final double os_scale = Info.getSystemScaling();
+
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
     fixBounds(pieces);
 
@@ -253,7 +255,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
-    final double os_scale = Info.getSystemScaling();
     Rectangle dbounds = new Rectangle(bounds);
     dbounds.x *= os_scale;
     dbounds.y *= os_scale;
