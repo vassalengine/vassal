@@ -204,8 +204,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       final GamePiece p = map.findPiece(e.getPoint(), targetSelector);
       if (p != null) {
         EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
-        if (filter == null
-            || !filter.rejectEvent(e)) {
+        if (filter == null || !filter.rejectEvent(e)) {
           JPopupMenu popup = createPopup(p, true);
           Point pt = map.componentCoordinates(e.getPoint());
           popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
