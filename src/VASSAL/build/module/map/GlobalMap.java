@@ -500,7 +500,8 @@ public class GlobalMap implements AutoConfigurable,
     public Dimension getPreferredSize() {
       return new Dimension(
         (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * scale),
-        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale));
+        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale)
+      );
     }
   }
 
