@@ -307,6 +307,7 @@ public class StackMetrics extends AbstractConfigurable {
    * @param visibleRect the visible rectangle in component coordinates
    */
   public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect) {
+    Component view = map.getView();
     Highlighter highlighter = map.getHighlighter();
     Point mapLocation = map.mapCoordinates(location);
     Rectangle region = visibleRect == null ? null : map.mapRectangle(visibleRect);
@@ -323,10 +324,10 @@ public class StackMetrics extends AbstractConfigurable {
       Point pt = map.componentCoordinates(positions[index]);
       if (bounds == null || isVisible(region, bounds[index])) {
         if (stack.isExpanded() || !e.hasMoreElements()) {
-          next.draw(g, pt.x, pt.y, map.getView(), zoom);
+          next.draw(g, pt.x, pt.y, view, zoom);
         }
         else {
-          drawUnexpanded(next, g, pt.x, pt.y, map.getView(), zoom);
+          drawUnexpanded(next, g, pt.x, pt.y, view, zoom);
         }
       }
     }
@@ -339,8 +340,8 @@ public class StackMetrics extends AbstractConfigurable {
       int index = stack.indexOf(next);
       if (bounds == null || isVisible(region, bounds[index])) {
         Point pt = map.componentCoordinates(positions[index]);
-        next.draw(g, pt.x, pt.y, map.getView(), zoom);
-        highlighter.draw(next, g, pt.x, pt.y, map.getView(), zoom);
+        next.draw(g, pt.x, pt.y, view, zoom);
+        highlighter.draw(next, g, pt.x, pt.y, view, zoom);
       }
     }
   }
