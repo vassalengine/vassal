@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Point;
@@ -31,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -41,6 +43,7 @@ import javax.swing.border.EtchedBorder;
 
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -77,6 +80,9 @@ public class GlobalMap implements AutoConfigurable,
 
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
+
+  protected static final double os_scale = Info.getSystemScaling();
+
   protected Color rectColor = Color.black;
   protected final LaunchButton launch;
 
@@ -276,15 +282,14 @@ public class GlobalMap implements AutoConfigurable,
                      (int) ((p.y - map.getEdgeBuffer().height) * scale));
   }
 
-
   public Point mapToDrawing(Point p) {
-    final double dscale = scale * Info.getSystemScaling();
+    final double dscale = scale * os_scale;
     return new Point((int) ((p.x - map.getEdgeBuffer().width) * dscale),
                      (int) ((p.y - map.getEdgeBuffer().height) * dscale));
   }
 
   public Rectangle mapToDrawing(Rectangle r) {
-    final double dscale = scale * Info.getSystemScaling();
+    final double dscale = scale * os_scale;
     return new Rectangle(
       (int) ((r.x - map.getEdgeBuffer().width) * dscale),
       (int) ((r.y - map.getEdgeBuffer().height) * dscale),
@@ -474,28 +479,45 @@ public class GlobalMap implements AutoConfigurable,
 
     @Override
     protected void paintComponent(Graphics g) {
-      map.drawBoards(g,
-                     -Math.round((float) scale * map.getEdgeBuffer().width),
-                     -Math.round((float) scale * map.getEdgeBuffer().height),
-                     scale, this);
+      final Graphics2D g2d = (Graphics2D) g;
+
+      // HDPI: We may get a transform where scale != 1. This means we
+      // are running on an HDPI system. We want to draw at the effective
+      // scale factor to prevent poor quality upscaling, so reset the
+      // transform to scale of 1 and multiply the map zoom by the OS scaling.
+      final AffineTransform orig_t = g2d.getTransform();
+
+      g2d.setTransform(new AffineTransform(
+        1.0, 0.0,
+        0.0, 1.0,
+        orig_t.getTranslateX(), orig_t.getTranslateY()
+      ));
+
+      final double dscale = scale * os_scale;
+
+      map.drawBoards(
+        g,
+        -Math.round((float) dscale * map.getEdgeBuffer().width),
+        -Math.round((float) dscale * map.getEdgeBuffer().height),
+        dscale,
+        this
+      );
 
       for (GamePiece gp : map.getPieces()) {
-        Point p = mapToComponent(gp.getPosition());
-        gp.draw(g, p.x, p.y, this, scale);
+        Point p = mapToDrawing(gp.getPosition());
+        gp.draw(g, p.x, p.y, this, dscale);
       }
 
       mouseOverViewer.draw(g, map);
 
-// FIXME: use a Graphics2D for this
       // Draw a rectangle indicating the present viewing area
       g.setColor(rectColor);
 
-      final Rectangle r = map.getView().getVisibleRect();
-      final Point ul = mapToComponent(map.componentToMap(r.getLocation()));
-      final int w = (int) (scale * r.width / map.getZoom());
-      final int h = (int) (scale * r.height / map.getZoom());
-      g.drawRect(ul.x, ul.y, w, h);
-      g.drawRect(ul.x - 1, ul.y - 1, w + 2, h + 2);
+      final Rectangle vr = mapToDrawing(map.componentToMap(map.getView().getVisibleRect()));
+      g.drawRect(vr.x, vr.y, vr.width, vr.height);
+      g.drawRect(vr.x - 1, vr.y - 1, vr.width + 2, vr.height + 2);
+
+      g2d.setTransform(orig_t);
     }
 
     public void mousePressed(MouseEvent e) {
