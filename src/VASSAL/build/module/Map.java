@@ -2667,9 +2667,14 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       // HDPI: We may get a transform where scale != 1. This means we
       // are running on an HDPI system. We want to draw at the effective
       // scale factor to prevent poor quality upscaling, so reset the
-      // transform to identity and multiply the map zoom by the OS scaling.
+      // transform to scale of 1 and multiply the map zoom by the OS scaling.
       final AffineTransform orig_t = g2d.getTransform();
-      g2d.setTransform(new AffineTransform());
+
+      g2d.setTransform(new AffineTransform(
+        1.0, 0.0,
+        0.0, 1.0,
+        orig_t.getTranslateX(), orig_t.getTranslateY()
+      ));
 
       final Rectangle r = map.componentToDrawing(getVisibleRect());
 
