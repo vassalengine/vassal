@@ -463,11 +463,11 @@ public class LOS_Thread extends AbstractConfigurable implements
     if (initializing || !visible) {
       return;
     }
+
     g.setColor(threadColor);
     Point mapAnchor = map.mapToComponent(anchor);
     Point mapArrow = map.mapToComponent(arrow);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
-    Board b;
 
     if (drawRange) {
       if (rangeScale > 0) {
@@ -475,24 +475,28 @@ public class LOS_Thread extends AbstractConfigurable implements
         drawRange(g, dist);
       }
       else  {
-        b = map.findBoard(anchor);
-        MapGrid grid = null;
+        Board b = map.findBoard(anchor);
         if (b != null) {
-          grid = b.getGrid();
-        }
-        if (grid != null && grid instanceof ZonedGrid) {
-            Point bp = new Point(anchor);
-            bp.translate(-b.bounds().x, -b.bounds().y);
-            Zone z = ((ZonedGrid) b.getGrid()).findZone(bp);
-            if (z != null) {
-              grid = z.getGrid();
+          MapGrid grid = b.getGrid();
+
+          if (grid != null) {
+            if (grid instanceof ZonedGrid) {
+              Point bp = new Point(anchor);
+              bp.translate(-b.bounds().x, -b.bounds().y);
+              Zone z = ((ZonedGrid) b.getGrid()).findZone(bp);
+              if (z != null) {
+                grid = z.getGrid();
+              }
             }
-        }
-        if (grid != null) {
-          drawRange(g, grid.range(anchor, arrow));
+
+            if (grid != null) {
+              drawRange(g, grid.range(anchor, arrow));
+            }
+          }
         }
       }
     }
+
     lastAnchor = anchor;
     lastArrow = arrow;
   }
