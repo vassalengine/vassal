@@ -38,6 +38,7 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.lang3.StringUtils;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -82,6 +83,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     UniqueIdManager.Identifyable,
     CommandEncoder {
 
+  protected static final double os_scale = Info.getSystemScaling();
+
   public static final String LOS_THREAD_COMMAND = "LOS\t";
 
   public static final String NAME = "threadName";
@@ -107,7 +110,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String ROUND_UP = "Up";
   public static final String ROUND_DOWN = "Down";
   public static final String ROUND_OFF = "Nearest whole number";
-  public static Font RANGE_FONT = new Font("Dialog", 0, 11);
+  public static Font RANGE_FONT = new Font("Dialog", 0, (int)(11 * os_scale));
   public static final String DEFAULT_ICON = "/images/thread.gif";
 
   public static final String FROM_LOCATION = "FromLocation";
@@ -465,8 +468,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
 
     g.setColor(threadColor);
-    Point mapAnchor = map.mapToComponent(anchor);
-    Point mapArrow = map.mapToComponent(arrow);
+    Point mapAnchor = map.mapToDrawing(anchor);
+    Point mapArrow = map.mapToDrawing(arrow);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
 
     if (drawRange) {
@@ -695,12 +698,22 @@ public class LOS_Thread extends AbstractConfigurable implements
       map.repaint(r);
 
       if (drawRange) {
+// FIXME
         r = new Rectangle(lastRangeRect);
         r.width += (int)(r.width / map.getZoom()) + 1;
         r.height += (int)(r.height / map.getZoom()) + 1;
+
+//        r = map.mapToComponent(lastRangeRect);
+
         map.repaint(r);
       }
     }
+  }
+
+  private String rangePlaceholder(int range) {
+    final char[] eights = new char[(int)Math.log10(range + 1) + 1];
+    Arrays.fill(eights, '8');
+    return new String(eights);
   }
 
   /**
@@ -709,11 +722,13 @@ public class LOS_Thread extends AbstractConfigurable implements
    * @param range the range to display, in whatever units returned
    * by the {@link MapGrid} containing the thread */
   public void drawRange(Graphics g, int range) {
-    Point mapArrow = map.mapToComponent(arrow);
-    Point mapAnchor = map.mapToComponent(anchor);
+    Point mapArrow = map.mapToDrawing(arrow);
+    Point mapAnchor = map.mapToDrawing(anchor);
+
     g.setColor(Color.black);
     g.setFont(RANGE_FONT);
     final FontMetrics fm = g.getFontMetrics();
+
     final StringBuilder buffer = new StringBuilder();
     int dummy = range;
     while (dummy >= 1) {
@@ -723,8 +738,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     if (buffer.length() == 0) {
       buffer.append("8");
     }
-    String rangeMess = Resources.getString("LOS_Thread.range");
-    int wid = fm.stringWidth(" "+rangeMess+"  "+buffer.toString());
+    String rangeMsg = Resources.getString("LOS_Thread.range");
+    int wid = fm.stringWidth(" "+rangeMsg+"  "+buffer.toString());
     int hgt = fm.getAscent() + 2;
     int w = mapArrow.x - mapAnchor.x;
     int h = mapArrow.y - mapAnchor.y;
@@ -732,10 +747,10 @@ public class LOS_Thread extends AbstractConfigurable implements
     int y0 = mapArrow.y + (int) ((hgt / 2 + 20) * h / Math.sqrt(w * w + h * h));
     g.fillRect(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid, hgt);
     g.setColor(Color.white);
-    g.drawString(rangeMess + " " + range,
+    g.drawString(rangeMsg + " " + range,
                  x0 - wid / 2 + fm.stringWidth(" "), y0 + hgt / 2);
     lastRangeRect = new Rectangle(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid+1, hgt+1);
-    Point np = map.componentToMap(new Point(lastRangeRect.x, lastRangeRect.y));
+    Point np = map.drawingToMap(new Point(lastRangeRect.x, lastRangeRect.y));
     lastRangeRect.x = np.x;
     lastRangeRect.y = np.y;
     lastRange = String.valueOf(range);
