@@ -200,35 +200,41 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   }
 
   public void mouseReleased(MouseEvent e) {
-    if (e.isMetaDown()) {
-      final GamePiece p = map.findPiece(e.getPoint(), targetSelector);
-      if (p != null) {
-        EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
-        if (filter == null || !filter.rejectEvent(e)) {
-          JPopupMenu popup = createPopup(p, true);
-          Point pt = map.mapToComponent(e.getPoint());
-          popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled
-                (javax.swing.event.PopupMenuEvent evt) {
-              map.repaint();
-            }
-
-            public void popupMenuWillBecomeInvisible
-                (javax.swing.event.PopupMenuEvent evt) {
-              map.repaint();
-            }
-
-            public void popupMenuWillBecomeVisible
-                (javax.swing.event.PopupMenuEvent evt) {
-            }
-          });
-          // It is possible for the map to close before the menu is displayed
-          if (map.getView().isShowing()) {
-            popup.show(map.getView(), pt.x, pt.y);
-          }
-          e.consume();
-        }
-      }
+    if (!e.isMetaDown()) {
+      return;
     }
+
+    final GamePiece p = map.findPiece(e.getPoint(), targetSelector);
+    if (p == null) {
+      return;
+    }
+
+    EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
+    if (filter != null && filter.rejectEvent(e)) {
+      return;
+    }
+
+    JPopupMenu popup = createPopup(p, true);
+    Point pt = map.mapToComponent(e.getPoint());
+    popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+      public void popupMenuCanceled
+          (javax.swing.event.PopupMenuEvent evt) {
+        map.repaint();
+      }
+
+      public void popupMenuWillBecomeInvisible
+          (javax.swing.event.PopupMenuEvent evt) {
+        map.repaint();
+      }
+
+      public void popupMenuWillBecomeVisible
+          (javax.swing.event.PopupMenuEvent evt) {
+      }
+    });
+    // It is possible for the map to close before the menu is displayed
+    if (map.getView().isShowing()) {
+      popup.show(map.getView(), pt.x, pt.y);
+    }
+    e.consume();
   }
 }
