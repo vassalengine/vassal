@@ -41,7 +41,6 @@ import javax.swing.border.EtchedBorder;
 
 import org.w3c.dom.Element;
 
-import VASSAL.Info;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -78,8 +77,6 @@ public class GlobalMap implements AutoConfigurable,
 
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
-  protected static final double os_scale = Info.getSystemScaling();
-  protected double escale = scale * os_scale; // Effective zoom factor
   protected Color rectColor = Color.black;
   protected final LaunchButton launch;
 
@@ -183,7 +180,6 @@ public class GlobalMap implements AutoConfigurable,
         value = Double.valueOf((String) value);
       }
       scale = ((Double) value).doubleValue();
-      escale = scale * os_scale;
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -253,8 +249,8 @@ public class GlobalMap implements AutoConfigurable,
    * @return
    */
   public Point componentCoordinates(Point p) {
-    return new Point((int) ((p.x - map.getEdgeBuffer().width) * escale),
-                     (int) ((p.y - map.getEdgeBuffer().height) * escale));
+    return new Point((int) ((p.x - map.getEdgeBuffer().width) * scale),
+                     (int) ((p.y - map.getEdgeBuffer().height) * scale));
   }
 
   /**
@@ -266,8 +262,8 @@ public class GlobalMap implements AutoConfigurable,
    */
   public Point mapCoordinates(Point p) {
     return new Point(
-      (int) Math.round(p.x / escale) + map.getEdgeBuffer().width,
-      (int) Math.round(p.y / escale) + map.getEdgeBuffer().height);
+      (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
+      (int) Math.round(p.y / scale) + map.getEdgeBuffer().height);
   }
 
   public String getToolTipText(MouseEvent e) {
@@ -349,7 +345,7 @@ public class GlobalMap implements AutoConfigurable,
     }
 
     protected double getZoom() {
-      return escale;
+      return scale;
     }
   }
 
@@ -452,13 +448,13 @@ public class GlobalMap implements AutoConfigurable,
     @Override
     protected void paintComponent(Graphics g) {
       map.drawBoards(g,
-                     -Math.round((float) escale * map.getEdgeBuffer().width),
-                     -Math.round((float) escale * map.getEdgeBuffer().height),
-                     escale, this);
+                     -Math.round((float) scale * map.getEdgeBuffer().width),
+                     -Math.round((float) scale * map.getEdgeBuffer().height),
+                     scale, this);
 
       for (GamePiece gp : map.getPieces()) {
         Point p = componentCoordinates(gp.getPosition());
-        gp.draw(g, p.x, p.y, this, escale);
+        gp.draw(g, p.x, p.y, this, scale);
       }
 
       mouseOverViewer.draw(g, map);
@@ -470,8 +466,8 @@ public class GlobalMap implements AutoConfigurable,
       final Rectangle r = map.getView().getVisibleRect();
       final Point ul =
         componentCoordinates(map.mapCoordinates(r.getLocation()));
-      final int w = (int) (escale * r.width / map.getZoom());
-      final int h = (int) (escale * r.height / map.getZoom());
+      final int w = (int) (scale * r.width / map.getZoom());
+      final int h = (int) (scale * r.height / map.getZoom());
       g.drawRect(ul.x, ul.y, w, h);
       g.drawRect(ul.x - 1, ul.y - 1, w + 2, h + 2);
     }
@@ -494,8 +490,8 @@ public class GlobalMap implements AutoConfigurable,
 
     public Dimension getPreferredSize() {
       return new Dimension(
-        (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * escale),
-        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * escale));
+        (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * scale),
+        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale));
     }
   }
 
