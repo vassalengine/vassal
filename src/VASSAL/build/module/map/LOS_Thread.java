@@ -659,9 +659,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     return StringUtils.join(checkList, ", ");
   }
 
-  /** Since we register ourselves as a MouseMotionListener directly,
-   * these mouse events are received in component
-   * coordinates */
+  /* Since we register ourselves as a MouseMotionListener directly,
+     these mouse events are received in component coordinates */
   public void mouseMoved(MouseEvent e) {
   }
 
