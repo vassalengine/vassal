@@ -698,22 +698,9 @@ public class LOS_Thread extends AbstractConfigurable implements
       map.repaint(r);
 
       if (drawRange) {
-// FIXME
-        r = new Rectangle(lastRangeRect);
-        r.width += (int)(r.width / map.getZoom()) + 1;
-        r.height += (int)(r.height / map.getZoom()) + 1;
-
-//        r = map.mapToComponent(lastRangeRect);
-
-        map.repaint(r);
+        map.repaint(lastRangeRect);
       }
     }
-  }
-
-  private String rangePlaceholder(int range) {
-    final char[] eights = new char[(int)Math.log10(range + 1) + 1];
-    Arrays.fill(eights, '8');
-    return new String(eights);
   }
 
   /**
@@ -738,21 +725,31 @@ public class LOS_Thread extends AbstractConfigurable implements
     if (buffer.length() == 0) {
       buffer.append("8");
     }
-    String rangeMsg = Resources.getString("LOS_Thread.range");
-    int wid = fm.stringWidth(" "+rangeMsg+"  "+buffer.toString());
+    final String rangeMsg = Resources.getString("LOS_Thread.range");
+
+    int wid = fm.stringWidth(" " + rangeMsg + "  " + buffer.toString());
     int hgt = fm.getAscent() + 2;
-    int w = mapArrow.x - mapAnchor.x;
-    int h = mapArrow.y - mapAnchor.y;
-    int x0 = mapArrow.x + (int) ((wid / 2 + 20) * w / Math.sqrt(w * w + h * h));
-    int y0 = mapArrow.y + (int) ((hgt / 2 + 20) * h / Math.sqrt(w * w + h * h));
+
+    final int w = mapArrow.x - mapAnchor.x;
+    final int h = mapArrow.y - mapAnchor.y;
+    final double hypot = Math.sqrt(w * w + h * h);
+    final int x0 = mapArrow.x + (int) ((wid / 2 + 20) * w / hypot);
+    final int y0 = mapArrow.y + (int) ((hgt / 2 + 20) * h / hypot);
+
     g.fillRect(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid, hgt);
     g.setColor(Color.white);
     g.drawString(rangeMsg + " " + range,
                  x0 - wid / 2 + fm.stringWidth(" "), y0 + hgt / 2);
-    lastRangeRect = new Rectangle(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid+1, hgt+1);
-    Point np = map.drawingToMap(new Point(lastRangeRect.x, lastRangeRect.y));
-    lastRangeRect.x = np.x;
-    lastRangeRect.y = np.y;
+
+    // Fudge the bounding box for repaint, 50% margin on all sides.
+    // Everything else is so hosed here, it's not worth sorting out more
+    // precisely and the range rectangle is small anyhow.
+    lastRangeRect.x = x0 - wid / 2 - (int)(wid * 0.5);
+    lastRangeRect.y = y0 + hgt / 2 - fm.getAscent() - (int)(hgt * 0.5);
+    lastRangeRect.width = (int)(wid * 2);
+    lastRangeRect.height = (int)(hgt * 2);
+    lastRangeRect = map.drawingToMap(lastRangeRect);
+
     lastRange = String.valueOf(range);
   }
 
