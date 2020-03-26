@@ -265,15 +265,32 @@ public class GlobalMap implements AutoConfigurable,
     return componentToMap(p);
   }
 
+  public Point componentToMap(Point p) {
+    return new Point(
+      (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
+      (int) Math.round(p.y / scale) + map.getEdgeBuffer().height);
+  }
+
   public Point mapToComponent(Point p) {
     return new Point((int) ((p.x - map.getEdgeBuffer().width) * scale),
                      (int) ((p.y - map.getEdgeBuffer().height) * scale));
   }
 
-  public Point componentToMap(Point p) {
-    return new Point(
-      (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
-      (int) Math.round(p.y / scale) + map.getEdgeBuffer().height);
+
+  public Point mapToDrawing(Point p) {
+    final double dscale = scale * Info.getSystemScaling();
+    return new Point((int) ((p.x - map.getEdgeBuffer().width) * dscale),
+                     (int) ((p.y - map.getEdgeBuffer().height) * dscale));
+  }
+
+  public Rectangle mapToDrawing(Rectangle r) {
+    final double dscale = scale * Info.getSystemScaling();
+    return new Rectangle(
+      (int) ((r.x - map.getEdgeBuffer().width) * dscale),
+      (int) ((r.y - map.getEdgeBuffer().height) * dscale),
+      (int) (r.width * dscale),
+      (int) (r.height * dscale)
+    );
   }
 
   public String getToolTipText(MouseEvent e) {
