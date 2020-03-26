@@ -48,6 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -307,9 +308,11 @@ public class FreeRotator extends Decorator
     }
   }
 
+  protected static final double os_scale = Info.getSystemScaling();
+
   public void draw(Graphics g, Map map) {
     if (drawGhost) {
-      final Point p = map.mapToComponent(getGhostPosition());
+      final Point p = map.mapToDrawing(getGhostPosition());
 
       final Graphics2D g2d = (Graphics2D) g.create();
       g2d.transform(
@@ -322,7 +325,7 @@ public class FreeRotator extends Decorator
                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
-      piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom());
+      piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom() * os_scale);
       g2d.dispose();
     }
   }
