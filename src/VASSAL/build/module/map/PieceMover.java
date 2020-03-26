@@ -1183,10 +1183,10 @@ public class PieceMover extends AbstractBuildable
 
       final Point mousePosition = (map == null)
                         ? dge.getDragOrigin()
-                        : map.componentCoordinates(dge.getDragOrigin());
+                        : map.mapToComponentCoords(dge.getDragOrigin());
       Point piecePosition = (map == null)
                     ?  piece.getPosition()
-                    : map.componentCoordinates(piece.getPosition());
+                    : map.mapToComponentCoords(piece.getPosition());
       // If DragBuffer holds a piece with invalid coordinates (for example, a
       // card drawn from a deck), drag from center of piece
       if (piecePosition.x <= 0 || piecePosition.y <= 0) {

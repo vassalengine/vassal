@@ -947,22 +947,14 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    *
    * @see #componentCoordinates
    */
+  @Deprecated
   public Point mapCoordinates(Point p) {
-    final double zoom = getZoom();
-    p = new Point(p);
-    p.x /= zoom;
-    p.y /= zoom;
-    return p;
+    return componentToMapCoords(p);
   }
 
+  @Deprecated
   public Rectangle mapRectangle(Rectangle r) {
-    final double zoom = getZoom();
-    r = new Rectangle(r);
-    r.x /= zoom;
-    r.y /= zoom;
-    r.width /= zoom;
-    r.height /= zoom;
-    return r;
+    return componentToMapRect(r);
   }
 
   /**
@@ -970,22 +962,43 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    *
    * @see #mapCoordinates
    */
+  @Deprecated
   public Point componentCoordinates(Point p) {
-    final double zoom = getZoom();
-    p = new Point(p);
-    p.x *= zoom;
-    p.y *= zoom;
-    return p;
+    return mapToComponentCoords(p);
   }
 
+  @Deprecated
   public Rectangle componentRectangle(Rectangle r) {
-    final double zoom = getZoom();
-    r = new Rectangle(r);
-    r.x *= zoom;
-    r.y *= zoom;
-    r.width *= zoom;
-    r.height *= zoom;
-    return r;
+    return mapToComponentRect(r);
+  }
+
+  protected Point convertPoint(Point p, double zoom) {
+    return new Point((int)(p.x * zoom), (int)(p.y * zoom));
+  }
+
+  protected Rectangle convertRectangle(Rectangle r, double zoom) {
+    return new Rectangle(
+      (int)(r.x * zoom),
+      (int)(r.y * zoom),
+      (int)(r.width * zoom),
+      (int)(r.height * zoom)
+    );
+  }
+
+  public Point mapToComponentCoords(Point p) {
+    return convertPoint(p, getZoom());
+  }
+
+  public Rectangle mapToComponentRect(Rectangle r) {
+    return convertRectangle(r, getZoom());
+  }
+
+  public Point componentToMapCoords(Point p) {
+    return convertPoint(p, 1.0/getZoom());
+  }
+
+  public Rectangle componentToMapRect(Rectangle r) {
+    return convertRectangle(r, 1.0/getZoom());
   }
 
   /**
@@ -1156,12 +1169,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void mouseClicked(MouseEvent e) {
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = mapCoordinates(e.getPoint());
+      final Point p = componentToMapCoords(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(e);
     }
     else if (multicaster != null) {
-      final Point p = mapCoordinates(e.getPoint());
+      final Point p = componentToMapCoords(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       multicaster.mouseClicked(e);
     }
@@ -1210,12 +1223,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     activeMap = this;
 
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = mapCoordinates(e.getPoint());
+      final Point p = componentToMapCoords(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(e);
     }
     else if (multicaster != null) {
-      final Point p = mapCoordinates(e.getPoint());
+      final Point p = componentToMapCoords(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       multicaster.mousePressed(e);
     }
@@ -1235,12 +1248,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
-        p = mapCoordinates(e.getPoint());
+        p = componentToMapCoords(e.getPoint());
         e.translatePoint(p.x - e.getX(), p.y - e.getY());
         mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(e);
       }
       else if (multicaster != null) {
-        p = mapCoordinates(e.getPoint());
+        p = componentToMapCoords(e.getPoint());
         e.translatePoint(p.x - e.getX(), p.y - e.getY());
         multicaster.mouseReleased(e);
       }
@@ -1497,7 +1510,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
-        Point pt = componentCoordinates(stack[i].getPosition());
+        Point pt = mapToComponentCoords(stack[i].getPosition());
         if (stack[i].getClass() == Stack.class) {
           getStackMetrics().draw(
             (Stack) stack[i], pt, g, this, getZoom(), visibleRect);
@@ -1529,7 +1542,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
-        Point pt = componentCoordinates(stack[i].getPosition());
+        Point pt = mapToComponentCoords(stack[i].getPosition());
         stack[i].draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
         if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
           highlighter.draw(stack[i], g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
@@ -1763,7 +1776,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Repaint the given area, specified in map coordinates
    */
   public void repaint(Rectangle r) {
-    r.setLocation(componentCoordinates(new Point(r.x, r.y)));
+    r.setLocation(mapToComponentCoords(new Point(r.x, r.y)));
     r.setSize((int) (r.width * getZoom()), (int) (r.height * getZoom()));
     theMap.repaint(r.x, r.y, r.width, r.height);
   }
@@ -2096,7 +2109,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void centerAt(Point p, int dx, int dy) {
     if (scroll != null) {
-      p = componentCoordinates(p);
+      p = mapToComponentCoords(p);
 
       final Rectangle r = theMap.getVisibleRect();
       r.x = p.x - r.width/2;
@@ -2116,7 +2129,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /** Ensure that the given region (in map coordinates) is visible */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      final Point p = componentCoordinates(r.getLocation());
+      final Point p = mapToComponentCoords(r.getLocation());
       r = new Rectangle(p.x, p.y,
             (int) (getZoom() * r.width), (int) (getZoom() * r.height));
       theMap.scrollRectToVisible(r);

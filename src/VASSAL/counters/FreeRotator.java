@@ -309,7 +309,7 @@ public class FreeRotator extends Decorator
 
   public void draw(Graphics g, Map map) {
     if (drawGhost) {
-      final Point p = map.componentCoordinates(getGhostPosition());
+      final Point p = map.mapToComponentCoords(getGhostPosition());
 
       final Graphics2D g2d = (Graphics2D) g.create();
       g2d.transform(
@@ -599,7 +599,7 @@ public class FreeRotator extends Decorator
 
   public void mouseDragged(MouseEvent e) {
     if (drawGhost) {
-      final Point mousePos = getMap().mapCoordinates(e.getPoint());
+      final Point mousePos = getMap().componentToMapCoords(e.getPoint());
       final double myAngle = getRelativeAngle(mousePos, pivot);
       tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
     }

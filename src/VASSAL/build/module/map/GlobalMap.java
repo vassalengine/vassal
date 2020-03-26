@@ -248,9 +248,9 @@ public class GlobalMap implements AutoConfigurable,
    * @param p
    * @return
    */
+  @Deprecated
   public Point componentCoordinates(Point p) {
-    return new Point((int) ((p.x - map.getEdgeBuffer().width) * scale),
-                     (int) ((p.y - map.getEdgeBuffer().height) * scale));
+    return mapToComponentCoords(p);
   }
 
   /**
@@ -260,7 +260,17 @@ public class GlobalMap implements AutoConfigurable,
    * @param p
    * @return
    */
+  @Deprecated
   public Point mapCoordinates(Point p) {
+    return componentToMapCoords(p);
+  }
+
+  public Point mapToComponentCoords(Point p) {
+    return new Point((int) ((p.x - map.getEdgeBuffer().width) * scale),
+                     (int) ((p.y - map.getEdgeBuffer().height) * scale));
+  }
+
+  public Point componentToMapCoords(Point p) {
     return new Point(
       (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
       (int) Math.round(p.y / scale) + map.getEdgeBuffer().height);
@@ -334,7 +344,7 @@ public class GlobalMap implements AutoConfigurable,
     protected List<GamePiece> getDisplayablePieces() {
       final Point oldPoint = currentMousePosition.getPoint();
       final Point mapPoint =
-        GlobalMap.this.map.componentCoordinates(mapCoordinates(oldPoint));
+        GlobalMap.this.map.mapToComponentCoords(componentToMapCoords(oldPoint));
 
       currentMousePosition.translatePoint(mapPoint.x - oldPoint.x,
                                           mapPoint.y - oldPoint.y);
@@ -453,7 +463,7 @@ public class GlobalMap implements AutoConfigurable,
                      scale, this);
 
       for (GamePiece gp : map.getPieces()) {
-        Point p = componentCoordinates(gp.getPosition());
+        Point p = mapToComponentCoords(gp.getPosition());
         gp.draw(g, p.x, p.y, this, scale);
       }
 
@@ -465,7 +475,7 @@ public class GlobalMap implements AutoConfigurable,
 
       final Rectangle r = map.getView().getVisibleRect();
       final Point ul =
-        componentCoordinates(map.mapCoordinates(r.getLocation()));
+        mapToComponentCoords(map.componentToMapCoords(r.getLocation()));
       final int w = (int) (scale * r.width / map.getZoom());
       final int h = (int) (scale * r.height / map.getZoom());
       g.drawRect(ul.x, ul.y, w, h);
@@ -485,7 +495,7 @@ public class GlobalMap implements AutoConfigurable,
     }
 
     public void mouseReleased(MouseEvent e) {
-      map.centerAt(mapCoordinates(e.getPoint()));
+      map.centerAt(componentToMapCoords(e.getPoint()));
     }
 
     public Dimension getPreferredSize() {

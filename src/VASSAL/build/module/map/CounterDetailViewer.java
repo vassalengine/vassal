@@ -355,7 +355,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
-      Point mapPt = map.mapCoordinates(currentMousePosition.getPoint());
+      Point mapPt = map.componentToMapCoords(currentMousePosition.getPoint());
       Point snapPt = map.snapTo(mapPt);
       String locationName = map.localizedLocationName(snapPt);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
@@ -439,7 +439,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     Visitor visitor = new Visitor(new Filter(), map,
-      map.mapCoordinates(currentMousePosition.getPoint()));
+      map.componentToMapCoords(currentMousePosition.getPoint()));
     DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
