@@ -246,66 +246,74 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
-
-    Object owner = null;
-
     fixBounds(pieces);
 
-    if (bounds.width > 0) {
+    if (bounds.width <= 0) {
+      return;
+    }
 
-      Rectangle visibleRect = comp.getVisibleRect();
-      bounds.x = Math.min(bounds.x, visibleRect.x + visibleRect.width - bounds.width);
-      if (bounds.x < visibleRect.x)
-        bounds.x = visibleRect.x;
-      bounds.y = Math.min(bounds.y, visibleRect.y + visibleRect.height - bounds.height) - (isTextUnderCounters() ? 15 : 0);
-      int minY = visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0);
-      if (bounds.y < minY)
-        bounds.y = minY;
+    Rectangle visibleRect = comp.getVisibleRect();
+    bounds.x = Math.min(bounds.x, visibleRect.x + visibleRect.width - bounds.width);
+    if (bounds.x < visibleRect.x)
+      bounds.x = visibleRect.x;
+    bounds.y = Math.min(bounds.y, visibleRect.y + visibleRect.height - bounds.height) - (isTextUnderCounters() ? 15 : 0);
+    int minY = visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0);
+    if (bounds.y < minY)
+      bounds.y = minY;
 
-      if (bgColor != null) {
-        g.setColor(bgColor);
-        g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    if (bgColor != null) {
+      g.setColor(bgColor);
+      g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    if (fgColor != null) {
+      g.setColor(fgColor);
+      g.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 1, bounds.height + 1);
+      g.drawRect(bounds.x - 2, bounds.y - 2, bounds.width + 3, bounds.height + 3);
+    }
+
+    Shape oldClip = g.getClip();
+
+    Object owner = null;
+    int borderOffset = borderWidth;
+    double graphicsZoom = graphicsZoomLevel;
+    for (int i = 0; i < pieces.size(); i++) {
+      // Draw the next piece
+      // pt is the location of the left edge of the piece
+      GamePiece piece = pieces.get(i);
+      Rectangle pieceBounds = getBounds(piece);
+      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+      g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
+      final Stack parent = piece.getParent();
+      if (parent instanceof Deck) {
+        owner = piece.getProperty(Properties.OBSCURED_BY);
+        final boolean faceDown = ((Deck) parent).isFaceDown();
+        piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
       }
-      if (fgColor != null) {
-        g.setColor(fgColor);
-        g.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 1, bounds.height + 1);
-        g.drawRect(bounds.x - 2, bounds.y - 2, bounds.width + 3, bounds.height + 3);
-      }
-      Shape oldClip = g.getClip();
 
-      int borderOffset = borderWidth;
-      double graphicsZoom = graphicsZoomLevel;
-      for (int i = 0; i < pieces.size(); i++) {
-        // Draw the next piece
-        // pt is the location of the left edge of the piece
-        GamePiece piece = pieces.get(i);
-        Rectangle pieceBounds = getBounds(piece);
-        if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-        g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
-        final Stack parent = piece.getParent();
-        if (parent instanceof Deck) {
-          owner = piece.getProperty(Properties.OBSCURED_BY);
-          final boolean faceDown = ((Deck) parent).isFaceDown();
-          piece.setProperty(Properties.OBSCURED_BY, faceDown ? Deck.NO_USER : null);
+      piece.draw(
+        g,
+        bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset,
+        bounds.y - (int) (pieceBounds.y * graphicsZoom) + borderWidth,
+        comp,
+        graphicsZoom
+      );
+
+      if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
+      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+      g.setClip(oldClip);
+
+      if (isTextUnderCounters()) {
+        String text = counterReportFormat.getLocalizedText(piece);
+        if (text.length() > 0) {
+          int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
+          int y = bounds.y + bounds.height + 10;
+          drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
         }
-        piece.draw(g, bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset, bounds.y - (int) (pieceBounds.y * graphicsZoom) + borderWidth, comp,
-            graphicsZoom);
-        if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
-        if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
-        g.setClip(oldClip);
-
-        if (isTextUnderCounters()) {
-          String text = counterReportFormat.getLocalizedText(piece);
-          if (text.length() > 0) {
-            int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
-            int y = bounds.y + bounds.height + 10;
-            drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
-          }
-        }
-
-        bounds.translate((int) (pieceBounds.width * graphicsZoom), 0);
-        borderOffset += borderWidth;
       }
+
+      bounds.translate((int) (pieceBounds.width * graphicsZoom), 0);
+      borderOffset += borderWidth;
     }
   }
 
