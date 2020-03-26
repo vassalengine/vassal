@@ -31,6 +31,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -215,26 +217,25 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     }
 
     JPopupMenu popup = createPopup(p, true);
-    Point pt = map.mapToComponent(e.getPoint());
-    popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-      public void popupMenuCanceled
-          (javax.swing.event.PopupMenuEvent evt) {
+    popup.addPopupMenuListener(new PopupMenuListener() {
+      public void popupMenuCanceled(PopupMenuEvent evt) {
         map.repaint();
       }
 
-      public void popupMenuWillBecomeInvisible
-          (javax.swing.event.PopupMenuEvent evt) {
+      public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         map.repaint();
       }
 
-      public void popupMenuWillBecomeVisible
-          (javax.swing.event.PopupMenuEvent evt) {
+      public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
       }
     });
+
     // It is possible for the map to close before the menu is displayed
     if (map.getView().isShowing()) {
+      Point pt = map.mapToComponent(e.getPoint());
       popup.show(map.getView(), pt.x, pt.y);
     }
+
     e.consume();
   }
 }
