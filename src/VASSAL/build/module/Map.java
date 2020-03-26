@@ -79,6 +79,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -237,6 +238,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   };
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
+
+  protected static final double os_scale = Info.getSystemScaling();
 
   public Map() {
     getView();
@@ -985,6 +988,14 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     );
   }
 
+  public Point mapToDrawingCoords(Point p) {
+    return convertPoint(p, getZoom() * os_scale);
+  }
+
+  public Rectangle mapToDrawingRect(Rectangle r) {
+    return convertRectangle(r, getZoom() * os_scale);
+  }
+
   public Point mapToComponentCoords(Point p) {
     return convertPoint(p, getZoom());
   }
@@ -993,12 +1004,36 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return convertRectangle(r, getZoom());
   }
 
+  public Point componentToDrawingCoords(Point p) {
+    return convertPoint(p, os_scale);
+  }
+
+  public Rectangle componentToDrawingRect(Rectangle r) {
+    return convertRectangle(r, os_scale);
+  }
+
   public Point componentToMapCoords(Point p) {
     return convertPoint(p, 1.0/getZoom());
   }
 
   public Rectangle componentToMapRect(Rectangle r) {
     return convertRectangle(r, 1.0/getZoom());
+  }
+
+  public Point drawingToMapCoords(Point p) {
+    return convertPoint(p, 1.0/(getZoom() * os_scale));
+  }
+
+  public Rectangle drawingToMapRect(Rectangle r) {
+    return convertRectangle(r, 1.0/(getZoom() * os_scale));
+  }
+
+  public Point drawingToComponentCoords(Point p) {
+    return convertPoint(p, 1.0/os_scale);
+  }
+
+  public Rectangle drawingToComponentRect(Rectangle r) {
+    return convertRectangle(r, 1.0/os_scale);
   }
 
   /**
