@@ -43,6 +43,7 @@ import java.util.concurrent.Future;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -359,8 +360,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
         final int ow = op.getTileWidth();
         final int oh = op.getTileHeight();
 
-        final Point[] tiles = op.getTileIndices(r);
+        final double os_scale = Info.getSystemScaling();
 
+        final Point[] tiles = op.getTileIndices(r);
         for (Point tile : tiles) {
           // find tile position
           final int tx = location.x + tile.x*ow;
@@ -370,8 +372,16 @@ public class Board extends AbstractConfigurable implements GridContainer {
           final int tw = Math.min(ow, location.x+bounds.width-tx);
           final int th = Math.min(oh, location.y+bounds.height-ty);
 
+          // find position in component
+          final int cx = (int)(tx / os_scale);
+          final int cy = (int)(ty / os_scale);
+
+          // find tile size in component
+          final int cw = (int)(tw / os_scale);
+          final int ch = (int)(th / os_scale);
+
           final Repainter rep = obs == null ? null :
-            new Repainter(obs, tx, ty, tw, th);
+            new Repainter(obs, cx, cy, cw, ch);
 
           try {
             final Future<BufferedImage> fim =
@@ -396,7 +406,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
                         @Override
                         public void timingEvent(float fraction) {
                           alpha.put(t, fraction);
-                          obs.repaint(tx, ty, tw, th);
+                          obs.repaint(cx, cy, cw, ch);
                         }
                       }
                     );
@@ -423,7 +433,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 else {
                   if (o_requested.containsKey(tile)) {
                     o_requested.remove(tile);
-                    obs.repaint(tx, ty, tw, th);
+                    obs.repaint(cx, cy, cw, ch);
                   }
                   else {
                     drawTile(g, fim, tx, ty, obs);

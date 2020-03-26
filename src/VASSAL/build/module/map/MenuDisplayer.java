@@ -230,9 +230,13 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
     });
 
+    // NB: The conversion back to component coordinates is correct. The
+    // master mouse event listener on the map translates all coordinates to
+    // map coordinates before passing them on.
+    Point pt = map.mapToComponent(e.getPoint());
+
     // It is possible for the map to close before the menu is displayed
     if (map.getView().isShowing()) {
-      Point pt = map.mapToComponent(e.getPoint());
       popup.show(map.getView(), pt.x, pt.y);
     }
 

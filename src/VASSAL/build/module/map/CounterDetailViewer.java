@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -252,24 +253,36 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
+    final double os_scale = Info.getSystemScaling();
+    Rectangle dbounds = new Rectangle(bounds);
+    dbounds.x *= os_scale;
+    dbounds.y *= os_scale;
+    dbounds.width *= os_scale;
+    dbounds.height *= os_scale;
+
     Rectangle visibleRect = comp.getVisibleRect();
-    bounds.x = Math.min(bounds.x, visibleRect.x + visibleRect.width - bounds.width);
-    if (bounds.x < visibleRect.x)
-      bounds.x = visibleRect.x;
-    bounds.y = Math.min(bounds.y, visibleRect.y + visibleRect.height - bounds.height) - (isTextUnderCounters() ? 15 : 0);
+    visibleRect.x *= os_scale;
+    visibleRect.y *= os_scale;
+    visibleRect.width *= os_scale;
+    visibleRect.height *= os_scale;
+
+    dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
+    if (dbounds.x < visibleRect.x)
+      dbounds.x = visibleRect.x;
+    dbounds.y = Math.min(dbounds.y, visibleRect.y + visibleRect.height - dbounds.height) - (isTextUnderCounters() ? 15 : 0);
     int minY = visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0);
-    if (bounds.y < minY)
-      bounds.y = minY;
+    if (dbounds.y < minY)
+      dbounds.y = minY;
 
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+      g.fillRect(dbounds.x, dbounds.y, dbounds.width, dbounds.height);
     }
 
     if (fgColor != null) {
       g.setColor(fgColor);
-      g.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 1, bounds.height + 1);
-      g.drawRect(bounds.x - 2, bounds.y - 2, bounds.width + 3, bounds.height + 3);
+      g.drawRect(dbounds.x - 1, dbounds.y - 1, dbounds.width + 1, dbounds.height + 1);
+      g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
     }
 
     Shape oldClip = g.getClip();
@@ -283,7 +296,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       GamePiece piece = pieces.get(i);
       Rectangle pieceBounds = getBounds(piece);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-      g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
+      g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
       final Stack parent = piece.getParent();
       if (parent instanceof Deck) {
         owner = piece.getProperty(Properties.OBSCURED_BY);
@@ -293,10 +306,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       piece.draw(
         g,
-        bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset,
-        bounds.y - (int) (pieceBounds.y * graphicsZoom) + borderWidth,
+        dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale),
+        dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int)(borderWidth * os_scale),
         comp,
-        graphicsZoom
+        graphicsZoom * os_scale
       );
 
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
@@ -306,13 +319,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (isTextUnderCounters()) {
         String text = counterReportFormat.getLocalizedText(piece);
         if (text.length() > 0) {
-          int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
-          int y = bounds.y + bounds.height + 10;
+          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale);
+          int y = dbounds.y + dbounds.height + 10;
           drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
         }
       }
 
-      bounds.translate((int) (pieceBounds.width * graphicsZoom), 0);
+      dbounds.translate((int) (pieceBounds.width * graphicsZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
   }
