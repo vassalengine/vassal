@@ -206,7 +206,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
         if (filter == null || !filter.rejectEvent(e)) {
           JPopupMenu popup = createPopup(p, true);
-          Point pt = map.mapToComponentCoords(e.getPoint());
+          Point pt = map.mapToComponent(e.getPoint());
           popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled
                 (javax.swing.event.PopupMenuEvent evt) {

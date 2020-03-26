@@ -309,8 +309,8 @@ public class StackMetrics extends AbstractConfigurable {
   public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect) {
     Component view = map.getView();
     Highlighter highlighter = map.getHighlighter();
-    Point mapLocation = map.componentToMapCoords(location);
-    Rectangle region = visibleRect == null ? null : map.componentToMapRect(visibleRect);
+    Point mapLocation = map.componentToMap(location);
+    Rectangle region = visibleRect == null ? null : map.componentToMap(visibleRect);
     Point[] positions = new Point[stack.getPieceCount()];
     Rectangle[] bounds = region == null ? null : new Rectangle[stack.getPieceCount()];
     getContents(stack, positions, null, bounds, mapLocation.x, mapLocation.y);
@@ -321,7 +321,7 @@ public class StackMetrics extends AbstractConfigurable {
     {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
-      Point pt = map.mapToComponentCoords(positions[index]);
+      Point pt = map.mapToComponent(positions[index]);
       if (bounds == null || isVisible(region, bounds[index])) {
         if (stack.isExpanded() || !e.hasMoreElements()) {
           next.draw(g, pt.x, pt.y, view, zoom);
@@ -339,7 +339,7 @@ public class StackMetrics extends AbstractConfigurable {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       if (bounds == null || isVisible(region, bounds[index])) {
-        Point pt = map.mapToComponentCoords(positions[index]);
+        Point pt = map.mapToComponent(positions[index]);
         next.draw(g, pt.x, pt.y, view, zoom);
         highlighter.draw(next, g, pt.x, pt.y, view, zoom);
       }

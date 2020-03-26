@@ -167,7 +167,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         Point p = GameModule.getGameModule().getFrame().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
-          Point p2 = getMap().mapToComponentCoords(getPosition());
+          Point p2 = getMap().mapToComponent(getPosition());
           p.translate(p2.x, p2.y);
         }
         frame.setLocation(p.x, p.y);

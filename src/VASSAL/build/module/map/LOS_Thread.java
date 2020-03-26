@@ -464,8 +464,8 @@ public class LOS_Thread extends AbstractConfigurable implements
       return;
     }
     g.setColor(threadColor);
-    Point mapAnchor = map.mapToComponentCoords(anchor);
-    Point mapArrow = map.mapToComponentCoords(arrow);
+    Point mapAnchor = map.mapToComponent(anchor);
+    Point mapArrow = map.mapToComponent(arrow);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
     Board b;
 
@@ -672,9 +672,9 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (Boolean.TRUE.equals
           (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
           || snapEnd) {
-        p = map.mapToComponentCoords(map.snapTo(map.componentToMapCoords(p)));
+        p = map.mapToComponent(map.snapTo(map.componentToMap(p)));
       }
-      arrow = map.componentToMapCoords(p);
+      arrow = map.componentToMap(p);
 
       String location = map.localizedLocationName(arrow);
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
@@ -706,8 +706,8 @@ public class LOS_Thread extends AbstractConfigurable implements
    * @param range the range to display, in whatever units returned
    * by the {@link MapGrid} containing the thread */
   public void drawRange(Graphics g, int range) {
-    Point mapArrow = map.mapToComponentCoords(arrow);
-    Point mapAnchor = map.mapToComponentCoords(anchor);
+    Point mapArrow = map.mapToComponent(arrow);
+    Point mapAnchor = map.mapToComponent(anchor);
     g.setColor(Color.black);
     g.setFont(RANGE_FONT);
     final FontMetrics fm = g.getFontMetrics();
@@ -732,7 +732,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     g.drawString(rangeMess + " " + range,
                  x0 - wid / 2 + fm.stringWidth(" "), y0 + hgt / 2);
     lastRangeRect = new Rectangle(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid+1, hgt+1);
-    Point np = map.componentToMapCoords(new Point(lastRangeRect.x, lastRangeRect.y));
+    Point np = map.componentToMap(new Point(lastRangeRect.x, lastRangeRect.y));
     lastRangeRect.x = np.x;
     lastRangeRect.y = np.y;
     lastRange = String.valueOf(range);

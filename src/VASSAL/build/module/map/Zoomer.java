@@ -810,7 +810,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   protected Point getMapCenter() {
     final Rectangle r = map.getView().getVisibleRect();
-    return map.componentToMapCoords(new Point(r.x + r.width/2, r.y + r.height/2));
+    return map.componentToMap(new Point(r.x + r.width/2, r.y + r.height/2));
   }
 
   protected void updateZoomer(Point center) {

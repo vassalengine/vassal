@@ -952,12 +952,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   @Deprecated
   public Point mapCoordinates(Point p) {
-    return componentToMapCoords(p);
+    return componentToMap(p);
   }
 
   @Deprecated
   public Rectangle mapRectangle(Rectangle r) {
-    return componentToMapRect(r);
+    return componentToMap(r);
   }
 
   /**
@@ -967,19 +967,23 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   @Deprecated
   public Point componentCoordinates(Point p) {
-    return mapToComponentCoords(p);
+    return mapToComponent(p);
   }
 
   @Deprecated
   public Rectangle componentRectangle(Rectangle r) {
-    return mapToComponentRect(r);
+    return mapToComponent(r);
   }
 
-  protected Point convertPoint(Point p, double zoom) {
+  protected int scale(int c, double zoom) {
+    return (int)(c * zoom);
+  }
+
+  protected Point scale(Point p, double zoom) {
     return new Point((int)(p.x * zoom), (int)(p.y * zoom));
   }
 
-  protected Rectangle convertRectangle(Rectangle r, double zoom) {
+  protected Rectangle scale(Rectangle r, double zoom) {
     return new Rectangle(
       (int)(r.x * zoom),
       (int)(r.y * zoom),
@@ -988,52 +992,76 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     );
   }
 
-  public Point mapToDrawingCoords(Point p) {
-    return convertPoint(p, getZoom() * os_scale);
+  public int mapToDrawing(int c) {
+    return scale(c, getZoom() * os_scale);
   }
 
-  public Rectangle mapToDrawingRect(Rectangle r) {
-    return convertRectangle(r, getZoom() * os_scale);
+  public Point mapToDrawing(Point p) {
+    return scale(p, getZoom() * os_scale);
   }
 
-  public Point mapToComponentCoords(Point p) {
-    return convertPoint(p, getZoom());
+  public Rectangle mapToDrawing(Rectangle r) {
+    return scale(r, getZoom() * os_scale);
   }
 
-  public Rectangle mapToComponentRect(Rectangle r) {
-    return convertRectangle(r, getZoom());
+  public int mapToComponent(int c) {
+    return scale(c, getZoom());
   }
 
-  public Point componentToDrawingCoords(Point p) {
-    return convertPoint(p, os_scale);
+  public Point mapToComponent(Point p) {
+    return scale(p, getZoom());
   }
 
-  public Rectangle componentToDrawingRect(Rectangle r) {
-    return convertRectangle(r, os_scale);
+  public Rectangle mapToComponent(Rectangle r) {
+    return scale(r, getZoom());
   }
 
-  public Point componentToMapCoords(Point p) {
-    return convertPoint(p, 1.0/getZoom());
+  public int componentToDrawing(int c) {
+    return scale(c, os_scale);
   }
 
-  public Rectangle componentToMapRect(Rectangle r) {
-    return convertRectangle(r, 1.0/getZoom());
+  public Point componentToDrawing(Point p) {
+    return scale(p, os_scale);
   }
 
-  public Point drawingToMapCoords(Point p) {
-    return convertPoint(p, 1.0/(getZoom() * os_scale));
+  public Rectangle componentToDrawing(Rectangle r) {
+    return scale(r, os_scale);
   }
 
-  public Rectangle drawingToMapRect(Rectangle r) {
-    return convertRectangle(r, 1.0/(getZoom() * os_scale));
+  public int componentToMap(int c) {
+    return scale(c, 1.0/getZoom());
   }
 
-  public Point drawingToComponentCoords(Point p) {
-    return convertPoint(p, 1.0/os_scale);
+  public Point componentToMap(Point p) {
+    return scale(p, 1.0/getZoom());
   }
 
-  public Rectangle drawingToComponentRect(Rectangle r) {
-    return convertRectangle(r, 1.0/os_scale);
+  public Rectangle componentToMap(Rectangle r) {
+    return scale(r, 1.0/getZoom());
+  }
+
+  public int drawingToMap(int c) {
+    return scale(c, 1.0/(getZoom() * os_scale));
+  }
+
+  public Point drawingToMap(Point p) {
+    return scale(p, 1.0/(getZoom() * os_scale));
+  }
+
+  public Rectangle drawingToMap(Rectangle r) {
+    return scale(r, 1.0/(getZoom() * os_scale));
+  }
+
+  public int drawingToComponent(int c) {
+    return scale(c, 1.0/os_scale);
+  }
+
+  public Point drawingToComponent(Point p) {
+    return scale(p, 1.0/os_scale);
+  }
+
+  public Rectangle drawingToComponent(Rectangle r) {
+    return scale(r, 1.0/os_scale);
   }
 
   /**
@@ -1204,12 +1232,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void mouseClicked(MouseEvent e) {
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMapCoords(e.getPoint());
+      final Point p = componentToMap(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(e);
     }
     else if (multicaster != null) {
-      final Point p = componentToMapCoords(e.getPoint());
+      final Point p = componentToMap(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       multicaster.mouseClicked(e);
     }
@@ -1258,12 +1286,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     activeMap = this;
 
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMapCoords(e.getPoint());
+      final Point p = componentToMap(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(e);
     }
     else if (multicaster != null) {
-      final Point p = componentToMapCoords(e.getPoint());
+      final Point p = componentToMap(e.getPoint());
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       multicaster.mousePressed(e);
     }
@@ -1283,12 +1311,12 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
-        p = componentToMapCoords(e.getPoint());
+        p = componentToMap(e.getPoint());
         e.translatePoint(p.x - e.getX(), p.y - e.getY());
         mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(e);
       }
       else if (multicaster != null) {
-        p = componentToMapCoords(e.getPoint());
+        p = componentToMap(e.getPoint());
         e.translatePoint(p.x - e.getX(), p.y - e.getY());
         multicaster.mouseReleased(e);
       }
@@ -1545,7 +1573,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
-        Point pt = mapToComponentCoords(stack[i].getPosition());
+        Point pt = mapToComponent(stack[i].getPosition());
         if (stack[i].getClass() == Stack.class) {
           getStackMetrics().draw(
             (Stack) stack[i], pt, g, this, getZoom(), visibleRect);
@@ -1577,7 +1605,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
-        Point pt = mapToComponentCoords(stack[i].getPosition());
+        Point pt = mapToComponent(stack[i].getPosition());
         stack[i].draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
         if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
           highlighter.draw(stack[i], g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
@@ -1811,7 +1839,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Repaint the given area, specified in map coordinates
    */
   public void repaint(Rectangle r) {
-    r.setLocation(mapToComponentCoords(new Point(r.x, r.y)));
+    r.setLocation(mapToComponent(new Point(r.x, r.y)));
     r.setSize((int) (r.width * getZoom()), (int) (r.height * getZoom()));
     theMap.repaint(r.x, r.y, r.width, r.height);
   }
@@ -2144,7 +2172,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void centerAt(Point p, int dx, int dy) {
     if (scroll != null) {
-      p = mapToComponentCoords(p);
+      p = mapToComponent(p);
 
       final Rectangle r = theMap.getVisibleRect();
       r.x = p.x - r.width/2;
@@ -2164,7 +2192,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /** Ensure that the given region (in map coordinates) is visible */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      final Point p = mapToComponentCoords(r.getLocation());
+      final Point p = mapToComponent(r.getLocation());
       r = new Rectangle(p.x, p.y,
             (int) (getZoom() * r.width), (int) (getZoom() * r.height));
       theMap.scrollRectToVisible(r);

@@ -146,7 +146,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
         KeyBuffer.getBuffer().clear();
       }
-      anchor = map.mapToComponentCoords(e.getPoint());
+      anchor = map.mapToComponent(e.getPoint());
       selection = new Rectangle(anchor.x, anchor.y, 0, 0);
       if (map.getHighlighter() instanceof ColoredBorder) {
         ColoredBorder b = (ColoredBorder) map.getHighlighter();
@@ -162,7 +162,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
 
     PieceVisitorDispatcher d = createDragSelector(
-      !evt.isControlDown(), evt.isAltDown(), map.componentToMapRect(selection)
+      !evt.isControlDown(), evt.isAltDown(), map.componentToMap(selection)
     );
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
