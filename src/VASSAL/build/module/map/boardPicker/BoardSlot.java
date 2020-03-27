@@ -20,10 +20,12 @@ package VASSAL.build.module.map.boardPicker;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -33,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 
+import VASSAL.Info;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.i18n.Resources;
 
@@ -197,12 +200,30 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
   }
 
+  protected static final double os_scale = Info.getSystemScaling();
+
   public void paintIcon(Component c, Graphics g, int x, int y) {
+    final Graphics2D g2d = (Graphics2D) g;
+    final AffineTransform orig_t = g2d.getTransform();
+
+    g2d.setTransform(new AffineTransform(
+      1.0, 0.0,
+      0.0, 1.0,
+      orig_t.getTranslateX(), orig_t.getTranslateY()
+    ));
+
+    x *= os_scale;
+    y *= os_scale;
+
     if (board != null) {
-      board.draw(g,x,y,picker.getSlotScale(), c);
+      board.draw(g, x, y, picker.getSlotScale() * os_scale, c);
     }
     else {
-      g.clearRect(x,y,getIconWidth(),getIconHeight());
+      final int w = (int)(getIconWidth() * os_scale);
+      final int h = (int)(getIconHeight() * os_scale);
+      g.clearRect(x, y, w, h);
     }
+
+    g2d.setTransform(orig_t);
   }
 }
