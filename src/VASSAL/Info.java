@@ -24,6 +24,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -176,6 +177,14 @@ public final class Info {
 
   public static double getSystemScaling() {
     return systemScaling;
+  }
+
+  public static AffineTransform descaleTransform(AffineTransform t) {
+    return new AffineTransform(
+      1.0, 0.0,
+      0.0, 1.0,
+      t.getTranslateX(), t.getTranslateY()
+    );
   }
 
   /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead */

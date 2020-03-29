@@ -204,13 +204,9 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
 
   public void paintIcon(Component c, Graphics g, int x, int y) {
     final Graphics2D g2d = (Graphics2D) g;
-    final AffineTransform orig_t = g2d.getTransform();
 
-    g2d.setTransform(new AffineTransform(
-      1.0, 0.0,
-      0.0, 1.0,
-      orig_t.getTranslateX(), orig_t.getTranslateY()
-    ));
+    final AffineTransform orig_t = g2d.getTransform();
+    g2d.setTransform(Info.descaleTransform(orig_t));
 
     x *= os_scale;
     y *= os_scale;

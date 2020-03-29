@@ -2669,12 +2669,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       // scale factor to prevent poor quality upscaling, so reset the
       // transform to scale of 1 and multiply the map zoom by the OS scaling.
       final AffineTransform orig_t = g2d.getTransform();
-
-      g2d.setTransform(new AffineTransform(
-        1.0, 0.0,
-        0.0, 1.0,
-        orig_t.getTranslateX(), orig_t.getTranslateY()
-      ));
+      g2d.setTransform(Info.descaleTransform(orig_t));
 
       final Rectangle r = map.componentToDrawing(getVisibleRect());
 

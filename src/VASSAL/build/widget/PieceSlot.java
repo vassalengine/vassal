@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -33,12 +34,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import VASSAL.Info;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -78,7 +81,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected GamePiece expanded;
   protected String name;
   protected String pieceDefinition;
-  protected static Font FONT = new Font("Dialog", 0, 12);
+  protected static final double os_scale = Info.getSystemScaling();
+  protected static Font FONT = new Font("Dialog", 0, (int)(12 * os_scale));
   protected JPanel panel;
   protected int width, height;
   protected String gpId = ""; // Unique PieceSlot Id
@@ -198,7 +202,14 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public void paint(Graphics g) {
+    final Graphics2D g2d = (Graphics2D) g;
+
+    final AffineTransform orig_t = g2d.getTransform();
+    g2d.setTransform(Info.descaleTransform(orig_t));
+
     final Dimension size = panel.getSize();
+    size.width *= os_scale;
+    size.height *= os_scale;
 
     final Color c = g.getColor();
     g.setColor(Color.WHITE);
@@ -215,15 +226,17 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       );
     }
     else {
-      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, 1.0);
+      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale);
 
       // NB: The piece, not the expanded piece, receives events, so we check
       // the piece, not the expanded piece, for its selection status.
       if (Boolean.TRUE.equals(getPiece().getProperty(Properties.SELECTED))) {
         BasicPiece.getHighlighter().draw(getExpandedPiece(), g,
-          size.width / 2, size.height / 2, panel, 1.0);
+          size.width / 2, size.height / 2, panel, os_scale);
       }
     }
+
+    g2d.setTransform(orig_t);
   }
 
   public Dimension getPreferredSize() {
