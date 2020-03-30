@@ -22,11 +22,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A {@link JButton} which displays a color swatch.
@@ -37,7 +41,8 @@ import javax.swing.UIManager;
 public class ColorButton extends JButton {
   private static final long serialVersionUID = 1L;
 
-  private static Font FONT = new Font("Dialog", 0, 10);
+  private static final double os_scale = SwingUtils.getSystemScaling();
+  private static final Font FONT = new Font("Dialog", 0, (int)(10 * os_scale));
 
   private Color color;
 
@@ -79,20 +84,30 @@ public class ColorButton extends JButton {
     }
 
     public void paintIcon(Component c, Graphics g, int x, int y) {
+      final Graphics2D g2d = (Graphics2D) g;
+
+      final AffineTransform orig_t = g2d.getTransform();
+      g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+      x *= os_scale;
+      y *= os_scale;
+      final int w = (int)(swatchWidth * os_scale);
+      final int h = (int)(swatchHeight * os_scale);
+
       g.setColor(Color.black);
-      g.drawRect(x, y, swatchWidth-1, swatchHeight-1);
+      g.drawRect(x, y, w-1, h-1);
 
       if (color != null) {
         g.setColor(color);
-        g.fillRect(x+1, y+1, swatchWidth-2, swatchHeight-2);
+        g.fillRect(x+1, y+1, w-2, h-2);
       }
       else {
         // paint no color and a "nil" if the color is null
         g.setColor(UIManager.getColor("controlText"));
         g.setFont(FONT);
         g.drawString("nil",
-          x+(swatchWidth - g.getFontMetrics(FONT).stringWidth("nil"))/ 2,
-          y+(swatchHeight + g.getFontMetrics(FONT).getAscent())/2);
+          x+(w - g.getFontMetrics(FONT).stringWidth("nil"))/ 2,
+          y+(h + g.getFontMetrics(FONT).getAscent())/2);
       }
     }
 
