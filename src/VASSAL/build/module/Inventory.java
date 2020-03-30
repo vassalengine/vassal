@@ -21,6 +21,7 @@ package VASSAL.build.module;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +29,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
@@ -104,6 +106,7 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 public class Inventory extends AbstractConfigurable
                        implements GameComponent,
@@ -286,6 +289,8 @@ public class Inventory extends AbstractConfigurable
     return scrollPane;
   }
 
+  private static final double os_scale = SwingUtils.getSystemScaling();
+
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
@@ -312,7 +317,13 @@ public class Inventory extends AbstractConfigurable
               }
 
               public void paintIcon(Component c, Graphics g, int x, int y) {
-                piece.draw(g, -r.x, -r.y, c, pieceZoom);
+                final Graphics2D g2d = (Graphics2D) g;
+                final AffineTransform orig_t = g2d.getTransform();
+                g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+                piece.draw(g, -r.x, -r.y, c, pieceZoom * os_scale);
+
+                g2d.setTransform(orig_t);
               }
 
             } : null);
