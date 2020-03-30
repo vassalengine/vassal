@@ -20,11 +20,9 @@ package VASSAL;
 
 import java.awt.Component;
 import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
 import java.io.File;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -164,27 +162,6 @@ public final class Info {
     bounds.setSize(bounds.width - insets.left - insets.right,
                    bounds.height - insets.top - insets.bottom);
     return bounds;
-  }
-
-  // Note: We assume that X and Y scaling will be equal.
-  private static final double systemScaling =
-    GraphicsEnvironment.isHeadless() ? 1.0 :
-      GraphicsEnvironment.getLocalGraphicsEnvironment()
-                         .getDefaultScreenDevice()
-                         .getDefaultConfiguration()
-                         .getDefaultTransform()
-                         .getScaleX();
-
-  public static double getSystemScaling() {
-    return systemScaling;
-  }
-
-  public static AffineTransform descaleTransform(AffineTransform t) {
-    return new AffineTransform(
-      1.0, 0.0,
-      0.0, 1.0,
-      t.getTranslateX(), t.getTranslateY()
-    );
   }
 
   /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead */

@@ -35,9 +35,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 
-import VASSAL.Info;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.SwingUtils;
 
 public class BoardSlot extends JPanel implements Icon, ActionListener {
   private static final long serialVersionUID = 1L;
@@ -200,13 +200,13 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
   }
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public void paintIcon(Component c, Graphics g, int x, int y) {
     final Graphics2D g2d = (Graphics2D) g;
 
     final AffineTransform orig_t = g2d.getTransform();
-    g2d.setTransform(Info.descaleTransform(orig_t));
+    g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
     x *= os_scale;
     y *= os_scale;

@@ -80,7 +80,6 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
 
-import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -168,6 +167,7 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /*
 import org.jdesktop.swinghelper.layer.JXLayer;
@@ -240,7 +240,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public Map() {
     getView();
@@ -2669,7 +2669,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       // scale factor to prevent poor quality upscaling, so reset the
       // transform to scale of 1 and multiply the map zoom by the OS scaling.
       final AffineTransform orig_t = g2d.getTransform();
-      g2d.setTransform(Info.descaleTransform(orig_t));
+      g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
       final Rectangle r = map.componentToDrawing(getVisibleRect());
 

@@ -43,7 +43,6 @@ import java.util.concurrent.Future;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -70,6 +69,7 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
+import VASSAL.tools.swing.SwingUtils;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
@@ -328,7 +328,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public void drawRegion(final Graphics g,
                          final Point location,

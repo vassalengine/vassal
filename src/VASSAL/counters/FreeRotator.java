@@ -48,7 +48,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -67,6 +66,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Decorator that rotates a GamePiece to an arbitrary angle
@@ -308,7 +308,7 @@ public class FreeRotator extends Decorator
     }
   }
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public void draw(Graphics g, Map map) {
     if (drawGhost) {

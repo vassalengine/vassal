@@ -43,7 +43,6 @@ import javax.swing.border.EtchedBorder;
 
 import org.w3c.dom.Element;
 
-import VASSAL.Info;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -66,6 +65,7 @@ import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is scaled version of a {@link Map} that gives an overview.
@@ -81,7 +81,7 @@ public class GlobalMap implements AutoConfigurable,
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   protected Color rectColor = Color.black;
   protected final LaunchButton launch;
@@ -486,7 +486,7 @@ public class GlobalMap implements AutoConfigurable,
       // scale factor to prevent poor quality upscaling, so reset the
       // transform to scale of 1 and multiply the map zoom by the OS scaling.
       final AffineTransform orig_t = g2d.getTransform();
-      g2d.setTransform(Info.descaleTransform(orig_t));
+      g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
       final double dscale = scale * os_scale;
 

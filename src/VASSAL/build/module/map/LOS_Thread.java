@@ -38,7 +38,6 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.lang3.StringUtils;
 
-import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -68,6 +67,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A class that allows the user to draw a straight line on a Map (LOS
@@ -83,7 +83,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     UniqueIdManager.Identifyable,
     CommandEncoder {
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public static final String LOS_THREAD_COMMAND = "LOS\t";
 

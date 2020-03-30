@@ -47,7 +47,6 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
-import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -83,6 +82,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -246,7 +246,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawGraphics(g, pt, comp, a);
   }
 
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
     fixBounds(pieces);

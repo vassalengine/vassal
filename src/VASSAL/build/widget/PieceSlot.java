@@ -41,7 +41,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import VASSAL.Info;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -67,6 +66,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Component that displays a GamePiece.
@@ -81,7 +81,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected GamePiece expanded;
   protected String name;
   protected String pieceDefinition;
-  protected static final double os_scale = Info.getSystemScaling();
+  protected static final double os_scale = SwingUtils.getSystemScaling();
   protected static Font FONT = new Font("Dialog", 0, (int)(12 * os_scale));
   protected JPanel panel;
   protected int width, height;
@@ -205,7 +205,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     final Graphics2D g2d = (Graphics2D) g;
 
     final AffineTransform orig_t = g2d.getTransform();
-    g2d.setTransform(Info.descaleTransform(orig_t));
+    g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
     final Dimension size = panel.getSize();
     size.width *= os_scale;
