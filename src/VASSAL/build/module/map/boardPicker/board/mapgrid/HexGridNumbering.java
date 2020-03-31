@@ -60,6 +60,7 @@ import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
   private static final Logger logger =
@@ -308,16 +309,29 @@ public class HexGridNumbering extends RegularGridNumbering {
     return x;
   }
 
+  private static final double os_scale = SwingUtils.getSystemScaling();
+
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
         private static final long serialVersionUID = 1L;
 
         public void paint(Graphics g) {
-          g.clearRect(0, 0, getWidth(), getHeight());
-          Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
-          grid.forceDraw(g, bounds, bounds, 1.0, false);
-          forceDraw(g, bounds, bounds, 1.0, false);
+          final Graphics2D g2d = (Graphics2D) g;
+          final AffineTransform orig_t = g2d.getTransform();
+          g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+          final Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
+          bounds.x *= os_scale;
+          bounds.y *= os_scale;
+          bounds.width *= os_scale;
+          bounds.height *= os_scale;
+
+          g.clearRect(0, 0, bounds.width, bounds.height);
+          grid.forceDraw(g, bounds, bounds, os_scale, false);
+          forceDraw(g, bounds, bounds, os_scale, false);
+
+          g2d.setTransform(orig_t);
         }
 
         public Dimension getPreferredSize() {
