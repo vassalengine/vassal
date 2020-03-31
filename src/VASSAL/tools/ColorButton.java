@@ -109,6 +109,8 @@ public class ColorButton extends JButton {
           x+(w - g.getFontMetrics(FONT).stringWidth("nil"))/ 2,
           y+(h + g.getFontMetrics(FONT).getAscent())/2);
       }
+
+      g2d.setTransform(orig_t);
     }
 
     public int getIconWidth() {
