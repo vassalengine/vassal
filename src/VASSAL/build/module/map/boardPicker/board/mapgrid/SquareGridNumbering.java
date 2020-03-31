@@ -33,6 +33,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 
 import javax.swing.JComponent;
@@ -41,6 +42,7 @@ import javax.swing.JPanel;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.counters.Labeler;
+import VASSAL.tools.swing.SwingUtils;
 
 public class SquareGridNumbering extends RegularGridNumbering {
 
@@ -51,16 +53,29 @@ public class SquareGridNumbering extends RegularGridNumbering {
     grid.setGridNumbering(this);
   }
 
+  private static final double os_scale = SwingUtils.getSystemScaling();
+
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
         private static final long serialVersionUID = 1L;
 
         public void paint(Graphics g) {
-          g.clearRect(0, 0, getWidth(), getHeight());
-          Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
-          grid.forceDraw(g, bounds, bounds, 1.0, false);
-          forceDraw(g, bounds, bounds, 1.0, false);
+          final Graphics2D g2d = (Graphics2D) g;
+          final AffineTransform orig_t = g2d.getTransform();
+          g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+          final Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
+          bounds.x *= os_scale;
+          bounds.y *= os_scale;
+          bounds.width *= os_scale;
+          bounds.height *= os_scale;
+
+          g.clearRect(0, 0, bounds.width, bounds.height);
+          grid.forceDraw(g, bounds, bounds, os_scale, false);
+          forceDraw(g, bounds, bounds, os_scale, false);
+
+          g2d.setTransform(orig_t);
         }
 
         public Dimension getPreferredSize() {
