@@ -156,26 +156,29 @@ public class PolygonEditor extends JPanel {
 
   public void paint(Graphics g) {
     paintBackground(g);
-    if (polygon != null && polygon.npoints > 0) {
-      final Graphics2D g2d = (Graphics2D) g;
 
-      g2d.setColor(Color.white);
-      g2d.setComposite(
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
-      g2d.fill(polygon);
-
-      if (selected >= 0 && selected < polygon.xpoints.length) {
-        g2d.setColor(Color.red);
-        int x = polygon.xpoints[selected];
-        int y = polygon.ypoints[selected];
-        g2d.fillOval(x - 10, y - 10, 20, 20);
-      }
-
-      g2d.setComposite(AlphaComposite.SrcAtop);
-      g2d.setColor(Color.black);
-      g2d.setStroke(new BasicStroke(2.0F));
-      g2d.drawPolygon(polygon);
+    if (polygon == null || polygon.npoints == 0) {
+      return;
     }
+
+    final Graphics2D g2d = (Graphics2D) g;
+
+    g2d.setColor(Color.white);
+    g2d.setComposite(
+      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+    g2d.fill(polygon);
+
+    if (selected >= 0 && selected < polygon.xpoints.length) {
+      g2d.setColor(Color.red);
+      int x = polygon.xpoints[selected];
+      int y = polygon.ypoints[selected];
+      g2d.fillOval(x - 10, y - 10, 20, 20);
+    }
+
+    g2d.setComposite(AlphaComposite.SrcAtop);
+    g2d.setColor(Color.black);
+    g2d.setStroke(new BasicStroke(2.0F));
+    g2d.drawPolygon(polygon);
   }
 
   protected void paintBackground(Graphics g) {
