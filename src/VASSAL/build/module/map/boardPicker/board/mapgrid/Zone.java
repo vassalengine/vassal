@@ -77,6 +77,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name";
@@ -603,6 +604,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     protected Polygon savePoly;
     final protected JLabel warning = new JLabel("Zone has not been defined");
 
+    private static final double os_scale = SwingUtils.getSystemScaling();
+
     public Editor(final Zone zone) {
       super(PATH, null);
       button = new JButton("Define Shape");
@@ -616,9 +619,20 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
         protected void paintBackground(Graphics g) {
           if (board != null) {
-            Rectangle b = getVisibleRect();
+            final Graphics2D g2d = (Graphics2D) g;
+            final AffineTransform orig_t = g2d.getTransform();
+            g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+            final Rectangle b = getVisibleRect();
+            b.x *= os_scale;
+            b.y *= os_scale;
+            b.width *= os_scale;
+            b.height *= os_scale;
+
             g.clearRect(b.x, b.y, b.width, b.height);
-            board.draw(g, 0, 0, 1.0, editor);
+            board.draw(g, 0, 0, os_scale, editor);
+
+            g2d.setTransform(orig_t);
           }
           else {
             super.paintBackground(g);
