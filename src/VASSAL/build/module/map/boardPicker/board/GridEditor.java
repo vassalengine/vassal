@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -50,6 +52,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
   private static final long serialVersionUID = 1L;
@@ -444,6 +447,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    */
   public abstract void calculate();
 
+  private static final double os_scale = SwingUtils.getSystemScaling();
+
   /*
    * Panel to display the Grid Editor
    */
@@ -474,9 +479,20 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public void paint(Graphics g) {
       if (board != null) {
-        Rectangle b = getVisibleRect();
+        final Graphics2D g2d = (Graphics2D) g;
+        final AffineTransform orig_t = g2d.getTransform();
+        g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+        final Rectangle b = getVisibleRect();
+        b.x *= os_scale;
+        b.y *= os_scale;
+        b.width *= os_scale;
+        b.height *= os_scale;
+
         g.clearRect(b.x, b.y, b.width, b.height);
-        board.draw(g, 0, 0, 1.0, this);
+        board.draw(g, 0, 0, os_scale, this);
+        g2d.setTransform(orig_t);
+
         if (setMode) {
           highlight(g, hp1);
           highlight(g, hp2);
