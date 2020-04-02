@@ -21,7 +21,9 @@ package VASSAL.tools.imageop;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
@@ -29,6 +31,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * An implementation of {@link Icon} using an {@link ImageOp} as a source.
@@ -39,6 +42,9 @@ import VASSAL.tools.ErrorDialog;
 public class OpIcon extends ImageIcon implements Icon {
   private static final long serialVersionUID = 1L;
   protected ImageOp sop;
+  protected ImageOp scaled_op;
+
+  private static final double os_scale = SwingUtils.getSystemScaling();
 
   /**
    * Creates an uninitialized icon.
@@ -53,6 +59,7 @@ public class OpIcon extends ImageIcon implements Icon {
    */
   public OpIcon(ImageOp op) {
     sop = op;
+    scaled_op = Op.scale(sop, os_scale);
   }
 
   /**
@@ -72,8 +79,15 @@ public class OpIcon extends ImageIcon implements Icon {
 
     final Repainter r = c == null ? null : new Repainter(c, g.getClipBounds());
 
+    final Graphics2D g2d = (Graphics2D) g;
+    final AffineTransform orig_t = g2d.getTransform();
+    g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+    x *= os_scale;
+    y *= os_scale;
+
     try {
-      g.drawImage(sop.getImage(r), x, y, c);
+      g.drawImage(scaled_op.getImage(r), x, y, c);
     }
     catch (CancellationException e) {
       ErrorDialog.bug(e);
@@ -84,6 +98,8 @@ public class OpIcon extends ImageIcon implements Icon {
     catch (ExecutionException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
+
+    g2d.setTransform(orig_t);
   }
 
   /** {@inheritDoc} */
@@ -129,5 +145,6 @@ public class OpIcon extends ImageIcon implements Icon {
    */
   public void setOp(ImageOp op) {
     sop = op;
+    scaled_op = Op.scale(sop, os_scale);
   }
 }
