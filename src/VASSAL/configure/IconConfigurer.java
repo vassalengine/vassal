@@ -37,7 +37,9 @@ import javax.swing.JPanel;
 import VASSAL.build.GameModule;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
+import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 
 public class IconConfigurer extends Configurer {
   private JPanel controls;
@@ -59,8 +61,10 @@ public class IconConfigurer extends Configurer {
     imageName = s == null ? "" : s;
 
     if (imageName.length() > 0) {
-      final Image img = Op.load(imageName).getImage();
-      if (img != null) icon = new ImageIcon(img);
+      final ImageOp sop = Op.load(imageName);
+      if (sop.getImage() != null) {
+        icon = new ImageIcon(new OwningOpMultiResolutionImage(sop));
+      }
     }
 
     setValue((Object) imageName);

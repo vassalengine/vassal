@@ -66,7 +66,9 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 
 /**
  * ...
@@ -621,7 +623,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 // FIXME: because Sun checks what class Icon implementations are,
 // this won't display as disabled properly
 
-// FIXME: how does this work? where are width and height set?
     private int width, height;
     private Icon[] icons;
 
@@ -642,8 +643,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         final String imageName = dice.get(i).getImageName(results[i]);
 
         if (imageName.length() > 0) {
-          final Image img = Op.load(imageName).getImage();
-          if (img != null) icons[i] = new ImageIcon(img);
+          final ImageOp sop = Op.load(imageName);
+          if (sop.getImage() != null) {
+            icons[i] = new ImageIcon(new OwningOpMultiResolutionImage(sop));
+          }
         }
       }
     }
