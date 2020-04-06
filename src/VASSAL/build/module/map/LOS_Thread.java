@@ -746,8 +746,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     // precisely and the range rectangle is small anyhow.
     lastRangeRect.x = x0 - wid / 2 - (int)(wid * 0.5);
     lastRangeRect.y = y0 + hgt / 2 - fm.getAscent() - (int)(hgt * 0.5);
-    lastRangeRect.width = (int)(wid * 2);
-    lastRangeRect.height = (int)(hgt * 2);
+    lastRangeRect.width = wid * 2;
+    lastRangeRect.height = hgt * 2;
     lastRangeRect = map.drawingToMap(lastRangeRect);
 
     lastRange = String.valueOf(range);
