@@ -377,8 +377,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
           final int cy = (int)(ty / os_scale);
 
           // find tile size in component
-          final int cw = (int)(tw / os_scale);
-          final int ch = (int)(th / os_scale);
+          final int cw = (int) Math.ceil(tw / os_scale);
+          final int ch = (int) Math.ceil(th / os_scale);
 
           final Repainter rep = obs == null ? null :
             new Repainter(obs, cx, cy, cw, ch);
