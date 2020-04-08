@@ -133,6 +133,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public static final String SUM = "sum(propertyName)";
 
+  protected static final double os_scale = SwingUtils.getSystemScaling();
+
   protected KeyStroke hotkey =
     KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
   protected Map map;
@@ -166,9 +168,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected Color fgColor = Color.black;
   protected Color bgColor;
   protected int fontSize = 9;
+  protected Font font = new Font("Dialog", Font.PLAIN, (int)(fontSize * os_scale));
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
-  protected Rectangle bounds;
+  protected Rectangle bounds = new Rectangle();
   protected boolean mouseInView = true;
   protected List<GamePiece> displayablePieces = null;
 
@@ -248,8 +251,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawGraphics(g, pt, comp, a);
   }
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
     fixBounds(pieces);
 
@@ -257,13 +258,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
-    Rectangle dbounds = new Rectangle(bounds);
+    g.setFont(font);
+
+    final Rectangle dbounds = new Rectangle(bounds);
     dbounds.x *= os_scale;
     dbounds.y *= os_scale;
     dbounds.width *= os_scale;
     dbounds.height *= os_scale;
 
-    Rectangle visibleRect = comp.getVisibleRect();
+    final Rectangle visibleRect = comp.getVisibleRect();
     visibleRect.x *= os_scale;
     visibleRect.y *= os_scale;
     visibleRect.width *= os_scale;
@@ -331,6 +334,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       dbounds.translate((int) (pieceBounds.width * graphicsZoom * os_scale), 0);
       borderOffset += borderWidth;
     }
+
+    bounds.x = (int)(dbounds.x / os_scale);
+    bounds.y = (int)(dbounds.y / os_scale);
+    bounds.width = (int)(dbounds.width / os_scale);
+    bounds.height = (int)(dbounds.height / os_scale);
   }
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
@@ -374,9 +382,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * location name above the centre of the first piece in the stack.
      */
     String report = "";
-    int x = bounds.x - bounds.width;
-    int y = bounds.y - 5;
+    int x = (int)((bounds.x - bounds.width) * os_scale);
+    int y = (int)((bounds.y - 5) * os_scale);
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
+
+    g.setFont(font);
 
     if (displayablePieces.isEmpty()) {
       Point mapPt = map.componentToMap(currentMousePosition.getPoint());
@@ -398,7 +408,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
-      x += borderWidth * pieces.size() + 2;
+      x += borderWidth * os_scale * pieces.size() + 2;
     }
 
     if (report.length() > 0) {
@@ -417,7 +427,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = ((Graphics2D) g);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      Labeler.drawLabel(g, label, pt.x, pt.y, new Font("Dialog", Font.PLAIN, fontSize), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      Labeler.drawLabel(g, label, pt.x, pt.y, font, hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -1051,6 +1061,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       if (value != null) {
         fontSize = ((Integer) value).intValue();
+        font = new Font("Dialog", Font.PLAIN, (int)(fontSize * os_scale));
       }
     }
     else if (PROPERTY_FILTER.equals(name)) {
@@ -1205,5 +1216,4 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     return null;
   }
-
 }
