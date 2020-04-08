@@ -23,6 +23,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -59,6 +60,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Displays a movement trail indicating where a piece has been moved
@@ -315,13 +317,17 @@ public class Footprint extends MovementMarkable {
     return "Movement trail";
   }
 
+  protected static final double os_scale = SwingUtils.getSystemScaling();
+
 // FIXME: This method is inefficient.
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
 
+    final Map map = getMap();
+
     // Do nothing when piece is not on a map, we are drawing the map
     // to something other than its normal view, or the trail is invisible,
-    if (getMap() == null || getMap().getView() != obs || !isTrailVisible()) {
+    if (map == null || map.getView() != obs || !isTrailVisible()) {
       return;
     }
 
@@ -329,7 +335,7 @@ public class Footprint extends MovementMarkable {
      * If we have changed Maps, then start a new trail. Note that this check is
      * here because setMoved is called before the piece has been moved.
      */
-    final String currentMap = getMap().getId();
+    final String currentMap = map.getId();
     if (!currentMap.equals(startMapId)) {
       startMapId = currentMap;
       clearTrail();
@@ -346,12 +352,8 @@ public class Footprint extends MovementMarkable {
      * setting, then don't draw the trail as it will be in the wrong place.
      * (i.e. Mouse-over viewer)
      */
-    double mapZoom = zoom;
-    if (this.getMap() != null) {
-      mapZoom = getMap().getZoom();
-      if (zoom != mapZoom) {
-        return;
-      }
+    if (zoom != map.getZoom() * os_scale) {
+      return;
     }
 
     final Graphics2D g2d = (Graphics2D) g;
@@ -370,12 +372,14 @@ public class Footprint extends MovementMarkable {
      * mapRect is made of the Map and a edgePointBuffer pixel border. Trail
      * points are not drawn outside this area.
      */
-    final int mapHeight = getMap().mapSize().height;
-    final int mapWidth = getMap().mapSize().width;
+    final Dimension mapsize = map.mapSize();
+    final int mapHeight = mapsize.height;
+    final int mapWidth = mapsize.width;
+
     final int edgeHeight =
-      Integer.parseInt(getMap().getAttributeValueString(Map.EDGE_HEIGHT));
+      Integer.parseInt(map.getAttributeValueString(Map.EDGE_HEIGHT));
     final int edgeWidth =
-      Integer.parseInt(getMap().getAttributeValueString(Map.EDGE_WIDTH));
+      Integer.parseInt(map.getAttributeValueString(Map.EDGE_WIDTH));
 
     final int edgeClipHeight = Math.min(edgeHeight, edgeDisplayBuffer);
     final int edgeClipWidth = Math.min(edgeWidth, edgeDisplayBuffer);
@@ -385,25 +389,23 @@ public class Footprint extends MovementMarkable {
     final int width = mapWidth - 2*(edgeWidth + edgeClipWidth);
     final int height = mapHeight - 2*(edgeHeight + edgeClipHeight);
 
-    final Rectangle newClip = new Rectangle(
+    Rectangle newClip = new Rectangle(
       (int) (clipX * zoom),
       (int) (clipY * zoom),
       (int) (width * zoom),
       (int) (height * zoom)
     );
-    final Rectangle circleRect = new Rectangle(
-      edgeWidth - edgePointBuffer,
-      edgeHeight - edgePointBuffer,
-      mapWidth + 2 * edgePointBuffer,
-      mapHeight + 2 * edgePointBuffer
-    );
-    final Rectangle visibleRect = getMap().getView().getVisibleRect();
+
+    final Rectangle visibleRect =
+      map.componentToDrawing(map.getView().getVisibleRect());
 
     final Shape oldClip = g2d.getClip();
-    g2d.setClip(newClip.intersection(visibleRect));
+
+    newClip = newClip.intersection(visibleRect);
     if (oldClip != null) {
-      g2d.setClip(oldClip.getBounds().intersection(g.getClipBounds()));
+      newClip = oldClip.getBounds().intersection(newClip);
     }
+    g2d.setClip(newClip);
 
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
@@ -414,7 +416,12 @@ public class Footprint extends MovementMarkable {
     g2d.setStroke(new BasicStroke(thickness));
     g2d.setColor(lineColor);
 
-    final Point here = getPosition();
+    final Rectangle circleRect = new Rectangle(
+      edgeWidth - edgePointBuffer,
+      edgeHeight - edgePointBuffer,
+      mapWidth + 2 * edgePointBuffer,
+      mapHeight + 2 * edgePointBuffer
+    );
 
     /*
      * Draw the tracks between trail points
@@ -435,6 +442,7 @@ public class Footprint extends MovementMarkable {
       cur = next;
     }
 
+    final Point here = getPosition();
     if (!here.equals(cur)) {
       x1 = (int)(cur.x * zoom);
       y1 = (int)(cur.y * zoom);
@@ -472,7 +480,7 @@ public class Footprint extends MovementMarkable {
         // Or some text?
         final String text = getTrailText(elementCount);
         if (selected && text != null) {
-          if (font == null || lastZoom != mapZoom) {
+          if (font == null || lastZoom != zoom) {
             x1 = (int)(p.x * zoom);
             y1 = (int)(p.y * zoom);
             final Font font =
@@ -481,7 +489,7 @@ public class Footprint extends MovementMarkable {
                               Labeler.CENTER, lineColor, null, null);
 
           }
-          lastZoom = mapZoom;
+          lastZoom = zoom;
         }
       }
     }
