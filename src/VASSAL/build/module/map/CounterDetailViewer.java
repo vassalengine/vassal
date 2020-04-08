@@ -220,12 +220,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public void draw(Graphics g, Point pt, JComponent comp) {
-
     if (!graphicsVisible && !textVisible) {
       return;
     }
 
-    bounds = new Rectangle(pt.x, pt.y, 0, 0);
+    bounds.x = pt.x;
+    bounds.y = pt.y;
+    bounds.width = 0;
+    bounds.height = 0;
 
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
