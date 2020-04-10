@@ -152,41 +152,42 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected BasicStroke stroke = null;
 
   public void draw(Graphics g, Map map) {
-    if (shadingVisible) {
-
-      double zoom = map.getZoom();
-      buildStroke(zoom);
-
-      final Graphics2D g2 = (Graphics2D) g;
-
-      final Composite oldComposite = g2.getComposite();
-      final Color oldColor = g2.getColor();
-      final Paint oldPaint = g2.getPaint();
-      final Stroke oldStroke = g2.getStroke();
-
-      g2.setComposite(getComposite());
-      g2.setColor(getColor());
-      g2.setPaint(
-        scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
-        getTexture(zoom) : getTexture());
-      Area area = getShadeShape(map);
-      if (zoom != 1.0) {
-        area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                                       .createTransformedShape(area));
-      }
-      g2.fill(area);
-      if (border) {
-        g2.setComposite(getBorderComposite());
-        g2.setStroke(getStroke(map.getZoom()));
-        g2.setColor(getBorderColor());
-        g2.draw(area);
-      }
-
-      g2.setComposite(oldComposite);
-      g2.setColor(oldColor);
-      g2.setPaint(oldPaint);
-      g2.setStroke(oldStroke);
+    if (!shadingVisible) {
+      return;
     }
+
+    double zoom = map.getZoom();
+    buildStroke(zoom);
+
+    final Graphics2D g2 = (Graphics2D) g;
+
+    final Composite oldComposite = g2.getComposite();
+    final Color oldColor = g2.getColor();
+    final Paint oldPaint = g2.getPaint();
+    final Stroke oldStroke = g2.getStroke();
+
+    g2.setComposite(getComposite());
+    g2.setColor(getColor());
+    g2.setPaint(
+      scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
+      getTexture(zoom) : getTexture());
+    Area area = getShadeShape(map);
+    if (zoom != 1.0) {
+      area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
+                                     .createTransformedShape(area));
+    }
+    g2.fill(area);
+    if (border) {
+      g2.setComposite(getBorderComposite());
+      g2.setStroke(getStroke(map.getZoom()));
+      g2.setColor(getBorderColor());
+      g2.draw(area);
+    }
+
+    g2.setComposite(oldComposite);
+    g2.setColor(oldColor);
+    g2.setPaint(oldPaint);
+    g2.setStroke(oldStroke);
   }
 
   /**
