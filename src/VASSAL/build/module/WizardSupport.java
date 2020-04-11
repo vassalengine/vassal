@@ -252,6 +252,7 @@ public class WizardSupport {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$
     }
   }
+
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
@@ -549,6 +550,7 @@ public class WizardSupport {
       }
     }
   }
+
   /**
    * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
    */
@@ -576,6 +578,7 @@ public class WizardSupport {
       return w;
     }
   }
+
   /**
    * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished
    * {@link GameSetupStep}s. Otherwise, enable the finish button.
@@ -647,6 +650,7 @@ public class WizardSupport {
       return c;
     }
   }
+
   /**
    * Wizard pages for loading a saved game
    *
@@ -698,6 +702,7 @@ public class WizardSupport {
       return (JComponent) fileConfig.getControls();
     }
   }
+
   /**
    * Wizard page for an unfinished {@link GameSetupStep}
    *
@@ -731,6 +736,7 @@ public class WizardSupport {
       UIManager.put("wizard.sidebar.image", img); //$NON-NLS-1$
     }
   }
+
   /**
    * Wizard pages for starting a new game. One page will be added for each unfinished {@link GameSetupStep}
    *
