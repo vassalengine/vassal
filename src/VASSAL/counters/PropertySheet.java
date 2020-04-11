@@ -194,7 +194,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
-  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
@@ -262,7 +262,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
     return value;
   }
-
 
   // stores field values
   private void updateStateFromFields() {
@@ -544,7 +543,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           pane.add(buttonRow, c);
         }
 
-
         // move window
         Point p = GameModule.getGameModule().getFrame().getLocation();
         if (getMap() != null) {
@@ -700,10 +698,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       add(ctrl, c);
     }
 
-
     DefaultTableModel tableModel;
     String[] defaultValues;
-
 
     public static class SmartTable extends JTable {
       private static final long serialVersionUID = 1L;
@@ -923,7 +919,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return rows;
     }
 
-    public java.awt.Component getControls() {
+    public Component getControls() {
       return m_panel;
     }
 
@@ -985,7 +981,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return buf.toString();
     }
   }
-
 
   class TickPanel extends JPanel implements ActionListener, FocusListener, DocumentListener {
     private static final long serialVersionUID = 1L;
@@ -1082,7 +1077,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return Integer.toString(numTicks) + VALUE_DELIMINATOR + maxTicks;
     }
 
-
     private void commitTextFields() {
       if (valField != null || maxField != null) {
         if (set(valField != null ? atoi(valField.getText()) : numTicks,
@@ -1137,7 +1131,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
 
-
     void addDocumentListener(DocumentListener listener) {
       if (valField != null)
         valField.getDocument().addDocumentListener(this);
@@ -1179,7 +1172,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
-
   class TickLabel extends JLabel implements MouseListener {
     private static final long serialVersionUID = 1L;
 
@@ -1216,49 +1208,50 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     protected int dx = 1;
 
     public void paint(Graphics g) {
-
       //Debug.trace("TickLabcmdel.paint(" + numTicks + "/" + maxTicks + ")");
       //Debug.trace("  width=" + getWidth() + " height=" + getHeight());
-      if (maxTicks > 0) {
-        // prefered width is 10
-        // min width before resize is 6
-        int displayWidth = getWidth() - 2;
+      if (maxTicks <= 0) {
+        return;
+      }
 
-        dx = Math.min(displayWidth / maxTicks, 10);
-        // if dx < 2, we have a problem
+      // prefered width is 10
+      // min width before resize is 6
+      int displayWidth = getWidth() - 2;
 
-        numRows = dx < 3 ? 3 : dx < 6 ? 2 : 1;
+      dx = Math.min(displayWidth / maxTicks, 10);
+      // if dx < 2, we have a problem
 
-        dx = Math.min(displayWidth * numRows / maxTicks, Math.min(getHeight() / numRows, 10));
-        if (dx < 1) dx = 1;
+      numRows = dx < 3 ? 3 : dx < 6 ? 2 : 1;
 
-        numCols = (maxTicks + numRows - 1) / numRows;
+      dx = Math.min(displayWidth * numRows / maxTicks, Math.min(getHeight() / numRows, 10));
+      if (dx < 1) dx = 1;
 
-        int dy = dx;
+      numCols = (maxTicks + numRows - 1) / numRows;
 
-        topMargin = (getHeight() - dy * numRows + 2) / 2;
+      int dy = dx;
 
-        int tick = 0;
-        int row, col;
-        if (dx > 4) {
-          for (; tick < maxTicks; ++tick) {
-            row = tick / numCols;
-            col = tick % numCols;
-            g.setColor(Color.BLACK);
-            g.drawRect(leftMargin + col * dx, topMargin + row * dy, dx - 3, dy - 3);
-            g.setColor(tick < numTicks ? Color.BLACK : Color.WHITE);
-            g.fillRect(leftMargin + 1 + col * dx, topMargin + 1 + row * dy, dx - 4, dy - 4);
-          }
+      topMargin = (getHeight() - dy * numRows + 2) / 2;
+
+      int tick = 0;
+      int row, col;
+      if (dx > 4) {
+        for (; tick < maxTicks; ++tick) {
+          row = tick / numCols;
+          col = tick % numCols;
+          g.setColor(Color.BLACK);
+          g.drawRect(leftMargin + col * dx, topMargin + row * dy, dx - 3, dy - 3);
+          g.setColor(tick < numTicks ? Color.BLACK : Color.WHITE);
+          g.fillRect(leftMargin + 1 + col * dx, topMargin + 1 + row * dy, dx - 4, dy - 4);
         }
-        else {
-          g.setColor(Color.GRAY);
-          g.fillRect(0, topMargin - 2, numCols * dx + leftMargin * 2, numRows * dy + 4);
-          for (; tick < maxTicks; ++tick) {
-            row = tick / numCols;
-            col = tick % numCols;
-            g.setColor(tick < numTicks ? Color.BLACK : Color.WHITE);
-            g.fillRect(leftMargin + col * dx, topMargin + row * dy, dx - 1, dy - 1);
-          }
+      }
+      else {
+        g.setColor(Color.GRAY);
+        g.fillRect(0, topMargin - 2, numCols * dx + leftMargin * 2, numRows * dy + 4);
+        for (; tick < maxTicks; ++tick) {
+          row = tick / numCols;
+          col = tick % numCols;
+          g.setColor(tick < numTicks ? Color.BLACK : Color.WHITE);
+          g.fillRect(leftMargin + col * dx, topMargin + row * dy, dx - 1, dy - 1);
         }
       }
     }
@@ -1291,7 +1284,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         l.actionPerformed(new ActionEvent(this, 0, null));
       }
     }
-
 
     public void set(int newNumTicks, int newMaxTicks) {
       //Debug.trace("TickLabel.set( " + newNumTicks + "," + newMaxTicks + " ) was " + numTicks + "/" + maxTicks);
@@ -1417,8 +1409,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       public void focusLost(FocusEvent event) {
         storeValues();
       }
-
     }
-
   }
 }
