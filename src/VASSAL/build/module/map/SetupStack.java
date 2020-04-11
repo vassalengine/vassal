@@ -164,16 +164,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   // must have a useable board with a grid
   protected boolean isUseGridLocation() {
-    if (!useGridLocation)
+    if (!useGridLocation) {
       return false;
+    }
     Board b = getConfigureBoard();
-    if (b == null)
-      return false;
-    MapGrid g = b.getGrid();
-    if (g == null)
-      return false;
-    else
-      return true;
+    return b != null && b.getGrid() != null;
   }
 
   // only update the position if we're using the location name
