@@ -55,6 +55,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,6 +105,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is the "At-Start Stack" component, which initializes a Map or Board with a specified stack.
@@ -479,7 +481,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
   }
 
-
   /*
    *  GUI Stack Placement Configurer
    */
@@ -718,7 +719,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void drawDummyImage(Graphics g, int x, int y, Component obs, double zoom) {
+      final Graphics2D g2d = (Graphics2D) g;
+      final AffineTransform orig_t = g2d.getTransform();
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+      final AffineTransform scaled_t = new AffineTransform(orig_t);
+      scaled_t.scale(os_scale, os_scale);
+      g2d.setTransform(scaled_t);
+
+      x /= os_scale;
+      y /= os_scale;
+
       g.drawImage(getDummyImage(), x, y, obs);
+
+      g2d.setTransform(orig_t);
     }
 
     public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {
@@ -729,7 +742,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       else {
         myPiece.draw(g, x, y, obs, zoom);
       }
-
     }
 
     public Rectangle getPieceBoundingBox() {
@@ -895,14 +907,24 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void paint(Graphics g) {
-      myBoard.draw(g, 0, 0, 1.0, this);
-      Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
+      final Graphics2D g2d = (Graphics2D) g;
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+      final AffineTransform orig_t = g2d.getTransform();
+      g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+      myBoard.draw(g, 0, 0, os_scale, this);
       if (myGrid != null) {
-        myGrid.draw(g,bounds,bounds,1.0,false);
+        final Rectangle bounds = new Rectangle(new Point(), myBoard.bounds().getSize());
+        bounds.width *= os_scale;
+        bounds.height *= os_scale;
+        myGrid.draw(g, bounds, bounds, os_scale, false);
       }
-      int x = myStack.pos.x;
-      int y = myStack.pos.y;
-      myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
+      int x = (int)(myStack.pos.x * os_scale);
+      int y = (int)(myStack.pos.y * os_scale);
+      myStack.stackConfigurer.drawImage(g, x, y, this, os_scale);
+
+      g2d.setTransform(orig_t);
     }
 
     public void update(Graphics g) {
