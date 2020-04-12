@@ -42,9 +42,6 @@ import VASSAL.tools.swing.SwingUtils;
 public class OpIcon extends ImageIcon implements Icon {
   private static final long serialVersionUID = 1L;
   protected ImageOp sop;
-  protected ImageOp scaled_op;
-
-  private static final double os_scale = SwingUtils.getSystemScaling();
 
   /**
    * Creates an uninitialized icon.
@@ -59,7 +56,6 @@ public class OpIcon extends ImageIcon implements Icon {
    */
   public OpIcon(ImageOp op) {
     sop = op;
-    scaled_op = Op.scale(sop, os_scale);
   }
 
   /**
@@ -80,6 +76,7 @@ public class OpIcon extends ImageIcon implements Icon {
     final Repainter r = c == null ? null : new Repainter(c, g.getClipBounds());
 
     final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final AffineTransform orig_t = g2d.getTransform();
     g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
@@ -87,7 +84,7 @@ public class OpIcon extends ImageIcon implements Icon {
     y *= os_scale;
 
     try {
-      g.drawImage(scaled_op.getImage(r), x, y, c);
+      g.drawImage(Op.scale(sop, os_scale).getImage(r), x, y, c);
     }
     catch (CancellationException e) {
       ErrorDialog.bug(e);
@@ -145,6 +142,5 @@ public class OpIcon extends ImageIcon implements Icon {
    */
   public void setOp(ImageOp op) {
     sop = op;
-    scaled_op = Op.scale(sop, os_scale);
   }
 }

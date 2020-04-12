@@ -81,8 +81,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected GamePiece expanded;
   protected String name;
   protected String pieceDefinition;
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-  protected static Font FONT = new Font("Dialog", 0, (int)(12 * os_scale));
+  protected static Font FONT = new Font("Dialog", 0, 12);
   protected JPanel panel;
   protected int width, height;
   protected String gpId = ""; // Unique PieceSlot Id
@@ -203,7 +202,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void paint(Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
-
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final AffineTransform orig_t = g2d.getTransform();
     g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
@@ -219,7 +218,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (getExpandedPiece() == null) {
       final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, size.width - 1, size.height - 1);
-      g.setFont(FONT);
+      g.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
       g.drawString(" nil ",
         size.width/2 - fm.stringWidth(" nil ")/2,
         size.height/2

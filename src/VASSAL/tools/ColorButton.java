@@ -40,9 +40,7 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class ColorButton extends JButton {
   private static final long serialVersionUID = 1L;
-
-  private static final double os_scale = SwingUtils.getSystemScaling();
-  private static final Font FONT = new Font("Dialog", 0, (int)(10 * os_scale));
+  private static final Font FONT = new Font("Dialog", 0, 10);
 
   private Color color;
 
@@ -85,7 +83,7 @@ public class ColorButton extends JButton {
 
     public void paintIcon(Component c, Graphics g, int x, int y) {
       final Graphics2D g2d = (Graphics2D) g;
-
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
       final AffineTransform orig_t = g2d.getTransform();
       g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
@@ -104,10 +102,11 @@ public class ColorButton extends JButton {
       else {
         // paint no color and a "nil" if the color is null
         g.setColor(UIManager.getColor("controlText"));
-        g.setFont(FONT);
+        final Font font = FONT.deriveFont((float)(FONT.getSize() * os_scale));
+        g.setFont(font);
         g.drawString("nil",
-          x+(w - g.getFontMetrics(FONT).stringWidth("nil"))/ 2,
-          y+(h + g.getFontMetrics(FONT).getAscent())/2);
+          x+(w - g.getFontMetrics(font).stringWidth("nil"))/ 2,
+          y+(h + g.getFontMetrics(font).getAscent())/2);
       }
 
       g2d.setTransform(orig_t);

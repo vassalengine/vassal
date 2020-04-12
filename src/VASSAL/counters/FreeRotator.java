@@ -66,7 +66,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Decorator that rotates a GamePiece to an arbitrary angle
@@ -308,26 +307,28 @@ public class FreeRotator extends Decorator
     }
   }
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   public void draw(Graphics g, Map map) {
-    if (drawGhost) {
-      final Point p = map.mapToDrawing(getGhostPosition());
-
-      final Graphics2D g2d = (Graphics2D) g.create();
-      g2d.transform(
-         AffineTransform.getRotateInstance(-PI_180 * tempAngle,
-                                           p.x + centerX(),
-                                           p.y + centerY()));
-      g2d.setComposite(
-         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-      piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom() * os_scale);
-      g2d.dispose();
+    if (!drawGhost) {
+      return;
     }
+
+    final Graphics2D g2d = (Graphics2D) g.create();
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+    final Point p = map.mapToDrawing(getGhostPosition(), os_scale);
+
+    g2d.transform(
+       AffineTransform.getRotateInstance(-PI_180 * tempAngle,
+                                         p.x + centerX(),
+                                         p.y + centerY()));
+    g2d.setComposite(
+       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+    piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom() * os_scale);
+    g2d.dispose();
   }
 
   public boolean drawAboveCounters() {

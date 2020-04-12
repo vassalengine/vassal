@@ -309,8 +309,6 @@ public class HexGridNumbering extends RegularGridNumbering {
     return x;
   }
 
-  private static final double os_scale = SwingUtils.getSystemScaling();
-
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
@@ -318,6 +316,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
         public void paint(Graphics g) {
           final Graphics2D g2d = (Graphics2D) g;
+          final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
           final AffineTransform orig_t = g2d.getTransform();
           g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 

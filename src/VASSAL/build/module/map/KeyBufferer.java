@@ -337,10 +337,17 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
 
     final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
     final Stroke str = g2d.getStroke();
-    g2d.setStroke(new BasicStroke(thickness));
+    g2d.setStroke(new BasicStroke((float)(thickness * os_scale)));
     g2d.setColor(color);
-    g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
+    g2d.drawRect(
+      (int)(selection.x * os_scale),
+      (int)(selection.y * os_scale),
+      (int)(selection.width * os_scale),
+      (int)(selection.height * os_scale)
+    );
     g2d.setStroke(str);
   }
 

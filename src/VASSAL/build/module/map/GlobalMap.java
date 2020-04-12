@@ -81,8 +81,6 @@ public class GlobalMap implements AutoConfigurable,
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   protected Color rectColor = Color.black;
   protected final LaunchButton launch;
 
@@ -282,13 +280,13 @@ public class GlobalMap implements AutoConfigurable,
                      (int) ((p.y - map.getEdgeBuffer().height) * scale));
   }
 
-  public Point mapToDrawing(Point p) {
+  public Point mapToDrawing(Point p, double os_scale) {
     final double dscale = scale * os_scale;
     return new Point((int) ((p.x - map.getEdgeBuffer().width) * dscale),
                      (int) ((p.y - map.getEdgeBuffer().height) * dscale));
   }
 
-  public Rectangle mapToDrawing(Rectangle r) {
+  public Rectangle mapToDrawing(Rectangle r, double os_scale) {
     final double dscale = scale * os_scale;
     return new Rectangle(
       (int) ((r.x - map.getEdgeBuffer().width) * dscale),
@@ -480,6 +478,7 @@ public class GlobalMap implements AutoConfigurable,
     @Override
     protected void paintComponent(Graphics g) {
       final Graphics2D g2d = (Graphics2D) g;
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       // HDPI: We may get a transform where scale != 1. This means we
       // are running on an HDPI system. We want to draw at the effective
@@ -499,7 +498,7 @@ public class GlobalMap implements AutoConfigurable,
       );
 
       for (GamePiece gp : map.getPieces()) {
-        Point p = mapToDrawing(gp.getPosition());
+        Point p = mapToDrawing(gp.getPosition(), os_scale);
         gp.draw(g, p.x, p.y, this, dscale);
       }
 
@@ -508,7 +507,7 @@ public class GlobalMap implements AutoConfigurable,
       // Draw a rectangle indicating the present viewing area
       g.setColor(rectColor);
 
-      final Rectangle vr = mapToDrawing(map.componentToMap(map.getView().getVisibleRect()));
+      final Rectangle vr = mapToDrawing(map.componentToMap(map.getView().getVisibleRect()), os_scale);
       g.drawRect(vr.x, vr.y, vr.width, vr.height);
       g.drawRect(vr.x - 1, vr.y - 1, vr.width + 2, vr.height + 2);
 

@@ -20,6 +20,7 @@ package VASSAL.build.module.map;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
@@ -139,13 +140,17 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
 
     if (lastMoved.getMap() == map) {
+      final Graphics2D g2d = (Graphics2D) g;
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+      final double zoom = map.getZoom() * os_scale;
+
       highlighter.draw(
         lastMoved,
         g,
-        (int) (lastMoved.getPosition().x * map.getZoom()),
-        (int) (lastMoved.getPosition().y * map.getZoom()),
+        (int) (lastMoved.getPosition().x * zoom),
+        (int) (lastMoved.getPosition().y * zoom),
         map.getView(),
-        map.getZoom()
+        zoom
       );
     }
     else {

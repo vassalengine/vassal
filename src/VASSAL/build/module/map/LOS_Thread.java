@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -67,7 +68,6 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A class that allows the user to draw a straight line on a Map (LOS
@@ -82,8 +82,6 @@ public class LOS_Thread extends AbstractConfigurable implements
     Drawable, Configurable,
     UniqueIdManager.Identifyable,
     CommandEncoder {
-
-  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public static final String LOS_THREAD_COMMAND = "LOS\t";
 
@@ -110,7 +108,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String ROUND_UP = "Up";
   public static final String ROUND_DOWN = "Down";
   public static final String ROUND_OFF = "Nearest whole number";
-  public static Font RANGE_FONT = new Font("Dialog", 0, (int)(11 * os_scale));
+  public static Font RANGE_FONT = new Font("Dialog", 0, 11);
   public static final String DEFAULT_ICON = "/images/thread.gif";
 
   public static final String FROM_LOCATION = "FromLocation";
@@ -462,14 +460,17 @@ public class LOS_Thread extends AbstractConfigurable implements
     setMirroring(sd.nextBoolean(false));
   }
 
-  public void draw(java.awt.Graphics g, Map m) {
+  public void draw(Graphics g, Map m) {
     if (initializing || !visible) {
       return;
     }
 
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
     g.setColor(threadColor);
-    Point mapAnchor = map.mapToDrawing(anchor);
-    Point mapArrow = map.mapToDrawing(arrow);
+    Point mapAnchor = map.mapToDrawing(anchor, os_scale);
+    Point mapArrow = map.mapToDrawing(arrow, os_scale);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
 
     if (drawRange) {
@@ -709,11 +710,14 @@ public class LOS_Thread extends AbstractConfigurable implements
    * @param range the range to display, in whatever units returned
    * by the {@link MapGrid} containing the thread */
   public void drawRange(Graphics g, int range) {
-    Point mapArrow = map.mapToDrawing(arrow);
-    Point mapAnchor = map.mapToDrawing(anchor);
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+    Point mapArrow = map.mapToDrawing(arrow, os_scale);
+    Point mapAnchor = map.mapToDrawing(anchor, os_scale);
 
     g.setColor(Color.black);
-    g.setFont(RANGE_FONT);
+    g.setFont(RANGE_FONT.deriveFont((float)(RANGE_FONT.getSize() * os_scale)));
     final FontMetrics fm = g.getFontMetrics();
 
     final StringBuilder buffer = new StringBuilder();
@@ -748,7 +752,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     lastRangeRect.y = y0 + hgt / 2 - fm.getAscent() - (int)(hgt * 0.5);
     lastRangeRect.width = wid * 2;
     lastRangeRect.height = hgt * 2;
-    lastRangeRect = map.drawingToMap(lastRangeRect);
+    lastRangeRect = map.drawingToMap(lastRangeRect, os_scale);
 
     lastRange = String.valueOf(range);
   }

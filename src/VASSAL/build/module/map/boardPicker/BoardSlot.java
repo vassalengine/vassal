@@ -200,12 +200,11 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
   }
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   public void paintIcon(Component c, Graphics g, int x, int y) {
     final Graphics2D g2d = (Graphics2D) g;
 
     final AffineTransform orig_t = g2d.getTransform();
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
     x *= os_scale;

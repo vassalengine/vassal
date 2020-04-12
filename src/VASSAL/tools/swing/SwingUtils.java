@@ -18,23 +18,9 @@
  */
 package VASSAL.tools.swing;
 
-import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
 public class SwingUtils {
-  // Note: We assume that X and Y scaling will be equal.
-  private static final double systemScaling =
-    GraphicsEnvironment.isHeadless() ? 1.0 :
-      GraphicsEnvironment.getLocalGraphicsEnvironment()
-                         .getDefaultScreenDevice()
-                         .getDefaultConfiguration()
-                         .getDefaultTransform()
-                         .getScaleX();
-
-  public static double getSystemScaling() {
-    return systemScaling;
-  }
-
   public static AffineTransform descaleTransform(AffineTransform t) {
     return new AffineTransform(
       1.0, 0.0,

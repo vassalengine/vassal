@@ -82,7 +82,6 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -133,8 +132,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public static final String SUM = "sum(propertyName)";
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   protected KeyStroke hotkey =
     KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
   protected Map map;
@@ -168,7 +165,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected Color fgColor = Color.black;
   protected Color bgColor;
   protected int fontSize = 9;
-  protected Font font = new Font("Dialog", Font.PLAIN, (int)(fontSize * os_scale));
+  protected Font font = new Font("Dialog", Font.PLAIN, fontSize);
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
   protected Rectangle bounds = new Rectangle();
@@ -232,6 +229,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     bounds.width = 0;
     bounds.height = 0;
 
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+    g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
+
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
     }
@@ -258,7 +259,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return;
     }
 
-    g.setFont(font);
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     final Rectangle dbounds = new Rectangle(bounds);
     dbounds.x *= os_scale;
@@ -381,12 +383,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * no counter viewer (i.e. single piece or expanded stack), then place the
      * location name above the centre of the first piece in the stack.
      */
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
     String report = "";
     int x = (int)((bounds.x - bounds.width) * os_scale);
     int y = (int)((bounds.y - 5) * os_scale);
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
-
-    g.setFont(font);
 
     if (displayablePieces.isEmpty()) {
       Point mapPt = map.componentToMap(currentMousePosition.getPoint());
@@ -422,12 +425,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
-
     if (label != null) {
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
-      Graphics2D g2d = ((Graphics2D) g);
+      Graphics2D g2d = (Graphics2D) g;
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      Labeler.drawLabel(g, label, pt.x, pt.y, font, hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      Labeler.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -1061,7 +1063,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       if (value != null) {
         fontSize = ((Integer) value).intValue();
-        font = new Font("Dialog", Font.PLAIN, (int)(fontSize * os_scale));
+        font = font.deriveFont(fontSize);
       }
     }
     else if (PROPERTY_FILTER.equals(name)) {

@@ -289,8 +289,6 @@ public class Inventory extends AbstractConfigurable
     return scrollPane;
   }
 
-  private static final double os_scale = SwingUtils.getSystemScaling();
-
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
@@ -318,6 +316,7 @@ public class Inventory extends AbstractConfigurable
 
               public void paintIcon(Component c, Graphics g, int x, int y) {
                 final Graphics2D g2d = (Graphics2D) g;
+                final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
                 final AffineTransform orig_t = g2d.getTransform();
                 g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 

@@ -447,8 +447,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    */
   public abstract void calculate();
 
-  private static final double os_scale = SwingUtils.getSystemScaling();
-
   /*
    * Panel to display the Grid Editor
    */
@@ -480,6 +478,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     public void paint(Graphics g) {
       if (board != null) {
         final Graphics2D g2d = (Graphics2D) g;
+        final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
         final AffineTransform orig_t = g2d.getTransform();
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 

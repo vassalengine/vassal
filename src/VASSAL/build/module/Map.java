@@ -240,8 +240,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   public Map() {
     getView();
     theMap.addMouseListener(this);
@@ -993,15 +991,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     );
   }
 
-  public int mapToDrawing(int c) {
+  public int mapToDrawing(int c, double os_scale) {
     return scale(c, getZoom() * os_scale);
   }
 
-  public Point mapToDrawing(Point p) {
+  public Point mapToDrawing(Point p, double os_scale) {
     return scale(p, getZoom() * os_scale);
   }
 
-  public Rectangle mapToDrawing(Rectangle r) {
+  public Rectangle mapToDrawing(Rectangle r, double os_scale) {
     return scale(r, getZoom() * os_scale);
   }
 
@@ -1017,15 +1015,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return scale(r, getZoom());
   }
 
-  public int componentToDrawing(int c) {
+  public int componentToDrawing(int c, double os_scale) {
     return scale(c, os_scale);
   }
 
-  public Point componentToDrawing(Point p) {
+  public Point componentToDrawing(Point p, double os_scale) {
     return scale(p, os_scale);
   }
 
-  public Rectangle componentToDrawing(Rectangle r) {
+  public Rectangle componentToDrawing(Rectangle r, double os_scale) {
     return scale(r, os_scale);
   }
 
@@ -1041,27 +1039,27 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return scale(r, 1.0/getZoom());
   }
 
-  public int drawingToMap(int c) {
+  public int drawingToMap(int c, double os_scale) {
     return scale(c, 1.0/(getZoom() * os_scale));
   }
 
-  public Point drawingToMap(Point p) {
+  public Point drawingToMap(Point p, double os_scale) {
     return scale(p, 1.0/(getZoom() * os_scale));
   }
 
-  public Rectangle drawingToMap(Rectangle r) {
+  public Rectangle drawingToMap(Rectangle r, double os_scale) {
     return scale(r, 1.0/(getZoom() * os_scale));
   }
 
-  public int drawingToComponent(int c) {
+  public int drawingToComponent(int c, double os_scale) {
     return scale(c, 1.0/os_scale);
   }
 
-  public Point drawingToComponent(Point p) {
+  public Point drawingToComponent(Point p, double os_scale) {
     return scale(p, 1.0/os_scale);
   }
 
-  public Rectangle drawingToComponent(Rectangle r) {
+  public Rectangle drawingToComponent(Rectangle r, double os_scale) {
     return scale(r, 1.0/os_scale);
   }
 
@@ -1551,6 +1549,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public void drawBoardsInRegion(Graphics g,
                                  Rectangle visibleRect,
                                  Component c) {
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double dzoom = getZoom() * os_scale;
     for (Board b : boards) {
       b.drawRegion(g, getLocation(b, dzoom), visibleRect, dzoom, c);
@@ -1572,15 +1572,16 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       return;
     }
 
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double dzoom = getZoom() * os_scale;
 
-    Graphics2D g2d = (Graphics2D) g;
     Composite oldComposite = g2d.getComposite();
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
     final GamePiece[] stack = pieces.getPieces();
     for (int i = 0; i < stack.length; ++i) {
-      final Point pt = mapToDrawing(stack[i].getPosition());
+      final Point pt = mapToDrawing(stack[i].getPosition(), os_scale);
       if (stack[i].getClass() == Stack.class) {
         getStackMetrics().draw(
           (Stack) stack[i], pt, g, this, dzoom, visibleRect
@@ -1606,20 +1607,23 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public void drawPieces(Graphics g, int xOffset, int yOffset) {
-    if (!hideCounters) {
-      Graphics2D g2d = (Graphics2D) g;
-      Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-      GamePiece[] stack = pieces.getPieces();
-      for (int i = 0; i < stack.length; ++i) {
-        Point pt = mapToDrawing(stack[i].getPosition());
-        stack[i].draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
-        if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
-          highlighter.draw(stack[i], g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
-        }
-      }
-      g2d.setComposite(oldComposite);
+    if (hideCounters) {
+      return;
     }
+
+    Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+    Composite oldComposite = g2d.getComposite();
+    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
+    GamePiece[] stack = pieces.getPieces();
+    for (int i = 0; i < stack.length; ++i) {
+      Point pt = mapToDrawing(stack[i].getPosition(), os_scale);
+      stack[i].draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
+      if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
+        highlighter.draw(stack[i], g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
+      }
+    }
+    g2d.setComposite(oldComposite);
   }
 
   public void drawDrawable(Graphics g, boolean aboveCounters) {
@@ -1756,22 +1760,25 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   protected void clearMapBorder(Graphics g) {
+    final Graphics2D g2d = (Graphics2D) g.create();
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
     if (clearFirst || boards.isEmpty()) {
       g.setColor(bgColor);
       g.fillRect(
         0,
         0,
-        componentToDrawing(theMap.getWidth()),
-        componentToDrawing(theMap.getHeight())
+        componentToDrawing(theMap.getWidth(), os_scale),
+        componentToDrawing(theMap.getHeight(), os_scale)
       );
       clearFirst = false;
     }
     else {
-      final int mw = componentToDrawing(theMap.getWidth());
-      final int mh = componentToDrawing(theMap.getHeight());
+      final int mw = componentToDrawing(theMap.getWidth(), os_scale);
+      final int mh = componentToDrawing(theMap.getHeight(), os_scale);
 
-      final int ew = mapToDrawing(edgeBuffer.width);
-      final int eh = mapToDrawing(edgeBuffer.height);
+      final int ew = mapToDrawing(edgeBuffer.width, os_scale);
+      final int eh = mapToDrawing(edgeBuffer.height, os_scale);
 
       g.setColor(bgColor);
       g.fillRect(0, 0, ew, mh);
@@ -2663,6 +2670,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       }
 
       final Graphics2D g2d = (Graphics2D) g;
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       // HDPI: We may get a transform where scale != 1. This means we
       // are running on an HDPI system. We want to draw at the effective
@@ -2671,7 +2679,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       final AffineTransform orig_t = g2d.getTransform();
       g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
-      final Rectangle r = map.componentToDrawing(getVisibleRect());
+      final Rectangle r = map.componentToDrawing(getVisibleRect(), os_scale);
 
       g2d.setColor(map.bgColor);
       g2d.fillRect(r.x, r.y, r.width, r.height);

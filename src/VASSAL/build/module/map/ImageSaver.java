@@ -68,7 +68,6 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.PNGFileFilter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.swing.ProgressDialog;
-import VASSAL.tools.swing.SwingUtils;
 
 // FIXME: Replace this in 3.2 with tiling code.
 
@@ -87,8 +86,6 @@ public class ImageSaver extends AbstractConfigurable {
   protected static final String DEFAULT_ICON = "/images/camera.gif";
 
   protected static ProgressDialog dialog;
-
-  protected static final double os_scale = SwingUtils.getSystemScaling();
 
   public ImageSaver() {
     final ActionListener al = new ActionListener() {
@@ -214,6 +211,7 @@ public class ImageSaver extends AbstractConfigurable {
     if (s.width == 0) s.width = 1;
     if (s.height == 0) s.height = 1;
 
+    final double os_scale = map.getView().getGraphicsConfiguration().getDefaultTransform().getScaleX();
     final double zoom = map.getZoom() * os_scale;
     int w = (int) Math.round(s.width * zoom);
     int h = (int) Math.round(s.height * zoom);

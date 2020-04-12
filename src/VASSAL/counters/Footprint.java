@@ -60,7 +60,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Displays a movement trail indicating where a piece has been moved
@@ -317,8 +316,6 @@ public class Footprint extends MovementMarkable {
     return "Movement trail";
   }
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
 // FIXME: This method is inefficient.
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
@@ -347,6 +344,9 @@ public class Footprint extends MovementMarkable {
       return;
     }
 
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
     /*
      * If we are asked to be drawn at a different zoom from the current map zoom
      * setting, then don't draw the trail as it will be in the wrong place.
@@ -356,7 +356,6 @@ public class Footprint extends MovementMarkable {
       return;
     }
 
-    final Graphics2D g2d = (Graphics2D) g;
     final boolean selected = Boolean.TRUE.equals(
       Decorator.getOutermost(this).getProperty(Properties.SELECTED));
     final int transparencyPercent = Math.max(0, Math.min(100,
@@ -397,7 +396,7 @@ public class Footprint extends MovementMarkable {
     );
 
     final Rectangle visibleRect =
-      map.componentToDrawing(map.getView().getVisibleRect());
+      map.componentToDrawing(map.getView().getVisibleRect(), os_scale);
 
     final Shape oldClip = g2d.getClip();
 

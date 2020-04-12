@@ -156,19 +156,19 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return;
     }
 
-    double zoom = map.getZoom();
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+    final double zoom = map.getZoom() * os_scale;
     buildStroke(zoom);
 
-    final Graphics2D g2 = (Graphics2D) g;
+    final Composite oldComposite = g2d.getComposite();
+    final Color oldColor = g2d.getColor();
+    final Paint oldPaint = g2d.getPaint();
+    final Stroke oldStroke = g2d.getStroke();
 
-    final Composite oldComposite = g2.getComposite();
-    final Color oldColor = g2.getColor();
-    final Paint oldPaint = g2.getPaint();
-    final Stroke oldStroke = g2.getStroke();
-
-    g2.setComposite(getComposite());
-    g2.setColor(getColor());
-    g2.setPaint(
+    g2d.setComposite(getComposite());
+    g2d.setColor(getColor());
+    g2d.setPaint(
       scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
       getTexture(zoom) : getTexture());
     Area area = getShadeShape(map);
@@ -176,18 +176,18 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
                                      .createTransformedShape(area));
     }
-    g2.fill(area);
+    g2d.fill(area);
     if (border) {
-      g2.setComposite(getBorderComposite());
-      g2.setStroke(getStroke(map.getZoom()));
-      g2.setColor(getBorderColor());
-      g2.draw(area);
+      g2d.setComposite(getBorderComposite());
+      g2d.setStroke(getStroke(zoom));
+      g2d.setColor(getBorderColor());
+      g2d.draw(area);
     }
 
-    g2.setComposite(oldComposite);
-    g2.setColor(oldColor);
-    g2.setPaint(oldPaint);
-    g2.setStroke(oldStroke);
+    g2d.setComposite(oldComposite);
+    g2d.setColor(oldColor);
+    g2d.setPaint(oldPaint);
+    g2d.setStroke(oldStroke);
   }
 
   /**

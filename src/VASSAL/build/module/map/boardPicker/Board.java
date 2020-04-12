@@ -69,7 +69,6 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
-import VASSAL.tools.swing.SwingUtils;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
@@ -328,8 +327,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  protected static final double os_scale = SwingUtils.getSystemScaling();
-
   public void drawRegion(final Graphics g,
                          final Point location,
                          Rectangle visibleRect,
@@ -344,6 +341,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
     if (!visibleRect.intersects(bounds)) {
       return;
     }
+
+    final Graphics2D g2d = (Graphics2D) g;
+    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     visibleRect = visibleRect.intersection(bounds);
     if (boardImageOp != null) {
@@ -420,7 +420,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 else {
                   Float a = alpha.get(tile);
                   if (a != null && a < 1.0f) {
-                    final Graphics2D g2d = (Graphics2D) g;
                     final Composite oldComp = g2d.getComposite();
                     g2d.setComposite(
                       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));

@@ -604,8 +604,6 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     protected Polygon savePoly;
     final protected JLabel warning = new JLabel("Zone has not been defined");
 
-    private static final double os_scale = SwingUtils.getSystemScaling();
-
     public Editor(final Zone zone) {
       super(PATH, null);
       button = new JButton("Define Shape");
@@ -620,6 +618,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         protected void paintBackground(Graphics g) {
           if (board != null) {
             final Graphics2D g2d = (Graphics2D) g;
+            final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
             final AffineTransform orig_t = g2d.getTransform();
             g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
