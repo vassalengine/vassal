@@ -26,7 +26,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -334,20 +333,6 @@ public class ImageUtils {
     return dst;
   }
 
-  protected static final boolean IS_MAC_RETINA;
-
-  static {
-    final Object o = Toolkit.getDefaultToolkit().getDesktopProperty(
-      "apple.awt.contentScaleFactor"
-    );
-
-    IS_MAC_RETINA = (o instanceof Number) && ((Number) o).doubleValue() == 2.0;
-  }
-
-  public static boolean isMacRetina() {
-    return IS_MAC_RETINA;
-  }
-
   private static boolean isHeadless() {
     return GraphicsEnvironment.isHeadless();
   }
@@ -373,22 +358,8 @@ public class ImageUtils {
     }
     else {
       final GraphicsConfiguration gc = getGraphicsConfiguration();
-
       oimg = gc.createCompatibleImage(1,1, BufferedImage.OPAQUE);
       timg = gc.createCompatibleImage(1,1, BufferedImage.TRANSLUCENT);
-
-      // Bug workaround: MacOX X machines with Retina displays are incapable
-      // of painting TYPE_INT_ARGB_PRE images, despite that these systems
-      // return that type as the "compatible" image type.
-      if (isMacRetina()) {
-        if (oimg.getType() == BufferedImage.TYPE_INT_ARGB_PRE) {
-          oimg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        }
-
-        if (timg.getType() == BufferedImage.TYPE_INT_ARGB_PRE) {
-          timg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        }
-      }
     }
 
     compatOpaqueImage = oimg;
