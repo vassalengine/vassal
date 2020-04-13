@@ -156,6 +156,7 @@ public class ComponentSplitter {
     }
     return split;
   }
+
   /**
    * Contains methods to automatically show/hide one of its components (the "hideable" component) while the other (the
    * "base" component) remains always visible. Can optionally change the size of its top level ancestorExtension when
