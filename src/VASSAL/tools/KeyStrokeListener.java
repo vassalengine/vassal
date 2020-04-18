@@ -82,10 +82,10 @@ public class KeyStrokeListener {
   
   public void removeKeyStrokeSource(KeyStrokeSource src) {
     if (src != null) {
-      sources.remove(src);      
-    }
-    if (key != null) {
-      src.getComponent().unregisterKeyboardAction(key);
+      sources.remove(src);
+      if (key != null) {
+        src.getComponent().unregisterKeyboardAction(key);
+      }
     }
   }
 }
