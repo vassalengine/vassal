@@ -37,8 +37,6 @@ public class Mp3AudioClip implements AudioClip {
 
   protected URL url = null;
   protected String name = null;
-  protected Player player = null;
-  protected InputStream stream = null;
 
   public Mp3AudioClip(String name) throws IOException {
     this.name = name;
@@ -69,21 +67,13 @@ public class Mp3AudioClip implements AudioClip {
     return null;
   }
 
-  public void play() {
-    // load the stream
-    stream = getStream();
-    if (stream == null) {
-      return;
-    }
-
-    // create the player
-    player = null;
+  protected Player getPlayer(InputStream stream) {
+    Player player = null;
     try {
       player = new Player(stream);
     }
     catch (JavaLayerException e) {
       ErrorDialog.bug(e);
-      return;
     }
     finally {
       if (player == null) {
@@ -93,6 +83,22 @@ public class Mp3AudioClip implements AudioClip {
       }
     }
 
+    return player;
+  }
+
+  public void play() {
+    // load the stream
+    final InputStream stream = getStream();
+    if (stream == null) {
+      return;
+    }
+
+    // create the player
+    final Player player = getPlayer(stream);
+    if (player == null) {
+      return;
+    }
+
     // run in new thread to play in background
     new Thread() {
       public void run() {
@@ -100,7 +106,9 @@ public class Mp3AudioClip implements AudioClip {
           player.play();
         }
         catch (JavaLayerException e) {
-          ErrorDialog.bug(e);
+          ErrorDialog.dataError(new BadDataReport(
+            "Error reading sound file", name, e
+          ));
         }
         finally {
           IOUtils.closeQuietly(stream);
