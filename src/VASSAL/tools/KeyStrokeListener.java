@@ -79,13 +79,4 @@ public class KeyStrokeListener {
       src.getComponent().registerKeyboardAction(l, key, src.getMode());
     }
   }
-  
-  public void removeKeyStrokeSource(KeyStrokeSource src) {
-    if (src != null) {
-      sources.remove(src);
-      if (key != null) {
-        src.getComponent().unregisterKeyboardAction(key);
-      }
-    }
-  }
 }
