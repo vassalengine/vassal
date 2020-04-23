@@ -53,6 +53,7 @@ JDOCLINK:=file:///usr/share/javadoc/java-13-openjdk-13.0.0.33-1.rolling.fc30.x86
 
 WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
+LINJMODS:=/usr/lib/jvm/java-13-openjdk-13.0.2.8-1.rolling.fc31.x86_64/jmods
 
 VNUM:=3.3.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
@@ -171,6 +172,10 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
+#
+# OS X
+#
+
 $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
@@ -204,41 +209,73 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
 	$(DMG) dmg $< $@
 
-$(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe
-	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
-#	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
-	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
-	cp -a CHANGES LICENSE README $(TMPDIR)/VASSAL-$(VERSION)
-#	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp -a $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
-	find $(TMPDIR)/VASSAL-$(VERSION) -type f -exec chmod 644 \{\} \+
-	find $(TMPDIR)/VASSAL-$(VERSION) -type d -exec chmod 755 \{\} \+
-	chmod 755 $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe,sh}
-	cd $(TMPDIR) ; zip -9rv $(@F) VASSAL-$(VERSION) ; cd ..
+#
+# other
+#
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
-	cp dist/VASSAL.sh $(TMPDIR)/VASSAL-$(VERSION)
-	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe}
-	tar cjvf $@ -C $(TMPDIR) VASSAL-$(VERSION)
+$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe
+	mkdir -p $@
+	cp -a $(DOCDIR) $@/doc
+	cp -a CHANGES LICENSE README $@
+	cp -a $(LIBDIR) $@/lib
+	cp dist/VASSAL.sh dist/windows/VASSAL.bat $@
+	find $@ -type f -exec chmod 644 \{\} \+
+	find $@ -type d -exec chmod 755 \{\} \+
+	chmod 755 $@/VASSAL.{bat,sh}
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
-	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{sh,bat}
-	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
-	mv $(TMPDIR)/VASSAL-$(VERSION)/CHANGES $(TMPDIR)/VASSAL-$(VERSION)/CHANGES.txt
-	mv $(TMPDIR)/VASSAL-$(VERSION)/LICENSE $(TMPDIR)/VASSAL-$(VERSION)/LICENSE.txt
-	mv $(TMPDIR)/VASSAL-$(VERSION)/README $(TMPDIR)/VASSAL-$(VERSION)/README.txt
-	$(JLINK) --module-path $(WINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $(TMPDIR)/VASSAL-$(VERSION)/jre
-	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
+$(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION)
+	pushd $(TMPDIR)/VASSAL-$(VERSION)-other ; zip -9rv ../../$@ VASSAL-$(VERSION) ; popd
+
+#
+# Linux
+#
+
+$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
+	mkdir -p $@
+	cp -a $(DOCDIR) $@/doc
+	cp -a CHANGES LICENSE README $@
+	cp -a $(LIBDIR) $@/lib
+	cp dist/linux/VASSAL.sh $@
+	find $@ -type f -exec chmod 644 \{\} \+
+	find $@ -type d -exec chmod 755 \{\} \+
+	chmod 755 $@/VASSAL.sh
+	$(JLINK) --module-path $(LINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+
+$(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION)
+	tar cjvf $@ -C $(TMPDIR)/VASSAL-$(VERSION)-linux VASSAL-$(VERSION)
+
+#
+# Windows
+#
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
+	mkdir -p $@
+	cp $(TMPDIR)/VASSAL.exe $@
+	cp -a CHANGES $@/CHANGES.txt
+	cp -a LICENSE $@/LICENSE.txt
+	cp -a README $@/README.txt
+	cp -a $(DOCDIR) $@/doc
+	cp -a $(LIBDIR) $@/lib
+	find $@ -type f -exec chmod 644 \{\} \+
+	find $@ -type d -exec chmod 755 \{\} \+
+	chmod 755 $@/VASSAL.exe
+	$(JLINK) --module-path $(WINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	for i in `find $@ -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
-			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
+			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
 		find $$i -maxdepth 1 -type f -printf 'File "%p"\n' ; \
 	done >$(TMPDIR)/install_files.inc
 	sed -e 's/^SetOutPath/RMDir/' \
-			-e 's/^File "$(TMPDIR)\/VASSAL-$(VERSION)/Delete "$$INSTDIR/' \
+			-e 's|^File "$@|Delete "$$INSTDIR|' \
 			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
 		tac	>$(TMPDIR)/uninstall_files.inc
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION)
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
+
+#
+# source
+#
 
 $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
 #	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
