@@ -211,8 +211,7 @@ public class ImageSaver extends AbstractConfigurable {
     if (s.width == 0) s.width = 1;
     if (s.height == 0) s.height = 1;
 
-    final double os_scale = map.getView().getGraphicsConfiguration().getDefaultTransform().getScaleX();
-    final double zoom = map.getZoom() * os_scale;
+    final double zoom = map.getZoom();
     int w = (int) Math.round(s.width * zoom);
     int h = (int) Math.round(s.height * zoom);
 
