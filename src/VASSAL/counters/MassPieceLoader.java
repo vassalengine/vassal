@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -432,7 +433,9 @@ public class MassPieceLoader {
     protected void loadImageNames(File dir) {
       imageNames.clear();
       if (dir != null && dir.isDirectory()) {
-        for (File file : dir.listFiles()) {
+        final File[] files = dir.listFiles();
+        Arrays.sort(files);
+        for (File file : files) {
           final String imageName = file.getName();
           if (ImageUtils.hasImageSuffix(imageName)) {
             imageNames.add(imageName);
