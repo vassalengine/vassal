@@ -58,8 +58,8 @@ LINJMODS:=/usr/lib/jvm/java-13-openjdk-13.0.2.8-1.rolling.fc31.x86_64/jmods
 VNUM:=3.3.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 SVNVERSION:=$(shell git svn log -1 --oneline | grep -oP '^r\K\d+')
-VERSION:=$(VNUM)-svn$(SVNVERSION)
-#VERSION:=$(VNUM)
+#VERSION:=$(VNUM)-svn$(SVNVERSION)
+VERSION:=$(VNUM)-beta1
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
