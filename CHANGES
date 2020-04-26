@@ -1,5 +1,8 @@
 3.3.0-beta1 - ???
 
+* 12559: HiDPI support
+* 12558: Bundle Java with VASSAL 
+* 12557: Compatibility with Java 9+ 
 * 12556: Mass Piece Definer does not sort image names
 
 3.2.17 - 31 December 2016
