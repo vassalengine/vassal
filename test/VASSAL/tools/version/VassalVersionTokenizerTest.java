@@ -33,13 +33,13 @@ public class VassalVersionTokenizerTest {
       { "1.2.3",         1, 2, 3           },
       { "1.2.3.4",       1, 2, 3, 4        },
       { "1.2.3-svn7890", 1, 2, 3, -2, 7890 },
-      { "3.2.0-beta1",   3, 2, 0, -2, 8193 },
       { "1.2.3-rc3",     1, 2, 3, -2, null },
       { "foobarbaz",     null              },
       { "1.2.foo",       1, 2, null        },
       { "1.2-foo",       1, 2, -2, null    },
       { "1.2-svn1234.8", 1, 2, -2, null    },
-      { "3.0b6",         3, 0, null        }
+      { "3.0b6",         3, 0, null        },
+      { "3.3.0-beta1",   3, 3, 0, -2, 9367 },
     };
 
     for (Object[] v : versions) {

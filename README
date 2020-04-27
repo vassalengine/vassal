@@ -4,6 +4,9 @@ The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta1.
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
 ********************************************************************************
 
+* This is a beta release. Things may be broken which worked in 3.2.17. If
+  you find a bug introduced since 3.2.17, please report it. 
+
 * If you save a module, game, or log in VASSAL 3.3, you will NOT be able to
   open it afterwards with VASSAL 3.2. We recommend keeping a backup copy of
   any pre-3.3 files you plan to modify in 3.3 until you've verified that
@@ -11,7 +14,9 @@ IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
 
 * Some modules containing custom drawing code may render incorrectly on HiDPI
   displays. If you are the maintainer of such a module, let us know and we
-  can advise you about what needs updating for 3.3 in your code.
+  can advise you about what needs updating for 3.3 in your code. (We are aware
+  already that VASL has this problem and are working with its maintainers to
+  update it.)
 
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
@@ -24,7 +29,7 @@ Download
 
 For Linux:
 
-  https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL--linux.tar.bz2
+  https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.0-beta1-linux.tar.bz2
 
 For Mac OS X:
 
@@ -66,7 +71,7 @@ Bug fixes:
 
 For changes prior to 3.3.0-beta1, see the change log.
 
-Please report all bugs in 3.3.0 even if they are bugs which you've already
+Please report all bugs in 3.3.0-beta1 even if they are bugs which you've already
 reported against other versions. We take your bug reports seriously---they're
 the reason we've been able to fix so many bugs.
 
@@ -75,7 +80,7 @@ the reason we've been able to fix so many bugs.
 Minimum Requirements
 *********************
 
-VASSAL 3.3 requires Java 9 or later to run.
+VASSAL 3.3 requires Java 9 or later.
 
 
 *********************

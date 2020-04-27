@@ -1,129 +1,45 @@
-[size=200][b]VASSAL 3.2.17 released[/b][/size]
+[size=200][b]VASSAL 3.3.0-beta1 released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.2.17, which which fixes several problems found in earlier versions.
+The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta1.
 
 
 [size=150][b]IMPORTANT[/b][/size]
 
-* If you save a module, game, or log in VASSAL 3.2, you will NOT be able to open it afterwards with VASSAL 3.1. We recommend keeping a backup copy of any pre-3.2 files you plan to modify in 3.2 until you've verified that everything works to your satisfaction.
+* This is a beta release. Things may be broken which worked in 3.2.17. If you find a bug introduced since 3.2.17, please report it. 
 
-* If you found it necessary to set a very large maximum heap (> 512MB) for a module with VASSAL 3.1, it should now be possible with VASSAL 3.2 to set a much lower maximum heap and achieve similar or better display performance. 512MB should now be adequate for most modules.
+* If you save a module, game, or log in VASSAL 3.3, you will NOT be able to open it afterwards with VASSAL 3.2. We recommend keeping a backup copy of any pre-3.3 files you plan to modify in 3.3 until you've verified that everything works to your satisfaction.
 
-* VASL 6 is compatible with VASSAL 3.2. VASL users, please upgrade!
-
-* If you are using MacOS X 10.8.3 or later, you may see the message "VASSAL-3.2.17.app is damaged and can’t be opened. You should move it to the Trash." The problem is NOT that your download was corrupt, but rather that MacOS is preventing you from running VASSAL. To start VASSAL, control-click or right-click the app bundle's icon and select Open from the menu. You'll see a dialog asking whether you want to open VASSAL. Select "Open". Thereafter, you should be able to start VASSAL normally.
-
-* Oracle's Java 7 and 8 have very poor rendering performance on some MacOS X systems, particularly Yosemite. If you are experiencing this, please use Apple's Java 6 instead.
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
 
 [size=150][b]Download[/b][/size]
 
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.17-linux.tar.bz2]Linux[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.17-macosx.dmg]Mac OS X[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.17-windows.exe]Windows[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.17-other.zip]Other[/url]
-[url=http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.17-src.zip]Source code[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.0-beta1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-windows.exe]Windows[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-src.zip]Source code[/url]
 
-[size=150][b]Recent Changes[/b][/size]
-The following bugs in 3.2.16 are fixed in 3.2.17:
+[size=150][b]New in 3.3.0-beta1[/b][/size]
 
-* 12534: Regular Expression matching not supported in Calulated Property
-* 12533: Game Refresher fails if Extensions are loaded
-* 12527: "Save Game" behaves as "Save As"
-* 12526: Switching desktop on Mac OS X 10.11.3 sometimes clones the currently selected unit
-* 12518: Rotated Layer following property does not update if property changes
-* 11649: Persistent LOS thread not working with zoom different from 100%
-* 11404: Some uses of the PRNG introduce a minuscule amount of modulo bias
-*  9670: IllegalStateException: Icon Family VASSAL not found in ServerAddressBook.getCurrentIcon
+Features:
 
-The following bugs in 3.2.15 are fixed in 3.2.16:
+* 12557: Compatibility with Java 9+: VASSAL 3.2 would not run with anything newer than Java 8. VASSAL 3.3 now requires Java 9 or later. 
 
-* 12524: Images retile unnecessarily due to bad timestamp
-* 12522: Deck shuffling logged incorrectly
+* 12558: Bundle Java with VASSAL: The Linux, Mac, and Windows packages now include Java 13. It is no longer necessary to install Java separately when using one of these packages.
 
-For changes prior to 3.2.16, see the change log.
+* 12559: HiDPI support: VASSAL now has support for displays with a high pixel density (e.g., Retina displays). On such displays, you should now see correctly sized interface elements and sharper image rendering.
 
-Please report all bugs in 3.2.17, even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
+Bug fixes:
 
-[size=150][b]New Features in 3.2[/b][/size]
+* 12556: Mass Piece Definer does not sort image names
 
-* Levels within a Layer can be moved up or down the level list using buttons. [RFE 1919]
+For changes prior to 3.3.0-beta1, see the change log.
 
-* Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards' options in right-click menu in Editor. Specify a folder of images, specify a counter template and Vassal will automatically load the images and generate units. [RFE 1927]
-
-* Description field added to Toolbar Menu and Multi-Action button components. [RFE 1885]
-
-* Specify Keystrokes by name - Key Commands can be entered as single Key Strokes as in earlier versions of Vassal, or can be given a 2 or more character names. Named Key Strokes are essentially 'invisible' to users. Vassal guarantees that a unique real keyStroke will be allocated to each uniquely named Keystroke. [RFE 1928]
-
-* Decks can specify by Property Expression which pieces are allowed to be dropped onto them. Pieces which may not be added are returned to where the drag started. [RFE 1935]
-
-* Decks can now specify a Hotkey for the Reverse and FaceUp/Down command and can customize the Reverse and Re-shuffle menu command names. [RFE 1938]
-
-* Counters now support the DeckPosition property. If a piece is not in a Deck, 0 is returned. If a piece is in a Deck, then the position of the piece relative to the top of the Deck is returned. The top piece returns 1, the next piece down returns 2 etc. [RFE 1937]
-
-* Support for MP3 sound files. [RFE 1934]
-
-* Fix Display/Color handling for Grids and Numberings. Allow Numbering to be visible when grid not visible in Zones. [RFE 1917]
-
-* Implementation of BeanShell allowing arbitrarily complex Java expressions to be used in Property Match Expressions, In-line Java expressions and new Calculated Property trait. [RFE 1801]
-
-* Display the Log File Comments in the Chat Window when a log file is opened or continued. [RFE 1939]
-
-* Global Key Commands created on a Map now have an option to affect counters on all Maps, not just the Map they are created on. [RFE 1902]
-
-* Traits that move a counter (Send To Location, Return to Deck, Moved Fixed Distance, Pivot) now update the same location Oldxxxxxx properties that Drag and Drop movement does. [RFE 1792]
-
-* Added repeat (loop) option to Trigger Action and Multi-action button. [RFE 1876]
-
-* Ensure all commands generated by a single user action are undone by a single click of the undo action. [RFE 2816016]
-
-* Option to allow non-owning players to move Restricted Access pieces. [RFE 1789]
-
-* Add 'Snap to Grid?' option to HexGrid and SquareGrid, defaulting to Yes. Allows Grid Snapping to be turned off for the whole grid. [RFE 2842811]
-
-* Streamlined room creation: automatic synchronization on room entry [RFE 1784]
-
-* New scenario updater [RFE 1899]
-
-* Allow Dynamic Property Select Value list to be dynamic [RFE 1926]
-
-* All scaling is now high-quality. Low-quality scaling (in hardware) caused too many graphics glitches on Windows.
-
-* The Invisible trait now supports adjustable transparency.
-
-* Map images are tiled the first time modules are loaded, to create an image cache. This should dramatically reduce the amount of memory needed to run modules.
-
-* Improved display of properties in the Editor [RFE 4323]:
-
-  - Display all available properties from all components structured in the
-    same way as the components of the module are built instead of all the
-    global properties being dumped in one menu.
-  - Available Global properties now appear without having to start a game.
-    Previously, globals like Deck and Zone properties where not available
-    unless you had started a game.
-  - Property and component names are sorted, except for the Piece Property
-    menu where the traits are displayed in the same order they exist in the
-    counter.
-  - If a menu has too many options to fit on the screen, it is now
-    scrollable, instead of stretching off the screen and leaving some
-    properties inaccessible.
-
-* Improvements to Layer trait [RFE 4717]:
-  - Follow Property name may be a BeanShell expression.
-  - Improved layout for Layer dialog in Editor.
-
-* Notify user when image loading fails [RFE 1887]
+Please report all bugs in 3.3.0-beta1 even if they are bugs which you've already reported against other versions. We take your bug reports seriously---they're the reason we've been able to fix so many bugs.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
-VASSAL 3.2 requires the Java Runtime Envrionment to run.
-
-Linux: Java 6 or later is required for using VASSAL on Linux.
-
-MacOS X: The recommended minimum Java version for using VASSAL on MacOS X is 1.5.0_08 (a.k.a. Java 5 Update 8) for Macs where Java 6 is unavailable, and Java 6 or later for Macs where Java 6 is available.
-
-Windows: The recommended minimum Java version for Windows is 1.6.0_45 (a.k.a. Java 6 Update 45). Windows users installing VASSAL with the Windows installer will be prompted to update Java if what they have is older than 1.6.0_45. After upgrading Java on Windows, you must restart your computer in order for Java programs to work properly.
-
-If you've installed Java 7 on Windows and thereafter VASSAL fails to launch: The Java 7 installer does not uninstall Java 6, and having both installed simultaneously prevents both from working properly. Therefore, check whether you also still have Java 6 installed. If so, removing Java 6 and rebooting will most likely solve your problem.
+VASSAL 3.3 requires Java 9 or later.
 
 [size=159][b]Help us test[/b][/size]
 
