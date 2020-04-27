@@ -1,4 +1,4 @@
-[size=18][b]VASSAL 3.2.17 released[/b][/size]
+[size=18][b]VASSAL 3.3.0-beta1 released[/b][/size]
 The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta1.
 
 [size=16][b]IMPORTANT[/b][/size]
@@ -9,11 +9,11 @@ The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta1.
 * Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
 
 [size=16][b]Download[/b][/size]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.0-beta1-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-windows.exe]Windows[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-other.zip]Other[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/VASSAL-3.3.0-beta1-src.zip]Source code[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.0-beta1/VASSAL-3.3.0-beta1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.0-beta1/VASSAL-3.3.0-beta1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.0-beta1/VASSAL-3.3.0-beta1-windows.exe]Windows[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.0-beta1/VASSAL-3.3.0-beta1-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.0-beta1/VASSAL-3.3.0-beta1-src.zip]Source code[/url]
 
 [size=16][b]New in 3.3.0-beta1[/b][/size]
 Features:
