@@ -230,7 +230,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-
 # Linux
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
+$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -239,7 +239,6 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.sh
-	$(JLINK) --module-path $(LINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 
 $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION)
 	tar cjvf $@ -C $(TMPDIR)/VASSAL-$(VERSION)-linux VASSAL-$(VERSION)
