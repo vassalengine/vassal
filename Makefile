@@ -59,7 +59,7 @@ VNUM:=3.3.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 SVNVERSION:=$(shell git svn log -1 --oneline | grep -oP '^r\K\d+')
 #VERSION:=$(VNUM)-svn$(SVNVERSION)
-VERSION:=$(VNUM)-beta1
+VERSION:=$(VNUM)-beta2
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
