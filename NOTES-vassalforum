@@ -41,6 +41,8 @@ Please report all bugs in 3.3.0-beta1 even if they are bugs which you've already
 
 VASSAL 3.3 requires Java 9 or later.
 
+The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems.
+
 [size=159][b]Help us test[/b][/size]
 
 Should you find any problems/oddities/bugs, please tell us so that we can
