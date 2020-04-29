@@ -211,7 +211,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           Point[] pos = new Point[s.getPieceCount()];
           map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
           for (int i = 0; i < pos.length; ++i) {
-            if (selection.contains(pos[i])) {
+            if (mapsel.contains(pos[i])) {
               if (selecting) {
                 KeyBuffer.getBuffer().add(s.getPieceAt(i));
               }
