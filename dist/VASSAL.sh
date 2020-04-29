@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Execute this file to launch VASSAL on MacOS or Linux
+# Execute this file to launch VASSAL on Unix
 #
 
 # Find absolute path where VASSAL is installed
