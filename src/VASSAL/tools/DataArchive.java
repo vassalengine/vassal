@@ -458,7 +458,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final int minor = (data[4] << 8) | data[5];
     final int major = (data[6] << 8) | data[7];
 
-    if (major > 53 || (major == 53 && minor != 0)) {
+    if (major > 55 || (major == 55 && minor != 0)) {
       ProblemDialog.showDisableable(
         JOptionPane.WARNING_MESSAGE,
         null,
@@ -466,7 +466,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         cs,
         "Incompatible Custom Code",
         "The Custom Code In This Module Should Be Recompiled",
-        "This module contains custom Java code (" + name + ") which was not compiled to be Java 9 compatible. As a result, this module will not run on all versions of Java which VASSAL itself supports.\n\nPlease check whether there is an updated version of this module. If not, please contact the maintainer of this module and request that it be fixed."
+        "This module contains custom Java code (" + name + ") which was not compiled to be Java 11 compatible. As a result, this module will not run on all versions of Java which VASSAL itself supports.\n\nPlease check whether there is an updated version of this module. If not, please contact the maintainer of this module and request that it be fixed."
       );
     }
 
