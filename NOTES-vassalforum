@@ -29,7 +29,7 @@ Features:
 
 * 12559: HiDPI support: VASSAL now has support for displays with a high pixel density (e.g., Retina displays). On such displays, you should now see correctly sized interface elements and sharper image rendering.
 
-Bug fixes in 3.3.0-beta1:
+Bug fixes in 3.3.0-beta2:
 
 * 12579: Don't bundle Java on Linux
 
