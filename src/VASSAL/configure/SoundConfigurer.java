@@ -96,8 +96,7 @@ public class SoundConfigurer extends Configurer {
         new Dimension(textField.getMaximumSize().width,
                       textField.getPreferredSize().height));
       textField.setEditable(false);
-      textField.setText(DEFAULT.equals(clipName) ?
-                        defaultResource : clipName);
+      textField.setText(DEFAULT.equals(clipName) ? defaultResource : clipName);
       controls.add(textField);
     }
     return controls;
