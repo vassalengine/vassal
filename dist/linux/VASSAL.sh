@@ -12,7 +12,7 @@ if [ ! -x "$JAVA" ]; then
   exit 1
 fi
 
-# Check the Java vesion; we require Java 9+.
+# Check the Java vesion; we require Java 11+.
 VERSION=$("$JAVA" -version 2>&1 | head -1 | sed -e 's/.* version "//; s/".*//')
 
 # Java 8 and earlier formats version x.y as 1.x.y
@@ -25,13 +25,13 @@ fi
 # Check that the major version we found is an integer
 MAJOR=$(echo "$MAJOR" | sed -e 's/[^0-9]//g')
 if [ -z "$MAJOR" ]; then
-  echo "Error: VASSAL requires Java 9 or later. The Java you are using ($JAVA) has an unrecognizable version '$VERSION'." 2>&1
+  echo "Error: VASSAL requires Java 11 or later. The Java you are using ($JAVA) has an unrecognizable version '$VERSION'." 2>&1
   exit 1
 fi
 
-# Check that the major version we found is >= 9
-if [ "$MAJOR" -lt 9 ]; then
-  echo "Error: VASSAL requires Java 9 or later. The Java you are using ($JAVA) is Java $MAJOR." 2>&1
+# Check that the major version we found is >= 11
+if [ "$MAJOR" -lt 11 ]; then
+  echo "Error: VASSAL requires Java 11 or later. The Java you are using ($JAVA) is Java $MAJOR." 2>&1
   exit 1
 fi
 
