@@ -2670,6 +2670,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       }
 
       final Graphics2D g2d = (Graphics2D) g;
+
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       // HDPI: We may get a transform where scale != 1. This means we

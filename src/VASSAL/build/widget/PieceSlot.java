@@ -216,6 +216,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g.setColor(c);
 
     if (getExpandedPiece() == null) {
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+
       final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, size.width - 1, size.height - 1);
       g.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));

@@ -101,6 +101,7 @@ public class ColorButton extends JButton {
       }
       else {
         // paint no color and a "nil" if the color is null
+        g2d.addRenderingHints(SwingUtils.FONT_HINTS);
         g.setColor(UIManager.getColor("controlText"));
         final Font font = FONT.deriveFont((float)(FONT.getSize() * os_scale));
         g.setFont(font);

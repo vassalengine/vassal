@@ -18,7 +18,9 @@
  */
 package VASSAL.tools.swing;
 
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import java.util.Map;
 
 public class SwingUtils {
   public static AffineTransform descaleTransform(AffineTransform t) {
@@ -28,4 +30,6 @@ public class SwingUtils {
       t.getTranslateX(), t.getTranslateY()
     );
   }
+
+  public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 }

@@ -1,5 +1,7 @@
 3.3.0-beta3 - ??
 
+* 12732: Use all available rendering hints for text
+* 12731: javax.sound.samples.Clip fails to convert WAV files it can play
 * 12724: Bundle Java 14 with Windows and Mac packages
 * 12613: Advance maximum custom class version to Java 11
 
