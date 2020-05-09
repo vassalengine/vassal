@@ -19,10 +19,8 @@
 package VASSAL.tools;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
@@ -35,68 +33,95 @@ import VASSAL.tools.AudioClip;
 import VASSAL.tools.io.IOUtils;
 
 public class AudioSystemClip implements AudioClip {
-  protected Clip clip;
+  protected Clip the_clip;
 
-  public AudioSystemClip(URL url) throws IOException {
-    AudioInputStream ais = null;
+  protected Clip getClip(InputStream in) throws IOException {
+    if (!in.markSupported()) {
+      // AudioInputStream requires a stream which is markable
+      in = new BufferedInputStream(in);
+    }
+
+    // try to get a Clip
+    Clip clip = null;
     try {
       try {
-        ais = AudioSystem.getAudioInputStream(url.openStream());
-      }
-      catch (UnsupportedAudioFileException e) {
-        throw new IOException(e); 
-      }
-
-      try {
         clip = AudioSystem.getClip();
-        clip.open(ais);
       }
       catch (IllegalArgumentException e) {
         throw new IOException(e);
       }
       catch (LineUnavailableException e) {
-        throw new IOException(e); 
+        throw new IOException(e);
       }
-    }
-    finally {
-      IOUtils.closeQuietly(ais);
-    }
-  }
+      catch (SecurityException e) {
+        throw new IOException(e);
+      }
 
-  public AudioSystemClip(InputStream in) throws IOException {
-    final BufferedInputStream bis = new BufferedInputStream(in);
-    try {
+      // wrap the input stream
       AudioInputStream ais = null;
       try {
         try {
-          ais = AudioSystem.getAudioInputStream(bis);
+          ais = AudioSystem.getAudioInputStream(in);
         }
         catch (UnsupportedAudioFileException e) {
           throw new IOException(e);
         }
 
+        // convert the audio stream to the type the clip wants
+        AudioInputStream cais = null;
         try {
-          clip = AudioSystem.getClip();
-          clip.open(ais);
+          try {
+            cais = AudioSystem.getAudioInputStream(clip.getFormat(), ais);
+          }
+          catch (IllegalArgumentException e) {
+            throw new IOException(e);
+          }
+
+          try {
+            clip.open(cais);
+            return clip;
+          }
+          catch (IllegalArgumentException e) {
+            throw new IOException(e);
+          }
+          catch (LineUnavailableException e) {
+            throw new IOException(e);
+          }
+          catch (SecurityException e) {
+            throw new IOException(e);
+          }
         }
-        catch (IllegalArgumentException e) {
-          throw new IOException(e);
-        }
-        catch (LineUnavailableException e) {
-          throw new IOException(e);
+        finally {
+          IOUtils.closeQuietly(cais);
         }
       }
       finally {
         IOUtils.closeQuietly(ais);
       }
     }
-    finally {
-      IOUtils.closeQuietly(bis);
+    catch (Exception e) {
+      IOUtils.closeQuietly(clip);
+      throw e;
     }
   }
 
+  public AudioSystemClip(URL url) throws IOException {
+    InputStream in = null;
+    try {
+      in = url.openStream();
+      the_clip = getClip(in);
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
+
+  public AudioSystemClip(InputStream in) throws IOException {
+    the_clip = getClip(in);
+  }
+
   public void play() {
-    clip.setFramePosition(0);
-    clip.start();
+    the_clip.setFramePosition(0);
+    the_clip.start();
   }
 }
