@@ -22,13 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.util.zip.ZipFile;
-
-import javax.imageio.stream.ImageInputStream;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -116,84 +111,19 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   }
 
   /**
-   * Close an {@link ObjectInput} unconditionally. Equivalent to
-   * calling <code>o.close()</code> when <code>o</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
+   * Close an {@link AutoCloseable} unconditionally. Equivalent to
+   * calling <code>c.close()</code> when <code>c</code> is nonnull.
    *
-   * @param o a (possibly <code>null</code>) <code>ObjectInput</code>
+   * @param c a (possibly <code>null</code>) <code>AutoCloseable</code>
    */
-  public static void closeQuietly(ObjectInput o) {
-    if (o == null) return;
+  public static void closeQuietly(AutoCloseable c) {
+    if (c == null) return;
 
     try {
-      o.close();
+      c.close();
     }
-    catch (IOException e) {
+    catch (Exception e) {
       // ignore
-    }
-  }
-
-  /**
-   * Close an {@link ObjectOutput} unconditionally. Equivalent to
-   * calling <code>o.close()</code> when <code>o</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param o a (possibly <code>null</code>) <code>ObjectOutput</code>
-   */
-  public static void closeQuietly(ObjectOutput o) {
-    if (o == null) return;
-
-    try {
-      o.close();
-    }
-    catch (IOException e) {
-      // ignore
-    }
-  }
-
-  /**
-   * Close a {@link ZipFile} unconditionally. Equivalent to
-   * calling <code>z.close()</code> when <code>z</code> is nonnull.
-   * {@link IOException}s are swallowed, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param z a (possibly <code>null</code>) <code>ZipFile</code>
-   */
-  // Why doesn't ZipFile implement Closeable? Argh!
-  public static void closeQuietly(ZipFile z) {
-    if (z == null) return;
-
-    try {
-      z.close();
-    }
-    catch (IOException e) {
-      // ignore
-    }
-  }
-
-  /**
-   * Close an {@link ImageInputStream} unconditionally. Equivalent to
-   * calling <code>s.close()</code> when <code>s</code> is nonnull.
-   * {@link IOException}s are quietly logged, as there is generally
-   * nothing that can be done about exceptions on closing.
-   *
-   * @param s a (possibly <code>null</code>) <code>ImageInputStream</code>
-   */
-  // Why doesn't ImageInputStream implement Closeable? Argh!
-  public static void closeQuietly(ImageInputStream s) {
-    if (s == null) return;
-
-    try {
-      s.close();
-    }
-    catch (IOException e) {
-      // ignore
-
-      // Note that ImageInputStreamImpl.close() rather ridiculously throws
-      // an IOException if the stream is already closed. This is always done
-      // via ImageInputStreamImpl.checkClosed().
     }
   }
 }
