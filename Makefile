@@ -49,11 +49,11 @@ JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 
-JDOCLINK:=file:///usr/share/javadoc/java-13-openjdk-13.0.0.33-1.rolling.fc30.x86_64/api
+JDOCLINK:=file:///usr/share/javadoc/java/api
 
 WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
-LINJMODS:=/usr/lib/jvm/java-13-openjdk-13.0.2.8-1.rolling.fc31.x86_64/jmods
+LINJMODS:=/usr/lib/jvm/java-14/jmods
 
 VNUM:=3.3.0
 #SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
