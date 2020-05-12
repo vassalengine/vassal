@@ -1,4 +1,4 @@
-3.3.0-beta3 - ??
+3.3.0-beta3 - 12 May 2020
 
 * 12732: Use all available rendering hints for text
 * 12731: javax.sound.samples.Clip fails to convert WAV files it can play

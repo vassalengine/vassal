@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta2.
+The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta3.
 </p>
 <h2>IMPORTANT</h2>
 <ul>
@@ -10,20 +10,27 @@ The VASSAL Team is happy to announce the release of VASSAL 3.3.0-beta2.
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta2/VASSAL-3.3.0-beta2-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta2/VASSAL-3.3.0-beta2-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta2/VASSAL-3.3.0-beta2-windows.exe' target='_new'>Windows</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta2/VASSAL-3.3.0-beta2-other.zip'  target='_new'>Other</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta2/VASSAL-3.3.0-beta2-src.zip' target='_new'>Source code</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta3/VASSAL-3.3.0-beta3-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta3/VASSAL-3.3.0-beta3-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta3/VASSAL-3.3.0-beta3-windows.exe' target='_new'>Windows</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta3/VASSAL-3.3.0-beta3-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.0-beta3/VASSAL-3.3.0-beta3-src.zip' target='_new'>Source code</a></li>
 </ul>
 
 <h2>New in 3.3.0</h2>
 <p>
 Features:
 <ul>
-  <li>12557: Compatibility with Java 9+: VASSAL 3.2 would not run with anything newer than Java 8. VASSAL 3.3 now requires Java 9 or later.</li>
-  <li>12558: Bundle Java with VASSAL: The Mac and Windows packages now include Java 13. It is no longer necessary to install Java separately when using one of these packages.</li>
+  <li>12557, 12613: Compatibility with Java 9+: VASSAL 3.2 would not run with anything newer than Java 8. VASSAL 3.3 now requires Java 11 or later.</li>
+  <li>12558, 12724: Bundle Java with VASSAL: The Mac and Windows packages now include Java 14. It is no longer necessary to install Java separately when using one of these packages.</li>
   <li>12559: HiDPI support: VASSAL now has support for displays with a high pixel density (e.g., Retina displays). On such displays, you should now see correctly sized interface elements and sharper image rendering.</li>
+</ul>
+</p>
+<p>
+Bug fixes in 3.3.0-beta3:
+<ul>
+  <li>12732: Use all available rendering hints for text</li>
+  <li>12731: javax.sound.samples.Clip fails to convert WAV files it can play</li>
 </ul>
 </p>
 <p>
@@ -44,7 +51,7 @@ For changes prior to 3.3.0-beta1, see the change log.
 
 <h2>Minimum Requirements</h2>
 <p>
-VASSAL 3.3 requires Java 9 or later.
+VASSAL 3.3 requires Java 11 or later.
 </p>
 <p>
 The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems.
