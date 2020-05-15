@@ -1,3 +1,7 @@
+3.3.0-beta4 - ???
+
+* 12805: Upgraded Batik from 1.12 to 1.13
+
 3.3.0-beta3 - 12 May 2020
 
 * 12732: Use all available rendering hints for text
