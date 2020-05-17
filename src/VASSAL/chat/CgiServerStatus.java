@@ -99,7 +99,7 @@ public class CgiServerStatus implements ServerStatus {
 
   public ModuleSummary[] getHistory(String timeRange) {
     final Long l = timeRanges.get(timeRange);
-    return l != null ? getHistory(l.longValue()) : new ModuleSummary[0];
+    return l != null ? getHistory(l) : new ModuleSummary[0];
   }
 
   public String[] getSupportedTimeRanges() {

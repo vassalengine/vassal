@@ -1075,7 +1075,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     if (crc == null) {
       crc = buildCrc();
     }
-    return crc.longValue();
+    return crc;
   }
 
   protected Long buildCrc() {

@@ -51,7 +51,7 @@ public class LongConfigurer extends StringConfigurer {
 
   public long getLongValue(long defaultValue) {
     if (getValue() instanceof Long) {
-      return ((Long) getValue()).longValue();
+      return (Long) getValue();
     }
     else {
       return defaultValue;

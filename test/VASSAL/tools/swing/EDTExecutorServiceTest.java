@@ -118,7 +118,7 @@ public class EDTExecutorServiceTest {
       }
     });
 
-    assertEquals((byte) 0xfe, f.get().byteValue());
+    assertEquals((byte) 0xfe, f.get());
   }
 
   @Test
@@ -130,7 +130,7 @@ public class EDTExecutorServiceTest {
       }
     });
 
-    assertEquals(3, f.get().shortValue());
+    assertEquals(3, f.get());
   }
 
   @Test
