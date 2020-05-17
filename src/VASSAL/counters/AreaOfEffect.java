@@ -426,7 +426,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
 
     protected void updateRangeVisibility() {
-      final boolean fixedRange = fixedRadius.booleanValue().booleanValue();
+      final boolean fixedRange = fixedRadius.booleanValue();
       radiusValue.getControls().setVisible(fixedRange);
       radiusMarker.getControls().setVisible(!fixedRange);
       repack();

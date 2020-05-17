@@ -288,8 +288,8 @@ public class CounterGlobalKeyCommand extends Decorator
           .append(propertyMatch.getValueString())
           .append(restrictRange.getValueString())
           .append(range.getValueString())
-          .append(suppress.booleanValue().booleanValue())
-        .append(fixedRange.booleanValue().booleanValue())
+          .append(suppress.booleanValue())
+        .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
         .append(deckPolicy.getIntValue());
