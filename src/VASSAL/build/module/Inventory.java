@@ -634,7 +634,7 @@ public class Inventory extends AbstractConfigurable
       if (o instanceof String) {
         o = Double.valueOf((String) o);
       }
-      pieceZoom = ((Double) o).doubleValue();
+      pieceZoom = (Double) o;
     }
     else if (FORWARD_KEYSTROKE.equals(key)) {
       forwardKeystroke = getBooleanValue(o);

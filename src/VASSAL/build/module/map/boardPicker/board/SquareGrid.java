@@ -289,13 +289,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       if (val instanceof String) {
         val = Double.valueOf((String) val);
       }
-      dy = ((Double) val).doubleValue();
+      dy = (Double) val;
     }
     else if (DX.equals(key)) {
       if (val instanceof String) {
         val = Double.valueOf((String) val);
       }
-      dx = ((Double) val).doubleValue();
+      dx = (Double) val;
     }
     else if (RANGE.equals(key)) {
       rangeOption = (String) val;

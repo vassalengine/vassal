@@ -49,7 +49,7 @@ public class DoublePreference extends BasicPreference {
     if (value instanceof String) {
       value = Double.valueOf((String) value);
     }
-    defaultValue = ((Double) value).doubleValue();
+    defaultValue = (Double) value;
 
   }
 

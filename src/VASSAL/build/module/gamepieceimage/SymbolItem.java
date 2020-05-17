@@ -121,7 +121,7 @@ public class SymbolItem extends Item {
       if (o instanceof String) {
         o = Double.valueOf((String) o);
       }
-      lineWidth = ((Double) o).doubleValue();
+      lineWidth = (Double) o;
       if (lineWidth < 0) lineWidth = 0;
     }
     else

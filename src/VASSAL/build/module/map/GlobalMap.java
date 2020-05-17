@@ -183,7 +183,7 @@ public class GlobalMap implements AutoConfigurable,
       if (value instanceof String) {
         value = Double.valueOf((String) value);
       }
-      scale = ((Double) value).doubleValue();
+      scale = (Double) value;
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {

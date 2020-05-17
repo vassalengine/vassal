@@ -105,7 +105,7 @@ public class EDTExecutorServiceTest {
       }
     }, Math.PI);
 
-    assertEquals(Math.PI, f.get().doubleValue(), 0.0);
+    assertEquals(Math.PI, f.get(), 0.0);
   }
 
   @Test

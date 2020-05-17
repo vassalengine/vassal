@@ -177,7 +177,7 @@ public class HexGrid extends AbstractConfigurable
     c.getConfigurer(DY).addPropertyChangeListener(new java.beans.PropertyChangeListener() {
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         if (evt.getNewValue() != null) {
-          double hgt = ((Double) evt.getNewValue()).doubleValue();
+          double hgt = (Double) evt.getNewValue();
           dxConfig.setValue(Double.valueOf(sqrt3_2 * hgt).toString());
         }
       }
@@ -362,7 +362,7 @@ public class HexGrid extends AbstractConfigurable
       if (val instanceof String) {
         val = Double.valueOf((String) val);
       }
-      dy = ((Double) val).doubleValue();
+      dy = (Double) val;
       if (dx == sqrt3_2 * 64.0) {
         dx = sqrt3_2 * dy;
       }
@@ -371,7 +371,7 @@ public class HexGrid extends AbstractConfigurable
       if (val instanceof String) {
         val = Double.valueOf((String) val);
       }
-      dx = ((Double) val).doubleValue();
+      dx = (Double) val;
     }
     else if (SNAP_TO.equals(key)) {
       if (val instanceof String) {

@@ -212,7 +212,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       }
 
       try {
-        slotScale = Double.valueOf(e.getAttribute(SCALE)).doubleValue();
+        slotScale = Double.valueOf(e.getAttribute(SCALE));
       }
       catch (NumberFormatException ex) {
         // Use default values if attribute doesn't parse.
@@ -798,7 +798,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       scale.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            slotScale = ((Double) evt.getNewValue()).doubleValue();
+            slotScale = (Double) evt.getNewValue();
           }
         }
       });
