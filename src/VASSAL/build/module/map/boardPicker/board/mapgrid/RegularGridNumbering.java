@@ -171,25 +171,25 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      hLeading = ((Integer) value).intValue();
+      hLeading = (Integer) value;
     }
     else if (V_LEADING.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      vLeading = ((Integer) value).intValue();
+      vLeading = (Integer) value;
     }
     else if (H_OFF.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      hOff = ((Integer) value).intValue();
+      hOff = (Integer) value;
     }
     else if (V_OFF.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      vOff = ((Integer) value).intValue();
+      vOff = (Integer) value;
     }
     else if (H_DESCEND.equals(key)) {
       if (value instanceof String) {
@@ -207,7 +207,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      fontSize = ((Integer) value).intValue();
+      fontSize = (Integer) value;
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -228,19 +228,19 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      rotateTextDegrees = ((Integer) value).intValue();
+      rotateTextDegrees = (Integer) value;
     }
     else if (H_DRAW_OFF.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      hDrawOff = ((Integer) value).intValue();
+      hDrawOff = (Integer) value;
     }
     else if (V_DRAW_OFF.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      vDrawOff = ((Integer) value).intValue();
+      vDrawOff = (Integer) value;
     }
   }
 

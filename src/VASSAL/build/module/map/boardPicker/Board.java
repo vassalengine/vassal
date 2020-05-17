@@ -248,7 +248,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = Integer.valueOf((String) val);
       }
       if (val != null) {
-        boundaries.setSize(((Integer) val).intValue(), boundaries.height);
+        boundaries.setSize((Integer) val, boundaries.height);
       }
     }
     else if (HEIGHT.equals(key)) {
@@ -256,7 +256,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = Integer.valueOf((String) val);
       }
       if (val != null) {
-        boundaries.setSize(boundaries.width, ((Integer) val).intValue());
+        boundaries.setSize(boundaries.width, (Integer) val);
       }
     }
     else if (COLOR.equals(key)) {

@@ -436,14 +436,14 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      resultsIcon.width = ((Integer) o).intValue();
+      resultsIcon.width = (Integer) o;
       dialog.pack();
     }
     else if (WINDOW_Y.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      resultsIcon.height = ((Integer) o).intValue();
+      resultsIcon.height = (Integer) o;
       dialog.pack();
     }
     else if (BACKGROUND_COLOR.equals(key)) {

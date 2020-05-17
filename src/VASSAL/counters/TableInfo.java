@@ -244,8 +244,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
     public String getState() {
       final StringBuilder buf = new StringBuilder();
-      int n = ((Integer) rowConfig.getValue()).intValue()
-        * ((Integer) colConfig.getValue()).intValue();
+      int n = (Integer) rowConfig.getValue() * (Integer) colConfig.getValue();
       while (--n > 0) {
         buf.append(',');
       }

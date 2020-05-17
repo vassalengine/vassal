@@ -107,14 +107,14 @@ public class SymbolItem extends Item {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      width = ((Integer) o).intValue();
+      width = (Integer) o;
       if (width < 1) width = 1;
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      height = ((Integer) o).intValue();
+      height = (Integer) o;
       if (height < 1) height = 1;
     }
     else if (LINE_WIDTH.equals(key)) {

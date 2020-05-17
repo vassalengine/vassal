@@ -184,7 +184,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      thickness = ((Integer) value).intValue();
+      thickness = (Integer) value;
     }
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
@@ -195,7 +195,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         value = Integer.valueOf((String) value);
       }
       try {
-        x = ((Integer) value).intValue();
+        x = (Integer) value;
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);
@@ -206,7 +206,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         value = Integer.valueOf((String) value);
       }
       try {
-        y = ((Integer) value).intValue();
+        y = (Integer) value;
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);

@@ -796,7 +796,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         .append(command.getValueString());
 
       Integer i = (Integer) fontSize.getValue();
-      if (i == null || i.intValue() <= 0) {
+      if (i == null || i <= 0) {
         i = 10;
       }
       se.append(i.toString())

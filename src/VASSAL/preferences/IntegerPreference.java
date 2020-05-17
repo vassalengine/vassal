@@ -48,7 +48,7 @@ public class IntegerPreference extends BasicPreference {
     if (value instanceof String) {
       value = Integer.valueOf((String) value);
     }
-    defaultValue = ((Integer) value).intValue();
+    defaultValue = (Integer) value;
 
   }
 

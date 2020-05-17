@@ -298,7 +298,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      width = ((Integer) val).intValue();
+      width = (Integer) val;
     }
     else if (STYLE.equals(key)) {
       style = (String) val;
@@ -308,7 +308,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      opacity = ((Integer) val).intValue();
+      opacity = (Integer) val;
     }
     else if (IMAGE.equals(key)) {
       imageName = (String) val;
@@ -345,7 +345,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
     public PercentageConfigurer(String key, String name, Object val) {
       super(key, name, val);
-      opacity = ((Integer) val).intValue();
+      opacity = (Integer) val;
     }
 
     public String getValueString() {

@@ -121,7 +121,7 @@ public class Dialogs {
     if (o == null || !(o instanceof Integer))
       return JOptionPane.CLOSED_OPTION;
     else
-      return ((Integer) o).intValue();
+      return (Integer) o;
   }
 
   public static Object showDialog(

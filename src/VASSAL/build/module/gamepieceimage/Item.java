@@ -122,13 +122,13 @@ public abstract class Item extends AbstractConfigurable {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      xoffset = ((Integer) o).intValue();
+      xoffset = (Integer) o;
     }
     else if (Y_OFFSET.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      yoffset = ((Integer) o).intValue();
+      yoffset = (Integer) o;
     }
     else if (ADVANCED.equals(key)) {
       if (o instanceof String) {
@@ -140,7 +140,7 @@ public abstract class Item extends AbstractConfigurable {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      rotation = ((Integer) o).intValue();
+      rotation = (Integer) o;
     }
     else if (ANTIALIAS.equals(key)) {
       if (o instanceof String) {

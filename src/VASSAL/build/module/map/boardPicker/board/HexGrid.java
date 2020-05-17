@@ -350,13 +350,13 @@ public class HexGrid extends AbstractConfigurable
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      origin.x = ((Integer) val).intValue();
+      origin.x = (Integer) val;
     }
     else if (Y0.equals(key)) {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      origin.y = ((Integer) val).intValue();
+      origin.y = (Integer) val;
     }
     else if (DY.equals(key)) {
       if (val instanceof String) {

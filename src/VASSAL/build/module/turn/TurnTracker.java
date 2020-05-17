@@ -276,7 +276,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      width = ((Integer) value).intValue();
+      width = (Integer) value;
     }
     else if (LENGTH_STYLE.equals(key)) {
       lengthStyle = (String) value;
@@ -351,7 +351,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   protected int getFontSize() {
-    return ((Integer) GameModule.getGameModule().getPrefs().getValue(FONT_SIZE)).intValue();
+    return (Integer) GameModule.getGameModule().getPrefs().getValue(FONT_SIZE);
   }
 
   protected int getFontStyle() {

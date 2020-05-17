@@ -187,7 +187,7 @@ public class CounterTurnLevel extends TurnLevel {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      start = ((Integer) value).intValue();
+      start = (Integer) value;
       current = start;
       myValue.setPropertyValue(getValueString());
     }
@@ -195,7 +195,7 @@ public class CounterTurnLevel extends TurnLevel {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      incr = ((Integer) value).intValue();
+      incr = (Integer) value;
     }
     else if (LOOP.equals(key)) {
       if (value instanceof String) {
@@ -207,7 +207,7 @@ public class CounterTurnLevel extends TurnLevel {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      loopLimit = ((Integer) value).intValue();
+      loopLimit = (Integer) value;
     }
     else {
       super.setAttribute(key, value);

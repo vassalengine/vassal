@@ -747,7 +747,7 @@ public class MassPieceLoader {
           ((PieceNode) node).setSkip((Boolean) value);
         }
         else if (column == COPIES_COL) {
-          int val = value == null ? 1 : ((Integer) value).intValue();
+          int val = value == null ? 1 : (Integer) value;
           if (val < 1) val = 1;
           ((PieceNode) node).setCopies(val);
         }

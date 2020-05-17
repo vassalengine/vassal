@@ -372,13 +372,13 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      indexStart = ((Integer) o).intValue();
+      indexStart = (Integer) o;
     }
     else if (INDEX_STEP.equals(key)) {
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
-      indexStep = ((Integer) o).intValue();
+      indexStep = (Integer) o;
     }
     else {
       launch.setAttribute(key, o);

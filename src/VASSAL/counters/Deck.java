@@ -278,7 +278,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       if (f.accept(p)) {
         String mapProperty = prop.getPropertyValue();
           if (mapProperty != null) {
-            int newValue = (Integer.decode(mapProperty)).intValue();
+            int newValue = Integer.decode(mapProperty);
             if (increase) {
               newValue++;
             }

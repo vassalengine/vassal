@@ -81,7 +81,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
     config.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         if (SCROLL_SPEED.equals(e.getPropertyName()))
-          setSpeed(((Integer) e.getNewValue()).intValue());
+          setSpeed((Integer) e.getNewValue());
       }
     });
 
@@ -92,7 +92,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
     else {
       final Prefs prefs = g.getPrefs();
       prefs.addOption(Resources.getString("Prefs.general_tab"), config); //$NON-NLS-1$
-      setSpeed(((Integer) prefs.getValue(SCROLL_SPEED)).intValue());
+      setSpeed((Integer) prefs.getValue(SCROLL_SPEED));
     }
   }
 

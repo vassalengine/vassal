@@ -322,7 +322,7 @@ public class MassKeyCommand extends AbstractConfigurable
         intConfig.setFrozen(true);
         if (o instanceof Integer) {
           Integer i = (Integer) o;
-          switch ((i).intValue()) {
+          switch (i) {
           case 0:
             typeConfig.setValue(NONE);
             intConfig.setValue(1);
@@ -511,7 +511,7 @@ public class MassKeyCommand extends AbstractConfigurable
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      globalCommand.setSelectFromDeck(((Integer) value).intValue());
+      globalCommand.setSelectFromDeck((Integer) value);
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);

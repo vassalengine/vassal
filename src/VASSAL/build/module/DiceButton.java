@@ -346,7 +346,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (N_DICE.equals(key)) {
       if (o instanceof Integer) {
-        nDice = ((Integer) o).intValue();
+        nDice = (Integer) o;
       }
       else if (o instanceof String) {
         nDice = Integer.parseInt((String) o);
@@ -354,7 +354,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (N_SIDES.equals(key)) {
       if (o instanceof Integer) {
-        nSides = ((Integer) o).intValue();
+        nSides = (Integer) o;
       }
       else if (o instanceof String) {
         nSides = Integer.parseInt((String) o);
@@ -362,7 +362,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (PLUS.equals(key)) {
       if (o instanceof Integer) {
-        plus = ((Integer) o).intValue();
+        plus = (Integer) o;
       }
       else if (o instanceof String) {
         plus = Integer.parseInt((String) o);
@@ -370,7 +370,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (ADD_TO_TOTAL.equals(key)) {
       if (o instanceof Integer) {
-        addToTotal = ((Integer) o).intValue();
+        addToTotal = (Integer) o;
       }
       else if (o instanceof String) {
         addToTotal = Integer.parseInt((String) o);

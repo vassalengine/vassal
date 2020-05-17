@@ -321,7 +321,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         value = Integer.valueOf((String) value);
       }
       try {
-        edgeBuffer = new Dimension(((Integer) value).intValue(), edgeBuffer.height);
+        edgeBuffer = new Dimension((Integer) value, edgeBuffer.height);
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);
@@ -332,7 +332,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         value = Integer.valueOf((String) value);
       }
       try {
-        edgeBuffer = new Dimension(edgeBuffer.width, ((Integer) value).intValue());
+        edgeBuffer = new Dimension(edgeBuffer.width, (Integer) value);
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);
@@ -366,7 +366,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         value = Integer.valueOf((String) value);
       }
       if (highlighter instanceof ColoredBorder) {
-        ((ColoredBorder) highlighter).setThickness(((Integer) value).intValue());
+        ((ColoredBorder) highlighter).setThickness((Integer) value);
       }
     }
     else if (USE_LAUNCH_BUTTON.equals(key)) {
@@ -1965,8 +1965,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
       if (shouldDockIntoMainWindow()) {
         mainWindowDock.showComponent();
-        final int height = ((Integer)
-          Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT)).intValue();
+        final int height = (Integer)
+          Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
         if (height > 0) {
           final Container top = mainWindowDock.getTopLevelAncestor();
           top.setSize(top.getWidth(), height);

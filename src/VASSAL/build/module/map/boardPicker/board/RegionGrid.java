@@ -245,7 +245,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      fontSize = ((Integer) val).intValue();
+      fontSize = (Integer) val;
     }
     else if (SNAPTO.equals(key)) {
       if (val instanceof Boolean) {

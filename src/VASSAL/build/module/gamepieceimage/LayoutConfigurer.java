@@ -84,8 +84,8 @@ public class LayoutConfigurer extends Configurer {
     if (layout != null) {
 
       layout.setConfigureName(defName.getValueString());
-      layout.setHeight(((Integer) height.getValue()).intValue());
-      layout.setWidth(((Integer) width.getValue()).intValue());
+      layout.setHeight((Integer) height.getValue());
+      layout.setWidth((Integer) width.getValue());
     }
     return layout;
   }
@@ -390,7 +390,7 @@ public class LayoutConfigurer extends Configurer {
     }
 
     public int getIntValue() {
-      return ((Integer) getValue()).intValue();
+      return (Integer) getValue();
     }
 
   }

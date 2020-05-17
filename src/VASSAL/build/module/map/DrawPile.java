@@ -488,13 +488,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      dummy.getSize().width = ((Integer) value).intValue();
+      dummy.getSize().width = (Integer) value;
     }
     else if (HEIGHT.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      dummy.getSize().height = ((Integer) value).intValue();
+      dummy.getSize().height = (Integer) value;
     }
     else if (FACE_DOWN.equals(key)) {
       dummy.setFaceDownOption((String) value);
@@ -566,7 +566,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      dummy.setMaxStack(((Integer) value).intValue());
+      dummy.setMaxStack((Integer) value);
     }
     if (EXPRESSIONCOUNTING.equals(key)) {
       if (value instanceof Boolean) {

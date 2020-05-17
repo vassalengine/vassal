@@ -48,7 +48,7 @@ public class IntConfigurer extends StringConfigurer {
 
   public int getIntValue(int defaultValue) {
     if (getValue() instanceof Integer) {
-      return ((Integer)getValue()).intValue();
+      return (Integer) getValue();
     }
     else {
       return defaultValue;

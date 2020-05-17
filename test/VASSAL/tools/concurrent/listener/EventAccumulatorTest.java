@@ -36,7 +36,7 @@ public class EventAccumulatorTest {
     int i = 0;
     for (Pair<Object,Integer> e : ea.events()) {
       assertSame(this, e.first);
-      assertEquals(i, e.second.intValue());
+      assertEquals(i, e.second);
       ++i;
     }
   }

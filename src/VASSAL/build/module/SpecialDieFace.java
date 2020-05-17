@@ -93,7 +93,7 @@ public class SpecialDieFace extends AbstractConfigurable {
         if (o instanceof String) {
           o = Integer.valueOf((String) o);
         }
-        value = ((Integer) o).intValue();
+        value = (Integer) o;
       }
       catch (NumberFormatException e) {
         throw new IllegalBuildException(e);

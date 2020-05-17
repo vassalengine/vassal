@@ -282,7 +282,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      rangeScale = ((Integer) value).intValue();
+      rangeScale = (Integer) value;
     }
     else if (RANGE_ROUNDING.equals(key)) {
       if (ROUND_UP.equals(value)) {
@@ -305,7 +305,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      setTransparency(((Integer) value).intValue());
+      setTransparency((Integer) value);
     }
     else if (RANGE_FOREGROUND.equals(key)) {
       if (value instanceof String) {

@@ -743,7 +743,7 @@ public class ServerAddressBook {
             Resources.getString("ServerAddressBook.edit_server_configuration"), //$NON-NLS-1$
             config.getControls(), JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
             null, null, null, null);
-        if (result != null && result.intValue() == 0) {
+        if (result != null && result == 0) {
           if (enabled) {
             setProperties(config.getProperties());
             saveAddressBook();

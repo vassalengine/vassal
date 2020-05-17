@@ -92,7 +92,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      highlighter.setThickness(((Integer) value).intValue());
+      highlighter.setThickness((Integer) value);
     }
     else if (ENABLED.equals(key)) {
       if (value instanceof String) {

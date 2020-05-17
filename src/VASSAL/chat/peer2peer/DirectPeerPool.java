@@ -272,7 +272,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
         queryPanel, JOptionPane.QUESTION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
         null, null, null, null);
-    if (result != null && result.intValue() == 0) {
+    if (result != null && result == 0) {
       for (int i = 0; i < entries.length; i++) {
         addressBook.removeElement(entries[i]);
       }

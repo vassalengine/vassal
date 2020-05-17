@@ -807,7 +807,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       width.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            psize.width = ((Integer) evt.getNewValue()).intValue();
+            psize.width = (Integer) evt.getNewValue();
           }
         }
       });
@@ -816,7 +816,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       height.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            psize.height = ((Integer) evt.getNewValue()).intValue();
+            psize.height = (Integer) evt.getNewValue();
           }
         }
       });

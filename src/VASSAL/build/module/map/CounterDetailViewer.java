@@ -914,7 +914,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         value = Integer.valueOf((String) value);
       }
       if (value != null) {
-        delay = ((Integer) value).intValue();
+        delay = (Integer) value;
       }
     }
     else if (HOTKEY.equals(name)) {
@@ -974,7 +974,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      borderWidth = ((Integer) value).intValue();
+      borderWidth = (Integer) value;
     }
     else if (SHOW_NOSTACK.equals(name)) {
       if (value instanceof Boolean) {
@@ -1062,7 +1062,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         value = Integer.valueOf((String) value);
       }
       if (value != null) {
-        fontSize = ((Integer) value).intValue();
+        fontSize = (Integer) value;
         font = font.deriveFont(fontSize);
       }
     }

@@ -699,7 +699,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      borderWidth = ((Integer) value).intValue();
+      borderWidth = (Integer) value;
       if (borderWidth < 0) {
         borderWidth = 0;
       }
@@ -709,7 +709,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      opacity = ((Integer) value).intValue();
+      opacity = (Integer) value;
       if (opacity < 0 || opacity > 100) {
         opacity = 100;
       }
@@ -719,7 +719,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      borderOpacity = ((Integer) value).intValue();
+      borderOpacity = (Integer) value;
       if (borderOpacity < 0 || borderOpacity > 100) {
         borderOpacity = 100;
       }

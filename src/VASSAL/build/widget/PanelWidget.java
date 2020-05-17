@@ -193,7 +193,7 @@ public class PanelWidget extends Widget {
         value = Integer.valueOf((String) value);
       }
 
-      nColumns = ((Integer) value).intValue();
+      nColumns = (Integer) value;
 
       if (nColumns < 1) {
         // FIXME: also dialog should not permit values < 1 to be entered

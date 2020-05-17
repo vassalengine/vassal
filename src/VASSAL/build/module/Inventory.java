@@ -655,14 +655,14 @@ public class Inventory extends AbstractConfigurable
       if (o instanceof String)
         cutBelowRoot = Integer.parseInt((String) o);
       else {
-        cutBelowRoot = ((Integer) o).intValue();
+        cutBelowRoot = (Integer) o;
       }
     }
     else if (CUTABOVELEAVES.equals(key)) {
       if (o instanceof String)
         cutAboveLeaves = Integer.parseInt((String) o);
       else {
-        cutAboveLeaves = ((Integer) o).intValue();
+        cutAboveLeaves = (Integer) o;
       }
     }
     else if (SORT_PIECES.equals(key)) {

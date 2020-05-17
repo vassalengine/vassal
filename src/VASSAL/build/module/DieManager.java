@@ -357,13 +357,13 @@ public class DieManager extends AbstractConfigurable {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      defaultNDice = ((Integer) value).intValue();
+      defaultNDice = (Integer) value;
     }
     else if (DFLT_NSIDES.equals(key)) {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
-      defaultNSides = ((Integer) value).intValue();
+      defaultNSides = (Integer) value;
     }
   }
 

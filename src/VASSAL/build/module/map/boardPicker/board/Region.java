@@ -160,13 +160,13 @@ public class Region extends AbstractConfigurable {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      origin.x = ((Integer) val).intValue();
+      origin.x = (Integer) val;
     }
     else if (Y.equals(key)) {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
       }
-      origin.y = ((Integer) val).intValue();
+      origin.y = (Integer) val;
     }
 
   }

@@ -106,7 +106,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
       else if (value != null) {
-        exSepX = ((Integer) value).intValue();
+        exSepX = (Integer) value;
       }
     }
     else if (EXSEP_Y.equals(name)) {
@@ -122,7 +122,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
       else if (value != null) {
-        exSepY = ((Integer) value).intValue();
+        exSepY = (Integer) value;
       }
     }
     else if (UNEXSEP_X.equals(name)) {
@@ -138,7 +138,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
       else if (value != null) {
-        unexSepX = ((Integer) value).intValue();
+        unexSepX = (Integer) value;
       }
     }
     else if (UNEXSEP_Y.equals(name)) {
@@ -154,7 +154,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
       else if (value != null) {
-        unexSepY = ((Integer) value).intValue();
+        unexSepY = (Integer) value;
       }
     }
     else if (DISABLED.equals(name)) {

@@ -171,7 +171,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     }
 
     public int getLayerForPiece(GamePiece p) {
-      return ((Integer)dispatcher.accept(p)).intValue();
+      return (Integer) dispatcher.accept(p);
     }
 
     public int getLayerForName(String layer) {
