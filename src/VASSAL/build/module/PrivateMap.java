@@ -110,7 +110,7 @@ public class PrivateMap extends Map {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      visibleToAll = ((Boolean) value).booleanValue();
+      visibleToAll = (Boolean) value;
     }
     else if (SIDE.equals(key)) {
       if (value instanceof String) {

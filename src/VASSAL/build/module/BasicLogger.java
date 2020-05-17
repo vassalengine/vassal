@@ -263,7 +263,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final GameModule g = GameModule.getGameModule();
 
-    if (((Boolean) g.getPrefs().getValue(prefName)).booleanValue()) {
+    if ((Boolean) g.getPrefs().getValue(prefName)) {
       Object[] options = {
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO),

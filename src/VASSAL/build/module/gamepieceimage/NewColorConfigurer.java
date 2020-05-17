@@ -81,8 +81,8 @@ public class NewColorConfigurer extends Configurer {
       box.add(bc.getControls());
       bc.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          colorBox.setVisible(!bc.booleanValue().booleanValue());
-          swatchBox.setVisible(bc.booleanValue().booleanValue());
+          colorBox.setVisible(!bc.booleanValue());
+          swatchBox.setVisible(bc.booleanValue());
           SwingUtilities.getWindowAncestor(bc.getControls()).pack();
         }
       });

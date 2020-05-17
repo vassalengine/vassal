@@ -273,7 +273,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      drawRange = ((Boolean) value).booleanValue();
+      drawRange = (Boolean) value;
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -299,7 +299,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      hideCounters = ((Boolean) value).booleanValue();
+      hideCounters = (Boolean) value;
     }
     else if (HIDE_OPACITY.equals(key)) {
       if (value instanceof String) {
@@ -330,13 +330,13 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      snapStart = ((Boolean) value).booleanValue();
+      snapStart = (Boolean) value;
     }
     else if (SNAP_END.equals(key)) {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      snapEnd = ((Boolean) value).booleanValue();
+      snapEnd = (Boolean) value;
     }
     else if (REPORT.equals(key)) {
       reportFormat.setFormat((String) value);

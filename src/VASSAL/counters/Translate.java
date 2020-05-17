@@ -346,7 +346,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     private void updateAdvancedVisibility() {
-      boolean visible = advancedInput.booleanValue().booleanValue();
+      boolean visible = advancedInput.booleanValue();
       xIndexInput.getControls().setVisible(visible);
       xOffsetInput.getControls().setVisible(visible);
       yIndexInput.getControls().setVisible(visible);

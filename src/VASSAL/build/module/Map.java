@@ -348,7 +348,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      allowMultiple = ((Boolean) value).booleanValue();
+      allowMultiple = (Boolean) value;
       if (picker != null) {
         picker.setAllowMultiple(allowMultiple);
       }
@@ -373,7 +373,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      useLaunchButtonEdit = ((Boolean) value).booleanValue();
+      useLaunchButtonEdit = (Boolean) value;
       launchButton.setVisible(useLaunchButton);
     }
     else if (SUPPRESS_AUTO.equals(key)) {

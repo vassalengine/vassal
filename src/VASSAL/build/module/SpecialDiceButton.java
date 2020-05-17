@@ -399,7 +399,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   private boolean getBoolVal(Object o) {
     if (o instanceof Boolean) {
-      return ((Boolean) o).booleanValue();
+      return (Boolean) o;
     }
     else if (o instanceof String) {
       return "true".equals(o); //$NON-NLS-1$

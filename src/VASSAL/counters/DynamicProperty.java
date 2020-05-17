@@ -330,7 +330,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
         new ArrayList<DynamicKeyCommand>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          boolean isNumeric = numericConfig.booleanValue().booleanValue();
+          boolean isNumeric = numericConfig.booleanValue();
           minConfig.getControls().setVisible(isNumeric);
           maxConfig.getControls().setVisible(isNumeric);
           wrapConfig.getControls().setVisible(isNumeric);

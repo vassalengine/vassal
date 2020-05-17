@@ -927,7 +927,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (DRAW_PIECES.equals(name)) {
       if (value instanceof Boolean) {
-        drawPieces = ((Boolean) value).booleanValue();
+        drawPieces = (Boolean) value;
       }
       else if (value instanceof String) {
         drawPieces = "true".equals(value);
@@ -935,7 +935,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (GRAPH_SINGLE_DEPRECATED.equals(name)) {
       if (value instanceof Boolean) {
-        drawSingleDeprecated = ((Boolean) value).booleanValue();
+        drawSingleDeprecated = (Boolean) value;
       }
       else if (value instanceof String) {
         drawSingleDeprecated = "true".equals(value);
@@ -943,7 +943,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_TEXT.equals(name)) {
       if (value instanceof Boolean) {
-        showText = ((Boolean) value).booleanValue();
+        showText = (Boolean) value;
       }
       else if (value instanceof String) {
         showText = "true".equals(value);
@@ -952,7 +952,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_TEXT_SINGLE_DEPRECATED.equals(name)) {
       if (value instanceof Boolean) {
-        showTextSingleDeprecated = ((Boolean) value).booleanValue();
+        showTextSingleDeprecated = (Boolean) value;
       }
       else if (value instanceof String) {
         showTextSingleDeprecated = "true".equals(value);
@@ -978,7 +978,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_NOSTACK.equals(name)) {
       if (value instanceof Boolean) {
-        showNoStack = ((Boolean) value).booleanValue();
+        showNoStack = (Boolean) value;
       }
       else if (value instanceof String) {
         showNoStack = "true".equals(value);
@@ -986,7 +986,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_MOVE_SELECTED.equals(name)) {
       if (value instanceof Boolean) {
-        showMoveSelected = ((Boolean) value).booleanValue();
+        showMoveSelected = (Boolean) value;
       }
       else if (value instanceof String) {
         showMoveSelected = "true".equals(value);
@@ -994,7 +994,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_NON_MOVABLE.equals(name)) {
       if (value instanceof Boolean) {
-        showNonMovable = ((Boolean) value).booleanValue();
+        showNonMovable = (Boolean) value;
       }
       else if (value instanceof String) {
         showNonMovable = "true".equals(value);
@@ -1002,7 +1002,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_DECK.equals(name)) {
       if (value instanceof Boolean) {
-        showDeck = ((Boolean) value).booleanValue();
+        showDeck = (Boolean) value;
       }
       else if (value instanceof String) {
         showDeck = "true".equals(value);
@@ -1010,7 +1010,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (UNROTATE_PIECES.equals(name)) {
         if (value instanceof Boolean) {
-          unrotatePieces = ((Boolean) value).booleanValue();
+          unrotatePieces = (Boolean) value;
         }
         else if (value instanceof String) {
           unrotatePieces = "true".equals(value);

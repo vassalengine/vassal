@@ -134,14 +134,14 @@ public class FontConfigurer extends Configurer {
 
   protected void updateValue() {
     final int style = Font.PLAIN |
-       (bold.booleanValue().booleanValue() ? Font.BOLD : 0) |
-       (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
+       (bold.booleanValue() ? Font.BOLD : 0) |
+       (italic.booleanValue() ? Font.ITALIC : 0);
 
     final OutlineFont font = new OutlineFont(
       (String) family.getSelectedItem(),
       style,
       Integer.parseInt(size.getValueString()),
-      outline.booleanValue().booleanValue()
+      outline.booleanValue()
     );
 
     setValue(font);

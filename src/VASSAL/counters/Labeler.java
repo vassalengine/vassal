@@ -817,8 +817,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         .append(format.getValueString())
         .append(fontFamily.getSelectedItem().toString());
       final int style = Font.PLAIN +
-        (bold.booleanValue().booleanValue() ? Font.BOLD : 0) +
-        (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
+        (bold.booleanValue() ? Font.BOLD : 0) +
+        (italic.booleanValue() ? Font.ITALIC : 0);
       se.append(style + "");
       i = (Integer) rotate.getValue();
       if (i == null) i = 0;

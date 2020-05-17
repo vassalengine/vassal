@@ -142,7 +142,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      useFile = ((Boolean) value).booleanValue();
+      useFile = (Boolean) value;
     }
     else if (FILE.equals(key)) {
       if (value instanceof File) {
@@ -154,7 +154,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      setMenu(((Boolean) value).booleanValue());
+      setMenu((Boolean) value);
     }
   }
 

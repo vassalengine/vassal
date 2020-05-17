@@ -167,8 +167,8 @@ public class Footprint extends MovementMarkable {
 
     trailKey = st.nextNamedKeyStroke(DEFAULT_TRAIL_KEY);
     menuCommand = st.nextToken(DEFAULT_MENU_COMMAND);
-    initiallyVisible = st.nextBoolean(DEFAULT_INITIALLY_VISIBLE.booleanValue());
-    globallyVisible = st.nextBoolean(DEFAULT_GLOBALLY_VISIBLE.booleanValue());
+    initiallyVisible = st.nextBoolean(DEFAULT_INITIALLY_VISIBLE);
+    globallyVisible = st.nextBoolean(DEFAULT_GLOBALLY_VISIBLE);
     circleRadius = st.nextInt(DEFAULT_CIRCLE_RADIUS);
     fillColor = st.nextColor(DEFAULT_FILL_COLOR);
     lineColor = st.nextColor(DEFAULT_LINE_COLOR);

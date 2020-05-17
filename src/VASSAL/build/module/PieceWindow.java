@@ -270,7 +270,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       if (value instanceof String) {
         value = Boolean.valueOf((String)value);
       }
-      hidden = ((Boolean)value).booleanValue();
+      hidden = (Boolean) value;
     }
     else if (TOOLTIP.equals(name)) {
       tooltip = (String) value;

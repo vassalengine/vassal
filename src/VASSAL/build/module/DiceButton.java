@@ -378,7 +378,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (REPORT_TOTAL.equals(key)) {
       if (o instanceof Boolean) {
-        reportTotal = ((Boolean) o).booleanValue();
+        reportTotal = (Boolean) o;
       }
       else if (o instanceof String) {
         reportTotal = "true".equals(o); //$NON-NLS-1$
@@ -386,7 +386,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (PROMPT_ALWAYS.equals(key)) {
       if (o instanceof Boolean) {
-        promptAlways = ((Boolean) o).booleanValue();
+        promptAlways = (Boolean) o;
       }
       else if (o instanceof String) {
         promptAlways = "true".equals(o); //$NON-NLS-1$
@@ -401,7 +401,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (SORT_DICE_RESULTS.equals(key)) {
       if (o instanceof Boolean) {
-        sortDice = ((Boolean) o).booleanValue();
+        sortDice = (Boolean) o;
       }
       else if (o instanceof String) {
         sortDice = "true".equals(o); //$NON-NLS-1$

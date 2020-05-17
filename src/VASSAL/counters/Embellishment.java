@@ -1209,7 +1209,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         activateConfig.getControls().setVisible(true);
       }
 
-      final boolean controlled = !followConfig.booleanValue().booleanValue();
+      final boolean controlled = !followConfig.booleanValue();
       loop.setEnabled(controlled);
       propertyConfig.getControls().setVisible(!controlled);
       firstLevelConfig.getControls().setVisible(!controlled);

@@ -712,7 +712,7 @@ public class Inventory extends AbstractConfigurable
     if (o instanceof String) {
       o = Boolean.valueOf((String) o);
     }
-    return ((Boolean) o).booleanValue();
+    return (Boolean) o;
   }
 
   public String getAttributeValueString(String key) {

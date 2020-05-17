@@ -191,19 +191,19 @@ public class SymbolSet extends Importer{
     boolean isTransparent() {
       if (transparent == null) {
         BufferedImage image = getImage();
-        transparent  = Boolean.TRUE;
+        transparent = true;
         search:
           for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
               if (image.getRGB(i, j) != 0) {
-                transparent = Boolean.FALSE;
+                transparent = false;
                 break search;
               }
             }
           }
 
       }
-      return transparent.booleanValue();
+      return transparent;
     }
 
     /**

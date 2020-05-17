@@ -612,9 +612,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     private void updateVisibility() {
-//      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
+//      boolean advancedVisible = advancedInput.booleanValue();
        advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
-       boolean advancedVisible = advancedInput.booleanValue().booleanValue()
+       boolean advancedVisible = advancedInput.booleanValue()
                        && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);

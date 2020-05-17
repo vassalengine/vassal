@@ -179,7 +179,7 @@ public class LayerControl extends AbstractConfigurable {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      skip = ((Boolean) value).booleanValue();
+      skip = (Boolean) value;
     }
     else if (LAYERS.equals(key)) {
       if (value instanceof String) {

@@ -557,8 +557,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
 
     private void updateVisibility() {
-      final boolean isLoop = loopConfig.booleanValue().booleanValue();
-      final boolean isIndex = indexConfig.booleanValue().booleanValue();
+      final boolean isLoop = loopConfig.booleanValue();
+      final boolean isIndex = indexConfig.booleanValue();
       final String type = LoopControl.loopDescToType(loopTypeConfig.getValueString());
 
       loopTypeConfig.getControls().setVisible(isLoop);

@@ -192,7 +192,7 @@ public class Tutorial extends AbstractConfigurable {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      launchOnFirstStartup = ((Boolean) value).booleanValue();
+      launchOnFirstStartup = (Boolean) value;
     }
     else if (PROMPT_MESSAGE.equals(key)) {
       promptMessage = (String) value;

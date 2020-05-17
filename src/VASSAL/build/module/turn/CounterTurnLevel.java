@@ -201,7 +201,7 @@ public class CounterTurnLevel extends TurnLevel {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      loop = ((Boolean) value).booleanValue();
+      loop = (Boolean) value;
     }
     else if (LOOP_LIMIT.equals(key)) {
       if (value instanceof String) {

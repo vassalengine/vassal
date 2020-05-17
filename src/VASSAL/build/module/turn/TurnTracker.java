@@ -355,11 +355,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   protected int getFontStyle() {
-    return ((Boolean) GameModule.getGameModule().getPrefs().getValue(FONT_BOLD)).booleanValue() ? 1 : 0;
+    return (Boolean) GameModule.getGameModule().getPrefs().getValue(FONT_BOLD) ? 1 : 0;
   }
 
   protected boolean isDocked() {
-    return ((Boolean) GameModule.getGameModule().getPrefs().getValue(DOCKED)).booleanValue();
+    return (Boolean) GameModule.getGameModule().getPrefs().getValue(DOCKED);
   }
 
   protected void setDocked(boolean dock) {

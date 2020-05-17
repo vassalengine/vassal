@@ -49,7 +49,7 @@ public class BooleanPreference extends BasicPreference {
     if (value instanceof String) {
       value = Boolean.valueOf((String) value);
     }
-    defaultValue = ((Boolean) value).booleanValue();
+    defaultValue = (Boolean) value;
   }
 
   public Configurer getPreferenceConfigurer() {

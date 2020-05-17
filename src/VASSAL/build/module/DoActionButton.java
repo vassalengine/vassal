@@ -296,7 +296,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      doReport = ((Boolean) o).booleanValue();
+      doReport = (Boolean) o;
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) o);
@@ -305,7 +305,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      doSound = ((Boolean) o).booleanValue();
+      doSound = (Boolean) o;
     }
     if (SOUND_CLIP.equals(key)) {
       if (o instanceof File) {
@@ -317,7 +317,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      doHotkey = ((Boolean) o).booleanValue();
+      doHotkey = (Boolean) o;
     }
     else if (HOTKEYS.equals(key)) {
       if (o instanceof String) {
@@ -329,7 +329,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      doLoop = ((Boolean) o).booleanValue();
+      doLoop = (Boolean) o;
       updateLoopPropertyRegistration();
     }
     else if (LOOP_TYPE.equals(key)) {
@@ -360,7 +360,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      hasIndex = ((Boolean) o).booleanValue();
+      hasIndex = (Boolean) o;
       updateLoopPropertyRegistration();
     }
     else if (INDEX_PROPERTY.equals(key)) {

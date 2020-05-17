@@ -41,14 +41,13 @@ public class BooleanConfigurer extends Configurer {
   }
 
   public boolean getValueBoolean() {
-    return booleanValue().booleanValue();
+    return booleanValue();
   }
 
   public void setValue(Object o) {
     super.setValue(o);
-    if (box != null
-        && !Boolean.valueOf(box.isSelected()).equals(o)) {
-      box.setSelected(booleanValue().booleanValue());
+    if (box != null && !Boolean.valueOf(box.isSelected()).equals(o)) {
+      box.setSelected(booleanValue());
     }
   }
 
@@ -66,7 +65,7 @@ public class BooleanConfigurer extends Configurer {
   public java.awt.Component getControls() {
     if (box == null) {
       box = new javax.swing.JCheckBox(getName());
-      box.setSelected(booleanValue().booleanValue());
+      box.setSelected(booleanValue());
       box.addItemListener(new java.awt.event.ItemListener() {
         public void itemStateChanged(java.awt.event.ItemEvent e) {
           setValue(Boolean.valueOf(box.isSelected()));

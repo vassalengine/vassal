@@ -621,7 +621,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      alwaysOn = ((Boolean) value).booleanValue();
+      alwaysOn = (Boolean) value;
       setLaunchButtonVisibility();
       reset();
     }
@@ -629,7 +629,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      startsOn = ((Boolean) value).booleanValue();
+      startsOn = (Boolean) value;
       setLaunchButtonVisibility();
       reset();
     }
@@ -649,7 +649,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      drawOver = ((Boolean) value).booleanValue();
+      drawOver = (Boolean) value;
     }
     else if (PATTERN.equals(key)) {
       pattern = (String) value;
@@ -687,7 +687,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      border = ((Boolean) value).booleanValue();
+      border = (Boolean) value;
     }
     else if (BORDER_COLOR.equals(key)) {
       if (value instanceof String) {

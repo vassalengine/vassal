@@ -304,31 +304,31 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       if (val instanceof String) {
         val = Boolean.valueOf((String) val);
       }
-      snapTo = ((Boolean) val).booleanValue();
+      snapTo = (Boolean) val;
     }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
         val = Boolean.valueOf((String) val);
       }
-      cornersLegal = ((Boolean) val).booleanValue();
+      cornersLegal = (Boolean) val;
     }
     else if (EDGES.equals(key)) {
       if (val instanceof String) {
         val = Boolean.valueOf((String) val);
       }
-      edgesLegal = ((Boolean) val).booleanValue();
+      edgesLegal = (Boolean) val;
     }
     else if (VISIBLE.equals(key)) {
       if (val instanceof String) {
         val = Boolean.valueOf((String) val);
       }
-      visible = ((Boolean) val).booleanValue();
+      visible = (Boolean) val;
     }
     else if (DOTS_VISIBLE.equals(key)) {
       if (val instanceof String) {
         val = Boolean.valueOf((String) val);
       }
-      dotsVisible = ((Boolean) val).booleanValue();
+      dotsVisible = (Boolean) val;
     }
     else if (COLOR.equals(key)) {
       if (val instanceof String) {

@@ -232,7 +232,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    * other players
    */
   public boolean isUnmaskable(String id) {
-    return override != null ? override.booleanValue() : allowed.contains(id);
+    return override != null ? override : allowed.contains(id);
   }
 
   public static class SetAllowed extends Command {

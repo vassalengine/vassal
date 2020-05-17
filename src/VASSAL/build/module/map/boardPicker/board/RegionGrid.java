@@ -235,7 +235,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     if (VISIBLE.equals(key)) {
 
       if (val instanceof Boolean) {
-        visible = ((Boolean) val).booleanValue();
+        visible = (Boolean) val;
       }
       else if (val instanceof String) {
         visible = "true".equals(val); //$NON-NLS-1$
@@ -249,7 +249,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
     else if (SNAPTO.equals(key)) {
       if (val instanceof Boolean) {
-        snapTo = ((Boolean) val).booleanValue();
+        snapTo = (Boolean) val;
       }
       else if (val instanceof String) {
         snapTo = "true".equals(val); //$NON-NLS-1$

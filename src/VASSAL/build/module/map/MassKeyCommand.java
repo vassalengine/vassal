@@ -505,7 +505,7 @@ public class MassKeyCommand extends AbstractConfigurable
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      globalCommand.setReportSingle(((Boolean) value).booleanValue());
+      globalCommand.setReportSingle((Boolean) value);
     }
     else if (DECK_COUNT.equals(key)) {
       if (value instanceof String) {
@@ -521,7 +521,7 @@ public class MassKeyCommand extends AbstractConfigurable
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      singleMap = (((Boolean) value).booleanValue());
+      singleMap = ((Boolean) value);
     }
     else {
       launch.setAttribute(key, value);

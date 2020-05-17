@@ -161,7 +161,7 @@ public class StackMetrics extends AbstractConfigurable {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      disabled = ((Boolean) value).booleanValue();
+      disabled = (Boolean) value;
     }
     else if (TOP_KEY.equals(name)) {
       topKey = HotKeyConfigurer.decode((String) value);

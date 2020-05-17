@@ -1009,7 +1009,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
        * Change visibility of fields depending on the Follow Property setting
        */
       protected void showHideFields() {
-        boolean show = !followConfig.booleanValue().booleanValue();
+        boolean show = !followConfig.booleanValue();
         loop.setEnabled(show);
         propertyConfig.getControls().setVisible(!show);
         firstLevelConfig.getControls().setVisible(!show);

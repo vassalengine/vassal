@@ -186,7 +186,7 @@ public class PanelWidget extends Widget {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      fixed = ((Boolean) value).booleanValue();
+      fixed = (Boolean) value;
     }
     else if (COLS.equals(name)) {
       if (value instanceof String) {
@@ -207,7 +207,7 @@ public class PanelWidget extends Widget {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      vertical = ((Boolean) value).booleanValue();
+      vertical = (Boolean) value;
     }
 
     if (panel != null) {

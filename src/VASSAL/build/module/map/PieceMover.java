@@ -248,7 +248,7 @@ public class PieceMover extends AbstractBuildable
           }
         }
 
-        if (((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue() || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
+        if ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS) || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
           DragBuffer.getBuffer().add(s);
         }
         else {

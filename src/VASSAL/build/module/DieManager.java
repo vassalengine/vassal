@@ -299,11 +299,11 @@ public class DieManager extends AbstractConfigurable {
 
     // And tell it the prefs it will need
     server.setPasswd((String) prefs.getValue(SERVER_PW));
-    server.setUseEmail(((Boolean) prefs.getValue(USE_EMAIL)).booleanValue());
+    server.setUseEmail((Boolean) prefs.getValue(USE_EMAIL));
     server.setPrimaryEmail((String) prefs.getValue(PRIMARY_EMAIL));
     server.setSecondaryEmail((String) prefs.getValue(SECONDARY_EMAIL));
 
-    useMultiRoll = ((Boolean) prefs.getValue(MULTI_ROLL)).booleanValue();
+    useMultiRoll = (Boolean) prefs.getValue(MULTI_ROLL);
 
   }
 

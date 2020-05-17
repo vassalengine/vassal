@@ -744,7 +744,7 @@ public class MassPieceLoader {
           ((PieceNode) node).setName((String) value);
         }
         else if (column == SKIP_COL) {
-          ((PieceNode) node).setSkip(((Boolean) value).booleanValue());
+          ((PieceNode) node).setSkip((Boolean) value);
         }
         else if (column == COPIES_COL) {
           int val = value == null ? 1 : ((Integer) value).intValue();
@@ -899,7 +899,7 @@ public class MassPieceLoader {
     }
 
     public String getImageName() {
-      if (basicConfig.booleanValue().booleanValue()) {
+      if (basicConfig.booleanValue()) {
         return "";
       }
       else {

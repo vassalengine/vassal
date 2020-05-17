@@ -134,7 +134,7 @@ public abstract class Item extends AbstractConfigurable {
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      advanced = ((Boolean) o).booleanValue();
+      advanced = (Boolean) o;
     }
     else if (ROTATION.equals(key)) {
       if (o instanceof String) {
@@ -146,7 +146,7 @@ public abstract class Item extends AbstractConfigurable {
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
-      antialias = ((Boolean) o).booleanValue();
+      antialias = (Boolean) o;
     }
 
   }

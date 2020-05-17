@@ -304,13 +304,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      configList = ((Boolean) value).booleanValue();
+      configList = (Boolean) value;
     }
     else if (CONFIG_FIRST.equals(key)) {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      configFirst = ((Boolean) value).booleanValue();
+      configFirst = (Boolean) value;
     }
     else if (PROMPT.equals(key)) {
       prompt = (String) value;
@@ -402,16 +402,14 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
         add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$
         for (int i = 0; i < list.length; i++) {
-
-          BooleanConfigurer b =
-            new BooleanConfigurer(null, list[i], Boolean.valueOf(active[i]));
+          BooleanConfigurer b = new BooleanConfigurer(null, list[i], active[i]);
           b.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent e) {
               BooleanConfigurer b = (BooleanConfigurer) e.getSource();
               String option = b.getName();
               for (int i = 0; i < list.length; i++) {
                 if (list[i].equals(option)) {
-                  active[i] = ((BooleanConfigurer) e.getSource()).booleanValue().booleanValue();
+                  active[i] = b.booleanValue();
                 }
               }
             }

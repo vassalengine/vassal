@@ -98,7 +98,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      enabled = ((Boolean) value).booleanValue();
+      enabled = (Boolean) value;
     }
   }
 

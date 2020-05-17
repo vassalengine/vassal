@@ -141,7 +141,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
      */
     else if (Properties.SELECTED.equals(key)) {
       if (val instanceof Boolean) {
-        setSelected(((Boolean) val).booleanValue());
+        setSelected((Boolean) val);
       }
       else {
         setSelected(false);

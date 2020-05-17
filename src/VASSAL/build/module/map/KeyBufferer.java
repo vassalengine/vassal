@@ -98,7 +98,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
-      boolean movingStacksPickupUnits = ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue();
+      boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
       if (!KeyBuffer.getBuffer().contains(p)) {
         if (!e.isShiftDown() && !e.isControlDown()) {
           KeyBuffer.getBuffer().clear();
