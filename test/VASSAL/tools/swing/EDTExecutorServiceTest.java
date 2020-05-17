@@ -165,7 +165,7 @@ public class EDTExecutorServiceTest {
     }
 
     for (Future<Character> f : ex.invokeAll(tasks)) {
-      assertEquals('x', f.get().charValue());
+      assertEquals('x', f.get());
     }
   }
 
@@ -185,7 +185,7 @@ public class EDTExecutorServiceTest {
     }
 
     for (Future<Character> f : ex.invokeAll(tasks, 1L, TimeUnit.NANOSECONDS)) {
-      if (!f.isCancelled()) assertEquals('x', f.get().charValue());
+      if (!f.isCancelled()) assertEquals('x', f.get());
     }
   }
 

@@ -843,7 +843,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
                                                     boolean sel,
                                                     boolean focus) {
         super.getListCellRendererComponent(list, value, index, sel, focus);
-        switch (((Character) value).charValue()) {
+        switch ((Character) value) {
           case 't':
             setText("Top");
             break;
