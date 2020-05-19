@@ -135,10 +135,18 @@ public class ChatServerControls extends AbstractBuildable {
         ServerAddressBook.editCurrentServer(!client.isConnected());
       }});
     configServerButton.addMouseListener(new MouseAdapter(){
-      public void mouseClicked(MouseEvent e) {
-        if (!client.isConnected() && e.isMetaDown()) {
+      private void maybePopup(MouseEvent e) {
+        if (!client.isConnected() && e.isPopupTrigger()) {
           showChangeServerMenu();
         }
+      }
+
+      public void mousePressed(MouseEvent e) {
+        maybePopup(e);
+      }
+
+      public void mouseReleased(MouseEvent e) {
+        maybePopup(e);
       }
     });
     toolbar.add(configServerButton);

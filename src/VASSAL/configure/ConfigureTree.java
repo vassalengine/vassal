@@ -860,36 +860,50 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return null;
   }
 
+  protected void maybePopup(MouseEvent e) {
+    Configurable target = getTarget(e.getX(), e.getY());
+    if (target == null) {
+      return;
+    }
+
+    setSelectionRow(getClosestRowForLocation(e.getX(), e.getY()));
+    JPopupMenu popup = buildPopupMenu(target);
+    popup.show(ConfigureTree.this, e.getX(), e.getY());
+    popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+      public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+        repaint();
+      }
+
+      public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+        repaint();
+      }
+
+      public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+      }
+    });
+  }
+
   public void mousePressed(MouseEvent e) {
+    if (e.isPopupTrigger()) {
+      maybePopup(e);
+    }
   }
 
   public void mouseReleased(MouseEvent e) {
-    Configurable target = getTarget(e.getX(), e.getY());
-    if (target != null) {
-      if (e.getClickCount() == 2 && !e.isMetaDown()) {
-        if (target.getConfigurer() != null) {
-          Action a = buildEditAction(target);
-          if (a != null) {
-            a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
-          }
-        }
+    if (e.isPopupTrigger()) {
+      maybePopup(e);
+    }
+    else if (e.getClickCount() == 2) {
+      Configurable target = getTarget(e.getX(), e.getY());
+      if (target == null) {
+        return;
       }
-      else if (e.isMetaDown()) {
-        setSelectionRow(getClosestRowForLocation(e.getX(), e.getY()));
-        JPopupMenu popup = buildPopupMenu(target);
-        popup.show(ConfigureTree.this, e.getX(), e.getY());
-        popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-          public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            repaint();
-          }
 
-          public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-            repaint();
-          }
-
-          public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-          }
-        });
+      if (target.getConfigurer() != null) {
+        Action a = buildEditAction(target);
+        if (a != null) {
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
+        }
       }
     }
   }

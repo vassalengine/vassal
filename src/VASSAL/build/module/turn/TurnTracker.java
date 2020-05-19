@@ -940,23 +940,24 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     public void mouseClicked(MouseEvent e) {
-      if (e.isMetaDown()) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+      if (e.isPopupTrigger()) {
         doPopup(e.getPoint());
       }
     }
 
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    public void mousePressed(MouseEvent e) {
-    }
-
     public void mouseReleased(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        doPopup(e.getPoint());
+      }
     }
 
     public void doPopup(Point p) {
@@ -965,11 +966,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         popup.show(this, p.x, p.y);
       }
     }
-
   }
 
   protected void buildPopup() {
-
     popup = new JPopupMenu();
     popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
       public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {

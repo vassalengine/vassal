@@ -253,8 +253,16 @@ public class Inventory extends AbstractConfigurable
       }
     });
     tree.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        maybePopup(e);
+      }
+
       public void mouseReleased(MouseEvent e) {
-        if (showMenu && e.isMetaDown()) {
+        maybePopup(e);
+      }
+
+      private void maybePopup(MouseEvent e) {
+        if (showMenu && e.isPopupTrigger()) {
           final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {
             if (path.getLastPathComponent() instanceof CounterNode) {

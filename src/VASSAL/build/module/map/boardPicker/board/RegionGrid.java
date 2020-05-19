@@ -829,11 +829,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       final Point p = e.getPoint();
       lastClick = p;
 
-      if (e.isMetaDown()) { // Right click...menu
-        doPopupMenu(e);
-      }
-      else if (lastClickedRegion != null) {
-
+      if (lastClickedRegion != null) {
         if (e.getClickCount() >= 2) { // Double click show properties
           if (lastClickedRegion.getConfigurer() != null) {
             final Action a =
@@ -847,7 +843,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
             }
           }
         }
-
       }
       view.repaint(); // Clean up selection
     }
@@ -951,7 +946,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           }
         }
       }
-
     }
 
     /*
@@ -991,8 +985,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         }
         w.toFront();
       }
-
-
     }
 
     protected void select(Region r) {
@@ -1047,34 +1039,42 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     public void mousePressed(MouseEvent e) {
-      final Point p = e.getPoint();
-      lastClick = p;
-      lastClickedRegion = grid.getRegion(p);
-
-      if (!e.isShiftDown() && !e.isControlDown() &&
-          (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
-        unSelectAll();
-      }
-
-      if (lastClickedRegion == null) {
-        anchor = p;
-        selectionRect = new Rectangle(anchor.x, anchor.y, 0, 0);
+      if (e.isPopupTrigger()) {
+        doPopupMenu(e);
       }
       else {
-        if (e.isControlDown()) {
-          unselect(lastClickedRegion);
+        final Point p = e.getPoint();
+        lastClick = p;
+        lastClickedRegion = grid.getRegion(p);
+
+        if (!e.isShiftDown() && !e.isControlDown() &&
+            (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
+          unSelectAll();
+        }
+
+        if (lastClickedRegion == null) {
+          anchor = p;
+          selectionRect = new Rectangle(anchor.x, anchor.y, 0, 0);
         }
         else {
-          select(lastClickedRegion);
+          if (e.isControlDown()) {
+            unselect(lastClickedRegion);
+          }
+          else {
+            select(lastClickedRegion);
+          }
         }
       }
     }
 
-    public void mouseReleased(MouseEvent evPt) {
-      if (selectionRect != null) {
+    public void mouseReleased(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        doPopupMenu(e);
+      }
+      else if (selectionRect != null) {
         for (Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
-            if (evPt.isControlDown()) {
+            if (e.isControlDown()) {
               unselect(r);
             }
             else {

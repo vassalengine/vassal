@@ -250,18 +250,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
-  public void mousePressed(MouseEvent e) {
-    KeyBuffer.getBuffer().clear();
-    Map.clearActiveMap();
-    if (getPiece() != null) {
-      KeyBuffer.getBuffer().add(getPiece());
-    }
-
-    clearExpandedPiece();
-    panel.requestFocus();
-    panel.repaint();
-  }
-
   // Puts counter in DragBuffer. Call when mouse gesture recognized
   protected void startDrag() {
 
@@ -283,23 +271,44 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
+  protected void doPopup(MouseEvent e) {
+    JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
+    popup.addPopupMenuListener(new PopupMenuListener() {
+      public void popupMenuCanceled(PopupMenuEvent evt) {
+        panel.repaint();
+      }
+
+      public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+        clearExpandedPiece();
+        panel.repaint();
+      }
+
+      public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+      }
+    });
+    popup.show(panel, e.getX(), e.getY());
+  }
+
+  public void mousePressed(MouseEvent e) {
+    if (e.isPopupTrigger()) {
+      doPopup(e);
+    }
+    else {
+      KeyBuffer.getBuffer().clear();
+      Map.clearActiveMap();
+      if (getPiece() != null) {
+        KeyBuffer.getBuffer().add(getPiece());
+      }
+
+      clearExpandedPiece();
+      panel.requestFocus();
+      panel.repaint();
+    }
+  }
+
   public void mouseReleased(MouseEvent e) {
-    if (getPiece() != null && e.isMetaDown()) {
-      JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
-      popup.addPopupMenuListener(new PopupMenuListener() {
-        public void popupMenuCanceled(PopupMenuEvent evt) {
-          panel.repaint();
-        }
-
-        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-          clearExpandedPiece();
-          panel.repaint();
-        }
-
-        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-        }
-      });
-      popup.show(panel, e.getX(), e.getY());
+    if (getPiece() != null && e.isPopupTrigger()) {
+      doPopup(e);
     }
 
     clearExpandedPiece();

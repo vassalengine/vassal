@@ -203,8 +203,8 @@ public class HtmlChart extends Widget implements MouseListener {
     return null;
   }
 
-  public void mousePressed(MouseEvent event) {
-    if (event.isMetaDown()) {
+  protected void maybePopup(MouseEvent event) {
+    if (event.isPopupTrigger()) {
       final JPopupMenu popup = new JPopupMenu();
       final JMenuItem item = new JMenuItem("Return to default page");
 
@@ -222,6 +222,14 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
+  public void mousePressed(MouseEvent e) {
+    maybePopup(e);
+  }
+
+  public void mouseReleased(MouseEvent e) {
+    maybePopup(e);
+  }
+
   public void mouseClicked(MouseEvent e) {
   }
 
@@ -229,9 +237,6 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   public void mouseExited(MouseEvent e) {
-  }
-
-  public void mouseReleased(MouseEvent e) {
   }
 
   public class HtmlChartHyperlinkListener implements HyperlinkListener {

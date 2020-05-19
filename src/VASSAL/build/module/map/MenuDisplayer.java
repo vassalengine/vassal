@@ -201,8 +201,16 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     return popup;
   }
 
+  public void mousePressed(MouseEvent e) {
+    maybePopup(e);
+  }
+
   public void mouseReleased(MouseEvent e) {
-    if (!e.isMetaDown()) {
+    maybePopup(e);
+  }
+
+  protected void maybePopup(MouseEvent e) {
+    if (!e.isPopupTrigger()) {
       return;
     }
 

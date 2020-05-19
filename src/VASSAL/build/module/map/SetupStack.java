@@ -815,29 +815,28 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void keyReleased(KeyEvent e) {
-
     }
 
     public void keyTyped(KeyEvent e) {
-
     }
 
     public void mouseClicked(MouseEvent e) {
-
     }
 
     public void mouseEntered(MouseEvent e) {
-
     }
 
     public void mouseExited(MouseEvent e) {
-
     }
 
-    public void mousePressed(MouseEvent e) {
+    protected void maybePopup(MouseEvent e) {
+      if (!e.isPopupTrigger() || myPiece == null) {
+        return;
+      }
+
       Rectangle r = getPieceBoundingBox();
       r.translate(pos.x, pos.y);
-      if (myPiece != null && e.isMetaDown() && r.contains(e.getPoint())) {
+      if (r.contains(e.getPoint())) {
         JPopupMenu popup = MenuDisplayer.createPopup(myPiece);
         popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
           public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -855,11 +854,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
     }
 
-    public void mouseReleased(MouseEvent e) {
-
-
+    public void mousePressed(MouseEvent e) {
+      maybePopup(e);
     }
 
+    public void mouseReleased(MouseEvent e) {
+      maybePopup(e);
+    }
   }
 
   public ComponentI18nData getI18nData() {

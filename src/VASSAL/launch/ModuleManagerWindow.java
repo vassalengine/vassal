@@ -608,16 +608,24 @@ public class ModuleManagerWindow extends JFrame {
       }
 
       @Override
+      public void mousePressed(MouseEvent e) {
+        maybePopup(e);
+      }
+
+      @Override
       public void mouseReleased(MouseEvent e) {
-        final TreePath path =
-          tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
-        if (path == null) return;
+        maybePopup(e);
+      }
 
-        selectedNode = (MyTreeNode) path.getLastPathComponent();
+      private void maybePopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          final TreePath path =
+            tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
+          if (path == null) return;
 
-        if (e.isMetaDown()) {
           final int row = tree.getRowForPath(path);
           if (row >= 0) {
+            selectedNode = (MyTreeNode) path.getLastPathComponent();
             tree.clearSelection();
             tree.addRowSelectionInterval(row, row);
             final AbstractInfo target =

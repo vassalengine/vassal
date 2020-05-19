@@ -63,9 +63,17 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
 
   public void initializeControls(final ChatServerControls controls) {
     currentRoomPopupBuilder = new MouseAdapter() {
+      public void mousePressed(MouseEvent evt) {
+        maybePopup(evt);
+      }
+
       public void mouseReleased(MouseEvent evt) {
-        JTree tree = (JTree) evt.getSource();
-        if (evt.isMetaDown()) {
+        maybePopup(evt);
+      }
+
+      private void maybePopup(MouseEvent evt) {
+        if (evt.isPopupTrigger()) {
+          JTree tree = (JTree) evt.getSource();
           TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
           if (path != null) {
             Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
@@ -84,31 +92,22 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     };
     controls.getCurrentRoom().addMouseListener(currentRoomPopupBuilder);
     roomPopupBuilder = new MouseAdapter() {
+      public void mousePressed(MouseEvent evt) {
+        if (evt.isPopupTrigger()) {
+          maybePopup(evt);
+        }
+      }
+
       public void mouseReleased(MouseEvent evt) {
-        JTree tree = (JTree) evt.getSource();
-        TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
-        if (path != null) {
-          Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
-          if (target instanceof Player) {
-            if (evt.isMetaDown()) {
-              JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
-              for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
-                popup.getComponent(i).setFont(POPUP_MENU_FONT);
-              }
-              popup.show(tree, evt.getX(), evt.getY());
-            }
-          }
-          else if (target instanceof SimpleRoom) {
-            if (evt.isMetaDown()) {
-              JPopupMenu popup = buildPopupForRoom((VASSAL.chat.Room) target, tree);
-              if (popup != null) {
-                for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
-                  popup.getComponent(i).setFont(POPUP_MENU_FONT);
-                }
-                popup.show(tree, evt.getX(), evt.getY());
-              }
-            }
-            else if (evt.getClickCount() == 2) {
+        if (evt.isPopupTrigger()) {
+          maybePopup(evt);
+        }
+        else if (evt.getClickCount() == 2) {
+          JTree tree = (JTree) evt.getSource();
+          TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
+          if (path != null) {
+            Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+            if (target instanceof SimpleRoom) {
               int row = tree.getRowForLocation(evt.getX(), evt.getY());
               if (tree.isCollapsed(row)) {
                 tree.expandRow(row);
@@ -118,6 +117,29 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
               }
               doubleClickRoom((VASSAL.chat.Room) target, tree);
             }
+          }
+        }
+      }
+
+      private void maybePopup(MouseEvent evt) {
+        JTree tree = (JTree) evt.getSource();
+        TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
+        if (path != null) {
+          Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+          JPopupMenu popup = null;
+
+          if (target instanceof Player) {
+            popup = buildPopupForPlayer((SimplePlayer) target, tree);
+          }
+          else if (target instanceof SimpleRoom) {
+            popup = buildPopupForRoom((VASSAL.chat.Room) target, tree);
+          }
+
+          if (popup != null) {
+            for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
+              popup.getComponent(i).setFont(POPUP_MENU_FONT);
+            }
+            popup.show(tree, evt.getX(), evt.getY());
           }
         }
       }
