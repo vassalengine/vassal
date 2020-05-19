@@ -1419,7 +1419,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * The map scrolls when dragging the mouse near the edge.
    */
   public void mouseDragged(MouseEvent e) {
-    if (!e.isMetaDown()) {
+    if (e.getButton() != 3) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }
     else {

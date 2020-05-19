@@ -1258,7 +1258,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     public void mouseClicked(MouseEvent event) {
 
-      if ((event.isMetaDown() || event.isShiftDown()) && panelType != TICKS_VALMAX) {
+      if ((event.getButton() == 3 || event.isShiftDown()) && panelType != TICKS_VALMAX) {
         new EditTickLabelValueDialog(this);
         return;
       }

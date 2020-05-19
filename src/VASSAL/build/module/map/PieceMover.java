@@ -705,7 +705,7 @@ public class PieceMover extends AbstractBuildable
   protected boolean canHandleEvent(MouseEvent e) {
     return !e.isShiftDown() &&
            !e.isControlDown() &&
-           !e.isMetaDown() &&
+            e.getButton() != 3 &&
             e.getClickCount() < 2 &&
            !e.isConsumed();
   }

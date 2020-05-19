@@ -89,6 +89,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (e.isConsumed()) {
       return;
     }
+
     GamePiece p = map.findPiece(e.getPoint(), PieceFinder.PIECE_IN_STACK);
     // Don't clear the buffer until we find the clicked-on piece
     // Because selecting a piece affects its visibility
@@ -107,8 +108,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         // while not selected, then select all of the pieces in the stack
         // RFE 1659481 - Control clicking only deselects
         if (!e.isControlDown()) {
-          if (movingStacksPickupUnits || p.getParent() == null || p.getParent().isExpanded() || e.isMetaDown()
-              || Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+          if (movingStacksPickupUnits ||
+              p.getParent() == null ||
+              p.getParent().isExpanded() ||
+              e.getButton() == 3 ||
+              Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
+          {
             KeyBuffer.getBuffer().add(p);
           }
           else {

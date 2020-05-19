@@ -1092,7 +1092,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     // Scroll map if necessary
     public void mouseDragged(MouseEvent e) {
-      if (!e.isMetaDown()) {
+      if (e.getButton() != 3) {
         scrollAtEdge(e.getPoint(), 15);
       }
 

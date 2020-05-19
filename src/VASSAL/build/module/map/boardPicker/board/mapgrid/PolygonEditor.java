@@ -226,7 +226,7 @@ public class PolygonEditor extends JPanel {
        selected = -1;
        double minDist = Float.MAX_VALUE;
 
-       if (!e.isMetaDown()) {
+       if (e.getButton() != 3) {
          // move an existing vertex
                for (int i = 0; i < polygon.npoints; ++i) {
                        double dist = Point2D.distance(polygon.xpoints[i], polygon.ypoints[i], e.getX(), e.getY());
