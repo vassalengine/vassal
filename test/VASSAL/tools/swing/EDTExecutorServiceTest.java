@@ -118,7 +118,7 @@ public class EDTExecutorServiceTest {
       }
     });
 
-    assertEquals((byte) 0xfe, f.get());
+    assertEquals((byte) 0xfe, f.get().byteValue());
   }
 
   @Test
@@ -130,7 +130,7 @@ public class EDTExecutorServiceTest {
       }
     });
 
-    assertEquals(3, f.get());
+    assertEquals(3, f.get().shortValue());
   }
 
   @Test
@@ -165,7 +165,7 @@ public class EDTExecutorServiceTest {
     }
 
     for (Future<Character> f : ex.invokeAll(tasks)) {
-      assertEquals('x', f.get());
+      assertEquals('x', f.get().charValue());
     }
   }
 
@@ -185,7 +185,7 @@ public class EDTExecutorServiceTest {
     }
 
     for (Future<Character> f : ex.invokeAll(tasks, 1L, TimeUnit.NANOSECONDS)) {
-      if (!f.isCancelled()) assertEquals('x', f.get());
+      if (!f.isCancelled()) assertEquals('x', f.get().charValue());
     }
   }
 

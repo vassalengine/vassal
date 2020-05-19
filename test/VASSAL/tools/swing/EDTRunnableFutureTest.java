@@ -32,7 +32,7 @@ public class EDTRunnableFutureTest {
     };
 
     r.run();
-    assertEquals(42, r.get());
+    assertEquals(42, r.get().intValue());
   }
 
   @Test(expected=ExecutionException.class)
