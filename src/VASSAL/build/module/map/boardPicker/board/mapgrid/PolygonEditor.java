@@ -54,21 +54,21 @@ public class PolygonEditor extends JPanel {
 
   public PolygonEditor(Polygon p) {
     polygon = p;
- //   reset(); // too much of this happening
+    // reset(); // too much of this happening
   }
 
   protected void reset() {
-         MouseListener ml[] = getMouseListeners();
-         
-         // get rid of all the mouse listeners floating around
-         for (MouseListener i: ml)
-                 removeMouseListener(i);
-                         
-         MouseMotionListener mml[] = getMouseMotionListeners();
-         
-         for (MouseMotionListener i: mml)
-                 removeMouseMotionListener(i);
-         
+    MouseListener ml[] = getMouseListeners();
+
+    // get rid of all the mouse listeners floating around
+    for (MouseListener i: ml)
+      removeMouseListener(i);
+
+    MouseMotionListener mml[] = getMouseMotionListeners();
+
+    for (MouseMotionListener i: mml)
+      removeMouseMotionListener(i);
+
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
     }
