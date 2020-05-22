@@ -815,9 +815,9 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       private JPanel controls;
       private List<String> names;
       private List<Integer> isPrefix;
-      private static final Integer NEITHER = Integer.valueOf(0);
-      private static final Integer PREFIX = Integer.valueOf(1);
-      private static final Integer SUFFIX = Integer.valueOf(2);
+      private static final Integer NEITHER = 0;
+      private static final Integer PREFIX = 1;
+      private static final Integer SUFFIX = 2;
       // random layers
       private HotKeyConfigurer rndKeyConfig;
 
@@ -1240,13 +1240,13 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
         activateKeyInput.setText(e.activateKey);
         activateCommand.setText(e.activateCommand);
-        activateModifiers.setValue(Integer.valueOf(e.activateModifiers));
+        activateModifiers.setValue(e.activateModifiers);
         upKeyInput.setText(e.upKey);
         upCommand.setText(e.upCommand);
-        upModifiers.setValue(Integer.valueOf(e.upModifiers));
+        upModifiers.setValue(e.upModifiers);
         downKeyInput.setText(e.downKey);
         downCommand.setText(e.downCommand);
-        downModifiers.setValue(Integer.valueOf(e.downModifiers));
+        downModifiers.setValue(e.downModifiers);
         resetKey.setValue(e.resetKey);
         resetCommand.setText(e.resetCommand);
         resetLevel.setText(e.resetLevel.getFormat());
@@ -1254,7 +1254,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         yOffInput.setText(String.valueOf(e.yOff));
         images.setImageList(e.imageName);
 
-        followConfig.setValue(Boolean.valueOf(e.followProperty));
+        followConfig.setValue(e.followProperty);
         propertyConfig.setValue(e.propertyName);
 
         // Add at least one level if none defined

@@ -364,7 +364,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected void setDocked(boolean dock) {
     final GameModule g = GameModule.getGameModule();
-    g.getPrefs().setValue(DOCKED, Boolean.valueOf(dock));
+    g.getPrefs().setValue(DOCKED, dock);
     launch.setVisible(
       !dock && (
         getAttributeValueString(BUTTON_TEXT).length() > 0 ||

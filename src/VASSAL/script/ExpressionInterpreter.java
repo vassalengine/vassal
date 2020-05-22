@@ -339,7 +339,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           
           try {
             result +=
-              Integer.valueOf(s.getPieceAt(i).getProperty(property).toString());
+              Integer.parseInt(s.getPieceAt(i).getProperty(property).toString());
           }
           catch (Exception e) {
             // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
@@ -376,7 +376,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
               Stack s = (Stack) pieces[i];
               for (int j = 0; j < s.getPieceCount(); j++) {
                 try {
-                  result += Integer.valueOf(s.getPieceAt(j).getProperty(property).toString());
+                  result += Integer.parseInt(s.getPieceAt(j).getProperty(property).toString());
                 }
                 catch (NumberFormatException e) {
                   //
@@ -385,7 +385,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
             }
             else {
               try {
-                result += Integer.valueOf(pieces[i].getProperty(property).toString());
+                result += Integer.parseInt(pieces[i].getProperty(property).toString());
               }
               catch (NumberFormatException e) {
                 //

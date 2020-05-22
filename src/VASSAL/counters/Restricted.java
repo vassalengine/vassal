@@ -159,10 +159,10 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
-      return Boolean.valueOf(isRestricted());
+      return isRestricted();
     }
     else if (Properties.RESTRICTED_MOVEMENT.equals(key)) {
-      return Boolean.valueOf(isRestricted() && restrictMovement);
+      return isRestricted() && restrictMovement;
     }
     else {
       return super.getLocalizedProperty(key);
@@ -171,10 +171,10 @@ public class Restricted extends Decorator implements EditablePiece {
 
   public Object getProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
-      return Boolean.valueOf(isRestricted());
+      return isRestricted();
     }
     else if (Properties.RESTRICTED_MOVEMENT.equals(key)) {
-      return Boolean.valueOf(isRestricted() && restrictMovement);
+      return isRestricted() && restrictMovement;
     }
     else {
       return super.getProperty(key);

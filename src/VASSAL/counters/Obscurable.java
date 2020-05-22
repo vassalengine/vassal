@@ -262,10 +262,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public Object getProperty(Object key) {
     if (Properties.OBSCURED_TO_ME.equals(key)) {
-      return Boolean.valueOf(obscuredToMe());
+      return obscuredToMe();
     }
     else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
-      return Boolean.valueOf(obscuredToOthers());
+      return obscuredToOthers();
     }
     else if (ID.equals(key)) {
       return obscuredBy;
@@ -306,10 +306,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
     }
     else if (Properties.OBSCURED_TO_ME.equals(key)) {
-      return Boolean.valueOf(obscuredToMe());
+      return obscuredToMe();
     }
     else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
-      return Boolean.valueOf(obscuredToOthers());
+      return obscuredToOthers();
     }
     else if (ID.equals(key)) {
       return obscuredBy;

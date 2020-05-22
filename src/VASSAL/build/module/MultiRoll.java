@@ -446,7 +446,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col4.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumDice(Integer.valueOf((String) cb.getSelectedItem()));
+          rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
         }
       });
       col4.setEnabled(false);
@@ -466,7 +466,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col5.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumSides(Integer.valueOf((String) cb.getSelectedItem()));
+          rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
         }
       });
       col5.setEnabled(false);
@@ -479,7 +479,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col6.addKeyListener(new java.awt.event.KeyAdapter() {
         public void keyReleased(java.awt.event.KeyEvent e) {
           try {
-            rolls[myRow].setPlus(Integer.valueOf(col3.getText()));
+            rolls[myRow].setPlus(Integer.parseInt(col3.getText()));
           }
           catch (NumberFormatException ev) {
             // TODO use IntConfigurer for col3

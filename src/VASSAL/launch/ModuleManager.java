@@ -380,7 +380,7 @@ public class ModuleManager {
     final IntConfigurer initHeapConf = new IntConfigurer(
       INITIAL_HEAP,
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      Integer.valueOf(256)
+      256
     );
     globalPrefs.addOption("Importer", initHeapConf);
 
@@ -388,7 +388,7 @@ public class ModuleManager {
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      Integer.valueOf(512)
+      512
     );
     globalPrefs.addOption("Importer", maxHeapConf);
   }

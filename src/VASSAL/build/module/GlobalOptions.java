@@ -122,7 +122,7 @@ public class GlobalOptions extends AbstractConfigurable {
     final IntConfigurer initHeapConf = new IntConfigurer(
       INITIAL_HEAP,
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      Integer.valueOf(256)
+      256
     );
     prefs.addOption(initHeapConf);
 
@@ -130,7 +130,7 @@ public class GlobalOptions extends AbstractConfigurable {
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
-      Integer.valueOf(512)
+      512
     );
     prefs.addOption(maxHeapConf);
 
