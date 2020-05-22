@@ -1178,7 +1178,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   public static String testConnection(String host, String port, String login, String passwd) {
-    final StringBuffer text = new StringBuffer(Resources.getString("JabberClient.testing_connection")+host+":"+port+" "+login+"/"+passwd).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    final StringBuilder text = new StringBuilder(Resources.getString("JabberClient.testing_connection")+host+":"+port+" "+login+"/"+passwd).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     if (host.length() == 0) {
       return text.append(Resources.getString("JabberClient.error_no_host")).toString(); //$NON-NLS-1$
