@@ -153,7 +153,7 @@ public class PropertyChangerConfigurer extends Configurer {
 
   protected void updateValue() {
     PropertyChanger p;
-    switch (descriptionToCode.get(typeConfig.getValueString()).charValue()) {
+    switch (descriptionToCode.get(typeConfig.getValueString())) {
     case PROMPT_CODE:
       p = new PropertyPrompt(constraints, promptConfig.getValueString());
       break;
@@ -177,7 +177,7 @@ public class PropertyChangerConfigurer extends Configurer {
     PropertyChanger propChanger = getPropertyChanger();
     SequenceEncoder se = new SequenceEncoder(',');
     if (propChanger != null) {
-      switch (typeToCode.get(propChanger.getClass()).charValue()) {
+      switch (typeToCode.get(propChanger.getClass())) {
       case PROMPT_CODE:
         se.append(PROMPT_CODE)
           .append(((PropertyPrompt) propChanger).getPrompt());
