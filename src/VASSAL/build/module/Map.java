@@ -612,7 +612,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return toolBar;
   }
 
-
   /**
    * Add a {@link Drawable} component to this map
    *
