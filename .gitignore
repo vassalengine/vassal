@@ -3,3 +3,7 @@ bin/
 javadoc/
 lib/Vengine.jar
 tmp/
+
+# IntelliJ
+*.iml
+.idea/
