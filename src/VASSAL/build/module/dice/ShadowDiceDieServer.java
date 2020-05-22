@@ -52,15 +52,14 @@ public class ShadowDiceDieServer extends DieServer {
     int mLen = toss.getMaxDescLength();
 
     DieRoll[] rolls = toss.getDieRolls();
-    for (int i = 0; i < rolls.length; i++) {
-      s += hexify(rolls[i].getDescription());
-      for (int j = 0; j < mLen - rolls[i].getDescription().length(); j++) {
+    for (DieRoll roll : rolls) {
+      s += hexify(roll.getDescription());
+      for (int j = 0; j < mLen - roll.getDescription().length(); j++) {
         s += ' ';
       }
       s += ' ' + HASH;
-      int nd = rolls[i].getNumDice();
-      int ns = rolls[i].getNumSides();
-//        int p = rolls[i].getPlus();
+      int nd = roll.getNumDice();
+      int ns = roll.getNumSides();
       for (int j = 0; j < nd; j++) {
         s += LSQUARE + "1d" + ns + RSQUARE;
       }

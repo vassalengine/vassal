@@ -364,8 +364,8 @@ public class SequenceEncoder {
 
   public static void main(String args[]) {
     SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < args.length; ++i) {
-      se.append(args[i]);
+    for (String arg : args) {
+      se.append(arg);
     }
     System.out.println(se.getValue());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(se.getValue(), ',');

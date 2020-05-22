@@ -157,10 +157,10 @@ public class ReportState extends Decorator implements TranslatablePiece {
           //
           String commandName = "";
           KeyCommand[] k = ((Decorator) outer).getKeyCommands();
-          for (int j = 0; j < k.length; j++) {
-            KeyStroke commandKey = k[j].getKeyStroke();
+          for (KeyCommand keyCommand : k) {
+            KeyStroke commandKey = keyCommand.getKeyStroke();
             if (stroke.equals(commandKey)) {
-              commandName = k[j].getName();
+              commandName = keyCommand.getName();
             }
           }
 

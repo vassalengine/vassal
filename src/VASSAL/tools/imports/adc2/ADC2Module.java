@@ -1625,8 +1625,8 @@ private PieceWindow pieceWin;
   }
 
   public boolean usePieceValues() {
-    for (int i = 0; i < pieceValues.length; ++i) {
-      if (pieceValues[i] != null && !pieceValues[i].equals(""))
+    for (String pieceValue : pieceValues) {
+      if (pieceValue != null && !pieceValue.equals(""))
         return true;
     }
     return false;
@@ -1736,9 +1736,9 @@ private PieceWindow pieceWin;
     /* int nAlliances = */ ADC2Utils.readBase250Word(in); // ignored
     for (int i = 0; i < players.size(); ++i) {
       in.readUnsignedShort(); // unknown
-      for (int j = 0; j < players.size(); ++j) {
+      for (Player player : players) {
         if (in.readUnsignedShort() > 0) {
-          players.get(i).setAlly(players.get(j));
+          players.get(i).setAlly(player);
         }
       }
     }
@@ -2474,23 +2474,23 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
     StringBuilder sb = new StringBuilder();
     int mask = 0x1;
-    for (int i = 0; i < classValues.length; ++i) {
-      if (classValues[i] != null && !classValues[i].equals("")) {
+    for (String classValue : classValues) {
+      if (classValue != null && !classValue.equals("")) {
         if ((classCombatSummaryValues & mask) > 0) {
           if (sb.length() > 0)
             sb.append('-');
-          sb.append("$sum(" + classValues[i] + ")$");
+          sb.append("$sum(" + classValue + ")$");
         }
       }
       mask <<= 1;
     }
     mask = 0x1;
-    for (int i = 0; i < pieceValues.length; ++i) {
-      if (pieceValues[i] != null && !pieceValues[i].equals("")) {
+    for (String pieceValue : pieceValues) {
+      if (pieceValue != null && !pieceValue.equals("")) {
         if ((pieceCombatSummaryValues & mask) > 0) {
           if (sb.length() > 0)
             sb.append('-');
-          sb.append("$sum(" + pieceValues[i] + ")$");
+          sb.append("$sum(" + pieceValue + ")$");
         }
       }
       mask <<= 1;

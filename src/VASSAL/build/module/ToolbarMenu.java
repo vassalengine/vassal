@@ -225,8 +225,8 @@ public class ToolbarMenu extends AbstractConfigurable
           toolbarMenu.addContainerListener(this);
           JMenu subMenu = new JMenu(b.getText());
           Component[] items = toolbarMenu.getComponents();
-          for (int i = 0; i < items.length; i++) {
-            final JMenuItem otherItem = (JMenuItem) items[i];
+          for (Component component : items) {
+            final JMenuItem otherItem = (JMenuItem) component;
             JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(new ActionListener() {

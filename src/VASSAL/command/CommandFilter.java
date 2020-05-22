@@ -30,8 +30,8 @@ public abstract class CommandFilter {
     Command comm = accept(c) ? c : new NullCommand();
     Command sub[] = c.getSubCommands();
     comm.stripSubCommands();
-    for (int i=0;i<sub.length;++i) {
-      comm.append(apply(sub[i]));
+    for (Command command : sub) {
+      comm.append(apply(command));
     }
     return comm;
   }

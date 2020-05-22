@@ -110,8 +110,8 @@ public class StringArrayConfigurer extends Configurer {
       removeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           Object[] o = list.getSelectedValues();
-          for (int i = 0; i < o.length; ++i) {
-            removeValue((String) o[i]);
+          for (Object item : o) {
+            removeValue((String) item);
           }
         }
       });
@@ -188,8 +188,8 @@ public class StringArrayConfigurer extends Configurer {
       return "";
     }
     SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < s.length; ++i) {
-      se.append(s[i] != null ? s[i] : "");
+    for (String item : s) {
+      se.append(item != null ? item : "");
     }
     return se.getValue();
   }
@@ -224,8 +224,8 @@ public class StringArrayConfigurer extends Configurer {
     if (model != null) {
       model.removeAllElements();
       String[] s = getStringArray();
-      for (int i = 0; i < s.length; ++i) {
-        model.addElement(s[i]);
+      for (String item : s) {
+        model.addElement(item);
       }
     }
   }

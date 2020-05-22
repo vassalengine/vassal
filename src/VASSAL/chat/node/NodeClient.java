@@ -444,12 +444,12 @@ public abstract class NodeClient implements LockableChatServerConnection,
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
-      for (int i = 0; i < allRooms.length; ++i) {
-        String infoString = p.getProperty(allRooms[i].getName());
+      for (NodeRoom aRoom : allRooms) {
+        String infoString = p.getProperty(aRoom.getName());
         if (infoString != null && infoString.length() > 0) {
           try {
             Properties info = new PropertiesEncoder(infoString).getProperties();
-            allRooms[i].setInfo(info);
+            aRoom.setInfo(info);
           }
           // FIXME: review error message
           catch (IOException e) {

@@ -1115,12 +1115,10 @@ public class MapBoard extends Importer {
             ArrayList<Point2D.Float> lineB = points.get(j);
             if (b.equals(lineB.get(0))) { // point A at start of lineA and point B at start of lineB
               if (lineA.size() < lineB.size()) { // insert A before B
-                for (int k = 0; k < lineA.size(); ++k)
-                  lineB.add(0, lineA.get(k));
+                for (Point2D.Float aFloat : lineA) lineB.add(0, aFloat);
                 points.remove(i);
               } else { // insert B before A
-                for (int k = 0; k < lineB.size(); ++k)
-                  lineA.add(0, lineB.get(k));
+                for (Point2D.Float aFloat : lineB) lineA.add(0, aFloat);
                 points.remove(j);
               }
               return;

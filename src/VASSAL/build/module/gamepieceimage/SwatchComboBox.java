@@ -40,8 +40,8 @@ public class SwatchComboBox extends JComboBox {
 
   public SwatchComboBox() {
     String[] s = ColorManager.getColorManager().getColorNames();
-    for (int i = 0; i < s.length; ++i) {
-      addItem(s[i]);
+    for (String value : s) {
+      addItem(value);
     }
     SwatchRenderer renderer = new SwatchRenderer();
     setRenderer(renderer);

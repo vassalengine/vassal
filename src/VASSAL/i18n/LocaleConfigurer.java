@@ -140,10 +140,10 @@ public class LocaleConfigurer extends Configurer {
     if (languageList == null) {
       String[] langs = Locale.getISOLanguages();
       ArrayList<String> sortedLangs = new ArrayList<String>();
-      for (int i = 0; i < langs.length; i++) {
+      for (String s : langs) {
         String lang =
-          (new Locale(langs[i])).getDisplayLanguage(Locale.getDefault());
-        languages.put(lang, langs[i]);
+                (new Locale(s)).getDisplayLanguage(Locale.getDefault());
+        languages.put(lang, s);
         sortedLangs.add(lang);
       }
       Collections.sort(sortedLangs, Collator.getInstance(Locale.getDefault()));
@@ -156,10 +156,10 @@ public class LocaleConfigurer extends Configurer {
     if (countryList == null) {
       String[] c = Locale.getISOCountries();
       ArrayList<String> sortedCountries = new ArrayList<String>();
-      for (int i = 0; i < c.length; i++) {
+      for (String s : c) {
         String country =
-          (new Locale("en", c[i])).getDisplayCountry(Locale.getDefault());
-        countries.put(country, c[i]);
+                (new Locale("en", s)).getDisplayCountry(Locale.getDefault());
+        countries.put(country, s);
         sortedCountries.add(country);
       }
       Collections.sort(sortedCountries,

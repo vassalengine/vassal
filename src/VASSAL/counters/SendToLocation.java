@@ -519,9 +519,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);
       destInput.setValue(DEST_LOCATION);
-      for (int i=0; i < DEST_OPTIONS.length; i++) {
-        if (DEST_OPTIONS[i].substring(0,1).equals(p.destination)) {
-          destInput.setValue(DEST_OPTIONS[i]);
+      for (String destOption : DEST_OPTIONS) {
+        if (destOption.substring(0, 1).equals(p.destination)) {
+          destInput.setValue(destOption);
         }
       }
       destInput.addPropertyChangeListener(new PropertyChangeListener() {

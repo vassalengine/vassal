@@ -435,8 +435,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isAllowedChildClass(Configurable parent, Class<?> childClass) {
     final Class<?>[] allowableClasses = parent.getAllowableConfigureComponents();
-    for (int i = 0; i < allowableClasses.length; i++) {
-      if (allowableClasses[i] == childClass) {
+    for (Class<?> allowableClass : allowableClasses) {
+      if (allowableClass == childClass) {
         return true;
       }
     }
@@ -928,12 +928,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
       final Class<?> c[] = parent.getAllowableConfigureComponents();
-      for (int i = 0; i < c.length; ++i) {
-        if (c[i].isAssignableFrom(child.getClass()) ||
-            ((c[i] == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
-            ((c[i] == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
-            ) {
-              return true;
+      for (Class<?> aClass : c) {
+        if (aClass.isAssignableFrom(child.getClass()) ||
+                ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
+                ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
+        ) {
+          return true;
         }
       }
     }

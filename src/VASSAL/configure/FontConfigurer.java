@@ -70,16 +70,16 @@ public class FontConfigurer extends Configurer {
       p.add(new JLabel(name));
       family = new JComboBox();
       String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-      for (int i = 0; i < s.length; ++i) {
-        family.addItem(s[i]);
+      for (String element : s) {
+        family.addItem(element);
       }
       family.setSelectedItem(value == null ? "SansSerif" : ((Font) value).getFamily());
       family.setMaximumSize(new Dimension(family.getMaximumSize().width,family.getPreferredSize().height));
       p.add(family);
 
       size = new JComboBox();
-      for (int i = 0; i < sizes.length; ++i) {
-        size.addItem(sizes[i] + "");
+      for (int item : sizes) {
+        size.addItem(item + "");
       }
       size.setSelectedItem(value == null ? sizes[sizes.length / 2] + ""
                            : ((Font) value).getSize() + "");

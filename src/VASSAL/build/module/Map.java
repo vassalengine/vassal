@@ -1580,17 +1580,16 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
     final GamePiece[] stack = pieces.getPieces();
-    for (int i = 0; i < stack.length; ++i) {
-      final Point pt = mapToDrawing(stack[i].getPosition(), os_scale);
-      if (stack[i].getClass() == Stack.class) {
+    for (GamePiece gamePiece : stack) {
+      final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
+      if (gamePiece.getClass() == Stack.class) {
         getStackMetrics().draw(
-          (Stack) stack[i], pt, g, this, dzoom, visibleRect
+                (Stack) gamePiece, pt, g, this, dzoom, visibleRect
         );
-      }
-      else {
-        stack[i].draw(g, pt.x, pt.y, c, dzoom);
-        if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
-          highlighter.draw(stack[i], g, pt.x, pt.y, c, dzoom);
+      } else {
+        gamePiece.draw(g, pt.x, pt.y, c, dzoom);
+        if (Boolean.TRUE.equals(gamePiece.getProperty(Properties.SELECTED))) {
+          highlighter.draw(gamePiece, g, pt.x, pt.y, c, dzoom);
         }
       }
 /*
@@ -1616,11 +1615,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     Composite oldComposite = g2d.getComposite();
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
     GamePiece[] stack = pieces.getPieces();
-    for (int i = 0; i < stack.length; ++i) {
-      Point pt = mapToDrawing(stack[i].getPosition(), os_scale);
-      stack[i].draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
-      if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
-        highlighter.draw(stack[i], g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
+    for (GamePiece gamePiece : stack) {
+      Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
+      gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
+      if (Boolean.TRUE.equals(gamePiece.getProperty(Properties.SELECTED))) {
+        highlighter.draw(gamePiece, g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
       }
     }
     g2d.setComposite(oldComposite);

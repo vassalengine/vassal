@@ -176,8 +176,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     langBox.removeAllItems();
     String[] langs = Localization.getInstance().getTranslationList();
-    for (int i=0; i < langs.length; i++) {
-      langBox.addItem(langs[i]);
+    for (String lang : langs) {
+      langBox.addItem(lang);
     }
     langBox.setSelectedItem(((Translation) target).getDescription());
     keyTable.setEnabled(true);

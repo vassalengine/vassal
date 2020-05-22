@@ -1071,8 +1071,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public ModuleSummary[] getStatus() {
     ArrayList<ModuleSummary> entries = new ArrayList<ModuleSummary>();
     try {
-      for (Iterator<HostedRoom> iter = MultiUserChat.getHostedRooms(conn, conferenceService).iterator(); iter.hasNext();) {
-        HostedRoom room = iter.next();
+      for (HostedRoom room : MultiUserChat.getHostedRooms(conn, conferenceService)) {
         MultiUserChat.getRoomInfo(conn, room.getJid());
       }
     }

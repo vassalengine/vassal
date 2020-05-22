@@ -69,19 +69,19 @@ public class SimpleConfigurer extends Configurer
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-      for (int i = 0; i < attConfig.length; ++i) {
-        p.add(attConfig[i].getControls());
-        // attConfig[i].addPropertyChangeListener(this);
+      for (Configurer configurer : attConfig) {
+        p.add(configurer.getControls());
+        // configurer.addPropertyChangeListener(this);
       }
     }
     return p;
   }
 
   public void propertyChange(final PropertyChangeEvent p1) {
-    for (int i = 0; i < attConfig.length; ++i) {
-      // System.err.println(attConfig[i].getName()+" = "+attConfig[i].getValue());
-      if (attConfig[i].getValue() == null) {
-        setValue((Object)null);
+    for (Configurer configurer : attConfig) {
+      // System.err.println(configurer.getName()+" = "+configurer.getValue());
+      if (configurer.getValue() == null) {
+        setValue((Object) null);
         return;
       }
       setValue(target);

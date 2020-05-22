@@ -116,8 +116,8 @@ public class Restricted extends Decorator implements EditablePiece {
         && PlayerRoster.isActive()
         && GameModule.getGameModule().getGameState().isGameStarted()) {
       restricted = true;
-      for (int i = 0; i < side.length; ++i) {
-        if (side[i].equals(PlayerRoster.getMySide())) {
+      for (String s : side) {
+        if (s.equals(PlayerRoster.getMySide())) {
           restricted = false;
           break;
         }

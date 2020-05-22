@@ -177,9 +177,9 @@ public class Symbol {
     }
 
     protected static SizeOption findSize(String name) {
-      for (int i = 0; i < SIZES.length; i++) {
-        if (name.equals(SIZES[i].getName())) {
-          return SIZES[i];
+      for (SizeOption size : SIZES) {
+        if (name.equals(size.getName())) {
+          return size;
         }
       }
       return SIZES[0];

@@ -41,8 +41,8 @@ public class ConditionalCommand extends Command {
   }
 
   protected void executeCommand() {
-    for (int i = 0; i < conditions.length; ++i) {
-      if (!conditions[i].isSatisfied()) {
+    for (Condition condition : conditions) {
+      if (!condition.isSatisfied()) {
         return;
       }
     }

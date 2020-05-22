@@ -66,10 +66,10 @@ public class TextClient {
 
   public static String report(Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
+    for (Room room : r) {
+      buffer.append(room.getName() + ": "); //$NON-NLS-1$
 
-      Player[] p = (Player[]) r[i].getPlayerList().toArray();
+      Player[] p = (Player[]) room.getPlayerList().toArray();
       for (int j = 0; j < p.length; ++j) {
         buffer.append(p[j]);
         if (j < p.length - 1) {

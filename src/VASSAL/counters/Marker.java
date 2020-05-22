@@ -118,8 +118,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   public String myGetState() {
     SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < values.length; ++i) {
-      se.append(values[i]);
+    for (String value : values) {
+      se.append(value);
     }
     return se.getValue();
   }
@@ -134,8 +134,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < keys.length; ++i) {
-      se.append(keys[i]);
+    for (String key : keys) {
+      se.append(key);
     }
     return ID + se.getValue();
   }
@@ -171,8 +171,8 @@ public class Marker extends Decorator implements EditablePiece {
    */
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<String>();
-    for (int i = 0; i < keys.length; ++i) {
-      l.add(keys[i]);
+    for (String key : keys) {
+      l.add(key);
     }
     return l;
   }

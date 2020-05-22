@@ -290,8 +290,8 @@ public class MultiRoll extends JDialog implements ActionListener {
     menuItem.addActionListener(this);
     popup.add(menuItem);
 
-    for (int i = 0; i < aBook.length; i++) {
-      menuItem = new JMenuItem(aBook[i]);
+    for (String s : aBook) {
+      menuItem = new JMenuItem(s);
       menuItem.addActionListener(this);
       popup.add(menuItem);
     }

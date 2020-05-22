@@ -54,8 +54,8 @@ public class FormattedStringConfigurer
   public void setOptions(String[] options) {
     optionsModel.removeAllElements();
     optionsModel.addElement("Insert");
-    for (int i = 0; i < options.length; i++) {
-      optionsModel.addElement(options[i]);
+    for (String option : options) {
+      optionsModel.addElement(option);
     }
     setListVisibility();
   }

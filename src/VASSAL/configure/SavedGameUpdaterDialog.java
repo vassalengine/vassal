@@ -208,8 +208,8 @@ public class SavedGameUpdaterDialog extends JDialog {
       File[] selectedFiles = fc.getSelectedFiles();
       if (selectedFiles != null) {
         savedGamesModel.clear();
-        for (int i = 0; i < selectedFiles.length; i++) {
-          savedGamesModel.addElement(selectedFiles[i]);
+        for (File selectedFile : selectedFiles) {
+          savedGamesModel.addElement(selectedFile);
         }
       }
     }

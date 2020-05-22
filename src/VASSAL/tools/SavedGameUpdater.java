@@ -126,10 +126,10 @@ public class SavedGameUpdater {
     }
     else {
       final Configurable[] children = last.getConfigureComponents();
-      for (int i = 0; i < children.length; ++i) {
-        l.add(children[i]);
+      for (Configurable child : children) {
+        l.add(child);
         findPieceSlots(l, p);
-        l.remove(children[i]);
+        l.remove(child);
       }
     }
   }

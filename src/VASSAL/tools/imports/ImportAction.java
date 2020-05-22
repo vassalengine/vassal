@@ -125,10 +125,10 @@ public final class ImportAction extends EditModuleAction {
       }
     }
 
-    for (int i = 0; i < indices.length; ++i) {
+    for (int index : indices) {
       try {
-        if (((Importer) (IMPORTERS[indices[i]].newInstance())).isValidImportFile(f)) {
-          return IMPORTERS[indices[i]];
+        if (((Importer) (IMPORTERS[index].newInstance())).isValidImportFile(f)) {
+          return IMPORTERS[index];
         }
       }
       catch (InstantiationException e) {

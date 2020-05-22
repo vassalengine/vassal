@@ -246,8 +246,8 @@ public class BasicModule extends GameModule {
     Command sub[] = c.getSubCommands();
     if (sub.length > 0) {
       SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
-      for (int i = 0; i < sub.length; ++i) {
-        s2 = encode(sub[i]);
+      for (Command command : sub) {
+        s2 = encode(command);
         if (s2 != null) {
           se.append(s2);
         }

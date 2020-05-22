@@ -636,8 +636,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       untranslatedSides = sides.toArray(new String[sides.size()]);
       String[] s = StringArrayConfigurer.stringToArray((String) value);
       sides = new ArrayList<String>(s.length);
-      for (int i = 0; i < s.length; i++) {
-        sides.add(s[i]);
+      for (String item : s) {
+        sides.add(item);
       }
     }
     else {

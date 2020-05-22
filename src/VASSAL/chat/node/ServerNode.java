@@ -91,8 +91,8 @@ public class ServerNode extends Node {
 
     return new MsgSender() {
       public void send(String msg) {
-        for (int i = 0; i < senders.length; ++i) {
-          senders[i].send(msg);
+        for (MsgSender sender : senders) {
+          sender.send(msg);
         }
       }
     };

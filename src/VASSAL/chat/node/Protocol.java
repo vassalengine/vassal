@@ -201,9 +201,9 @@ public class Protocol {
    */
   public static String encodeRoomsInfo(Node[] rooms) {
     Properties p = new Properties();
-    for (int i = 0; i < rooms.length; ++i) {
-      if (rooms[i].getInfo() != null && rooms[i].getInfo().length() > 0)
-        p.setProperty(rooms[i].getId(), rooms[i].getInfo());
+    for (Node room : rooms) {
+      if (room.getInfo() != null && room.getInfo().length() > 0)
+        p.setProperty(room.getId(), room.getInfo());
     }
     String value = new PropertiesEncoder(p).getStringValue();
     return value == null ? ROOM_INFO : ROOM_INFO + value;
@@ -232,10 +232,10 @@ public class Protocol {
    */
   public static String encodeListCommand(Node[] nodes) {
     SequenceEncoder list = new SequenceEncoder('\t');
-    for (int i = 0; i < nodes.length; ++i) {
-      if (nodes[i].getPath() != null && nodes[i].getInfo() != null) {
+    for (Node node : nodes) {
+      if (node.getPath() != null && node.getInfo() != null) {
         SequenceEncoder info = new SequenceEncoder('=');
-        info.append(nodes[i].getPath()).append(nodes[i].getInfo());
+        info.append(node.getPath()).append(node.getInfo());
         list.append(info.getValue());
       }
     }

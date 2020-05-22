@@ -517,8 +517,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return ""; //$NON-NLS-1$
     }
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < ia.length; ++i) {
-      se.append(String.valueOf(ia[i]));
+    for (int value : ia) {
+      se.append(String.valueOf(value));
     }
     return se.getValue();
   }
@@ -657,10 +657,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         g.fillRect(x, y, width, height);
       }
       int offset = 0;
-      for (int i = 0; i < icons.length; ++i) {
-        if (icons[i] != null) {
-          icons[i].paintIcon(c, g, x + offset, y);
-          offset += icons[i].getIconWidth();
+      for (Icon icon : icons) {
+        if (icon != null) {
+          icon.paintIcon(c, g, x + offset, y);
+          offset += icon.getIconWidth();
         }
       }
     }

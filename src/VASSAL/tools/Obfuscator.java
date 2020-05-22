@@ -46,8 +46,8 @@ public class Obfuscator {
     key = (byte) rand.nextInt(256);
     final StringBuilder buffer = new StringBuilder(HEADER);
     appendAsHex(buffer,key);
-    for (int i = 0; i < contents.length; ++i) {
-      appendAsHex(buffer,(byte) (contents[i] ^ key));
+    for (byte content : contents) {
+      appendAsHex(buffer, (byte) (content ^ key));
     }
     encrypted = buffer.toString();
   }

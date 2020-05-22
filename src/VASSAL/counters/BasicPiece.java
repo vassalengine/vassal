@@ -366,9 +366,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   private void enableCommand(String name, boolean enable) {
-    for (int i = 0; i < commands.length; ++i) {
-      if (name.equals(commands[i].getName())) {
-        commands[i].setEnabled(enable);
+    for (KeyCommand command : commands) {
+      if (name.equals(command.getName())) {
+        command.setEnabled(enable);
       }
     }
   }
@@ -377,9 +377,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (stroke == null) {
       return false;
     }
-    for (int i = 0; i < commands.length; ++i) {
-      if (stroke.equals(commands[i].getKeyStroke())) {
-        return commands[i].isEnabled();
+    for (KeyCommand command : commands) {
+      if (stroke.equals(command.getKeyStroke())) {
+        return command.isEnabled();
       }
     }
     return true;

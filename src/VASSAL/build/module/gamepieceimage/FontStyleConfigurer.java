@@ -91,8 +91,8 @@ public class FontStyleConfigurer extends Configurer {
 
     fonts = new JComboBox();
     String[] s = FontManager.getFontManager().getFontNames();
-    for (int i = 0; i < s.length; i++) {
-      fonts.addItem(s[i]);
+    for (String item : s) {
+      fonts.addItem(item);
     }
     fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName()); //$NON-NLS-1$
     fontPanel.add(fonts);

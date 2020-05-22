@@ -27,8 +27,8 @@ public class RollSet {
 
   public int getMaxDescLength() {
     int len = 0;
-    for (int i = 0; i < dieRolls.length; i++) {
-      len = Math.max(len, dieRolls[i].getDescription().length());
+    for (DieRoll dieRoll : dieRolls) {
+      len = Math.max(len, dieRoll.getDescription().length());
     }
     return len;
   }
