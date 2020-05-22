@@ -418,8 +418,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public KeyCommand[] getKeyCommands() {
     if (obscuredToMe()) {
-      final KeyCommand myC[] = myGetKeyCommands();
-      final KeyCommand c[] = (KeyCommand[])
+      final KeyCommand[] myC = myGetKeyCommands();
+      final KeyCommand[] c = (KeyCommand[])
         Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;

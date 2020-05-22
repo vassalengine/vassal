@@ -120,10 +120,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   protected int nValues;
   protected int xOff, yOff;
-  protected String imageName[];
-  protected String commonName[];
-  protected Rectangle size[];
-  protected ScaledImagePainter imagePainter[];
+  protected String[] imageName;
+  protected String[] commonName;
+  protected Rectangle[] size;
+  protected ScaledImagePainter[] imagePainter;
   protected boolean drawUnderneathWhenSelected = false;
 
   protected String name = "";

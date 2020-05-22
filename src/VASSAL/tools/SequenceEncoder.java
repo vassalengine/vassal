@@ -362,7 +362,7 @@ public class SequenceEncoder {
     }
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     SequenceEncoder se = new SequenceEncoder(',');
     for (String arg : args) {
       se.append(arg);

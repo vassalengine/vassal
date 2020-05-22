@@ -101,7 +101,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     se.append(current);
     se.append(currentSubLevel);
     se.append(first);
-    String s[] = new String[active.length];
+    String[] s = new String[active.length];
     for (int i = 0; i < s.length; i++) {
       s[i] = active[i] + ""; //$NON-NLS-1$
     }

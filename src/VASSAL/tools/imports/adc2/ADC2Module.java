@@ -1456,7 +1456,7 @@ public class ADC2Module extends Importer {
   private ForcePoolList forcePools = new ForcePoolList();
   private final String[] classValues = new String[8];
   private final String[] pieceValues = new String[8];
-  private FacingDirection allowedFacings[];
+  private FacingDirection[] allowedFacings;
 
   protected PieceClass getClassFromIndex(int index) {
     if (index < 0 || index >= pieceClasses.size())
@@ -1487,7 +1487,7 @@ public class ADC2Module extends Importer {
   private boolean useLOS;
   private String deckName;
   private int nCardSets;
-  private final String infoPages[] = new String[10];
+  private final String[] infoPages = new String[10];
   private String infoPageName;
 
   public static final Color FLAG_BACKGROUND = new Color(1.0f, 1.0f, 0.8f, 0.8f);
@@ -1767,9 +1767,9 @@ private PieceWindow pieceWin;
               while (input.readUnsignedByte() != 0x3b) { }
               int idx = input.readUnsignedByte();
               int len = input.readUnsignedByte();
-              byte dimensions[] = new byte[8];
+              byte[] dimensions = new byte[8];
               input.readFully(dimensions);
-              byte buf[] = new byte[len];
+              byte[] buf = new byte[len];
               input.readFully(buf);
               String name = new String(buf);
               if (idx >=0 && idx <10 && infoPages[idx] == null) {
@@ -2091,11 +2091,11 @@ private PieceWindow pieceWin;
       if (name.equals(cl.getName()))
         name = "";
 
-      int values[] = new int[8];
+      int[] values = new int[8];
       for (int j = 0; j < values.length; ++j)
         values[j] = in.readInt();
 
-      ValueType types[] = new ValueType[8];
+      ValueType[] types = new ValueType[8];
       for (int j = 0; j < types.length; ++j) {
         switch (in.readUnsignedByte()) {
         case 1:
@@ -2539,7 +2539,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
       PlayerHand hand = new PlayerHand();
       insertComponent(hand, module);
       if (pool.getOwner() == Player.ALL_PLAYERS) {
-        String sides[] = new String[players.size()];
+        String[] sides = new String[players.size()];
         for (int i = 0; i < players.size(); ++i) {
           sides[i] = players.get(i).getName();
         }
@@ -2701,7 +2701,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     insertComponent(menu, gameModule);
     menu.setAttribute(ToolbarMenu.BUTTON_TEXT, "Windows");
     menu.setAttribute(ToolbarMenu.TOOLTIP, "Open trays, decks, charts, and hands.");
-    String items[] = new String[nHands+3];
+    String[] items = new String[nHands+3];
     items[0] = TRAY;
     items[1] = DECKS;
     int start = 2;

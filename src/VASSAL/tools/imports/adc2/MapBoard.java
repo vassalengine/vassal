@@ -3057,7 +3057,7 @@ public class MapBoard extends Importer {
    */
   Board getBoard() {
     BoardPicker picker = getBoardPicker();
-    String boards[] = picker.getAllowableBoardNames();
+    String[] boards = picker.getAllowableBoardNames();
     assert(boards.length <= 1);
     Board board = null;
     if (boards.length == 0) {

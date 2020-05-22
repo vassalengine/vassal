@@ -432,8 +432,8 @@ public class MultiRoll extends JDialog implements ActionListener {
       col3.setEnabled(false);
 
       // Number of Dice
-      int allowableDice[] = dieManager.getServer().getnDiceList();
-      String diceData[] = new String[allowableDice.length];
+      int[] allowableDice = dieManager.getServer().getnDiceList();
+      String[] diceData = new String[allowableDice.length];
       int defaultNDIdx = 0;
       for (int i = 0; i < diceData.length; i++) {
         diceData[i] = allowableDice[i] + "";
@@ -453,7 +453,7 @@ public class MultiRoll extends JDialog implements ActionListener {
 
       // Number of Sides
       int[] allowableSides = dieManager.getServer().getnSideList();
-      String sideData[] = new String[allowableSides.length];
+      String[] sideData = new String[allowableSides.length];
       int defaultNSIdx = 0;
       for (int i = 0; i < sideData.length; i++) {
         sideData[i] = allowableSides[i] + "";

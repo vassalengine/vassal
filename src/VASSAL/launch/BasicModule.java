@@ -243,7 +243,7 @@ public class BasicModule extends GameModule {
     }
     String s = encodeSubCommand(c);
     String s2;
-    Command sub[] = c.getSubCommands();
+    Command[] sub = c.getSubCommands();
     if (sub.length > 0) {
       SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
       for (Command command : sub) {

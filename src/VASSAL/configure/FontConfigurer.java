@@ -108,7 +108,7 @@ public class FontConfigurer extends Configurer {
     return f.getName() + "," + f.getSize();
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     final JFrame f = new JFrame();
     f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
     FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13});

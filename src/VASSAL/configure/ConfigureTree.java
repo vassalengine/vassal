@@ -927,7 +927,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
-      final Class<?> c[] = parent.getAllowableConfigureComponents();
+      final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (Class<?> aClass : c) {
         if (aClass.isAssignableFrom(child.getClass()) ||
                 ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks

@@ -103,7 +103,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
    */
   public static JPopupMenu createPopup(GamePiece target, boolean global) {
     JPopupMenu popup = new JPopupMenu();
-    KeyCommand c[] = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
+    KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
     if (c != null) {
       ArrayList<JMenuItem> commands = new ArrayList<JMenuItem>();
       ArrayList<KeyStroke> strokes = new ArrayList<KeyStroke>();

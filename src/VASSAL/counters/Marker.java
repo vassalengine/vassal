@@ -44,8 +44,8 @@ import VASSAL.tools.SequenceEncoder;
 public class Marker extends Decorator implements EditablePiece {
   public static final String ID = "mark;";
 
-  protected String keys[];
-  protected String values[];
+  protected String[] keys;
+  protected String[] values;
 
   public Marker() {
     this(ID, null);

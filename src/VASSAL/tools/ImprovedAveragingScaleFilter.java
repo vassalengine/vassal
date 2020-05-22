@@ -26,7 +26,9 @@ import java.awt.image.ColorModel;
  * same algorithm but makes sure all images are scaled using area
  * averaging.  Ensures there is no fallback to ReplicateScaleFilter. */
 public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
-  private int savedWidth, savedHeight, savedPixels[];
+  private int savedWidth;
+  private int savedHeight;
+  private int[] savedPixels;
   private static ColorModel defaultCM = ColorModel.getRGBdefault();
 
   public ImprovedAveragingScaleFilter(int savedWidth, int savedHeight, int destWidth, int destHeight ) {
@@ -49,12 +51,12 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
   }
 
   public void setPixels (int x, int y, int width, int height,
-      ColorModel cm, byte pixels[], int offset, int scansize) {
+                         ColorModel cm, byte[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
 
   public void setPixels (int x, int y, int width, int height,
-      ColorModel cm, int pixels[], int offset, int scansize) {
+                         ColorModel cm, int[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
 
@@ -84,7 +86,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
     }
     else {
       // get orig image width and height
-      int pixels[] = new int [savedWidth];
+      int[] pixels = new int [savedWidth];
       int position;
       for (int yy=0;yy<savedHeight;yy++) {
         position=0;

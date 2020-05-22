@@ -1152,7 +1152,7 @@ public class MassPieceLoader {
       imageListElements.removeAllElements();
     }
 
-    public void setImageList(String names[]) {
+    public void setImageList(String[] names) {
       while (names.length > multiPanel.getComponentCount()) {
         addEntry();
       }

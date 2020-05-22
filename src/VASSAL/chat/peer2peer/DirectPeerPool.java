@@ -202,7 +202,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   protected void invite(final PendingPeerManager ppm) {
-    final int selected[] = addressList.getSelectedIndices();
+    final int[] selected = addressList.getSelectedIndices();
     for (int value : selected) {
       final Entry entry = (Entry) addressBook.getElementAt(value);
       final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -252,11 +252,11 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   protected void removeEntries() {
-    final int selected[] = addressList.getSelectedIndices();
+    final int[] selected = addressList.getSelectedIndices();
     if (selected.length == 0) {
       return;
     }
-    final Entry entries[] = new Entry[selected.length];
+    final Entry[] entries = new Entry[selected.length];
     for (int i = 0; i < selected.length; i++) {
       entries[i] = (Entry) addressBook.getElementAt(selected[i]);
     }

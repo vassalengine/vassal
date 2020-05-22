@@ -183,7 +183,7 @@ public class Protocol {
    * @see #encodeNodeInfoCommand
    */
   public static String[] decodeNodeInfoCommand(String cmd) {
-    String s[] = null;
+    String[] s = null;
     if (cmd.startsWith(NODE_INFO)) {
       s = new String[2];
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(NODE_INFO.length()), '=');

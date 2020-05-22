@@ -38,10 +38,10 @@ import VASSAL.build.Configurable;
 public class SimpleConfigurer extends Configurer
                               implements PropertyChangeListener {
   private javax.swing.JPanel p;
-  private Configurer attConfig[];
+  private Configurer[] attConfig;
   private Configurable target;
 
-  public SimpleConfigurer(Configurable c, Configurer attConfigurers[]) {
+  public SimpleConfigurer(Configurable c, Configurer[] attConfigurers) {
     super(null,c.getConfigureName());
 
     attConfig = attConfigurers;
