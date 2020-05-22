@@ -19,8 +19,7 @@
 
 package VASSAL.tools.concurrent.listener;
 
-import VASSAL.tools.lang.Pair;
-
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,15 +27,15 @@ import static org.junit.Assert.*;
 public class EventAccumulatorTest {
   @Test
   public void testEvents() {
-    final EventAccumulator<Integer> ea = new EventAccumulator<Integer>();
+    final EventAccumulator<Integer> ea = new EventAccumulator<>();
     for (int i = 0; i < 10; ++i) {
       ea.receive(this, i);
     }
 
     int i = 0;
-    for (Pair<Object,Integer> e : ea.events()) {
-      assertSame(this, e.first);
-      assertEquals(i, e.second.intValue());
+    for (ImmutablePair<Object,Integer> e : ea.events()) {
+      assertSame(this, e.getLeft());
+      assertEquals(i, e.getRight().intValue());
       ++i;
     }
   }

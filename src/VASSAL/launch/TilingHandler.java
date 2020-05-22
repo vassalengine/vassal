@@ -24,8 +24,6 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +40,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,6 @@ import VASSAL.tools.io.InputOutputStreamPump;
 import VASSAL.tools.io.InputStreamPump;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
-import VASSAL.tools.lang.Pair;
 import VASSAL.tools.swing.EDT;
 import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.Progressor;
@@ -72,11 +70,11 @@ public class TilingHandler {
   private static final Logger logger =
     LoggerFactory.getLogger(TilingHandler.class);
 
-  protected final String aname;
-  protected final File cdir;
-  protected final Dimension tdim;
-  protected final int maxheap_limit;
-  protected final int pid;
+  private final String aname;
+  private final File cdir;
+  private final Dimension tdim;
+  private final int maxheapLimit;
+  private final int pid;
 
   /**
    * Creates a {@code TilingHandler}.
@@ -91,11 +89,11 @@ public class TilingHandler {
     this.aname = aname;
     this.cdir = cdir;
     this.tdim = tdim;
-    this.maxheap_limit = mhlim;
+    this.maxheapLimit = mhlim;
     this.pid = pid;
   }
 
-  protected boolean isFresh(FileArchive archive,
+  private static boolean isFresh(FileArchive archive,
                             FileStore tcache, String ipath)
                                                            throws IOException {
     // look at the first 1:1 tile
@@ -108,25 +106,18 @@ public class TilingHandler {
            imtime <= tcache.getMTime(tpath);
   }
 
-  protected Dimension getImageSize(DataArchive archive, String ipath)
+  private static Dimension getImageSize(DataArchive archive, String ipath)
                                                            throws IOException {
-    InputStream in = null;
-    try {
-      in = archive.getInputStream(ipath);
-      final Dimension id = ImageUtils.getImageSize(ipath, in);
-      in.close();
-      return id;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+    try (InputStream in = archive.getInputStream(ipath)) {
+      return ImageUtils.getImageSize(ipath, in);
     }
   }
 
-  protected Pair<Integer,Integer> findImages(
+  private ImmutablePair<Integer,Integer> findImages(
     DataArchive archive,
     FileStore tcache,
     List<String> multi,
-    List<Pair<String,IOException>> failed) throws IOException
+    List<ImmutablePair<String,IOException>> failed) throws IOException
   {
     // build a list of all multi-tile images and count tiles
     final Set<String> images = archive.getImageNameSet();
@@ -148,7 +139,7 @@ public class TilingHandler {
       }
       catch (IOException e) {
         // skip images we can't read
-        failed.add(Pair.of(ipath, e));
+        failed.add(ImmutablePair.of(ipath, e));
         continue;
       }
 
@@ -167,10 +158,10 @@ public class TilingHandler {
       }
     }
 
-    return new Pair<Integer,Integer>(tcount, maxpix);
+    return new ImmutablePair<>(tcount, maxpix);
   }
 
-  protected void runSlicer(List<String> multi, final int tcount, int maxheap)
+  private void runSlicer(List<String> multi, final int tcount, int maxheap)
                                    throws CancellationException, IOException {
 
     final InetAddress lo = InetAddress.getByName(null);
@@ -178,21 +169,19 @@ public class TilingHandler {
 
     final int port = ssock.getLocalPort();
 
-    final List<String> args = new ArrayList<String>();
-    args.addAll(Arrays.asList(new String[] {
-      Info.javaBinPath,
-      "-classpath",
-      System.getProperty("java.class.path"),
-      "-Xmx" + maxheap + "M",
-      "-DVASSAL.id=" + pid,
-      "-Duser.home=" + System.getProperty("user.home"),
-      "-DVASSAL.port=" + port,
-      "VASSAL.tools.image.tilecache.ZipFileImageTiler",
-      aname,
-      cdir.getAbsolutePath(),
-      String.valueOf(tdim.width),
-      String.valueOf(tdim.height)
-    }));
+    final List<String> args = Arrays.asList(
+            Info.javaBinPath,
+            "-classpath",
+            System.getProperty("java.class.path"),
+            "-Xmx" + maxheap + "M",
+            "-DVASSAL.id=" + pid,
+            "-Duser.home=" + System.getProperty("user.home"),
+            "-DVASSAL.port=" + port,
+            "VASSAL.tools.image.tilecache.ZipFileImageTiler",
+            aname,
+            cdir.getAbsolutePath(),
+            String.valueOf(tdim.width),
+            String.valueOf(tdim.height));
 
     // get the progress dialog
     final ProgressDialog pd = ProgressDialog.createOnEDT(
@@ -209,19 +198,14 @@ public class TilingHandler {
       null,
       outP,
       errP,
-      args.toArray(new String[args.size()])
+      args.toArray(new String[0])
     );
 
     // write the image paths to child's stdin, one per line
-    PrintWriter stdin = null;
-    try {
-      stdin = new PrintWriter(proc.stdin);
+    try (PrintWriter stdin = new PrintWriter(proc.stdin)) {
       for (String m : multi) {
         stdin.println(m);
       }
-    }
-    finally {
-      IOUtils.closeQuietly(stdin);
     }
 
     Socket csock = null;
@@ -234,22 +218,16 @@ public class TilingHandler {
 
       final Progressor progressor = new Progressor(0, tcount) {
         @Override
-        protected void run(Pair<Integer,Integer> prog) {
-          pd.setProgress((100*prog.second)/max);
+        protected void run(ImmutablePair<Integer,Integer> prog) {
+          pd.setProgress((100*prog.getRight())/max);
         }
       };
 
       // setup the cancel button in the progress dialog
-      EDT.execute(new Runnable() {
-        public void run() {
-          pd.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              pd.setVisible(false);
-              proc.future.cancel(true);
-            }
-          });
-        }
-      });
+      EDT.execute(() -> pd.addActionListener(e -> {
+        pd.setVisible(false);
+        proc.future.cancel(true);
+      }));
 
       boolean done = false;
       byte type;
@@ -260,11 +238,9 @@ public class TilingHandler {
         case STARTING_IMAGE:
           final String ipath = in.readUTF();
 
-          EDT.execute(new Runnable() {
-            public void run() {
-              pd.setLabel("Tiling " + ipath);
-              if (!pd.isVisible()) pd.setVisible(true);
-            }
+          EDT.execute(() -> {
+            pd.setLabel("Tiling " + ipath);
+            if (!pd.isVisible()) pd.setVisible(true);
           });
           break;
 
@@ -290,7 +266,7 @@ public class TilingHandler {
       ssock.close();
     }
     catch (IOException e) {
-
+      logger.error("Error during tiling process", e);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -305,17 +281,13 @@ public class TilingHandler {
         throw new IOException("return value == " + retval);
       }
     }
-    catch (ExecutionException e) {
-      // should never happen
-      throw new IllegalStateException(e);
-    }
-    catch (InterruptedException e) {
+    catch (ExecutionException | InterruptedException e) {
       // should never happen
       throw new IllegalStateException(e);
     }
   }
 
-  protected void makeHashDirs() throws IOException {
+  private void makeHashDirs() throws IOException {
     for (int i = 0; i < 16; ++i) {
       for (int j = 0; j < 16; ++j) {
         final File d = new File(String.format("%s/%1x/%1x%1x", cdir, i, i, j));
@@ -324,7 +296,7 @@ public class TilingHandler {
     }
   }
 
-  protected void cleanup() throws IOException {
+  private void cleanup() throws IOException {
     FileUtils.forceDelete(cdir);
   }
 
@@ -334,20 +306,13 @@ public class TilingHandler {
    * @throws IOException if one occurs
    */
   public void sliceTiles() throws CancellationException, IOException {
-    final List<String> multi = new ArrayList<String>();
-    final List<Pair<String,IOException>> failed =
-      new ArrayList<Pair<String,IOException>>();
+    final List<String> multi = new ArrayList<>();
+    final List<ImmutablePair<String,IOException>> failed = new ArrayList<>();
 
-    Pair<Integer,Integer> s;
-    DataArchive archive = null;
-    try {
-      archive = new DataArchive(aname);
+    ImmutablePair<Integer,Integer> s;
+    try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);
-      archive.close();
-    }
-    finally {
-      IOUtils.closeQuietly(archive);
     }
 
     // nothing to do if no images need tiling
@@ -359,25 +324,20 @@ public class TilingHandler {
     // ensure that the tile directories exist
     makeHashDirs();
 
-    final int tcount = s.first;
-    final int max_data_mbytes = (4*s.second) >> 20;
+    final int maxDataMbytes = (4*s.getRight()) >> 20;
 
     // fix the max heap
 
     // This was determined empirically.
-    final int maxheap_estimated = (int) (1.66*max_data_mbytes + 150);
+    final int maxheapEstimated = (int) (1.66*maxDataMbytes + 150);
 
-    final int maxheap = Math.min(maxheap_estimated, maxheap_limit);
+    final int maxheap = Math.min(maxheapEstimated, maxheapLimit);
 
     // slice, and cleanup on failure
     try {
-      runSlicer(multi, s.first, maxheap);
+      runSlicer(multi, s.getLeft(), maxheap);
     }
-    catch (CancellationException e) {
-      cleanup();
-      throw e;
-    }
-    catch (IOException e) {
+    catch (CancellationException | IOException e) {
       cleanup();
       throw e;
     }

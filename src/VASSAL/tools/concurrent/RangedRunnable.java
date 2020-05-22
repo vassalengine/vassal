@@ -18,7 +18,7 @@
  */
 package VASSAL.tools.concurrent;
 
-import VASSAL.tools.lang.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  * A {@link Runnable} which operates on a rolling range.
@@ -33,7 +33,7 @@ import VASSAL.tools.lang.Pair;
  * @since 3.1.11
  */
 public abstract class RangedRunnable<T> implements Runnable {
-  protected Pair<T,T> range;
+  protected ImmutablePair<T,T> range;
   protected boolean submitted = false;
 
   /**
@@ -42,13 +42,13 @@ public abstract class RangedRunnable<T> implements Runnable {
    * @param init the initial lower bound
    */
   public RangedRunnable(T init) {
-    range = new Pair<T,T>(init, null);
+    range = new ImmutablePair<>(init, null);
   }
 
   /**
    * {@inheritDoc}
    *
-   * <p>Flushes the range and calls {@see #run(Pair<T,T>)}.</p>
+   * <p>Flushes the range and calls {@see #run(ImmutablePair<T,T>)}.</p>
    */
   public final void run() {
     run(flush());
@@ -61,8 +61,8 @@ public abstract class RangedRunnable<T> implements Runnable {
    * @param submit whether to also submit the change
    */
   public final synchronized void setLast(T last, boolean submit) {
-    if (last != range.second) {
-      range = new Pair<T,T>(range.first, last);
+    if (last != range.getRight()) {
+      range = new ImmutablePair<>(range.getLeft(), last);
     }
 
     if (submit && !submitted) {
@@ -83,7 +83,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * @param r the range to process
    */
-  protected abstract void run(Pair<T,T> r);
+  protected abstract void run(ImmutablePair<T, T> r);
 
   /**
    * Returns the old range and creates a new range adjacent to the old one.
@@ -91,9 +91,9 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * @return the range being flushed
    */
-  private final synchronized Pair<T,T> flush() {
-    final Pair<T,T> flushed = range;
-    range = new Pair<T,T>(flushed.second, null);
+  private synchronized ImmutablePair<T,T> flush() {
+    final ImmutablePair<T,T> flushed = range;
+    range = new ImmutablePair<>(flushed.getRight(), null);
     submitted = false;
     return flushed;
   }
