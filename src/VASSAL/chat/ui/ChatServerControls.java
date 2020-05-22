@@ -221,7 +221,7 @@ public class ChatServerControls extends AbstractBuildable {
   public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
-        splitter = new ComponentSplitter().splitRight(GameModule.getGameModule().getControlPanel(), controlPanel, false);
+        splitter = ComponentSplitter.splitRight(GameModule.getGameModule().getControlPanel(), controlPanel, false);
         splitter.revalidate();
         final Runnable runnable = new Runnable() {
           public void run() {

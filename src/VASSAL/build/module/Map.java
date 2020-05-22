@@ -169,11 +169,6 @@ import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 
-/*
-import org.jdesktop.swinghelper.layer.JXLayer;
-import org.jdesktop.swinghelper.layer.demo.DebugPainter;
-*/
-
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
  * a Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
@@ -675,17 +670,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
-      final ComponentSplitter splitter = new ComponentSplitter();
 
-/*
-final JXLayer<JComponent> jxl = new JXLayer<JComponent>(layeredPane);
-final DebugPainter<JComponent> dp = new DebugPainter<JComponent>();
-jxl.setPainter(dp);
-mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGameModule().getControlPanel(), -1), jxl, true);
-*/
-
-      mainWindowDock = splitter.splitBottom(
-        splitter.getSplitAncestor(g.getControlPanel(), -1),
+      mainWindowDock = ComponentSplitter.splitBottom(
+        ComponentSplitter.getSplitAncestor(g.getControlPanel(), -1),
         layeredPane, true
       );
 
