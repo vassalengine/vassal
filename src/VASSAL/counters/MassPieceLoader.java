@@ -1036,7 +1036,7 @@ public class MassPieceLoader {
           return s.endsWith(levelName.substring(1));
         }
         else if (levelName.charAt(0) == INCLUDES.charAt(0)) {
-          return s.indexOf(levelName.substring(1)) >= 0;
+          return s.contains(levelName.substring(1));
         }
         else if (levelName.charAt(0) == EQUALS.charAt(0)) {
           return s.equals(levelName.substring(1));
