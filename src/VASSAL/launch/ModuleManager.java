@@ -518,7 +518,7 @@ public class ModuleManager {
         if (lr.module == null && lr.game != null) {
           // attempt to find the module for the saved game or log
           final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.game);
-          if (data != null && data instanceof SaveMetaData) {
+          if (data instanceof SaveMetaData) {
             // we found save metadata
             final String moduleName = ((SaveMetaData) data).getModuleName();
             if (moduleName != null && moduleName.length() > 0) {

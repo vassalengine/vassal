@@ -1237,7 +1237,7 @@ public class ModuleManagerWindow extends JFrame {
 
     protected void loadMetaData() {
       AbstractMetaData data = MetaDataFactory.buildMetaData(file);
-      if (data != null && data instanceof ModuleMetaData) {
+      if (data instanceof ModuleMetaData) {
         setValid(true);
         metadata = (ModuleMetaData) data;
       }
@@ -1482,7 +1482,7 @@ public class ModuleManagerWindow extends JFrame {
 
     protected void loadMetaData() {
       AbstractMetaData data = MetaDataFactory.buildMetaData(file);
-      if (data != null && data instanceof ExtensionMetaData) {
+      if (data instanceof ExtensionMetaData) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
       }
@@ -1723,7 +1723,7 @@ public class ModuleManagerWindow extends JFrame {
 
     protected void loadMetaData() {
       AbstractMetaData data = MetaDataFactory.buildMetaData(file);
-      if (data != null && data instanceof SaveMetaData) {
+      if (data instanceof SaveMetaData) {
         metadata = (SaveMetaData) data;
         setValid(true);
       }

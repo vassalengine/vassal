@@ -488,7 +488,7 @@ public class MassPieceLoader {
       ArrayList<Decorator> traits = new ArrayList<Decorator>();
 
       // Reverse the order of the traits to innermost out
-      while (template != null && template instanceof Decorator) {
+      while (template instanceof Decorator) {
         traits.add(0, (Decorator) template);
         template = ((Decorator) template).getInner();
       }

@@ -439,7 +439,7 @@ public class GameState implements CommandEncoder {
     if (f.exists()) {
       // warn user if overwriting a save from an old version
       final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
-      if (md != null && md instanceof SaveMetaData) {
+      if (md instanceof SaveMetaData) {
         if (Info.hasOldFormat(md.getVassalVersion())) {
           return Dialogs.showConfirmDialog(
             GameModule.getGameModule().getFrame(),

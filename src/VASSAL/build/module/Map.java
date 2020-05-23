@@ -784,7 +784,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     Board b = findBoard(p);
     if (b != null) {
       MapGrid grid = b.getGrid();
-      if (grid != null && grid instanceof ZonedGrid) {
+      if (grid instanceof ZonedGrid) {
         Rectangle r = b.bounds();
         p.translate(-r.x, -r.y);  // Translate to Board co-ords
         return ((ZonedGrid) grid).findZone(p);

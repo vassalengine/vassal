@@ -152,7 +152,7 @@ public class Player extends Launcher {
     public void actionPerformed(ActionEvent e) {
       // don't permit loading of VASL saved with 3.1 or earlier
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
-      if (data != null && data instanceof ModuleMetaData) {
+      if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
         if (Info.compareVersions(md.getVassalVersion(), "3.2.0") < 0) {
           if ("VASL".equals(md.getName())) {

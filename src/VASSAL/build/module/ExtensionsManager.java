@@ -165,7 +165,7 @@ public class ExtensionsManager {
       else {
         for (File file : files) {
           final AbstractMetaData metadata = MetaDataFactory.buildMetaData(file);
-          if (metadata != null && metadata instanceof ExtensionMetaData) {
+          if (metadata instanceof ExtensionMetaData) {
             extensions.add(file);
           }
         }

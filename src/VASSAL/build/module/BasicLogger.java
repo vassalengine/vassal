@@ -359,7 +359,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     // warn user if overwriting log from an old version
     if (file.exists()) {
       final AbstractMetaData md = MetaDataFactory.buildMetaData(file);
-      if (md != null && md instanceof SaveMetaData) {
+      if (md instanceof SaveMetaData) {
         if (Info.hasOldFormat(md.getVassalVersion())) {
 
           final int result = Dialogs.showConfirmDialog(

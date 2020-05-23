@@ -99,7 +99,7 @@
 //        }
 ///*
 //
-//      if (value != null && value instanceof Font) {
+//      if (value instanceof Font) {
 //        UIManager.put(key, null);
 //        final Font font = UIManager.getFont(key);
 //        if (font != null) {

@@ -947,7 +947,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           if (p.getType().equals(Presence.Type.available)) {
             PacketExtension ext = p.getExtension(QUERY_USER);
             JabberRoom room = null;
-            if (ext != null && ext instanceof MUCUser){
+            if (ext instanceof MUCUser){
               final String affiliation = ((MUCUser) ext).getItem().getAffiliation();
               final String jid = playerMgr.getPlayer(getAbsolutePlayerJID(p.getFrom())).getJid();
               String roomJid = (String) p.getProperty(ROOM_JID);
