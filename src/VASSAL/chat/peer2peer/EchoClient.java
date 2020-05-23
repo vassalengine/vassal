@@ -89,9 +89,9 @@ public class EchoClient implements Runnable, PropertyChangeListener {
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
-      VASSAL.chat.Player[] l = (VASSAL.chat.Player[]) r[i].getPlayerList().toArray();
+    for (VASSAL.chat.Room room : r) {
+      buffer.append(room.getName() + ": "); //$NON-NLS-1$
+      Player[] l = (Player[]) room.getPlayerList().toArray();
       for (int j = 0; j < l.length; ++j) {
         buffer.append(l[j]);
         if (j < l.length - 1) {

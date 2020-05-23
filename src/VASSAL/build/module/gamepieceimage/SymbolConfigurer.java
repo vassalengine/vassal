@@ -53,8 +53,8 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
     public SymbolComboBox() {
       String[] s = Symbol.NatoUnitSymbolSet.getSymbolNames();
-      for (int i = 0; i < s.length; ++i) {
-        addItem(s[i]);
+      for (String item : s) {
+        addItem(item);
       }
       SymbolRenderer renderer = new SymbolRenderer();
       setRenderer(renderer);

@@ -171,7 +171,7 @@ public class MultiImagePicker extends JPanel {
     showSelected();
   }
 
-  public void setImageList(String names[]) {
+  public void setImageList(String[] names) {
     while (names.length > multiPanel.getComponentCount()) {
       addEntry();
     }

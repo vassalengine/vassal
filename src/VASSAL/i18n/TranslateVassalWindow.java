@@ -263,7 +263,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     return true;
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         final TranslateVassalWindow w = new TranslateVassalWindow(null);

@@ -49,8 +49,8 @@ public class SizeConfigurer extends StringEnumConfigurer {
 
     public SizeComboBox() {
       String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
-      for (int i = 0; i < s.length; ++i) {
-        addItem(s[i]);
+      for (String item : s) {
+        addItem(item);
       }
       SizeRenderer renderer = new SizeRenderer();
       setRenderer(renderer);

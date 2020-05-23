@@ -246,7 +246,7 @@ public abstract class Builder {
     }
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     Document doc = createNewDocument();
     Element e = doc.createElement("test"); //$NON-NLS-1$
     Element e1 = doc.createElement("sub1"); //$NON-NLS-1$

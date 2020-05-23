@@ -131,14 +131,14 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     contents.setBorder(BorderFactory.createEtchedBorder());
     contents.setLayout(new GridLayout(0, 5));
 
-    for (int i = 0; i < columns.length; i++) {
-      contents.add(new JLabel(columns[i].getName()));
+    for (Column item : columns) {
+      contents.add(new JLabel(item.getName()));
     }
 
     if (columns[0].getRowCount() > 0) {
       for (int row = 0; row < columns[0].getRowCount(); row++) {
-        for (int col = 0; col < columns.length; col++) {
-          contents.add(columns[col].getControls(row));
+        for (Column column : columns) {
+          contents.add(column.getControls(row));
         }
       }
     }

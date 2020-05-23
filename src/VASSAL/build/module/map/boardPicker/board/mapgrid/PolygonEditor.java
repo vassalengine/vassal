@@ -58,13 +58,13 @@ public class PolygonEditor extends JPanel {
   }
 
   protected void reset() {
-    MouseListener ml[] = getMouseListeners();
+    MouseListener[] ml = getMouseListeners();
 
     // get rid of all the mouse listeners floating around
     for (MouseListener i: ml)
       removeMouseListener(i);
 
-    MouseMotionListener mml[] = getMouseMotionListeners();
+    MouseMotionListener[] mml = getMouseMotionListeners();
 
     for (MouseMotionListener i: mml)
       removeMouseMotionListener(i);

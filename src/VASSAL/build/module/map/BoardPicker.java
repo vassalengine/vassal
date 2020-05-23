@@ -212,7 +212,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       }
 
       try {
-        slotScale = Double.valueOf(e.getAttribute(SCALE));
+        slotScale = Double.parseDouble(e.getAttribute(SCALE));
       }
       catch (NumberFormatException ex) {
         // Use default values if attribute doesn't parse.

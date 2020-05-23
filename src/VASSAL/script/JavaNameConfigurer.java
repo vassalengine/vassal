@@ -68,17 +68,17 @@ public class JavaNameConfigurer extends Configurer {
           noUpdate = true;
           String v = nameField.getText();
           int caret = nameField.getCaretPosition();
-          StringBuffer buffer = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           for (int i = 0; i < v.length(); i++) {
             char c = v.charAt(i);
             if (c == '$' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-              buffer.append(c);
+              sb.append(c);
             }
             else if (i > 0 && c >= '0' && c <= '9') {
-              buffer.append(c);
+              sb.append(c);
             }
           }
-          String newString = buffer.toString();
+          String newString = sb.toString();
           setValue(newString);
           nameField.setText(newString);
           if (newString.length() < v.length()) {

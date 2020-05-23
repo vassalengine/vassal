@@ -61,7 +61,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     boards = new JComboBox();
     boards.addItem(prompt);
 
-    final String lbn[] = picker.getAllowableLocalizedBoardNames();
+    final String[] lbn = picker.getAllowableLocalizedBoardNames();
     for (String s : lbn) {
       boards.addItem(s);
     }

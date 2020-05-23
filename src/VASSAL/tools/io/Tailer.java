@@ -221,7 +221,7 @@ public class Tailer {
     }
   }
 
-  public static void main(String args[]) throws IOException {
+  public static void main(String[] args) throws IOException {
     final Tailer t = new Tailer(new File(args[0]));
 
     t.addEventListener(new EventListener<String>() {

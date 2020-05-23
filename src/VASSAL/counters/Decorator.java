@@ -258,8 +258,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @return the commands for this piece and its inner piece
    */
   protected KeyCommand[] getKeyCommands() {
-    final KeyCommand myC[] = myGetKeyCommands();
-    final KeyCommand c[] =
+    final KeyCommand[] myC = myGetKeyCommands();
+    final KeyCommand[] c =
       (KeyCommand[]) piece.getProperty(Properties.KEY_COMMANDS);
 
     if (c == null) return myC;

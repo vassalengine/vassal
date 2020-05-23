@@ -389,9 +389,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected Stack initializeContents() {
     Stack s = createStack();
     Configurable[] c = getConfigureComponents();
-    for (int i = 0; i < c.length; ++i) {
-      if (c[i] instanceof PieceSlot) {
-        PieceSlot slot = (PieceSlot) c[i];
+    for (Configurable configurable : c) {
+      if (configurable instanceof PieceSlot) {
+        PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
         p = PieceCloner.getInstance().clonePiece(p);
         GameModule.getGameModule().getGameState().addPiece(p);

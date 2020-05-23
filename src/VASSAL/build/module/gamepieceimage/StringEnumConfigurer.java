@@ -84,8 +84,8 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public boolean isValidValue(Object o) {
-    for (int i = 0; i < validValues.length; ++i) {
-      if (validValues[i].equals(o)) {
+    for (String validValue : validValues) {
+      if (validValue.equals(o)) {
         return true;
       }
     }

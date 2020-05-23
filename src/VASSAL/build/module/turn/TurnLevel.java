@@ -215,7 +215,7 @@ public abstract class TurnLevel extends TurnComponent {
     p.add(Box.createRigidArea(FILLER));
 
     if (getTurnLevelCount() > 1) {
-      String s[] = new String[getTurnLevelCount()];
+      String[] s = new String[getTurnLevelCount()];
       for (int i = 0; i < s.length; i++) {
         s[i] = getTurnLevel(i).getConfigureName();
       }

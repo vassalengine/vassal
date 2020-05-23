@@ -298,10 +298,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     Object owner = null;
     int borderOffset = borderWidth;
     double graphicsZoom = graphicsZoomLevel;
-    for (int i = 0; i < pieces.size(); i++) {
+    for (GamePiece piece : pieces) {
       // Draw the next piece
       // pt is the location of the left edge of the piece
-      GamePiece piece = pieces.get(i);
       Rectangle pieceBounds = getBounds(piece);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
       g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
@@ -552,8 +551,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
-          for (int i = 0; i < displayLayers.length; i++) {
-            if (layerName.equals(displayLayers[i])) {
+          for (String displayLayer : displayLayers) {
+            if (layerName.equals(displayLayer)) {
               return true;
             }
           }
@@ -561,8 +560,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Exclude pieces from named layers.
         else if (displayWhat.equals(EXC_LAYERS)) {
-          for (int i = 0; i < displayLayers.length; i++) {
-            if (layerName.equals(displayLayers[i])) {
+          for (String displayLayer : displayLayers) {
+            if (layerName.equals(displayLayer)) {
               return false;
             }
           }

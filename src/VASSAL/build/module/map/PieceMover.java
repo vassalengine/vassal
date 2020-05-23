@@ -347,8 +347,8 @@ public class PieceMover extends AbstractBuildable
           public void actionPerformed(ActionEvent e) {
             final GamePiece[] p = map.getAllPieces();
             final Command c = new NullCommand();
-            for (int i = 0; i < p.length; ++i) {
-              c.append(markMoved(p[i], false));
+            for (GamePiece gamePiece : p) {
+              c.append(markMoved(gamePiece, false));
             }
             GameModule.getGameModule().sendAndLog(c);
             map.repaint();
@@ -609,9 +609,9 @@ public class PieceMover extends AbstractBuildable
         // into an expanded Stack and the merge order must be reversed to
         // maintain the order of the merging pieces.
         if (mergeWith instanceof Stack) {
-          for (int i = 0; i < draggedPieces.size(); ++i) {
-            comm = comm.append(movedPiece(draggedPieces.get(i), mergeWith.getPosition()));
-            comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPieces.get(i)));
+          for (GamePiece draggedPiece : draggedPieces) {
+            comm = comm.append(movedPiece(draggedPiece, mergeWith.getPosition()));
+            comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPiece));
           }
         }
         else {

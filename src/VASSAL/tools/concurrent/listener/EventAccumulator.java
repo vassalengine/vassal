@@ -26,7 +26,7 @@ import VASSAL.tools.lang.Pair;
 
 /**
  * An {@link EventListener} which accumulates the events it receives into
- * a {@link List}.
+ * a {@link java.util.List}.
  *
  * @since 3.2.0
  * @author Joel Uckelman

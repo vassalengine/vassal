@@ -54,14 +54,14 @@ public class BonesDiceServer extends DieServer {
     StringBuilder query = new StringBuilder("req=");
 
     // format is "{{ xdy + n }}"
-    for (int i = 0; i < rolls.length; ++i) {
+    for (DieRoll roll : rolls) {
       query.append("{{")
-          .append(rolls[i].getNumDice())
-          .append("D")
-          .append(rolls[i].getNumSides());
+           .append(roll.getNumDice())
+           .append("D")
+           .append(roll.getNumSides());
 
-      if (rolls[i].getPlus() != 0) {
-        query.append("+").append(rolls[i].getPlus());
+      if (roll.getPlus() != 0) {
+        query.append("+").append(roll.getPlus());
       }
 
       query.append("}}\n");

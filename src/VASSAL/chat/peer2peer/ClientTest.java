@@ -65,9 +65,9 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
-      List<Player> l = r[i].getPlayerList();
+    for (VASSAL.chat.Room room : r) {
+      buffer.append(room.getName() + ": "); //$NON-NLS-1$
+      List<Player> l = room.getPlayerList();
       for (int j = 0; j < l.size(); ++j) {
         buffer.append(l.get(j));
         if (j < l.size() - 1) {

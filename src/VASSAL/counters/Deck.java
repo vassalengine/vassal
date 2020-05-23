@@ -183,8 +183,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setPropertySource(PropertySource source) {
     propertySource = source;
     if (globalCommands != null) {
-      for (int i = 0; i < globalCommands.size(); i++) {
-        globalCommands.get(i).setPropertySource(propertySource);
+      for (DeckGlobalKeyCommand globalCommand : globalCommands) {
+        globalCommand.setPropertySource(propertySource);
       }
     }
   }
@@ -211,8 +211,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   protected void setGlobalCommands(String[] commands) {
     globalCommands = new ArrayList<DeckGlobalKeyCommand>(commands.length);
-    for (int i = 0; i < commands.length; i++) {
-      globalCommands.add(new DeckGlobalKeyCommand(commands[i], propertySource));
+    for (String command : commands) {
+      globalCommands.add(new DeckGlobalKeyCommand(command, propertySource));
     }
   }
 
@@ -933,7 +933,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Command pieceRemoved(GamePiece p) {
     ChangeTracker tracker = new ChangeTracker(p);
-    p.setProperty(Properties.OBSCURED_TO_OTHERS, Boolean.valueOf(isFaceDown() && !isDrawFaceUp()));
+    p.setProperty(Properties.OBSCURED_TO_OTHERS, isFaceDown() && !isDrawFaceUp());
     return tracker.getChangeCommand();
   }
 
@@ -1127,12 +1127,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       commands = l.toArray(new KeyCommand[l.size()]);
     }
 
-    for (int i = 0; i < commands.length; ++i) {
-      if (Resources.getString("Deck.face_up").equals(commands[i].getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
-        commands[i].putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
+    for (KeyCommand command : commands) {
+      if (Resources.getString("Deck.face_up").equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
       }
-      else if (Resources.getString("Deck.face_down").equals(commands[i].getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
-        commands[i].putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
+      else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
       }
     }
     return commands;
@@ -1232,8 +1232,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         int[] selection = list.getSelectedIndices();
         if (selection.length > 0) {
           nextDraw = new ArrayList<GamePiece>();
-          for (int i = 0; i < selection.length; ++i) {
-            nextDraw.add(pieces[selection[i]].piece);
+          for (int value : selection) {
+            nextDraw.add(pieces[value].piece);
           }
         }
         else {
@@ -1427,8 +1427,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       c.execute();
       final Command[] sub = c.getSubCommands();
       c = new NullCommand();
-      for (int i = 0; i < sub.length; ++i) {
-        c.append(sub[i]);
+      for (Command command : sub) {
+        c.append(command);
       }
       c.append(t.getChangeCommand());
       updateCountsAll();
@@ -1459,9 +1459,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     protected void executeCommand() {
       target.removeAll();
       Command[] sub = getSubCommands();
-      for (int i = 0; i < sub.length; i++) {
-        if (sub[i] instanceof AddPiece) {
-          GamePiece p = ((AddPiece) sub[i]).getTarget();
+      for (Command command : sub) {
+        if (command instanceof AddPiece) {
+          GamePiece p = ((AddPiece) command).getTarget();
           // We set the id to null so that the piece will get a new id
           // when the AddPiece command executes
           p.setId(null);

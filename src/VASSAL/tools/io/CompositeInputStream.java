@@ -96,7 +96,7 @@ public class CompositeInputStream extends InputStream {
 
   /** {@inheritDoc} */
   @Override
-  public int read(byte b[], int off, int len) throws IOException {
+  public int read(byte[] b, int off, int len) throws IOException {
     if (in == null) return -1;
     if (len == 0) return 0;
 

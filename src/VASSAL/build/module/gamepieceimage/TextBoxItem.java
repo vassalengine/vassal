@@ -73,7 +73,7 @@ public class TextBoxItem extends TextItem {
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?> c[] = ArrayUtils.insert(
+    final Class<?>[] c = ArrayUtils.insert(
       super.getAttributeTypes(), 2,
       new Class<?>[] {
         Integer.class,

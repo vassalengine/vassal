@@ -84,8 +84,8 @@ public class MovementReporter {
       }
     }
     Command[] sub = c.getSubCommands();
-    for (int i = 0; i < sub.length; i++) {
-      extractMoveCommands(sub[i]);
+    for (Command command : sub) {
+      extractMoveCommands(command);
     }
   }
 
@@ -381,8 +381,7 @@ public class MovementReporter {
     public String getPieceName() {
       final StringBuilder names = new StringBuilder();
       boolean first = true;
-      for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
-        GamePiece piece = i.next();
+      for (GamePiece piece : pieces) {
         if (piece instanceof Stack) {
           for (Iterator<GamePiece> j = ((Stack) piece).getPiecesIterator(); j.hasNext(); ) {
             GamePiece p = j.next();

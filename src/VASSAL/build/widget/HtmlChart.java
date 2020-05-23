@@ -298,7 +298,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
         if (kind instanceof HTML.Tag && element.getName().equals("img")) {
           final String imageName = (String) element.getAttributes().getAttribute(HTML.Attribute.SRC);
-          if (imageName.indexOf("/") < 0) {
+          if (!imageName.contains("/")) {
             return new ImageComponentView(element);
           }
         }

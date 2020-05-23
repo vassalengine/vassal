@@ -63,8 +63,8 @@ public class FunctionBuilder extends JDialog {
     JPanel p = new JPanel(new MigLayout("wrap 1,fillx"));
 
     p.add(new JLabel(desc), "align center");
-    for (int i = 0; i < parmDesc.length; i++) {
-      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i]+":  ", "", targetPiece);
+    for (String s : parmDesc) {
+      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, s + ":  ", "", targetPiece);
       configs.add(config);
       p.add(config.getControls(), "align right,growx");
     }

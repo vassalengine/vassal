@@ -48,9 +48,9 @@ public class ComponentPathBuilder {
    */
   public String getId(Configurable[] targetPath) {
     SequenceEncoder se = new SequenceEncoder('/');
-    for (int i = 0; i < targetPath.length; ++i) {
-      String name = targetPath[i].getConfigureName();
-      SequenceEncoder se2 = new SequenceEncoder(targetPath[i].getClass().getName(), ':');
+    for (Configurable configurable : targetPath) {
+      String name = configurable.getConfigureName();
+      SequenceEncoder se2 = new SequenceEncoder(configurable.getClass().getName(), ':');
       if (name != null) {
         se2.append(name);
       }

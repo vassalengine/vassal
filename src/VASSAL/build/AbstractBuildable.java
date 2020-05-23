@@ -167,10 +167,10 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     Element el = doc.createElement(getClass().getName());
     String[] names = getAttributeNames();
-    for (int i = 0; i < names.length; ++i) {
-      String val = getAttributeValueString(names[i]);
+    for (String name : names) {
+      String val = getAttributeValueString(name);
       if (val != null) {
-        el.setAttribute(names[i], val);
+        el.setAttribute(name, val);
       }
     }
 

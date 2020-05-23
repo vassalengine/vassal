@@ -63,7 +63,7 @@ public class LoggedOutputStream extends OutputStream {
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void write(byte b[], int off, int len) {
+  public synchronized void write(byte[] b, int off, int len) {
     // don't write trailing newlines, logger adds those
     if (b[off+len-1] == '\n') --len;
 

@@ -111,8 +111,8 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       return super.keyEvent(stroke);
     }
     else {
-      for (int j = 0; j < watchKeys.length ; j++) {
-        if (watchKeys[j].equals(stroke)) {
+      for (NamedKeyStroke watchKey : watchKeys) {
+        if (watchKey.equals(stroke)) {
           return null;
         }
       }
@@ -125,20 +125,20 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     ArrayList<KeyCommand> newCommands =
       new ArrayList<KeyCommand>(commands.length);
     if (matchesFilter()) {
-      for (int i = 0; i < commands.length; i++) {
+      for (KeyCommand command : commands) {
         boolean matches = false;
-        for (int j = 0; j < watchKeys.length && ! matches; j++) {
-          matches = (watchKeys[j].equals(commands[i].getKeyStroke()));
+        for (int j = 0; j < watchKeys.length && !matches; j++) {
+          matches = (watchKeys[j].equals(command.getKeyStroke()));
         }
         if (matches) {
           if (action.equals(DISABLE)) {
-            KeyCommand newCommand = new KeyCommand(commands[i]);
+            KeyCommand newCommand = new KeyCommand(command);
             newCommand.setEnabled(false);
             newCommands.add(newCommand);
           }
         }
         else {
-          newCommands.add(commands[i]);
+          newCommands.add(command);
         }
       }
       commands  = newCommands.toArray(new KeyCommand[newCommands.size()]);

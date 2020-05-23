@@ -369,8 +369,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public Configurer getConfigurer() {
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     String[] s = getAttributeNames();
-    for (int i = 0; i < s.length; ++i) {
-      c.getConfigurer(s[i]).addPropertyChangeListener(new PropertyChangeListener() {
+    for (String value : s) {
+      c.getConfigurer(value).addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           visualizer.repaint();
         }

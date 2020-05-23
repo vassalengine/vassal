@@ -186,8 +186,8 @@ public class SetGlobalProperty extends DynamicProperty {
    */
   public Command myKeyEvent(KeyStroke stroke) {
     Command comm = new NullCommand();
-    for (int i = 0; i < keyCommands.length; i++) {
-      if (keyCommands[i].matches(stroke)) {
+    for (DynamicKeyCommand keyCommand : keyCommands) {
+      if (keyCommand.matches(stroke)) {
         MutableProperty prop = null;
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
@@ -227,7 +227,7 @@ public class SetGlobalProperty extends DynamicProperty {
         }
         else {
           String oldValue = prop.getPropertyValue();
-          String newValue = keyCommands[i].propChanger.getNewValue(oldValue);
+          String newValue = keyCommand.propChanger.getNewValue(oldValue);
           format.setFormat(newValue);
           newValue = format.getText(Decorator.getOutermost(this));
           comm = prop.setPropertyValue(newValue);

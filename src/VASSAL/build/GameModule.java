@@ -488,9 +488,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return
    */
   public GamePiece createPiece(String type) {
-    for (int i = 0; i < commandEncoders.length; ++i) {
-      if (commandEncoders[i] instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoders[i]).createPiece(type);
+    for (CommandEncoder commandEncoder : commandEncoders) {
+      if (commandEncoder instanceof BasicCommandEncoder) {
+        GamePiece p = ((BasicCommandEncoder) commandEncoder).createPiece(type);
         if (p != null) {
           return p;
         }
@@ -500,9 +500,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public GamePiece createPiece(String type, GamePiece inner) {
-    for (int i = 0; i < commandEncoders.length; ++i) {
-      if (commandEncoders[i] instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoders[i]).createDecorator(type, inner);
+    for (CommandEncoder commandEncoder : commandEncoders) {
+      if (commandEncoder instanceof BasicCommandEncoder) {
+        GamePiece p = ((BasicCommandEncoder) commandEncoder).createDecorator(type, inner);
         if (p != null) {
           return p;
         }

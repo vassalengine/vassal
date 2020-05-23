@@ -37,7 +37,8 @@ public class RotateFilter extends ImageFilter {
   private Rectangle rotatedSpace;
   private Rectangle originalSpace;
   private ColorModel defaultRGBModel;
-  private int inPixels[], outPixels[];
+  private int[] inPixels;
+  private int[] outPixels;
 
   public RotateFilter(double angle) {
     this.angle = angle * (Math.PI / 180);
@@ -46,18 +47,18 @@ public class RotateFilter extends ImageFilter {
     defaultRGBModel = ColorModel.getRGBdefault();
   }
 
-  private void transform(int x, int y, double out[]) {
+  private void transform(int x, int y, double[] out) {
     out[0] = (x * cos) + (y * sin);
     out[1] = (y * cos) - (x * sin);
   }
 
-  private void transformBack(int x, int y, double out[]) {
+  private void transformBack(int x, int y, double[] out) {
     out[0] = (x * cos) - (y * sin);
     out[1] = (y * cos) + (x * sin);
   }
 
   public void transformSpace(Rectangle rect) {
-    double out[] = new double[2];
+    double[] out = new double[2];
     double minx = Double.MAX_VALUE;
     double miny = Double.MAX_VALUE;
     double maxx = Double.MIN_VALUE;
@@ -129,7 +130,7 @@ public class RotateFilter extends ImageFilter {
    * @see ImageConsumer#setPixels
    */
   public void setPixels(int x, int y, int w, int h,
-                        ColorModel model, byte pixels[],
+                        ColorModel model, byte[] pixels,
                         int off, int scansize) {
     int index = y * originalSpace.width + x;
     int srcindex = off;
@@ -151,7 +152,7 @@ public class RotateFilter extends ImageFilter {
    * @see ImageConsumer#setPixels
    */
   public void setPixels(int x, int y, int w, int h,
-                        ColorModel model, int pixels[],
+                        ColorModel model, int[] pixels,
                         int off, int scansize) {
     int index = y * originalSpace.width + x;
     int srcindex = off;
@@ -176,7 +177,7 @@ public class RotateFilter extends ImageFilter {
       consumer.imageComplete(status);
       return;
     }
-    double point[] = new double[2];
+    double[] point = new double[2];
     int srcwidth = originalSpace.width;
     int srcheight = originalSpace.height;
     int outwidth = rotatedSpace.width;
@@ -211,7 +212,7 @@ public class RotateFilter extends ImageFilter {
     consumer.imageComplete(status);
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     final Image unrotated = Toolkit.getDefaultToolkit().getImage("ASL/images/Climb1d.gif");
 
     ImageFilter filter = new RotateFilter(-60.0);

@@ -452,8 +452,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     final ArrayList<String> path = new ArrayList<String>();
-    for (int i = 0; i < groupBy.length; i++)
-      path.add(groupBy[i]);
+    for (String value : groupBy) path.add(value);
     results = new CounterInventory(
       new Counter(this.getConfigureName()), path, sortPieces);
 
@@ -467,9 +466,9 @@ public class Inventory extends AbstractConfigurable
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
-        for (int i = 0; i < groupBy.length; i++) {
-          if (groupBy[i].length() > 0) {
-            String prop = (String) p.getProperty(groupBy[i]);
+        for (String s : groupBy) {
+          if (s.length() > 0) {
+            String prop = (String) p.getProperty(s);
             if (prop != null)
               groups.add(prop);
           }
@@ -815,8 +814,8 @@ public class Inventory extends AbstractConfigurable
   protected boolean enabledForPlayersSide() {
     if (sides == null || sides.length == 0)
       return true;
-    for (int i = 0; i < sides.length; i++) {
-      if (sides[i].equalsIgnoreCase(PlayerRoster.getMySide()))
+    for (String side : sides) {
+      if (side.equalsIgnoreCase(PlayerRoster.getMySide()))
         return true;
     }
     return false;
@@ -862,8 +861,8 @@ public class Inventory extends AbstractConfigurable
     final TreePath[] tp = tree.getSelectionPaths();
     // set to not get duplicates
     HashSet<GamePiece> pieces = new HashSet<GamePiece>();
-    for (int i = 0; i < tp.length; i++) {
-      CounterNode node = (CounterNode) tp[i].getLastPathComponent();
+    for (TreePath treePath : tp) {
+      CounterNode node = (CounterNode) treePath.getLastPathComponent();
       if (node.isLeaf()) {
         pieces.add(node.getCounter().getPiece());
       }

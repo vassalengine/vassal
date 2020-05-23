@@ -180,7 +180,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       se.append("");
     }
     else {
-      se.append(override.booleanValue());
+      se.append(override);
     }
     se.append(allowed.size());
     for (String who : allowed) {

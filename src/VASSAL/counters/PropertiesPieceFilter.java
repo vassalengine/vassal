@@ -76,7 +76,7 @@ public class PropertiesPieceFilter {
       }
       else {
         for (int i = 0; i < CONDITIONS.length && f == null; i++) {
-          if (expression.indexOf(CONDITIONS[i].pattern()) >= 0) {
+          if (expression.contains(CONDITIONS[i].pattern())) {
             s = CONDITIONS[i].split(expression);
             String name = "";
             String value = "";

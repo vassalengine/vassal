@@ -154,8 +154,7 @@ public abstract class DieServer {
    */
   public void doInbuiltRoll(RollSet mroll) {
     DieRoll[] rolls = mroll.getDieRolls();
-    for (int i = 0; i < rolls.length; i++) {
-      DieRoll roll = rolls[i];
+    for (DieRoll roll : rolls) {
       String desc = roll.getDescription();
       int nSides = roll.getNumSides();
       int nDice = roll.getNumDice();
@@ -232,8 +231,7 @@ public abstract class DieServer {
 
   public void reportResult(RollSet mroll, FormattedString format) {
     DieRoll[] rolls = mroll.getDieRolls();
-    for (int i = 0; i < rolls.length; i++) {
-      DieRoll roll = rolls[i];
+    for (DieRoll roll : rolls) {
       int nDice = roll.getNumDice();
       boolean reportTotal = roll.isReportTotal();
 
@@ -255,7 +253,7 @@ public abstract class DieServer {
       if (reportTotal)
         val += total;
 
-      val = formatResult(rolls[i].getDescription(), val, format);
+      val = formatResult(roll.getDescription(), val, format);
       GameModule.getGameModule().getChatter().send(val);
     }
   }

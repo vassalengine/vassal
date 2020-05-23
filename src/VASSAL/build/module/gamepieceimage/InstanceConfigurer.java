@@ -133,21 +133,21 @@ public class InstanceConfigurer extends Configurer {
                                                       GamePieceImage defn) {
     ArrayList<ItemInstance> props = new ArrayList<ItemInstance>();
     String[] p = StringArrayConfigurer.stringToArray(s);
-    for (int i = 0; i < p.length; i++) {
-      if (p[i].startsWith(SymbolItem.TYPE)) {
-        props.add(new SymbolItemInstance(p[i], defn));
+    for (String item : p) {
+      if (item.startsWith(SymbolItem.TYPE)) {
+        props.add(new SymbolItemInstance(item, defn));
       }
-      else if (p[i].startsWith(TextBoxItem.TYPE)) {
-        props.add(new TextBoxItemInstance(p[i], defn));
+      else if (item.startsWith(TextBoxItem.TYPE)) {
+        props.add(new TextBoxItemInstance(item, defn));
       }
-      else if (p[i].startsWith(TextItem.TYPE)) {
-        props.add(new TextItemInstance(p[i], defn));
+      else if (item.startsWith(TextItem.TYPE)) {
+        props.add(new TextItemInstance(item, defn));
       }
-      else if (p[i].startsWith(ShapeItem.TYPE)) {
-        props.add(new ShapeItemInstance(p[i], defn));
+      else if (item.startsWith(ShapeItem.TYPE)) {
+        props.add(new ShapeItemInstance(item, defn));
       }
-      else if (p[i].startsWith(ImageItem.TYPE)) {
-        props.add(new ImageItemInstance(p[i], defn));
+      else if (item.startsWith(ImageItem.TYPE)) {
+        props.add(new ImageItemInstance(item, defn));
       }
     }
     return props;

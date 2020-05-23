@@ -121,8 +121,8 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
       newDelegate.setUserInfo(oldDelegate.getUserInfo());
     }
     PropertyChangeListener[] listeners = propSupport.getPropertyChangeListeners();
-    for (int i = 0; i < listeners.length; i++) {
-      newDelegate.addPropertyChangeListener(((PropertyChangeListenerProxy) listeners[i]).getPropertyName(), listeners[i]);
+    for (PropertyChangeListener listener : listeners) {
+      newDelegate.addPropertyChangeListener(((PropertyChangeListenerProxy) listener).getPropertyName(), listener);
     }
     if (controls != null) {
       if (delegate instanceof ChatControlsInitializer) {
