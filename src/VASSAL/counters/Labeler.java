@@ -674,11 +674,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private StringConfigurer command;
     private StringConfigurer initialValue;
     private ColorConfigurer fg,bg;
-    private JComboBox hPos,vPos,hJust,vJust;
+    private JComboBox<Character> hPos, vPos, hJust, vJust;
     private IntConfigurer hOff,vOff,fontSize;
     private ListCellRenderer renderer;
     private FormattedStringConfigurer format;
-    private JComboBox fontFamily;
+    private JComboBox<String> fontFamily;
     private IntConfigurer rotate;
     private BooleanConfigurer bold, italic;
     private StringConfigurer propertyNameConfig;
@@ -705,7 +705,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       Box b = Box.createHorizontalBox();
       b.add(new JLabel("Font:  "));
-      fontFamily = new JComboBox();
+      fontFamily = new JComboBox<String>();
       final String[] s = new String[]{
         "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
       };
@@ -745,7 +745,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Vertical position:  "));
-      vPos = new JComboBox(topBottom);
+      vPos = new JComboBox<Character>(topBottom);
       vPos.setRenderer(renderer);
       vPos.setSelectedItem(l.verticalPos);
       b.add(vPos);
@@ -755,7 +755,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Horizontal position:  "));
-      hPos = new JComboBox(rightLeft);
+      hPos = new JComboBox<Character>(rightLeft);
       hPos.setRenderer(renderer);
       hPos.setSelectedItem(l.horizontalPos);
       b.add(hPos);
@@ -765,7 +765,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Vertical text justification:  "));
-      vJust = new JComboBox(topBottom);
+      vJust = new JComboBox<Character>(topBottom);
       vJust.setRenderer(renderer);
       vJust.setSelectedItem(l.verticalJust);
       b.add(vJust);
@@ -773,7 +773,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Horizontal text justification:  "));
-      hJust = new JComboBox(rightLeft);
+      hJust = new JComboBox<Character>(rightLeft);
       hJust.setRenderer(renderer);
       hJust.setSelectedItem(l.horizontalJust);
       b.add(hJust);

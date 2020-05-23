@@ -88,7 +88,7 @@ public class ServerAddressBook {
   private JComponent controls;
   private StringConfigurer addressConfig;
   private JList myList;
-  private DefaultListModel addressBook;
+  private DefaultListModel<AddressBookEntry> addressBook;
   private AddressBookEntry currentEntry;
   private boolean enabled = true;
   private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -236,7 +236,7 @@ public class ServerAddressBook {
       controls = new JPanel(new MigLayout());
       addressConfig = new StringConfigurer(ADDRESS_PREF, null, ""); //$NON-NLS-1$
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
-      addressBook = new DefaultListModel();
+      addressBook = new DefaultListModel<AddressBookEntry>();
       loadAddressBook();
       myList = new JList(addressBook);
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -318,7 +318,7 @@ public class ServerAddressBook {
   private void updateButtonVisibility() {
     final int index = myList.getSelectedIndex();
     if (index >= 0) {
-      final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
+      final AddressBookEntry e = addressBook.get(index);
       editButton.setEnabled(e.isEditable() && (isEnabled() || !e.isCurrent()));
       removeButton.setEnabled(e.isRemovable() && !e.isCurrent());
       setButton.setEnabled(isEnabled() && !e.isCurrent());
@@ -337,8 +337,8 @@ public class ServerAddressBook {
     final String type = p.getProperty(TYPE_KEY);
     final String dtype = p.getProperty(DYNAMIC_TYPE);
     final String ctype = p.getProperty(P2P_MODE_KEY);
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
-      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = e.nextElement();
       final Properties ep = entry.getProperties();
 
       if (ep.equals(p)) {
@@ -374,7 +374,7 @@ public class ServerAddressBook {
   }
 
   private void setCurrentServer(int index) {
-    final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
+    final AddressBookEntry e = addressBook.get(index);
     if (currentEntry != null) {
       currentEntry.setCurrent(false);
     }
@@ -395,8 +395,8 @@ public class ServerAddressBook {
   public void showPopup(JComponent source) {
     final JPopupMenu popup = new JPopupMenu();
 
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
-      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = e.nextElement();
       final JMenuItem item = new JMenuItem(entry.toString());
       final AbstractAction action = new MenuAction(entry);
       item.setAction(action);
@@ -447,7 +447,7 @@ public class ServerAddressBook {
   }
 
   private void editServer(int index, boolean enabled) {
-    final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
+    final AddressBookEntry e = addressBook.get(index);
     final boolean current = e.equals(currentEntry);
     final Properties oldProps = e.getProperties();
     if (e.edit(enabled) && current) {
@@ -456,7 +456,7 @@ public class ServerAddressBook {
   }
 
   private void removeServer(int index) {
-    final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
+    final AddressBookEntry e = addressBook.get(index);
     int i = JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), Resources
         .getString("ServerAddressBook.remove_server", e.getDescription())); //$NON-NLS-1$
     if (i == 0) {
@@ -511,8 +511,8 @@ public class ServerAddressBook {
 
     // Remove any PeerClientEntry's, these are obsolete
     final DefaultListModel newAddressBook = new DefaultListModel();
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
-      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = e.nextElement();
       if (entry instanceof LegacyEntry) {
         newAddressBook.add(0, entry);
       }
@@ -531,8 +531,8 @@ public class ServerAddressBook {
     // boolean peerClient = false;
     boolean updated = false;
 
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
-      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = e.nextElement();
       if (entry instanceof LegacyEntry) {
         legacy = true;
       }
@@ -580,8 +580,8 @@ public class ServerAddressBook {
 
   private String encodeAddressBook() {
     SequenceEncoder se = new SequenceEncoder(',');
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
-      final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
+    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+      final AddressBookEntry entry = e.nextElement();
       if (entry != null) {
         se.append(entry.encode());
       }
