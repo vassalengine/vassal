@@ -136,7 +136,8 @@ public class RestrictCommands extends Decorator implements EditablePiece {
             newCommand.setEnabled(false);
             newCommands.add(newCommand);
           }
-        } else {
+        }
+        else {
           newCommands.add(command);
         }
       }

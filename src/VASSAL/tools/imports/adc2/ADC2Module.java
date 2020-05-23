@@ -1734,11 +1734,11 @@ private PieceWindow pieceWin;
     ADC2Utils.readBlockHeader(in, "Alliances");
 
     /* int nAlliances = */ ADC2Utils.readBase250Word(in); // ignored
-    for (int i = 0; i < players.size(); ++i) {
+    for (Player p1 : players) {
       in.readUnsignedShort(); // unknown
-      for (Player player : players) {
+      for (Player p2 : players) {
         if (in.readUnsignedShort() > 0) {
-          players.get(i).setAlly(player);
+          p1.setAlly(p2);
         }
       }
     }

@@ -178,8 +178,7 @@ public class TilingHandler {
 
     final int port = ssock.getLocalPort();
 
-    final List<String> args = new ArrayList<String>();
-    args.addAll(Arrays.asList(new String[] {
+    final List<String> args = Arrays.asList(
       Info.javaBinPath,
       "-classpath",
       System.getProperty("java.class.path"),
@@ -191,8 +190,7 @@ public class TilingHandler {
       aname,
       cdir.getAbsolutePath(),
       String.valueOf(tdim.width),
-      String.valueOf(tdim.height)
-    }));
+      String.valueOf(tdim.height));
 
     // get the progress dialog
     final ProgressDialog pd = ProgressDialog.createOnEDT(

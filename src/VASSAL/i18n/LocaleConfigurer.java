@@ -141,8 +141,7 @@ public class LocaleConfigurer extends Configurer {
       String[] langs = Locale.getISOLanguages();
       ArrayList<String> sortedLangs = new ArrayList<String>();
       for (String s : langs) {
-        String lang =
-                (new Locale(s)).getDisplayLanguage(Locale.getDefault());
+        String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, s);
         sortedLangs.add(lang);
       }

@@ -136,13 +136,17 @@ public class InstanceConfigurer extends Configurer {
     for (String item : p) {
       if (item.startsWith(SymbolItem.TYPE)) {
         props.add(new SymbolItemInstance(item, defn));
-      } else if (item.startsWith(TextBoxItem.TYPE)) {
+      }
+      else if (item.startsWith(TextBoxItem.TYPE)) {
         props.add(new TextBoxItemInstance(item, defn));
-      } else if (item.startsWith(TextItem.TYPE)) {
+      }
+      else if (item.startsWith(TextItem.TYPE)) {
         props.add(new TextItemInstance(item, defn));
-      } else if (item.startsWith(ShapeItem.TYPE)) {
+      }
+      else if (item.startsWith(ShapeItem.TYPE)) {
         props.add(new ShapeItemInstance(item, defn));
-      } else if (item.startsWith(ImageItem.TYPE)) {
+      }
+      else if (item.startsWith(ImageItem.TYPE)) {
         props.add(new ImageItemInstance(item, defn));
       }
     }

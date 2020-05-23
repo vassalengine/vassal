@@ -1130,7 +1130,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     for (KeyCommand command : commands) {
       if (Resources.getString("Deck.face_up").equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
         command.putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
-      } else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
+      }
+      else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
         command.putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
       }
     }
