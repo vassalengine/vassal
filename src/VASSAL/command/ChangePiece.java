@@ -97,8 +97,8 @@ public class ChangePiece extends Command {
       && ((ChangePiece) c).newState != null) {
       ((ChangePiece) last).newState = ((ChangePiece) c).newState;
       sub = c.getSubCommands();
-      for (int i = 0; i < sub.length; ++i) {
-        append(sub[i]);
+      for (Command command : sub) {
+        append(command);
       }
       return this;
     }

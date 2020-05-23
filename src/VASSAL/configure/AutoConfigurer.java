@@ -175,10 +175,10 @@ public class AutoConfigurer extends Configurer
 
   public void reset() {
     String[] s = target.getAttributeNames();
-    for (int i = 0; i < s.length; ++i) {
-      Configurer config = getConfigurer(s[i]);
+    for (String item : s) {
+      Configurer config = getConfigurer(item);
       if (config != null) {
-        config.setValue(target.getAttributeValueString(s[i]));
+        config.setValue(target.getAttributeValueString(item));
       }
     }
   }

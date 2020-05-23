@@ -58,8 +58,8 @@ public class MassPieceDefiner extends PieceDefiner {
       definers.add(new Entry((PieceSlot) c, def));
     }
     Configurable[] child = c.getConfigureComponents();
-    for (int i = 0; i < child.length; ++i) {
-      init(child[i]);
+    for (Configurable configurable : child) {
+      init(configurable);
     }
   }
 

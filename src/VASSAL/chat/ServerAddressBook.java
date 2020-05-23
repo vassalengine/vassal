@@ -1205,7 +1205,7 @@ public class ServerAddressBook {
       final String serverIp = getProperty(P2PClientFactory.P2P_SERVER_IP);
       final String serverPort = getProperty(P2PClientFactory.P2P_SERVER_PORT);
 
-      final StringBuffer desc = new StringBuffer(Resources.getString("ServerAddressBook.peer_client"));
+      final StringBuilder desc = new StringBuilder(Resources.getString("ServerAddressBook.peer_client"));
 
       if (serverIp == null || serverIp.length() == 0) {
         desc.append(" [");

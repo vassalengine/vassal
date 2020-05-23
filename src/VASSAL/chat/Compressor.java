@@ -70,7 +70,7 @@ public abstract class Compressor {
     }
   }
 
-  public static void main(String args[]) throws Exception {
+  public static void main(String[] args) throws Exception {
     if (args.length == 0) {
       final Frame f = new Frame();
       final TextField tf = new TextField(60);

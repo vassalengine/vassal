@@ -109,12 +109,12 @@ public class GlobalCommand {
           GameModule.getGameModule().getChatter(), "*" + reportText);
         c.execute();
       }
-      for (int mapI = 0; mapI < m.length; ++mapI) {
+      for (Map map : m) {
         Visitor visitor = new Visitor(c, filter, keyStroke);
         DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
-        GamePiece[] p = m[mapI].getPieces();
-        for (int i = 0; i < p.length; ++i) {
-          dispatcher.accept(p[i]);
+        GamePiece[] p = map.getPieces();
+        for (GamePiece gamePiece : p) {
+          dispatcher.accept(gamePiece);
         }
         visitor.getTracker().repaint();
         c = visitor.getCommand();

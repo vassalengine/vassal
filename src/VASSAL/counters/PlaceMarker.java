@@ -448,17 +448,17 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p.add(xOffsetConfig.getControls());
       yOffsetConfig.setValue(piece.yOffset);
       p.add(yOffsetConfig.getControls());
-      matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
+      matchRotationConfig.setValue(piece.matchRotation);
       p.add(matchRotationConfig.getControls());
       if (aboveConfig != null) {
-        aboveConfig.setValue(Boolean.valueOf(piece.above));
+        aboveConfig.setValue(piece.above);
         p.add(aboveConfig.getControls());
         ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
           }
         });
-        aboveConfig.getControls().setVisible(Boolean.valueOf(piece.matchRotation));
+        aboveConfig.getControls().setVisible(piece.matchRotation);
       }
       placementConfig = new JComboBox(new String[]{"On top of stack","On bottom of stack","Above this piece","Below this piece"});
       placementConfig.setSelectedIndex(piece.placement);

@@ -156,7 +156,7 @@ public class DragBuffer {
     return s;
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     JFrame f1 = new JFrame();
     f1.setSize(200, 200);
     f1.setVisible(true);

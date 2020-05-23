@@ -174,7 +174,7 @@ public class FileConfigurer extends Configurer {
     return (File) value;
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     final JFrame f = new JFrame();
     final FileConfigurer c =
       new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive"));

@@ -224,9 +224,8 @@ public class EDTExecutorService extends AbstractExecutorService {
 
       // Interleave time checks and calls to execute in case
       // executor doesn't have any/much parallelism.
-      final Iterator<Future<T>> it = futures.iterator();
-      while (it.hasNext()) {
-        execute((Runnable)(it.next()));
+      for (Future<T> future : futures) {
+        execute((Runnable) future);
         final long now = System.nanoTime();
         nanos -= now - lastTime;
         lastTime = now;

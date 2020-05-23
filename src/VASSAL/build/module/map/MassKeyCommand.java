@@ -479,8 +479,8 @@ public class MassKeyCommand extends AbstractConfigurable
       else {
         filter = new PieceFilter() {
           public boolean accept(GamePiece piece) {
-            for (int j = 0; j < names.length; ++j) {
-              if (Decorator.getInnermost(piece).getName().equals(names[j])) {
+            for (String s : names) {
+              if (Decorator.getInnermost(piece).getName().equals(s)) {
                 return true;
               }
             }

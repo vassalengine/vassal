@@ -202,10 +202,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   protected void invite(final PendingPeerManager ppm) {
-    final int selected[] = addressList.getSelectedIndices();
-    for (int i = 0; i < selected.length; i++) {
-      final Entry entry = (Entry) addressBook.getElementAt(selected[i]);
-      final PeerInfo info = PeerInfo.deFormat(entry.getAddress()+":"+entry.getPort()+" "+entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
+    final int[] selected = addressList.getSelectedIndices();
+    for (int value : selected) {
+      final Entry entry = (Entry) addressBook.getElementAt(value);
+      final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
       if (info != null) {
         ppm.addNewPeer(info);
         GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", entry.toString())); //$NON-NLS-1$
@@ -252,11 +252,11 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   protected void removeEntries() {
-    final int selected[] = addressList.getSelectedIndices();
+    final int[] selected = addressList.getSelectedIndices();
     if (selected.length == 0) {
       return;
     }
-    final Entry entries[] = new Entry[selected.length];
+    final Entry[] entries = new Entry[selected.length];
     for (int i = 0; i < selected.length; i++) {
       entries[i] = (Entry) addressBook.getElementAt(selected[i]);
     }
@@ -265,16 +265,16 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final String mess = (entries.length == 1 ? Resources.getString("Peer2Peer.remove_entry") : Resources.getString("Peer2Peer.remove_entries", entries.length));  //$NON-NLS-1$ //$NON-NLS-2$
     queryPanel.add(new JLabel(mess), "align center, wrap");
     queryPanel.add(new JLabel(), "wrap");
-    for (int i = 0; i < entries.length; i++) {
-      queryPanel.add(new JLabel(entries[i].toString()), "wrap");
+    for (Entry entry : entries) {
+      queryPanel.add(new JLabel(entry.toString()), "wrap");
     }
 
     final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
         queryPanel, JOptionPane.QUESTION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
         null, null, null, null);
     if (result != null && result == 0) {
-      for (int i = 0; i < entries.length; i++) {
-        addressBook.removeElement(entries[i]);
+      for (Entry entry : entries) {
+        addressBook.removeElement(entry);
       }
 
       saveAddressBook();

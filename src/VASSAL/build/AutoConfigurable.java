@@ -88,10 +88,10 @@ public interface AutoConfigurable extends Configurable {
                                                       AutoConfigurable parent) {
       Element el = doc.createElement(parent.getClass().getName());
       String[] names = parent.getAttributeNames();
-      for (int i = 0; i < names.length; ++i) {
-        String val = parent.getAttributeValueString(names[i]);
+      for (String name : names) {
+        String val = parent.getAttributeValueString(name);
         if (val != null) {
-          el.setAttribute(names[i], val);
+          el.setAttribute(name, val);
         }
       }
       return el;

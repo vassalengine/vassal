@@ -216,8 +216,8 @@ public class PrivateMap extends Map {
    * @see PlayerRoster
    */
   public boolean isAccessibleTo(String playerSide) {
-    for (int i = 0; i < owners.length; ++i) {
-      if (owners[i].equals(playerSide)) {
+    for (String owner : owners) {
+      if (owner.equals(playerSide)) {
         return true;
       }
     }

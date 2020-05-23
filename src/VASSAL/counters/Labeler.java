@@ -709,8 +709,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       final String[] s = new String[]{
         "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
       };
-      for (int i = 0; i < s.length; ++i) {
-        fontFamily.addItem(s[i]);
+      for (String value : s) {
+        fontFamily.addItem(value);
       }
       fontFamily.setSelectedItem(l.font.getFamily());
       b.add(fontFamily);

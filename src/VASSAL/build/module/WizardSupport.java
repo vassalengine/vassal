@@ -329,7 +329,7 @@ public class WizardSupport {
         show.setSelected(wizardConf.booleanValue());
         show.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            wizardConf.setValue(Boolean.valueOf(show.isSelected()));
+            wizardConf.setValue(show.isSelected());
           }
         });
         box.add(show);

@@ -255,7 +255,7 @@ public final class GeneralFilter {
     BufferedImage srcI,
     final Filter filter)
   {
-    final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
+    final int[] dst_data = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final int src_type;
     if (srcI.getTransparency() == BufferedImage.OPAQUE) {
@@ -297,7 +297,7 @@ public final class GeneralFilter {
     final int sw = sx1 - sx0 + 1;
     final int sh = sy1 - sy0 + 1;
 
-    final int src_data[] =
+    final int[] src_data =
       ((DataBufferInt) srcI.getRaster().getDataBuffer()).getData();
 
     resample(
@@ -337,7 +337,7 @@ public final class GeneralFilter {
     float yscale,
     final Filter filter)
   {
-    final int work[] = new int[sh];
+    final int[] work = new int[sh];
 
     final float fwidth = filter.getSamplingRadius();
 
@@ -382,7 +382,7 @@ public final class GeneralFilter {
       // handle TYPE_INT_ARGB
 
       // premultiply (copy of) source data
-      final int pre_src_data[] = new int[src_data.length];
+      final int[] pre_src_data = new int[src_data.length];
       for (int i = 0; i < src_data.length; ++i) {
         final int unpre = src_data[i];
         final int a = (unpre >>> 24) & 0xff;

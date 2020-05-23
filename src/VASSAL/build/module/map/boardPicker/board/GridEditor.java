@@ -175,7 +175,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     numberingButton = new JButton(NUMBERING);
     numberingButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, Boolean.valueOf(! grid.getGridNumbering().isVisible()));
+        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
         repaint();
       }
     });
@@ -210,7 +210,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     setMode = false;
     grid.setVisible(saveGridVisible);
     if (grid.getGridNumbering() != null && saveNumberingVisible) {
-      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, Boolean.valueOf(saveNumberingVisible));
+      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, saveNumberingVisible);
     }
     repaint();
   }

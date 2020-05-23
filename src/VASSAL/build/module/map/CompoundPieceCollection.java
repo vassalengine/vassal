@@ -70,8 +70,8 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   public void clear() {
-    for (int i=0;i<layers.length;++i) {
-      layers[i].clear();
+    for (SimplePieceCollection layer : layers) {
+      layer.clear();
     }
   }
 

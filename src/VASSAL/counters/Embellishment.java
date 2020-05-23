@@ -120,10 +120,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   protected int nValues;
   protected int xOff, yOff;
-  protected String imageName[];
-  protected String commonName[];
-  protected Rectangle size[];
-  protected ScaledImagePainter imagePainter[];
+  protected String[] imageName;
+  protected String[] commonName;
+  protected Rectangle[] size;
+  protected ScaledImagePainter[] imagePainter;
   protected boolean drawUnderneathWhenSelected = false;
 
   protected String name = "";
@@ -1391,7 +1391,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         isPrefix.add(is);
       }
 
-      alwaysActiveConfig.setValue(Boolean.valueOf(e.alwaysActive));
+      alwaysActiveConfig.setValue(e.alwaysActive);
       drawUnderneath.setSelected(e.drawUnderneathWhenSelected);
       loop.setSelected(e.loopLevels);
 
@@ -1407,7 +1407,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       yOffInput.setText(String.valueOf(e.yOff));
       images.setImageList(e.imageName);
 
-      followConfig.setValue(Boolean.valueOf(e.followProperty));
+      followConfig.setValue(e.followProperty);
       propertyConfig.setValue(e.propertyName);
 
       // Add at least one level if none defined

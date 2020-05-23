@@ -323,7 +323,7 @@ import java.awt.image.WritableRaster;
    }
 
 
-   void quickSort(int a[], int lo0, int hi0) {
+   void quickSort(int[] a, int lo0, int hi0) {
   // Based on the QuickSort method by James Gosling from Sun's SortDemo applet
 
      int lo = lo0;

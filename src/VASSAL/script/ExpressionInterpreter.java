@@ -339,7 +339,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           
           try {
             result +=
-              Integer.valueOf(s.getPieceAt(i).getProperty(property).toString());
+              Integer.parseInt(s.getPieceAt(i).getProperty(property).toString());
           }
           catch (Exception e) {
             // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
@@ -370,13 +370,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       if (m != null) {
         String here = m.locationName(p.getPosition());
         GamePiece[] pieces = m.getPieces();
-        for (int i = 0; i < pieces.length; i++) {
-          if (here.equals(m.locationName(pieces[i].getPosition()))) {
-            if (pieces[i] instanceof Stack) {
-              Stack s = (Stack) pieces[i];
+        for (GamePiece piece : pieces) {
+          if (here.equals(m.locationName(piece.getPosition()))) {
+            if (piece instanceof Stack) {
+              Stack s = (Stack) piece;
               for (int j = 0; j < s.getPieceCount(); j++) {
                 try {
-                  result += Integer.valueOf(s.getPieceAt(j).getProperty(property).toString());
+                  result += Integer.parseInt(s.getPieceAt(j).getProperty(property).toString());
                 }
                 catch (NumberFormatException e) {
                   //
@@ -385,9 +385,8 @@ public class ExpressionInterpreter extends AbstractInterpreter {
             }
             else {
               try {
-                result += Integer.valueOf(pieces[i].getProperty(property).toString());
-              }
-              catch (NumberFormatException e) {
+                result += Integer.parseInt(piece.getProperty(property).toString());
+              } catch (NumberFormatException e) {
                 //
               }
             }

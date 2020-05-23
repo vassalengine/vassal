@@ -74,8 +74,8 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
 
       NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
       if (keyStrokes != null) {
-        for (int i = 0; i < keyStrokes.length; i++) {
-          addKey(keyStrokes[i]);
+        for (NamedKeyStroke keyStroke : keyStrokes) {
+          addKey(keyStroke);
         }
       }
       addKey(null);
@@ -161,8 +161,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       return null;
     }
     SequenceEncoder se = new SequenceEncoder(',');
-    for (int i = 0; i < keys.length; i++) {
-      NamedKeyStroke key = keys[i];
+    for (NamedKeyStroke key : keys) {
       if (!key.isNull()) {
         se.append(NamedHotKeyConfigurer.encode(key));
       }

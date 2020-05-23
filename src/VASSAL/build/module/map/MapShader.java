@@ -681,7 +681,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       if (value instanceof String) {
         value = Boolean.valueOf((String)value);
       }
-      scaleImage = ((Boolean)value).booleanValue();
+      scaleImage = (Boolean) value;
     }
     else if (BORDER.equals(key)) {
       if (value instanceof String) {

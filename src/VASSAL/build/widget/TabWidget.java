@@ -103,8 +103,7 @@ public class TabWidget extends Widget
     if (tab == null) {
       rebuild();
       tab = new JTabbedPane();
-      for (int i = 0; i < widgets.size(); ++i) {
-        final Widget w = widgets.get(i);
+      for (final Widget w : widgets) {
         w.addPropertyChangeListener(this);
         tab.addTab(w.getConfigureName(), new JPanel());
       }

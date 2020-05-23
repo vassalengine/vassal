@@ -364,7 +364,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected void setDocked(boolean dock) {
     final GameModule g = GameModule.getGameModule();
-    g.getPrefs().setValue(DOCKED, Boolean.valueOf(dock));
+    g.getPrefs().setValue(DOCKED, dock);
     launch.setVisible(
       !dock && (
         getAttributeValueString(BUTTON_TEXT).length() > 0 ||
@@ -459,7 +459,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static class TurnFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       TurnTracker t = (TurnTracker) c;
-      String s[] = new String[t.getLevelCount()];
+      String[] s = new String[t.getLevelCount()];
       for (int i = 0; i < s.length; i++) {
         s[i] = LEVEL+(i+1);
       }
@@ -1096,7 +1096,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        String s[] = new String[getTurnLevelCount()];
+        String[] s = new String[getTurnLevelCount()];
         for (int i = 0; i < s.length; i++) {
           s[i] = getTurnLevel(i).getConfigureName();
         }

@@ -173,7 +173,7 @@ public class DieManager extends AbstractConfigurable {
       return null;
     }
     else {
-      String s[] = new String[servers.size()];
+      String[] s = new String[servers.size()];
       int i = 0;
       for (DieServer d : servers.values()) {
         s[i++] = d.getDescription();

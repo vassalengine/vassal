@@ -98,7 +98,7 @@ public class MTRandom extends Random {
 
   private final static int N = 624;
   private final static int M = 397;
-  private final static int MAGIC[] = { 0x0, 0x9908b0df };
+  private final static int[] MAGIC = { 0x0, 0x9908b0df };
   private final static int MAGIC_FACTOR1 = 1812433253;
   private final static int MAGIC_FACTOR2 = 1664525;
   private final static int MAGIC_FACTOR3 = 1566083941;

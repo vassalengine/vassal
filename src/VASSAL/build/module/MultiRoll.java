@@ -290,8 +290,8 @@ public class MultiRoll extends JDialog implements ActionListener {
     menuItem.addActionListener(this);
     popup.add(menuItem);
 
-    for (int i = 0; i < aBook.length; i++) {
-      menuItem = new JMenuItem(aBook[i]);
+    for (String s : aBook) {
+      menuItem = new JMenuItem(s);
       menuItem.addActionListener(this);
       popup.add(menuItem);
     }
@@ -432,8 +432,8 @@ public class MultiRoll extends JDialog implements ActionListener {
       col3.setEnabled(false);
 
       // Number of Dice
-      int allowableDice[] = dieManager.getServer().getnDiceList();
-      String diceData[] = new String[allowableDice.length];
+      int[] allowableDice = dieManager.getServer().getnDiceList();
+      String[] diceData = new String[allowableDice.length];
       int defaultNDIdx = 0;
       for (int i = 0; i < diceData.length; i++) {
         diceData[i] = allowableDice[i] + "";
@@ -446,14 +446,14 @@ public class MultiRoll extends JDialog implements ActionListener {
       col4.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumDice(Integer.valueOf((String) cb.getSelectedItem()));
+          rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
         }
       });
       col4.setEnabled(false);
 
       // Number of Sides
       int[] allowableSides = dieManager.getServer().getnSideList();
-      String sideData[] = new String[allowableSides.length];
+      String[] sideData = new String[allowableSides.length];
       int defaultNSIdx = 0;
       for (int i = 0; i < sideData.length; i++) {
         sideData[i] = allowableSides[i] + "";
@@ -466,7 +466,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col5.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumSides(Integer.valueOf((String) cb.getSelectedItem()));
+          rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
         }
       });
       col5.setEnabled(false);
@@ -479,7 +479,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col6.addKeyListener(new java.awt.event.KeyAdapter() {
         public void keyReleased(java.awt.event.KeyEvent e) {
           try {
-            rolls[myRow].setPlus(Integer.valueOf(col3.getText()));
+            rolls[myRow].setPlus(Integer.parseInt(col3.getText()));
           }
           catch (NumberFormatException ev) {
             // TODO use IntConfigurer for col3

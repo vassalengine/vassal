@@ -380,7 +380,7 @@ public class FreeRotator extends Decorator
   public void mySetState(String state) {
     if (validAngles.length == 1) {
       try {
-        validAngles[0] = Double.valueOf(state);
+        validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
         reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);

@@ -1282,9 +1282,9 @@ public class ModuleManagerWindow extends JFrame {
       for (int i = 0; i < getTreeNode().getChildCount(); i++) {
         nodes[i] = getTreeNode().getChild(i);
       }
-      for (int i = 0; i < nodes.length; i++) {
-        if (!nodes[i].getFile().exists()) {
-          treeModel.removeNodeFromParent(nodes[i]);
+      for (MyTreeNode myTreeNode : nodes) {
+        if (!myTreeNode.getFile().exists()) {
+          treeModel.removeNodeFromParent(myTreeNode);
         }
       }
 

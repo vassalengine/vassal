@@ -103,7 +103,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
    */
   public static JPopupMenu createPopup(GamePiece target, boolean global) {
     JPopupMenu popup = new JPopupMenu();
-    KeyCommand c[] = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
+    KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
     if (c != null) {
       ArrayList<JMenuItem> commands = new ArrayList<JMenuItem>();
       ArrayList<KeyStroke> strokes = new ArrayList<KeyStroke>();
@@ -115,14 +115,14 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       HashMap<String,ArrayList<JMenuItem>> commandNames =
         new HashMap<String,ArrayList<JMenuItem>>();
 
-      for (int i = 0; i < c.length; ++i) {
-        c[i].setGlobal(global);
-        KeyStroke stroke = c[i].getKeyStroke();
+      for (KeyCommand keyCommand : c) {
+        keyCommand.setGlobal(global);
+        KeyStroke stroke = keyCommand.getKeyStroke();
         JMenuItem item = null;
-        if (c[i] instanceof KeyCommandSubMenu) {
-          JMenu subMenu = new JMenu(c[i].getLocalizedMenuText());
+        if (keyCommand instanceof KeyCommandSubMenu) {
+          JMenu subMenu = new JMenu(keyCommand.getLocalizedMenuText());
           subMenu.setFont(POPUP_MENU_FONT);
-          subMenus.put((KeyCommandSubMenu) c[i], subMenu);
+          subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
           item = subMenu;
           commands.add(item);
           strokes.add(KeyStroke.getKeyStroke('\0'));
@@ -135,31 +135,31 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
               String commandName =
                 (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
-                  commandName.length() < c[i].getName().length()) {
-                item = new JMenuItem(c[i].getLocalizedMenuText());
-                item.addActionListener(c[i]);
+                      commandName.length() < keyCommand.getName().length()) {
+                item = new JMenuItem(keyCommand.getLocalizedMenuText());
+                item.addActionListener(keyCommand);
                 item.setFont(POPUP_MENU_FONT);
-                item.setEnabled(c[i].isEnabled());
+                item.setEnabled(keyCommand.isEnabled());
                 commands.set(strokes.indexOf(stroke), item);
               }
             }
           }
           else {
             strokes.add(stroke != null ? stroke : KeyStroke.getKeyStroke('\0'));
-            item = new JMenuItem(c[i].getLocalizedMenuText());
-            item.addActionListener(c[i]);
+            item = new JMenuItem(keyCommand.getLocalizedMenuText());
+            item.addActionListener(keyCommand);
             item.setFont(POPUP_MENU_FONT);
-            item.setEnabled(c[i].isEnabled());
+            item.setEnabled(keyCommand.isEnabled());
             commands.add(item);
           }
         }
-        if (c[i].getName() != null &&
-            c[i].getName().length() > 0 &&
-            item != null) {
-          ArrayList<JMenuItem> l = commandNames.get(c[i].getName());
+        if (keyCommand.getName() != null &&
+                keyCommand.getName().length() > 0 &&
+                item != null) {
+          ArrayList<JMenuItem> l = commandNames.get(keyCommand.getName());
           if (l == null) {
             l = new ArrayList<JMenuItem>();
-            commandNames.put(c[i].getName(), l);
+            commandNames.put(keyCommand.getName(), l);
           }
           l.add(item);
         }

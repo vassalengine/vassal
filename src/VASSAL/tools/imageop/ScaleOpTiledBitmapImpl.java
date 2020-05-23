@@ -210,12 +210,12 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
       g.dispose();
 
-      final int src_data[] =
+      final int[] src_data =
         ((DataBufferInt) src.getRaster().getDataBuffer()).getData();
 
       final WritableRaster dstR = src.getColorModel()
                                      .createCompatibleWritableRaster(dw, dh);
-      final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
+      final int[] dst_data = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
       final int src_type;
       if (!src_trans) {

@@ -101,7 +101,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     se.append(current);
     se.append(currentSubLevel);
     se.append(first);
-    String s[] = new String[active.length];
+    String[] s = new String[active.length];
     for (int i = 0; i < s.length; i++) {
       s[i] = active[i] + ""; //$NON-NLS-1$
     }
@@ -151,9 +151,9 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    */
   protected String getLongestValueName() {
     String s = "X"; //$NON-NLS-1$
-    for (int i = 0; i < list.length; i++) {
-      if (list[i].length() > s.length()) {
-        s = list[i];
+    for (String value : list) {
+      if (value.length() > s.length()) {
+        s = value;
       }
     }
     return s;
@@ -211,8 +211,8 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   /* A list turn level is active only if at least one item is active */
   protected boolean isActive() {
-    for (int i = 0; i < active.length; i++) {
-      if (active[i]) {
+    for (boolean b : active) {
+      if (b) {
         return true;
       }
     }
