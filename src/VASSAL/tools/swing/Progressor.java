@@ -20,7 +20,7 @@
 package VASSAL.tools.swing;
 
 import VASSAL.tools.concurrent.RangedRunnable;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import VASSAL.tools.lang.Pair;
 
 /**
  * A progress handler.
@@ -74,7 +74,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
     }
 
     // submit only if this change affects the integer percentage
-    setLast(prog, (100*prog)/max > (100*range.getLeft())/max);
+    setLast(prog, (100*prog)/max > (100*range.first)/max);
   }
 
   /**
@@ -83,7 +83,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    * @return the progress value
    */
   public synchronized int get() {
-    return range.getRight() != null ? range.getRight() : range.getLeft();
+    return range.second != null ? range.second : range.first;
   }
 
   /**
@@ -123,7 +123,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    *
    * @param prog the range of progress since the last update
    */
-  protected abstract void run(ImmutablePair<Integer,Integer> prog);
+  protected abstract void run(Pair<Integer,Integer> prog);
 
   /**
    * Submits this {@link Runnable} to be run on the Event Dispatch Thread.

@@ -19,11 +19,10 @@
 
 package VASSAL.tools.concurrent.listener;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+
+import VASSAL.tools.lang.Pair;
 
 /**
  * An {@link EventListener} which accumulates the events it receives into
@@ -34,20 +33,19 @@ import java.util.List;
  */
 public class EventAccumulator<T> implements EventListener<T> {
 
-  private final Collection<ImmutablePair<Object,T>> sourceEventPairs;
+  protected final Collection<Pair<Object,T>> col;
 
   public EventAccumulator() {
-    this(new ArrayList<>());
+    this(new ArrayList<Pair<Object,T>>());
   }
 
-  public EventAccumulator(Collection<ImmutablePair<Object,T>> sourceEventPairs) {
-    this.sourceEventPairs = sourceEventPairs;
+  public EventAccumulator(Collection<Pair<Object,T>> col) {
+    this.col = col;
   }
 
   /** {@inheritDoc} */
-  @Override
   public void receive(Object src, T event) {
-    sourceEventPairs.add(new ImmutablePair<>(src, event));
+    col.add(new Pair<Object,T>(src, event));
   }
 
   /**
@@ -55,7 +53,7 @@ public class EventAccumulator<T> implements EventListener<T> {
    *
    * @return the collection of sources and events received
    */
-  public Collection<ImmutablePair<Object,T>> events() {
-    return sourceEventPairs;
+  public Collection<Pair<Object,T>> events() {
+    return col;
   }
 }
