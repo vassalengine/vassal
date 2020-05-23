@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module;
 
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
@@ -45,6 +46,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +68,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
+import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -81,6 +84,7 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
+
 
 /**
  * The GameState represents the state of the game currently being played.
@@ -328,6 +332,34 @@ public class GameState implements CommandEncoder {
     gameStarted |= this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
     lastSaveFile = null;
+
+    if (gameStarted) {
+      adjustSplitter();
+    }
+  }
+
+  private void adjustSplitter() {
+    // If there is a docked map, set the splitter to a reasaonable location
+    final GameModule g = GameModule.getGameModule();
+    for (VASSAL.build.module.Map m : g.getComponentsOf(VASSAL.build.module.Map.class)) {
+      if (m.shouldDockIntoMainWindow()) {
+        final Component c = SwingUtilities.getAncestorOfClass(
+          ComponentSplitter.SplitPane.class, m.getView()
+        );
+
+        // this should always be true
+        if (c instanceof ComponentSplitter.SplitPane) {
+          final ComponentSplitter.SplitPane sp = (ComponentSplitter.SplitPane) c;
+
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              sp.setDividerLocation(g.getChatter().getPreferredSize().height);
+            }
+          });
+        }
+        return;
+      }
+    }
   }
 
   /** Return true if a game is currently in progress */

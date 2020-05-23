@@ -2,6 +2,7 @@
 
 * 12861: Improved behavior of Zone editor
 * 12817: Right-clicking on unexpanded stacks no longer selects top piece
+* 12816: Splitter between chat and map panes starts with map obscured
 * 12805: Upgraded Batik from 1.12 to 1.13
 
 3.3.0-beta3 - 12 May 2020
