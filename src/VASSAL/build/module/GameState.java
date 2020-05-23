@@ -282,9 +282,11 @@ public class GameState implements CommandEncoder {
    * on all registered {@link GameComponent} objects.
    */
   public void setup(boolean gameStarting) {
+    final GameModule g = GameModule.getGameModule();
+
     if (!gameStarting && gameStarted && isModified()) {
       switch (JOptionPane.showConfirmDialog(
-        GameModule.getGameModule().getFrame(),
+        g.getFrame(),
         Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
         Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
         JOptionPane.YES_NO_CANCEL_OPTION)) {
@@ -310,12 +312,12 @@ public class GameState implements CommandEncoder {
     if (gameStarting) {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_continuation"));
-      GameModule.getGameModule().getWizardSupport().showGameSetupWizard();
+      g.getWizardSupport().showGameSetupWizard();
     }
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      GameModule.getGameModule().appendToTitle(null);
+      g.appendToTitle(null);
     }
 
     gameStarted &= this.gameStarting;
