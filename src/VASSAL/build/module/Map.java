@@ -1924,20 +1924,22 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   public boolean shouldDockIntoMainWindow() {
-    boolean shouldDock = false;
-    if (GlobalOptions.getInstance().isUseSingleWindow() && !useLaunchButton) {
-      shouldDock = true;
-      for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
-        if (m == this) {
-          break;
-        }
-        if (m.shouldDockIntoMainWindow()) {
-          shouldDock = false;
-          break;
-        }
+    // set to show via a button, or no combined window at all, don't dock
+    if (useLaunchButton || !GlobalOptions.getInstance().isUseSingleWindow()) {
+      return false;
+    }
+
+    // otherwise dock if this map is the first not to show via a button
+    for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
+      if (m == this) {
+        return true;
+      }
+      else if (m.shouldDockIntoMainWindow()) {
+        return false;
       }
     }
-    return shouldDock;
+    // should be impossible
+    return true;
   }
 
   /**
