@@ -93,8 +93,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    conversation = new JTextArea(15, 60);
-    for (int i = 0; i < 15; ++i) {
+    conversation = new JTextArea(10, 80);
+    for (int i = 0; i < 10; ++i) {
       conversation.append("\n"); //$NON-NLS-1$
     }
     conversation.setEditable(false);
@@ -106,7 +106,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
       }
     });
-    input = new JTextField(60);
+    input = new JTextField(80);
     input.setFocusTraversalKeysEnabled(false);
     input.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
