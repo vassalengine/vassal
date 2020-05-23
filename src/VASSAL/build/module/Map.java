@@ -674,6 +674,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         ComponentSplitter.getSplitAncestor(g.getControlPanel(), -1),
         layeredPane, true
       );
+      mainWindowDock.setResizeWeight(0.0);
 
       g.addKeyStrokeSource(
         new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
