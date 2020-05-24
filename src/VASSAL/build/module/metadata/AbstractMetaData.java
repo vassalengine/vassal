@@ -183,8 +183,7 @@ public abstract class AbstractMetaData {
     }
     catch (ParserConfigurationException ex) {
       ErrorDialog.bug(ex);
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(ex);
+      throw (IOException) new IOException(ex);
     }
 
     try {
@@ -197,12 +196,10 @@ public abstract class AbstractMetaData {
     }
     catch (TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
       ErrorDialog.bug(ex);
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException(ex).initCause(ex);
+      throw (IOException) new IOException(ex);
     }
     catch (TransformerException ex) {
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(ex);
+      throw (IOException) new IOException(ex);
     }
   }
 

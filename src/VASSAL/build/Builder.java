@@ -162,8 +162,7 @@ public abstract class Builder {
       return null;
     }
     catch (SAXException e) {
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(e);
+      throw (IOException) new IOException(e);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -204,8 +203,7 @@ public abstract class Builder {
       xformer.transform(source, result);
     }
     catch (TransformerException e) {
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(e);
+      throw (IOException) new IOException(e);
     }
   }
 

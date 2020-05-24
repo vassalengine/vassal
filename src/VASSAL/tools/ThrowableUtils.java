@@ -103,7 +103,7 @@ public class ThrowableUtils {
                                                                      throws T {
     T toThrow = null;
     try {
-      toThrow = cl.cast(cl.getConstructor().newInstance().initCause(t));
+      toThrow = cl.cast(cl.getConstructor().newInstance(t));
     }
     catch (Throwable ignore) {
       // If anything happens here, we're screwed anyway, as we're already

@@ -103,8 +103,8 @@ public class BasicModule extends GameModule {
         // we have failed I/O from when we read ok but have no module
         catch (IOException e) {
           throw (IOException) new IOException(
-            Resources.getString("BasicModule.not_a_module") //$NON-NLS-1$
-          ).initCause(e);
+            Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
+            e);
         }
 
         final Document doc = Builder.createDocument(in);

@@ -60,8 +60,8 @@ public class ImageIOException extends IOException {
   }
 
   public ImageIOException(File file, Throwable cause) {
-    this(file);
-    initCause(cause);
+    super(file.getPath(), cause);
+    this.file = file;
   }
 
   public ImageIOException(String filename, String message, Throwable cause) {
@@ -69,9 +69,8 @@ public class ImageIOException extends IOException {
   }
 
   public ImageIOException(File file, String message, Throwable cause) {
-    super(file.getPath() + ": " + message);
+    super(file.getPath() + ": " + message, cause);
     this.file = file;
-    initCause(cause);
   }
 
   public File getFile() {
