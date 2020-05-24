@@ -102,7 +102,7 @@ public class SVGRenderer {
       in.close();
     }
     catch (DOMException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -200,7 +200,7 @@ public class SVGRenderer {
         return doc;
       }
       catch (DOMException e) {
-        throw (IOException) new IOException(e);
+        throw new IOException(e);
       }
       finally {
         IOUtils.closeQuietly(in);

@@ -891,7 +891,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public void editGrid() {
-    gridEditor = new HexGridEditor((GridEditor.EditableGrid) this);
+    gridEditor = new HexGridEditor(this);
     gridEditor.setVisible(true);
     // Local variables may have been updated by GridEditor so refresh
     // configurers. Setting the Dy configurer will auto-recalculate dx

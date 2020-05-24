@@ -193,7 +193,7 @@ public class ColorManager extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            userColors.remove((String) evt.getOldValue());
+            userColors.remove(evt.getOldValue());
             userColors.put((String) evt.getNewValue(),
                            (ColorSwatch) evt.getSource());
           }

@@ -257,7 +257,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
 
   public void sendTo(Player recipient, Command c) {
     String path = new SequenceEncoder(moduleName, '/')
-        .append("*").append(((NodePlayer) recipient).getId()).getValue(); //$NON-NLS-1$
+      .append("*").append(recipient.getId()).getValue(); //$NON-NLS-1$
     forward(path, encoder.encode(c));
   }
 

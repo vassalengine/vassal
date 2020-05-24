@@ -169,7 +169,7 @@ public class LayerControl extends AbstractConfigurable {
     if (NAME.equals(key)) {
       setConfigureName((String)value);
       if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP,(String)value);
+        launch.setAttribute(TOOLTIP, value);
       }
     }
     else if (COMMAND.equals(key)) {

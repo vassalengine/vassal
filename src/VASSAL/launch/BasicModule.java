@@ -102,7 +102,7 @@ public class BasicModule extends GameModule {
         // FIXME: this should be more specific, to separate the case where
         // we have failed I/O from when we read ok but have no module
         catch (IOException e) {
-          throw (IOException) new IOException(
+          throw new IOException(
             Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
             e);
         }

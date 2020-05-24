@@ -162,7 +162,7 @@ public abstract class Builder {
       return null;
     }
     catch (SAXException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -203,7 +203,7 @@ public abstract class Builder {
       xformer.transform(source, result);
     }
     catch (TransformerException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
   }
 

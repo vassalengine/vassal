@@ -48,7 +48,7 @@ public class BugUtils {
         }
       }
       catch (NumberFormatException e) {
-        throw (IOException) new IOException(e);
+        throw new IOException(e);
       }
 
       in.close();

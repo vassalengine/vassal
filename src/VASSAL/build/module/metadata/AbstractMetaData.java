@@ -183,7 +183,7 @@ public abstract class AbstractMetaData {
     }
     catch (ParserConfigurationException ex) {
       ErrorDialog.bug(ex);
-      throw (IOException) new IOException(ex);
+      throw new IOException(ex);
     }
 
     try {
@@ -196,10 +196,10 @@ public abstract class AbstractMetaData {
     }
     catch (TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
       ErrorDialog.bug(ex);
-      throw (IOException) new IOException(ex);
+      throw new IOException(ex);
     }
     catch (TransformerException ex) {
-      throw (IOException) new IOException(ex);
+      throw new IOException(ex);
     }
   }
 
@@ -291,7 +291,7 @@ public abstract class AbstractMetaData {
      * Build Attribute class based on atrribute value and translations
      * available in the current module
      *
-     * @param c Target configurable
+     * @param target Target configurable
      * @param name Attribute name
      */
     public Attribute(Configurable target, String name) {

@@ -74,7 +74,7 @@ public class AddressBookServerConfigurer extends Configurer {
         public void propertyChange(PropertyChangeEvent e) {
           if (ServerAddressBook.CURRENT_SERVER.equals(e.getPropertyName())) {
             addressBook.setFrozen(true);
-            setValue((Properties) e.getNewValue());
+            setValue(e.getNewValue());
             addressBook.setFrozen(false);
           }
         }});

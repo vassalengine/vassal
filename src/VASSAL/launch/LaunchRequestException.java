@@ -39,6 +39,6 @@ public class LaunchRequestException extends Exception {
    * @param vals {@link Resources} arguments
    */
   public LaunchRequestException(String key, String... vals) {
-    super(Resources.getString(key, (Object[]) vals));
+    super(Resources.getString(key, vals));
   }
 }

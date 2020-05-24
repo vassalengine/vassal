@@ -147,7 +147,7 @@ public class SVGImageUtils {
       }
     }
     catch (DOMException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
 
     final NodeList usenodes = doc.getElementsByTagName("use");
@@ -198,7 +198,7 @@ public class SVGImageUtils {
       DOMUtilities.writeDocument(doc, sw);
     }
     catch (DOMException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
 
     sw.flush();

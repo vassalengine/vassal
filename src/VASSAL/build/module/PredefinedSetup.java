@@ -135,7 +135,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
-      menuItem.getAction().putValue(Action.NAME, (String) value);
+      menuItem.getAction().putValue(Action.NAME, value);
       menu.setText((String) value);
     }
     else if (USE_FILE.equals(key)) {

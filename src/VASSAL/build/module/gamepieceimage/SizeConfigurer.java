@@ -41,7 +41,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
   }
 
   public JComboBox getComboBox() {
-    return (JComboBox) new SizeComboBox();
+    return new SizeComboBox();
   }
 
   public class SizeComboBox extends JComboBox {

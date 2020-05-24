@@ -43,7 +43,7 @@ public class ScriptInterpreter extends AbstractInterpreter {
   }
 
   public Object evaluate(String statement) throws EvalError {
-    setVar(SOURCE, (PropertySource) GameModule.getGameModule());
+    setVar(SOURCE, GameModule.getGameModule());
     return super.eval(statement);
   }
 

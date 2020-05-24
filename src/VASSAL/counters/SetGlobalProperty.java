@@ -275,7 +275,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new PropertyNameExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
+      nameConfig = new PropertyNameExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), m);
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);

@@ -436,7 +436,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   private static final CodeSource cs =
-    new CodeSource((URL) null, (Certificate[]) null);
+    new CodeSource(null, (Certificate[]) null);
 
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {

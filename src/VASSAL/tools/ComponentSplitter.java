@@ -190,7 +190,7 @@ public class ComponentSplitter {
       this.resizeOnVisibilityChange = resizeOnVisibilityChange;
       this.hideablePosition = hideablePosition;
       if (hideableComponent instanceof JComponent) {
-        ((JComponent) hideableComponent).setMinimumSize(new Dimension(0, 0));
+        hideableComponent.setMinimumSize(new Dimension(0, 0));
       }
       switch (hideablePosition) {
       case HIDE_LEFT:

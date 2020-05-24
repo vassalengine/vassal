@@ -166,7 +166,7 @@ public class FileConfigurer extends Configurer {
       setValue((Object) null);
     }
     else {
-      setValue(fc.getSelectedFile().exists() ? fc.getSelectedFile() : (Object) null);
+      setValue(fc.getSelectedFile().exists() ? fc.getSelectedFile() : null);
     }
   }
 

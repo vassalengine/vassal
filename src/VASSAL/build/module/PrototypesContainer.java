@@ -87,7 +87,7 @@ public class PrototypesContainer extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove((String) evt.getOldValue());
+            definitions.remove(evt.getOldValue());
             definitions.put((String) evt.getNewValue(),
                             (PrototypeDefinition) evt.getSource());
           }

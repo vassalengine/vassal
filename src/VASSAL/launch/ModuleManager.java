@@ -148,7 +148,7 @@ public class ModuleManager {
         klock = kraf.getChannel().lock();
       }
       catch (OverlappingFileLockException e) {
-        throw (IOException) new IOException(e);
+        throw new IOException(e);
       }
 
       // determine whether we are the server or a client
@@ -161,7 +161,7 @@ public class ModuleManager {
         lock = lout.getChannel().tryLock();
       }
       catch (OverlappingFileLockException e) {
-        throw (IOException) new IOException(e);
+        throw new IOException(e);
       }
 
       if (lock != null) {

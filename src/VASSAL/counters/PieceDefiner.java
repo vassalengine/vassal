@@ -521,7 +521,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (o == null) return;
 
     if (o instanceof GamePiece) {
-      availableModel.addElement((GamePiece) o);
+      availableModel.addElement(o);
     }
     else {
       ErrorDialog.show("Error.not_a_gamepiece", className);

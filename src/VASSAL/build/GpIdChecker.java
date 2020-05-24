@@ -310,7 +310,7 @@ public class GpIdChecker {
       GamePiece p = newPiece;
       while (p != null) {
         if (p instanceof BasicPiece) {
-          ((BasicPiece) p).setState(((BasicPiece) Decorator.getInnermost(oldPiece)).getState());
+          p.setState(Decorator.getInnermost(oldPiece).getState());
           p = null;
         }
         else {

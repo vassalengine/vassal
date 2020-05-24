@@ -86,7 +86,7 @@ public class ReadErrorDialog {
     ErrorDialog.showDisableable(
       null,
       e,
-      (Object) (e.getClass().getName() + "@" + filename),
+      e.getClass().getName() + "@" + filename,
       "Unable to Read File",
       "Unable to Read File",
       "VASSAL was unable to read the file '" + filename + "'."

@@ -250,7 +250,7 @@ public class ImageSaver extends AbstractConfigurable {
           dialog.setProgress((Integer) e.getNewValue());
         }
         else if ("state".equals(e.getPropertyName())) {
-          if ((SwingWorker.StateValue) e.getNewValue() ==
+          if (e.getNewValue() ==
               SwingWorker.StateValue.DONE) {
             // close the dialog on cancellation or completion
             dialog.setVisible(false);

@@ -565,7 +565,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public void editGrid() {
-    gridEditor = new SquareGridEditor((GridEditor.EditableGrid) this);
+    gridEditor = new SquareGridEditor(this);
     gridEditor.setVisible(true);
     // Local variables may have been updated by GridEditor so refresh
     // configurers.

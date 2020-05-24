@@ -26,7 +26,7 @@ public class AcceptPeerThread extends Thread {
       // FIXME: review error message
       catch (Exception ex) {
         if (i == MAX_ATTEMPTS -1) {
-          throw (IOException) new IOException(ex);
+          throw new IOException(ex);
         }
       }
     }

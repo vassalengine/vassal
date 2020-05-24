@@ -388,7 +388,7 @@ public class MassPieceLoader {
             .getLastPathComponent();
         c.setEnabled(!node.isSkip());
         if (node instanceof PieceNode) {
-          final String image = ((PieceNode) node).getImageName();
+          final String image = node.getImageName();
           final String i = "<html><img src=\"file:/"+loadDirectory.getAbsolutePath()+"/"+image+"\"></html>";
           c.setToolTipText(i);
         }
@@ -1142,7 +1142,7 @@ public class MassPieceLoader {
       final int size = imageListElements.size();
       final ArrayList<String> names = new ArrayList<>(size);
       for (int i = 0; i < size; ++i) {
-        names.add((((Entry) multiPanel.getComponent(i)).toString()));
+        names.add((multiPanel.getComponent(i).toString()));
       }
       return names;
     }

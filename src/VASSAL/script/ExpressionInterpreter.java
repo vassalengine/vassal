@@ -159,7 +159,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * methods available to expressions.
    */
   protected void initialiseStatic() {
-    topLevelNameSpace = new NameSpace((NameSpace) null, getClassManager(), "topLevel");
+    topLevelNameSpace = new NameSpace(null, getClassManager(), "topLevel");
     setNameSpace(topLevelNameSpace);
     getNameSpace().importClass("VASSAL.build.module.properties.PropertySource");
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");

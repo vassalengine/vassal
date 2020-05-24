@@ -39,7 +39,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public SimplePlayer() {
-    this((String) null);
+    this(null);
   }
 
   public String toString() {

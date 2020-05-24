@@ -983,7 +983,7 @@ public class ModuleManagerWindow extends JFrame {
       else if (info instanceof ModuleInfo) {
         return this;
       }
-      else if ((MyTreeNode) getParent() == null) {
+      else if (getParent() == null) {
         return null;
       }
       else {

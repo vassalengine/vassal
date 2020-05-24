@@ -1036,7 +1036,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           return true;
         }
         if (serverMessageFilter.accept(packet)) {
-          return ((Message) packet).getFrom().equals(JabberClient.this.getConnection().getHost());
+          return packet.getFrom().equals(JabberClient.this.getConnection().getHost());
         }
         return false;
       }

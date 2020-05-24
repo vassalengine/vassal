@@ -225,7 +225,7 @@ public class WrapLayout extends FlowLayout {
       target.invalidate();
 
       if (target instanceof JComponent) {
-        ((JComponent)target).revalidate();
+        target.revalidate();
       }
 
       recursing = false;

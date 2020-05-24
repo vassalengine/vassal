@@ -940,7 +940,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         for (int iType = 0; iType < TYPE_VALUES.length; ++iType) {
           if (typeString.matches(TYPE_VALUES[iType]) &&
               !DEFAULT_ROW[0].equals(propertyTable.getValueAt(iRow, 0))) {
-            defEncoder.append(iType + (String) propertyTable.getValueAt(iRow, 0));
+            defEncoder.append("" + iType + propertyTable.getValueAt(iRow, 0));
             break;
           }
         }

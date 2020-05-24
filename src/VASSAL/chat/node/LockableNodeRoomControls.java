@@ -32,7 +32,7 @@ import VASSAL.i18n.Resources;
 public class LockableNodeRoomControls extends LockableRoomControls {
 
   public LockableNodeRoomControls(NodeClient client) {
-    super((ChatServerConnection) client);
+    super(client);
   }
 
   protected void addLockRoomAction(JPopupMenu popup, Room target) {

@@ -117,7 +117,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   public <T> void removePropertyListener(Property<T> prop,
                                          PropertyListener<? super T> l) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
-    plisteners.remove((PropertyListener<? super V>) l);
+    plisteners.remove(l);
   }
 
   /** {@inheritDoc} */

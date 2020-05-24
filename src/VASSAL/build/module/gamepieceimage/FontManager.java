@@ -127,7 +127,7 @@ public class FontManager extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            fontStyles.remove((String) evt.getOldValue());
+            fontStyles.remove(evt.getOldValue());
             fontStyles.put((String) evt.getNewValue(),
                            (FontStyle) evt.getSource());
           }

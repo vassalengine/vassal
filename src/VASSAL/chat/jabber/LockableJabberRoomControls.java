@@ -64,7 +64,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
   }
 
   public LockableJabberRoomControls(JabberClient client) {
-    super((ChatServerConnection) client);
+    super(client);
   }
 
   protected void addLockRoomAction(JPopupMenu popup, Room target) {

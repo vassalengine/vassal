@@ -139,7 +139,7 @@ public class ComponentI18nData {
   }
 
   public ComponentI18nData(Configurable c, String prefix) {
-    this(c, prefix, (Translatable) null);
+    this(c, prefix, null);
   }
 
   /**

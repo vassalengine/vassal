@@ -42,7 +42,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
   }
 
   public JComboBox getComboBox() {
-    return (JComboBox) new SymbolComboBox();
+    return new SymbolComboBox();
   }
 
   public class SymbolComboBox extends JComboBox {

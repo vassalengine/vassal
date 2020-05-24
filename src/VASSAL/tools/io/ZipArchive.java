@@ -507,7 +507,7 @@ public class ZipArchive implements FileArchive {
         }
 
         err += " Data written to " + tmpFile.getAbsolutePath() + " instead.";
-        throw (IOException) new IOException(err, e);
+        throw new IOException(err, e);
       }
     }
 

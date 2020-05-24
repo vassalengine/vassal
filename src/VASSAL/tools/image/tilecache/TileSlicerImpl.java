@@ -109,7 +109,7 @@ public class TileSlicerImpl implements TileSlicer {
       throw new IllegalStateException(e);
     }
     catch (ExecutionException e) {
-      throw (IOException) new IOException(e);
+      throw new IOException(e);
     }
     finally {
       // cancel everything if anything fails
