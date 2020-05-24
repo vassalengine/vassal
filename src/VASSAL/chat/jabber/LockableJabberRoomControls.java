@@ -27,7 +27,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
-import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.Room;
 import VASSAL.chat.ui.ChatServerControls;

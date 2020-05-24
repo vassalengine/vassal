@@ -20,10 +20,8 @@
 package VASSAL.tools;
 
 import java.awt.Graphics2D;
-import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JDialog;

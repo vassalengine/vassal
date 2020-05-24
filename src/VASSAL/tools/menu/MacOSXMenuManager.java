@@ -27,8 +27,6 @@ import java.awt.desktop.PreferencesEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 import javax.swing.JFrame;

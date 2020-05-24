@@ -42,7 +42,6 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;

@@ -23,7 +23,6 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Properties;
 
 import VASSAL.tools.SequenceEncoder;

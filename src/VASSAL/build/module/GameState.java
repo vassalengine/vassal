@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;

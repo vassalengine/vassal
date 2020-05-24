@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 
-import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.Room;
 import VASSAL.chat.ui.LockableRoomControls;

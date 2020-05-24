@@ -54,7 +54,6 @@ import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;

@@ -48,10 +48,8 @@ import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.ZipArchive;
 
 public class PrefsEditor {
   private JDialog dialog;
