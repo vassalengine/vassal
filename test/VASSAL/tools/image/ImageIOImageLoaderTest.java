@@ -107,34 +107,6 @@ public class ImageIOImageLoaderTest {
   }
 
   @Test
-  public void testLoad_iTXTBug() throws IOException {
-    final String efile = "test/VASSAL/tools/image/no-iTXt.png";
-    final String afile = "test/VASSAL/tools/image/iTXt.png";
-
-    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
-    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
-
-    final BufferedImage expected = read(loader, efile);
-    final BufferedImage actual = read(loader, afile);
-
-    assertEquals(BufferedImage.TYPE_INT_ARGB, actual.getType());
-    assertImageContentEquals(expected, actual);
-  }
-
-  protected Dimension size(ImageLoader loader, String file) throws IOException {
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(file);
-      final Dimension d = loader.size(file, in);
-      in.close();
-      return d;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
-  }
-
-  @Test
   public void testSizeOk() throws IOException {
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);

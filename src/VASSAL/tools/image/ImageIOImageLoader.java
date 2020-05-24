@@ -26,9 +26,7 @@ import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -64,18 +62,6 @@ public class ImageIOImageLoader implements ImageLoader {
   public ImageIOImageLoader(ImageTypeConverter tconv) {
     this.tconv = tconv;
   }
-
-  // Used to indicate whether this version of Java has the PNG iTXt bug.
-  // This can be removed once we no longer support Java 1.5.
-  protected static final boolean iTXtBug;
-
-  static {
-    final String jvmver = System.getProperty("java.version");
-    iTXtBug = jvmver == null || jvmver.startsWith("1.5");
-  }
-
-  protected static final Set<Integer> skip_iTXt =
-    Collections.singleton(PNGDecoder.iTXt);
 
   // Used to indicate whether this version of Java has the JPEG color
   // correction bug.
@@ -170,7 +156,6 @@ public class ImageIOImageLoader implements ImageLoader {
     // ImageIO fails on the following types of images:
     //
     // Sun Bug 6788458: 8-bit/channel color type 2 (RGB) PNGs with tRNS chunks
-    // Sun Bug 6541476: PNGs with iTXt chunks on Java 1.5
     // Sun Bug 6444360: JPEGs with corrupt color profiles
     // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5
     // Sun Bug 4712797: YCbCr JPEGs with no JFIF marker
@@ -257,14 +242,6 @@ public class ImageIOImageLoader implements ImageLoader {
                      ((ch.data[3] & 0xff) <<  8) |
                       (ch.data[5] & 0xff);
             }
-          }
-
-          if (iTXtBug) {
-            // Filter out iTXt chunks on JVMs with the iTXt bug.
-            rin.reset();
-            rin = new RereadableInputStream(
-              new PNGChunkSkipInputStream(skip_iTXt, rin));
-            rin.mark(1);
           }
         }
       }
