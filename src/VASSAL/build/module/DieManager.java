@@ -161,7 +161,7 @@ public class DieManager extends AbstractConfigurable {
       return null;
     }
     else {
-      return servers.keySet().toArray(new String[servers.size()]);
+      return servers.keySet().toArray(new String[0]);
     }
   }
 

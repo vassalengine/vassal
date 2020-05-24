@@ -190,7 +190,7 @@ public class RandomTextButton extends DiceButton {
     l.remove(N_SIDES);
     l.add(FACES);
     l.add(NUMERIC);
-    return l.toArray(new String[l.size()]);
+    return l.toArray(new String[0]);
   }
 
   public String[] getAttributeDescriptions() {
@@ -201,7 +201,7 @@ public class RandomTextButton extends DiceButton {
     l.remove(names.indexOf(N_SIDES));
     l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
     l.add(Resources.getString("Editor.RandomTextButton.faces_numeric")); //$NON-NLS-1$
-    return l.toArray(new String[l.size()]);
+    return l.toArray(new String[0]);
   }
 
   public Class<?>[] getAttributeTypes() {

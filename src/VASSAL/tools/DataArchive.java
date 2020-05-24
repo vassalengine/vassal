@@ -338,7 +338,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   public String[] getImageNames() {
     final SortedSet<String> s = getImageNameSet();
-    return s.toArray(new String[s.size()]);
+    return s.toArray(new String[0]);
   }
 
   public SortedSet<String> getImageNameSet() {

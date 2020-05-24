@@ -102,7 +102,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     for (Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
       l.add(i.next());
     }
-    return l.toArray(new String[l.size()]);
+    return l.toArray(new String[0]);
   }
 
   public String getMenuName() {

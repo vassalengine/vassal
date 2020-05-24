@@ -50,7 +50,7 @@ public class SimplePieceCollection implements PieceCollection {
   }
 
   public GamePiece[] getPieces() {
-    return pieces.toArray(new GamePiece[pieces.size()]);
+    return pieces.toArray(new GamePiece[0]);
   }
 
   public GamePiece[] getAllPieces() {

@@ -789,9 +789,9 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       Set<JabberRoom> rooms = occupants.keySet();
       for (JabberRoom room : rooms) {
         List<JabberPlayer> l = occupants.get(room);
-        room.setPlayers(l.toArray(new JabberPlayer[l.size()]));
+        room.setPlayers(l.toArray(new JabberPlayer[0]));
       }
-      Room[] roomArray = rooms.toArray(new Room[rooms.size()]);
+      Room[] roomArray = rooms.toArray(new Room[0]);
       Arrays.sort(roomArray, roomSortOrder);
       return roomArray;
     }
@@ -1075,7 +1075,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     catch (XMPPException e) {
       e.printStackTrace();
     }
-    return entries.toArray(new ModuleSummary[entries.size()]);
+    return entries.toArray(new ModuleSummary[0]);
   }
 
   public String[] getSupportedTimeRanges() {

@@ -67,7 +67,7 @@ public class Marker extends Decorator implements EditablePiece {
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    keys = l.toArray(new String[l.size()]);
+    keys = l.toArray(new String[0]);
     values = new String[keys.length];
     Arrays.fill(values, "");
   }

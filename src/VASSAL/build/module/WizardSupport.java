@@ -764,7 +764,7 @@ public class WizardSupport {
         pages.add(page);
       }
       if (!pages.isEmpty()) {
-        WizardPage[] wizardPages = pages.toArray(new WizardPage[pages.size()]);
+        WizardPage[] wizardPages = pages.toArray(new WizardPage[0]);
         String[] steps = new String[setupSteps.size()];
         String[] desc = new String[setupSteps.size()];
         for (int i = 0, n = setupSteps.size(); i < n; i++) {

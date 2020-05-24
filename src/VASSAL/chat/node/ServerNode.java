@@ -57,7 +57,7 @@ public class ServerNode extends Node {
         for (Node node : target) {
           l.addAll(Arrays.asList(node.getChildren()));
         }
-        target = l.toArray(new Node[l.size()]);
+        target = l.toArray(new Node[0]);
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
@@ -69,7 +69,7 @@ public class ServerNode extends Node {
             }
           }
         }
-        target = l.toArray(new Node[l.size()]);
+        target = l.toArray(new Node[0]);
       }
       else {
         int i = 0;

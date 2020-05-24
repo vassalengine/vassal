@@ -293,7 +293,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
       // append the number of players to each room name
       r.setName(r.getName() + " (" + l.size() + ")");
-      children = l.toArray(new Player[l.size()]);
+      children = l.toArray(new Player[0]);
     }
 
     final DefaultMutableTreeNode node = new DefaultMutableTreeNode(o);

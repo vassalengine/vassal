@@ -216,7 +216,7 @@ public class StringArrayConfigurer extends Configurer {
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    return l.toArray(new String[l.size()]);
+    return l.toArray(new String[0]);
   }
 
   protected void updateModel() {

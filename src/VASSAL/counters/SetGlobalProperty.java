@@ -92,14 +92,14 @@ public class SetGlobalProperty extends DynamicProperty {
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
     keyCommands = keyCommandListConfig.getListValue().toArray(
-        new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
+      new DynamicKeyCommand[0]);
     ArrayList<DynamicKeyCommand> l = new ArrayList<>();
     for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.getName() != null && dkc.getName().length() > 0) {
         l.add(dkc);
       }
     }
-    menuCommands = l.toArray(new DynamicKeyCommand[l.size()]);
+    menuCommands = l.toArray(new DynamicKeyCommand[0]);
     description = sd.nextToken("");
     propertyLevel = sd.nextToken(CURRENT_ZONE);
     searchName = sd.nextToken("");

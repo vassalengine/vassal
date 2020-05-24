@@ -240,6 +240,6 @@ public class ColorManager extends AbstractConfigurable {
     }
 
     names.addAll(Arrays.asList(standardColorNames));
-    return names.toArray(new String[names.size()]);
+    return names.toArray(new String[0]);
   }
 }

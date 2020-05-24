@@ -327,7 +327,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   public Configurable[] getConfigureComponents() {
-    return possibleBoards.toArray(new Configurable[possibleBoards.size()]);
+    return possibleBoards.toArray(new Configurable[0]);
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
@@ -417,7 +417,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     for (Board b : possibleBoards) {
       s.add(b.getName());
     }
-    return s.toArray(new String[s.size()]);
+    return s.toArray(new String[0]);
   }
 
   public String[] getAllowableLocalizedBoardNames() {
@@ -425,7 +425,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     for (Board b : possibleBoards) {
       s.add(b.getLocalizedName());
     }
-    return s.toArray(new String[s.size()]);
+    return s.toArray(new String[0]);
   }
 
   /**

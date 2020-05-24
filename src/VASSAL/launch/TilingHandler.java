@@ -207,7 +207,7 @@ public class TilingHandler {
       null,
       outP,
       errP,
-      args.toArray(new String[args.size()])
+      args.toArray(new String[0])
     );
 
     // write the image paths to child's stdin, one per line

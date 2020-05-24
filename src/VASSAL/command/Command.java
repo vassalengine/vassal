@@ -42,7 +42,7 @@ public abstract class Command {
   public Command() {}
 
   public Command[] getSubCommands() {
-    return seq.toArray(new Command[seq.size()]);
+    return seq.toArray(new Command[0]);
   }
 
   /**

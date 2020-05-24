@@ -156,7 +156,7 @@ public class Node implements MsgSender {
   public Node[] getLeafDescendants() {
     ArrayList<Node> l = new ArrayList<>();
     addLeaves(this, l);
-    return l.toArray(new Node[l.size()]);
+    return l.toArray(new Node[0]);
   }
 
   private void addLeaves(Node base, List<Node> l) {
@@ -176,7 +176,7 @@ public class Node implements MsgSender {
 
   public Node[] getChildren() {
     synchronized (children) {
-      return children.toArray(new Node[children.size()]);
+      return children.toArray(new Node[0]);
     }
   }
 

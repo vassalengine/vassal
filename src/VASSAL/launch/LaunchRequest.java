@@ -145,7 +145,7 @@ public class LaunchRequest implements Serializable {
       args.add(importFile.getPath());
     }
 
-    return args.toArray(new String[args.size()]);
+    return args.toArray(new String[0]);
   }
 
   // FIXME: translate this somehow?

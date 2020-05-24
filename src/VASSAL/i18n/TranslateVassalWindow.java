@@ -176,7 +176,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     ((VassalTranslation) target).clearProperties();
     ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
     Collections.sort(keyList);
-    keys = keyList.toArray(new String[keyList.size()]);
+    keys = keyList.toArray(new String[0]);
     copyButtons = new CopyButton[keys.length];
     ((MyTableModel) keyTable.getModel()).update();
   }

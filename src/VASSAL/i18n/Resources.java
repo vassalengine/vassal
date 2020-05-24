@@ -116,7 +116,10 @@ public class Resources {
     }
 
     setInstanceLocale(myLocale);
-    final StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getInstanceString("Prefs.language"), languages.toArray(new String[languages.size()])) {
+    final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
+        Resources.LOCALE_PREF_KEY,
+        getInstanceString("Prefs.language"),
+        languages.toArray(new String[0])) {
       public Component getControls() {
         if (box == null) {
           final Component c = super.getControls();
@@ -172,7 +175,7 @@ public class Resources {
         ArrayList<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
-        config.setValidValues(valid.toArray(new String[valid.size()]));
+        config.setValidValues(valid.toArray(new String[0]));
       }
     }
   }

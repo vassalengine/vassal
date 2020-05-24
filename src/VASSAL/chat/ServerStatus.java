@@ -71,7 +71,7 @@ public interface ServerStatus {
     }
 
     public Room[] getRooms() {
-      return rooms.values().toArray(new Room[rooms.size()]);
+      return rooms.values().toArray(new Room[0]);
     }
 
     public int numPlayers(){

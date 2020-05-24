@@ -130,7 +130,7 @@ public class ToolbarMenu extends AbstractConfigurable
   public String getAttributeValueString(String key) {
     if (MENU_ITEMS.equals(key)) {
       return StringArrayConfigurer.arrayToString(
-        menuItems.toArray(new String[menuItems.size()]));
+        menuItems.toArray(new String[0]));
     }
     else if(DESCRIPTION.equals(key)) {
       return getConfigureName();

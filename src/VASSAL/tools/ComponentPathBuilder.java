@@ -73,7 +73,7 @@ public class ComponentPathBuilder {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
       addToPath(GameModule.getGameModule(), st, list);
     }
-    return list.toArray(new Configurable[list.size()]);
+    return list.toArray(new Configurable[0]);
   }
 
   private void addToPath(Configurable parent,

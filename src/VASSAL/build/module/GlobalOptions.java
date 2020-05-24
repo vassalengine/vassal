@@ -234,7 +234,7 @@ public class GlobalOptions extends AbstractConfigurable {
       attributes.add(key);
     }
 
-    return attributes.toArray(new String[attributes.size()]);
+    return attributes.toArray(new String[0]);
   }
 
   public Class<?>[] getAttributeTypes() {

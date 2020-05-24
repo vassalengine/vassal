@@ -84,7 +84,7 @@ public class RoomManager {
   }
 
   public Room[] getRooms() {
-    return rooms.toArray(new Room[rooms.size()]);
+    return rooms.toArray(new Room[0]);
 /*
 //  System.err.println("--------");
     Room[] r = new Room[rooms.size()];

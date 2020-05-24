@@ -112,7 +112,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     catch (IOException ex) {
       System.err.println("IOException retrieving messages from "+getMessagesURL); //$NON-NLS-1$
     }
-    return msgList.toArray(new Message[msgList.size()]);
+    return msgList.toArray(new Message[0]);
   }
 
   private Properties prepareInfo() {

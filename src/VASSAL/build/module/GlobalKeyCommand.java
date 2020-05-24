@@ -33,7 +33,7 @@ public class GlobalKeyCommand extends MassKeyCommand {
   public void apply() {
     final List<Map> l = Map.getMapList();
     GameModule.getGameModule().sendAndLog(
-      globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
+      globalCommand.apply(l.toArray(new Map[0]), getFilter()));
   }
 
   // Hide 'This Map only' option

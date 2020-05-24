@@ -1122,7 +1122,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(cmd.getKeyCommand(this));
       }
 
-      commands = l.toArray(new KeyCommand[l.size()]);
+      commands = l.toArray(new KeyCommand[0]);
     }
 
     for (KeyCommand command : commands) {

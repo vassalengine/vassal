@@ -472,7 +472,7 @@ e.printStackTrace();
 
       al.addAll(Arrays.asList(lr.toArgs()));
 
-      final String[] args = al.toArray(new String[al.size()]);
+      final String[] args = al.toArray(new String[0]);
 
       // try to start a child process with the given heap sizes
       args[1] = "-Xms" + initialHeap + "M";

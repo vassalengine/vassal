@@ -215,7 +215,7 @@ public class CgiServerStatus implements ServerStatus {
       Map<String,ServerStatus.ModuleSummary> entries) {
 
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
-      new ServerStatus.ModuleSummary[entries.size()]);
+      new ModuleSummary[0]);
     Arrays.sort(e, new Comparator<>() {
       public int compare(ServerStatus.ModuleSummary a,
                          ServerStatus.ModuleSummary b) {

@@ -138,7 +138,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
         l.add(value);
       }
     }
-    return l.toArray(new NamedKeyStroke[l.size()]);
+    return l.toArray(new NamedKeyStroke[0]);
   }
 
   public static NamedKeyStroke[] decode(String s) {
@@ -153,7 +153,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
         l.add(NamedHotKeyConfigurer.decode(token));
       }
     }
-    return l.toArray(new NamedKeyStroke[l.size()]);
+    return l.toArray(new NamedKeyStroke[0]);
   }
 
   public static String encode(NamedKeyStroke[] keys) {

@@ -87,7 +87,7 @@ public abstract class AbstractParent<T extends JComponent>
   }
 
   public ChildProxy<?>[] getChildren() {
-    return children.toArray(new ChildProxy<?>[children.size()]);
+    return children.toArray(new ChildProxy<?>[0]);
   }
 
   public ChildProxy<?> getChild(int pos) {

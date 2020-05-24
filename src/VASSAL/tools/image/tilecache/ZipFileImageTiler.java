@@ -99,7 +99,7 @@ public class ZipFileImageTiler {
         IOUtils.closeQuietly(stdin);
       }
 
-      final String[] ipaths = pl.toArray(new String[pl.size()]);
+      final String[] ipaths = pl.toArray(new String[0]);
 
       // TODO: Determine what the optimal number of threads is.
       final Runtime runtime = Runtime.getRuntime();

@@ -230,7 +230,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
           }
         }
       }
-      return l.toArray(new String[l.size()]);
+      return l.toArray(new String[0]);
     }
   }
 

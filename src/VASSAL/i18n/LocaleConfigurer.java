@@ -146,7 +146,7 @@ public class LocaleConfigurer extends Configurer {
         sortedLangs.add(lang);
       }
       Collections.sort(sortedLangs, Collator.getInstance(Locale.getDefault()));
-      languageList = sortedLangs.toArray(new String[sortedLangs.size()]);
+      languageList = sortedLangs.toArray(new String[0]);
     }
     return languageList;
   }
@@ -165,7 +165,7 @@ public class LocaleConfigurer extends Configurer {
                        Collator.getInstance(Locale.getDefault()));
       countries.put(ANY_COUNTRY, "");
       sortedCountries.add(0, ANY_COUNTRY);
-      countryList = sortedCountries.toArray(new String[sortedCountries.size()]);
+      countryList = sortedCountries.toArray(new String[0]);
     }
     return countryList;
   }

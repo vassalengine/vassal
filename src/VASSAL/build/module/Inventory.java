@@ -1027,7 +1027,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     public String[] getPath() {
-      return groups.toArray(new String[groups.size()]);
+      return groups.toArray(new String[0]);
     }
 
     public int getValue() {

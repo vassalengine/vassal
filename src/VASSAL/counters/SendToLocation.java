@@ -182,7 +182,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if (backCommandName.length() > 0 && backKey != null && !backKey.isNull()) {
         l.add(backCommand);
       }
-      command = l.toArray(new KeyCommand[l.size()]);
+      command = l.toArray(new KeyCommand[0]);
     }
 
     for (KeyCommand c : command ) {

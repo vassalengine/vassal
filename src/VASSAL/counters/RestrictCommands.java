@@ -141,7 +141,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
           newCommands.add(command);
         }
       }
-      commands  = newCommands.toArray(new KeyCommand[newCommands.size()]);
+      commands  = newCommands.toArray(new KeyCommand[0]);
     }
     return commands;
   }

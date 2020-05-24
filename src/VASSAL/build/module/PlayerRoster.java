@@ -309,7 +309,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public PlayerInfo[] getPlayers() {
-    return players.toArray(new PlayerInfo[players.size()]);
+    return players.toArray(new PlayerInfo[0]);
   }
 
   public void add(String playerId, String playerName, String side) {
@@ -398,7 +398,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     availableSides.add(0, translatedObserver);
     sideConfig = new StringEnumConfigurer(null,
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
-      availableSides.toArray(new String[availableSides.size()]));
+      availableSides.toArray(new String[0]));
     sideConfig.setValue(translatedObserver);
     return sideConfig.getControls();
   }
@@ -466,7 +466,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,
       null,
-      availableSides.toArray(new String[availableSides.size()]),
+      availableSides.toArray(new String[0]),
       translatedObserver
     );
 
@@ -549,7 +549,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[sides.size()])); //$NON-NLS-1$
+      sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[0])); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           sides.clear();
@@ -633,7 +633,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    */
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
-      untranslatedSides = sides.toArray(new String[sides.size()]);
+      untranslatedSides = sides.toArray(new String[0]);
       String[] s = StringArrayConfigurer.stringToArray((String) value);
       sides = new ArrayList<>(s.length);
       for (String item : s) {
@@ -646,7 +646,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected String getSidesAsString() {
-    String[] s = sides.toArray(new String[sides.size()]);
+    String[] s = sides.toArray(new String[0]);
     return StringArrayConfigurer.arrayToString(s);
   }
 

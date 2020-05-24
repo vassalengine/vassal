@@ -476,7 +476,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           l.add(new KeyCommand(rndText, rndKey, outer, this));
         }
         // end random layers
-        commands = l.toArray(new KeyCommand[l.size()]);
+        commands = l.toArray(new KeyCommand[0]);
       }
       if (up != null) {
         up.setEnabled(loopLevels || Math.abs(value) < imageName.length);
@@ -1120,8 +1120,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           .append(drawUnderneath.isSelected())
           .append(xOffInput.getText())
           .append(yOffInput.getText())
-          .append(imageNames.toArray(new String[imageNames.size()]))
-          .append(commonNames.toArray(new String[commonNames.size()]))
+          .append(imageNames.toArray(new String[0]))
+          .append(commonNames.toArray(new String[0]))
           .append(loop.isSelected())
           .append(name.getText())
           .append((KeyStroke) rndKeyConfig.getValue())

@@ -437,7 +437,7 @@ public class FreeRotator extends Decorator
         l.add(rotateRNDCommand);
       }
       // end for random rotate
-      commands = l.toArray(new KeyCommand[l.size()]);
+      commands = l.toArray(new KeyCommand[0]);
     }
     setAngleCommand.setEnabled(getMap() != null &&
                                validAngles.length == 1 &&

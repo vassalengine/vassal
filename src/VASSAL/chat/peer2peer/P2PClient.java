@@ -126,8 +126,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public void sendToOthers(String msg) {
     if (isConnected()) {
       final Room myRoom = getRoom();
-      final Player[] pl = myRoom.getPlayerList().toArray(
-        new Player[myRoom.getPlayerList().size()]);
+      final Player[] pl = myRoom.getPlayerList().toArray(new Player[0]);
       for (Player p : pl) {
         if (!p.equals(me)) {
           final ActivePeer peer =

@@ -162,7 +162,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
         l.add((Configurable) b);
       }
     }
-    return l.toArray(new Configurable[l.size()]);
+    return l.toArray(new Configurable[0]);
   }
 
   /**

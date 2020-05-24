@@ -139,7 +139,7 @@ public class MassKeyCommand extends AbstractConfigurable
     else {
       final List<Map> l = Map.getMapList();
       GameModule.getGameModule().sendAndLog(
-          globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
+          globalCommand.apply(l.toArray(new Map[0]), getFilter()));
     }
   }
 

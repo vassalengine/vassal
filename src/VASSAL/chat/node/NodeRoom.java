@@ -79,7 +79,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
    */
   public void setMembersToCurrentPlayers() {
     List<Player> l = getPlayerList();
-    NodePlayer[] p = l.toArray(new NodePlayer[l.size()]);
+    NodePlayer[] p = l.toArray(new NodePlayer[0]);
     members = new String[p.length];
     for (int i = 0; i < p.length; i++) {
       members[i] = p[i].getId();

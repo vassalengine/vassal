@@ -454,7 +454,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       l.add(peek);
     }
 
-    commandsWithPeek = l.toArray(new KeyCommand[l.size()]);
+    commandsWithPeek = l.toArray(new KeyCommand[0]);
 
     return obscuredToOthers() &&
            isMaskable() &&

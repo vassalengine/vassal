@@ -95,7 +95,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
         layer = 0;
       }
     }
-    return l.toArray(new GamePiece[l.size()]);
+    return l.toArray(new GamePiece[0]);
   }
 
   public GamePiece[] getAllPieces() {

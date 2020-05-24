@@ -122,7 +122,7 @@ public class SavedGameUpdater {
 
       p.setProperty(clone.getType(),
         ComponentPathBuilder.getInstance().getId(
-          l.toArray(new Configurable[l.size()])));
+          l.toArray(new Configurable[0])));
     }
     else {
       final Configurable[] children = last.getConfigureComponents();

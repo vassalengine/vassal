@@ -804,7 +804,7 @@ public class ModuleManagerWindow extends JFrame {
         (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
       l.add(module.encode());
     }
-    recentModuleConfig.setValue(l.toArray(new String[l.size()]));
+    recentModuleConfig.setValue(l.toArray(new String[0]));
     modulePanelLayout.show(
       moduleView, getModuleCount() == 0 ? "quickStart" : "modules");
   }

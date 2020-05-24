@@ -352,7 +352,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       if (deleteKey > 0) {
         l.add(new KeyCommand("Delete", KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target));
       }
-      commands = l.toArray(new KeyCommand[l.size()]);
+      commands = l.toArray(new KeyCommand[0]);
     }
     final GamePiece outer = Decorator.getOutermost(this);
     boolean canAdjustPosition = outer.getMap() != null && outer.getParent() != null && outer.getParent().topPiece() != getParent().bottomPiece();

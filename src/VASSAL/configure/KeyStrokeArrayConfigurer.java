@@ -138,7 +138,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
         l.add(value);
       }
     }
-    return l.toArray(new KeyStroke[l.size()]);
+    return l.toArray(new KeyStroke[0]);
   }
 
   public static KeyStroke[] decode(String s) {
@@ -150,7 +150,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     while (st.hasMoreTokens()) {
       l.add(HotKeyConfigurer.decode(st.nextToken()));
     }
-    return l.toArray(new KeyStroke[l.size()]);
+    return l.toArray(new KeyStroke[0]);
   }
 
   public static String encode(KeyStroke[] keys) {

@@ -155,7 +155,7 @@ public class FontManager extends AbstractConfigurable {
     for (FontStyle fs : fontStyles.values()) {
       names.add(fs.getConfigureName());
     }
-    return names.toArray(new String[names.size()]);
+    return names.toArray(new String[0]);
   }
 
 }
