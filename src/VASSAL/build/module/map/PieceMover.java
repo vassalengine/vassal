@@ -497,7 +497,7 @@ public class PieceMover extends AbstractBuildable
    *          Point mouse released
    */
   public Command movePieces(Map map, Point p) {
-    final List<GamePiece> allDraggedPieces = new ArrayList<GamePiece>();
+    final List<GamePiece> allDraggedPieces = new ArrayList<>();
     final PieceIterator it = DragBuffer.getBuffer().getIterator();
     if (!it.hasMoreElements()) return null;
 
@@ -507,7 +507,7 @@ public class PieceMover extends AbstractBuildable
     // Map of Point->List<GamePiece> of pieces to merge with at a given
     // location. There is potentially one piece for each Game Piece Layer.
     final HashMap<Point,List<GamePiece>> mergeTargets =
-      new HashMap<Point,List<GamePiece>>();
+      new HashMap<>();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
       tracker.addPiece(dragging);
@@ -515,7 +515,7 @@ public class PieceMover extends AbstractBuildable
        * Take a copy of the pieces in dragging.
        * If it is a stack, it is cleared by the merging process.
        */
-      final ArrayList<GamePiece> draggedPieces = new ArrayList<GamePiece>(0);
+      final ArrayList<GamePiece> draggedPieces = new ArrayList<>(0);
       if (dragging instanceof Stack) {
         int size = ((Stack) dragging).getPieceCount();
         for (int i = 0; i < size; i++) {
@@ -560,7 +560,7 @@ public class PieceMover extends AbstractBuildable
         }
 
         if (mergeWith != null && map.getStackMetrics().isStackingEnabled()) {
-          mergeCandidates = new ArrayList<GamePiece>();
+          mergeCandidates = new ArrayList<>();
           mergeCandidates.add(dragging);
           mergeCandidates.add(mergeWith);
           mergeTargets.put(p, mergeCandidates);
@@ -586,7 +586,7 @@ public class PieceMover extends AbstractBuildable
         // Deck will be be Obscued to us, but will be Obscured by the dummy
         // user Deck.NO_USER
         if (mergeWith instanceof Deck) {
-          final ArrayList<GamePiece> newList = new ArrayList<GamePiece>(0);
+          final ArrayList<GamePiece> newList = new ArrayList<>(0);
           for (GamePiece piece : draggedPieces) {
             if (((Deck) mergeWith).mayContain(piece)) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
@@ -847,7 +847,7 @@ public class PieceMover extends AbstractBuildable
     // process a drop target
     // event, we manually pass the event on to this listener.
     java.util.Map<Component,DropTargetListener> dropTargetListeners =
-      new HashMap<Component,DropTargetListener>();
+      new HashMap<>();
 
     abstract protected int getOffsetMult();
 
@@ -996,7 +996,7 @@ public class PieceMover extends AbstractBuildable
     }
 
     private List<Point> buildBoundingBox(double zoom, boolean doOffset) {
-      final ArrayList<Point> relativePositions = new ArrayList<Point>();
+      final ArrayList<Point> relativePositions = new ArrayList<>();
       final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
       final GamePiece firstPiece = dragContents.nextPiece();
       GamePiece lastPiece = firstPiece;
@@ -1163,7 +1163,7 @@ public class PieceMover extends AbstractBuildable
       // Remove any Immovable pieces from the DragBuffer that were
       // selected in a selection rectangle, unless they are being
       // dragged from a piece palette (i.e., getMap() == null).
-      final List<GamePiece> pieces = new ArrayList<GamePiece>();
+      final List<GamePiece> pieces = new ArrayList<>();
       for (PieceIterator i = db.getIterator();
            i.hasMoreElements(); pieces.add(i.nextPiece()));
       for (GamePiece piece : pieces) {

@@ -465,7 +465,7 @@ public class DiceButton extends AbstractConfigurable {
    * Implement PropertyNameSource - Expose roll result property
    */
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_result");
     return l;
   }

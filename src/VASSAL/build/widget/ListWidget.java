@@ -56,7 +56,7 @@ public class ListWidget extends Widget
   private int width, height, divider;
   private static final String DIVIDER="divider";
 
-  private Map<Object,String> keys = new HashMap<Object,String>();
+  private Map<Object,String> keys = new HashMap<>();
   private int count = 0;
 
   public ListWidget() {

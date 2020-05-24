@@ -57,7 +57,7 @@ public class CheckBoxMenuItemProxy
   public void setAction(final Action action)  {
     this.action = action;
 
-    forEachPeer(new Functor<JCheckBoxMenuItem>() {
+    forEachPeer(new Functor<>() {
       public void apply(JCheckBoxMenuItem item) {
         item.setAction(action);
       }
@@ -71,7 +71,7 @@ public class CheckBoxMenuItemProxy
   public void setSelected(final boolean state) {
     this.state = state;
 
-    forEachPeer(new Functor<JCheckBoxMenuItem>() {
+    forEachPeer(new Functor<>() {
       public void apply(JCheckBoxMenuItem item) {
         item.setSelected(state);
       }
@@ -84,14 +84,14 @@ public class CheckBoxMenuItemProxy
     item.setSelected(state);
     item.addItemListener(this);
 
-    peers.add(new WeakReference<JCheckBoxMenuItem>(item, queue));
+    peers.add(new WeakReference<>(item, queue));
     return item;
   }
 
   public void itemStateChanged(ItemEvent e) {
     state = e.getStateChange() == ItemEvent.SELECTED;
 
-    forEachPeer(new Functor<JCheckBoxMenuItem>() {
+    forEachPeer(new Functor<>() {
       public void apply(JCheckBoxMenuItem item) {
         item.setSelected(state);
       }

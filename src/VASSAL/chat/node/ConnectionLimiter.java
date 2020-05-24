@@ -27,8 +27,7 @@ import VASSAL.i18n.Resources;
  * Limits connections to the server to one per registered username
  */
 public class ConnectionLimiter {
-  private Map<String,SocketHandler> connections =
-    new HashMap<String,SocketHandler>();
+  private Map<String,SocketHandler> connections = new HashMap<>();
 
   public synchronized void register(String name, SocketHandler handler) {
     if (connections.containsKey(name)) {

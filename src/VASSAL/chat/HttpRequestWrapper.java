@@ -52,7 +52,7 @@ public class HttpRequestWrapper {
     try {
       in = new BufferedReader(new InputStreamReader(is, "UTF-8")); //$NON-NLS-1$
 
-      final ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<>();
       String line;
       while ((line = in.readLine()) != null) l.add(line);
 

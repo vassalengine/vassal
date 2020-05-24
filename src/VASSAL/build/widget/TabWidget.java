@@ -42,7 +42,7 @@ import VASSAL.build.Widget;
 public class TabWidget extends Widget
     implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
-  private List<Widget> widgets = new ArrayList<Widget>();
+  private List<Widget> widgets = new ArrayList<>();
 
   public TabWidget() { }
 

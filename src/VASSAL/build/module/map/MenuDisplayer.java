@@ -105,15 +105,13 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     JPopupMenu popup = new JPopupMenu();
     KeyCommand[] c = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
     if (c != null) {
-      ArrayList<JMenuItem> commands = new ArrayList<JMenuItem>();
-      ArrayList<KeyStroke> strokes = new ArrayList<KeyStroke>();
+      ArrayList<JMenuItem> commands = new ArrayList<>();
+      ArrayList<KeyStroke> strokes = new ArrayList<>();
 
       // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      HashMap<KeyCommandSubMenu,JMenu> subMenus =
-        new HashMap<KeyCommandSubMenu,JMenu>();
+      HashMap<KeyCommandSubMenu,JMenu> subMenus = new HashMap<>();
       // Maps name to a list of commands with that name
-      HashMap<String,ArrayList<JMenuItem>> commandNames =
-        new HashMap<String,ArrayList<JMenuItem>>();
+      HashMap<String,ArrayList<JMenuItem>> commandNames = new HashMap<>();
 
       for (KeyCommand keyCommand : c) {
         keyCommand.setGlobal(global);
@@ -158,7 +156,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
                 item != null) {
           ArrayList<JMenuItem> l = commandNames.get(keyCommand.getName());
           if (l == null) {
-            l = new ArrayList<JMenuItem>();
+            l = new ArrayList<>();
             commandNames.put(keyCommand.getName(), l);
           }
           l.add(item);

@@ -47,7 +47,7 @@ public class FontManager extends AbstractConfigurable {
     return instance;
   }
 
-  protected Map<String,FontStyle> fontStyles = new HashMap<String,FontStyle>();
+  protected Map<String,FontStyle> fontStyles = new HashMap<>();
 
   public static final String DIALOG = "Dialog"; //$NON-NLS-1$
   public static final String SERIF = "Serif"; //$NON-NLS-1$
@@ -151,7 +151,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    ArrayList<String> names = new ArrayList<String>(fontStyles.size());
+    ArrayList<String> names = new ArrayList<>(fontStyles.size());
     for (FontStyle fs : fontStyles.values()) {
       names.add(fs.getConfigureName());
     }

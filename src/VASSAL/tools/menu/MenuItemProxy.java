@@ -46,7 +46,7 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   public void setAction(final Action action) {
     this.action = action;
 
-    forEachPeer(new Functor<JMenuItem>() {
+    forEachPeer(new Functor<>() {
       public void apply(JMenuItem item) {
         item.setAction(action);
         item.setVisible(action != null);
@@ -58,7 +58,7 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   public JMenuItem createPeer() {
     final JMenuItem item = new JMenuItem(action);
 
-    peers.add(new WeakReference<JMenuItem>(item, queue));
+    peers.add(new WeakReference<>(item, queue));
     return item;
   }
 }

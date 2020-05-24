@@ -31,7 +31,7 @@ public class FormattedString {
   // An efficiently evaluable representation of the string
   protected Expression format;
 
-  protected Map<String,String> props = new HashMap<String,String>();
+  protected Map<String,String> props = new HashMap<>();
   protected PropertySource defaultProperties;
 
   public FormattedString() {

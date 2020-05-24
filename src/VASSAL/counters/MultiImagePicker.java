@@ -104,7 +104,7 @@ public class MultiImagePicker extends JPanel {
    */
   public List<String> getImageNameList() {
     final int size = imageListElements.size();
-    final ArrayList<String> names = new ArrayList<String>(size);
+    final ArrayList<String> names = new ArrayList<>(size);
     for (int i = 0; i < size; ++i) {
       names.add((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
     }

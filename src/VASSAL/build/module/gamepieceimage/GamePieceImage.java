@@ -57,7 +57,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
   public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
 
-  protected List<ItemInstance> instances = new ArrayList<ItemInstance>();
+  protected List<ItemInstance> instances = new ArrayList<>();
   protected InstanceConfigurer defnConfig = null;
   protected GamePieceLayout layout;
   protected ColorSwatch bgColor = ColorSwatch.getWhite();
@@ -402,7 +402,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
    * Reconcile our current elements with the elements in the owning scheme.
    */
   protected void rebuildInstances() {
-    final ArrayList<ItemInstance> newInstances = new ArrayList<ItemInstance>();
+    final ArrayList<ItemInstance> newInstances = new ArrayList<>();
 
     for (ItemInstance prop : instances) {
       final Item item = layout.getItem(prop.getName());

@@ -68,7 +68,7 @@ public class ComponentPathBuilder {
    * @throws PathFormatException if no such component exists
    */
   public Configurable[] getPath(String id) throws PathFormatException {
-    final ArrayList<Configurable> list = new ArrayList<Configurable>();
+    final ArrayList<Configurable> list = new ArrayList<>();
     if (id.length() > 0) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
       addToPath(GameModule.getGameModule(), st, list);
@@ -90,7 +90,7 @@ public class ComponentPathBuilder {
       }
       Configurable[] children = parent.getConfigureComponents();
       Configurable match = null;
-      ArrayList<Configurable> partialMatches = new ArrayList<Configurable>();
+      ArrayList<Configurable> partialMatches = new ArrayList<>();
       int i = -1;
       while (++i < children.length) {
         if (className.equals(children[i].getClass().getName())) {
@@ -113,7 +113,7 @@ public class ComponentPathBuilder {
         else {
           ArrayList<Configurable> subPath = null;
           for (Configurable candidate : partialMatches) {
-            ArrayList<Configurable> l = new ArrayList<Configurable>();
+            ArrayList<Configurable> l = new ArrayList<>();
             try {
               addToPath(candidate, st.copy(), l);
               subPath = l;

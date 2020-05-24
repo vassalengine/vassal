@@ -36,7 +36,7 @@ public class KeyBuffer {
   private Comparator<GamePiece> pieceSorter = new PieceSorter();
 
   private KeyBuffer() {
-    pieces = new ArrayList<GamePiece>();
+    pieces = new ArrayList<>();
     bounds = new BoundsTracker();
   }
 
@@ -102,7 +102,7 @@ public class KeyBuffer {
 
     // Copy contents into new list, because contents may change
     // as a result of key commands
-    ArrayList<GamePiece> targets = new ArrayList<GamePiece>(pieces);
+    ArrayList<GamePiece> targets = new ArrayList<>(pieces);
     // Reverse the order if this is a "Move Up" or "Move to Bottom" keystroke
     if (targets.size() > 0) {
       GamePiece top = targets.get(0);

@@ -134,7 +134,7 @@ public final class GameRefresher implements GameComponent {
      * 2. Make a list of all pieces in the game that we have access to
      */
     final Command command = new NullCommand();
-    final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
+    final ArrayList<GamePiece> pieces = new ArrayList<>();
 
     for (GamePiece piece : theModule.getGameState().getAllPieces()) {
       if (piece instanceof Deck) {

@@ -460,7 +460,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public String[] getValidValues(AutoConfigurable target) {
       String[] values;
       if (target instanceof SetupStack) {
-        ArrayList<String> l = new ArrayList<String>();
+        ArrayList<String> l = new ArrayList<>();
         l.add(ANY);
         Map m = ((SetupStack) target).map;
         if (m != null) {

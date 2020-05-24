@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class SimpleRoom implements Room {
   private String name;
-  private List<Player> players = new ArrayList<Player>();
+  private List<Player> players = new ArrayList<>();
 
   public SimpleRoom() {
   }

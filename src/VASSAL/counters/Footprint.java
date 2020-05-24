@@ -73,7 +73,7 @@ public class Footprint extends MovementMarkable {
   protected boolean globalVisibility = false;  // Shared trail visibility (if globallyVisible == true)
   protected String startMapId = "";            // Map Id trail started on
                                                // List of points
-  protected List<Point> pointList = new ArrayList<Point>();
+  protected List<Point> pointList = new ArrayList<>();
 
   // Type Variables (Configured in Ed)
   protected NamedKeyStroke trailKey;                // Control Key to invoke

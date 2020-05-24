@@ -387,10 +387,10 @@ public class Translate extends Decorator implements TranslatablePiece {
    * be merged with other moving pieces until they've been moved.
    */
   public static class MoveExecuter implements Runnable {
-    private List<Move> moves = new ArrayList<Move>();
-    private Set<GamePiece> pieces = new HashSet<GamePiece>();
+    private List<Move> moves = new ArrayList<>();
+    private Set<GamePiece> pieces = new HashSet<>();
     private KeyStroke stroke;
-    private List<GamePiece> innerPieces = new ArrayList<GamePiece>();
+    private List<GamePiece> innerPieces = new ArrayList<>();
 
     public void run() {
       mover = null;

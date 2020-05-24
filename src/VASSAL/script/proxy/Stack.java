@@ -65,7 +65,7 @@ public class Stack extends GamePiece {
   }
 
   public List<GamePiece> getPieces() {
-    ArrayList<GamePiece> list = new ArrayList<GamePiece>(getPieceCount());
+    ArrayList<GamePiece> list = new ArrayList<>(getPieceCount());
     for (int i = 0; i < getPieceCount(); i++) {
       list.add(new GamePiece(getVassalStack().getPieceAt(i)));
     }

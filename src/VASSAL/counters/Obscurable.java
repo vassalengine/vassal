@@ -431,7 +431,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public KeyCommand[] myGetKeyCommands() {
-    ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+    ArrayList<KeyCommand> l = new ArrayList<>();
     GamePiece outer = Decorator.getOutermost(this);
 
     // Hide Command
@@ -580,7 +580,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.OBSCURED_TO_OTHERS);
     l.add(Properties.OBSCURED_TO_ME);
     return l;

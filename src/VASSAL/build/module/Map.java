@@ -185,7 +185,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
   protected static UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;
-  protected ArrayList<Drawable> drawComponents = new ArrayList<Drawable>();
+  protected ArrayList<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
   protected ComponentSplitter.SplitPane mainWindowDock;
@@ -203,14 +203,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String markUnmovedText = ""; //$NON-NLS-1$
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected MouseListener multicaster = null;
-  protected ArrayList<MouseListener> mouseListenerStack =
-    new ArrayList<MouseListener>();
-  protected List<Board> boards = new CopyOnWriteArrayList<Board>();
+  protected ArrayList<MouseListener> mouseListenerStack = new ArrayList<>();
+  protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
   protected PieceCollection pieces = new DefaultPieceCollection();
   protected Highlighter highlighter = new ColoredBorder();
-  protected ArrayList<Highlighter> highlighters = new ArrayList<Highlighter>();
+  protected ArrayList<Highlighter> highlighters = new ArrayList<>();
   protected boolean clearFirst = false; // Whether to clear the display before
   // drawing the map
   protected boolean hideCounters = false; // Option to hide counters to see
@@ -1252,7 +1251,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     if (!this.equals(activeMap)) {
       boolean dirty = false;
 
-      final ArrayList<GamePiece> l = new ArrayList<GamePiece>();
+      final ArrayList<GamePiece> l = new ArrayList<>();
       for (Iterator<GamePiece> i = KeyBuffer.getBuffer().getPiecesIterator();
            i.hasNext(); ) {
         l.add(i.next());

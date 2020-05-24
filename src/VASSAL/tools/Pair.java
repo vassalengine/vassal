@@ -70,6 +70,6 @@ public final class Pair<A,B> {
    * @return the pair containing {@code first} and (@code second}
    */
   public static <A,B> Pair<A,B> of(A first, B second) {
-    return new Pair<A,B>(first, second);
+    return new Pair<>(first, second);
   }
 }

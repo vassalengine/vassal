@@ -79,11 +79,11 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
   protected String expression;
   protected PropertySource source;
-  protected List<String> variables = new ArrayList<String>();
+  protected List<String> variables = new ArrayList<>();
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
-  protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<String, ExpressionInterpreter>();
+  protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
 
   public static ExpressionInterpreter createInterpreter (String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);

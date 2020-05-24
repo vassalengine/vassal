@@ -285,7 +285,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }

@@ -41,7 +41,7 @@ public class MessageViewer extends JPanel {
   private JTable msgTable;
   private DefaultTableModel model;
   private JTextArea msgText;
-  private List<Message> msgList = new ArrayList<Message>();
+  private List<Message> msgList = new ArrayList<>();
 
   public MessageViewer() {
     initComponents();
@@ -50,14 +50,14 @@ public class MessageViewer extends JPanel {
   public void setMessages(Enumeration<Message> msgEnum) {
     msgList.clear();
     msgText.setText("");  //$NON-NLS-1$
-    Vector<Vector<String>> rows = new Vector<Vector<String>>();
-    Vector<String> names = new Vector<String>();
+    Vector<Vector<String>> rows = new Vector<>();
+    Vector<String> names = new Vector<>();
     names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
     names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
       Message msg = msgEnum.nextElement();
       msgList.add(msg);
-      Vector<String> cols = new Vector<String>();
+      Vector<String> cols = new Vector<>();
       cols.addElement(msg.getSender());
       cols.addElement(Resources.formatDate(msg.getDate()));
       rows.addElement(cols);

@@ -38,7 +38,7 @@ public class DefaultMultiEventListenerSupport
          implements MultiEventListenerSupport {
 
   protected final ConcurrentMap<Class<?>,List<EventListener<?>>> listeners =
-    new ConcurrentHashMap<Class<?>,List<EventListener<?>>>();
+    new ConcurrentHashMap<>();
 
   protected final Object src;
 
@@ -54,7 +54,7 @@ public class DefaultMultiEventListenerSupport
   /** {@inheritDoc} */
   public <T> void addEventListener(Class<T> c, EventListener<? super T> l) {
     // ensure that a listener list exists for class c
-    listeners.putIfAbsent(c, new CopyOnWriteArrayList<EventListener<?>>());
+    listeners.putIfAbsent(c, new CopyOnWriteArrayList<>());
 
     // add the listener to the list for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
@@ -94,8 +94,7 @@ public class DefaultMultiEventListenerSupport
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public <T> List<EventListener<? super T>> getEventListeners(Class<T> c) {
-    final List<EventListener<? super T>> list =
-      new ArrayList<EventListener<? super T>>();
+    final List<EventListener<? super T>> list = new ArrayList<>();
 
     // make a list of all listeners for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
@@ -123,9 +122,9 @@ public class DefaultMultiEventListenerSupport
 
   protected List<EventListener<?>> registerType(Class<?> c) {
     // ensure that a listener list exists for class c
-    listeners.putIfAbsent(c, new CopyOnWriteArrayList<EventListener<?>>());
+    listeners.putIfAbsent(c, new CopyOnWriteArrayList<>());
 
-    final Set<EventListener<?>> lset = new HashSet<EventListener<?>>();
+    final Set<EventListener<?>> lset = new HashSet<>();
 
     // make a set of all listeners for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {

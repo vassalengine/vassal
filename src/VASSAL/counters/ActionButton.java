@@ -194,9 +194,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    * click falls within the button's boundaries
    */
   protected static class ButtonPusher {
-    private Set<Map> maps = new HashSet<Map>();
+    private Set<Map> maps = new HashSet<>();
     private java.util.Map<Component,ComponentMouseListener>
-      componentMouseListeners = new HashMap<Component,ComponentMouseListener>();
+      componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
       if (map != null) {

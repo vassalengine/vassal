@@ -45,7 +45,7 @@ public class InputOutputStreamPump implements InputStreamPump,
    * Creates an <code>InputOutputStreamPump</code>.
    */
   public InputOutputStreamPump() {
-    this(null, null, new DummyEventListener<IOException>());
+    this(null, null, new DummyEventListener<>());
   }
 
   /**
@@ -64,7 +64,7 @@ public class InputOutputStreamPump implements InputStreamPump,
    * @param out the output stream
    */
   public InputOutputStreamPump(InputStream in, OutputStream out) {
-    this(in, out, new DummyEventListener<IOException>());
+    this(in, out, new DummyEventListener<>());
   }
 
   /**

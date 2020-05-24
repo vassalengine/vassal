@@ -407,7 +407,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Default Property Name Source
    */
   public List<String> getPropertyNames() {
-    return new ArrayList<String>(0);
+    return new ArrayList<>(0);
   }
 
   /**

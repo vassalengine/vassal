@@ -55,8 +55,7 @@ public interface MutablePropertiesContainer {
    *
    */
   public static class Impl implements MutablePropertiesContainer {
-    private Map<String,MutableProperty> props =
-      new HashMap<String,MutableProperty>();
+    private Map<String,MutableProperty> props = new HashMap<>();
     private String id;
 
     public Impl() {

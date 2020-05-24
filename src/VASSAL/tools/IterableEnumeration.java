@@ -75,6 +75,6 @@ public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
    * @return an <code>Iterable</code> wrapping <code>e</code>
    */
   public static <T> Iterable<T> iterate(Enumeration<T> e) {
-    return new IterableEnumeration<T>(e);
+    return new IterableEnumeration<>(e);
   }
 }

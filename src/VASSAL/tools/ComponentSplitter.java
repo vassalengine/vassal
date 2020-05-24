@@ -172,7 +172,7 @@ public class ComponentSplitter {
     public static final int HIDE_LEFT = 2;
     public static final int HIDE_RIGHT = 3;
     private List<SplitPane> showingTransverseComponents =
-      new ArrayList<SplitPane>();
+      new ArrayList<>();
     private int transverseHiddenSize;
 
     /**

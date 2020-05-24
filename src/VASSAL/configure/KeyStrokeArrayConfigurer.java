@@ -41,7 +41,7 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of keystrokes
  */
 public class KeyStrokeArrayConfigurer extends Configurer {
-  private List<HotKeyConfigurer> configs = new ArrayList<HotKeyConfigurer>();
+  private List<HotKeyConfigurer> configs = new ArrayList<>();
   private Box controls;
   private JPanel panel;
 
@@ -131,7 +131,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
   }
 
   public KeyStroke[] getKeyStrokes() {
-    ArrayList<KeyStroke> l = new ArrayList<KeyStroke>();
+    ArrayList<KeyStroke> l = new ArrayList<>();
     for (HotKeyConfigurer hotKeyConfigurer : configs) {
       KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
       if (value != null) {
@@ -145,7 +145,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    ArrayList<KeyStroke> l = new ArrayList<KeyStroke>();
+    ArrayList<KeyStroke> l = new ArrayList<>();
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       l.add(HotKeyConfigurer.decode(st.nextToken()));

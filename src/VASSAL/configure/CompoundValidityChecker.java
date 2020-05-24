@@ -27,7 +27,7 @@ import VASSAL.build.Buildable;
  * Combines multiple instances of ValidityChecker
  */
 public class CompoundValidityChecker implements ValidityChecker {
-  private List<ValidityChecker> checkers = new ArrayList<ValidityChecker>();
+  private List<ValidityChecker> checkers = new ArrayList<>();
 
   public CompoundValidityChecker(ValidityChecker checker1,
                                  ValidityChecker checker2) {

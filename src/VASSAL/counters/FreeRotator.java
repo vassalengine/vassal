@@ -107,14 +107,13 @@ public class FreeRotator extends Decorator
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  @Deprecated protected java.util.Map<Double,Image> images =
-    new HashMap<Double,Image>();
-  protected java.util.Map<Double,Rectangle> bounds =
-    new HashMap<Double,Rectangle>();
-  @Deprecated protected PieceImage unrotated;
+  @Deprecated
+  protected java.util.Map<Double,Image> images = new HashMap<>();
+  protected java.util.Map<Double,Rectangle> bounds = new HashMap<>();
+  @Deprecated
+  protected PieceImage unrotated;
   protected GamePieceOp gpOp;
-  protected java.util.Map<Double,RotateScaleOp> rotOp =
-    new HashMap<Double,RotateScaleOp>();
+  protected java.util.Map<Double,RotateScaleOp> rotOp = new HashMap<>();
 
   protected double tempAngle, startAngle;
   protected Point pivot;
@@ -398,7 +397,7 @@ public class FreeRotator extends Decorator
 
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      final ArrayList<KeyCommand> l = new ArrayList<>();
       final GamePiece outer = Decorator.getOutermost(this);
       setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, this);
       rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, this);
@@ -674,7 +673,7 @@ public class FreeRotator extends Decorator
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(name + FACING);
     l.add(name + DEGREES);
     return l;

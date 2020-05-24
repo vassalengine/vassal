@@ -99,7 +99,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
 
-  protected Map<Point,Region> regionList = new HashMap<Point,Region>();
+  protected Map<Point,Region> regionList = new HashMap<>();
   protected GridContainer container;
   protected boolean visible = false;
   protected static boolean inConfig = false;
@@ -427,7 +427,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected JScrollPane scroll;
     protected JPopupMenu myPopup;
 
-    protected List<Region> selectedRegions = new ArrayList<Region>();
+    protected List<Region> selectedRegions = new ArrayList<>();
     protected Region lastClickedRegion = null;
     protected Point lastClick;
     protected Rectangle selectionRect = null;
@@ -538,7 +538,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
      * after changes
      */
     public void save() {
-      saveRegions = new ArrayList<Region>(grid.regionList.size());
+      saveRegions = new ArrayList<>(grid.regionList.size());
       for (Region r : grid.regionList.values()) {
         saveRegions.add(new Region(r));
       }

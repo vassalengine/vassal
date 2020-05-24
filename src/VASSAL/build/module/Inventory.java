@@ -451,7 +451,7 @@ public class Inventory extends AbstractConfigurable
       m.getPieces();
     }
 
-    final ArrayList<String> path = new ArrayList<String>();
+    final ArrayList<String> path = new ArrayList<>();
     for (String value : groupBy) path.add(value);
     results = new CounterInventory(
       new Counter(this.getConfigureName()), path, sortPieces);
@@ -462,7 +462,7 @@ public class Inventory extends AbstractConfigurable
     );
 
     while (pi.hasMoreElements()) {
-      final ArrayList<String> groups = new ArrayList<String>();
+      final ArrayList<String> groups = new ArrayList<>();
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
@@ -860,7 +860,7 @@ public class Inventory extends AbstractConfigurable
     Command c = new NullCommand();
     final TreePath[] tp = tree.getSelectionPaths();
     // set to not get duplicates
-    HashSet<GamePiece> pieces = new HashSet<GamePiece>();
+    HashSet<GamePiece> pieces = new HashSet<>();
     for (TreePath treePath : tp) {
       CounterNode node = (CounterNode) treePath.getLastPathComponent();
       if (node.isLeaf()) {
@@ -887,7 +887,7 @@ public class Inventory extends AbstractConfigurable
 
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
-    HashSet<String> expanded = new HashSet<String>();
+    HashSet<String> expanded = new HashSet<>();
     for (int i = 0, n = tree.getRowCount(); i < n; ++i) {
       if (tree.isExpanded(i)) {
         expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
@@ -1165,7 +1165,7 @@ public class Inventory extends AbstractConfigurable
       this.entry = entry;
       this.counter = counter;
       counter.setNode(this);
-      children = new ArrayList<CounterNode>();
+      children = new ArrayList<>();
     }
 
     public String toString() {
@@ -1296,7 +1296,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     public void cutLeaves() {
-     ArrayList<CounterNode> toBeRemoved = new ArrayList<CounterNode>();
+     ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
      for (CounterNode child : children) {
         if (child.isLeaf())
           toBeRemoved.add(child);
@@ -1472,7 +1472,7 @@ public class Inventory extends AbstractConfigurable
   public class CounterInventory implements TreeModel {
     // Needed for TreeModel
     protected List<TreeModelListener> treeModelListeners =
-      new ArrayList<TreeModelListener>();
+      new ArrayList<>();
     // This contains shortcuts to the nodes of the tree
     protected Map<String,CounterNode> inventory;
     // The start of the tree
@@ -1489,7 +1489,7 @@ public class Inventory extends AbstractConfigurable
     public CounterInventory(Counter c, List<String> path, boolean sort) {
       this.root = new CounterNode(c.getName(), c);
       this.path = path;
-      this.inventory = new HashMap<String,CounterNode>();
+      this.inventory = new HashMap<>();
       this.sort = sort;
       changed = true;
     }

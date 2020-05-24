@@ -229,7 +229,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public List<Double> getLevels() {
-      final ArrayList<Double> l = new ArrayList<Double>(levels.length);
+      final ArrayList<Double> l = new ArrayList<>(levels.length);
       for (double d : levels) l.add(d);
       return l;
     }
@@ -730,7 +730,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       if (val != null) {
         // dump into a set to remove duplicates
-        final HashSet<Double> levels = new HashSet<Double>();
+        final HashSet<Double> levels = new HashSet<>();
         for (String s : (String[]) val) {
           levels.add(Double.valueOf(s));
         }

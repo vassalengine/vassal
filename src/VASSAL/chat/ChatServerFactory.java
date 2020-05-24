@@ -30,7 +30,7 @@ import java.util.Properties;
 public abstract class ChatServerFactory {
   public static final String TYPE_KEY = "type"; //$NON-NLS-1$
   private static Map<String, ChatServerFactory> factories =
-    new HashMap<String,ChatServerFactory>();
+    new HashMap<>();
 
   public abstract ChatServerConnection buildServer(Properties param);
 

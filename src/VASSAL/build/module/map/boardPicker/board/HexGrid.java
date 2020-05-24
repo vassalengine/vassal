@@ -82,7 +82,7 @@ public class HexGrid extends AbstractConfigurable
   protected Color color = Color.black;
   protected boolean sideways = false;
   protected boolean snapTo = true;
-  protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
+  protected Map<Integer,Area> shapeCache = new HashMap<>();
   protected HexGridEditor gridEditor;
 
   public static final String X0 = "x0"; //$NON-NLS-1$

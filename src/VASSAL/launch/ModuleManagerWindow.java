@@ -475,8 +475,8 @@ public class ModuleManagerWindow extends JFrame {
   protected void buildTree() {
     recentModuleConfig = new StringArrayConfigurer("RecentModules", null);
     Prefs.getGlobalPrefs().addOption(null, recentModuleConfig);
-    final List<String> missingModules = new ArrayList<String>();
-    final List<ModuleInfo> moduleList = new ArrayList<ModuleInfo>();
+    final List<String> missingModules = new ArrayList<>();
+    final List<ModuleInfo> moduleList = new ArrayList<>();
     for (String s : recentModuleConfig.getStringArray()) {
       final ModuleInfo module = new ModuleInfo(s);
       if (module.getFile().exists() && module.isValid()) {
@@ -493,7 +493,7 @@ public class ModuleManagerWindow extends JFrame {
       recentModuleConfig.removeValue(s);
     }
 
-    Collections.sort(moduleList, new Comparator<ModuleInfo>() {
+    Collections.sort(moduleList, new Comparator<>() {
       public int compare(ModuleInfo f1, ModuleInfo f2) {
         return f1.compareTo(f2);
       }
@@ -508,14 +508,14 @@ public class ModuleManagerWindow extends JFrame {
         moduleNode.add(extensionNode);
       }
 
-      final ArrayList<File> missingFolders = new ArrayList<File>();
+      final ArrayList<File> missingFolders = new ArrayList<>();
 
       for (File f : moduleInfo.getFolders()) {
         if (f.exists() && f.isDirectory()) {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
           moduleNode.add(folderNode);
-          final ArrayList<File> l = new ArrayList<File>();
+          final ArrayList<File> l = new ArrayList<>();
 
           final File[] files = f.listFiles();
           if (files == null) continue;
@@ -798,7 +798,7 @@ public class ModuleManagerWindow extends JFrame {
   }
 
   private void updateModuleList() {
-    final List<String> l = new ArrayList<String>();
+    final List<String> l = new ArrayList<>();
     for (int i = 0; i < rootNode.getChildCount(); i++) {
       final ModuleInfo module =
         (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
@@ -1180,7 +1180,7 @@ public class ModuleManagerWindow extends JFrame {
   public class ModuleInfo extends AbstractInfo {
 
     private ExtensionsManager extMgr;
-    private SortedSet<File> gameFolders = new TreeSet<File>();
+    private SortedSet<File> gameFolders = new TreeSet<>();
     private ModuleMetaData metadata;
 
     private Action newExtensionAction =
@@ -1365,7 +1365,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public List<ExtensionInfo> getExtensions() {
-      final List<ExtensionInfo> l = new ArrayList<ExtensionInfo>();
+      final List<ExtensionInfo> l = new ArrayList<>();
       for (File f : extMgr.getActiveExtensions()) {
         l.add(new ExtensionInfo(f, true, this));
       }

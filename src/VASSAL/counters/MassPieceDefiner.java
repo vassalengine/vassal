@@ -35,7 +35,7 @@ public class MassPieceDefiner extends PieceDefiner {
 
   public MassPieceDefiner(Configurable top) {
     super();
-    definers = new ArrayList<Entry>();
+    definers = new ArrayList<>();
     changed = false;
     init(top);
     if (!definers.isEmpty()) {
@@ -65,8 +65,7 @@ public class MassPieceDefiner extends PieceDefiner {
 
   private List<Class<? extends GamePiece>> getTemplate() {
     GamePiece p = definers.get(0).definer.getPiece();
-    ArrayList<Class<? extends GamePiece>> types =
-      new ArrayList<Class<? extends GamePiece>>();
+    ArrayList<Class<? extends GamePiece>> types = new ArrayList<>();
     while (p instanceof Decorator) {
       types.add(p.getClass());
       p = ((Decorator) p).piece;

@@ -16,7 +16,7 @@ import VASSAL.i18n.Resources;
  */
 public class SelectionHighlighters extends AbstractConfigurable {
   protected Map map;
-  protected List<SelectionHighlighter> highlighters = new ArrayList<SelectionHighlighter>();
+  protected List<SelectionHighlighter> highlighters = new ArrayList<>();
 
   public SelectionHighlighters() {
     super();

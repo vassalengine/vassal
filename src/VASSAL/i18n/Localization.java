@@ -61,14 +61,10 @@ public class Localization extends Language {
   protected String moduleBundle;
   protected String languageBundle;
   protected String countryBundle;
-  protected List<Translation> moduleTranslations =
-    new ArrayList<Translation>();
-  protected List<Translation> languageTranslations =
-    new ArrayList<Translation>();
-  protected List<Translation> countryTranslations =
-    new ArrayList<Translation>();
-  protected List<Translation> translations =
-    new ArrayList<Translation>();
+  protected List<Translation> moduleTranslations = new ArrayList<>();
+  protected List<Translation> languageTranslations = new ArrayList<>();
+  protected List<Translation> countryTranslations = new ArrayList<>();
+  protected List<Translation> translations = new ArrayList<>();
 
   /*
    * Master translation property list
@@ -108,8 +104,7 @@ public class Localization extends Language {
   /**
    * Record attributes as the module is being built for later translation
    */
-  protected Set<TranslatableAttribute> translatableItems =
-    new HashSet<TranslatableAttribute>();
+  protected Set<TranslatableAttribute> translatableItems = new HashSet<>();
 
   /**
    * Record an attribute that may need to be translated.

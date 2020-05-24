@@ -292,18 +292,18 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   private ConcurrentMap<Point,Future<BufferedImage>> requested =
-    new ConcurrentHashMap<Point,Future<BufferedImage>>();
+    new ConcurrentHashMap<>();
 
   private java.util.Map<Point,Float> alpha =
-    new ConcurrentHashMap<Point,Float>();
+    new ConcurrentHashMap<>();
 
   private ConcurrentMap<Point,Future<BufferedImage>> o_requested =
-    new ConcurrentHashMap<Point,Future<BufferedImage>>();
+    new ConcurrentHashMap<>();
 
-  private static Comparator<Point> tileOrdering = new Comparator<Point>() {
+  private static Comparator<Point> tileOrdering = new Comparator<>() {
     public int compare(Point t1, Point t2) {
       if (t1.y < t2.y) return -1;
-      if (t1.y > t2.y) return  1;
+      if (t1.y > t2.y) return 1;
       return t1.x - t2.x;
     }
   };
@@ -719,7 +719,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Deprecated
   public static class Cleanup implements GameComponent {
     private static Cleanup instance;
-    private Set<Board> toClean = new HashSet<Board>();
+    private Set<Board> toClean = new HashSet<>();
     private boolean gameStarted = false;
 
     public static void init() {

@@ -55,11 +55,11 @@ import VASSAL.tools.io.ZipArchive;
 
 public class PrefsEditor {
   private JDialog dialog;
-  private List<Configurer> options = new ArrayList<Configurer>();
-  private List<Configurer> extras = new ArrayList<Configurer>();
+  private List<Configurer> options = new ArrayList<>();
+  private List<Configurer> extras = new ArrayList<>();
   private boolean iterating = false;
-  private Map<Configurer,Object> savedValues = new HashMap<Configurer,Object>();
-  private List<Prefs> prefs = new ArrayList<Prefs>();
+  private Map<Configurer,Object> savedValues = new HashMap<>();
+  private List<Prefs> prefs = new ArrayList<>();
   private JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
   private File pfile;

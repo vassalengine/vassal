@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DefaultEventListenerSupport<T> implements EventListenerSupport<T> {
 
   protected final List<EventListener<? super T>> listeners =
-    new CopyOnWriteArrayList<EventListener<? super T>>();
+    new CopyOnWriteArrayList<>();
 
   protected final Object src;
 
@@ -62,7 +62,7 @@ public class DefaultEventListenerSupport<T> implements EventListenerSupport<T> {
 
   /** {@inheritDoc} */
   public List<EventListener<? super T>> getEventListeners() {
-    return new ArrayList<EventListener<? super T>>(listeners);
+    return new ArrayList<>(listeners);
   }
 
   /** {@inheritDoc} */

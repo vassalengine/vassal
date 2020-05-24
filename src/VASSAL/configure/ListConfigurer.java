@@ -50,10 +50,10 @@ public abstract class ListConfigurer extends Configurer implements
   protected Box configControls;
   protected JPanel panel;
   protected Dimension fixedSize;
-  protected List<Configurer> configurers = new ArrayList<Configurer>();
+  protected List<Configurer> configurers = new ArrayList<>();
 
   public ListConfigurer(String key, String name) {
-    super(key, name, new ArrayList<Object>());
+    super(key, name, new ArrayList<>());
   }
 
   public ListConfigurer(String key, String name, List<?> val) {
@@ -88,7 +88,7 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateValue() {
     noUpdate = true;
-    ArrayList<Object> newArray = new ArrayList<Object>();
+    ArrayList<Object> newArray = new ArrayList<>();
     for (Configurer c : configurers) {
       newArray.add(c.getValue());
     }
@@ -98,7 +98,7 @@ public abstract class ListConfigurer extends Configurer implements
 
   public void setValue(Object o) {
     if (o == null) {
-      o = new ArrayList<Object>();
+      o = new ArrayList<>();
     }
     super.setValue(o);
     if (!noUpdate) {

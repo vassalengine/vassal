@@ -178,7 +178,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-      cur_request = new SwingWorker<ServerStatus.ModuleSummary[],Void>() {
+      cur_request = new SwingWorker<>() {
         @Override
         public ServerStatus.ModuleSummary[] doInBackground() {
           return status.getStatus();
@@ -191,8 +191,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
               refresh(model, get());
               fireSelectionChanged();
             }
-          }
-          catch (InterruptedException ex) {
+          } catch (InterruptedException ex) {
             ErrorDialog.bug(ex);
           }
           // FIXME: review error message
@@ -214,7 +213,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-      hist_request = new SwingWorker<ServerStatus.ModuleSummary[],Void>() {
+      hist_request = new SwingWorker<>() {
         @Override
         public ServerStatus.ModuleSummary[] doInBackground() {
           return status.getHistory(getTitleAt(page));
@@ -226,7 +225,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
           if (sel == page) {
             // page didn't change, refresh with what we computed
             try {
-              refresh(historicalModels[sel-1], get());
+              refresh(historicalModels[sel - 1], get());
             }
             // FIXME: review error message
             catch (InterruptedException ex) {

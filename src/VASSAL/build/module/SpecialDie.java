@@ -39,7 +39,7 @@ public class SpecialDie extends AbstractConfigurable {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDie.class);
 
-  private List<SpecialDieFace> dieFaceList = new ArrayList<SpecialDieFace>();
+  private List<SpecialDieFace> dieFaceList = new ArrayList<>();
   private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final String NAME = "name"; //$NON-NLS-1$

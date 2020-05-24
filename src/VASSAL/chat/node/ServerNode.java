@@ -53,7 +53,7 @@ public class ServerNode extends Node {
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
       if ("*".equals(childId)) { //$NON-NLS-1$
-        ArrayList<Node> l = new ArrayList<Node>();
+        ArrayList<Node> l = new ArrayList<>();
         for (Node node : target) {
           l.addAll(Arrays.asList(node.getChildren()));
         }
@@ -61,7 +61,7 @@ public class ServerNode extends Node {
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
-        ArrayList<Node> l = new ArrayList<Node>();
+        ArrayList<Node> l = new ArrayList<>();
         for (Node node : target) {
           for (Node child : node.getChildren()) {
             if (!childId.equals(child.getId())) {
@@ -188,7 +188,7 @@ public class ServerNode extends Node {
   }
   private static class SendContentsTask extends TimerTask {
     // FIXME: should modules be wrapped by Collections.synchronizedMap()?
-    private Set<Node> modules = new HashSet<Node>();
+    private Set<Node> modules = new HashSet<>();
 
     public void markChanged(Node module) {
       synchronized (modules) {
@@ -197,7 +197,7 @@ public class ServerNode extends Node {
     }
 
     public void run() {
-      HashSet<Node> s = new HashSet<Node>();
+      HashSet<Node> s = new HashSet<>();
       synchronized (modules) {
         s.addAll(modules);
       }

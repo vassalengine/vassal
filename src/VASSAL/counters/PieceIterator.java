@@ -37,12 +37,12 @@ public class PieceIterator {
 
   @Deprecated
   public <T extends GamePiece> PieceIterator(Enumeration<T> e) {
-    this(new IterableEnumeration<T>(e));
+    this(new IterableEnumeration<>(e));
   }
 
   public PieceIterator(final Iterator<? extends GamePiece> i, PieceFilter f) {
     filter = f;
-    pi = new Iterator<GamePiece>() {
+    pi = new Iterator<>() {
       private GamePiece next;
 
       public boolean hasNext() {
@@ -64,7 +64,7 @@ public class PieceIterator {
           return ret;
         }
 
-        for ( ; ; next = i.next()) {
+        for (; ; next = i.next()) {
           if (filter == null || filter.accept(next)) {
             final GamePiece ret = next;
             next = null;
@@ -81,7 +81,7 @@ public class PieceIterator {
 
   @Deprecated
   public <T extends GamePiece> PieceIterator(Enumeration<T> e, PieceFilter f) {
-    this(new IterableEnumeration<T>(e), f);
+    this(new IterableEnumeration<>(e), f);
   }
 
   public GamePiece nextPiece() {
@@ -103,6 +103,6 @@ public class PieceIterator {
 
   @Deprecated
   public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
-    return PieceIterator.visible(new IterableEnumeration<T>(e));
+    return PieceIterator.visible(new IterableEnumeration<>(e));
   }
 }

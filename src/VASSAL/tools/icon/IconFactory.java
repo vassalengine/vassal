@@ -61,7 +61,7 @@ public final class IconFactory {
   private static final JarArchive jar = new JarArchive();
 
   private static IconFactory instance = new IconFactory();
-  private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<String, IconFamily>();
+  private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<>();
   private static final Object preloadLock = new Object();
   private Thread preloadThread;
 
@@ -254,7 +254,7 @@ public final class IconFactory {
    * @return Icon Family name list
    */
   private List<String> getIconFamilyList() {
-    final ArrayList<String> names = new ArrayList<String>();
+    final ArrayList<String> names = new ArrayList<>();
     synchronized (preloadLock) {
       for (String s : iconFamilies.keySet()) {
         names.add(s);

@@ -41,7 +41,7 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of {@link NamedKeyStrokes}
  */
 public class NamedKeyStrokeArrayConfigurer extends Configurer {
-  private List<NamedHotKeyConfigurer> configs = new ArrayList<NamedHotKeyConfigurer>();
+  private List<NamedHotKeyConfigurer> configs = new ArrayList<>();
   private Box controls;
   private JPanel panel;
 
@@ -131,7 +131,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<NamedKeyStroke>();
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
     for (NamedHotKeyConfigurer hotKeyConfigurer : configs) {
       NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
       if (value != null) {
@@ -145,7 +145,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    ArrayList<NamedKeyStroke> l = new ArrayList<NamedKeyStroke>();
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();

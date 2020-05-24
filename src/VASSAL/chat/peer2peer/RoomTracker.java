@@ -34,8 +34,8 @@ public class RoomTracker {
   private List<Player> leftPlayers;
 
   public RoomTracker() {
-    joinedPlayers = new ArrayList<Player>();
-    leftPlayers = new ArrayList<Player>();
+    joinedPlayers = new ArrayList<>();
+    leftPlayers = new ArrayList<>();
   }
 
   public void init(Room r) {

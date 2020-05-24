@@ -111,9 +111,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected final LaunchRequest lr;
 
   protected static final Set<File> editing =
-    Collections.synchronizedSet(new HashSet<File>());
+    Collections.synchronizedSet(new HashSet<>());
   protected static final Map<File,Integer> using =
-    Collections.synchronizedMap(new HashMap<File,Integer>());
+    Collections.synchronizedMap(new HashMap<>());
 
 /*
   protected static final List<ObjectOutputStream> children =
@@ -121,7 +121,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 */
 
   protected static final List<IPCMessenger> children =
-    Collections.synchronizedList(new ArrayList<IPCMessenger>());
+    Collections.synchronizedList(new ArrayList<>());
 
   protected static final AtomicInteger nextId = new AtomicInteger(1);
 
@@ -158,8 +158,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   public static boolean shutDown() {
     ModuleManagerWindow.getInstance().toBack();
 
-    final List<Future<IPCMessage>> futures =
-      new ArrayList<Future<IPCMessage>>();
+    final List<Future<IPCMessage>> futures = new ArrayList<>();
 
     // must synchronize when iterating over a Collections.synchronizedList()
     synchronized (children) {
@@ -425,7 +424,7 @@ e.printStackTrace();
       final int port = serverSocket.getLocalPort();
 
       // build the argument list
-      final ArrayList<String> al = new ArrayList<String>();
+      final ArrayList<String> al = new ArrayList<>();
       al.add(Info.javaBinPath);
       al.add("");   // reserved for initial heap
       al.add("");   // reserved for maximum heap

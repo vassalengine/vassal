@@ -53,11 +53,11 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final char ENUM_CODE = 'E';
   protected static final char INCR_CODE = 'I';
   protected static final Map<Class<? extends PropertyChanger>,Character> typeToCode =
-    new HashMap<Class<? extends PropertyChanger>,Character>();
+    new HashMap<>();
   protected static final Map<Class<? extends PropertyChanger>,String> typeToDescription =
-    new HashMap<Class<? extends PropertyChanger>,String>();
+    new HashMap<>();
   protected static final Map<String,Character> descriptionToCode =
-    new HashMap<String,Character>();
+    new HashMap<>();
   static {
     typeToCode.put(PropertySetter.class, PLAIN_CODE);
     typeToCode.put(PropertyPrompt.class, PROMPT_CODE);

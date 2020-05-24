@@ -27,7 +27,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class OwningOpMultiResolutionImage extends OpMultiResolutionImage {
-  protected SortedMap<Double, Image> imgs = new TreeMap<Double, Image>();
+  protected SortedMap<Double, Image> imgs = new TreeMap<>();
 
   public OwningOpMultiResolutionImage(ImageOp sop) {
     super(sop);
@@ -45,6 +45,6 @@ public class OwningOpMultiResolutionImage extends OpMultiResolutionImage {
 
   @Override
   public List<Image> getResolutionVariants() {
-    return Collections.unmodifiableList(new ArrayList<Image>(imgs.values())); 
+    return Collections.unmodifiableList(new ArrayList<>(imgs.values()));
   } 
 }

@@ -32,7 +32,7 @@ import VASSAL.counters.GamePiece;
  */
 public class PieceI18nData {
   protected GamePiece piece;
-  protected List<Property> properties = new ArrayList<Property>();
+  protected List<Property> properties = new ArrayList<>();
 
   public PieceI18nData(GamePiece piece) {
     this.piece = piece;

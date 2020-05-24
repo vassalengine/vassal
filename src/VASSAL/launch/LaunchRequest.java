@@ -104,7 +104,7 @@ public class LaunchRequest implements Serializable {
 
     this.builtInModule = lr.builtInModule;
 
-    if (lr.autoext != null) this.autoext = new ArrayList<String>(lr.autoext);
+    if (lr.autoext != null) this.autoext = new ArrayList<>(lr.autoext);
   }
 
   /**
@@ -113,7 +113,7 @@ public class LaunchRequest implements Serializable {
    * @return an array which would be parsed to this <code>LaunchRequest</code>
    */
   public String[] toArgs() {
-    final ArrayList<String> args = new ArrayList<String>();
+    final ArrayList<String> args = new ArrayList<>();
 
     args.add("--" + mode.toString());
 
@@ -221,7 +221,7 @@ public class LaunchRequest implements Serializable {
     while ((c = g.getopt()) != -1) {
       switch (c) {
       case AUTO_EXT:
-        if (lr.autoext == null) lr.autoext = new ArrayList<String>();
+        if (lr.autoext == null) lr.autoext = new ArrayList<>();
         for (String ext : g.getOptarg().split(",")) {
           lr.autoext.add(ext.replace("_"," "));
         }

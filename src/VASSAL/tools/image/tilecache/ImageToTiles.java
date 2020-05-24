@@ -69,7 +69,7 @@ public class ImageToTiles {
       runtime.availableProcessors(),
       runtime.availableProcessors()+1,
       60, TimeUnit.SECONDS,
-      new LinkedBlockingQueue<Runnable>(),
+      new LinkedBlockingQueue<>(),
       new DaemonThreadFactory(ImageToTiles.class.getSimpleName())
     );
 
@@ -97,7 +97,7 @@ public class ImageToTiles {
     }
 
     final String iname = new File(ipath).getName();
-    final Callback<Void> dotter = new Callback<Void>() {
+    final Callback<Void> dotter = new Callback<>() {
       public void receive(Void obj) {
         System.out.print('.');
       }

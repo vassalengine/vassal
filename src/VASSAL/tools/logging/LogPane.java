@@ -45,7 +45,7 @@ public class LogPane extends JTextArea {
 
     tailer = new Tailer(file);
 
-    tailer.addEventListener(new EventListener<String>() {
+    tailer.addEventListener(new EventListener<>() {
       public void receive(Object src, String s) {
         // NB: JTextArea.append() is thread-safe; it can be called off-EDT.
         append(s);

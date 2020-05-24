@@ -36,7 +36,7 @@ public class EventAccumulator<T> implements EventListener<T> {
   protected final Collection<Pair<Object,T>> col;
 
   public EventAccumulator() {
-    this(new ArrayList<Pair<Object,T>>());
+    this(new ArrayList<>());
   }
 
   public EventAccumulator(Collection<Pair<Object,T>> col) {
@@ -45,7 +45,7 @@ public class EventAccumulator<T> implements EventListener<T> {
 
   /** {@inheritDoc} */
   public void receive(Object src, T event) {
-    col.add(new Pair<Object,T>(src, event));
+    col.add(new Pair<>(src, event));
   }
 
   /**

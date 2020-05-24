@@ -49,11 +49,9 @@ public class ComponentI18nData {
   protected String prefix;
   protected Translatable parent;
   protected Configurable myComponent;
-  protected Map<String, Property> translatableProperties =
-    new TreeMap<String, Property>();
-  protected Map<String, Property> allProperties =
-    new TreeMap<String, Property>();
-  protected List<Translatable> children = new ArrayList<Translatable>();
+  protected Map<String, Property> translatableProperties = new TreeMap<>();
+  protected Map<String, Property> allProperties = new TreeMap<>();
+  protected List<Translatable> children = new ArrayList<>();
 
   /**
    * Build from an AbstractConfigurable. The parent will be set from

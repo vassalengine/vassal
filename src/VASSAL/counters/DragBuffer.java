@@ -37,7 +37,7 @@ import VASSAL.build.module.Map;
 public class DragBuffer {
   private final static DragBuffer theBuffer = new DragBuffer();
 
-  private final List<GamePiece> pieces = new ArrayList<GamePiece>();
+  private final List<GamePiece> pieces = new ArrayList<>();
   private MouseEvent lastRelease;
   private Component dropTarget;
   private MouseListener dropHandler;

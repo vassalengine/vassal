@@ -80,7 +80,7 @@ public class Stack implements GamePiece, StateMergeable {
    */
   @Deprecated
   public Enumeration<GamePiece> getPieces() {
-    return new EnumeratedIterator<GamePiece>(new AllPieceIterator());
+    return new EnumeratedIterator<>(new AllPieceIterator());
     //    return new AllPieceEnum();
   }
 
@@ -96,7 +96,7 @@ public class Stack implements GamePiece, StateMergeable {
    */
   @Deprecated
   public Enumeration<GamePiece> getPiecesInReverseOrder() {
-    return new EnumeratedIterator<GamePiece>(new ReversePieceIterator());
+    return new EnumeratedIterator<>(new ReversePieceIterator());
 //    return new ReversePieceEnum();
   }
 
@@ -112,7 +112,7 @@ public class Stack implements GamePiece, StateMergeable {
    */
   @Deprecated
   public Enumeration<GamePiece> getPiecesInVisibleOrder() {
-    return new EnumeratedIterator<GamePiece>(new VisibleOrderIterator());
+    return new EnumeratedIterator<>(new VisibleOrderIterator());
 //    return new VisibleOrderEnum();
   }
 
@@ -512,11 +512,11 @@ public class Stack implements GamePiece, StateMergeable {
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
-      ArrayList<String> newContents = new ArrayList<String>();
+      ArrayList<String> newContents = new ArrayList<>();
       while (stNew.hasMoreTokens()) {
         newContents.add(stNew.nextToken());
       }
-      ArrayList<String> oldContents = new ArrayList<String>();
+      ArrayList<String> oldContents = new ArrayList<>();
       while (stOld.hasMoreTokens()) {
         oldContents.add(stOld.nextToken());
       }

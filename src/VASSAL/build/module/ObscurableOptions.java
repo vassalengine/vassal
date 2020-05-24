@@ -48,7 +48,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   public static final String COMMAND_ID = "UNMASK\t"; //$NON-NLS-1$
   public static final String PREFS_KEY = "OpponentUnmaskable"; //$NON-NLS-1$
-  private List<String> allowed = new ArrayList<String>();
+  private List<String> allowed = new ArrayList<>();
   private Boolean override;
 
   private ObscurableOptions() {
@@ -139,7 +139,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   public Command decode(String command) {
     if (command.startsWith(COMMAND_ID)) {
       command = command.substring(COMMAND_ID.length());
-      ArrayList<String> l = new ArrayList<String>();
+      ArrayList<String> l = new ArrayList<>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       while (st.hasMoreTokens()) {
         l.add(st.nextToken());

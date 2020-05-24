@@ -87,7 +87,7 @@ import VASSAL.tools.SequenceEncoder;
 public class BoardPicker extends AbstractBuildable implements ActionListener, GameComponent, GameSetupStep, Configurable, CommandEncoder, ValidityChecker {
   private static final long serialVersionUID = 1L;
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
-  protected List<Board> possibleBoards = new ArrayList<Board>();
+  protected List<Board> possibleBoards = new ArrayList<>();
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
@@ -129,7 +129,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   protected void initComponents() {
-    multipleButtons = new ArrayList<JButton>();
+    multipleButtons = new ArrayList<>();
     controls = new JPanel(new BorderLayout());
     statusLabel = new JLabel(""); //$NON-NLS-1$
     statusLabel.setForeground(Color.BLUE);
@@ -253,7 +253,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (possibleBoards.isEmpty()) {
       report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
     }
-    HashSet<String> names = new HashSet<String>();
+    HashSet<String> names = new HashSet<>();
     for (Board b : possibleBoards) {
       if (names.contains(b.getName())) {
         report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
@@ -384,7 +384,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     d.pack();
     d.setLocationRelativeTo(c);
     d.setVisible(true);
-    currentBoards = new ArrayList<Board>(getBoardsFromControls());
+    currentBoards = new ArrayList<>(getBoardsFromControls());
   }
 
   /**
@@ -413,7 +413,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return an array of the names of all boards from which the user may choose
    */
   public String[] getAllowableBoardNames() {
-    final ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
     for (Board b : possibleBoards) {
       s.add(b.getName());
     }
@@ -421,7 +421,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   public String[] getAllowableLocalizedBoardNames() {
-    final ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
     for (Board b : possibleBoards) {
       s.add(b.getLocalizedName());
     }
@@ -473,7 +473,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   public void finish() {
-    currentBoards = new ArrayList<Board>(getBoardsFromControls());
+    currentBoards = new ArrayList<>(getBoardsFromControls());
     map.setBoards(getSelectedBoards());
   }
 
@@ -547,7 +547,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated
   public Vector<Board> pickBoards() {
-    return new Vector<Board>(getBoardsFromControls());
+    return new Vector<>(getBoardsFromControls());
   }
 
   /**
@@ -556,7 +556,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return
    */
   public List<Board> getBoardsFromControls() {
-    ArrayList<Board> boardList = new ArrayList<Board>();
+    ArrayList<Board> boardList = new ArrayList<>();
     if (toolbar != null) {
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {
@@ -681,7 +681,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   public Command decode(String command) {
     if (command.startsWith(map.getId() + ID) ||
         command.startsWith(map.getConfigureName() + ID)) {
-      ArrayList<Board> bds = new ArrayList<Board>();
+      ArrayList<Board> bds = new ArrayList<>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       st.nextToken();
       while (st.hasMoreTokens()) {

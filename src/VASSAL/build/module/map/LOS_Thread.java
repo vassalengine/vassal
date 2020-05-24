@@ -149,7 +149,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected String lastLocation = "";
   protected String lastRange = "";
   protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $"+FROM_LOCATION+"$ to $"+CHECK_LIST+"$");
-  protected List<String> checkList = new ArrayList<String>();
+  protected List<String> checkList = new ArrayList<>();
   protected String persistence = CTRL_CLICK;
   protected String persistentIconName;
   protected String global = ALWAYS;

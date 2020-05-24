@@ -45,7 +45,7 @@ public class SimpleVersionTokenizer implements VersionTokenizer {
   protected enum State { NUM, DELIM, EOS, END };
   protected State state = State.NUM;
 
-  protected static Map<String,Integer> tags = new HashMap<String,Integer>();
+  protected static Map<String,Integer> tags = new HashMap<>();
 
   /**
    * Constructs a <code>VersionTokenizer</code> which operates on a

@@ -167,7 +167,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
   protected static class Column {
     protected Class<?> type;
     protected String name;
-    protected List<Configurer> configurers = new ArrayList<Configurer>();
+    protected List<Configurer> configurers = new ArrayList<>();
     protected Box controls;
     protected JPanel contents;
 

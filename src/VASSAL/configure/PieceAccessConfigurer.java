@@ -143,7 +143,7 @@ public class PieceAccessConfigurer extends Configurer {
     else if (s != null && s.startsWith(SIDES)) {
       SequenceEncoder.Decoder sd =
         new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
-      ArrayList<String> l = new ArrayList<String>();
+      ArrayList<String> l = new ArrayList<>();
       while (sd.hasMoreTokens()) {
         l.add(sd.nextToken());
       }

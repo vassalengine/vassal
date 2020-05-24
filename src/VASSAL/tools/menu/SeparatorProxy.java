@@ -31,7 +31,7 @@ public class SeparatorProxy extends AbstractProxy<JSeparator> {
   @Override
   public JSeparator createPeer() {
     final JSeparator sep = new JSeparator();
-    peers.add(new WeakReference<JSeparator>(sep, queue));
+    peers.add(new WeakReference<>(sep, queue));
     return sep;
   }
 }

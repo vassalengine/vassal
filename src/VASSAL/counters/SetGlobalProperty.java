@@ -93,7 +93,7 @@ public class SetGlobalProperty extends DynamicProperty {
     keyCommandListConfig.setValue(sd.nextToken(""));
     keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
-    ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
+    ArrayList<DynamicKeyCommand> l = new ArrayList<>();
     for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.getName() != null && dkc.getName().length() > 0) {
         l.add(dkc);
@@ -192,7 +192,7 @@ public class SetGlobalProperty extends DynamicProperty {
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
         ArrayList<MutablePropertiesContainer> propertyContainers =
-          new ArrayList<MutablePropertiesContainer>();
+          new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
@@ -262,7 +262,7 @@ public class SetGlobalProperty extends DynamicProperty {
         }
       };
       keyCommandListConfig.setValue(
-        new ArrayList<DynamicKeyCommand>(Arrays.asList(m.keyCommands)));
+        new ArrayList<>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           boolean isNumeric = numericConfig.booleanValue();

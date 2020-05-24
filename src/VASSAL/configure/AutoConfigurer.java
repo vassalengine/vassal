@@ -52,7 +52,7 @@ public class AutoConfigurer extends Configurer
   implements PropertyChangeListener {
   protected JPanel p;
   protected AutoConfigurable target;
-  protected List<Configurer> configurers = new ArrayList<Configurer>();
+  protected List<Configurer> configurers = new ArrayList<>();
   protected Map<String,VisibilityCondition> conditions;
 
   public AutoConfigurer(AutoConfigurable c) {
@@ -204,7 +204,7 @@ public class AutoConfigurer extends Configurer
   public void setVisibility(String attribute, VisibilityCondition c) {
     if (c != null) {
       if (conditions == null) {
-        conditions = new HashMap<String,VisibilityCondition>();
+        conditions = new HashMap<>();
       }
       conditions.put(attribute, c);
       checkVisibility();

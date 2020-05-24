@@ -92,9 +92,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
   private Map<String,BasicPieceFactory> basicFactories =
-    new HashMap<String,BasicPieceFactory>();
+    new HashMap<>();
   private Map<String,DecoratorFactory> decoratorFactories =
-    new HashMap<String,DecoratorFactory>();
+    new HashMap<>();
 
   public BasicCommandEncoder() {
     basicFactories.put(Stack.TYPE, new BasicPieceFactory() {

@@ -58,7 +58,7 @@ public class ImageUtils {
   @Deprecated
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$
   private static final Map<RenderingHints.Key,Object> defaultHints =
-    new HashMap<RenderingHints.Key,Object>();
+    new HashMap<>();
 
   static {
     // Initialise Image prefs prior to Preferences being read.

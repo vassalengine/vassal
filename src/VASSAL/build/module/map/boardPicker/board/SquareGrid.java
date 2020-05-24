@@ -66,7 +66,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean dotsVisible = false;
   protected Color color = Color.black;
   protected GridContainer container;
-  protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
+  protected Map<Integer,Area> shapeCache = new HashMap<>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
   protected boolean snapTo = true;

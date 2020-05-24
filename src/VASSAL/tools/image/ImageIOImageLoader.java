@@ -391,7 +391,7 @@ public class ImageIOImageLoader implements ImageLoader {
       img.getTransparency() == BufferedImage.OPAQUE && !fix_tRNS
       ? typeIfOpaque : typeIfTransparent;
 
-    final Reference<BufferedImage> ref = new Reference<BufferedImage>(img);
+    final Reference<BufferedImage> ref = new Reference<>(img);
 
     if (fix_tRNS) {
       // Fix up transparency in type 2 Truecolor images.
@@ -466,29 +466,28 @@ public class ImageIOImageLoader implements ImageLoader {
 
   /** A functor for reading images. */
   protected static Wrapper<BufferedImage> readImage =
-                                                 new Wrapper<BufferedImage>() {
-    /**
-     * Loads an image.
-     *
-     * @param name the image name
-     * @param in the input stream
-     * @return the image
-     *
-     * @throws UnrecognizedImageTypeException if the image type is unknown
-     * @throws IOException if reading the image goes wrong
-     */
-    public BufferedImage run(String name, InputStream in) throws IOException {
+    new Wrapper<>() {
+      /**
+       * Loads an image.
+       *
+       * @param name the image name
+       * @param in the input stream
+       * @return the image
+       * @throws UnrecognizedImageTypeException if the image type is unknown
+       * @throws IOException if reading the image goes wrong
+       */
+      public BufferedImage run(String name, InputStream in) throws IOException {
 
-      final BufferedImage img =
-        ImageIO.read(new MemoryCacheImageInputStream(in));
-      if (img == null) throw new UnrecognizedImageTypeException(name);
+        final BufferedImage img =
+          ImageIO.read(new MemoryCacheImageInputStream(in));
+        if (img == null) throw new UnrecognizedImageTypeException(name);
 
-      return img;
-    }
-  };
+        return img;
+      }
+    };
 
   /** A functor for reading image dimensions. */
-  protected static Wrapper<Dimension> readSize = new Wrapper<Dimension>() {
+  protected static Wrapper<Dimension> readSize = new Wrapper<>() {
     /**
      * Gets the size of an image.
      *

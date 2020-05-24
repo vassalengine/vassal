@@ -94,8 +94,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undoAction.setEnabled(false);
     endLogAction.setEnabled(false);
     newLogAction.setEnabled(false);
-    logInput = new ArrayList<Command>();
-    logOutput = new ArrayList<Command>();
+    logInput = new ArrayList<>();
+    logOutput = new ArrayList<>();
   }
 
   public void build(Element e) { }

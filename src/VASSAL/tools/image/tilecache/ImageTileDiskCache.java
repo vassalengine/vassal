@@ -108,7 +108,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   /** {@inheritDoc} */
   public List<String> getFiles() throws IOException {
     final File[] files = new File(cpath).listFiles();
-    final List<String> names = new ArrayList<String>(files.length);
+    final List<String> names = new ArrayList<>(files.length);
 
     for (File f : files) names.add(f.getPath());
 
@@ -118,7 +118,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   /** {@inheritDoc} */
   public List<String> getFiles(String root) throws IOException {
     final File[] files = new File(cpath).listFiles();
-    final List<String> names = new ArrayList<String>(files.length);
+    final List<String> names = new ArrayList<>(files.length);
 
     for (File f : files) {
       final String path = f.getPath();

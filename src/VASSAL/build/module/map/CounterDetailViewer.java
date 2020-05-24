@@ -245,7 +245,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Deprecated // Required for backward compatibility
   protected void drawGraphics(Graphics g, Point pt, JComponent comp,
                               PieceIterator pi) {
-    ArrayList<GamePiece> a = new ArrayList<GamePiece>();
+    ArrayList<GamePiece> a = new ArrayList<>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
     }
@@ -368,7 +368,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Deprecated // Required for backward compatibility
   protected void drawText(Graphics g, Point pt,
                           JComponent comp, PieceIterator pi) {
-    ArrayList<GamePiece> a = new ArrayList<GamePiece>();
+    ArrayList<GamePiece> a = new ArrayList<>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
     }
@@ -592,7 +592,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
       }
-      pieces = new ArrayList<GamePiece>();
+      pieces = new ArrayList<>();
       this.filter = filter;
     }
 

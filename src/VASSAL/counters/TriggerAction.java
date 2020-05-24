@@ -417,7 +417,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   public List<String> getPropertyNames() {
     if (isIndex()) {
-      final ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<>();
       l.add(indexProperty);
       return l;
     }

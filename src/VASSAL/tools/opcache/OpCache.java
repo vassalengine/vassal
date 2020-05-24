@@ -51,7 +51,7 @@ public class OpCache {
   public static class Key<V> {
     public final Op<V> op;
     public final int version;
-    public final List<Key<?>> deps = new ArrayList<Key<?>>();
+    public final List<Key<?>> deps = new ArrayList<>();
 
     private final int hash;
 
@@ -97,7 +97,7 @@ public class OpCache {
   }
 
   protected final ConcurrentMap<Key<?>,Future<?>> cache =
-    new ConcurrentSoftHashMap<Key<?>,Future<?>>();
+    new ConcurrentSoftHashMap<>();
 
   /**
    * A request for execution of an {@link Op} which will be completed
@@ -152,7 +152,7 @@ public class OpCache {
   /**
    * The {@link Future} which is cached on failure of an {@link Op}.
    */
-  private static final Future<Void> failure = new Future<Void>() {
+  private static final Future<Void> failure = new Future<>() {
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
@@ -305,7 +305,7 @@ public class OpCache {
     if (fut == null) {
       if (obs == null) {
         // check whether any other op has beat us into the cache
-        final Result<V> res = new Result<V>();
+        final Result<V> res = new Result<>();
         fut = (Future<V>) cache.putIfAbsent(key, res);
 
         // if not, then apply the op
@@ -327,7 +327,7 @@ public class OpCache {
         }
       }
       else {
-        final Request<V> req = new Request<V>(key, obs);
+        final Request<V> req = new Request<>(key, obs);
         fut = (Future<V>) cache.putIfAbsent(key, req);
         if (fut == null) {
           threadPool.submit(req);
@@ -351,7 +351,7 @@ public class OpCache {
 /////
 // FIXME: finalize this...
   private final BlockingQueue<Runnable> requestQueue =
-    new LinkedBlockingQueue<Runnable>();
+    new LinkedBlockingQueue<>();
 
   private static class Ex extends ThreadPoolExecutor {
     public Ex(int corePoolSize, int maximumPoolSize, long keepAliveTime,

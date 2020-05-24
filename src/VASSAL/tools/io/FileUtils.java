@@ -68,7 +68,7 @@ public class FileUtils {
    */
   public static void recursiveDelete(File base) throws IOException {
     // we delete as many files as we can
-    final List<File> failed = new ArrayList<File>();
+    final List<File> failed = new ArrayList<>();
     recursiveDeleteHelper(base, failed);
 
     // if any deletions failed, we list them

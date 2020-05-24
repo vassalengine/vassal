@@ -91,11 +91,11 @@ public class MassPieceLoader {
 
   protected Configurable target;
   protected ConfigureTree configureTree;
-  protected ArrayList<String> imageNames = new ArrayList<String>();
-  protected ArrayList<String> baseImages = new ArrayList<String>();
-  protected ArrayList<String> levelImages = new ArrayList<String>();
-  protected HashMap<String, PieceInfo> pieceInfo = new HashMap<String, PieceInfo>();
-  protected ArrayList<Emb> layers = new ArrayList<Emb>();
+  protected ArrayList<String> imageNames = new ArrayList<>();
+  protected ArrayList<String> baseImages = new ArrayList<>();
+  protected ArrayList<String> levelImages = new ArrayList<>();
+  protected HashMap<String, PieceInfo> pieceInfo = new HashMap<>();
+  protected ArrayList<Emb> layers = new ArrayList<>();
   protected MassLoaderDialog dialog;
   private static DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
       "Image Directory: ");
@@ -485,7 +485,7 @@ public class MassPieceLoader {
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();
-      ArrayList<Decorator> traits = new ArrayList<Decorator>();
+      ArrayList<Decorator> traits = new ArrayList<>();
 
       // Reverse the order of the traits to innermost out
       while (template instanceof Decorator) {
@@ -997,7 +997,7 @@ public class MassPieceLoader {
    */
   static class Emb extends Embellishment {
 
-    private ArrayList<String> builtImages = new ArrayList<String>();
+    private ArrayList<String> builtImages = new ArrayList<>();
 
     public Emb() {
       super();
@@ -1140,7 +1140,7 @@ public class MassPieceLoader {
 
     public List<String> getImageNameList() {
       final int size = imageListElements.size();
-      final ArrayList<String> names = new ArrayList<String>(size);
+      final ArrayList<String> names = new ArrayList<>(size);
       for (int i = 0; i < size; ++i) {
         names.add((((Entry) multiPanel.getComponent(i)).toString()));
       }

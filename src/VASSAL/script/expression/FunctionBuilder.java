@@ -49,7 +49,7 @@ public class FunctionBuilder extends JDialog {
   protected String save;
   protected StringConfigurer target;
   protected String function;
-  protected List<BeanShellExpressionConfigurer> configs = new ArrayList<BeanShellExpressionConfigurer>();
+  protected List<BeanShellExpressionConfigurer> configs = new ArrayList<>();
   protected EditablePiece targetPiece;
 
   public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece) {

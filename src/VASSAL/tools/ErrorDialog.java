@@ -52,7 +52,7 @@ public class ErrorDialog {
     LoggerFactory.getLogger(ErrorDialog.class);
 
   private static final List<BugHandler> bughandlers =
-    Collections.synchronizedList(new ArrayList<BugHandler>(
+    Collections.synchronizedList(new ArrayList<>(
       Arrays.asList(new Bug2694Handler())
     ));
 
@@ -339,7 +339,7 @@ public class ErrorDialog {
   }
 
   private static final Set<String> reportedDataErrors =
-    Collections.synchronizedSet(new HashSet<String>());
+    Collections.synchronizedSet(new HashSet<>());
 
   public static void dataError(BadDataReport e) {
     logger.warn(e.getMessage() + ": " + e.getData());

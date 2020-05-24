@@ -76,7 +76,7 @@ public interface MutableProperty {
     private MutablePropertiesContainer parent;
 
     // Maintain a static list of all Global Properties known to module
-    private static List<Impl> allProperties = new ArrayList<Impl>();
+    private static List<Impl> allProperties = new ArrayList<>();
     public static List<Impl> getAllProperties() {
       return allProperties;
     }

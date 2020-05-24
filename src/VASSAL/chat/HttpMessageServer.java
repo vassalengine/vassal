@@ -75,7 +75,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   }
 
   public Message[] getMessages() {
-    final ArrayList<Message> msgList = new ArrayList<Message>();
+    final ArrayList<Message> msgList = new ArrayList<>();
     try {
       for (String msg : getMessagesURL.doGet(prepareInfo())) {
         try {

@@ -42,7 +42,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    * @param init the initial lower bound
    */
   public RangedRunnable(T init) {
-    range = new Pair<T,T>(init, null);
+    range = new Pair<>(init, null);
   }
 
   /**
@@ -62,7 +62,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    */
   public final synchronized void setLast(T last, boolean submit) {
     if (last != range.second) {
-      range = new Pair<T,T>(range.first, last);
+      range = new Pair<>(range.first, last);
     }
 
     if (submit && !submitted) {
@@ -93,7 +93,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    */
   private final synchronized Pair<T,T> flush() {
     final Pair<T,T> flushed = range;
-    range = new Pair<T,T>(flushed.second, null);
+    range = new Pair<>(flushed.second, null);
     submitted = false;
     return flushed;
   }

@@ -44,7 +44,7 @@ import VASSAL.tools.ErrorDialog;
  */
 public class PanelWidget extends Widget {
   private JPanel panel;
-  private List<Widget> widgets = new ArrayList<Widget>();
+  private List<Widget> widgets = new ArrayList<>();
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;

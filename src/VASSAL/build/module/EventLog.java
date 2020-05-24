@@ -44,8 +44,8 @@ public class EventLog extends AbstractBuildable
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
     mod.getPrefs().addOption(new StringConfigurer(EVENT_LIST, null));
-    myEvents = new ArrayList<Event>();
-    savedEvents = new ArrayList<Event>();
+    myEvents = new ArrayList<>();
+    savedEvents = new ArrayList<>();
 
     for (Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
       myEvents.add(e);
@@ -102,9 +102,9 @@ public class EventLog extends AbstractBuildable
    * @return the events represented by the string
    */
   public static Iterable<Event> decodedEvents(final String s) {
-    return new Iterable<Event>() {
+    return new Iterable<>() {
       public Iterator<Event> iterator() {
-        return new Iterator<Event>() {
+        return new Iterator<>() {
           private final SequenceEncoder.Decoder se =
             new SequenceEncoder.Decoder(s, '|');
 
@@ -130,7 +130,7 @@ public class EventLog extends AbstractBuildable
   /** Use {@link #decodedEvents()} instead. */
   @Deprecated
   public static Enumeration<Event> decodeEvents(String s) {
-    ArrayList<Event> l = new ArrayList<Event>();
+    ArrayList<Event> l = new ArrayList<>();
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
       SequenceEncoder.Decoder sub =

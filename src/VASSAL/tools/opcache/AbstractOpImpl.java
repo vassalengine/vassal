@@ -91,14 +91,14 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   }
 
   private static final ConcurrentMap<Op<?>,OpCache.Key<?>> kcache =
-    new ConcurrentHashMap<Op<?>,OpCache.Key<?>>();
+    new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public OpCache.Key<V> newKey() {
     OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);
     if (key == null) {
-      final OpCache.Key<V> nkey = new OpCache.Key<V>(this, 0);
+      final OpCache.Key<V> nkey = new OpCache.Key<>(this, 0);
       key = (OpCache.Key<V>) kcache.putIfAbsent(this, nkey);
       if (key == null) key = nkey;
     }
@@ -111,7 +111,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   public void update() {
     final OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);
     if (key != null) {
-      final OpCache.Key<V> nkey = new OpCache.Key<V>(this, key.version+1);
+      final OpCache.Key<V> nkey = new OpCache.Key<>(this, key.version + 1);
       kcache.replace(this, key, nkey);
     }
   }

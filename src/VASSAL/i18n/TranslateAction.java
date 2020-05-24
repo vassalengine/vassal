@@ -41,7 +41,7 @@ public class TranslateAction extends AbstractAction {
   protected Configurable target;
   protected HelpWindow helpWindow;
   protected static Map<Configurable,TranslateWindow> openWindows =
-    new HashMap<Configurable,TranslateWindow>();
+    new HashMap<>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 

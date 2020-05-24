@@ -292,7 +292,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           // FIXME: review error message
           catch (XMPPException e) {
             // Create the account if it doesn't exist
-            Map<String, String> attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             attributes.put("name", me.getName()); //$NON-NLS-1$
             try {
               conn.getAccountManager().createAccount(username, password, attributes);
@@ -705,7 +705,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   private class MonitorRooms implements PacketListener, ParticipantStatusListener {
     private static final String ROOM_CHANGE_ACTION = "changedRoom"; //$NON-NLS-1$
     private MultiUserChat monitorRoom;
-    private Comparator<Room> roomSortOrder = new Comparator<Room>() {
+    private Comparator<Room> roomSortOrder = new Comparator<>() {
       public int compare(Room o1, Room o2) {
         if (o1.equals(defaultRoom) && !o2.equals(defaultRoom)) {
           return -1;
@@ -774,13 +774,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
 
     public Room[] getAvailableRooms() {
-      Map<JabberRoom, List<JabberPlayer>> occupants = new HashMap<JabberRoom, List<JabberPlayer>>();
+      Map<JabberRoom, List<JabberPlayer>> occupants = new HashMap<>();
       for (JabberPlayer p : playerMgr.getAllPlayers()) {
         JabberRoom room = p.getJoinedRoom();
         if (room != null) {
           List<JabberPlayer> l = occupants.get(room);
           if (l == null) {
-            l = new ArrayList<JabberPlayer>();
+            l = new ArrayList<>();
             occupants.put(room, l);
           }
           l.add(p);
@@ -1069,7 +1069,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   public ModuleSummary[] getStatus() {
-    ArrayList<ModuleSummary> entries = new ArrayList<ModuleSummary>();
+    ArrayList<ModuleSummary> entries = new ArrayList<>();
     try {
       for (HostedRoom room : MultiUserChat.getHostedRooms(conn, conferenceService)) {
         MultiUserChat.getRoomInfo(conn, room.getJid());
@@ -1210,7 +1210,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       catch (XMPPException e) {
         text.append(Resources.getString("JabberClient.login_failed")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         text.append(Resources.getString("JabberClient.attempting_to_create")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        final Map<String, String> attributes = new HashMap<String, String>();
+        final Map<String, String> attributes = new HashMap<>();
         attributes.put("name", GameModule.getUserId()); //$NON-NLS-1$
         try {
           conn.getAccountManager().createAccount(login, passwd,

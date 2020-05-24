@@ -66,7 +66,7 @@ public class MenuBarProxy extends AbstractParent<JMenuBar> {
     }
 */
 
-    peers.add(new WeakReference<JMenuBar>(mb, queue));
+    peers.add(new WeakReference<>(mb, queue));
     return mb;
   }
 }

@@ -321,7 +321,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
 
   public void setProperty(Object key, Object val) {
     if (props == null) {
-      props = new HashMap<Object, Object>();
+      props = new HashMap<>();
     }
     if (val == null) {
       props.remove(key);
@@ -344,7 +344,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      final ArrayList<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
         l.add(new KeyCommand("Clone", KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target));
@@ -715,7 +715,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(LOCATION_NAME);
     l.add(CURRENT_MAP);
     l.add(CURRENT_BOARD);

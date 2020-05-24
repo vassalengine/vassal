@@ -285,11 +285,11 @@ public class PrivateMap extends Map {
     private static final long serialVersionUID = 1L;
 
     private boolean listenersActive;
-    private List<KeyListener> keyListeners = new ArrayList<KeyListener>();
+    private List<KeyListener> keyListeners = new ArrayList<>();
     private List<MouseListener> mouseListeners =
-      new ArrayList<MouseListener>();
+      new ArrayList<>();
     private List<MouseMotionListener> mouseMotionListeners =
-      new ArrayList<MouseMotionListener>();
+      new ArrayList<>();
     private DropTarget dropTarget;
 
     public View(PrivateMap m) {

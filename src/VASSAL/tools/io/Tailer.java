@@ -74,7 +74,7 @@ public class Tailer {
 
     this.file = file;
     this.poll_interval = poll_interval;
-    this.lsup = new DefaultEventListenerSupport<String>(this);
+    this.lsup = new DefaultEventListenerSupport<>(this);
   }
 
   /**
@@ -224,7 +224,7 @@ public class Tailer {
   public static void main(String[] args) throws IOException {
     final Tailer t = new Tailer(new File(args[0]));
 
-    t.addEventListener(new EventListener<String>() {
+    t.addEventListener(new EventListener<>() {
       public void receive(Object src, String s) {
         System.out.print(s);
       }

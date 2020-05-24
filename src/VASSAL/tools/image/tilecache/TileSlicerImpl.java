@@ -63,7 +63,7 @@ public class TileSlicerImpl implements TileSlicer {
     final int sw = src.getWidth();
     final int sh = src.getHeight();
 
-    final List<Future<Void>> futures = new ArrayList<Future<Void>>();
+    final List<Future<Void>> futures = new ArrayList<>();
 
     // slice unscaled 1:1 tiles
     final TaskMaker unscaled = new TaskMaker() {

@@ -85,7 +85,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public static class Manager {
-    private Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
+    private Map<String, JabberPlayer> jidToPlayer = new HashMap<>();
 
     public JabberPlayer getPlayer(String jid) {
       if (jid == null) {

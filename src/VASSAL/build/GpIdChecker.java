@@ -40,8 +40,8 @@ public class GpIdChecker {
   protected int maxId;
   protected boolean useName = false;
   protected boolean extensionsLoaded = false;
-  final HashMap<String, SlotElement> goodSlots = new HashMap<String, SlotElement>();
-  final ArrayList<SlotElement> errorSlots = new ArrayList<SlotElement>();
+  final HashMap<String, SlotElement> goodSlots = new HashMap<>();
+  final ArrayList<SlotElement> errorSlots = new ArrayList<>();
 
   public GpIdChecker() {
     this(null);

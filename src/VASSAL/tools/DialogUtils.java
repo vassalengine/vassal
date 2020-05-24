@@ -37,7 +37,7 @@ public class DialogUtils {
   private DialogUtils() {}
 
   private static final Set<Object> disabled =
-    Collections.synchronizedSet(new HashSet<Object>());
+    Collections.synchronizedSet(new HashSet<>());
 
   public static boolean isDisabled(Object key) {
     return disabled.contains(key);

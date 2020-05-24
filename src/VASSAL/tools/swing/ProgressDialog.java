@@ -249,7 +249,7 @@ public class ProgressDialog extends JDialog {
   public static ProgressDialog createOnEDT(final Frame parent,
                                            final String title,
                                            final String text) {
-    final Future<ProgressDialog> f = EDT.submit(new Callable<ProgressDialog>() {
+    final Future<ProgressDialog> f = EDT.submit(new Callable<>() {
       public ProgressDialog call() {
         return new ProgressDialog(parent, title, text);
       }

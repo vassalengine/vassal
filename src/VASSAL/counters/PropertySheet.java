@@ -124,7 +124,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected boolean isUpdating;
 
   protected String state;
-  protected Map<String,Object> properties = new HashMap<String,Object>();
+  protected Map<String,Object> properties = new HashMap<>();
   protected List<JComponent> m_fields;
 
 
@@ -349,7 +349,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     if (launch.matches(stroke)) {
       if (frame == null) {
-        m_fields = new ArrayList<JComponent>();
+        m_fields = new ArrayList<>();
         VASSAL.build.module.Map map = piece.getMap();
         Frame parent = null;
         if (map != null && map.getView() != null) {
@@ -838,7 +838,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   public PieceI18nData getI18nData() {
-    final ArrayList<String> items = new ArrayList<String>();
+    final ArrayList<String> items = new ArrayList<>();
     final SequenceEncoder.Decoder defDecoder =
       new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
     while (defDecoder.hasMoreTokens()) {
@@ -863,7 +863,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     for (String prop : properties.keySet()) {
       l.add(prop);
     }
@@ -992,9 +992,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private JTextField maxField;
     private TickLabel ticks;
     private List<ActionListener> actionListeners =
-      new ArrayList<ActionListener>();
+      new ArrayList<>();
     private List<DocumentListener> documentListeners =
-      new ArrayList<DocumentListener>();
+      new ArrayList<>();
 
     public TickPanel(String value, int type) {
       super(new GridBagLayout());
@@ -1179,7 +1179,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int maxTicks = 0;
     protected int panelType;
     private List<ActionListener> actionListeners =
-      new ArrayList<ActionListener>();
+      new ArrayList<>();
 
     public int getNumTicks() {
       return numTicks;

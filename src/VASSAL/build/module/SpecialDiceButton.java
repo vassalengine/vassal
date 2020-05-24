@@ -80,7 +80,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
-  protected List<SpecialDie> dice = new ArrayList<SpecialDie>();
+  protected List<SpecialDie> dice = new ArrayList<>();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;
@@ -535,7 +535,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -550,7 +550,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * Implement PropertyNameSource - Expose roll result property
    */
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_result");
     return l;
   }
@@ -581,7 +581,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       st.nextToken();
     }
     if (st != null) {
-      final ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<>();
       while (st.hasMoreTokens()) {
         l.add(st.nextToken());
       }

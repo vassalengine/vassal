@@ -70,7 +70,7 @@ public class AsynchronousServerNode extends ServerNode {
 
     public ReportContentsThread(AsynchronousServerNode server) {
       this.server = server;
-      changed = new HashSet<Node>();
+      changed = new HashSet<>();
       start();
     }
 

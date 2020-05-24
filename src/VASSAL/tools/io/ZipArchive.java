@@ -77,7 +77,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private final Map<String,Entry> entries = new HashMap<String,Entry>();
+  private final Map<String,Entry> entries = new HashMap<>();
 
   private final ReadWriteLock rwl = new CountingReadWriteLock();
   private final Lock r = rwl.readLock();
@@ -576,7 +576,7 @@ public class ZipArchive implements FileArchive {
     r.lock();
     try {
       openIfClosed();
-      return new ArrayList<String>(entries.keySet());
+      return new ArrayList<>(entries.keySet());
     }
     finally {
       r.unlock();
@@ -598,7 +598,7 @@ public class ZipArchive implements FileArchive {
 //        throw new FileNotFoundException(root + " not in archive");
 
       root += '/';
-      final ArrayList<String> names = new ArrayList<String>();
+      final ArrayList<String> names = new ArrayList<>();
 
       for (String n : entries.keySet()) {
         if (n.startsWith(root)) {

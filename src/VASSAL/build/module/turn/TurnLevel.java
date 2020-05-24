@@ -159,7 +159,7 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public List<TurnLevel> getActiveChildLevels() {
-    ArrayList<TurnLevel> children = new ArrayList<TurnLevel>();
+    ArrayList<TurnLevel> children = new ArrayList<>();
     if (getTurnLevelCount() > 0) {
       TurnLevel activeChild = getTurnLevel(currentSubLevel);
       children.add(activeChild);
@@ -377,7 +377,7 @@ public abstract class TurnLevel extends TurnComponent {
    * Implement PropertyNameSource - Expose the name of this level property
    */
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     if (propertyName != null && propertyName.length() > 0) {
       l.add(propertyName);
     }

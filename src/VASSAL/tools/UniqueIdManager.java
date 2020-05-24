@@ -48,7 +48,7 @@ import VASSAL.configure.ValidityChecker;
  * and can use {@link #findInstance} to look up a component by id.
  */
 public class UniqueIdManager implements ValidityChecker {
-  private List<Identifyable> instances = new ArrayList<Identifyable>();
+  private List<Identifyable> instances = new ArrayList<>();
   private String prefix;
 
   public UniqueIdManager(String prefix) {

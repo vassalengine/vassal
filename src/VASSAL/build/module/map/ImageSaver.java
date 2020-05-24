@@ -284,7 +284,7 @@ public class ImageSaver extends AbstractConfigurable {
     private final Color bg = ColorConfigurer.stringToColor(
       map.getAttributeValueString(Map.BACKGROUND_COLOR));
 
-    private final List<File> files = new ArrayList<File>();
+    private final List<File> files = new ArrayList<>();
 
 // FIXME: SnapshotTask ignores x,y!
     public SnapshotTask(File file, int x, int y, int w, int h) {

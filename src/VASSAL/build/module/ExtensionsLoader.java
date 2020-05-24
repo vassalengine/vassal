@@ -47,8 +47,8 @@ public class ExtensionsLoader implements CommandEncoder {
   public static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
   public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
-  protected Set<String> loadedExtensions = new HashSet<String>();
-  protected HashMap<String,String> loadedIds = new HashMap<String,String>();
+  protected Set<String> loadedExtensions = new HashSet<>();
+  protected HashMap<String,String> loadedIds = new HashMap<>();
 
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;

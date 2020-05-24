@@ -12,7 +12,7 @@ public class Exec {
     Runtime.getRuntime().availableProcessors(),
     Runtime.getRuntime().availableProcessors()+1,
     60, TimeUnit.SECONDS,
-    new LinkedBlockingQueue<Runnable>()
+    new LinkedBlockingQueue<>()
   );
 
 /*

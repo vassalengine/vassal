@@ -42,7 +42,7 @@ import VASSAL.i18n.Resources;
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
   private Map<String,PrototypeDefinition> definitions =
-    new HashMap<String,PrototypeDefinition>();
+    new HashMap<>();
 
   public String[] getAttributeDescriptions() {
     return new String[0];

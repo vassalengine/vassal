@@ -36,7 +36,7 @@ import VASSAL.tools.ThrowableUtils;
  * @see CommandEncoder
  */
 public abstract class Command {
-  private LinkedList<Command> seq = new LinkedList<Command>();
+  private LinkedList<Command> seq = new LinkedList<>();
   private Command undo;
 
   public Command() {}
@@ -101,7 +101,7 @@ public abstract class Command {
    * Remove all subcommands.
    */
   public void stripSubCommands() {
-    seq = new LinkedList<Command>();
+    seq = new LinkedList<>();
   }
 
   /**

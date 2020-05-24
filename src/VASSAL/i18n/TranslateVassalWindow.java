@@ -174,7 +174,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    ArrayList<String> keyList = new ArrayList<String>(Resources.getVassalKeys());
+    ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
     Collections.sort(keyList);
     keys = keyList.toArray(new String[keyList.size()]);
     copyButtons = new CopyButton[keys.length];

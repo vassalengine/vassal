@@ -52,8 +52,7 @@ import VASSAL.tools.FormattedString;
 public class DieManager extends AbstractConfigurable {
 
   private Map<String,DieServer> servers;
-  private List<InternetDiceButton> dieButtons =
-    new ArrayList<InternetDiceButton>();
+  private List<InternetDiceButton> dieButtons = new ArrayList<>();
   private String desc = "Die Manager";
   private boolean useMultiRoll;
   private int defaultNDice = 2;
@@ -81,7 +80,7 @@ public class DieManager extends AbstractConfigurable {
   public DieManager() {
 
     DieServer d;
-    servers = new HashMap<String,DieServer>();
+    servers = new HashMap<>();
 
     /*
      * Create the Internet Dice Servers we know about

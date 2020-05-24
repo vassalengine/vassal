@@ -41,7 +41,7 @@ public interface ServerStatus {
 
   public static class ModuleSummary {
     private String moduleName;
-    private Map<String,Room> rooms = new HashMap<String,Room>();
+    private Map<String,Room> rooms = new HashMap<>();
 
     public ModuleSummary(String moduleName) {
       this.moduleName = moduleName;

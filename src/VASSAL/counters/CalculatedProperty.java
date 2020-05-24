@@ -234,7 +234,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(name);
     return l;
   }

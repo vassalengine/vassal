@@ -156,7 +156,7 @@ public class ExtensionsManager {
   }
 
   private List<File> getExtensions(File dir) {
-    final List<File> extensions = new ArrayList<File>(0);
+    final List<File> extensions = new ArrayList<>(0);
     if (dir != null && dir.exists()) {
       File[] files = dir.listFiles(filter);
       if (files == null) {

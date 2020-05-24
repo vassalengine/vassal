@@ -39,8 +39,7 @@ public class EditPropertiesAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Map<Configurable,PropertiesWindow> openWindows =
-    new HashMap<Configurable,PropertiesWindow>();
+  protected static Map<Configurable,PropertiesWindow> openWindows = new HashMap<>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 

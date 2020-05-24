@@ -75,7 +75,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   private RoomInfo info;
   private boolean ownedByMe;
   private JabberClient client;
-  private ArrayList<String> owners = new ArrayList<String>();
+  private ArrayList<String> owners = new ArrayList<>();
   private Properties config = new Properties();
 
   private JabberRoom(String name, String jid, RoomInfo info, JabberClient client) {
@@ -312,7 +312,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   }
 
   public static class Manager {
-    private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
+    private Map<String, JabberRoom> jidToRoom = new HashMap<>();
 
     public JabberRoom getRoomByJID(JabberClient client, String jid) {
       return getRoomByJID(client, jid, "");

@@ -35,7 +35,7 @@ import VASSAL.tools.ErrorDialog;
  */
 public class TurnComponent extends AbstractConfigurable {
 
-  protected List<TurnLevel> levels = new ArrayList<TurnLevel>();
+  protected List<TurnLevel> levels = new ArrayList<>();
 
   public void addLevel(TurnLevel t) {
     levels.add(t);

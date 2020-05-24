@@ -93,9 +93,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
 
-  private Map<String,Object> properties = new HashMap<String,Object>();
-  private static Map<String,Configurer> optionConfigurers =
-    new LinkedHashMap<String,Configurer>();
+  private Map<String,Object> properties = new HashMap<>();
+  private static Map<String,Configurer> optionConfigurers = new LinkedHashMap<>();
   private static Properties optionInitialValues = new Properties();
 
   private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -221,7 +220,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    final ArrayList<String> attributes = new ArrayList<String>(
+    final ArrayList<String> attributes = new ArrayList<>(
       Arrays.asList(
         NON_OWNER_UNMASKABLE,
         PROMPT_STRING,
@@ -443,7 +442,7 @@ public class GlobalOptions extends AbstractConfigurable {
    * Implement PropertyNameSource - Expose our preference names
    */
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<>();
     for (Buildable b : getBuildables()) {
       if (b instanceof BasicPreference) {
         l.add(((BasicPreference) b).getVariableName());

@@ -69,6 +69,6 @@ public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
    * @return an <code>Iterable</code> wrapping <code>i</code>
    */
   public static <T> Iterable<T> iterate(Iterator<T> i) {
-    return new IterableIterator<T>(i);
+    return new IterableIterator<>(i);
   }
 }

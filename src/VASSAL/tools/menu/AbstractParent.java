@@ -32,7 +32,7 @@ public abstract class AbstractParent<T extends JComponent>
                 extends AbstractProxy<T>
                 implements ParentProxy {
 
-  protected final List<ChildProxy<?>> children = new ArrayList<ChildProxy<?>>();
+  protected final List<ChildProxy<?>> children = new ArrayList<>();
 
   public void add(final ChildProxy<?> child) {
     children.add(child);
@@ -40,7 +40,7 @@ public abstract class AbstractParent<T extends JComponent>
 
     if (child instanceof MenuMarker) return;
 
-    forEachPeer(new Functor<T>() {
+    forEachPeer(new Functor<>() {
       public void apply(T peer) {
         peer.add(child.createPeer());
       }
@@ -64,7 +64,7 @@ public abstract class AbstractParent<T extends JComponent>
 
     final int rpos = proxyIndexToRealIndex(pos);
 
-    forEachPeer(new Functor<T>() {
+    forEachPeer(new Functor<>() {
       public void apply(T peer) {
         peer.add(child.createPeer(), rpos);
       }

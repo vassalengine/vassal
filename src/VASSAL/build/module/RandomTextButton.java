@@ -186,7 +186,7 @@ public class RandomTextButton extends DiceButton {
    */
   public String[] getAttributeNames() {
     ArrayList<String> l =
-      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
+      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(N_SIDES);
     l.add(FACES);
     l.add(NUMERIC);
@@ -195,9 +195,9 @@ public class RandomTextButton extends DiceButton {
 
   public String[] getAttributeDescriptions() {
     ArrayList<String> l =
-      new ArrayList<String>(Arrays.asList(super.getAttributeDescriptions()));
+      new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
     ArrayList<String> names =
-      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
+      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
     l.add(Resources.getString("Editor.RandomTextButton.faces_numeric")); //$NON-NLS-1$
@@ -206,9 +206,9 @@ public class RandomTextButton extends DiceButton {
 
   public Class<?>[] getAttributeTypes() {
     ArrayList<Class<?>> l =
-      new ArrayList<Class<?>>(Arrays.asList(super.getAttributeTypes()));
+      new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
     ArrayList<String> names =
-      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
+      new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);

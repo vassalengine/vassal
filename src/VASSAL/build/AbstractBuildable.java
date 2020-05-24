@@ -40,7 +40,7 @@ import VASSAL.i18n.Translatable;
  * handled automatically.
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource {
-  protected List<Buildable> buildComponents = new ArrayList<Buildable>();
+  protected List<Buildable> buildComponents = new ArrayList<>();
 
   // Sub-classes can set this reference to perform validity checking
   protected ValidityChecker validator;
@@ -115,7 +115,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
-    final ArrayList<T> l = new ArrayList<T>();
+    final ArrayList<T> l = new ArrayList<>();
     for (Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));
@@ -145,7 +145,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * @return
    */
   public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
-    ArrayList<T> l = new ArrayList<T>();
+    ArrayList<T> l = new ArrayList<>();
     addComponents(target, l);
     return l;
   }
@@ -225,6 +225,6 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * Default implementation of PropertyNameSource - No properties exposed
    */
   public List<String> getPropertyNames() {
-    return new ArrayList<String>();
+    return new ArrayList<>();
   }
 }

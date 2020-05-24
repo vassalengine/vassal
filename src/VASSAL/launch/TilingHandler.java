@@ -167,7 +167,7 @@ public class TilingHandler {
       }
     }
 
-    return new Pair<Integer,Integer>(tcount, maxpix);
+    return new Pair<>(tcount, maxpix);
   }
 
   protected void runSlicer(List<String> multi, final int tcount, int maxheap)
@@ -332,9 +332,9 @@ public class TilingHandler {
    * @throws IOException if one occurs
    */
   public void sliceTiles() throws CancellationException, IOException {
-    final List<String> multi = new ArrayList<String>();
+    final List<String> multi = new ArrayList<>();
     final List<Pair<String,IOException>> failed =
-      new ArrayList<Pair<String,IOException>>();
+      new ArrayList<>();
 
     Pair<Integer,Integer> s;
     DataArchive archive = null;

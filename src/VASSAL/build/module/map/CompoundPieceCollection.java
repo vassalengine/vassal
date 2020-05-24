@@ -84,7 +84,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   protected GamePiece[] getPieces(boolean includeDisabled) {
-    ArrayList<GamePiece> l = new ArrayList<GamePiece>();
+    ArrayList<GamePiece> l = new ArrayList<>();
     int layer = bottomLayer;
     for (int i = 0; i < layers.length; ++i) {
       if (includeDisabled || (!includeDisabled && enabled[layer])) {

@@ -26,10 +26,10 @@ public class IPCMessenger {
   protected final AtomicLong next_id = new AtomicLong(0L);
 
   protected final Map<Long,CompletableFuture<IPCMessage>> waiting =
-    new ConcurrentHashMap<Long,CompletableFuture<IPCMessage>>();
+    new ConcurrentHashMap<>();
 
   protected final BlockingQueue<IPCMessage> outqueue =
-    new LinkedBlockingQueue<IPCMessage>();
+    new LinkedBlockingQueue<>();
 
   protected final ObjectInputStream in;
   protected final ObjectOutputStream out;
@@ -59,7 +59,7 @@ public class IPCMessenger {
     this.in = new ObjectInputStream(in);
     this.lsup = new DefaultMultiEventListenerSupport(this);
 
-    lsup.addEventListener(IPCMessage.class, new EventListener<IPCMessage>() {
+    lsup.addEventListener(IPCMessage.class, new EventListener<>() {
       public void receive(Object src, IPCMessage msg) {
         if (msg.isReply()) {
           final CompletableFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
@@ -69,7 +69,7 @@ public class IPCMessenger {
       }
     });
 
-    lsup.addEventListener(Halt.class, new EventListener<Halt>() {
+    lsup.addEventListener(Halt.class, new EventListener<>() {
       public void receive(Object src, Halt halt) {
         try {
           send(new Fin(halt));
@@ -111,7 +111,7 @@ public class IPCMessenger {
 
     msg.setId(next_id.getAndIncrement());
 
-    final CompletableFuture<IPCMessage> f = new CompletableFuture<IPCMessage>();
+    final CompletableFuture<IPCMessage> f = new CompletableFuture<>();
     if (msg.expectsReply()) {
       waiting.put(msg.getId(), f);
     }

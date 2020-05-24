@@ -74,7 +74,7 @@ public class SoundEncoder implements CommandEncoder {
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
-    private static ArrayList<Player> banned = new ArrayList<Player>();
+    private static ArrayList<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
     private String soundKey;

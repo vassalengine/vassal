@@ -9,7 +9,7 @@ import javax.swing.Action;
 
 
 public class ActionManager {
-  private final Map<Object,Action> map = new HashMap<Object,Action>();
+  private final Map<Object,Action> map = new HashMap<>();
 
   private static final ActionManager instance = new ActionManager();
 

@@ -48,9 +48,9 @@ import VASSAL.chat.SimpleRoom;
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
   private List<PlayerActionFactory> playerActionFactories =
-    new ArrayList<PlayerActionFactory>();
+    new ArrayList<>();
   private List<RoomActionFactory> roomActionFactories =
-    new ArrayList<RoomActionFactory>();
+    new ArrayList<>();
   protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;
   private MouseAdapter roomPopupBuilder;

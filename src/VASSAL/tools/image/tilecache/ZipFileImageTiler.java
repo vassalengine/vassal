@@ -84,7 +84,7 @@ public class ZipFileImageTiler {
       final int th = Integer.parseInt(args[3]);
 
       // Get the image paths from stdin, one per line
-      final List<String> pl = new ArrayList<String>();
+      final List<String> pl = new ArrayList<>();
       BufferedReader stdin = null;
       try {
         stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -108,7 +108,7 @@ public class ZipFileImageTiler {
         runtime.availableProcessors(),
         runtime.availableProcessors()+1,
         60, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>(),
+        new LinkedBlockingQueue<>(),
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
@@ -143,7 +143,7 @@ public class ZipFileImageTiler {
 
         final DataOutputStream out = dout;
 
-        final Callback<String> imageL = new Callback<String>() {
+        final Callback<String> imageL = new Callback<>() {
           public void receive(String ipath) throws IOException {
             out.writeByte(STARTING_IMAGE);
             out.writeUTF(ipath);
@@ -151,14 +151,14 @@ public class ZipFileImageTiler {
           }
         };
 
-        final Callback<Void> tileL = new Callback<Void>() {
+        final Callback<Void> tileL = new Callback<>() {
           public void receive(Void obj) throws IOException {
             out.writeByte(TILE_WRITTEN);
             out.flush();
           }
         };
 
-        final Callback<Void> doneL = new Callback<Void>() {
+        final Callback<Void> doneL = new Callback<>() {
           public void receive(Void obj) throws IOException {
             out.writeByte(TILING_FINISHED);
             out.flush();

@@ -33,7 +33,7 @@ public class BoundsTracker {
   private Set<Map> maps;
 
   public BoundsTracker() {
-    maps = new HashSet<Map>();
+    maps = new HashSet<>();
   }
 
   public void clear() {

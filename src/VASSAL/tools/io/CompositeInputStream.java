@@ -51,7 +51,7 @@ public class CompositeInputStream extends InputStream {
    * @param streams the <code>InputStream</code>s to be concatenated
    */
   public CompositeInputStream(List<InputStream> streams) {
-    queue = new LinkedList<InputStream>(streams);
+    queue = new LinkedList<>(streams);
     in = queue.poll();
   }
 

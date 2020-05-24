@@ -213,7 +213,7 @@ public class StringArrayConfigurer extends Configurer {
       return EMPTY;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }

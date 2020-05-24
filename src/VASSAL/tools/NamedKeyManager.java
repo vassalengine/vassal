@@ -38,8 +38,7 @@ public class NamedKeyManager {
   protected static final int NAMED_MARKER = '\uF8FF';
 
   protected static int nextNamedKey = NAMED_START;
-  protected static HashMap<String, KeyStroke> strokes =
-    new HashMap<String, KeyStroke>();
+  protected static HashMap<String, KeyStroke> strokes = new HashMap<>();
 
   public NamedKeyManager() {
   }

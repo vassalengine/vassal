@@ -37,8 +37,7 @@ import VASSAL.configure.SingleChildInstance;
  * {@link VASSAL.build.module.gamepieceimage.GamePieceLayout}.
  */
 public class GamePieceLayoutsContainer extends AbstractConfigurable {
-  protected Map<String,GamePieceLayout> definitions =
-    new HashMap<String,GamePieceLayout>();
+  protected Map<String,GamePieceLayout> definitions = new HashMap<>();
 
   protected GamePieceLayout getDefinition(String name) {
     return definitions.get(name);

@@ -126,8 +126,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("",this);
-  protected List<MutableProperty.Impl> expressionProperties =
-    new ArrayList<MutableProperty.Impl>();
+  protected List<MutableProperty.Impl> expressionProperties = new ArrayList<>();
 
   protected String deckName;
   protected String localizedDeckName;
@@ -139,8 +138,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean expressionCounting = false;
   protected List<GamePiece> nextDraw = null;
   protected KeyCommand[] commands;
-  protected List<DeckGlobalKeyCommand> globalCommands =
-    new ArrayList<DeckGlobalKeyCommand>();
+  protected List<DeckGlobalKeyCommand> globalCommands = new ArrayList<>();
   protected boolean hotkeyOnEmpty;
   protected NamedKeyStroke emptyKey;
   protected boolean restrictOption;
@@ -210,7 +208,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   protected void setGlobalCommands(String[] commands) {
-    globalCommands = new ArrayList<DeckGlobalKeyCommand>(commands.length);
+    globalCommands = new ArrayList<>(commands.length);
     for (String command : commands) {
       globalCommands.add(new DeckGlobalKeyCommand(command, propertySource));
     }
@@ -774,10 +772,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
-      final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
+      final ArrayList<GamePiece> pieces = new ArrayList<>();
       if (ALWAYS.equals(shuffleOption)) {
         // Instead of shuffling the entire deck, just pick <b>count</b> random elements
-        final ArrayList<Integer> indices = new ArrayList<Integer>();
+        final ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
@@ -873,7 +871,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     faceDown = "true".equals(st.nextToken()); //$NON-NLS-1$
-    final ArrayList<GamePiece> l = new ArrayList<GamePiece>();
+    final ArrayList<GamePiece> l = new ArrayList<>();
     if (st.hasMoreTokens()) {
       final SequenceEncoder.Decoder st2 =
         new SequenceEncoder.Decoder(st.nextToken(), ',');
@@ -899,7 +897,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Reverse the order of the contents of the Deck */
   public Command reverse() {
-    final ArrayList<GamePiece> list = new ArrayList<GamePiece>();
+    final ArrayList<GamePiece> list = new ArrayList<>();
     for (Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
@@ -1030,7 +1028,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      ArrayList<KeyCommand> l = new ArrayList<>();
       KeyCommand c = null;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
@@ -1231,7 +1229,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       public void actionPerformed(ActionEvent e) {
         int[] selection = list.getSelectedIndices();
         if (selection.length > 0) {
-          nextDraw = new ArrayList<GamePiece>();
+          nextDraw = new ArrayList<>();
           for (int value : selection) {
             nextDraw.add(pieces[value].piece);
           }

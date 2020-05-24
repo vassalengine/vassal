@@ -585,7 +585,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    * @return maximum turn string
    */
   protected String getMaximumTurnString() {
-    List<String> levels = new ArrayList<String>();
+    List<String> levels = new ArrayList<>();
     for (Buildable b : getBuildables()) {
       if (b instanceof TurnLevel) {
         ((TurnLevel) b).findMaximumStrings(levels, 0);
@@ -617,7 +617,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    * @return
    */
   protected List<TurnLevel> getActiveChildLevels() {
-    ArrayList<TurnLevel> levels = new ArrayList<TurnLevel>();
+    ArrayList<TurnLevel> levels = new ArrayList<>();
     TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       levels.add(level);

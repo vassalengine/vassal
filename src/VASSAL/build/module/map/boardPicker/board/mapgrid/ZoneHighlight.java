@@ -360,7 +360,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
       final JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
 
-      final HashMap<Integer,JLabel> labelTable = new HashMap<Integer,JLabel>();
+      final HashMap<Integer,JLabel> labelTable = new HashMap<>();
       labelTable.put(0, new JLabel("Transparent"));
       labelTable.put(100, new JLabel("Opaque"));
 
@@ -368,7 +368,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.setPaintTicks(true);
       // Note: JSlider uses the outdated Hashtable. Eventually Hashtable
       // will be deprecated and we'll be able to use the HashMap directly.
-      slider.setLabelTable(new Hashtable<Integer,JLabel>(labelTable));
+      slider.setLabelTable(new Hashtable<>(labelTable));
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
       slider.addChangeListener(new ChangeListener() {

@@ -35,7 +35,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
 
 // FIXME: consider using WeakReferences for listeners to prevent memory leaks
   protected final CopyOnWriteArrayList<PropertyListener<Object>> listeners =
-    new CopyOnWriteArrayList<PropertyListener<Object>>();
+    new CopyOnWriteArrayList<>();
 
   /**
    * {@inheritDoc}
@@ -66,17 +66,17 @@ public class ConcurrentPropertySupport implements PropertySupport {
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?
       Collections.<PropertyListener<Object>>emptyList() :
-      new ArrayList<PropertyListener<Object>>(listeners);
+      new ArrayList<>(listeners);
   }
 
   protected final ConcurrentMap<Property<?>,List<PropertyListener<?>>>
-    plisteners = new ConcurrentHashMap<Property<?>,List<PropertyListener<?>>>();
+    plisteners = new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */
   public <T> void addPropertyListener(Property<T> prop,
                                       PropertyListener<? super T> l) {
     final List<PropertyListener<?>> empty =
-      new CopyOnWriteArrayList<PropertyListener<?>>();
+      new CopyOnWriteArrayList<>();
 
     List<PropertyListener<?>> list = plisteners.putIfAbsent(prop, empty);
     if (list == null) list = empty;

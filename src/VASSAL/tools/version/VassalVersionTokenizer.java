@@ -60,7 +60,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   protected enum State { NUM, DELIM, TAG, EOS, END };
   protected State state = State.NUM;
 
-  protected static Map<String,Integer> tags = new HashMap<String,Integer>();
+  protected static Map<String,Integer> tags = new HashMap<>();
 
   // This is the mapping for tags to svn versions. Only tags which cannot
   // be distinguished from the current version from the numeric portion

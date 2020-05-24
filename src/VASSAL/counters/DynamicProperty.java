@@ -100,7 +100,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
 
-    final ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
+    final ArrayList<DynamicKeyCommand> l = new ArrayList<>();
     for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.getName() != null && dkc.getName().length() > 0) {
         l.add(dkc);
@@ -285,7 +285,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(key);
     return l;
   }
@@ -327,7 +327,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
         }
       };
       keyCommandListConfig.setValue(
-        new ArrayList<DynamicKeyCommand>(Arrays.asList(m.keyCommands)));
+        new ArrayList<>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           boolean isNumeric = numericConfig.booleanValue();

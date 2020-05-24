@@ -39,8 +39,8 @@ public class PrivateChatManager {
   private List<Player> banned;
 
   public PrivateChatManager(ChatServerConnection client) {
-    chatters = new ArrayList<Entry>();
-    banned = new ArrayList<Player>();
+    chatters = new ArrayList<>();
+    banned = new ArrayList<>();
     this.client = client;
   }
 

@@ -261,7 +261,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);
 
-      final ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<>();
       while (st.hasMoreTokens()) {
         l.add(st.nextToken());
       }
@@ -443,7 +443,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     public KeyCommand[] myGetKeyCommands() {
       if (commands == null) {
-        final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+        final ArrayList<KeyCommand> l = new ArrayList<>();
         final GamePiece outer = Decorator.getOutermost(this);
         if (activateCommand.length() > 0 && activateKey.length() > 0) {
           final KeyCommand k = new KeyCommand(activateCommand,
@@ -1066,8 +1066,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
       public String getType() {
         final SequenceEncoder se = new SequenceEncoder(';');
-        final ArrayList<String> imageNames = new ArrayList<String>();
-        final ArrayList<String> commonNames = new ArrayList<String>();
+        final ArrayList<String> imageNames = new ArrayList<>();
+        final ArrayList<String> commonNames = new ArrayList<>();
         int i = 0;
         for (String n : images.getImageNameList()) {
           imageNames.add(n);
@@ -1205,8 +1205,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
       public void reset(Embellishment0 e) {
         name.setText(e.name);
-        names = new ArrayList<String>();
-        isPrefix = new ArrayList<Integer>();
+        names = new ArrayList<>();
+        isPrefix = new ArrayList<>();
         for (int i = 0; i < e.commonName.length; ++i) {
           String s = e.commonName[i];
           Integer is = NEITHER;

@@ -36,7 +36,7 @@ import javax.swing.JWindow;
 public class SplashScreen extends JWindow {
   private static final long serialVersionUID = 1L;
 
-  private static List<SplashScreen> instances = new ArrayList<SplashScreen>();
+  private static List<SplashScreen> instances = new ArrayList<>();
 
   public SplashScreen(Image im) {
     instances.add(this);

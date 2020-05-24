@@ -89,10 +89,10 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   protected final CopyOnWriteArrayList<PropertyListener<Object>> listeners =
-    new CopyOnWriteArrayList<PropertyListener<Object>>();
+    new CopyOnWriteArrayList<>();
 
   protected final CopyOnWriteArrayList<PropertyListener<? super V>> plisteners =
-    new CopyOnWriteArrayList<PropertyListener<? super V>>();
+    new CopyOnWriteArrayList<>();
 
   /** {@inheritDoc} */
   public void addPropertyListener(PropertyListener<Object> l) {
@@ -124,7 +124,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?
       Collections.<PropertyListener<Object>>emptyList() :
-      new ArrayList<PropertyListener<Object>>(listeners);
+      new ArrayList<>(listeners);
   }
 
   /** {@inheritDoc} */

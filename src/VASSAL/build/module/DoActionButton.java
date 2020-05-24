@@ -91,7 +91,7 @@ public class DoActionButton extends AbstractConfigurable
   protected boolean doSound = false;
   protected String soundClip = ""; //$NON-NLS-1$
   protected boolean doHotkey = false;
-  protected List<NamedKeyStroke> hotkeys = new ArrayList<NamedKeyStroke>();
+  protected List<NamedKeyStroke> hotkeys = new ArrayList<>();
   protected boolean doLoop = false;
   protected String loopType = LoopControl.LOOP_COUNTED;
   protected FormattedString loopCount = new FormattedString("1"); //$NON-NLS-1$
@@ -510,7 +510,7 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   protected List<NamedKeyStroke> decodeHotkeys(String s) {
-    List<NamedKeyStroke> list = new ArrayList<NamedKeyStroke>();
+    List<NamedKeyStroke> list = new ArrayList<>();
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     while (sd.hasMoreTokens()) {
       NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
@@ -720,7 +720,7 @@ public class DoActionButton extends AbstractConfigurable
    */
   public List<String> getPropertyNames() {
     if (doLoop && hasIndex) {
-      final ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<>();
       l.add(indexProperty);
       return l;
     }

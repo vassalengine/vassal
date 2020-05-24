@@ -35,7 +35,7 @@ public class ColoredBorder implements Highlighter {
   protected int thickness;
 
   // Additional Highlighters
-  protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
+  protected List<Highlighter> highlighters = new ArrayList<>();
 
   public ColoredBorder() {
     this(Color.black, 3);

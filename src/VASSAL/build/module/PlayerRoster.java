@@ -67,12 +67,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
-  protected List<PlayerInfo> players = new ArrayList<PlayerInfo>();
-  protected List<String> sides = new ArrayList<String>();
+  protected List<PlayerInfo> players = new ArrayList<>();
+  protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
   protected LaunchButton retireButton;
   protected List<SideChangeListener> sideChangeListeners =
-    new ArrayList<SideChangeListener>();
+    new ArrayList<>();
 
   protected String translatedObserver;
 
@@ -387,8 +387,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public Component getControls() {
-    ArrayList<String> availableSides = new ArrayList<String>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<String>();
+    ArrayList<String> availableSides = new ArrayList<>(sides);
+    ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (PlayerInfo p : players) {
       alreadyTaken.add(p.side);
@@ -449,8 +449,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected String promptForSide() {
-    ArrayList<String> availableSides = new ArrayList<String>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<String>();
+    ArrayList<String> availableSides = new ArrayList<>(sides);
+    ArrayList<String> alreadyTaken = new ArrayList<>();
 
     for (PlayerInfo p : players) {
       alreadyTaken.add(p.side);
@@ -635,7 +635,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     if (SIDES.equals(key)) {
       untranslatedSides = sides.toArray(new String[sides.size()]);
       String[] s = StringArrayConfigurer.stringToArray((String) value);
-      sides = new ArrayList<String>(s.length);
+      sides = new ArrayList<>(s.length);
       for (String item : s) {
         sides.add(item);
       }

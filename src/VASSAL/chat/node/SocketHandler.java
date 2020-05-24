@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class SocketHandler {
   protected Socket sock;
   protected SocketWatcher handler;
-  private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<String>();
+  private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<>();
   private boolean isOpen = true;
   private Thread readThread;
   private Thread writeThread;

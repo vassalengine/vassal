@@ -37,7 +37,7 @@ public class ThreadManager {
   private ThreadManager() { }
 
   private static final BlockingQueue<Runnable> requestQueue =
-    new LinkedBlockingQueue<Runnable>();
+    new LinkedBlockingQueue<>();
 /*
     new LinkedBlockingQueue<Runnable>() {
     @Override

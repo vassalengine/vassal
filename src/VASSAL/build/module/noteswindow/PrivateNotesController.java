@@ -45,7 +45,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   private TextConfigurer text;
 
   public PrivateNotesController() {
-    notes = new HashSet<PrivateText>();
+    notes = new HashSet<>();
   }
 
   public Component getControls() {

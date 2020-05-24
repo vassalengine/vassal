@@ -534,7 +534,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    * Implement PropertNameSource - expose names of my ZoneProperties
    */
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<String>();
+    List<String> l = new ArrayList<>();
     for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
       l.add(zp.getConfigureName());
     }

@@ -44,9 +44,9 @@ public class LocaleConfigurer extends Configurer {
 
   protected static final String ANY_COUNTRY = "<Any Country>";
   protected Box panel;
-  protected static Map<String,String> languages = new HashMap<String,String>();
+  protected static Map<String,String> languages = new HashMap<>();
   protected static String[] languageList;
-  protected static Map<String,String> countries = new HashMap<String,String>();
+  protected static Map<String,String> countries = new HashMap<>();
   protected static String[] countryList;
 
   protected JComboBox langBox;
@@ -139,7 +139,7 @@ public class LocaleConfigurer extends Configurer {
    protected String[] getLanguageList() {
     if (languageList == null) {
       String[] langs = Locale.getISOLanguages();
-      ArrayList<String> sortedLangs = new ArrayList<String>();
+      ArrayList<String> sortedLangs = new ArrayList<>();
       for (String s : langs) {
         String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, s);
@@ -154,7 +154,7 @@ public class LocaleConfigurer extends Configurer {
   protected String[] getCountryList() {
     if (countryList == null) {
       String[] c = Locale.getISOCountries();
-      ArrayList<String> sortedCountries = new ArrayList<String>();
+      ArrayList<String> sortedCountries = new ArrayList<>();
       for (String s : c) {
         String country =
                 (new Locale("en", s)).getDisplayCountry(Locale.getDefault());

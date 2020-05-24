@@ -146,7 +146,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   public RollSet getRollSet() {
-    ArrayList<DieRoll> l = new ArrayList<DieRoll>();
+    ArrayList<DieRoll> l = new ArrayList<>();
     for (int i = 0; i < MAX_ROLLS; ++i) {
       if (useDie[i]) {
         l.add(rolls[i]);

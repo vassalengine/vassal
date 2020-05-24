@@ -95,9 +95,9 @@ public class GameState implements CommandEncoder {
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(GameState.class);
 
-  protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
-  protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
-  protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
+  protected Map<String,GamePiece> pieces = new HashMap<>();
+  protected List<GameComponent> gameComponents = new ArrayList<>();
+  protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame;
   protected String lastSave;
   protected File lastSaveFile = null;
@@ -238,7 +238,7 @@ public class GameState implements CommandEncoder {
    * yet finished
    */
   public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
-    ArrayList<GameSetupStep> l = new ArrayList<GameSetupStep>();
+    ArrayList<GameSetupStep> l = new ArrayList<>();
     for (GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {
         l.add(step);
@@ -850,9 +850,9 @@ public class GameState implements CommandEncoder {
    */
   public Command getRestorePiecesCommand() {
     // TODO remove stacks that were empty when the game was loaded and are still empty now
-    final List<GamePiece> pieceList = new ArrayList<GamePiece>(pieces.values());
-    Collections.sort(pieceList, new Comparator<GamePiece>() {
-      private final Map<GamePiece,Integer> indices = new HashMap<GamePiece,Integer>();
+    final List<GamePiece> pieceList = new ArrayList<>(pieces.values());
+    Collections.sort(pieceList, new Comparator<>() {
+      private final Map<GamePiece, Integer> indices = new HashMap<>();
 
       // Cache indices because indexOf() is linear;
       // otherwise sorting would be quadratic.

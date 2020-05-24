@@ -363,7 +363,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private final HashSet<String> uniquePieceNames = new HashSet<String>();
+  private final HashSet<String> uniquePieceNames = new HashSet<>();
   private static boolean usePieceNames = false;
 
   public class Piece {
@@ -411,7 +411,7 @@ public class ADC2Module extends Importer {
 
       ArrayList<Piece> stack = hash.get(position);
       if (stack == null) {
-        stack = new ArrayList<Piece>();
+        stack = new ArrayList<>();
         stack.add(this);
         hash.put(position, stack);
       }
@@ -795,7 +795,7 @@ public class ADC2Module extends Importer {
     private final SymbolSet.SymbolData hiddenSymbol;
     private final int hiddenPieceOptions;
     private final int order;
-    private TreeSet<Player> allies = new TreeSet<Player>(new Comparator<Player>() {
+    private TreeSet<Player> allies = new TreeSet<>(new Comparator<>() {
       public int compare(Player p1, Player p2) { return p1.order - p2.order; }
     });
 
@@ -862,7 +862,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private HashMap<Integer,SymbolSet> cardDecks = new HashMap<Integer,SymbolSet>();
+  private HashMap<Integer,SymbolSet> cardDecks = new HashMap<>();
 
   public class CardClass extends PieceClass {
     private final int setIndex;
@@ -1448,11 +1448,11 @@ public class ADC2Module extends Importer {
   private MapBoard map = null;
   @SuppressWarnings("unused")
   private int gameTurn = -1;
-  private final ArrayList<PieceClass> pieceClasses = new ArrayList<PieceClass>();
-  private final ArrayList<Piece> pieces = new ArrayList<Piece>();
-  private final ArrayList<Player> players = new ArrayList<Player>();
-  private final HashMap<Integer,ArrayList<Piece>> stacks = new HashMap<Integer,ArrayList<Piece>>();
-  private final HashMap<Integer, ArrayList<Piece>> forcePoolHashMap = new HashMap<Integer,ArrayList<Piece>>();
+  private final ArrayList<PieceClass> pieceClasses = new ArrayList<>();
+  private final ArrayList<Piece> pieces = new ArrayList<>();
+  private final ArrayList<Player> players = new ArrayList<>();
+  private final HashMap<Integer, ArrayList<Piece>> stacks = new HashMap<>();
+  private final HashMap<Integer, ArrayList<Piece>> forcePoolHashMap = new HashMap<>();
   private ForcePoolList forcePools = new ForcePoolList();
   private final String[] classValues = new String[8];
   private final String[] pieceValues = new String[8];
@@ -1483,7 +1483,7 @@ public class ADC2Module extends Importer {
   private int classCombatSummaryValues;
   private int pieceCombatSummaryValues;
   private final StatusDots[] statusDots = new StatusDots[6];
-  private final ArrayList<String> turnNames = new ArrayList<String>();
+  private final ArrayList<String> turnNames = new ArrayList<>();
   private boolean useLOS;
   private String deckName;
   private int nCardSets;
@@ -1511,7 +1511,7 @@ private PieceWindow pieceWin;
     private final Color foreground;
     private final int tab;
     private String imageName;
-    private final ArrayList<StatusDots> statusDots = new ArrayList<StatusDots>();
+    private final ArrayList<StatusDots> statusDots = new ArrayList<>();
 
     public StateFlag(String flag, Color background, Color foreground, int tab) {
       this.name = flag;
@@ -1559,11 +1559,11 @@ private PieceWindow pieceWin;
 
   private String getFlagTab(int height, StateFlag flag) throws IOException {
     if (hiddenFlagImages == null)
-      hiddenFlagImages = new HashMap<StateFlag, HashMap<Dimension,String>>();
+      hiddenFlagImages = new HashMap<>();
 
     HashMap<Dimension,String> map = hiddenFlagImages.get(flag);
     if (map == null) {
-      map = new HashMap<Dimension,String>();
+      map = new HashMap<>();
       hiddenFlagImages.put(flag, map);
     }
 
@@ -1593,11 +1593,11 @@ private PieceWindow pieceWin;
 
   private String getFlagLayer(Dimension d, StateFlag flag) throws IOException {
     if (hiddenFlagImages == null)
-      hiddenFlagImages = new HashMap<StateFlag, HashMap<Dimension,String>>();
+      hiddenFlagImages = new HashMap<>();
 
     HashMap<Dimension,String> map = hiddenFlagImages.get(flag);
     if (map == null) {
-      map = new HashMap<Dimension,String>();
+      map = new HashMap<>();
       hiddenFlagImages.put(flag, map);
     }
 

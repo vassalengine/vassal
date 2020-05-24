@@ -145,8 +145,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
-  protected java.util.Map<Double,TexturePaint> textures =
-    new HashMap<Double,TexturePaint>();
+  protected java.util.Map<Double,TexturePaint> textures = new HashMap<>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;

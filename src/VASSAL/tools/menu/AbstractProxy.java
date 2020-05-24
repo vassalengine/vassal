@@ -17,9 +17,9 @@ import javax.swing.JComponent;
 public abstract class AbstractProxy<T extends JComponent>
                 implements ChildProxy<T> {
   protected final List<WeakReference<T>> peers =
-    new ArrayList<WeakReference<T>>();
+    new ArrayList<>();
 
-  protected final ReferenceQueue<T> queue = new ReferenceQueue<T>();
+  protected final ReferenceQueue<T> queue = new ReferenceQueue<>();
 
   protected void processQueue() {
     Reference<? extends T> ref;
@@ -49,7 +49,7 @@ public abstract class AbstractProxy<T extends JComponent>
     this.parent = parent;
 
     if (parent == null) {
-      forEachPeer(new Functor<T>() {
+      forEachPeer(new Functor<>() {
         public void apply(T peer) {
           final Container par = peer.getParent();
           if (par != null) {

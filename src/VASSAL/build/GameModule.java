@@ -166,12 +166,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected WizardSupport wizardSupport;
   protected PropertyChangeSupport idChangeSupport;
 
-  protected List<KeyStrokeSource> keyStrokeSources =
-    new ArrayList<KeyStrokeSource>();
-  protected List<KeyStrokeListener> keyStrokeListeners =
-    new ArrayList<KeyStrokeListener>();
+  protected List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
+  protected List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
-  protected List<String> deferredChat = new ArrayList<String>();
+  protected List<String> deferredChat = new ArrayList<>();
 
   protected int nextGpId = 0;
 
@@ -1079,7 +1077,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   protected Long buildCrc() {
-    final List<File> files = new ArrayList<File>();
+    final List<File> files = new ArrayList<>();
     if (getDataArchive().getArchive() != null) {
       files.add(new File(getDataArchive().getName()));
     }

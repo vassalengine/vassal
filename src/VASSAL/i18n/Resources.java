@@ -61,7 +61,7 @@ public class Resources {
 
   // Note: The Locale ctor takes the lower-case two-letter ISO language code.
   protected final List<Locale> supportedLocales =
-    new ArrayList<Locale>(Arrays.asList(
+    new ArrayList<>(Arrays.asList(
       Locale.ENGLISH,
       Locale.GERMAN,
       Locale.FRENCH,
@@ -70,7 +70,7 @@ public class Resources {
       Locale.JAPANESE,
       new Locale("nl")  // Dutch
     )
-  );
+    );
 
   protected Locale locale = Locale.getDefault();
   protected static String DATE_FORMAT = "{0,date}";
@@ -99,7 +99,7 @@ public class Resources {
       addLocale(myLocale);
     }
 
-    final ArrayList<String> languages = new ArrayList<String>();
+    final ArrayList<String> languages = new ArrayList<>();
     for (Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
@@ -169,8 +169,8 @@ public class Resources {
       StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        ArrayList<String> valid = new ArrayList<String>(Arrays
-            .asList(config.getValidValues()));
+        ArrayList<String> valid = new ArrayList<>(Arrays
+          .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[valid.size()]));
       }

@@ -45,8 +45,8 @@ import VASSAL.tools.FormattedString;
 public class MovementReporter {
   protected FormattedString format = new FormattedString();
 
-  protected List<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
-  protected List<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
+  protected List<MoveSummary> movesToReport = new ArrayList<>();
+  protected List<MoveSummary> movesToMark = new ArrayList<>();
 
   public MovementReporter(Command moveCommand) {
     extractMoveCommands(moveCommand);
@@ -282,7 +282,7 @@ public class MovementReporter {
   public static class MoveSummary {
     protected String oldMapId, newMapId;
     protected Point oldPosition, newPosition;
-    protected List<GamePiece> pieces = new ArrayList<GamePiece>();
+    protected List<GamePiece> pieces = new ArrayList<>();
 
     public MoveSummary(AddPiece c) {
       GamePiece target = c.getTarget();

@@ -50,7 +50,7 @@ import VASSAL.i18n.Resources;
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
  */
 public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, GridContainer {
-  protected List<Zone> zones = new ArrayList<Zone>();
+  protected List<Zone> zones = new ArrayList<>();
   protected MapGrid background;
   protected GridContainer container;
   protected ZonedGridHighlighter zoneHighlighters;

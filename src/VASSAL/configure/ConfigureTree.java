@@ -91,8 +91,7 @@ import VASSAL.tools.menu.MenuManager;
 public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener {
   private static final long serialVersionUID = 1L;
 
-  protected Map<Configurable, DefaultMutableTreeNode> nodes =
-    new HashMap<Configurable, DefaultMutableTreeNode>();
+  protected Map<Configurable, DefaultMutableTreeNode> nodes = new HashMap<>();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
@@ -125,8 +124,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action helpAction;
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
-  protected static List<AdditionalComponent> additionalComponents =
-    new ArrayList<AdditionalComponent>();
+  protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
@@ -262,7 +260,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JPopupMenu buildPopupMenu(final Configurable target) {
     final JPopupMenu popup = new JPopupMenu();
-    final ArrayList<Action> l = new ArrayList<Action>();
+    final ArrayList<Action> l = new ArrayList<>();
     l.add(buildEditAction(target));
     l.add(buildEditPiecesAction(target));
     addActionGroup(popup, l);
@@ -524,7 +522,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected List<Action> buildAddActionsFor(final Configurable target) {
-    final ArrayList<Action> l = new ArrayList<Action>();
+    final ArrayList<Action> l = new ArrayList<>();
     for (Class<? extends Buildable> newConfig :
             target.getAllowableConfigureComponents()) {
       l.add(buildAddAction(target, newConfig));
@@ -724,7 +722,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     DefaultMutableTreeNode parentNode = getTreeNode(parent);
     Configurable[] oldContents = parent.getConfigureComponents();
     boolean succeeded = true;
-    ArrayList<Configurable> moveToBack = new ArrayList<Configurable>();
+    ArrayList<Configurable> moveToBack = new ArrayList<>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
         oldContents[i].removeFrom(parent);

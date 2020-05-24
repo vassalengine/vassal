@@ -250,7 +250,7 @@ public class MapBoard extends Importer {
 
     void overlay(MapLayer layer) {
       if (layers == null) {
-        layers = new ArrayList<MapLayer>();
+        layers = new ArrayList<>();
       }
       layers.add(layer);
     }
@@ -458,9 +458,9 @@ public class MapBoard extends Importer {
    * the default order of line definitions for hex sides and hex lines.
    */
   private static class Hex {
-    ArrayList<Line> hexLines = new ArrayList<Line>();
+    ArrayList<Line> hexLines = new ArrayList<>();
 
-    ArrayList<Line> hexSides = new ArrayList<Line>();
+    ArrayList<Line> hexSides = new ArrayList<>();
   }
 
   /**
@@ -1011,7 +1011,7 @@ public class MapBoard extends Importer {
 
     void drawLines(Graphics2D g, int cap) {
       final ArrayList<LineDefinition> lds =
-        new ArrayList<LineDefinition>(Arrays.asList(lineDefinitions));
+        new ArrayList<>(Arrays.asList(lineDefinitions));
 
       // find the next line in priority
       while (lds.size() > 0) {
@@ -1046,7 +1046,7 @@ public class MapBoard extends Importer {
 
     // using floats because we really want to aim for the centre pixel, not necessarily
     // the space between pixels--only important for aliasing effects.
-    private ArrayList<ArrayList<Point2D.Float>> points = new ArrayList<ArrayList<Point2D.Float>>();
+    private ArrayList<ArrayList<Point2D.Float>> points = new ArrayList<>();
 
     // line width
     private final int size;
@@ -1193,7 +1193,7 @@ public class MapBoard extends Importer {
       }
 
       // both A and B are open
-      ArrayList<Point2D.Float> newLine = new ArrayList<Point2D.Float>(2);
+      ArrayList<Point2D.Float> newLine = new ArrayList<>(2);
       newLine.add(a);
       newLine.add(b);
       points.add(newLine);
@@ -2122,7 +2122,7 @@ public class MapBoard extends Importer {
 
   // Archive of fonts used for placenames. makes reuse possible and is
   // probably faster as most of the place names use only one of a very few fonts.
-  private final static HashMap<Integer, Font> defaultFonts = new HashMap<Integer, Font>();
+  private final static HashMap<Integer, Font> defaultFonts = new HashMap<>();
 
   // which level to import
   private static final int zoomLevel = 2;
@@ -2168,7 +2168,7 @@ public class MapBoard extends Importer {
       f = new Font(fontName, fontStyle, size);
       if (isUnderline) {
         // TODO: why doesn't underlining doesn't work? Why why why?
-        Hashtable<TextAttribute, Object> hash = new Hashtable<TextAttribute, Object>();
+        Hashtable<TextAttribute, Object> hash = new Hashtable<>();
         hash.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         f = f.deriveFont(hash);
       }
@@ -2178,7 +2178,7 @@ public class MapBoard extends Importer {
   }
 
   // tertiary symbols.
-  private final ArrayList<HexData> attributes = new ArrayList<HexData>();
+  private final ArrayList<HexData> attributes = new ArrayList<>();
 
   // name of the map board is derived from the file name
   private String baseName;
@@ -2187,10 +2187,10 @@ public class MapBoard extends Importer {
   private Hex[] hexes;
 
   // hexline data
-  private final ArrayList<HexLine> hexLines = new ArrayList<HexLine>();
+  private final ArrayList<HexLine> hexLines = new ArrayList<>();
 
   // hexside data
-  private final ArrayList<HexSide> hexSides = new ArrayList<HexSide>();
+  private final ArrayList<HexSide> hexSides = new ArrayList<>();
 
   // layout of the hexes or squares
   private Layout layout;
@@ -2199,28 +2199,28 @@ public class MapBoard extends Importer {
   private LineDefinition[] lineDefinitions;
 
   // organizes all the drawable elements in order of drawing priority
-  private ArrayList<MapLayer> mapElements = new ArrayList<MapLayer>();
+  private ArrayList<MapLayer> mapElements = new ArrayList<>();
 
   // grid numbering systems
-  private final ArrayList<MapSheet> mapSheets = new ArrayList<MapSheet>();
+  private final ArrayList<MapSheet> mapSheets = new ArrayList<>();
 
   // labels; not necessary actual places corresponding to a hex, although
   // that's how it's described by ADC2
-  private final ArrayList<PlaceName> placeNames = new ArrayList<PlaceName>();
+  private final ArrayList<PlaceName> placeNames = new ArrayList<>();
 
   // optional place symbol in addition to primary and secondary mapboard
   // symbol
-  private final ArrayList<HexData> placeSymbols = new ArrayList<HexData>();
+  private final ArrayList<HexData> placeSymbols = new ArrayList<>();
 
   // primary mapboard symbols. Every hex must have one even if it's null.
-  private final ArrayList<HexData> primaryMapBoardSymbols = new ArrayList<HexData>();
+  private final ArrayList<HexData> primaryMapBoardSymbols = new ArrayList<>();
 
   // and secondary mapboard symbols (typically a lot fewer)
-  private final ArrayList<HexData> secondaryMapBoardSymbols = new ArrayList<HexData>();
+  private final ArrayList<HexData> secondaryMapBoardSymbols = new ArrayList<>();
 
   // overlay symbol. there's only one, but we make it an ArrayList<> for consistency
   // with other drawing objects
-  private final ArrayList<MapBoardOverlay> overlaySymbol = new ArrayList<MapBoardOverlay>();
+  private final ArrayList<MapBoardOverlay> overlaySymbol = new ArrayList<>();
 
   // symbol set associated with this map -- needed for mapboard symbols
   private SymbolSet set;
@@ -2317,7 +2317,7 @@ public class MapBoard extends Importer {
     // obviously, element types can't be sorted before we do this.
     // TODO: check this! If they're turned off in the map, can they be turned on
     // again in the player?
-    final ArrayList<MapLayer> elements = new ArrayList<MapLayer>(mapElements);
+    final ArrayList<MapLayer> elements = new ArrayList<>(mapElements);
     if (in.readByte() == 0)
       mapElements.remove(elements.get(drawingPriorities[0]));
     if (in.readByte() == 0)
@@ -2545,7 +2545,7 @@ public class MapBoard extends Importer {
 
     byte[] priority = new byte[10];
     in.readFully(priority);
-    ArrayList<MapLayer> items = new ArrayList<MapLayer>(mapElements.size());
+    ArrayList<MapLayer> items = new ArrayList<>(mapElements.size());
     for (int i = 0; i < mapElements.size(); ++i) {
 
       // invalid index: abort reordering and switch back to default
@@ -2994,7 +2994,7 @@ public class MapBoard extends Importer {
     // write place names as pieces with no image.
     getMainMap();
     final Point offset = getCenterOffset();
-    final HashSet<String> set = new HashSet<String>();
+    final HashSet<String> set = new HashSet<>();
     final Board board = getBoard();
 
     for (PlaceName pn : placeNames) {

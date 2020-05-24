@@ -29,7 +29,7 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.i18n.Resources;
 
 public class RoomManager {
-  private List<Room> rooms = new ArrayList<Room>();
+  private List<Room> rooms = new ArrayList<>();
   private SimpleRoom defaultRoom =
     new SimpleRoom(Resources.getString("Chat.main_room")); //$NON-NLS-1$
 

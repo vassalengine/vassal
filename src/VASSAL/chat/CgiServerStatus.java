@@ -48,7 +48,7 @@ public class CgiServerStatus implements ServerStatus {
   public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
   public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
 
-  private static final Map<String,Long> timeRanges = new HashMap<String,Long>();
+  private static final Map<String,Long> timeRanges = new HashMap<>();
 
   private static final String[] times = new String[]{
     Resources.getString(LAST_DAY),
@@ -67,7 +67,7 @@ public class CgiServerStatus implements ServerStatus {
 
   public ServerStatus.ModuleSummary[] getStatus() {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
-      new HashMap<String,ServerStatus.ModuleSummary>();
+      new HashMap<>();
     try {
       for (String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
@@ -106,9 +106,8 @@ public class CgiServerStatus implements ServerStatus {
     return times;
   }
 
-  private SortedMap<Long,List<String[]>> records =
-    new TreeMap<Long,List<String[]>>();
-  private List<Range<Long>> requests = new ArrayList<Range<Long>>();
+  private SortedMap<Long,List<String[]>> records = new TreeMap<>();
+  private List<Range<Long>> requests = new ArrayList<>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
     if (time <= 0) return getStatus();
@@ -117,7 +116,7 @@ public class CgiServerStatus implements ServerStatus {
 
     // start with new interval
     final Range<Long> req = Range.between(now - time, now);
-    final ArrayList<Range<Long>> toRequest = new ArrayList<Range<Long>>();
+    final ArrayList<Range<Long>> toRequest = new ArrayList<>();
     toRequest.add(req);
 
     // subtract each old interval from new interval
@@ -152,7 +151,7 @@ public class CgiServerStatus implements ServerStatus {
 
           List<String[]> l = records.get(when);
           if (l == null) {
-            l = new ArrayList<String[]>();
+            l = new ArrayList<>();
             records.put(when, l);
           }
 
@@ -193,7 +192,7 @@ public class CgiServerStatus implements ServerStatus {
 
     // pull what we need from the records
     final HashMap<String,ServerStatus.ModuleSummary> entries =
-      new HashMap<String,ServerStatus.ModuleSummary>();
+      new HashMap<>();
 
     for (List<String[]> l : records.subMap(req.getMinimum(),
                                            req.getMaximum()).values()) {
@@ -221,7 +220,7 @@ public class CgiServerStatus implements ServerStatus {
 
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ServerStatus.ModuleSummary[entries.size()]);
-    Arrays.sort(e, new Comparator<ServerStatus.ModuleSummary>() {
+    Arrays.sort(e, new Comparator<>() {
       public int compare(ServerStatus.ModuleSummary a,
                          ServerStatus.ModuleSummary b) {
         return a.getModuleName().compareTo(b.getModuleName());

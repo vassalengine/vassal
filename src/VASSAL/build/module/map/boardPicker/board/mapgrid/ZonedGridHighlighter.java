@@ -40,7 +40,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   protected Color currentColor ;
 
   public ZonedGridHighlighter() {
-    highlightList = new ArrayList<ZoneHighlight>();
+    highlightList = new ArrayList<>();
   }
 
   public void addHighlight(ZoneHighlight h) {

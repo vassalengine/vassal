@@ -42,7 +42,7 @@ public class StringUtils {
    * @return a single delimited <code>String</code>
    */
   public static String join(String delim, String... str) {
-    return join(delim, new ArrayIterator<String>(str));
+    return join(delim, new ArrayIterator<>(str));
   }
 
   /** @deprecated Use {@link #join(String,String...)} instead. */

@@ -267,7 +267,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(Properties.MOVED);
     return l;
   }

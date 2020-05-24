@@ -63,7 +63,7 @@ public class Marker extends Decorator implements EditablePiece {
   public void mySetType(String s) {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -170,7 +170,7 @@ public class Marker extends Decorator implements EditablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     for (String key : keys) {
       l.add(key);
     }

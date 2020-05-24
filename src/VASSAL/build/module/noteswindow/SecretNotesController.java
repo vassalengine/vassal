@@ -91,7 +91,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
 
   public SecretNotesController() {
-    notes = new ArrayList<SecretNote>();
+    notes = new ArrayList<>();
     controls = new Controls();
   }
 
@@ -218,7 +218,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   }
 
   public void captureState() {
-    lastSavedNotes = new ArrayList<SecretNote>(notes);
+    lastSavedNotes = new ArrayList<>(notes);
   }
 
   public void restoreState() {

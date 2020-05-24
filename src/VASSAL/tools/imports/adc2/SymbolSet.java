@@ -422,7 +422,7 @@ public class SymbolSet extends Importer{
    */
   public Dimension getModalSize() {
     final HashMap<Dimension,Integer> histogram =
-      new HashMap<Dimension,Integer>();
+      new HashMap<>();
 
     for (SymbolData piece : gamePieceData) {
       final BufferedImage im = piece.getImage();

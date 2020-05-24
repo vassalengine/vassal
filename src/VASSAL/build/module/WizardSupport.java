@@ -117,7 +117,7 @@ public class WizardSupport {
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
   public static final String WELCOME_WIZARD_ENABLED = "showWelcomeWizard"; //$NON-NLS-1$
   protected Dimension logoSize = new Dimension(200, 200);
-  protected List<PredefinedSetup> setups = new ArrayList<PredefinedSetup>();
+  protected List<PredefinedSetup> setups = new ArrayList<>();
   protected Tutorial tutorial;
 
   public WizardSupport() {
@@ -170,7 +170,7 @@ public class WizardSupport {
 
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
-    final HashMap<String, Wizard> props = new HashMap<String, Wizard>();
+    final HashMap<String, Wizard> props = new HashMap<>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
 
     Action help = null;
@@ -218,7 +218,7 @@ public class WizardSupport {
   }
 
   public WizardPanelProvider createPlayOfflinePanels() {
-    ArrayList<PredefinedSetup> l = new ArrayList<PredefinedSetup>();
+    ArrayList<PredefinedSetup> l = new ArrayList<>();
     for (PredefinedSetup ps : setups) {
       if (!ps.isMenu())
         l.add(ps);
@@ -669,7 +669,7 @@ public class WizardSupport {
         fileConfig = new FileConfigurer(null,
             Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          private Set<File> processing = new HashSet<File>();
+          private Set<File> processing = new HashSet<>();
 
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
@@ -755,8 +755,8 @@ public class WizardSupport {
 
     public static GameSetupPanels newInstance() {
       GameSetupPanels panels = null;
-      final ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
-      final ArrayList<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
+      final ArrayList<SetupStepPage> pages = new ArrayList<>();
+      final ArrayList<GameSetupStep> setupSteps = new ArrayList<>();
       for (Iterator<GameSetupStep> i = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); i.hasNext();) {
         final GameSetupStep step = i.next();
         setupSteps.add(step);

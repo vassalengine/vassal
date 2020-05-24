@@ -32,7 +32,7 @@ import java.util.List;
  * @see VassalVersion
  */
 public class Version implements Comparable<Version> {
-  protected final List<Integer> tokens = new ArrayList<Integer>();
+  protected final List<Integer> tokens = new ArrayList<>();
   protected final String vstring;
   protected final boolean valid;
 

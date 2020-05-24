@@ -57,7 +57,7 @@ public class MenuProxy extends AbstractParent<JMenu> {
   public void setText(final String text) {
     this.text = text;
 
-    forEachPeer(new Functor<JMenu>() {
+    forEachPeer(new Functor<>() {
       public void apply(JMenu menu) {
         menu.setText(text);
       }
@@ -76,16 +76,16 @@ public class MenuProxy extends AbstractParent<JMenu> {
       if (peer != null) menu.add(peer);
     }
 
-    peers.add(new WeakReference<JMenu>(menu, queue));
+    peers.add(new WeakReference<>(menu, queue));
     return menu;
   }
 
   public void setMnemonic(final char mnemonic) {
     this.mnemonic = mnemonic;
-    forEachPeer(new Functor<JMenu>() {
-         public void apply(JMenu menu) {
-           menu.setMnemonic(mnemonic);
-         }
+    forEachPeer(new Functor<>() {
+      public void apply(JMenu menu) {
+        menu.setMnemonic(mnemonic);
+      }
     });
   }
 }

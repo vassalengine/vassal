@@ -219,7 +219,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
      * looks for the names of all decks already defined
      */
     public String[] getValidValues(AutoConfigurable target) {
-      ArrayList<String> l = new ArrayList<String>();
+      ArrayList<String> l = new ArrayList<>();
       l.add(NONE);
       for (GameComponent g :
            GameModule.getGameModule().getGameState().getGameComponents()) {
@@ -805,7 +805,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    * and any counting properties.
    */
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<String>();
+    List<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_numPieces");
     for (String ce : dummy.getCountExpressions()) {
       l.add(getConfigureName()+"_"+(new Deck.CountExpression(ce)).getName());

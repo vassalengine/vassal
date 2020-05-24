@@ -123,7 +123,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   protected KeyCommand[] getKeyCommands() {
     KeyCommand[] commands = super.getKeyCommands();
     ArrayList<KeyCommand> newCommands =
-      new ArrayList<KeyCommand>(commands.length);
+      new ArrayList<>(commands.length);
     if (matchesFilter()) {
       for (KeyCommand command : commands) {
         boolean matches = false;

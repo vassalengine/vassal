@@ -108,7 +108,7 @@ public class ColorManager extends AbstractConfigurable {
    * User defined Colors
    */
   protected Map<String,ColorSwatch> userColors =
-    new HashMap<String,ColorSwatch>();
+    new HashMap<>();
 
   public ColorManager() {
     instance = this;
@@ -229,11 +229,11 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorNames() {
-    ArrayList<ColorSwatch> a = new ArrayList<ColorSwatch>(userColors.values());
+    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
     ArrayList<String> names =
-      new ArrayList<String>(a.size() + standardColors.length);
+      new ArrayList<>(a.size() + standardColors.length);
 
     for (ColorSwatch cs : a) {
       names.add(cs.getConfigureName());

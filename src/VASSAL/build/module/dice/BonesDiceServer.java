@@ -106,7 +106,7 @@ public class BonesDiceServer extends DieServer {
 
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
-    final Vector<String> returnString = new Vector<String>();
+    final Vector<String> returnString = new Vector<>();
 
     final URL url = new URL(rollString[0]);
     final HttpURLConnection connection =

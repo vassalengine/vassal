@@ -108,7 +108,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   // FIXME: rename to newTaskFor(), mark as @Override in Java 1.6+
   /** {@inheritDoc} */
   protected <T> RunnableFuture<T> newTask(final Callable<T> cable) {
-    return new EDTRunnableFuture<T>() {
+    return new EDTRunnableFuture<>() {
       protected void runOnEDT() throws Exception {
         result = cable.call();
       }
@@ -118,7 +118,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   // FIXME: rename to newTaskFor(), mark as @Override in Java 1.6+
   /** {@inheritDoc} */
   protected <T> RunnableFuture<T> newTask(final Runnable rable, T result) {
-    return new EDTRunnableFuture<T>(result) {
+    return new EDTRunnableFuture<>(result) {
       protected void runOnEDT() {
         rable.run();
       }
@@ -175,7 +175,7 @@ public class EDTExecutorService extends AbstractExecutorService {
                                                   throws InterruptedException {
     if (tasks == null) throw new NullPointerException();
 
-    final List<Future<T>> futures = new ArrayList<Future<T>>(tasks.size());
+    final List<Future<T>> futures = new ArrayList<>(tasks.size());
     boolean done = false;
     try {
       for (Callable<T> t : tasks) {
@@ -215,7 +215,7 @@ public class EDTExecutorService extends AbstractExecutorService {
     if (unit == null) throw new NullPointerException();
 
     long nanos = unit.toNanos(timeout);
-    final List<Future<T>> futures = new ArrayList<Future<T>>(tasks.size());
+    final List<Future<T>> futures = new ArrayList<>(tasks.size());
     boolean done = false;
     try {
       for (Callable<T> t : tasks) futures.add(newTask(t));
@@ -280,7 +280,7 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   // The poision pill task used for shutting down the ExecutorService
   protected final EDTRunnableFuture<Void> poison_pill =
-                                                new EDTRunnableFuture<Void>() {
-    protected void runOnEDT() {}
-  };
+    new EDTRunnableFuture<>() {
+      protected void runOnEDT() {}
+    };
 }

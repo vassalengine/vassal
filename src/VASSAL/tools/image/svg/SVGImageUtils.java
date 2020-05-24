@@ -124,7 +124,7 @@ public class SVGImageUtils {
    */
   public static List<String> getExternalReferences(String path)
                                                            throws IOException {
-    final ArrayList<String> reflist = new ArrayList<String>();
+    final ArrayList<String> reflist = new ArrayList<>();
     reflist.add(path);
     return getExternalReferences(path, reflist);
   }
@@ -140,7 +140,7 @@ public class SVGImageUtils {
   protected static List<String> getExternalReferences(
                           String path, List<String> known) throws IOException {
 
-    final HashSet<String> follow = new HashSet<String>();
+    final HashSet<String> follow = new HashSet<>();
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
 
     Document doc = null;

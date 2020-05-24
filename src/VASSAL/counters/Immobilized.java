@@ -286,7 +286,7 @@ public class Immobilized extends Decorator implements EditablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);

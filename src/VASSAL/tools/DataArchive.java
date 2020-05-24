@@ -71,11 +71,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   protected FileArchive archive;
 
-  protected List<DataArchive> extensions = new ArrayList<DataArchive>();
+  protected List<DataArchive> extensions = new ArrayList<>();
 
 // FIXME: these should go into a cache, like images have
   private final Map<String,AudioClip> soundCache =
-    new HashMap<String,AudioClip>();
+    new HashMap<>();
 
   protected SortedSet<String> localImages = null;
 
@@ -342,7 +342,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet() {
-    final TreeSet<String> s = new TreeSet<String>();
+    final TreeSet<String> s = new TreeSet<>();
     getImageNamesRecursively(s);
     return s;
   }
@@ -357,7 +357,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   protected SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s = new TreeSet<String>();
+    final TreeSet<String> s = new TreeSet<>();
 
     if (archive != null) {
       try {
@@ -482,7 +482,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   @Deprecated
   private final Map<String,ImageSource> imageSources =
-    new HashMap<String,ImageSource>();
+    new HashMap<>();
 
   /**
    * Add an ImageSource under the given name, but only if no source is

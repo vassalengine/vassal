@@ -175,7 +175,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      ArrayList<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
       }
