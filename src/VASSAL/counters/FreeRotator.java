@@ -615,7 +615,7 @@ public class FreeRotator extends Decorator
       myAngle = p.x < origin.x ? -Math.PI/2.0 : Math.PI/2.0;
     }
     else {
-      myAngle = Math.atan((double)(p.x - origin.x) / (double)(origin.y - p.y));
+      myAngle = Math.atan((double)(p.x - origin.x) / (origin.y - p.y));
       if (origin.y < p.y) {
         myAngle += Math.PI;
       }

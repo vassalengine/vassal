@@ -75,7 +75,7 @@ public class BasicModule extends GameModule {
   private static final Logger log =
     LoggerFactory.getLogger(BasicModule.class);
 
-  private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
+  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
   protected GameRefresher gameRefresher;
 

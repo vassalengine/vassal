@@ -1085,13 +1085,13 @@ public class MapBoard extends Importer {
     }
 
     void addLine(int x1, int y1, float x2, float y2) {
-      addLine(new Point2D.Float((float) x1, (float) y1),
+      addLine(new Point2D.Float(x1, y1),
           new Point2D.Float(x2, y2));
     }
 
     void addLine(int x1, int y1, int x2, int y2) {
-      addLine(new Point2D.Float((float) x1, (float) y1),
-          new Point2D.Float((float) x2, (float) y2));
+      addLine(new Point2D.Float(x1, y1),
+          new Point2D.Float(x2, y2));
     }
 
     /**

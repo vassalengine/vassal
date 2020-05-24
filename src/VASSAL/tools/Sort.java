@@ -145,7 +145,7 @@ public class Sort {
             int len = Math.min(s1.length(), s2.length());
             int result = 0;
             for (int i = 0; i < len; ++i) {
-                result = (int) s1.charAt(i) - (int) s2.charAt(i);
+                result = s1.charAt(i) - s2.charAt(i);
                 if (result != 0) {
                     return result;
                 }

@@ -237,17 +237,17 @@ import java.awt.image.WritableRaster;
            for (int i=cube.lower; i<=cube.upper; i++) {
                color = histPtr[i];
                r = red(color);
-               rsum += (float)r*(float)hist[color];
+               rsum += (float)r* hist[color];
                g = green(color);
-               gsum += (float)g*(float)hist[color];
+               gsum += (float)g* hist[color];
                b = blue(color);
-               bsum += (float)b*(float)hist[color];
+               bsum += (float)b* hist[color];
            }
 
            // Update the color map
-           r = (int)(rsum/(float)cube.count);
-           g = (int)(gsum/(float)cube.count);
-           b = (int)(bsum/(float)cube.count);
+           r = (int)(rsum/ cube.count);
+           g = (int)(gsum/ cube.count);
+           b = (int)(bsum/ cube.count);
            if (r==248 && g==248 && b==248)
                r=g=b=255;  // Restore white (255,255,255)
            rLUT[k] = (byte)r;

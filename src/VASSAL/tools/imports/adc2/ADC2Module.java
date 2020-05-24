@@ -2759,7 +2759,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     c.anchor = GridBagConstraints.CENTER;
     panel.setLayout(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    final int nColumns = (int) Math.sqrt((double) nForcePools);
+    final int nColumns = (int) Math.sqrt(nForcePools);
     Iterator<Pool> iter = forcePools.iterator(ForcePool.class);
     for (int i = 0; i < nForcePools; ++i) {
       ForcePool fp = (ForcePool) iter.next();

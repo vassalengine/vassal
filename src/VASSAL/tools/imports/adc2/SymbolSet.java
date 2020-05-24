@@ -458,7 +458,7 @@ public class SymbolSet extends Importer{
    * @return Map board symbol size corresponding to the specified zoom level
    */
   double getZoomFactor(int zoomLevel) {
-    return (double) mapBoardSymbolSize[zoomLevel] / (double) mapBoardSymbolSize[SymbolSet.zoomLevel];
+    return (double) mapBoardSymbolSize[zoomLevel] / mapBoardSymbolSize[SymbolSet.zoomLevel];
   }
 
   /**

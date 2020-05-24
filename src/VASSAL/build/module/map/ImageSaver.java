@@ -394,7 +394,7 @@ public class ImageSaver extends AbstractConfigurable {
       // ensure that the size of the image data array (4 bytes per pixel)
       // does not exceed the maximum array size, 2^31-1 elements;
       // otherwise we'll overflow an int and have a negavive array size
-      while ((long)tw * (long)th > Integer.MAX_VALUE/4) {
+      while ((long)tw * th > Integer.MAX_VALUE/4) {
         if (tw > th) {
           tw = (int) Math.ceil(tw/2.0);
         }

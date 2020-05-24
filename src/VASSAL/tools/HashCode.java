@@ -38,15 +38,15 @@ public final class HashCode {
   }
 
   public static final int hash(final byte value) {
-    return (int) value;
+    return value;
   }
 
   public static final int hash(final char value) {
-    return (int) value;
+    return value;
   }
 
   public static final int hash(final short value) {
-    return (int) value;
+    return value;
   }
 
   public static final int hash(final int value) {

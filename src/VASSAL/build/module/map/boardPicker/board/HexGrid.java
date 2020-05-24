@@ -604,8 +604,8 @@ public class HexGrid extends AbstractConfigurable
   protected Area getSingleHexShape(int centerX, int centerY, boolean reversed) {
     Polygon poly = new Polygon();
 
-    float x = (float) (sideways ? centerY : centerX);
-    float y = (float) (sideways ? centerX : centerY);
+    float x = (sideways ? centerY : centerX);
+    float y = (sideways ? centerX : centerY);
 
     float x1,y1, x2,y2, x3,y3, x4, y4, x5, y5, x6, y6;
 
@@ -672,11 +672,11 @@ public class HexGrid extends AbstractConfigurable
     rotateIfSideways(p2);
     int x = p2.x - p1.x;
     int y = p2.y - p1.y;
-    double theta = atan2((double) (-x), (double) (-y)) + PI;
+    double theta = atan2((-x), (-y)) + PI;
     while (theta > PI / 3.)
       theta -= PI / 3.;
     theta = PI / 6. - theta;
-    double r = sqrt((double) (x * x + y * y));
+    double r = sqrt((x * x + y * y));
     r *= cos(theta);
     return (int) (r / (dy * sqrt3_2) + 0.5);
   }
