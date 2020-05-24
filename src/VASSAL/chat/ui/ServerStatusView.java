@@ -191,7 +191,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
               refresh(model, get());
               fireSelectionChanged();
             }
-          } catch (InterruptedException ex) {
+          }
+          catch (InterruptedException ex) {
             ErrorDialog.bug(ex);
           }
           // FIXME: review error message
