@@ -1,5 +1,7 @@
 package VASSAL.tools;
 
+import java.io.IOException;
+
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
@@ -1066,12 +1068,7 @@ public class Base64
 
             obj = ois.readObject();
         }   // end try
-        catch( java.io.IOException e )
-        {
-            e.printStackTrace();
-            obj = null;
-        }   // end catch
-        catch( java.lang.ClassNotFoundException e )
+        catch( IOException | ClassNotFoundException e )
         {
             e.printStackTrace();
             obj = null;

@@ -68,10 +68,7 @@ public class DialogUtils {
         try {
           SwingUtilities.invokeAndWait(runnable);
         }
-        catch (InterruptedException e) {
-          ErrorDialog.bug(e);
-        }
-        catch (InvocationTargetException e) {
+        catch (InterruptedException | InvocationTargetException e) {
           ErrorDialog.bug(e);
         }
       }

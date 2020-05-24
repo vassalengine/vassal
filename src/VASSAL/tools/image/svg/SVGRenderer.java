@@ -144,10 +144,7 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     // FIXME: review error message
-    catch (BridgeException e) {
-      logger.error("", e);
-    }
-    catch (TranscoderException e) {
+    catch (BridgeException | TranscoderException e) {
       logger.error("", e);
     }
 
@@ -175,10 +172,7 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     // FIXME: review error message
-    catch (BridgeException e) {
-      logger.error("", e);
-    }
-    catch (TranscoderException e) {
+    catch (BridgeException | TranscoderException e) {
       logger.error("", e);
     }
 

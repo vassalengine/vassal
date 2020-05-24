@@ -77,11 +77,8 @@ public abstract class AbstractOpImpl
     try {
       return getImage(null);
     }
-    catch (CancellationException e) {
+    catch (CancellationException | InterruptedException e) {
       // FIXME: bug until we permit cancellation
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {

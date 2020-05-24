@@ -225,14 +225,8 @@ public class OpCache {
     try {
       return get(key, null);
     }
-    catch (CancellationException e) {
+    catch (CancellationException | ExecutionException | InterruptedException e) {
       // FIXME: bug until we permit cancellation
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExecutionException e) {
       ErrorDialog.bug(e);
     }
 
@@ -382,11 +376,7 @@ public class OpCache {
       try {
         return fut.get();
       }
-      catch (CancellationException e) {
-      }
-      catch (InterruptedException e) {
-      }
-      catch (ExecutionException e) {
+      catch (CancellationException | ExecutionException | InterruptedException e) {
       }
     }
     return null;

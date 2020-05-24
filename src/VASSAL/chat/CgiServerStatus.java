@@ -158,11 +158,7 @@ public class CgiServerStatus implements ServerStatus {
           l.add(new String[]{ moduleName, roomName, playerName });
         }
         // FIXME: review error message
-        catch (NoSuchElementException e) {
-          e.printStackTrace();
-        }
-        // FIXME: review error message
-        catch (NumberFormatException e) {
+        catch (NoSuchElementException | NumberFormatException e) {
           e.printStackTrace();
         }
       }

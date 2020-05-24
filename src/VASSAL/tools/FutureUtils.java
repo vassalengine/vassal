@@ -37,14 +37,11 @@ public class FutureUtils {
     try {
       future.get();
     }
-    catch (CancellationException e) {
+    catch (CancellationException | InterruptedException e) {
       e.printStackTrace();
     }
     catch (ExecutionException e) {
       ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      e.printStackTrace();
     }
   }
 }

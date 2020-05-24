@@ -41,19 +41,8 @@ class IPCMessageReceiver implements Runnable {
 
       in.close();
     }
-    catch (ClassCastException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (ClassNotFoundException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (InvalidClassException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (StreamCorruptedException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (OptionalDataException e) {
+    catch (ClassCastException | OptionalDataException | StreamCorruptedException
+      | InvalidClassException | ClassNotFoundException e) {
       throw new IllegalStateException(e);
     }
     catch (EOFException e) {

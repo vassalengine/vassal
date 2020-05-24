@@ -56,10 +56,7 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
         }
       }
     }
-    catch (InterruptedException e) {
-      logger.error("", e);
-    }
-    catch (ExecutionException e) {
+    catch (InterruptedException | ExecutionException e) {
       logger.error("", e);
     }
   }

@@ -73,9 +73,6 @@ public class PropertiesWindow extends JDialog {
         catch (ClassNotFoundException e) {
           // This element doesn't correspond to a class. Skip it.
         }
-        catch (ExceptionInInitializerError e) {
-          ErrorDialog.bug(e);
-        }
         catch (LinkageError e) {
           ErrorDialog.bug(e);
         }

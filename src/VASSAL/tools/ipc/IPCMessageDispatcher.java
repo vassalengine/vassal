@@ -29,11 +29,7 @@ public class IPCMessageDispatcher implements Runnable {
 
       out.close();
     }
-    catch (IOException e) {
-// FIXME
-      e.printStackTrace();
-    }
-    catch (InterruptedException e) {
+    catch (IOException | InterruptedException e) {
 // FIXME
       e.printStackTrace();
     }

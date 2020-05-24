@@ -454,12 +454,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
 // FIXME: should getTileFuture() throw these? Yes, probably, because it's
 // synchronous when obs is null.
-        catch (CancellationException e) {
+        catch (CancellationException | ExecutionException e) {
           // FIXME: bug until we permit cancellation
-          ErrorDialog.bug(e);
-        }
-        catch (ExecutionException e) {
-          // FIXME: bug until we figure out why getTileFuture() throws this
+          // FIXME: bug until we figure out why getTileFuture() throws ExecutionException
           ErrorDialog.bug(e);
         }
       }
@@ -515,13 +512,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final ImageOp sop = Op.scale(boardImageOp, zoom);
       return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
     }
-    catch (CancellationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExecutionException e) {
+    catch (CancellationException | ExecutionException | InterruptedException e) {
       ErrorDialog.bug(e);
     }
     return null;

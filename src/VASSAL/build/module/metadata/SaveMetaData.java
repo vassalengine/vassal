@@ -161,10 +161,7 @@ public class SaveMetaData extends AbstractMetaData {
 
       zip.close();
     }
-    catch (IOException e) {
-      logger.error("", e);
-    }
-    catch (SAXException e) {
+    catch (IOException | SAXException e) {
       logger.error("", e);
     }
     finally {

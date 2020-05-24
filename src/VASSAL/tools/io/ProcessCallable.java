@@ -125,10 +125,7 @@ class ProcessCallable implements Callable<Integer> {
     try {
       f.get(1000L, TimeUnit.MILLISECONDS);
     }
-    catch (ExecutionException e) {
-      logger.error("", e);
-    }
-    catch (InterruptedException e) {
+    catch (ExecutionException | InterruptedException e) {
       logger.error("", e);
     }
     catch (TimeoutException e) {

@@ -189,10 +189,7 @@ public class SavedGameUpdaterDialog extends JDialog {
               SwingUtilities.invokeAndWait(showError);
             }
             // FIXME: review error message
-            catch (InterruptedException e1) {
-            }
-            // FIXME: review error message
-            catch (InvocationTargetException e1) {
+            catch (InterruptedException | InvocationTargetException e1) {
             }
           }
         }

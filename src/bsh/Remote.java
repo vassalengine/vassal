@@ -189,13 +189,13 @@ public class Remote
 
 		  System.out.println( "Return Value: "+returnValue );
 
-		} catch (MalformedURLException e) {
-		  System.out.println(e);     // bad postURL
-		} catch (IOException e2) {
-		  System.out.println(e2);    // I/O error
 		}
+    catch (IOException e) {
+			// bad postURL, I/O error
+      System.out.println(e);
+    }
 
-		return returnValue;
+    return returnValue;
 	}
 
 	/*

@@ -485,12 +485,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
                         {
                             EventQueue.invokeAndWait(this);
                         }
-                        catch (InvocationTargetException ex)
-                        {
-                            ex.printStackTrace();
-                            return;
-                        }
-                        catch (InterruptedException ex)
+                        catch (InvocationTargetException | InterruptedException ex)
                         {
                             ex.printStackTrace();
                             return;

@@ -639,9 +639,6 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       out = new ObfuscatingOutputStream(ba);
       out.write(clearText.getBytes("UTF-8")); //$NON-NLS-1$
     }
-    catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
     catch (IOException e) {
       e.printStackTrace();
     }

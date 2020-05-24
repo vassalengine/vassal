@@ -177,15 +177,12 @@ e.printStackTrace();
     for (Future<IPCMessage> f : futures) {
       try {
         if (f.get() instanceof Launcher.CloseReject) {
-System.out.println("rejected!");
+          System.out.println("rejected!");
           return false;
         }
       }
-      catch (ExecutionException e) {
-e.printStackTrace();
-      }
-      catch (InterruptedException e) {
-e.printStackTrace();
+      catch (ExecutionException | InterruptedException e) {
+        e.printStackTrace();
       }
     }
 

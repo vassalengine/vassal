@@ -162,9 +162,6 @@ public class NewColorConfigurer extends Configurer {
                        Integer.parseInt(st.nextToken()));
     }
     // FIXME: review error message
-    catch (NumberFormatException e) {
-      return null;
-    }
     catch (IllegalArgumentException e) {
       return null;
     }

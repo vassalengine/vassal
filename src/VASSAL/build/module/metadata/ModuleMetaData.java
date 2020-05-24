@@ -145,13 +145,10 @@ public class ModuleMetaData extends AbstractMetaData {
 
       zip.close();
     }
-    catch (IOException e) {
-      logger.error("", e);
-    }
     catch (SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
-    catch (SAXException e) {
+    catch (IOException | SAXException e) {
       logger.error("", e);
     }
     finally {

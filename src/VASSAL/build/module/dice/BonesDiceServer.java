@@ -76,11 +76,7 @@ public class BonesDiceServer extends DieServer {
 
 //      return new String[] {  URLEncoder.encode(query.toString(), "UTF-8") };
     }
-    catch (MalformedURLException e) {
-      // should never happen
-      ErrorDialog.bug(e);
-    }
-    catch (URISyntaxException e) {
+    catch (MalformedURLException | URISyntaxException e) {
       // should never happen
       ErrorDialog.bug(e);
     }

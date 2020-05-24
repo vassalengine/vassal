@@ -208,11 +208,8 @@ public class Tailer {
           Thread.sleep(poll_interval);
         }
       }
-      catch (IOException e) {
+      catch (IOException | InterruptedException e) {
 // FIXME: there should be an error listener; we can't handle exceptions here
-        logger.error("", e);
-      }
-      catch (InterruptedException e) {
         logger.error("", e);
       }
       finally {

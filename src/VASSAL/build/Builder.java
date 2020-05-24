@@ -85,11 +85,7 @@ public abstract class Builder {
         catch (IllegalBuildException ex) {
           ErrorDialog.bug(ex);
         }
-        catch (RuntimeException ex) {
-          logger.error("Error building " + child.getNodeName());
-          throw ex;
-        }
-        catch (Error ex) {
+        catch (RuntimeException | Error ex) {
           logger.error("Error building " + child.getNodeName());
           throw ex;
         }

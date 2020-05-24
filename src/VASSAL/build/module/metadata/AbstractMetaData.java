@@ -195,15 +195,10 @@ public abstract class AbstractMetaData {
         "{http://xml.apache.org/xslt}indent-amount", "2");
       xformer.transform(new DOMSource(doc), new StreamResult(out));
     }
-    catch (TransformerConfigurationException ex) {
+    catch (TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
       ErrorDialog.bug(ex);
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(ex);
-    }
-    catch (TransformerFactoryConfigurationError ex) {
-      ErrorDialog.bug(ex);
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(ex);
+      throw (IOException) new IOException(ex).initCause(ex);
     }
     catch (TransformerException ex) {
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6

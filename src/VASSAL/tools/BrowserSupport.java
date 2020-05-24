@@ -53,11 +53,7 @@ public class BrowserSupport {
             return;
           }
         }
-        catch (IllegalArgumentException e) {
-          ErrorDialog.bug(e);
-          return;
-        }
-        catch (URISyntaxException e) {
+        catch (IllegalArgumentException | URISyntaxException e) {
           ErrorDialog.bug(e);
           return;
         }

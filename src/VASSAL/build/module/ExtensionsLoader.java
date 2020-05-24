@@ -123,10 +123,7 @@ public class ExtensionsLoader implements CommandEncoder {
       catch (ZipException e) {
         // Not a zip file. Ignore.
       }
-      catch (IOException e) {
-        reportBuildError(e, extension.getName());
-      }
-      catch (LoadExtensionException e) {
+      catch (IOException | LoadExtensionException e) {
         reportBuildError(e, extension.getName());
       }
     }

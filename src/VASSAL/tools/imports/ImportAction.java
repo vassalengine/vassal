@@ -131,10 +131,7 @@ public final class ImportAction extends EditModuleAction {
           return IMPORTERS[index];
         }
       }
-      catch (InstantiationException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (IllegalAccessException e) {
+      catch (InstantiationException | IllegalAccessException e) {
         ErrorDialog.bug(e);
       }
     }
@@ -178,10 +175,7 @@ public final class ImportAction extends EditModuleAction {
       imp.writeToArchive();
     }
     // these should never happen
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InstantiationException e) {
+    catch (IllegalAccessException | InstantiationException e) {
       ErrorDialog.bug(e);
     }
 

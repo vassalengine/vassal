@@ -99,10 +99,7 @@ public class MessageBoardControls {
             try {
               showMessages(get());
             }
-            catch (InterruptedException e) {
-              ErrorDialog.bug(e);
-            }
-            catch (ExecutionException e) {
+            catch (InterruptedException | ExecutionException e) {
               ErrorDialog.bug(e);
             }
 
@@ -146,10 +143,7 @@ public class MessageBoardControls {
             try {
               showMessages(get());
             }
-            catch (InterruptedException e) {
-              ErrorDialog.bug(e);
-            }
-            catch (ExecutionException e) {
+            catch (InterruptedException | ExecutionException e) {
               ErrorDialog.bug(e);
             }
 

@@ -111,10 +111,7 @@ public class ColorConfigurer extends Configurer {
     catch (NumberFormatException e) {
       ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
     }
-    catch (IllegalArgumentException e) {
-      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
-    }
-    catch (NoSuchElementException e) {
+    catch (IllegalArgumentException | NoSuchElementException e) {
       ErrorDialog.dataError(new BadDataReport("bad color", s, e));
     }
 

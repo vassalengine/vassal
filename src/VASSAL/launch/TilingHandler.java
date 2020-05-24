@@ -303,11 +303,7 @@ public class TilingHandler {
         throw new IOException("return value == " + retval);
       }
     }
-    catch (ExecutionException e) {
-      // should never happen
-      throw new IllegalStateException(e);
-    }
-    catch (InterruptedException e) {
+    catch (ExecutionException | InterruptedException e) {
       // should never happen
       throw new IllegalStateException(e);
     }
@@ -371,11 +367,7 @@ public class TilingHandler {
     try {
       runSlicer(multi, s.first, maxheap);
     }
-    catch (CancellationException e) {
-      cleanup();
-      throw e;
-    }
-    catch (IOException e) {
+    catch (CancellationException | IOException e) {
       cleanup();
       throw e;
     }

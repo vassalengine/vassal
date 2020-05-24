@@ -62,12 +62,8 @@ public class EDTExecutorService extends AbstractExecutorService {
     catch (TimeoutException e) {
       return false;
     }
-    catch (CancellationException e) {
-      // Should not happen, the poision pill is never cancelled.
-      throw new IllegalStateException(e);
-    }
-    catch (ExecutionException e) {
-      // Should not happen, the poision pill runs no code.
+    catch (CancellationException | ExecutionException e) {
+      // Should not happen, the poision pill is never cancelled / runs no code
       throw new IllegalStateException(e);
     }
     finally {
@@ -189,9 +185,7 @@ public class EDTExecutorService extends AbstractExecutorService {
           try {
             f.get();
           }
-          catch (CancellationException ignore) {
-          }
-          catch (ExecutionException ignore) {
+          catch (CancellationException | ExecutionException ignore) {
           }
         }
       }
@@ -239,9 +233,7 @@ public class EDTExecutorService extends AbstractExecutorService {
           try {
             f.get(nanos, TimeUnit.NANOSECONDS);
           }
-          catch (CancellationException ignore) {
-          }
-          catch (ExecutionException ignore) {
+          catch (CancellationException | ExecutionException ignore) {
           }
           catch (TimeoutException toe) {
             return futures;

@@ -477,17 +477,7 @@ public class BugDialog extends JDialog {
         // cancelled by user, do nothing
         timer.stop();
       }
-      catch (InterruptedException e) {
-        timer.stop();
-        e.printStackTrace();
-        showConnectionFailedPanel();
-      }
-      catch (ExecutionException e) {
-        timer.stop();
-        e.printStackTrace();
-        showConnectionFailedPanel();
-      }
-      catch (TimeoutException e) {
+      catch (InterruptedException | TimeoutException | ExecutionException e) {
         timer.stop();
         e.printStackTrace();
         showConnectionFailedPanel();
@@ -568,17 +558,7 @@ public class BugDialog extends JDialog {
         // cancelled by user, do nothing
         timer.stop();
       }
-      catch (InterruptedException e) {
-        timer.stop();
-        e.printStackTrace();
-        showConnectionFailedPanel();
-      }
-      catch (ExecutionException e) {
-        timer.stop();
-        e.printStackTrace();
-        showConnectionFailedPanel();
-      }
-      catch (TimeoutException e) {
+      catch (InterruptedException | TimeoutException | ExecutionException e) {
         timer.stop();
         e.printStackTrace();
         showConnectionFailedPanel();

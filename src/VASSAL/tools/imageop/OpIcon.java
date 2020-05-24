@@ -86,10 +86,7 @@ public class OpIcon extends ImageIcon implements Icon {
     try {
       g.drawImage(Op.scale(sop, os_scale).getImage(r), x, y, c);
     }
-    catch (CancellationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
+    catch (CancellationException | InterruptedException e) {
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {

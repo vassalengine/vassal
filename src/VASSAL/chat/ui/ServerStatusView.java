@@ -228,11 +228,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
               refresh(historicalModels[sel - 1], get());
             }
             // FIXME: review error message
-            catch (InterruptedException ex) {
-              ex.printStackTrace();
-            }
-            // FIXME: review error message
-            catch (ExecutionException ex) {
+            catch (InterruptedException | ExecutionException ex) {
               ex.printStackTrace();
             }
 

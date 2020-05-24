@@ -88,13 +88,10 @@ public class SVGImageUtils {
       }
       in.close();
     }
-    catch (DOMException e) {
-      throw new ImageIOException(name, e);
-    }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
     }
-    catch (IOException e) {
+    catch (DOMException | IOException e) {
       throw new ImageIOException(name, e);
     }
     finally {

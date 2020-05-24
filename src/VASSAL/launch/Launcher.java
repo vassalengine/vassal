@@ -148,11 +148,8 @@ public abstract class Launcher {
         try {
           launch();
         }
-        catch (ExtensionsLoader.LoadExtensionException e2) {
+        catch (ExtensionsLoader.LoadExtensionException | IOException e2) {
           warn(e2);
-        }
-        catch (IOException e1) {
-          warn(e1);
         }
       }
 

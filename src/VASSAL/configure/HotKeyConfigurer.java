@@ -140,9 +140,6 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
            Integer.parseInt(s.substring(index + 1)));
     }
     // FIXME: review error message
-    catch (NumberFormatException e) {
-      return null;
-    }
     catch (IllegalArgumentException e) {
       return null;
     }

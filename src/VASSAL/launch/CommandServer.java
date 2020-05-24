@@ -83,10 +83,7 @@ public class CommandServer implements Runnable {
           out.writeObject(result);
         }
       }
-      catch (EOFException e) {
-        // Normal. This happens when the socket is closed from the other end.
-      }
-      catch (SocketException e) {
+      catch (EOFException | SocketException e) {
         // Normal. This happens when the socket is closed from the other end.
       }
 

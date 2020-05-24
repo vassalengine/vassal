@@ -258,11 +258,7 @@ public class ProgressDialog extends JDialog {
     try {
       return f.get();
     }
-    catch (CancellationException e) {
-      // this should never happen
-      throw new IllegalStateException(e);
-    }
-    catch (InterruptedException e) {
+    catch (CancellationException | InterruptedException e) {
       // this should never happen
       throw new IllegalStateException(e);
     }

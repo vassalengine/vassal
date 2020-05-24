@@ -806,19 +806,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     catch (NoSuchMethodException e) {
       // Ignore. This is normal, since some classes won't have this method.
     }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (IllegalArgumentException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InvocationTargetException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (NullPointerException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExceptionInInitializerError e) {
+    catch (IllegalAccessException | ExceptionInInitializerError
+      | NullPointerException | InvocationTargetException | IllegalArgumentException e) {
       ErrorDialog.bug(e);
     }
 

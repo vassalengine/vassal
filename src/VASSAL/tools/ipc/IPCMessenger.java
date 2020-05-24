@@ -95,13 +95,7 @@ public class IPCMessenger {
     try {
       f.get();
     }
-    catch (CancellationException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (ExecutionException e) {
-      throw new IllegalStateException(e);
-    }
-    catch (InterruptedException e) {
+    catch (CancellationException | InterruptedException | ExecutionException e) {
       throw new IllegalStateException(e);
     }
   }

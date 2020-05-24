@@ -89,16 +89,8 @@ public class StartUp {
                 UIManager.getSystemLookAndFeelClassName()
               );
             }
-            catch (ClassNotFoundException e) {
-              ErrorDialog.bug(e);
-            }
-            catch (IllegalAccessException e) {
-              ErrorDialog.bug(e);
-            }
-            catch (InstantiationException e) {
-              ErrorDialog.bug(e);
-            }
-            catch (UnsupportedLookAndFeelException e) {
+            catch (ClassNotFoundException | UnsupportedLookAndFeelException
+              | InstantiationException | IllegalAccessException e) {
               ErrorDialog.bug(e);
             }
           }
@@ -110,10 +102,7 @@ public class StartUp {
         }
       });
     }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InvocationTargetException e) {
+    catch (InterruptedException | InvocationTargetException e) {
       ErrorDialog.bug(e);
     }
   }

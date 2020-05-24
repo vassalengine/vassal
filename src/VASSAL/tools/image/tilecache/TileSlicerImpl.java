@@ -104,16 +104,12 @@ public class TileSlicerImpl implements TileSlicer {
         progress.receive(null);
       }
     }
-    catch (CancellationException e) {
+    catch (CancellationException | InterruptedException e) {
       // should never happen
       throw new IllegalStateException(e);
     }
     catch (ExecutionException e) {
       throw (IOException) new IOException().initCause(e);
-    }
-    catch (InterruptedException e) {
-      // should never happen
-      throw new IllegalStateException(e);
     }
     finally {
       // cancel everything if anything fails

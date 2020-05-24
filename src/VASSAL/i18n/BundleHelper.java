@@ -42,10 +42,7 @@ public class BundleHelper {
     try {
       return bundle.getString(id);
     }
-    catch (ClassCastException e) {
-      logger.error("No Translation: " + id);
-    }
-    catch (MissingResourceException e) {
+    catch (ClassCastException | MissingResourceException e) {
       logger.error("No Translation: " + id);
     }
 
