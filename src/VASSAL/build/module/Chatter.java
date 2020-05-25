@@ -87,7 +87,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected Color myChat;
   protected Color otherChat;
 
-  public static final String getAnonymousUserName() {
+  public static String getAnonymousUserName() {
     return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
   }
 

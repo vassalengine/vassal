@@ -142,7 +142,7 @@ public class Symbol {
     protected static final String COMPANY_SYMBOL = "i"; //$NON-NLS-1$
     protected static final String BRIGADE_SYMBOL = "x"; //$NON-NLS-1$
 
-    protected static final String[] getSymbolNames() {
+    protected static String[] getSymbolNames() {
       return new String[] {
           NONE,
           INFANTRY,
