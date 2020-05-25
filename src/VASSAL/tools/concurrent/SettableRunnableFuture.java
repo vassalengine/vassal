@@ -19,6 +19,8 @@
 
 package VASSAL.tools.concurrent;
 
+import java.util.concurrent.RunnableFuture;
+
 /**
  * A {@link SettableFuture} that is a {@link RunnableFuture}.
  */
