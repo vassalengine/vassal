@@ -23,6 +23,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A {@link FilterInputStream} which converts a file created with
@@ -43,7 +44,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     final byte[] header = new byte[ObfuscatingOutputStream.HEADER.length()];
     readFully(in, header, 0, header.length);
-    if (new String(header, "UTF-8").equals(ObfuscatingOutputStream.HEADER)) {
+    if (new String(header, StandardCharsets.UTF_8).equals(ObfuscatingOutputStream.HEADER)) {
       this.in = new DeobfuscatingInputStreamImpl(in);
     }
     else {

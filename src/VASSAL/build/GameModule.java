@@ -27,6 +27,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -1019,7 +1020,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     try {
       final String save = buildString();
       writer.addFile(BUILDFILE,
-        new ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
+        new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));  //$NON-NLS-1$
 
       if (saveAs) writer.saveAs(true);
       else writer.save(true);

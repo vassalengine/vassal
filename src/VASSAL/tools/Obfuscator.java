@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import VASSAL.tools.io.IOUtils;
@@ -58,7 +59,7 @@ public class Obfuscator {
   }
 
   public void write(OutputStream out) throws IOException {
-    out.write(encrypted.getBytes("UTF-8"));
+    out.write(encrypted.getBytes(StandardCharsets.UTF_8));
   }
 
   // Convert a plain text file to an obfuscated file

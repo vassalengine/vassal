@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -316,7 +317,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       OutputStream out = null;
       try {
         out = new ObfuscatingOutputStream(ba);
-        out.write(s.getBytes("UTF-8"));
+        out.write(s.getBytes(StandardCharsets.UTF_8));
         out.close();
       }
       finally {

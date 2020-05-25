@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -50,7 +51,7 @@ public class HttpRequestWrapper {
   private List<String> readLines(InputStream is) throws IOException {
     BufferedReader in = null;
     try {
-      in = new BufferedReader(new InputStreamReader(is, "UTF-8")); //$NON-NLS-1$
+      in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)); //$NON-NLS-1$
 
       final ArrayList<String> l = new ArrayList<>();
       String line;

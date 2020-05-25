@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -748,7 +749,7 @@ public class GameState implements CommandEncoder {
     OutputStream out = null;
     try {
       out = new ObfuscatingOutputStream(ba);
-      out.write(save.getBytes("UTF-8"));
+      out.write(save.getBytes(StandardCharsets.UTF_8));
       out.close();
     }
     finally {
@@ -932,7 +933,7 @@ public class GameState implements CommandEncoder {
             din = new DeobfuscatingInputStream(zipInput);
 // FIXME: toString() is very inefficient, make decode() use the stream directly
             final Command c = GameModule.getGameModule().decode(
-              IOUtils.toString(din, "UTF-8"));
+              IOUtils.toString(din, StandardCharsets.UTF_8));
             din.close();
             return c;
           }

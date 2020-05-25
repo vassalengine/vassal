@@ -24,6 +24,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 /**
@@ -58,7 +59,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
     super(out);
     this.key = key;
 
-    out.write(HEADER.getBytes("UTF-8"));
+    out.write(HEADER.getBytes(StandardCharsets.UTF_8));
 
     pair[0] = hex[(key & 0xF0) >>> 4];
     pair[1] = hex[key & 0x0F];

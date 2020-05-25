@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import javax.swing.AbstractAction;
@@ -412,7 +413,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
       final String save = buildString();
       w.addFile(GameModule.BUILDFILE,
-                new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
+                new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8))); //$NON-NLS-1$
 
       if (saveAs) w.saveAs(true);
       else w.save(true);

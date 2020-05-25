@@ -21,6 +21,7 @@ package VASSAL.tools;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -46,7 +47,7 @@ public class PropertiesEncoder {
     try {
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
       p.store(out, null);
-      s = new String(out.toByteArray(), "UTF-8");
+      s = new String(out.toByteArray(), StandardCharsets.UTF_8);
     }
     catch (IOException e) {
       ErrorDialog.bug(e);
@@ -75,7 +76,7 @@ public class PropertiesEncoder {
         buffer.append('\n');
       }
     }
-    p.load(new ByteArrayInputStream(buffer.toString().getBytes("UTF-8")));
+    p.load(new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)));
     return p;
   }
 

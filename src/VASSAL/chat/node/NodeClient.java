@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
@@ -241,7 +242,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       if (msg.length() > compressionLimit) {
         try {
           msg = ZIP_HEADER + Base64.encodeBase64String(
-            Compressor.compress(msg.getBytes("UTF-8"))
+            Compressor.compress(msg.getBytes(StandardCharsets.UTF_8))
           );
         }
         // FIXME: review error message
@@ -491,7 +492,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
                 msg.substring(ZIP_HEADER.length())
               )
             ),
-            "UTF-8"
+            StandardCharsets.UTF_8
           );
         }
         // FIXME: review error message

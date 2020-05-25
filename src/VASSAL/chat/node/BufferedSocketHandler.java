@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
@@ -35,8 +35,8 @@ public class BufferedSocketHandler extends SocketHandler {
 
   public BufferedSocketHandler(Socket sock, SocketWatcher handler) throws IOException {
     super(sock, handler);
-    reader = new BufferedReader(new InputStreamReader(sock.getInputStream(),Charset.forName("UTF-8"))); //$NON-NLS-1$
-    writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(),Charset.forName("UTF-8"))); //$NON-NLS-1$
+    reader = new BufferedReader(new InputStreamReader(sock.getInputStream(), StandardCharsets.UTF_8)); //$NON-NLS-1$
+    writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(), StandardCharsets.UTF_8)); //$NON-NLS-1$
   }
 
   @Override

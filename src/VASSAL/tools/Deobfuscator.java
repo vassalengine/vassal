@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.IOUtils;
@@ -39,7 +40,7 @@ public class Deobfuscator {
   public Deobfuscator(InputStream in) throws IOException {
     String s = null;
     try {
-      s = IOUtils.toString(in, "UTF-8");
+      s = IOUtils.toString(in, StandardCharsets.UTF_8);
       in.close();
     }
     catch (UnsupportedEncodingException e) {
@@ -60,7 +61,7 @@ public class Deobfuscator {
         bytes[i] = (byte)
           (Integer.parseInt(s.substring(offset++, ++offset), 16) ^ key);
       }
-      plain = new String(bytes,"UTF-8");
+      plain = new String(bytes, StandardCharsets.UTF_8);
     }
     else {
       plain = s;

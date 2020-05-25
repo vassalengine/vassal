@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
@@ -277,21 +278,21 @@ public class ZipUpdater implements Runnable {
           buffer.append("Manifest-Version: 1.0\n")
                 .append("Main-Class: VASSAL.tools.ZipUpdater\n");
           writeEntry(
-            new ByteArrayInputStream(buffer.toString().getBytes("UTF-8")),
+            new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)),
             out,
             manifestEntry);
 
           final ZipEntry nameEntry = new ZipEntry(TARGET_ARCHIVE);
           nameEntry.setMethod(ZipEntry.DEFLATED);
           writeEntry(
-            new ByteArrayInputStream(inputArchiveName.getBytes("UTF-8")),
+            new ByteArrayInputStream(inputArchiveName.getBytes(StandardCharsets.UTF_8)),
             out,
             nameEntry);
 
           final ZipEntry updatedEntry = new ZipEntry(UPDATED_ARCHIVE_NAME);
           updatedEntry.setMethod(ZipEntry.DEFLATED);
           writeEntry(
-            new ByteArrayInputStream(newFile.getName().getBytes("UTF-8")),
+            new ByteArrayInputStream(newFile.getName().getBytes(StandardCharsets.UTF_8)),
             out,
             updatedEntry);
 

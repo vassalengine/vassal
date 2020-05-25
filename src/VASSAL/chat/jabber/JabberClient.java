@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -661,7 +662,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     try {
       out = new ObfuscatingOutputStream(ba);
-      out.write(clearText.getBytes("UTF-8")); //$NON-NLS-1$
+      out.write(clearText.getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -687,7 +688,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     try {
       in = new DeobfuscatingInputStream(ba);
-      clearText = IOUtils.toString(in, "UTF-8"); //$NON-NLS-1$
+      clearText = IOUtils.toString(in, StandardCharsets.UTF_8); //$NON-NLS-1$
     }
     catch (IOException e) {
       e.printStackTrace();
