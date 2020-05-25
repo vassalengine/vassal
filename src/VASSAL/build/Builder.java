@@ -218,7 +218,7 @@ public abstract class Builder {
         buffer.append(((org.w3c.dom.Text) sub.item(i)).getData());
       }
       else if (sub.item(i).getNodeType() == Node.ENTITY_REFERENCE_NODE) {
-        buffer.append(sub.item(i).getFirstChild().toString());
+        buffer.append(sub.item(i).getFirstChild());
       }
     }
     return buffer.toString().trim();

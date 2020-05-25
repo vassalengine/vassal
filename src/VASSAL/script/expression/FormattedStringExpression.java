@@ -65,7 +65,7 @@ public class FormattedStringExpression extends Expression {
           final Object value =
             localized ? ps.getLocalizedProperty(token) : ps.getProperty(token);
           if (value != null) {
-            buffer.append(value.toString());
+            buffer.append(value);
           }
           else if (!localized) {
             buffer.append(token);

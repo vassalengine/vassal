@@ -115,7 +115,7 @@ public class LaunchRequest implements Serializable {
   public String[] toArgs() {
     final ArrayList<String> args = new ArrayList<>();
 
-    args.add("--" + mode.toString());
+    args.add("--" + mode);
 
     if (builtInModule) args.add("--auto");
 

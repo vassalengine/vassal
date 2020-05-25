@@ -1360,7 +1360,7 @@ public class ServerAddressBook {
         setIcon(e.getIcon(LEAF_ICON_SIZE));
         if (e.isCurrent()) {
           setFont(highlightFont);
-          setText(e.toString() + Resources.getString("ServerAddressBook.current")); //$NON-NLS-1$
+          setText(e + Resources.getString("ServerAddressBook.current")); //$NON-NLS-1$
         }
         else {
           setFont(standardFont);

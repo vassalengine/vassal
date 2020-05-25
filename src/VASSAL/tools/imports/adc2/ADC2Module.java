@@ -2503,7 +2503,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     if (sb.length() > 0)
       sb.append(' ');
     viewer.setAttribute(CounterDetailViewer.MINIMUM_DISPLAYABLE, "1");
-    viewer.setAttribute(CounterDetailViewer.SUMMARY_REPORT_FORMAT, sb.toString() + "($LocationName$)");
+    viewer.setAttribute(CounterDetailViewer.SUMMARY_REPORT_FORMAT, sb + "($LocationName$)");
     if (usePieceNames) {
       viewer.setAttribute(CounterDetailViewer.COUNTER_REPORT_FORMAT, PC_NAME);
     }

@@ -749,7 +749,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     final String rangeMsg = Resources.getString("LOS_Thread.range");
 
-    int wid = fm.stringWidth(" " + rangeMsg + "  " + buffer.toString());
+    int wid = fm.stringWidth(" " + rangeMsg + "  " + buffer);
     int hgt = fm.getAscent() + 2;
 
     final int w = mapArrow.x - mapAnchor.x;

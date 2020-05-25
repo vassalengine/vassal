@@ -57,7 +57,7 @@ public class IntBuilder extends StrBuilder {
       }
     }
 
-    value = (negative ? "-" : "") + result.toString();
+    value = (negative ? "-" : "") + result;
     if (value.length() == 0 || value.equals("-")) {
       value = "0";
     }

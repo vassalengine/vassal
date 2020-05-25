@@ -1234,7 +1234,7 @@ public class Inventory extends AbstractConfigurable
       name.append(separator());
 
       if (counter != null)
-        name.append(counter.toString());
+        name.append(counter);
       else
         name.append(getEntry());
 

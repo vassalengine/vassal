@@ -298,7 +298,7 @@ public final class IconFactory {
         findJarIcons();
       }
       else {
-        throw new IllegalBuildException ("Unknown Vassal Image source type: "+imageUrl.toString()); //$NON-NLS-1$
+        throw new IllegalBuildException ("Unknown Vassal Image source type: "+ imageUrl); //$NON-NLS-1$
       }
     }
     catch (IOException e) {

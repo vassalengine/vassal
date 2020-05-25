@@ -102,6 +102,6 @@ public class VersionUtils {
 
   public static void main(String[] args) throws IOException {
     final VassalVersion v = new VassalVersion(Info.getVersion());
-    System.out.println(v.toString() + " is current? " + isCurrent(v));
+    System.out.println(v + " is current? " + isCurrent(v));
   }
 }

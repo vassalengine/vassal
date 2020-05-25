@@ -146,7 +146,7 @@ public abstract class Command {
     final String details = getDetails();
     if (details != null) sb.append("[").append(details).append("]");
 
-    for (Command c : seq) sb.append("+").append(c.toString());
+    for (Command c : seq) sb.append("+").append(c);
 
     return sb.toString();
   }

@@ -294,7 +294,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
       }
-      return ID + buffer.toString();
+      return ID + buffer;
     }
 
     @Override

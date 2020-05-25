@@ -166,7 +166,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load "+INIT_SCRIPT+" URI generated="+ini.toString());
+    logger.info("Attempting to load "+INIT_SCRIPT+" URI generated="+ ini);
     BufferedReader in = null;
     try {
       in = new BufferedReader(
@@ -177,12 +177,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
         eval(in);
       }
       catch (EvalError e) {
-        logger.error("Error trying to read init script: "+ini.toString());
+        logger.error("Error trying to read init script: "+ ini);
         WarningDialog.show(e, "");
       }
     }
     catch (IOException e) {
-      logger.error("Error trying to read init script: "+ini.toString());
+      logger.error("Error trying to read init script: "+ ini);
       WarningDialog.show(e, "");
     }
     finally {
