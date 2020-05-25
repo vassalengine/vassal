@@ -147,14 +147,9 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   }
 
   public static void main(String[] args) throws IOException {
-    InputStream in = null;
-    try {
-      in = new DeobfuscatingInputStream(
-        args.length > 0 ? new FileInputStream(args[0]) : System.in);
+    try (InputStream in = new DeobfuscatingInputStream(
+      args.length > 0 ? new FileInputStream(args[0]) : System.in)) {
       IOUtils.copy(in, System.out);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     System.exit(0);

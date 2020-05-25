@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1639,11 +1640,10 @@ private PieceWindow pieceWin;
   @Override
   protected void load(File f) throws IOException {
     super.load(f);
-    DataInputStream in = null;
 
-    try {
-      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
-
+    try (InputStream fin = new FileInputStream(f);
+         InputStream bin = new BufferedInputStream(fin);
+         DataInputStream in = new DataInputStream(bin)) {
       name = stripExtension(f.getName());
 
       int header = in.readByte();
@@ -1657,7 +1657,7 @@ private PieceWindow pieceWin;
       String mapFileName = forceExtension(s, "map");
       map = new MapBoard();
       File mapFile = action.getCaseInsensitiveFile(new File(mapFileName), f, true,
-          new ExtensionFileFilter(ADC2Utils.MAP_DESCRIPTION, new String[] {ADC2Utils.MAP_EXTENSION}));
+        new ExtensionFileFilter(ADC2Utils.MAP_DESCRIPTION, new String[]{ADC2Utils.MAP_EXTENSION}));
       if (mapFile == null)
         throw new FileNotFoundException("Unable to locate map file.");
       map.importFile(action, mapFile);
@@ -1693,12 +1693,8 @@ private PieceWindow pieceWin;
         readDrawOptionsBlock(in);
         readPieceStatusDotsBlock(in); // read this in again!
       }
-      catch(ADC2Utils.NoMoreBlocksException e) { }
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      catch (ADC2Utils.NoMoreBlocksException e) {
+      }
     }
   }
 
@@ -1761,11 +1757,10 @@ private PieceWindow pieceWin;
       File ipx = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "ipx")), file, true,
           new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
       if (ipx != null) {
-        DataInputStream input = null;
 
-        try {
-          input = new DataInputStream(new BufferedInputStream(new FileInputStream(ipx)));
-
+        try (InputStream fin = new FileInputStream(ipx);
+             InputStream bin = new BufferedInputStream(fin);
+             DataInputStream input = new DataInputStream(bin)) {
           try {
             while (true) { // loop until EOF
               while (input.readUnsignedByte() != 0x3b) { }
@@ -1784,11 +1779,6 @@ private PieceWindow pieceWin;
           catch (EOFException e) {
             // do nothing
           }
-
-          input.close();
-        }
-        finally {
-          IOUtils.closeQuietly(input);
         }
       }
       else {
@@ -2889,16 +2879,11 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = null;
-    try {
-      in = new DataInputStream(new FileInputStream(f));
+    try (InputStream fin = new FileInputStream(f);
+         DataInputStream in = new DataInputStream(fin)) {
       int header = in.readByte();
       boolean valid = header == -3 || header == -2;
-      in.close();
       return valid;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 }

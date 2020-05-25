@@ -23,6 +23,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -31,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -49,18 +48,13 @@ public class HttpRequestWrapper {
   }
 
   private List<String> readLines(InputStream is) throws IOException {
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)); //$NON-NLS-1$
-
+    try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+         BufferedReader in = new BufferedReader(isr)) {
       final ArrayList<String> l = new ArrayList<>();
       String line;
       while ((line = in.readLine()) != null) l.add(line);
 
       return l;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -88,7 +82,9 @@ public class HttpRequestWrapper {
 
     final URLConnection conn = new URL(url).openConnection();
     conn.setUseCaches(false);
-    return readLines(conn.getInputStream());
+    try (InputStream in = conn.getInputStream()) {
+      return readLines(in);
+    } 
   }
 
   public List<String> doPost(Properties p) throws IOException {
@@ -116,15 +112,13 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     //      conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
-    DataOutputStream out = null;
-    try {
-      out = new DataOutputStream(conn.getOutputStream());
+    try (OutputStream co = conn.getOutputStream();
+         DataOutputStream out = new DataOutputStream(co)) {
       out.writeBytes(content);
     }
-    finally {
-      IOUtils.closeQuietly(out);
-    }
 
-    return readLines(conn.getInputStream());
+    try (InputStream in = conn.getInputStream()) {
+      return readLines(in);
+    } 
   }
 }

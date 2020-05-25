@@ -36,6 +36,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +86,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * The map board itself.
@@ -2263,10 +2263,10 @@ public class MapBoard extends Importer {
    * together using the <code>Graphics2D</code> object <code>g</code>.
    */
   protected void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {
-    DataInputStream in = null;
 
-    try {
-      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
+    try (InputStream fin = new FileInputStream(f);
+         InputStream bin = new BufferedInputStream(fin);
+         DataInputStream in = new DataInputStream(bin)) {
       // how many image sections
       int nSheets = ADC2Utils.readBase250Word(in);
       for (int i = 0; i < nSheets; ++i) {
@@ -2288,11 +2288,6 @@ public class MapBoard extends Importer {
         }
         g.drawImage(img, null, x, y);
       }
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -2719,11 +2714,10 @@ public class MapBoard extends Importer {
   @Override
   protected void load(File f) throws IOException {
     super.load(f);
-    DataInputStream in = null;
 
-    try {
-      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
-
+    try (InputStream fin = new FileInputStream(f);
+         InputStream bin = new BufferedInputStream(fin);
+         DataInputStream in = new DataInputStream(bin)) {
       baseName = stripExtension(f.getName());
       path = f.getPath();
       int header = in.readByte();
@@ -2799,12 +2793,8 @@ public class MapBoard extends Importer {
         readMapItemDrawingOrderBlock(in);
         readMapItemDrawFlagBlock(in);
       }
-      catch(ADC2Utils.NoMoreBlocksException e) {}
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      catch (ADC2Utils.NoMoreBlocksException e) {
+      }
     }
   }
 
@@ -3104,15 +3094,9 @@ public class MapBoard extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = null;
-    try {
-      in = new DataInputStream(new FileInputStream(f));
-      boolean valid = in.readByte() == -3;
-      in.close();
-      return valid;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+    try (InputStream fin = new FileInputStream(f);
+         DataInputStream in = new DataInputStream(fin)) {
+      return in.readByte() == -3;
     }
   }
 }

@@ -37,11 +37,11 @@ public class Mp3AudioClip implements AudioClip {
   protected URL url = null;
   protected String name = null;
 
-  public Mp3AudioClip(String name) throws IOException {
+  public Mp3AudioClip(String name) {
     this.name = name;
   }
 
-  public Mp3AudioClip(URL url) throws IOException {
+  public Mp3AudioClip(URL url) {
     this.url = url;
   }
 

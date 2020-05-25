@@ -169,23 +169,15 @@ public class ZipFileImageTiler {
           }
         };
 
-        FileArchive fa = null;
-        try {
-          fa = new ZipArchive(zpath);
-
+        try (FileArchive fa = new ZipArchive(zpath)) {
           // Tile the images
           tiler.run(
             fa, tpath, tw, th, ipaths, exec,
             loader, slicer, imageL, tileL, doneL
           );
-
-          fa.close();
         }
         catch (IOException e) {
           logger.error("", e);
-        }
-        finally {
-          IOUtils.closeQuietly(fa);
         }
 
         dout.close();

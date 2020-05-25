@@ -21,6 +21,7 @@ package VASSAL.i18n;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -33,8 +34,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {
@@ -178,27 +179,17 @@ public class Translation extends AbstractConfigurable
       localProperties = new Properties();
     }
 
-    if (GameModule.getGameModule() != null) {
-      BufferedInputStream in = null;
-      try {
-        try {
-          in = new BufferedInputStream(
-            GameModule.getGameModule()
-                      .getDataArchive()
-                      .getInputStream(getBundleFileName())
-          );
-        }
-        catch (FileNotFoundException e) {
-          // ignore, properties have not been saved yet
-          dirty = false;
-          return;
-        }
-
+    final GameModule g = GameModule.getGameModule();
+    if (g != null) {
+      final DataArchive mda = g.getDataArchive();
+      try (InputStream inner = mda.getInputStream(getBundleFileName());
+           BufferedInputStream in = new BufferedInputStream(inner)) {
         localProperties.load(in);
-        in.close();
       }
-      finally {
-        IOUtils.closeQuietly(in);
+      catch (FileNotFoundException e) {
+        // ignore, properties have not been saved yet
+        dirty = false;
+        return;
       }
     }
 
@@ -206,20 +197,10 @@ public class Translation extends AbstractConfigurable
   }
 
   protected VassalResourceBundle getBundle() throws IOException {
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(
-        GameModule.getGameModule()
-                  .getDataArchive()
-                  .getInputStream(getBundleFileName())
-      );
-
-      final VassalResourceBundle b = new VassalResourceBundle(in);
-      in.close();
-      return b;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+    final DataArchive mda = GameModule.getGameModule().getDataArchive();
+    try (InputStream inner = mda.getInputStream(getBundleFileName());
+         BufferedInputStream in = new BufferedInputStream(inner)) {
+      return new VassalResourceBundle(in);
     }
   }
 

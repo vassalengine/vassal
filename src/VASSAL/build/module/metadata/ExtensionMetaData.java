@@ -35,7 +35,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.io.IOUtils;
 
 public class ExtensionMetaData extends AbstractMetaData {
   private static final Logger logger =
@@ -124,10 +123,12 @@ public class ExtensionMetaData extends AbstractMetaData {
    *  - Check it has a Zip Entry named buildfile
    *  - If it has a metadata file, read and parse it.
    *
-   * @param file Module File
+   * Closes the Zip file.
+   *
+   * @param zip Module File
    */
   public void read(ZipFile zip) {
-    try {
+    try (zip) {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile.
@@ -162,17 +163,12 @@ public class ExtensionMetaData extends AbstractMetaData {
       if (moduleData == null) {
         moduleData = buildFileModuleData;
       }
-
-      zip.close();
     }
     catch (SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
     catch (IOException | SAXException e) {
       logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(zip);
     }
   }
 

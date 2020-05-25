@@ -28,7 +28,6 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 public class ShutDownAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
@@ -40,17 +39,11 @@ public class ShutDownAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     if (GameModule.getGameModule() == null) {
-      Prefs p = null;
-      try {
-        p = Prefs.getGlobalPrefs();
+      try (Prefs p = Prefs.getGlobalPrefs()) {
         p.write();
-        p.close();
       }
       catch (IOException ex) {
         WriteErrorDialog.error(ex, Prefs.getGlobalPrefs().getFile().getPath());
-      }
-      finally {
-        IOUtils.closeQuietly(p);
       }
 
       System.exit(0);

@@ -750,15 +750,9 @@ public class GameState implements CommandEncoder {
       out.write(save.getBytes(StandardCharsets.UTF_8));
     }
 
-    FileArchive archive = null;
-    try {
-      archive = new ZipArchive(f);
+    try (FileArchive archive = new ZipArchive(f)) {
       archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
       (new SaveMetaData()).save(archive);
-      archive.close();
-    }
-    finally {
-      IOUtils.closeQuietly(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);

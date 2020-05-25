@@ -185,21 +185,16 @@ public class Prefs implements Closeable {
   }
 
   protected void read() {
-    InputStream in = null;
-    try {
-      in = new BufferedInputStream(new FileInputStream(file));
+    try (InputStream fin = new FileInputStream(file);
+         InputStream in = new BufferedInputStream(fin)) {
       storedValues.clear();
       storedValues.load(in);
-      in.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {
       ReadErrorDialog.errorNoI18N(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -214,9 +209,7 @@ public class Prefs implements Closeable {
       FileUtils.forceMkdir(Info.getPrefsDir());
     }
 
-    RandomAccessFile raf = null;
-    try {
-      raf = new RandomAccessFile(file, "rw");
+    try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
       final FileChannel ch = raf.getChannel();
 
       // lock the prefs file
@@ -241,10 +234,7 @@ public class Prefs implements Closeable {
       storedValues.store(out, null);
       out.flush();
     }
-    finally {
-      // also closes the channel, the streams, and releases the lock
-      IOUtils.closeQuietly(raf);
-    }
+    // channel and streams closed, lock released
   }
 
   /** Save these preferences and write to disk. */

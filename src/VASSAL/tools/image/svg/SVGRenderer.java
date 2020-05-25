@@ -64,8 +64,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Render an SVG image to a {@link BufferedImage}.
@@ -86,26 +86,28 @@ public class SVGRenderer {
   private final float defaultW, defaultH;
   private final Rasterizer r = new Rasterizer();
 
+  /**
+   * Closes the {@link InputStream}.
+   */
   public SVGRenderer(URL file, InputStream in) throws IOException {
     this(file.toString(), in);
   }
 
+  /**
+   * Closes the {@link InputStream}.
+   */
   public SVGRenderer(String file, InputStream in) throws IOException {
     // load the SVG
-    try {
+    try (in) {
       // We synchronize on docFactory becuase it does internal caching
       // of the Documents it produces. This ensures that a Document is
       // being modified on one thread only.
       synchronized (docFactory) {
         doc = docFactory.createDocument(file, in);
       }
-      in.close();
     }
     catch (DOMException e) {
       throw new IOException(e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     // get the default image size
@@ -188,22 +190,13 @@ public class SVGRenderer {
     public Document loadDocument(String uri)
         throws MalformedURLException, IOException {
       final String file = new File((new URL(uri)).getPath()).getName();
-
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(
-          GameModule.getGameModule()
-                    .getDataArchive()
-                    .getInputStream(file));
-        final Document doc = loadDocument(uri, in);
-        in.close();
-        return doc;
+      final DataArchive mda = GameModule.getGameModule().getDataArchive();
+      try (InputStream inner = mda.getInputStream(file);
+           BufferedInputStream in = new BufferedInputStream(inner)) {
+        return loadDocument(uri, in);
       }
       catch (DOMException e) {
         throw new IOException(e);
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
     }
   }

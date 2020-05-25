@@ -48,7 +48,6 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.IOUtils;
 
 public class TranslateVassalWindow extends TranslateWindow {
   private static final long serialVersionUID = 1L;
@@ -107,18 +106,12 @@ public class TranslateVassalWindow extends TranslateWindow {
           final String filename = "VASSAL_" + l + ".properties";
           final InputStream is = getClass().getResourceAsStream(filename);
           if (is != null) {
-            BufferedInputStream in = null;
-            try {
-              in = new BufferedInputStream(is);
-              ((VassalTranslation)target).loadProperties(in);
+            try (BufferedInputStream in = new BufferedInputStream(is)) {
+              ((VassalTranslation) target).loadProperties(in);
               ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
-              in.close();
             }
             catch (IOException e) {
               ReadErrorDialog.error(e, filename);
-            }
-            finally {
-              IOUtils.closeQuietly(in);
             }
           }
         }
@@ -220,17 +213,12 @@ public class TranslateVassalWindow extends TranslateWindow {
       localeConfig.setValue(locale);
     }
 
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(new FileInputStream(file));
+    try (InputStream fin = new FileInputStream(file);
+         BufferedInputStream in = new BufferedInputStream(fin)) {
       ((VassalTranslation) target).loadProperties(in);
-      in.close();
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     ((MyTableModel) keyTable.getModel()).fireTableDataChanged();

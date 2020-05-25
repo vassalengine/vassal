@@ -25,8 +25,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
@@ -98,19 +98,13 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     try {
       // write the converted image data to a file
-      OutputStream out = null;
-      try {
-        out = new BufferedOutputStream(
-                new GZIPOutputStream(
-                  new FileOutputStream(tmp)));
+      try (OutputStream fout = new FileOutputStream(tmp);
+           OutputStream gzout = new GZIPOutputStream(fout);
+           OutputStream out = new BufferedOutputStream(gzout)) {
         write(src, out);
-        out.close();
       }
       catch (IOException e) {
         throw new ImageIOException(tmp, e);
-      }
-      finally {
-        IOUtils.closeQuietly(out);
       }
 
       final int w = src.getWidth();
@@ -122,20 +116,14 @@ public class FileImageTypeConverter implements ImageTypeConverter {
       final BufferedImage dst = new BufferedImage(w, h, type);
 
       // read the converted image data back
-      InputStream in = null;
-      try {
-        in = new BufferedInputStream(
-               new GZIPInputStream(
-                 new FileInputStream(tmp)));
+      try (InputStream fin = new FileInputStream(tmp);
+           InputStream gzin = new GZIPInputStream(fin);
+           InputStream in = new BufferedInputStream(gzin)) {
         read(in, dst);
-        in.close();
         return dst;
       }
       catch (IOException e) {
         throw new ImageIOException(tmp, e);
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
     }
     finally {

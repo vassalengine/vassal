@@ -330,15 +330,9 @@ public class TilingHandler {
       new ArrayList<>();
 
     Pair<Integer,Integer> s;
-    DataArchive archive = null;
-    try {
-      archive = new DataArchive(aname);
+    try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);
-      archive.close();
-    }
-    finally {
-      IOUtils.closeQuietly(archive);
     }
 
     // nothing to do if no images need tiling

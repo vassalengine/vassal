@@ -66,7 +66,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.PNGFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.swing.ProgressDialog;
 
 // FIXME: Replace this in 3.2 with tiling code.
@@ -385,21 +384,16 @@ public class ImageSaver extends AbstractConfigurable {
         public void writeAborted(ImageWriter source) { }
       });
 
-      ImageOutputStream os = null;
-      try {
-        os = ImageIO.createImageOutputStream(f);
-
+      try (ImageOutputStream os = ImageIO.createImageOutputStream(f)) {
         if (os == null) {
           throw new IOException("Failed to write file " + f.getAbsolutePath());
         }
 
         iw.setOutput(os);
         iw.write(img);
-        os.close();
       }
       finally {
         iw.dispose();
-        IOUtils.closeQuietly(os);
       }
     }
 

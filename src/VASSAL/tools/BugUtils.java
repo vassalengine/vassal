@@ -16,9 +16,14 @@ public class BugUtils {
                                    Throwable t) throws IOException {
     final HTTPPostBuilder pb = new HTTPPostBuilder();
 
-    InputStream in = null;
-    try {
-/*
+    final String url = "http://www.vassalengine.org/util/bug.php";
+    pb.setParameter("version", Info.getVersion());
+    pb.setParameter("email", email);
+    pb.setParameter("summary", getSummary(t));
+    pb.setParameter("description", description);
+    pb.setParameter("log", "errorLog", errorLog);
+
+    /*
       final URL url = new URL("http://sourceforge.net/tracker/index.php");
       pb.setParameter("group_id", "90612");
       pb.setParameter("atid", "594231");
@@ -30,15 +35,9 @@ public class BugUtils {
       pb.setParameter("input_file", "errorLog", errorLog);
       pb.setParameter("file_description", "the errorLog");
       pb.setParameter("submit", "SUBMIT");
-*/
-      final String url = "http://www.vassalengine.org/util/bug.php";
-      pb.setParameter("version", Info.getVersion());
-      pb.setParameter("email", email);
-      pb.setParameter("summary", getSummary(t));
-      pb.setParameter("description", description);
-      pb.setParameter("log", "errorLog", errorLog);
+    */
 
-      in = pb.post(url);
+    try (InputStream in = pb.post(url)) {
       final String result = IOUtils.toString(in);
 
       // script should return zero on success, otherwise it failed
@@ -50,11 +49,6 @@ public class BugUtils {
       catch (NumberFormatException e) {
         throw new IOException(e);
       }
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -86,16 +80,13 @@ public class BugUtils {
 // FIXME: move this somewhere else?
   public static String getErrorLog() {
     String log = null;
-    FileReader r = null;
-    try {
-      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
+    final File f = new File(Info.getConfDir(), "errorLog");
+    try (FileReader r = new FileReader(f)) {
       log = IOUtils.toString(r);
-      r.close();
     }
     catch (IOException e) {
       // Don't bother logging this---if we can't read the errorLog,
       // then we probably can't write to it either.
-      IOUtils.closeQuietly(r);
     }
 
     return log;

@@ -25,8 +25,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -48,6 +48,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
@@ -91,19 +92,14 @@ public class HtmlChart extends Widget implements MouseListener {
   private String getFile(final String fname) {
     if (fname == null) return null;
 
+    final DataArchive mda = GameModule.getGameModule().getDataArchive();
     String s = null;
-    InputStream in = null;
-    try {
-      in = new BufferedInputStream(
-        GameModule.getGameModule().getDataArchive().getInputStream(fname));
-      s =  IOUtils.toString(in);
-      in.close();
+    try (InputStream inner = mda.getInputStream(fname);
+         InputStream in = new BufferedInputStream(inner)) {
+      s = IOUtils.toString(in);
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"),fname,e));
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
     }
 
     return s;
