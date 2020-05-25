@@ -3,6 +3,7 @@ package VASSAL.tools.version;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
@@ -34,7 +35,7 @@ public class VersionUtils {
   private static VassalVersion getVersion(String url) throws IOException {
     try (InputStream in = new URL(url).openStream()) {
       final VassalVersion version =
-        new VassalVersion(IOUtils.toString(in).trim());
+        new VassalVersion(IOUtils.toString(in, StandardCharsets.UTF_8).trim());
       return version;
     }
   }

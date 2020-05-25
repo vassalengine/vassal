@@ -27,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -96,7 +97,7 @@ public class HtmlChart extends Widget implements MouseListener {
     String s = null;
     try (InputStream inner = mda.getInputStream(fname);
          InputStream in = new BufferedInputStream(inner)) {
-      s = IOUtils.toString(in);
+      s = IOUtils.toString(in, StandardCharsets.UTF_8);
     }
     catch (IOException e) {
       ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));

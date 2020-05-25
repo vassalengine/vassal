@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
@@ -38,7 +39,7 @@ public class BugUtils {
     */
 
     try (InputStream in = pb.post(url)) {
-      final String result = IOUtils.toString(in);
+      final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
 
       // script should return zero on success, otherwise it failed
       try {
