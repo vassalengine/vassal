@@ -19,8 +19,6 @@
 package VASSAL.tools.swing;
 
 import java.awt.EventQueue;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
@@ -104,9 +102,9 @@ public class EDTExecutorService extends AbstractExecutorService {
     return Collections.<Runnable>emptyList();
   }
 
-  // FIXME: rename to newTaskFor(), mark as @Override in Java 1.6+
   /** {@inheritDoc} */
-  protected <T> RunnableFuture<T> newTask(final Callable<T> cable) {
+  @Override
+  protected <T> RunnableFuture<T> newTaskFor(Callable<T> cable) {
     return new EDTRunnableFuture<>() {
       @Override
       protected void runOnEDT() throws Exception {
@@ -115,45 +113,15 @@ public class EDTExecutorService extends AbstractExecutorService {
     };
   }
 
-  // FIXME: rename to newTaskFor(), mark as @Override in Java 1.6+
   /** {@inheritDoc} */
-  protected <T> RunnableFuture<T> newTask(final Runnable rable, T result) {
+  @Override
+  protected <T> RunnableFuture<T> newTaskFor(Runnable rable, T result) {
     return new EDTRunnableFuture<>(result) {
       @Override
       protected void runOnEDT() {
         rable.run();
       }
     };
-  }
-
-  // FIXME: remove for Java 1.6+
-  /** {@inheritDoc} */
-  @Override
-  public Future<?> submit(Runnable task) {
-    if (task == null) throw new NullPointerException();
-    final RunnableFuture<Void> ftask = newTask(task, null);
-    execute(ftask);
-    return ftask;
-  }
-
-  // FIXME: remove for Java 1.6+
-  /** {@inheritDoc} */
-  @Override
-  public <T> Future<T> submit(Runnable task, T result) {
-    if (task == null) throw new NullPointerException();
-    final RunnableFuture<T> ftask = newTask(task, result);
-    execute(ftask);
-    return ftask;
-  }
-
-  // FIXME: remove for Java 1.6+
-  /** {@inheritDoc} */
-  @Override
-  public <T> Future<T> submit(Callable<T> task) {
-    if (task == null) throw new NullPointerException();
-    final RunnableFuture<T> ftask = newTask(task);
-    execute(ftask);
-    return ftask;
   }
 
   /**
@@ -168,98 +136,6 @@ public class EDTExecutorService extends AbstractExecutorService {
   public <T> EDTRunnableFuture<T> submit(EDTRunnableFuture<T> task) {
     execute(task);
     return task;
-  }
-
-  // FIXME: remove for Java 1.6+
-  /** {@inheritDoc} */
-  @Override
-  public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
-                                                  throws InterruptedException {
-    if (tasks == null) throw new NullPointerException();
-
-    final List<Future<T>> futures = new ArrayList<>(tasks.size());
-    boolean done = false;
-    try {
-      for (Callable<T> t : tasks) {
-        final RunnableFuture<T> f = newTask(t);
-        futures.add(f);
-        execute(f);
-      }
-
-      for (Future<T> f : futures) {
-        if (!f.isDone()) {
-          try {
-            f.get();
-          }
-          catch (CancellationException | ExecutionException ignore) {
-          }
-        }
-      }
-
-      done = true;
-      return futures;
-    }
-    finally {
-      if (!done) {
-        for (Future<T> f : futures) f.cancel(true);
-      }
-    }
-  }
-
-  // FIXME: remove for Java 1.6+
-  /** {@inheritDoc} */
-  @Override
-  public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
-                                       long timeout, TimeUnit unit)
-                                                  throws InterruptedException {
-    if (tasks == null) throw new NullPointerException();
-    if (unit == null) throw new NullPointerException();
-
-    long nanos = unit.toNanos(timeout);
-    final List<Future<T>> futures = new ArrayList<>(tasks.size());
-    boolean done = false;
-    try {
-      for (Callable<T> t : tasks) futures.add(newTask(t));
-
-      long lastTime = System.nanoTime();
-
-      // Interleave time checks and calls to execute in case
-      // executor doesn't have any/much parallelism.
-      for (Future<T> future : futures) {
-        execute((Runnable) future);
-        final long now = System.nanoTime();
-        nanos -= now - lastTime;
-        lastTime = now;
-        if (nanos <= 0) return futures;
-      }
-
-      for (Future<T> f : futures) {
-        if (!f.isDone()) {
-          if (nanos <= 0) return futures;
-
-          try {
-            f.get(nanos, TimeUnit.NANOSECONDS);
-          }
-          catch (CancellationException | ExecutionException ignore) {
-          }
-          catch (TimeoutException toe) {
-            return futures;
-          }
-
-          final long now = System.nanoTime();
-          nanos -= now - lastTime;
-          lastTime = now;
-        }
-      }
-
-      done = true;
-      return futures;
-    }
-    finally {
-      if (!done) {
-        for (Future<T> f : futures) f.cancel(true);
-      }
-    }
   }
 
   /** {@inheritDoc} */
