@@ -571,8 +571,6 @@ public class SymbolSet extends Importer{
           maskData[i] = new SymbolData(maskImages, true).read(in);
       }
 
-      in.close();
-
       /* See if there is a single-image underlay for the map. */
       underlay = loadSymbolImage(baseName, 'z', false);
     }

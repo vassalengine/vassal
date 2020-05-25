@@ -110,7 +110,7 @@ public class ZipUpdater implements Runnable {
       }
 
       try (BufferedInputStream in = new BufferedInputStream(newContents)) {
-        long cs = writeEntry(newContents, output, newEntry);
+        long cs = writeEntry(in, output, newEntry);
         return cs;
       }
     }
@@ -293,7 +293,7 @@ public class ZipUpdater implements Runnable {
             }
 
             try (BufferedInputStream in = new BufferedInputStream(is)) {
-              writeEntry(is, out, classEntry);
+              writeEntry(in, out, classEntry);
             }
           }
         }
