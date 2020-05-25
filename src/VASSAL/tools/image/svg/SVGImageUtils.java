@@ -47,7 +47,6 @@ import org.w3c.dom.NodeList;
 
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Utility methods for manipulating SVG images.
@@ -75,6 +74,8 @@ public class SVGImageUtils {
   /**
    * Returns the default dimensions of the SVG image.
    *
+   * Closes the {@link InputStream}.
+   *
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
@@ -82,20 +83,16 @@ public class SVGImageUtils {
                                                           throws IOException {
     // get the SVG
     final Document doc;
-    try {
+    try (in) {
       synchronized (factory) {
         doc = factory.createDocument(null, in);
       }
-      in.close();
     }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (DOMException | IOException e) {
       throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     // get the default image width and height

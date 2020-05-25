@@ -296,37 +296,17 @@ public class ModuleManager {
         final byte[] buf = new byte[4096];
 
         try {
-          final ZipArchive za = new ZipArchive(pzip);
-          try {
+          try (ZipArchive za = new ZipArchive(pzip)) {
             for (String f : za.getFiles()) {
               final File ofile = new File(
                 pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f)
               );
 
-              InputStream in = null;
-              try {
-                in = za.getInputStream(f);
-
-                OutputStream out = null;
-                try {
-                  out = new FileOutputStream(ofile);
-                  IOUtils.copy(in, out, buf);
-                  out.close();
-                }
-                finally {
-                  IOUtils.closeQuietly(out);
-                }
-
-                in.close();
-              }
-              finally {
-                IOUtils.closeQuietly(in);
+              try (InputStream in = za.getInputStream(f);
+                   OutputStream out = new FileOutputStream(ofile)) {
+                IOUtils.copy(in, out, buf);
               }
             }
-            za.close();
-          }
-          finally {
-            IOUtils.closeQuietly(za);
           }
         }
         catch (IOException e) {

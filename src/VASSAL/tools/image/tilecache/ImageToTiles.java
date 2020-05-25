@@ -34,7 +34,6 @@ import VASSAL.tools.image.FallbackImageTypeConverter;
 import VASSAL.tools.image.ImageIOImageLoader;
 import VASSAL.tools.image.ImageLoader;
 import VASSAL.tools.image.ImageTypeConverter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Callback;
 
@@ -84,17 +83,11 @@ public class ImageToTiles {
     final ImageLoader loader = new ImageIOImageLoader(itc);
 
     BufferedImage src = null;
-    InputStream in = null;
-    try {
-      in = new FileInputStream(ipath);
+    try (InputStream in = new FileInputStream(ipath)) {
       src = loader.load(
         ipath, in, BufferedImage.TYPE_INT_RGB,
         BufferedImage.TYPE_INT_ARGB_PRE, false
       );
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     final String iname = new File(ipath).getName();

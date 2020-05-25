@@ -32,16 +32,10 @@ public class VersionUtils {
   }
 
   private static VassalVersion getVersion(String url) throws IOException {
-    InputStream in = null;
-    try {
-      in = new URL(url).openStream();
+    try (InputStream in = new URL(url).openStream()) {
       final VassalVersion version =
         new VassalVersion(IOUtils.toString(in).trim());
-      in.close();
       return version;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

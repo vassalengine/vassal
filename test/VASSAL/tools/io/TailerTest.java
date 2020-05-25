@@ -93,13 +93,8 @@ public class TailerTest {
     final String actual = sb_tailer.toString();
 
     String expected = null;
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(file);
+    try (FileInputStream in = new FileInputStream(file)) {
       expected = IOUtils.toString(in).substring(0, actual.length());
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     // compare whatever the Tailer had time to read

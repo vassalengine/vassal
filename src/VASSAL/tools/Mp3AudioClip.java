@@ -103,16 +103,13 @@ public class Mp3AudioClip implements AudioClip {
     new Thread() {
       @Override
       public void run() {
-        try {
+        try (stream) {
           player.play();
         }
-        catch (JavaLayerException e) {
+        catch (JavaLayerException | IOException e) {
           ErrorDialog.dataError(new BadDataReport(
             "Error reading sound file", name, e
           ));
-        }
-        finally {
-          IOUtils.closeQuietly(stream);
         }
       }
     }.start();

@@ -19,6 +19,7 @@ package VASSAL.build.module.metadata;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -52,10 +53,10 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 
 /**
  *
@@ -135,14 +136,8 @@ public abstract class AbstractMetaData {
   }
 
   public void save(FileArchive archive) throws IOException {
-    OutputStream out = null;
-    try {
-      out = archive.getOutputStream(getZipEntryName());
+    try (OutputStream out = archive.getOutputStream(getZipEntryName())) {
       save(out);
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 
@@ -230,21 +225,14 @@ public abstract class AbstractMetaData {
   }
 
   public void copyModuleMetadata(FileArchive archive) throws IOException {
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(
-        GameModule.getGameModule()
-                  .getDataArchive()
-                  .getInputStream(ModuleMetaData.ZIP_ENTRY_NAME));
+    final DataArchive mda = GameModule.getGameModule().getDataArchive();
+    try (InputStream inner = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME);
+         BufferedInputStream in = new BufferedInputStream(inner)) {
       archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
-      in.close();
     }
     catch (FileNotFoundException e) {
       // No Metatdata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

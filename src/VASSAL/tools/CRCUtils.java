@@ -25,8 +25,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.CRC32;
 
-import VASSAL.tools.io.IOUtils;
-
 /**
  * Some general purpose CRC utilities.
  *
@@ -66,12 +64,8 @@ public class CRCUtils {
    * @throws IOException
    */
   private static void buildCRC(File file, CRC32 crc, byte[] buffer) throws IOException {
-    InputStream in = new FileInputStream(file);
-    try {
+    try (InputStream in = new FileInputStream(file)) {
       buildCRC(in, crc, buffer);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

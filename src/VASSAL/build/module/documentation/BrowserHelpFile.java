@@ -139,14 +139,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
         else {
 // FIXME: no way to distinguish between read and write errors here
-          FileOutputStream fos = null;
-          try {
-            fos = new FileOutputStream(new File(output, entry.getName()));
+          try (FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
             IOUtils.copy(in, fos);
-            fos.close();
-          }
-          finally {
-            IOUtils.closeQuietly(fos);
           }
         }
       }
@@ -328,16 +322,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       File packed = null;
       try {
         packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-        ZipOutputStream out = null;
-        try {
-          out = new ZipOutputStream(new FileOutputStream(packed));
+        try (FileOutputStream fout = new FileOutputStream(packed);
+             ZipOutputStream out = new ZipOutputStream(fout)) {
           for (File f : dir.listFiles()) {
             packFile(f, "", out); //$NON-NLS-1$
           }
-          out.close();
-        }
-        finally {
-          IOUtils.closeQuietly(out);
         }
 
         GameModule.getGameModule().getArchiveWriter().addFile(
@@ -360,14 +349,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         final ZipEntry entry = new ZipEntry(prefix + packed.getName());
         out.putNextEntry(entry);
 
-        FileInputStream in = null;
-        try {
-          in = new FileInputStream(packed);
+        try (FileInputStream in = new FileInputStream(packed)) {
           IOUtils.copy(in, out);
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
     }

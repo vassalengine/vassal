@@ -110,15 +110,9 @@ public class TilingHandler {
 
   protected Dimension getImageSize(DataArchive archive, String ipath)
                                                            throws IOException {
-    InputStream in = null;
-    try {
-      in = archive.getInputStream(ipath);
+    try (InputStream in = archive.getInputStream(ipath)) {
       final Dimension id = ImageUtils.getImageSize(ipath, in);
-      in.close();
       return id;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

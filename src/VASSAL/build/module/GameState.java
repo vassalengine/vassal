@@ -746,14 +746,8 @@ public class GameState implements CommandEncoder {
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
     final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-    OutputStream out = null;
-    try {
-      out = new ObfuscatingOutputStream(ba);
+    try (OutputStream out = new ObfuscatingOutputStream(ba)) {
       out.write(save.getBytes(StandardCharsets.UTF_8));
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
 
     FileArchive archive = null;
@@ -793,11 +787,8 @@ public class GameState implements CommandEncoder {
     new SwingWorker<Command,Void>() {
       @Override
       public Command doInBackground() throws Exception {
-        try {
+        try (in) {
           return decodeSavedGame(in);
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
 
@@ -922,30 +913,18 @@ public class GameState implements CommandEncoder {
   }
 
   public Command decodeSavedGame(InputStream in) throws IOException {
-    ZipInputStream zipInput = null;
-    try {
-      zipInput = new ZipInputStream(in);
+    try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
-          InputStream din = null;
-          try {
-            din = new DeobfuscatingInputStream(zipInput);
-// FIXME: toString() is very inefficient, make decode() use the stream directly
+          try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
+            // FIXME: toString() is very inefficient, make decode() use the stream directly
             final Command c = GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8));
-            din.close();
             return c;
-          }
-          finally {
-            IOUtils.closeQuietly(din);
           }
         }
       }
-      zipInput.close();
-    }
-    finally {
-      IOUtils.closeQuietly(zipInput);
     }
 
 // FIXME: give more specific error message

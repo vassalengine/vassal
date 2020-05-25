@@ -18,6 +18,7 @@
 package VASSAL.build.module.metadata;
 
 import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -142,10 +143,8 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
 
       // parse! parse!
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(zip.getInputStream(data));
-
+      try (InputStream zin = zip.getInputStream(data);
+           BufferedInputStream in = new BufferedInputStream(zin)) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);
@@ -153,11 +152,6 @@ public class ExtensionMetaData extends AbstractMetaData {
           parser.setErrorHandler(handler);
           parser.parse(new InputSource(in));
         }
-
-        in.close();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
 
       // read the matching Module data. A basic moduledata may have been

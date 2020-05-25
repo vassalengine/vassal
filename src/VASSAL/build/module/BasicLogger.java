@@ -64,7 +64,6 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
@@ -314,25 +313,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 // FIXME: Extremely inefficient! Make encode write to an OutputStream
       final String s = GameModule.getGameModule().encode(log);
       final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-      OutputStream out = null;
-      try {
-        out = new ObfuscatingOutputStream(ba);
+      try (OutputStream out = new ObfuscatingOutputStream(ba)) {
         out.write(s.getBytes(StandardCharsets.UTF_8));
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
       }
 
-      FileArchive archive = null;
-      try {
-        archive = new ZipArchive(outputFile);
+      try (FileArchive archive = new ZipArchive(outputFile)) {
         archive.add(GameState.SAVEFILE_ZIP_ENTRY, ba.toInputStream());
         metadata.save(archive);
-        archive.close();
-      }
-      finally {
-        IOUtils.closeQuietly(archive);
       }
 
       Launcher.getInstance().sendSaveCmd(outputFile);

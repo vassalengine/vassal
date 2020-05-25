@@ -35,7 +35,6 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 
 import sun.java2d.cmm.ProfileDeferralMgr;
 
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
 import VASSAL.tools.lang.Reference;
 
@@ -70,20 +69,14 @@ public class ImageIOImageLoader implements ImageLoader {
   static {
     BufferedImage img = null;
 
-    InputStream in = null;
-    try {
+    try (InputStream in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg")) {
       // We intentionally bypass the normal image loading system
       // in order to see how ImageIO loads the test image.
-      in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg");
       img = ImageIO.read(new MemoryCacheImageInputStream(in));
-      in.close();
     }
     catch (IOException e) {
       // this should not happen
       throw new IllegalStateException();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     if (img == null) {
@@ -179,9 +172,7 @@ public class ImageIOImageLoader implements ImageLoader {
     boolean fix_YCbCr = false;
 
     BufferedImage img = null;
-    RereadableInputStream rin = null;
-    try {
-      rin = new RereadableInputStream(in);
+    try (RereadableInputStream rin = new RereadableInputStream(in)) {
       rin.mark(512);
 
       DataInputStream din = new DataInputStream(rin);
@@ -349,7 +340,6 @@ public class ImageIOImageLoader implements ImageLoader {
       // Load the image
       rin.reset();
       img = wrapImageIO(name, rin, readImage);
-      rin.close();
     }
     catch (ImageIOException e) {
       // Don't wrap ImageIOExceptions.
@@ -357,9 +347,6 @@ public class ImageIOImageLoader implements ImageLoader {
     }
     catch (IOException e) {
       throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(rin);
     }
 
     final int type =

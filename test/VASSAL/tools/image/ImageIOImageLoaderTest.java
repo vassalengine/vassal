@@ -47,18 +47,12 @@ public class ImageIOImageLoaderTest {
 
   protected BufferedImage read(ImageLoader loader, String file)
                                                            throws IOException {
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(file);
+    try (FileInputStream in = new FileInputStream(file)) {
       final BufferedImage img = loader.load(
         file, in, BufferedImage.TYPE_INT_RGB,
         BufferedImage.TYPE_INT_ARGB, false
       );
-      in.close();
       return img;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -107,15 +101,9 @@ public class ImageIOImageLoaderTest {
   }
 
   protected Dimension size(ImageLoader loader, String file) throws IOException {
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(file);
+    try (FileInputStream in = new FileInputStream(file)) {
       final Dimension d = loader.size(file, in);
-      in.close();
       return d;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

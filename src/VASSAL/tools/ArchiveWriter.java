@@ -199,17 +199,11 @@ public class ArchiveWriter extends DataArchive {
    * @param in the stream to copy
    */
   public void addFile(String fileName, InputStream in) {
-    OutputStream out = null;
-    try {
-      out = archive.getOutputStream(fileName);
+    try (OutputStream out = archive.getOutputStream(fileName)) {
       IOUtils.copy(in, out);
-      out.close();
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 

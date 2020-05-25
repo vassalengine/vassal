@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}
@@ -150,11 +149,10 @@ public abstract class Builder {
    */
   public static Document createDocument(InputStream in)
                                         throws IOException {
-    try {
+    try (in) {
       final Document doc = DocumentBuilderFactory.newInstance()
-                                                .newDocumentBuilder()
-                                                .parse(in);
-      in.close();
+                                                 .newDocumentBuilder()
+                                                 .parse(in);
       return doc;
     }
     catch (ParserConfigurationException e) {
@@ -163,9 +161,6 @@ public abstract class Builder {
     }
     catch (SAXException e) {
       throw new IOException(e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

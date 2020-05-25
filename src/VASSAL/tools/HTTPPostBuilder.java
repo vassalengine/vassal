@@ -81,14 +81,8 @@ public class HTTPPostBuilder {
    * @throws IOException in case of failure
    */
   public void setParameter(String name, File file) throws IOException {
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(file);
+    try (FileInputStream in = new FileInputStream(file)) {
       setParameter(name, file.getPath(), in);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -181,28 +175,22 @@ public class HTTPPostBuilder {
   public InputStream post(URL url) throws IOException {
     writeEnd();
 
-    OutputStream out = null;
-    try {
-      final HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    final HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
-      http.setRequestMethod("POST");
-      http.setDoInput(true);
-      http.setDoOutput(true);
-      http.setUseCaches(false);
-      http.setAllowUserInteraction(false);
+    http.setRequestMethod("POST");
+    http.setDoInput(true);
+    http.setDoOutput(true);
+    http.setUseCaches(false);
+    http.setAllowUserInteraction(false);
 
-      http.setRequestProperty("Content-Type",
-        "multipart/form-data; boundary=" + boundary);
-      http.setRequestProperty("Content-Length", String.valueOf(bytes.size()));
+    http.setRequestProperty("Content-Type",
+      "multipart/form-data; boundary=" + boundary);
+    http.setRequestProperty("Content-Length", String.valueOf(bytes.size()));
 
-      out = http.getOutputStream();
+    try (OutputStream out = http.getOutputStream()) {
       bytes.writeTo(out);
-      out.close();
+    }
 
-      return http.getInputStream();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
-    }
+    return http.getInputStream();
   }
 }

@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Improved version of ServerConfigurer that includes an Address Book of
@@ -114,8 +113,7 @@ public class AddressBookServerConfigurer extends Configurer {
   @Override
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try {
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       Properties p = (Properties) getValue();
       if (p != null) {
         p.store(out, null);
@@ -125,9 +123,6 @@ public class AddressBookServerConfigurer extends Configurer {
     // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
     return s;
   }

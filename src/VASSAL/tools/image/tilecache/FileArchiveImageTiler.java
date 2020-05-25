@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.tools.image.ImageLoader;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.lang.Callback;
 
 /**
@@ -70,21 +69,15 @@ public class FileArchiveImageTiler {
       imageListener.receive(ipath);
 
       BufferedImage src = null;
-      InputStream in = null;
-      try {
-        in = fa.getInputStream(ipath);
+      try (InputStream in = fa.getInputStream(ipath)) {
         src = loader.load(
           ipath, in, BufferedImage.TYPE_INT_RGB,
           BufferedImage.TYPE_INT_ARGB_PRE, false
         );
-        in.close();
       }
       catch (IOException e) {
         logger.error("", e);
         continue;
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
 
       slicer.slice(src, ipath, tpath, tw, th, exec, tileListener);
