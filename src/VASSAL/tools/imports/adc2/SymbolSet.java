@@ -36,13 +36,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
@@ -600,7 +600,7 @@ public class SymbolSet extends Importer{
       try {
         input = new BufferedReader(new FileReader(sdx));
 
-        final SymbolData[] pieces = ArrayUtils.copyOf(gamePieceData);
+        final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
 
         String line = null;
         try {

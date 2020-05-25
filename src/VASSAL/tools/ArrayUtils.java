@@ -19,6 +19,7 @@
 package VASSAL.tools;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * @author Joel Uckelman
@@ -27,220 +28,151 @@ import java.lang.reflect.Array;
 public class ArrayUtils {
   private ArrayUtils() {}
 
+  @Deprecated
   public static boolean[] copyOf(boolean[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static byte[] copyOf(byte[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static char[] copyOf(char[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static double[] copyOf(double[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static float[] copyOf(float[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static int[] copyOf(int[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static long[] copyOf(long[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static short[] copyOf(short[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
+  @Deprecated
   public static <T> T[] copyOf(T[] orig) {
-    return copyOf(orig, orig.length);
+    return Arrays.copyOf(orig, orig.length);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static boolean[] copyOf(boolean[] orig, int newLength) {
-    final boolean[] copy = new boolean[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static byte[] copyOf(byte[] orig, int newLength) {
-    final byte[] copy = new byte[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static char[] copyOf(char[] orig, int newLength) {
-    final char[] copy = new char[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static double[] copyOf(double[] orig, int newLength) {
-    final double[] copy = new double[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static float[] copyOf(float[] orig, int newLength) {
-    final float[] copy = new float[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static int[] copyOf(int[] orig, int newLength) {
-    final int[] copy = new int[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static long[] copyOf(long[] orig, int newLength) {
-    final long[] copy = new long[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
+  @Deprecated
   public static short[] copyOf(short[] orig, int newLength) {
-    final short[] copy = new short[newLength];
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
-  @SuppressWarnings("unchecked")
+  @Deprecated
   public static <T> T[] copyOf(T[] orig, int newLength) {
-    return (T[]) copyOf(orig, newLength, orig.getClass());
+    return Arrays.copyOf(orig, newLength);
   }
 
-  // FIXME: replace with Arrays.copyOf() in Java 1.6
-  @SuppressWarnings("unchecked")
+  @Deprecated
   public static <T,U> T[] copyOf(U[] orig, int newLength,
                                  Class<? extends T[]> newType) {
-    final T[] copy =
-      (T[]) Array.newInstance(newType.getComponentType(), newLength);
-    System.arraycopy(orig, 0, copy, 0, Math.min(orig.length, newLength));
-    return copy;
+    return Arrays.copyOf(orig, newLength, newType);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static boolean[] copyOfRange(boolean[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final boolean[] copy = new boolean[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static byte[] copyOfRange(byte[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final byte[] copy = new byte[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static char[] copyOfRange(char[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final char[] copy = new char[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static double[] copyOfRange(double[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final double[] copy = new double[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static float[] copyOfRange(float[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final float[] copy = new float[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static int[] copyOfRange(int[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final int[] copy = new int[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static long[] copyOfRange(long[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final long[] copy = new long[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
+  @Deprecated
   public static short[] copyOfRange(short[] orig, int from, int to) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final short[] copy = new short[newLength];
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
-  @SuppressWarnings("unchecked")
+  @Deprecated
   public static <T> T[] copyOfRange(T[] orig, int from, int to) {
-    return (T[]) copyOfRange(orig, from, to, orig.getClass());
+    return Arrays.copyOfRange(orig, from, to);
   }
 
-  // FIXME: replace with Arrays.copyOfRange() in Java 1.6
-  @SuppressWarnings("unchecked")
+  @Deprecated
   public static <T,U> T[] copyOfRange(U[] orig, int from, int to,
                                       Class<? extends T[]> newType) {
-    final int newLength = to - from;
-    if (newLength < 0) throw new IllegalArgumentException();
-
-    final T[] copy =
-      (T[]) Array.newInstance(newType.getComponentType(), newLength);
-    System.arraycopy(orig, from, copy, 0,
-                     Math.min(orig.length - from, newLength));
-    return copy;
+    return Arrays.copyOfRange(orig, from, to, newType);
   }
 
   public static boolean[] prepend(boolean[] orig, boolean e) {
@@ -315,49 +247,49 @@ public class ArrayUtils {
   }
 
   public static boolean[] append(boolean[] orig, boolean e) {
-    final boolean[] tmp = copyOf(orig, orig.length+1);
+    final boolean[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static byte[] append(byte[] orig, byte e) {
-    final byte[] tmp = copyOf(orig, orig.length+1);
+    final byte[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static char[] append(char[] orig, char e) {
-    final char[] tmp = copyOf(orig, orig.length+1);
+    final char[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static double[] append(double[] orig, double e) {
-    final double[] tmp = copyOf(orig, orig.length+1);
+    final double[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static float[] append(float[] orig, float e) {
-    final float[] tmp = copyOf(orig, orig.length+1);
+    final float[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static int[] append(int[] orig, int e) {
-    final int[] tmp = copyOf(orig, orig.length+1);
+    final int[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static long[] append(long[] orig, long e) {
-    final long[] tmp = copyOf(orig, orig.length+1);
+    final long[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
 
   public static short[] append(short[] orig, short e) {
-    final short[] tmp = copyOf(orig, orig.length+1);
+    final short[] tmp = Arrays.copyOf(orig, orig.length+1);
     tmp[orig.length] = e;
     return tmp;
   }
@@ -369,7 +301,7 @@ public class ArrayUtils {
 
   public static <T,X extends T,Y extends T> T[] append(Class<T[]> type,
                                                        X[] orig, Y e) {
-    final T[] tmp = copyOf(orig, orig.length+1, type);
+    final T[] tmp = Arrays.copyOf(orig, orig.length+1, type);
     tmp[orig.length] = e;
     return tmp;
   }

@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -58,7 +59,6 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -626,7 +626,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
     public ShowResults(SpecialDiceButton oTarget, int[] results) {
       target = oTarget;
-      rolls = ArrayUtils.copyOf(results);
+      rolls = Arrays.copyOf(results, results.length);
     }
 
     @Override

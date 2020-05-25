@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -34,7 +35,6 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
@@ -692,7 +692,7 @@ public class Stack implements GamePiece, StateMergeable {
     private final GamePiece[] p;
 
     public AllPieceIterator() {
-      p = ArrayUtils.copyOf(contents, pieceCount);
+      p = Arrays.copyOf(contents, pieceCount);
     }
 
     @Override
@@ -716,7 +716,7 @@ public class Stack implements GamePiece, StateMergeable {
     private final GamePiece[] p;
 
     public ReversePieceIterator() {
-      p = ArrayUtils.copyOf(contents, pieceCount);
+      p = Arrays.copyOf(contents, pieceCount);
     }
 
     @Override

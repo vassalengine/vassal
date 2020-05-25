@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.awt.Color;
 import java.awt.event.InputEvent;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -358,7 +359,7 @@ public class SequenceEncoder {
       }
 
       if (retVal.length < minLength) {
-        retVal = ArrayUtils.copyOf(retVal, minLength);
+        retVal = Arrays.copyOf(retVal, minLength);
       }
 
       return retVal;

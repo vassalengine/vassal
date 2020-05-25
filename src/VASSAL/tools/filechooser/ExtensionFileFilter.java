@@ -19,10 +19,10 @@
 package VASSAL.tools.filechooser;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
-import VASSAL.tools.ArrayUtils;
 
 /**
  * A generic by-extension FileFilter.
@@ -40,7 +40,7 @@ public class ExtensionFileFilter extends FileFilter {
   public ExtensionFileFilter(String desc, String[] types) {
     super();
     this.desc = desc + " (*" + StringUtils.join(types, ", *") + ")";
-    this.types = ArrayUtils.copyOf(types);
+    this.types = Arrays.copyOf(types, types.length);
   }
 
   /**

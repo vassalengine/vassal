@@ -72,7 +72,6 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -566,7 +565,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
 
-    this.countExpressions = ArrayUtils.copyOf(c, goodExpressionCount);
+    this.countExpressions = Arrays.copyOf(c, goodExpressionCount);
     while (countExpressions.length > expressionProperties.size()) {
       expressionProperties.add(new MutableProperty.Impl("",this));
     }
