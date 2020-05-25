@@ -106,6 +106,19 @@ public class ImageIOImageLoaderTest {
     }
   }
 
+  protected Dimension size(ImageLoader loader, String file) throws IOException {
+    FileInputStream in = null;
+    try {
+      in = new FileInputStream(file);
+      final Dimension d = loader.size(file, in);
+      in.close();
+      return d;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
+
   @Test
   public void testSizeOk() throws IOException {
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
