@@ -44,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -119,7 +120,6 @@ import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 import VASSAL.tools.imports.adc2.SymbolSet.SymbolData;
-import VASSAL.tools.io.IOUtils;
 
 public class ADC2Module extends Importer {
 
@@ -2394,10 +2394,9 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
             StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
-            BufferedReader input = null;
-            try {
-              input = new BufferedReader(new FileReader(f));
 
+            try (Reader fr = new FileReader(f);
+                 BufferedReader input = new BufferedReader(fr)) {
               String line = null;
               do {
                 line = input.readLine();
@@ -2413,11 +2412,6 @@ private void configureMainMap(GameModule gameModule) throws IOException {
               sb.append("</body></html>");
               gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
               w.setAttribute(HtmlChart.FILE, f.getName());
-
-              input.close();
-            }
-            finally {
-              IOUtils.closeQuietly(input);
             }
           }
           tab.propertyChange(new PropertyChangeEvent(w, Configurable.NAME_PROPERTY, "", infoPages[i]));

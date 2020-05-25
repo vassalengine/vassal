@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -105,7 +106,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class Inventory extends AbstractConfigurable
@@ -409,12 +409,10 @@ public class Inventory extends AbstractConfigurable
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
 
-    PrintWriter p = null;
-    try {
-      p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-
+    try (Writer fw = new FileWriter(file);
+         BufferedWriter bw = new BufferedWriter(fw);
+         PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
-      p.close();
 
       final Command c = new Chatter.DisplayText(
         GameModule.getGameModule().getChatter(),
@@ -424,9 +422,6 @@ public class Inventory extends AbstractConfigurable
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(p);
     }
   }
 

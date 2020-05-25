@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,6 @@ import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * ADC2 game piece and terrain symbols.
@@ -593,10 +593,9 @@ public class SymbolSet extends Importer{
     File sdx = new File(forceExtension(f.getPath(), "sdx"));
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
-      BufferedReader input = null;
 
-      try {
-        input = new BufferedReader(new FileReader(sdx));
+      try (Reader fr = new FileReader(sdx);
+           BufferedReader input = new BufferedReader(fr)) {
 
         final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
 
@@ -621,11 +620,6 @@ public class SymbolSet extends Importer{
         finally {
           gamePieceData = pieces;
         }
-
-        input.close();
-      }
-      finally {
-        IOUtils.closeQuietly(input);
       }
     }
   }

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 import javax.swing.JOptionPane;
 
@@ -43,7 +44,6 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.IOUtils;
 
 public class TextSaver extends AbstractConfigurable {
 
@@ -150,24 +150,18 @@ public class TextSaver extends AbstractConfigurable {
     if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION) return;
 
     final File file =  fc.getSelectedFile();
-    PrintWriter p = null;
-    try {
-      p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-
+    try (Writer fw = new FileWriter(file);
+         BufferedWriter bw = new BufferedWriter(fw);
+         PrintWriter p = new PrintWriter(bw)) {
       for (GamePiece gp : map.getPieces()) {
         final String s = gp.getName();
         if (s.length() > 0) {
           p.println(map.locationName(gp.getPosition()) + ": " + s);
         }
       }
-
-      p.close();
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(p);
     }
   }
 

@@ -20,8 +20,9 @@ package VASSAL.tools.icon;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Manage and Provide Icons in standard sizes.
@@ -316,9 +316,10 @@ public final class IconFactory {
   protected void findLocalSizedIcons(int size) throws IOException {
     final String path = DataArchive.ICON_DIR+IconFamily.SIZE_DIRS[size];
     final URL sizeURL = jar.getURL(path);
-    BufferedReader br = null;
-    try {
-      br = new BufferedReader(new InputStreamReader(sizeURL.openStream()));
+
+    try (InputStream in = sizeURL.openStream();
+         InputStreamReader isr = new InputStreamReader(in);
+         BufferedReader br = new BufferedReader(isr)) {
       String imageName = ""; //$NON-NLS-1$
       while (imageName != null) {
         imageName = br.readLine();
@@ -334,9 +335,6 @@ public final class IconFactory {
         }
       }
     }
-    finally {
-      IOUtils.closeQuietly(br);
-    }
   }
 
   /**
@@ -348,9 +346,10 @@ public final class IconFactory {
   private void findLocalScalableIcons() throws IOException {
     final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
     final URL url = jar.getURL(scalablePath);
-    BufferedReader br = null;
-    try {
-      br= new BufferedReader(new InputStreamReader(url.openStream()));
+
+    try (InputStream in = url.openStream();
+         InputStreamReader isr = new InputStreamReader(in);
+         BufferedReader br = new BufferedReader(isr)) {
       String imageName = ""; //$NON-NLS-1$
       while (imageName != null) {
         imageName = br.readLine();
@@ -365,9 +364,6 @@ public final class IconFactory {
           iconFamilies.put(familyName, family);
         }
       }
-    }
-    finally {
-      IOUtils.closeQuietly(br);
     }
   }
 

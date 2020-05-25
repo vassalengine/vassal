@@ -19,8 +19,9 @@
 package VASSAL.script;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,12 +168,10 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
     logger.info("Attempting to load "+INIT_SCRIPT+" URI generated="+ ini);
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(
-        new InputStreamReader(
-        ini.openStream()));
 
+    try (InputStream is = ini.openStream();
+         InputStreamReader isr = new InputStreamReader(is);
+         BufferedReader in = new BufferedReader(isr)) {
       try {
         eval(in);
       }
@@ -184,9 +183,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     catch (IOException e) {
       logger.error("Error trying to read init script: "+ ini);
       WarningDialog.show(e, "");
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

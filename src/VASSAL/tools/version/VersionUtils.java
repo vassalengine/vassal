@@ -44,11 +44,8 @@ public class VersionUtils {
   public static boolean isReportable(String version)
       throws IOException, NumberFormatException {
 
-    InputStream in = null;
-    try {
-      in = new URL(baseURL + bugCheck + version).openStream();
+    try (InputStream in = new URL(baseURL + bugCheck + version).openStream()) {
       final int result = Integer.parseInt(IOUtils.toString(in));
-      in.close();
 
       switch (result) {
       case 0: return false;
@@ -56,9 +53,6 @@ public class VersionUtils {
       default:
         throw new NumberFormatException("bad return value: " + result);
       }
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 */

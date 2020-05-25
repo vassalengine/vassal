@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1390,16 +1392,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       comm = comm.append(new AddPiece(p));
     }
 
-    BufferedWriter out = null;
-    try {
-      out = new BufferedWriter(new FileWriter(f));
+    try (Writer fw = new FileWriter(f);
+         BufferedWriter out = new BufferedWriter(fw)) {
       GameModule.getGameModule().addCommandEncoder(commandEncoder);
       out.write(GameModule.getGameModule().encode(comm));
       GameModule.getGameModule().removeCommandEncoder(commandEncoder);
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 
@@ -1433,15 +1430,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    BufferedReader in = null;
     String ds = null;
-    try {
-      in = new BufferedReader(new FileReader(f));
+
+    try (Reader fr = new FileReader(f);
+         BufferedReader in = new BufferedReader(fr)) {
       ds = IOUtils.toString(in);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     GameModule.getGameModule().addCommandEncoder(commandEncoder);

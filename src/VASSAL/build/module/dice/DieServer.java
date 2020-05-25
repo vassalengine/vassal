@@ -1,8 +1,10 @@
 package VASSAL.build.module.dice;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,8 +23,6 @@ import VASSAL.build.module.DieRoll;
 import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.io.IOUtils;
-
 
 /**
  * Base DieServer Class
@@ -271,27 +271,20 @@ public abstract class DieServer {
     final URLConnection connection = url.openConnection();
     connection.setDoOutput(true);
 
-    final PrintWriter out = new PrintWriter(connection.getOutputStream());
-    try {
-      for (String s : rollString) out.println(s);
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
+    try (OutputStream os = connection.getOutputStream();
+         PrintWriter out = new PrintWriter(os)) {
+      for (String s : rollString) {
+        out.println(s);
+      }
     }
 
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(
-        new InputStreamReader(connection.getInputStream()));
-
+    try (InputStream is = connection.getInputStream();
+         InputStreamReader isr = new InputStreamReader(is);
+         BufferedReader in = new BufferedReader(isr)) {
       String inputLine;
-      while ((inputLine = in.readLine()) != null) returnString.add(inputLine);
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      while ((inputLine = in.readLine()) != null) {
+        returnString.add(inputLine);
+      }
     }
 
     parseInternetRollString(toss, new Vector<>(returnString));
