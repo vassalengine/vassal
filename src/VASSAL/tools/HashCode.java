@@ -33,76 +33,76 @@ import java.util.Arrays;
 public final class HashCode {
   private HashCode() {}
 
-  public static final int hash(final boolean value) {
+  public static int hash(final boolean value) {
     return value ? 1 : 0;
   }
 
-  public static final int hash(final byte value) {
+  public static int hash(final byte value) {
     return value;
   }
 
-  public static final int hash(final char value) {
+  public static int hash(final char value) {
     return value;
   }
 
-  public static final int hash(final short value) {
+  public static int hash(final short value) {
     return value;
   }
 
-  public static final int hash(final int value) {
+  public static int hash(final int value) {
     return value;
   }
 
-  public static final int hash(final long value) {
+  public static int hash(final long value) {
     return (int)(value ^ (value >>> 32));
   }
 
-  public static final int hash(final float value) {
+  public static int hash(final float value) {
     return Float.floatToIntBits(value);
   }
 
-  public static final int hash(final double value) {
+  public static int hash(final double value) {
     final long bits = Double.doubleToLongBits(value);
     return (int)(bits ^ (bits >>> 32));
   }
 
-  public static final int hash(final Object value) {
+  public static int hash(final Object value) {
     return value == null ? 0 : value.hashCode();
   }
 
-  public static final int hash(final boolean[] a) {
+  public static int hash(final boolean[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final byte[] a) {
+  public static int hash(final byte[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final char[] a) {
+  public static int hash(final char[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final short[] a) {
+  public static int hash(final short[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final int[] a) {
+  public static int hash(final int[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final long[] a) {
+  public static int hash(final long[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final float[] a) {
+  public static int hash(final float[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final int hash(final double[] a) {
+  public static int hash(final double[] a) {
     return Arrays.hashCode(a);
   }
 
-  public static final <T> int hash(final T[] a) {
+  public static <T> int hash(final T[] a) {
     return Arrays.hashCode(a);
   }
 }
