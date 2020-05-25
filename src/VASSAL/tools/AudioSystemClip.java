@@ -41,9 +41,9 @@ public class AudioSystemClip implements AudioClip {
       in = new BufferedInputStream(in);
     }
 
-    // try to get a Clip
     Clip clip = null;
     try {
+      // try to get a Clip
       try {
         clip = AudioSystem.getClip();
       }
@@ -54,37 +54,31 @@ public class AudioSystemClip implements AudioClip {
       // wrap the input stream
       AudioInputStream ais = null;
       try {
-        try {
-          ais = AudioSystem.getAudioInputStream(in);
-        }
-        catch (UnsupportedAudioFileException e) {
-          throw new IOException(e);
-        }
+        ais = AudioSystem.getAudioInputStream(in);
+      }
+      catch (UnsupportedAudioFileException e) {
+        throw new IOException(e);
+      }
 
+      try (AudioInputStream a = ais) {
         // convert the audio stream to the type the clip wants
         AudioInputStream cais = null;
         try {
-          try {
-            cais = AudioSystem.getAudioInputStream(clip.getFormat(), ais);
-          }
-          catch (IllegalArgumentException e) {
-            throw new IOException(e);
-          }
+          cais = AudioSystem.getAudioInputStream(clip.getFormat(), a);
+        }
+        catch (IllegalArgumentException e) {
+          throw new IOException(e);
+        }
 
+        try (AudioInputStream ca = cais) {
           try {
-            clip.open(cais);
+            clip.open(ca);
             return clip;
           }
           catch (IllegalArgumentException | SecurityException | LineUnavailableException e) {
             throw new IOException(e);
           }
         }
-        finally {
-          IOUtils.closeQuietly(cais);
-        }
-      }
-      finally {
-        IOUtils.closeQuietly(ais);
       }
     }
     catch (Exception e) {
@@ -94,13 +88,8 @@ public class AudioSystemClip implements AudioClip {
   }
 
   public AudioSystemClip(URL url) throws IOException {
-    InputStream in = null;
-    try {
-      in = url.openStream();
+    try (InputStream in = url.openStream()) {
       the_clip = getClip(in);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
