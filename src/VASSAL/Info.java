@@ -111,8 +111,7 @@ public final class Info {
   public static String getMinorVersion() {
     final VersionTokenizer tok = new VassalVersionTokenizer(VERSION);
     try {
-      return Integer.toString(tok.next()) + "." +
-             Integer.toString(tok.next());
+      return tok.next() + "." + tok.next();
     }
     catch (VersionFormatException e) {
       return null;

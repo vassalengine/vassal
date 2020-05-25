@@ -189,7 +189,7 @@ public class FileConfigurer extends Configurer {
     c.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(String.valueOf(evt.getNewValue()));
+        System.err.println(evt.getNewValue());
       }
     });
     f.getContentPane().add(c.getControls());
