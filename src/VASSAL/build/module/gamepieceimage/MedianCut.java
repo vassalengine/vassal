@@ -62,7 +62,7 @@ import java.awt.image.WritableRaster;
 
 
    // Convert from 24-bit to 15-bit color
-   private final int rgb(int c) {
+   private int rgb(int c) {
        int r = (c&0xf80000)>>19;
        int g = (c&0xf800)>>6;
        int b = (c&0xf8)<<7;
@@ -70,17 +70,17 @@ import java.awt.image.WritableRaster;
    }
 
    // Get red component of a 15-bit color
-   private final int red(int x) {
+   private int red(int x) {
        return (x&31)<<3;
    }
 
    // Get green component of a 15-bit color
-   private final int green(int x) {
+   private int green(int x) {
        return (x>>2)&0xf8;
    }
 
    // Get blue component of a 15-bit color
-   private final int blue(int x) {
+   private int blue(int x) {
        return (x>>7)&0xf8;
    }
 

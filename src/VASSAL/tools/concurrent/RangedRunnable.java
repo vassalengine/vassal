@@ -92,7 +92,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * @return the range being flushed
    */
-  private final synchronized Pair<T,T> flush() {
+  private synchronized Pair<T,T> flush() {
     final Pair<T,T> flushed = range;
     range = new Pair<>(flushed.second, null);
     submitted = false;

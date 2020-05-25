@@ -191,7 +191,7 @@ public class MTRandom extends Random {
   // Initializes mt[N] with a simple integer seed. This method is
   // required as part of the Mersenne Twister algorithm but need
   // not be made public.
-  private final void setSeed(int seed) {
+  private void setSeed(int seed) {
 
     // Annoying runtime check for initialisation of internal data
     // caused by java.util.Random invoking setSeed() during init.

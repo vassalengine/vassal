@@ -356,7 +356,7 @@ public class Base64
    * in which case one of them will be picked, though there is
    * no guarantee as to which one will be picked.
    */
-  private final static byte[] getAlphabet( int options )
+  private static byte[] getAlphabet(int options )
   {
     if( (options & URL_SAFE) == URL_SAFE ) return _URL_SAFE_ALPHABET;
     else if( (options & ORDERED) == ORDERED ) return _ORDERED_ALPHABET;
@@ -372,7 +372,7 @@ public class Base64
    * in which case one of them will be picked, though there is
    * no guarantee as to which one will be picked.
    */
-  private final static byte[] getDecodabet( int options )
+  private static byte[] getDecodabet(int options )
   {
     if( (options & URL_SAFE) == URL_SAFE ) return _URL_SAFE_DECODABET;
     else if( (options & ORDERED) == ORDERED ) return _ORDERED_DECODABET;
@@ -417,7 +417,7 @@ public class Base64
      *
      * @param msg A message to include with usage info.
      */
-    private final static void usage( String msg )
+    private static void usage(String msg )
     {
         System.err.println( msg );
         System.err.println( "Usage: java Base64 -e|-d inputfile outputfile" );
