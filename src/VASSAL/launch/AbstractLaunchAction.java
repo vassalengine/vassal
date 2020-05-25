@@ -262,7 +262,7 @@ e.printStackTrace();
         final String aname = lr.module.getAbsolutePath();
         final ModuleMetaData meta = new ModuleMetaData(new ZipFile(aname));
         final String hstr =
-          DigestUtils.shaHex(meta.getName() + "_" + meta.getVersion());
+          DigestUtils.sha1Hex(meta.getName() + "_" + meta.getVersion());
 
         final File cdir = new File(Info.getConfDir(), "tiles/" + hstr);
 

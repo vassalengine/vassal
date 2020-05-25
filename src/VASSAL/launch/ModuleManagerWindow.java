@@ -1430,7 +1430,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void cleanupTileCache() {
-      final String hstr = DigestUtils.shaHex(
+      final String hstr = DigestUtils.sha1Hex(
         metadata.getName() + "_" + metadata.getVersion()
       );
 

@@ -393,7 +393,7 @@ public class TileUtils {
    * @return the name of the tile file
    */
   public static String tileName(String iname, int tileX, int tileY, int div) {
-    final String sha = DigestUtils.shaHex(
+    final String sha = DigestUtils.sha1Hex(
       iname + "(" + tileX + "," + tileY + "@1:" + div
     );
 

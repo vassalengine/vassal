@@ -961,7 +961,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       // are properly set at this point.
 
       final String hstr =
-        DigestUtils.shaHex(getGameName() + "_" + getGameVersion());
+        DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion());
 
       final File tc = new File(Info.getConfDir(), "tiles/" + hstr);
       tcache = new ImageTileDiskCache(tc.getAbsolutePath());
