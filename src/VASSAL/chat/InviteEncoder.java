@@ -31,6 +31,7 @@ public class InviteEncoder implements CommandEncoder {
     this.client = client;
   }
 
+  @Override
   public Command decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       String[] info = s.split("\\t"); //$NON-NLS-1$
@@ -41,6 +42,7 @@ public class InviteEncoder implements CommandEncoder {
     return null;
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof InviteCommand) {
       InviteCommand cmd = (InviteCommand) c;

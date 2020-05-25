@@ -46,44 +46,52 @@ public abstract class AbstractPropertyContainer implements PropertyContainer {
   protected final PropertySupport ps;
 
   /** {@inheritDoc} */
+  @Override
   public void addPropertyListener(PropertyListener<Object> l) {
     ps.addPropertyListener(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> void addPropertyListener(Property<T> prop,
                                       PropertyListener<? super T> l) {
     ps.addPropertyListener(prop, l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void removePropertyListener(PropertyListener<Object> l) {
     ps.removePropertyListener(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> void removePropertyListener(Property<T> prop,
                                          PropertyListener<? super T> l) {
     ps.removePropertyListener(prop, l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<PropertyListener<Object>> getPropertyListeners() {
     return ps.getPropertyListeners();
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> List<PropertyListener<? super T>>
                                        getPropertyListeners(Property<T> prop) {
     return ps.getPropertyListeners(prop);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasListeners() {
     return ps.hasListeners();
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> boolean hasListeners(Property<T> prop) {
     return ps.hasListeners(prop);
   }

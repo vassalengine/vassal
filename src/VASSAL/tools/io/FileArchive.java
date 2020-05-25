@@ -128,6 +128,7 @@ public interface FileArchive extends Closeable {
    *
    * @throws IOException
    */
+  @Override
   public void close() throws IOException;
 
   /**

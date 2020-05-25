@@ -38,16 +38,20 @@ public class EditContainedPiecesAction extends AbstractAction {
     this.target = target;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     final MassPieceDefiner mass = new MassPieceDefiner(target);
     Configurer c = new Configurer("", "") {
+      @Override
       public void setValue(String s) {
       }
 
+      @Override
       public java.awt.Component getControls() {
         return mass;
       }
 
+      @Override
       public String getValueString() {
         return "";
       }

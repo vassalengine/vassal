@@ -68,6 +68,7 @@ public class TilesToImage {
     // of the last row
     final File bdir = new File(base).getParentFile();
     final FileFilter filter = new FileFilter() {
+      @Override
       public boolean accept(File pathname) {
         return pathname.getPath().startsWith(base);
       }

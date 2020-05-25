@@ -36,14 +36,17 @@ public class IntegerPreference extends BasicPreference {
     return "Whole Number Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return Integer.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return Integer.toString(defaultValue);
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     if (value instanceof String) {
       value = Integer.valueOf((String) value);
@@ -52,11 +55,13 @@ public class IntegerPreference extends BasicPreference {
 
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config =
         new IntConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }});

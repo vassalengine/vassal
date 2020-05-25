@@ -52,6 +52,7 @@ public abstract class SocketHandler {
 
   private Thread startReadThread() {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         String line;
         try {
@@ -88,6 +89,7 @@ public abstract class SocketHandler {
 
   private Thread startWriteThread() {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         String line;
         try {

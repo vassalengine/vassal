@@ -54,6 +54,7 @@ public class RandomTextButton extends DiceButton {
   public RandomTextButton() {
     super();
     ActionListener ranAction = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (promptAlways) {
           promptAlways = false; // Show the usu
@@ -104,6 +105,7 @@ public class RandomTextButton extends DiceButton {
    * Forwards the result of the roll to the {@link Chatter#send}
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
    * prefix+[comma-separated roll list]+suffix */
+  @Override
   protected void DR() {
     final StringBuilder result = new StringBuilder();
     int total = addToTotal;
@@ -159,11 +161,13 @@ public class RandomTextButton extends DiceButton {
 
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_TOTAL.equals(name)
         || PLUS.equals(name)
         || ADD_TO_TOTAL.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return isNumeric;
         }
@@ -184,6 +188,7 @@ public class RandomTextButton extends DiceButton {
    * <code>NUMERIC</code>   If true, then face text must be an integer,
    *  and reportTotal is enabled
    */
+  @Override
   public String[] getAttributeNames() {
     ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
@@ -193,6 +198,7 @@ public class RandomTextButton extends DiceButton {
     return l.toArray(new String[0]);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
@@ -204,6 +210,7 @@ public class RandomTextButton extends DiceButton {
     return l.toArray(new String[0]);
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     ArrayList<Class<?>> l =
       new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
@@ -215,6 +222,7 @@ public class RandomTextButton extends DiceButton {
     return l.toArray(new Class<?>[names.size()]);
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NUMERIC.equals(key)) {
       isNumeric = Boolean.TRUE.equals(value) || "true".equals(value); //$NON-NLS-1$
@@ -231,6 +239,7 @@ public class RandomTextButton extends DiceButton {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NUMERIC.equals(key)) {
       return String.valueOf(isNumeric);
@@ -243,6 +252,7 @@ public class RandomTextButton extends DiceButton {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }

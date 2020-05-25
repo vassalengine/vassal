@@ -40,21 +40,25 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
     savedPixels=new int [savedWidth*savedHeight];
   }
 
+  @Override
   public void setColorModel (ColorModel model) {
     // Change color model to model you are generating
     consumer.setColorModel (defaultCM);
   }
 
+  @Override
   public void setHints (int hintflags) {
     consumer.setHints (TOPDOWNLEFTRIGHT | COMPLETESCANLINES |
         SINGLEPASS | (hintflags & SINGLEFRAME));
   }
 
+  @Override
   public void setPixels (int x, int y, int width, int height,
                          ColorModel cm, byte[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
 
+  @Override
   public void setPixels (int x, int y, int width, int height,
                          ColorModel cm, int[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
@@ -79,6 +83,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
     }
   }
 
+  @Override
   public void imageComplete (int status) {
     if ((status == IMAGEABORTED) || (status == IMAGEERROR)) {
       consumer.imageComplete (status);

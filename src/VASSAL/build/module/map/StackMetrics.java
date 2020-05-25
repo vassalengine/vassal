@@ -92,6 +92,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   protected Map map;
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (EXSEP_X.equals(name)) {
       if (value instanceof String) {
@@ -183,6 +184,7 @@ public class StackMetrics extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (EXSEP_X.equals(name)) {
       return String.valueOf(exSepX);
@@ -218,6 +220,7 @@ public class StackMetrics extends AbstractConfigurable {
     return null;
   }
 
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     map.setStackMetrics(this);
@@ -237,12 +240,14 @@ public class StackMetrics extends AbstractConfigurable {
     unexSepY = unexSy;
 
     unselectedVisible = new PieceFilter() {
+      @Override
       public boolean accept(GamePiece piece) {
         return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
       }
     };
     selectedVisible = new PieceFilter() {
+      @Override
       public boolean accept(GamePiece piece) {
         return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
             && Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
@@ -503,9 +508,11 @@ public class StackMetrics extends AbstractConfigurable {
     return !disabled;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
@@ -514,14 +521,17 @@ public class StackMetrics extends AbstractConfigurable {
     return Resources.getString("Editor.Stacking.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "StackingOptions");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       DISABLED,
@@ -537,6 +547,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString("Editor.Stacking.disable"), //$NON-NLS-1$
@@ -548,6 +559,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Boolean.class,
@@ -560,11 +572,13 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   private VisibilityCondition cond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !disabled;
     }
   };
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (name.equals(EXSEP_X)
         || name.equals(EXSEP_Y)

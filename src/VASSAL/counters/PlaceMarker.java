@@ -98,27 +98,33 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     command.setEnabled(getMap() != null && markerSpec != null);
     return commands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(command.getName())
@@ -135,6 +141,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (command.matches(stroke)) {
@@ -308,13 +315,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     return markerSpec != null && markerSpec.startsWith(BasicCommandEncoder.ADD);
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     String d = "Place Marker";
     if (description.length() > 0) {
@@ -323,10 +333,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Marker.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -358,10 +370,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, "Place Marker command"));
   }
@@ -420,6 +434,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       Box b = Box.createHorizontalBox();
       b.add(pieceInput.getComponent());
       defineButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           markerSlotPath = null;
           new ConfigurerWindow(pieceInput.getConfigurer()).setVisible(true);
@@ -427,6 +442,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       });
       b.add(defineButton);
       selectButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
           d.setVisible(true);
@@ -454,6 +470,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         aboveConfig.setValue(piece.above);
         p.add(aboveConfig.getControls());
         ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
           }
@@ -478,14 +495,17 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       return null;
     }
 
+    @Override
     public Component getControls() {
       return p;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandInput.getValueString());
@@ -519,6 +539,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         super(owner, targetClass);
       }
 
+      @Override
       protected boolean isValidTarget(Object selected) {
         return super.isValidTarget(selected) || CardSlot.class.isInstance(selected);
       }

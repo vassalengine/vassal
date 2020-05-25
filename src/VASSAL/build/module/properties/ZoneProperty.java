@@ -48,10 +48,12 @@ public class ZoneProperty extends GlobalProperty {
     return "Global Property";
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   protected String getPropertyId() {
     String zoneName = parentZone == null ? null : parentZone.getName();
     Board board = parentZone == null ? null : parentZone.getBoard();
@@ -61,6 +63,7 @@ public class ZoneProperty extends GlobalProperty {
     return getConfigureName()+"\t"+zoneName+"\t"+boardName+"\t"+mapName;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     property.addTo((MutablePropertiesContainer) parent);
     GameModule.getGameModule().addCommandEncoder(this);

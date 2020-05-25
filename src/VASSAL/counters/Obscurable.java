@@ -93,6 +93,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     setInner(d);
   }
 
+  @Override
   public void mySetState(String in) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(in, ';');
     String token = sd.nextToken("null");
@@ -101,6 +102,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     obscuredOptions = (obscuredBy == null ? null : new ObscurableOptions(token));
   }
 
+  @Override
   public void mySetType(String in) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(in, ';');
     st.nextToken();
@@ -143,6 +145,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     peek = null;
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(keyCommand).append(imageName).append(hideCommand);
@@ -167,6 +170,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(obscuredBy == null ? "null" : obscuredBy);
@@ -174,6 +178,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return se.getValue();
   }
 
+  @Override
   public Rectangle boundingBox() {
     if (obscuredToMe()) {
       return bBoxObscuredToMe();
@@ -186,6 +191,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Shape getShape() {
     if (obscuredToMe()) {
       return obscuredToMeView.getShape();
@@ -230,6 +236,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return obscuredBy != null;
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (ID.equals(key)) {
       if (val instanceof String
@@ -260,6 +267,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (Properties.OBSCURED_TO_ME.equals(key)) {
       return obscuredToMe();
@@ -301,6 +309,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (obscuredToMe()) {
       return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
@@ -322,6 +331,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (obscuredToMe()) {
       drawObscuredToMe(g, x, y, obs, zoom);
@@ -393,12 +403,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return r;
   }
 
+  @Override
   public String getLocalizedName() {
     String maskedName = maskName == null ? "?" : maskName;
     maskedName = getTranslation(maskedName);
     return getName(maskedName, true);
   }
 
+  @Override
   public String getName() {
     String maskedName = maskName == null ? "?" : maskName;
     return getName(maskedName, false);
@@ -416,6 +428,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public KeyCommand[] getKeyCommands() {
     if (obscuredToMe()) {
       final KeyCommand[] myC = myGetKeyCommands();
@@ -430,6 +443,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     ArrayList<KeyCommand> l = new ArrayList<>();
     GamePiece outer = Decorator.getOutermost(this);
@@ -491,6 +505,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return ObscurableOptions.getInstance().isUnmaskable(obscuredBy);
   }
 
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     if (!obscuredToMe()) {
       return super.keyEvent(stroke);
@@ -503,6 +518,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command retVal = null;
     myGetKeyCommands();
@@ -536,6 +552,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         peekKey == null && obscuredToOthers()) {
 // FIXME: This probably causes a race condition. Can we do this directly?
       Runnable runnable = new Runnable() {
+        @Override
         public void run() {
           KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
         }
@@ -545,14 +562,17 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     return retVal;
   }
 
+  @Override
   public String getDescription() {
     return "Mask";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Mask.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -572,6 +592,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {hideCommand, maskName, peekCommand}, new String[] {"Mask command", "Name when masked", "Peek command"});
   }
@@ -579,6 +600,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.OBSCURED_TO_OTHERS);
@@ -637,14 +659,17 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       final JPanel showDisplayOption = new JPanel() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Dimension getMinimumSize() {
           return new Dimension(60, 60);
         }
 
+        @Override
         public Dimension getPreferredSize() {
           return new Dimension(60, 60);
         }
 
+        @Override
         public void paint(Graphics g) {
           g.clearRect(0, 0, getWidth(), getHeight());
           switch (displayOption.getValueString().charAt(0)) {
@@ -685,6 +710,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       controls.add(imagePicker);
 
       displayOption.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           showDisplayOption.repaint();
           peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
@@ -698,10 +724,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       });
     }
 
+    @Override
     public String getState() {
       return "null";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(obscureKeyInput.getValueString())
@@ -736,6 +764,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }

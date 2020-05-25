@@ -40,10 +40,12 @@ public class ChangePropertyCommand extends Command {
     this.oldValue = oldValue;
   }
 
+  @Override
   protected void executeCommand() {
     property.setPropertyValue(newValue);
   }
 
+  @Override
   protected Command myUndoCommand() {
     return new ChangePropertyCommand(property, propertyName, newValue, oldValue);
   }

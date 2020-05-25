@@ -57,6 +57,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @throws Exception The operation represented by this <code>ImageOp</code>
    * could be anything, so any exception may be thrown.
    */
+  @Override
   public BufferedImage eval() throws Exception;
 
   /**

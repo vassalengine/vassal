@@ -88,9 +88,11 @@ public class PropertyChangerConfigurer extends Configurer {
     setValue(new PropertySetter("", null));
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       PropertyChangeListener l = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateValue();
           updateControls();
@@ -173,6 +175,7 @@ public class PropertyChangerConfigurer extends Configurer {
     setValue(p);
   }
 
+  @Override
   public String getValueString() {
     PropertyChanger propChanger = getPropertyChanger();
     SequenceEncoder se = new SequenceEncoder(',');
@@ -203,6 +206,7 @@ public class PropertyChangerConfigurer extends Configurer {
     return (PropertyChanger) getValue();
   }
 
+  @Override
   public void setValue(String s) {
     PropertyChanger p;
     if (s == null || s.length() == 0) {

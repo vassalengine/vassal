@@ -31,6 +31,7 @@ public class LogOutputStreamAdapter implements LogListener {
     this.out = out;
   }
 
+  @Override
   public void handle(LogEntry entry) {
     try {
       out.write(entry.toString().getBytes());

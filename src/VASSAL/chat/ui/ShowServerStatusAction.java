@@ -66,6 +66,7 @@ public class ShowServerStatusAction extends AbstractAction {
     putValue(SHORT_DESCRIPTION, Resources.getString("Chat.display_connections")); //$NON-NLS-1$
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     frame.refresh();
   }
@@ -108,16 +109,19 @@ public class ShowServerStatusAction extends AbstractAction {
       view.refresh();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       MessageBoard server = null;
       String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
         server = new HttpMessageServer(new PeerPoolInfo() {
+          @Override
           public String getModuleName() {
             return moduleName;
           }
 
+          @Override
           public String getUserName() {
             return ((ChatServerConnection) GameModule.getGameModule().getServer()).getUserInfo().getName();
           }

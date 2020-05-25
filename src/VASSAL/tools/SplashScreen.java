@@ -46,12 +46,14 @@ public class SplashScreen extends JWindow {
     setLocation(d.width / 2 - getSize().width / 2,
                 d.height / 2 - getSize().height / 2);
     addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseReleased(MouseEvent evt) {
         setVisible(false);
       }
     });
   }
 
+  @Override
   public void setVisible(boolean vis) {
     super.setVisible(vis);
     if (vis) {

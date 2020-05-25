@@ -351,6 +351,7 @@ public class ZipUpdater implements Runnable {
     this.error = error;
   }
 
+  @Override
   public void run() {
     JOptionPane.showMessageDialog(null, "Unable to update " + fileName + ".\n" + error.getMessage(), "Update failed", JOptionPane.ERROR_MESSAGE);
     System.exit(0);

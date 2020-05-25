@@ -71,6 +71,7 @@ public class ImageItem extends Item {
     setConfigureName(n);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -79,6 +80,7 @@ public class ImageItem extends Item {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       super.getAttributeTypes(), 2,
@@ -89,6 +91,7 @@ public class ImageItem extends Item {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       super.getAttributeNames(), 2,
@@ -97,6 +100,7 @@ public class ImageItem extends Item {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (IMAGE.equals(key)) {
       if (o instanceof String) {
@@ -123,6 +127,7 @@ public class ImageItem extends Item {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (IMAGE.equals(key)) {
       return imageName;
@@ -135,6 +140,7 @@ public class ImageItem extends Item {
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
        return falseCond;
@@ -148,22 +154,26 @@ public class ImageItem extends Item {
    }
 
   private VisibilityCondition falseCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return false;
     }
   };
 
   private VisibilityCondition fixedCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return imageSource.equals(SRC_FIXED);
     }
   };
 
   public static class TextSource extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
     }
   }
+  @Override
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
     Point origin = layout.getPosition(this);
@@ -185,10 +195,12 @@ public class ImageItem extends Item {
     }
   }
 
+  @Override
   public String getType() {
     return TYPE;
   }
 
+  @Override
   public Dimension getSize() {
     return imageBounds.getSize();
   }
@@ -244,6 +256,7 @@ public class ImageItem extends Item {
 
     private static final BaseOp op = new BaseOp();
 
+    @Override
     public BufferedImage eval() throws Exception {
       final BufferedImage img =
         ImageUtils.createCompatibleTranslucentImage(10, 10);
@@ -256,6 +269,7 @@ public class ImageItem extends Item {
       return img;
     }
 
+    @Override
     protected void fixSize() { }
 
     @Override
@@ -273,6 +287,7 @@ public class ImageItem extends Item {
       return 10;
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
     }
@@ -292,6 +307,7 @@ public class ImageItem extends Item {
     return item;
   }
 
+  @Override
   public String encode() {
     final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 

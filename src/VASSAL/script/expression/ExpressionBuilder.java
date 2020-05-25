@@ -71,6 +71,7 @@ public class ExpressionBuilder extends JDialog {
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         save();
       }
@@ -79,6 +80,7 @@ public class ExpressionBuilder extends JDialog {
 
     JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -87,6 +89,7 @@ public class ExpressionBuilder extends JDialog {
 
     JButton helpButton = ButtonFactory.getHelpButton();
     helpButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString());
       }
@@ -100,6 +103,7 @@ public class ExpressionBuilder extends JDialog {
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
          cancel();
       }

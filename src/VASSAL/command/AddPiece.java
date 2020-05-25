@@ -47,6 +47,7 @@ public class AddPiece extends Command {
    * Adds a piece by invoking {@link GameState#addPiece}, followed by
    * {@link GamePiece#setState}
    */
+  @Override
   protected void executeCommand() {
     if (target != null) {
       GameModule.getGameModule().getGameState().addPiece(target);
@@ -62,6 +63,7 @@ public class AddPiece extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
     if (undo == null) {
       undo = new RemovePiece(target);

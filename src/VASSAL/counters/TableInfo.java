@@ -75,6 +75,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     return nCols;
   }
 
+  @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
@@ -86,22 +87,27 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     table = null;
   }
 
+  @Override
   public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public java.awt.Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String myGetState() {
     if (table == null) {
       return values;
@@ -118,6 +124,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public void mySetState(String state) {
     if (table == null) {
       values = state;
@@ -140,12 +147,14 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(nRows).append(nCols).append(command).append(launchKey);
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (launch == null) {
       launch = new KeyCommand(command, launchKey, Decorator.getOutermost(this), this);
@@ -153,6 +162,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     return new KeyCommand[]{launch};
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (launch.matches(stroke)) {
@@ -172,6 +182,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         }
         frame.setLocation(p.x, p.y);
         frame.addWindowListener(new WindowAdapter() {
+          @Override
           public void windowClosing(WindowEvent evt) {
             table.editingStopped(null);
             GamePiece outer = Decorator.getOutermost(TableInfo.this);
@@ -192,18 +203,22 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public String getDescription() {
     return "Spreadsheet";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Spreadsheet.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Table Info command");
   }
@@ -229,10 +244,12 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       panel.add(colConfig.getControls());
     }
 
+    @Override
     public java.awt.Component getControls() {
       return panel;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(rowConfig.getValueString())
@@ -242,6 +259,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       final StringBuilder buf = new StringBuilder();
       int n = (Integer) rowConfig.getValue() * (Integer) colConfig.getValue();

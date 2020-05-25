@@ -103,6 +103,7 @@ public class PolygonEditor extends JPanel {
     addMouseListener(mp);
     addMouseMotionListener(mp);
     ActionListener l = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (selected >= 0) {
           for (int i = selected; i < polygon.npoints - 1; ++i) {
@@ -167,6 +168,7 @@ public class PolygonEditor extends JPanel {
     return s.toString();
   }
 
+  @Override
   public void paint(Graphics g) {
     paintBackground(g);
 
@@ -200,6 +202,7 @@ public class PolygonEditor extends JPanel {
 
   private class ModifyPolygon extends MouseInputAdapter {
     // implements java.awt.event.MouseMotionListener
+    @Override
     public void mouseDragged(MouseEvent e) {
       moveSelectedPoint(e);
       if (SwingUtilities.isLeftMouseButton(e)) {
@@ -216,12 +219,14 @@ public class PolygonEditor extends JPanel {
     }
 
     // implements java.awt.event.MouseListener
+    @Override
     public void mouseReleased(MouseEvent e) {
       moveSelectedPoint(e);
       repaint();
     }
 
     // implements java.awt.event.MouseListener
+    @Override
     public void mousePressed(MouseEvent e) {
        selected = -1;
        double minDist = Float.MAX_VALUE;
@@ -334,6 +339,7 @@ public class PolygonEditor extends JPanel {
 
   private class DefineRectangle extends MouseInputAdapter {
     // implements java.awt.event.MouseListener
+    @Override
     public void mousePressed(MouseEvent e) {
       polygon = new Polygon();
       polygon.addPoint(e.getX(), e.getY());
@@ -344,6 +350,7 @@ public class PolygonEditor extends JPanel {
     }
 
     // implements java.awt.event.MouseMotionListener
+    @Override
     public void mouseDragged(MouseEvent e) {
       polygon.xpoints[1] = e.getX();
       polygon.xpoints[2] = e.getX();
@@ -352,6 +359,7 @@ public class PolygonEditor extends JPanel {
       repaint();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       removeMouseListener(this);
       removeMouseMotionListener(this);
@@ -365,6 +373,7 @@ public class PolygonEditor extends JPanel {
     f.add(new PolygonEditor(null));
     f.setSize(500, 500);
     f.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         System.exit(0);
       }

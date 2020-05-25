@@ -227,6 +227,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String tooltip = ""; //$NON-NLS-1$
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       repaint();
     }
@@ -281,6 +282,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits"; //$NON-NLS-1$
 
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setMapName((String) value);
@@ -405,6 +407,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getMapName();
@@ -478,8 +481,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  @Override
   public void build(Element e) {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
           theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
@@ -607,6 +612,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * @return the toolbar for this map's window
    */
+  @Override
   public JToolBar getToolBar() {
     return toolBar;
   }
@@ -638,6 +644,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #getId
    * @see DragBuffer
    */
+  @Override
   public void addTo(Buildable b) {
     useLaunchButton = useLaunchButtonEdit;
     idMgr.add(this);
@@ -650,6 +657,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
 
     final DragGestureListener dgl = new DragGestureListener() {
+      @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
         if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
           dragGestureListener.dragGestureRecognized(dge);
@@ -684,6 +692,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     // Fix for bug 1630993: toolbar buttons not appearing
     toolBar.addHierarchyListener(new HierarchyListener() {
+      @Override
       public void hierarchyChanged(HierarchyEvent e) {
         Window w;
         if ((w = SwingUtilities.getWindowAncestor(toolBar)) != null) {
@@ -719,6 +728,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     pieceMover = mover;
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     Window w = SwingUtilities.getWindowAncestor(theMap);
@@ -734,6 +744,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     PlayerRoster.removeSideChangeListener(this);
   }
 
+  @Override
   public void sideChanged(String oldSide, String newSide) {
     repaint();
   }
@@ -761,6 +772,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     setBoards(Collections.list(boardList));
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -1201,9 +1213,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     mouseListenerStack.remove(mouseListenerStack.size()-1);
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
@@ -1215,6 +1229,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #popMouseListener
    * @see #addLocalMouseListener
    */
+  @Override
   public void mouseClicked(MouseEvent e) {
     if (!mouseListenerStack.isEmpty()) {
       final Point p = componentToMap(e.getPoint());
@@ -1245,6 +1260,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
 
     // Deselect any counters on the last Map with focus
@@ -1291,6 +1307,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #popMouseListener
    * @see #addLocalMouseListener
    */
+  @Override
   public void mouseReleased(MouseEvent e) {
     Point p = e.getPoint();
     p.translate(theMap.getX(), theMap.getY());
@@ -1355,24 +1372,29 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return dragGestureListener;
   }
 
+  @Override
   public void dragEnter(DropTargetDragEvent dtde) {
   }
 
+  @Override
   public void dragOver(DropTargetDragEvent dtde) {
     scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
   }
 
+  @Override
   public void dropActionChanged(DropTargetDragEvent dtde) {
   }
 
   /*
    * Cancel final scroll and repaint map
    */
+  @Override
   public void dragExit(DropTargetEvent dte) {
     if (scroller.isRunning()) scroller.stop();
     repaint();
   }
 
+  @Override
   public void drop(DropTargetDropEvent dtde) {
     if (dtde.getDropTargetContext().getComponent() == theMap) {
       final MouseEvent evt = new MouseEvent(
@@ -1395,6 +1417,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Mouse motion events are not forwarded to LocalMouseListeners or to listeners on the stack
    */
+  @Override
   public void mouseMoved(MouseEvent e) {
   }
 
@@ -1404,6 +1427,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    *
    * The map scrolls when dragging the mouse near the edge.
    */
+  @Override
   public void mouseDragged(MouseEvent e) {
     if (e.getButton() != 3) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
@@ -1870,6 +1894,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     this.pieceOpacity = pieceOpacity;
   }
 
+  @Override
   public Object getProperty(Object key) {
     Object value = null;
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
@@ -1882,6 +1907,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return value;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     Object value = null;
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
@@ -1947,6 +1973,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    *
    * @see GameComponent
    */
+  @Override
   public void setup(boolean show) {
     if (show) {
       final GameModule g = GameModule.getGameModule();
@@ -1969,6 +1996,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         if (SwingUtilities.getWindowAncestor(theMap) == null) {
           final Window topWindow = createParentFrame();
           topWindow.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
               if (useLaunchButton) {
                 topWindow.setVisible(false);
@@ -2240,10 +2268,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.Map.map_name"), //$NON-NLS-1$
@@ -2270,6 +2300,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -2296,6 +2327,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -2329,31 +2361,37 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
   public static final String MESSAGE = "message"; //$NON-NLS-1$
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/map.gif"); //$NON-NLS-1$
     }
   }
   public static class UnmovedIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/unmoved.gif"); //$NON-NLS-1$
     }
   }
   public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
     }
   }
   public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
     }
   }
   public static class CreateFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
     }
   }
   public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MESSAGE, ReportState.COMMAND_NAME, ReportState.OLD_UNIT_NAME,
           ReportState.NEW_UNIT_NAME, ReportState.MAP_NAME, ReportState.LOCATION_NAME });
@@ -2412,6 +2450,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     Class<?>[] c = { GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
         CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
@@ -2419,9 +2458,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return c;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (visibilityCondition == null) {
       visibilityCondition = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return useLaunchButton;
         }
@@ -2432,6 +2473,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (MARK_UNMOVED_TEXT.equals(name) || MARK_UNMOVED_ICON.equals(name) || MARK_UNMOVED_TOOLTIP.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !GlobalOptions.NEVER.equals(markMovedOption);
         }
@@ -2445,6 +2487,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Each Map must have a unique String id
    */
+  @Override
   public void setId(String id) {
     mapID = id;
   }
@@ -2485,15 +2528,18 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Find a contained Global Variable by name
    */
+  @Override
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
 
+  @Override
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
   }
 
+  @Override
   public MutableProperty removeMutableProperty(String key) {
     MutableProperty p = propsContainer.removeMutableProperty(key);
     if (p != null) {
@@ -2502,6 +2548,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return p;
   }
 
+  @Override
   public String getMutablePropertiesContainerId() {
     return getMapName();
   }
@@ -2510,6 +2557,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    *
    * @return the id for this map
    */
+  @Override
   public String getId() {
     return mapID;
   }
@@ -2567,6 +2615,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       this.base = base;
     }
 
+    @Override
     public void layoutContainer(Container target) {
       super.layoutContainer(target);
       base.getLayout().layoutContainer(base);
@@ -2607,6 +2656,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       this.p = p;
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       if (d.getPosition().equals(pt)) {
         return map.getStackMetrics().merge(d, p);
@@ -2616,6 +2666,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     }
 
+    @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
           && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
@@ -2626,6 +2677,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     }
 
+    @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
           && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
@@ -2651,6 +2703,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       map = m;
     }
 
+    @Override
     public void paint(Graphics g) {
       // Don't draw the map until the game is updated.
       if (GameModule.getGameModule().getGameState().isUpdating()) {
@@ -2679,11 +2732,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       g2d.setTransform(orig_t);
     }
 
+    @Override
     public void update(Graphics g) {
       // To avoid flicker, don't clear the display first
       paint(g);
     }
 
+    @Override
     public Dimension getPreferredSize() {
       return map.getPreferredSize();
     }

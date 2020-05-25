@@ -76,6 +76,7 @@ public class TempFileManager {
     //
     if (SystemUtils.IS_OS_WINDOWS) {
       Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
         public void run() {
           // Run the garbage collector and finalize repeatedly, with
           // exponentially increasing pauses, until we succeed at deleting
@@ -111,6 +112,7 @@ public class TempFileManager {
     }
     else {
       Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
         public void run() {
           try {
             cleanupSessionRoot();
@@ -130,6 +132,7 @@ public class TempFileManager {
     //
     if (tmpRoot.exists() && tmpRoot.isDirectory()) {
       final FileFilter filter = new FileFilter() {
+        @Override
         public boolean accept(File f) {
           return f.isDirectory() && f.getName().startsWith(DIR_PREFIX);
         }

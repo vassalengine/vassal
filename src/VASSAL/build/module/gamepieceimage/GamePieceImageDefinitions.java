@@ -51,6 +51,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     return instance;
   }
 
+  @Override
   public void build(Element e) {
     super.build(e);
 
@@ -71,34 +72,42 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     b.addTo(this);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
     setAllAttributesUntranslatable();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {
         GamePieceLayoutsContainer.class,
@@ -110,6 +119,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     return "Game Piece Image Definitions"; //$NON-NLS-1$
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof GamePieceLayoutsContainer) {
@@ -123,6 +133,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void remove(Buildable b) {
     super.remove(b);
     if (b instanceof GamePieceLayoutsContainer) {
@@ -136,10 +147,12 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 

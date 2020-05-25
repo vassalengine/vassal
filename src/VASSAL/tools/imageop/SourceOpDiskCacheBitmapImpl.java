@@ -94,6 +94,7 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -103,11 +104,13 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
+  @Override
   public BufferedImage eval() throws ImageIOException {
     return tileSrc.getTile(name, tileX, tileY, scale);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = getImageSize();
@@ -130,6 +133,7 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
    *
    * @return the name of the image in the {@link DataArchive}.
    */
+  @Override
   public String getName() {
     return name;
   }

@@ -190,6 +190,7 @@ e.printStackTrace();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void actionPerformed(ActionEvent e) {
     ModuleManagerWindow.getInstance().setWaitCursor(true);
     getLaunchTask().execute();
@@ -689,8 +690,10 @@ e.printStackTrace();
 
   protected static class NotifyOpenModuleOkListener
                                  implements EventListener<NotifyOpenModuleOk> {
+    @Override
     public void receive(Object src, final NotifyOpenModuleOk msg) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
           mmw.addModule(msg.lr.module);
@@ -702,8 +705,10 @@ e.printStackTrace();
 
   protected static class NotifyNewModuleOkListener
                                  implements EventListener<NotifyNewModuleOk> {
+    @Override
     public void receive(Object src, NotifyNewModuleOk msg) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           ModuleManagerWindow.getInstance().setWaitCursor(false);
         }
@@ -713,8 +718,10 @@ e.printStackTrace();
 
   protected static class NotifyImportModuleOkListener
                                implements EventListener<NotifyImportModuleOk> {
+    @Override
     public void receive(Object src, NotifyImportModuleOk msg) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           ModuleManagerWindow.getInstance().setWaitCursor(false);
         }
@@ -724,8 +731,10 @@ e.printStackTrace();
 
   protected static class NotifyOpenModuleFailedListener
                              implements EventListener<NotifyOpenModuleFailed> {
+    @Override
     public void receive(Object src, NotifyOpenModuleFailed msg) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           ModuleManagerWindow.getInstance().setWaitCursor(false);
         }
@@ -742,8 +751,10 @@ e.printStackTrace();
 
   protected static class NotifySaveFileOkListener
                                    implements EventListener<NotifySaveFileOk> {
+    @Override
     public void receive(Object rc, final NotifySaveFileOk msg) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           ModuleManagerWindow.getInstance().update(msg.file);
         }

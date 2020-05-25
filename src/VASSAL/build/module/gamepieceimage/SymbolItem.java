@@ -61,6 +61,7 @@ public class SymbolItem extends Item {
     setConfigureName(nam);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -71,6 +72,7 @@ public class SymbolItem extends Item {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       super.getAttributeTypes(), 2,
@@ -83,6 +85,7 @@ public class SymbolItem extends Item {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       super.getAttributeNames(), 2,
@@ -94,10 +97,12 @@ public class SymbolItem extends Item {
   }
 
   public static class SetConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return Symbol.SYMBOL_SETS;
     }
   }
+  @Override
   public void setAttribute(String key, Object o) {
 
     if (SET.equals(key)) {
@@ -132,6 +137,7 @@ public class SymbolItem extends Item {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
 
     if (SET.equals(key)) {
@@ -164,6 +170,7 @@ public class SymbolItem extends Item {
     return height;
   }
 
+  @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
     SymbolItemInstance si = null;
@@ -200,10 +207,12 @@ public class SymbolItem extends Item {
 
   }
 
+  @Override
   public String getType() {
     return TYPE;
   }
 
+  @Override
   public Dimension getSize() {
     return new Dimension(getWidth(),getHeight());
   }
@@ -222,6 +231,7 @@ public class SymbolItem extends Item {
     return item;
   }
 
+  @Override
   public String encode() {
 
     SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');

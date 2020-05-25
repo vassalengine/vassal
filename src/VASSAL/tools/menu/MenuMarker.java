@@ -28,14 +28,17 @@ import javax.swing.JComponent;
 public class MenuMarker implements ChildProxy<JComponent> {
   protected ParentProxy parent;
 
+  @Override
   public ParentProxy getParent() {
     return parent;
   }
 
+  @Override
   public void setParent(ParentProxy parent) {
     this.parent = parent;
   }
 
+  @Override
   public JComponent createPeer() {
     return null;
   }

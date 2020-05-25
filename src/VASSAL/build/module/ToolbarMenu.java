@@ -81,6 +81,7 @@ public class ToolbarMenu extends AbstractConfigurable
 
   public ToolbarMenu() {
     launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -95,6 +96,7 @@ public class ToolbarMenu extends AbstractConfigurable
     menu.show(launch, 0, 0);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.DESCRIPTION),
@@ -105,6 +107,7 @@ public class ToolbarMenu extends AbstractConfigurable
         Resources.getString("Editor.ToolbarMenu.menu_entries")}; //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -116,6 +119,7 @@ public class ToolbarMenu extends AbstractConfigurable
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       DESCRIPTION,
@@ -127,6 +131,7 @@ public class ToolbarMenu extends AbstractConfigurable
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (MENU_ITEMS.equals(key)) {
       return StringArrayConfigurer.arrayToString(
@@ -140,6 +145,7 @@ public class ToolbarMenu extends AbstractConfigurable
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (MENU_ITEMS.equals(key)) {
       if (value instanceof String) {
@@ -161,6 +167,7 @@ public class ToolbarMenu extends AbstractConfigurable
     }
   }
 
+  @Override
   public void addTo(Buildable parent) {
     if (parent instanceof ToolBarComponent) {
       toolbar = ((ToolBarComponent) parent).getToolBar();
@@ -170,10 +177,12 @@ public class ToolbarMenu extends AbstractConfigurable
     scheduleBuildMenu();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ToolbarMenu.htm"); //$NON-NLS-1$
   }
@@ -182,6 +191,7 @@ public class ToolbarMenu extends AbstractConfigurable
     return Resources.getString("Editor.ToolbarMenu.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     toolbar.remove(launch);
     toolbar.removeContainerListener(this);
@@ -230,6 +240,7 @@ public class ToolbarMenu extends AbstractConfigurable
             JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(new ActionListener() {
+              @Override
               public void actionPerformed(ActionEvent e) {
                 otherItem.doClick();
               }
@@ -244,6 +255,7 @@ public class ToolbarMenu extends AbstractConfigurable
           JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
           mi.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
               b.doClick();
             }
@@ -258,6 +270,7 @@ public class ToolbarMenu extends AbstractConfigurable
   protected void scheduleBuildMenu() {
     if (menuBuilder == null) {
       menuBuilder = new Runnable() {
+        @Override
         public void run() {
           buildMenu();
           menuBuilder = null;
@@ -267,14 +280,17 @@ public class ToolbarMenu extends AbstractConfigurable
     }
   }
 
+  @Override
   public void componentAdded(ContainerEvent e) {
     scheduleBuildMenu();
   }
 
+  @Override
   public void componentRemoved(ContainerEvent e) {
     scheduleBuildMenu();
   }
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     JButton b = (JButton) evt.getSource();
     JMenuItem mi = buttonsToMenuMap.get(b);
@@ -291,11 +307,13 @@ public class ToolbarMenu extends AbstractConfigurable
     }
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     // Prevent our Toolbar buttons from becoming visible on Game close/reopen
     scheduleBuildMenu();
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }

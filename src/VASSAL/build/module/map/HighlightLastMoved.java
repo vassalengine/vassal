@@ -56,6 +56,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     enabled = true;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString("Editor.HighlightLastMoved.enabled"), //$NON-NLS-1$
@@ -64,6 +65,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Boolean.class,
@@ -72,6 +74,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       ENABLED,
@@ -80,6 +83,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -101,6 +105,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(highlighter.getColor());
@@ -116,6 +121,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
   }
 
+  @Override
   public void addTo(Buildable parent) {
     Map map = (Map) parent;
     map.addDrawComponent(this);
@@ -125,6 +131,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     validator = new SingleChildInstance(map, getClass());
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     Map map = (Map) parent;
     map.removeDrawComponent(this);
@@ -133,6 +140,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     instances.remove(map);
   }
 
+  @Override
   public void draw(Graphics g, Map map) {
     if (lastMoved == null || !enabled) {
       return;
@@ -157,11 +165,13 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     currentlyEnabled = gameStarting && enabled;
     lastMoved = null;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -187,26 +197,33 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     lastMoved = null;
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "LastMoveHighlighter");
   }
@@ -215,6 +232,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     return Resources.getString("Editor.HighlightLastMoved.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

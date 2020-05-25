@@ -480,6 +480,7 @@ public class SymbolSet extends Importer{
   /**
    * Read a symbol set from the specified file.
    */
+  @Override
   protected void load(File f) throws IOException {
     super.load(f);
     DataInputStream in = null;
@@ -638,6 +639,7 @@ public class SymbolSet extends Importer{
    * Write all of the game pieces to the archive.  Mainly for testing or if only
    * the symbol set is imported.
    */
+  @Override
   public void writeToArchive() throws IOException {
     for (SymbolData piece : gamePieceData)
       piece.writeToArchive();

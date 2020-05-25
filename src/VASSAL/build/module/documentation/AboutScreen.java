@@ -55,6 +55,7 @@ public class AboutScreen extends AbstractConfigurable {
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -115,6 +116,7 @@ public class AboutScreen extends AbstractConfigurable {
    * DataArchive}.  The image is displayed when the menu item is
    * selected
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       TITLE,
@@ -122,6 +124,7 @@ public class AboutScreen extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Menu Entry:  ", //$NON-NLS-1$
@@ -129,6 +132,7 @@ public class AboutScreen extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -136,6 +140,7 @@ public class AboutScreen extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (TITLE.equals(key)) {
       return title;
@@ -149,6 +154,7 @@ public class AboutScreen extends AbstractConfigurable {
   public static final String TITLE = "title"; //$NON-NLS-1$
   public static final String FILE = "fileName"; //$NON-NLS-1$
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (TITLE.equals(key)) {
       title = (String) val;
@@ -187,10 +193,12 @@ public class AboutScreen extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance().removeAction("Documentation.about_module");
   }
@@ -199,10 +207,12 @@ public class AboutScreen extends AbstractConfigurable {
    * Expects to be added to a {@link Documentation}.  Adds an entry
    * to the <code>Help</code> menu
    */
+  @Override
   public void addTo(Buildable b) {
     MenuManager.getInstance().addAction("Documentation.about_module", launch);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
   }

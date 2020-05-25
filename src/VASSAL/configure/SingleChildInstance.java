@@ -35,6 +35,7 @@ public class SingleChildInstance implements ValidityChecker {
     this.target = target;
   }
 
+  @Override
   public void validate(Buildable b, ValidationReport report) {
     if (b == target && target.getComponentsOf(childClass).size() > 1) {
       report.addWarning(

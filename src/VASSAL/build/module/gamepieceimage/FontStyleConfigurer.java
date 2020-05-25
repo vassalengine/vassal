@@ -50,6 +50,7 @@ public class FontStyleConfigurer extends Configurer {
     this(key, name, FontManager.getFontManager().getFontStyle(styleName));
   }
 
+  @Override
   public String getValueString() {
     return "";
   }
@@ -62,6 +63,7 @@ public class FontStyleConfigurer extends Configurer {
     return (FontStyle) value;
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -98,6 +100,7 @@ public class FontStyleConfigurer extends Configurer {
     fontPanel.add(fonts);
 
     ItemListener l = new ItemListener() {
+      @Override
       public void itemStateChanged(ItemEvent evt) {
         updateValue();
       }
@@ -111,6 +114,7 @@ public class FontStyleConfigurer extends Configurer {
     setValue(FontManager.getFontManager().getFontStyle((String) fonts.getSelectedItem()));
   }
 
+  @Override
   public void setValue(String s) {
     setValue(FontManager.getFontManager().getFontStyle(s));
     buildFonts();

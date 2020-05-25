@@ -116,6 +116,7 @@ public class HtmlChart extends Widget implements MouseListener {
   // their work to a new file. Therefore, we read the entire file instead
   // of simply using:
   //    GameModule.getGameModule().getDataArchive().getURL( fileName );
+  @Override
   public Component getComponent() {
     if (htmlWin == null) {
       htmlWin = new JEditorPane();
@@ -140,6 +141,7 @@ public class HtmlChart extends Widget implements MouseListener {
     return fileName;
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 
@@ -147,13 +149,16 @@ public class HtmlChart extends Widget implements MouseListener {
     return "HTML Chart";
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ChartWindow.htm", "HtmlChart");
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (NAME.equals(key)) {
       setConfigureName((String) val);
@@ -169,6 +174,7 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
@@ -181,18 +187,22 @@ public class HtmlChart extends Widget implements MouseListener {
    *  in the {@link VASSAL.tools.DataArchive}</dd>
    * </dl>
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME, FILE};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  ", "HTML File:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class, File.class};
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();
@@ -210,6 +220,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       item.addActionListener(new ActionListener() {
         // Return to default page
+        @Override
         public void actionPerformed(ActionEvent e) {
           setFile(fileName);
         }
@@ -222,24 +233,30 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     maybePopup(e);
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     maybePopup(e);
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
   public class HtmlChartHyperlinkListener implements HyperlinkListener {
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent event) {
       if (event.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
         return;
@@ -284,6 +301,7 @@ public class HtmlChart extends Widget implements MouseListener {
   public static class XTMLEditorKit extends HTMLEditorKit {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public ViewFactory getViewFactory() {
       return new XTMLFactory();
     }
@@ -293,6 +311,7 @@ public class HtmlChart extends Widget implements MouseListener {
         super();
       }
 
+      @Override
       public View create(javax.swing.text.Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
@@ -320,6 +339,7 @@ public class HtmlChart extends Widget implements MouseListener {
                 ? null : Op.load(imageName);
         }
 
+        @Override
         protected Component createComponent() {
           final JLabel label = new JLabel();
           label.setIcon(new OpIcon(srcOp));

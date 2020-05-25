@@ -80,10 +80,12 @@ public class ModuleMetaData extends AbstractMetaData {
     return nameAttr == null ? "" : nameAttr.getLocalizedValue();
   }
 
+  @Override
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
 
+  @Override
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
@@ -94,6 +96,7 @@ public class ModuleMetaData extends AbstractMetaData {
    * @param doc Document
    * @param root Root element
    */
+  @Override
   protected void addElements(Document doc, Element root) {
     nameAttr.generateXML(doc, root, NAME_ELEMENT);
   }

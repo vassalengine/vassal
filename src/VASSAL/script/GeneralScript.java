@@ -64,10 +64,12 @@ public class GeneralScript extends AbstractScript
     return "";
   }
 
+  @Override
   public String getId() {
     return null;
   }
 
+  @Override
   public void setId(String id) {
 
   }
@@ -80,27 +82,33 @@ public class GeneralScript extends AbstractScript
     return buildHeaderLine() + "\n" + getScript() + "\n}";
   }
 
+  @Override
   public CompileResult compile() {
     final String fullScript = getFullScript();
     return BeanShell.getInstance().compile(new StringReader(fullScript));
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new ScriptConfigurer(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Script.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     idMgr.remove(this);
   }
 
+  @Override
   public void addTo(Buildable parent) {
     idMgr.add(this);
   }
 
+  @Override
   public void validate(Buildable target, ValidationReport report) {
     idMgr.validate(this, report);
   }
@@ -124,6 +132,7 @@ public class GeneralScript extends AbstractScript
       script = s;
       setValue(script);
       script.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(final PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             setName((String) evt.getNewValue());
@@ -137,6 +146,7 @@ public class GeneralScript extends AbstractScript
 
       nameConfig = new JavaNameConfigurer(NAME, "Name:  ", script.getConfigureName());
       nameConfig.addPropertyChangeListener(new PropertyChangeListener(){
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           script.setAttribute(NAME, e.getNewValue());
           updateHeader();
@@ -144,6 +154,7 @@ public class GeneralScript extends AbstractScript
 
       descConfig = new StringConfigurer(DESC, "Description:  ", script.getDescription());
       descConfig.addPropertyChangeListener(new PropertyChangeListener(){
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           script.setAttribute(DESC, e.getNewValue());
         }});
@@ -152,6 +163,7 @@ public class GeneralScript extends AbstractScript
 
       scriptConfig = new TextConfigurer(SCRIPT, "Script:  ", script.getScript());
       scriptConfig.addPropertyChangeListener(new PropertyChangeListener(){
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           script.setAttribute(SCRIPT, e.getNewValue());
         }});
@@ -196,6 +208,7 @@ public class GeneralScript extends AbstractScript
     /**
      * Compile the script and report errors
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
       CompileResult r = script.compile();
       if (r.isSuccess()) {

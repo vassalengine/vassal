@@ -70,27 +70,33 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     pusher = globalPusher;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height).append(description);
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
     if (getMap() != null) {
@@ -102,22 +108,27 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     }
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public String getDescription() {
     return description.length() == 0 ? "Action Button" : "Action Button - " + description;
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -129,20 +140,24 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     description = st.nextToken("");
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ActionButton.htm");
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     // Use inner name to prevent recursive looping when reporting errors.
     return piece.getName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getDescription();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -172,10 +187,12 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       box.add(heightConfig.getControls());
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(strokeConfig.getValueString()).append(xConfig.getValueString()).append(yConfig.getValueString()).append(widthConfig.getValueString()).append(
@@ -183,6 +200,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }
@@ -280,6 +298,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         this.map = map;
       }
 
+      @Override
       public void mouseClicked(MouseEvent e) {
         Point point = e.getPoint();
         final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
@@ -302,6 +321,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         yOffset = y;
       }
 
+      @Override
       public void mouseClicked(MouseEvent e) {
         Point point = e.getPoint();
         point.translate(-xOffset,-yOffset);

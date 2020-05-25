@@ -106,6 +106,7 @@ public class MovePiece extends Command {
     return playerId;
   }
 
+  @Override
   protected void executeCommand() {
     GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (piece != null) {
@@ -155,6 +156,7 @@ public class MovePiece extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
     return new MovePiece(id, oldMapId, oldPosition, oldUnderneathId, newMapId, newPosition, newUnderneathId, playerId);
   }
@@ -169,6 +171,7 @@ public class MovePiece extends Command {
    */
   protected PieceVisitorDispatcher createMergeFinder(final Map map, final GamePiece p, final Point pt) {
     PieceVisitorDispatcher dispatch = new DeckVisitorDispatcher(new DeckVisitor() {
+      @Override
       public Object visitDeck(Deck d) {
         if (d.getPosition().equals(pt)) {
           return map.getStackMetrics().merge(d, p);
@@ -178,6 +181,7 @@ public class MovePiece extends Command {
         }
       }
 
+      @Override
       public Object visitStack(Stack s) {
         if (s.getPosition().equals(pt)
             && map.getStackMetrics().isStackingEnabled()
@@ -191,6 +195,7 @@ public class MovePiece extends Command {
         }
       }
 
+      @Override
       public Object visitDefault(GamePiece piece) {
         if (piece.getPosition().equals(pt)
             && map.getStackMetrics().isStackingEnabled()
@@ -213,6 +218,7 @@ public class MovePiece extends Command {
     });
     return dispatch;
   }
+  @Override
   public String getDetails() {
     return "id="+id+",map="+newMapId+",position="+newPosition+",under="+newUnderneathId;
   }

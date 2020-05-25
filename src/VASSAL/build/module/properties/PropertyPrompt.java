@@ -37,6 +37,7 @@ public class PropertyPrompt implements PropertyChanger {
     this.promptText = prompt;
   }
 
+  @Override
   public String getNewValue(String oldValue) {
     String newValue = null;
     if (constraints != null && constraints.isNumeric()) {

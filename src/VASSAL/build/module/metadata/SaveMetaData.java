@@ -91,10 +91,12 @@ public class SaveMetaData extends AbstractMetaData {
     return moduleData;
   }
 
+  @Override
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
 
+  @Override
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
@@ -104,6 +106,7 @@ public class SaveMetaData extends AbstractMetaData {
    * @param archive Save game Archive
    * @throws IOException If anything goes wrong
    */
+  @Override
   public void save(FileArchive archive) throws IOException {
     super.save(archive);
 
@@ -116,6 +119,7 @@ public class SaveMetaData extends AbstractMetaData {
   /**
    * Add Elements specific to SaveMetaData
    */
+  @Override
   protected void addElements(Document doc, Element root) {
     return;
   }

@@ -36,11 +36,13 @@ public abstract class BackgroundTask {
 
     public Thread start() {
         final Runnable later = new Runnable() {
+            @Override
             public void run() {
                 doLater();
             }
         };
         Runnable first = new Runnable() {
+            @Override
             public void run() {
                 try {
                     doFirst();

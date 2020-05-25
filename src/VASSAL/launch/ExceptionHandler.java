@@ -59,6 +59,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
    * @param thread the thread where the exception occurred
    * @param thrown the exception
    */
+  @Override
   public void uncaughtException(Thread thread, Throwable thrown) {
     handle(thrown);
   }

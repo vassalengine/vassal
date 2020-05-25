@@ -37,22 +37,27 @@ public class TextPreference extends BasicPreference {
     return "Text Box Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return TextConfigurer.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     defaultValue = (String) value;
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new TextConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }});

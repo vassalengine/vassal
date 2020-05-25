@@ -86,6 +86,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     hasMoved = b;
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -96,24 +97,29 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     key = st.nextNamedKeyStroke('M');
   }
 
+  @Override
   public void mySetState(String newState) {
     hasMoved = "true".equals(newState);
   }
 
+  @Override
   public String myGetState() {
     return String.valueOf(hasMoved);
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key);
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[]{new KeyCommand(command, key, Decorator.getOutermost(this), this)};
   }
 
+  @Override
   public Command myKeyEvent(javax.swing.KeyStroke stroke) {
     if (stroke != null && key.equals(stroke)) {
       ChangeTracker c = new ChangeTracker(this);
@@ -126,10 +132,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
     r.add(piece.boundingBox());
@@ -138,10 +146,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     return r;
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
     if (hasMoved
@@ -161,10 +171,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     return icon != null ? new Dimension(icon.getIconWidth(), icon.getIconHeight()) : new Dimension();
   }
 
+  @Override
   public String getDescription() {
     return "Mark When Moved";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("MarkMoved.htm");
   }
@@ -179,6 +191,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (Properties.MOVED.equals(key)) {
       return isMoved() ? Boolean.TRUE : Boolean.FALSE;
@@ -188,6 +201,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (Properties.MOVED.equals(key)) {
       setMoved(Boolean.TRUE.equals(val));
@@ -198,10 +212,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Mark Moved command");
   }
@@ -229,6 +245,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       box.add(yOff.getControls());
     }
 
+    @Override
     public Component getControls() {
       boolean enabled = false;
       for (Map m : Map.getMapList()) {
@@ -239,6 +256,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       }
       if (!enabled) {
         Runnable runnable = new Runnable() {
+          @Override
           public void run() {
             JOptionPane.showMessageDialog(box, "You must enable the \"Mark Pieces that Move\" option in one or more Map Windows", "Option not enabled", JOptionPane.WARNING_MESSAGE);
           }
@@ -248,6 +266,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       return box;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(iconConfig.getValueString())
@@ -258,6 +277,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "false";
     }
@@ -266,6 +286,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(Properties.MOVED);

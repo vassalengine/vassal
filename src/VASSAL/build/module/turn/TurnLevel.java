@@ -222,6 +222,7 @@ public abstract class TurnLevel extends TurnComponent {
       StringEnumConfigurer e = new StringEnumConfigurer(null, " Select:  ", s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
       e.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           String option = ((StringEnumConfigurer) e.getSource()).getValueString();
           for (int i = 0; i < getTurnLevelCount(); i++) {
@@ -283,6 +284,7 @@ public abstract class TurnLevel extends TurnComponent {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Description:  ",
@@ -291,6 +293,7 @@ public abstract class TurnLevel extends TurnComponent {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -299,6 +302,7 @@ public abstract class TurnLevel extends TurnComponent {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -307,6 +311,7 @@ public abstract class TurnLevel extends TurnComponent {
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -321,6 +326,7 @@ public abstract class TurnLevel extends TurnComponent {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -340,6 +346,7 @@ public abstract class TurnLevel extends TurnComponent {
    * Allow TurnLevels to share global property with other TurnLevel's. Check to
    * see if a property already exists with the same name
    */
+  @Override
   public void addTo(Buildable parent) {
     this.parent = (TurnComponent) parent;
     ((TurnComponent) parent).addLevel(this);
@@ -352,21 +359,25 @@ public abstract class TurnLevel extends TurnComponent {
     }
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((TurnComponent) parent).removeLevel(this);
     myValue.removeFromContainer();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { CounterTurnLevel.class, ListTurnLevel.class };
   }
 
   public static class TurnFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[] { LEVEL_VALUE });
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(PROP, false);
@@ -376,6 +387,7 @@ public abstract class TurnLevel extends TurnComponent {
   /**
    * Implement PropertyNameSource - Expose the name of this level property
    */
+  @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
     if (propertyName != null && propertyName.length() > 0) {

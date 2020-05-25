@@ -39,15 +39,18 @@ public class BufferedSocketHandler extends SocketHandler {
     writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(),Charset.forName("UTF-8"))); //$NON-NLS-1$
   }
 
+  @Override
   protected void closeStreams() throws IOException {
     writer.close();
     reader.close();
   }
 
+  @Override
   protected String readNext() throws IOException {
     return reader.readLine();
   }
 
+  @Override
   protected void writeNext(String line) throws IOException {
     writer.write(line+'\n');
     writer.flush();

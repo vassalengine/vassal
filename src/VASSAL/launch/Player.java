@@ -60,11 +60,13 @@ public class Player extends Launcher {
     super(args);
   }
 
+  @Override
   protected MenuManager createMenuManager() {
     return SystemUtils.IS_OS_MAC_OSX ?
       new MacOSXMenuManager() : new PlayerMenuManager();
   }
 
+  @Override
   protected void launch() throws IOException {
     if (lr.builtInModule) {
       GameModule.init(createModule(createDataArchive()));

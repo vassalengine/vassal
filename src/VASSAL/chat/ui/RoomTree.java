@@ -46,6 +46,7 @@ public class RoomTree extends JTree {
     model = new DefaultTreeModel(root) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public boolean isLeaf(Object node) {
         return ((DefaultMutableTreeNode) node).getUserObject() instanceof Player;
       }

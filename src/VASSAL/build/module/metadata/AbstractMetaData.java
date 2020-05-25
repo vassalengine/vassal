@@ -412,6 +412,7 @@ public abstract class AbstractMetaData {
       return value == null ? "" : value;
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
 

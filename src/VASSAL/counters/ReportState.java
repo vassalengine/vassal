@@ -83,26 +83,32 @@ public class ReportState extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public String myGetState() {
     return cycleIndex + "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(NamedKeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(NamedKeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat))
@@ -111,11 +117,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
   }
 
   // We perform the inner commands first so that their effects will be reported
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     Command c = piece.keyEvent(stroke);
     return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     GamePiece outer = getOutermost(this);
 
@@ -224,6 +232,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     return name;
   }
 
+  @Override
   public void mySetState(String newState) {
     if (newState.length() > 0) {
       try {
@@ -239,10 +248,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     String d =  "Report Action";
     if (description.length() > 0) {
@@ -251,10 +262,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ReportChanges.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -283,10 +296,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
     description = st.nextToken("");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
     String[] formats = new String[c+1];
@@ -344,6 +359,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       cycleDownKeys = new NamedKeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
       box.add(cycleDownKeys.getControls());
       ItemListener l = new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           format.getControls().setVisible(!cycle.isSelected());
           cycleFormat.getControls().setVisible(cycle.isSelected());
@@ -359,14 +375,17 @@ public class ReportState extends Decorator implements TranslatablePiece {
       cycle.setSelected(piece.cycleReportFormat.length > 0);
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getState() {
       return cycle.isSelected() ? "0" : "-1";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       if (cycle.isSelected() && cycleFormat.getStringArray().length > 0) {
@@ -395,6 +414,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       this.oldPiece = oldPiece;
       this.newPiece = newPiece;
     }
+    @Override
     public Object getProperty(Object key) {
       Object value = null;
       if (key != null) {
@@ -410,6 +430,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       return value;
     }
 
+    @Override
     public Object getLocalizedProperty(Object key) {
       return getProperty(key);
     }

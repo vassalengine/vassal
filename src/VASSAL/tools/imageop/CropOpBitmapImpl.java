@@ -90,6 +90,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     final Point[] tiles =
       sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));
@@ -107,6 +108,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    * */
+  @Override
   public BufferedImage eval() throws Exception {
     // cobble source from tiles
     final Point[] tiles =
@@ -131,8 +133,10 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     return dst;
   }
 
+  @Override
   protected void fixSize() {}
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new CropOpBitmapImpl(this,
                          tileX*tileSize.width,
@@ -146,22 +150,27 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @return the rectangle to be cropped.
    */
+  @Override
   public Rectangle getRect() {
     return new Rectangle(x0, y0, size.width, size.height);
   }
 
+  @Override
   public int getX0() {
     return x0;
   }
 
+  @Override
   public int getY0() {
     return y0;
   }
 
+  @Override
   public int getX1() {
     return x1;
   }
 
+  @Override
   public int getY1() {
     return y1;
   }

@@ -98,6 +98,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     logOutput = new ArrayList<>();
   }
 
+  @Override
   public void build(Element e) { }
 
   /**
@@ -106,6 +107,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * window toolbar. Registers {@link KeyStrokeListener}s for hotkey
    * equivalents of each button.
    */
+  @Override
   public void addTo(Buildable b) {
     final GameModule mod = GameModule.getGameModule();
 
@@ -140,6 +142,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     stepIconConfig.setValue(STEP_ICON);
     GlobalOptions.getInstance().addOption(stepIconConfig);
     stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue());
       }
@@ -150,6 +153,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undoIconConfig.setValue(UNDO_ICON);
     GlobalOptions.getInstance().addOption(undoIconConfig);
     undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue());
       }
@@ -159,6 +163,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(stepKeyConfig);
     stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
         stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
@@ -176,16 +181,19 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionComment); //$NON-NLS-1$
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     return doc.createElement(getClass().getName());
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
   public void remove(Buildable b) {
   }
 
+  @Override
   public void setup(boolean show) {
     newLogAction.setEnabled(show);
     if (show) {
@@ -225,6 +233,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     return outputFile != null;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -428,6 +437,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     logOutput.add(undo);
   }
 
+  @Override
   public void log(Command c) {
     if (c != null && c.isLoggable()) {
       logOutput.add(c);
@@ -449,6 +459,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Recognizes a logging command. The logging command is a wrapper around an ordinary {@link Command} indicating that
    * the wrapped command should be stored and executed in sequence (when the <code>Step</code> button is pressed)
    */
+  @Override
   public String encode(Command c) {
     if (c instanceof LogCommand) {
       return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
@@ -458,6 +469,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
 
+  @Override
   public Command decode(String command) {
     if (command.startsWith(LOG)) {
       Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
@@ -473,6 +485,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected Action endLogAction = new AbstractAction(Resources.getString("BasicLogger.end_logfile")) {  //$NON-NLS-1$
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       try {
         write();
@@ -490,6 +503,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected Action newLogAction = new AbstractAction(Resources.getString("BasicLogger.begin_logfile")) {  //$NON-NLS-1$
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       beginOutput();
     }
@@ -517,9 +531,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logged.stripSubCommands();
     }
 
+    @Override
     protected void executeCommand() {
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
@@ -528,6 +544,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return logged;
     }
 
+    @Override
     public void execute() {
       Command c = assembleCommand();
       logInput.add(c);
@@ -555,6 +572,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       step();
     }
@@ -572,6 +590,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       undo();
     }

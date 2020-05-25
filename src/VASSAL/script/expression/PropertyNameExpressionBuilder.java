@@ -43,6 +43,7 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
   /**
    * Convert a property name to an equivalent Beanshell expression
    */
+  @Override
   public String convert(String s) {
     return "{" + s + "}";
   }
@@ -51,6 +52,7 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
    * Save entered expression to the target.
    * If a single property name has been entered, then return it as a simple name, not as an expression
    */
+  @Override
   public void save() {
     final String expr = expression.getValueString().trim();
     if (BeanShellExpression.isJavaIdentifier(expr)) {

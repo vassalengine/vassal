@@ -27,6 +27,7 @@ class IPCMessageReceiver implements Runnable {
     this.lsup = lsup;
   }
 
+  @Override
   public void run() {
     IPCMessage msg;
 

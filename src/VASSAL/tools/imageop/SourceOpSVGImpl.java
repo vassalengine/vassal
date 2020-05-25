@@ -74,6 +74,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     hash = name.hashCode() ^ archive.hashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -83,6 +84,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
+  @Override
   public BufferedImage eval() throws ImageIOException {
     try {
       final SVGRenderer renderer = new SVGRenderer(
@@ -104,6 +106,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   // Maybe size should go to -1,-1 when invalid?
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = getImageSize();
@@ -141,6 +144,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     return new Dimension();
   }
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new SourceTileOpSVGImpl(this, tileX, tileY);
   }
@@ -150,6 +154,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *
    * @return the name of the image in the {@link DataArchive}.
    */
+  @Override
   public String getName() {
     return name;
   }

@@ -30,10 +30,12 @@ public class ServerStatusControlsInitializer implements ChatControlsInitializer 
     this.status = status;
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     showStatusButton = controls.getToolbar().add(new ShowServerStatusAction(status, getClass().getResource("/images/status.gif"))); //$NON-NLS-1$
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(showStatusButton);
     controls.getToolbar().repaint();

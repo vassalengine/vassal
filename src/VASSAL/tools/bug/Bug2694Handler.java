@@ -23,6 +23,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 
 public class Bug2694Handler implements BugHandler {
+  @Override
   public boolean accept(Throwable thrown) {
     if (thrown instanceof UnsatisfiedLinkError) {
       final StackTraceElement[] trace = thrown.getStackTrace();
@@ -38,6 +39,7 @@ public class Bug2694Handler implements BugHandler {
     return false;
   }
 
+  @Override
   public void handle(Throwable thrown) {
     ErrorDialog.showDetails(
       thrown, ThrowableUtils.getStackTrace(thrown), "Error.bug2694"

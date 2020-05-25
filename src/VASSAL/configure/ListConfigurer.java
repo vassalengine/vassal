@@ -60,6 +60,7 @@ public abstract class ListConfigurer extends Configurer implements
     super(key, name, val);
   }
 
+  @Override
   public String getValueString() {
     if (getListValue().isEmpty()) {
       return "";
@@ -73,6 +74,7 @@ public abstract class ListConfigurer extends Configurer implements
     return se.getValue();
   }
 
+  @Override
   public void setValue(String s) {
     getListValue().clear();
     if (s.length() > 0) {
@@ -96,6 +98,7 @@ public abstract class ListConfigurer extends Configurer implements
     noUpdate = false;
   }
 
+  @Override
   public void setValue(Object o) {
     if (o == null) {
       o = new ArrayList<>();
@@ -106,6 +109,7 @@ public abstract class ListConfigurer extends Configurer implements
     }
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
       panel = new JPanel(new BorderLayout());
@@ -116,6 +120,7 @@ public abstract class ListConfigurer extends Configurer implements
 
       JButton addButton = new JButton("New");
       addButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           Configurer c = buildChildConfigurer();
           getListValue().add(c.getValue());
@@ -142,6 +147,7 @@ public abstract class ListConfigurer extends Configurer implements
    */
   protected abstract Configurer buildChildConfigurer();
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     updateValue();
   }
@@ -162,6 +168,7 @@ public abstract class ListConfigurer extends Configurer implements
         final Box b = Box.createHorizontalBox();
         JButton delButton = new JButton("Remove");
         delButton.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             getListValue().remove(c.getValue());
             updateControls();

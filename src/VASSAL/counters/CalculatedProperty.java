@@ -67,26 +67,32 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     setInner(inner);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
@@ -94,17 +100,21 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     return ID + se.getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     String desc = "Calculated Property";
     if (name != null && name.length() > 0) {
@@ -113,10 +123,12 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     return desc;
   }
 
+  @Override
   public HelpFile getHelpFile() {
       return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -133,6 +145,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * Evaluating Expressions can lead to infinite loops and
    * eventually a Stack Overflow. Trap and report this
    */
+  @Override
   public Object getProperty(Object key) {
     Object result = "";
     if (name.length() > 0 && name.equals(key)) {
@@ -153,6 +166,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     return super.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (name.length() > 0 && name.equals(key)) {
       return getProperty(key);
@@ -176,6 +190,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     }
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -204,14 +219,17 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString())
@@ -221,11 +239,13 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     // Use inner name to prevent recursive looping when reporting errors.
     return piece.getName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getDescription();
   }
@@ -233,6 +253,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(name);

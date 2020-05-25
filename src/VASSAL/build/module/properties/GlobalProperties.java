@@ -45,18 +45,22 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   private Map<String,MutableProperty> initialValues = new HashMap<>();
   private MutablePropertiesContainer parent;
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
@@ -65,24 +69,30 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return "Global Properties";
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalProperties.htm");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {GlobalProperty.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
     this.parent = (MutablePropertiesContainer) parent;
 
@@ -96,6 +106,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
       new ChangePropertyCommandEncoder(this));
   }
 
+  @Override
   public void addMutableProperty(String key, MutableProperty p) {
     if (parent == null) {
       initialValues.put(key,p);
@@ -105,6 +116,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
   }
 
+  @Override
   public MutableProperty removeMutableProperty(String key) {
     if (parent == null) {
       return initialValues.remove(key);
@@ -114,18 +126,22 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
   }
 
+  @Override
   public JToolBar getToolBar() {
     return tempToolbar.getToolBar();
   }
 
+  @Override
   public Object getProperty(Object key) {
     return propertySource == null ? null : propertySource.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     return propertySource == null ? null : propertySource.getLocalizedProperty(key);
   }
 
+   @Override
    public GlobalProperty getMutableProperty(String name) {
    GlobalProperty property = null;
     for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
@@ -139,6 +155,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   /*
    * Null i18n key prefix for this component
    */
+  @Override
   public String getI18nPrefix() {
     return "";
   }
@@ -150,10 +167,12 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   /**
    * Use the identity of the owning container (i.e. Module, map or zone)
    */
+  @Override
   public String getMutablePropertiesContainerId() {
     return parent.getMutablePropertiesContainerId();
   }
 
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {

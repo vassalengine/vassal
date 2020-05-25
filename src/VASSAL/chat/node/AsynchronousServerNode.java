@@ -58,6 +58,7 @@ public class AsynchronousServerNode extends ServerNode {
     contentsReporter = new ReportContentsThread(this);
   }
 
+  @Override
   protected synchronized void sendContents(Node node) {
     contentsReporter.markChanged(node);
   }
@@ -74,6 +75,7 @@ public class AsynchronousServerNode extends ServerNode {
       start();
     }
 
+    @Override
     public void run() {
       while (true) {
         try {

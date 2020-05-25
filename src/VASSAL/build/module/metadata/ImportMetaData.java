@@ -30,14 +30,17 @@ public class ImportMetaData extends AbstractMetaData {
 
   public static final String DATA_VERSION = "1";
 
+  @Override
   protected void addElements(Document doc, Element root) {
 
   }
 
+  @Override
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
 
+  @Override
   public String getZipEntryName() {
     return null;
   }

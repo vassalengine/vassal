@@ -79,11 +79,13 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     return super.getFuture(obs);
   }
 
+  @Override
   public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage eval() {
     final Rectangle b = piece.boundingBox();
     final BufferedImage im = ImageUtils.createCompatibleTranslucentImage(
@@ -97,6 +99,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     size = piece.boundingBox().getSize();
     if (size.width < 1) size.width = 1;
@@ -108,10 +111,12 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
    *
    * @return the source
    */
+  @Override
   public GamePiece getPiece() {
     return piece;
   }
 
+  @Override
   public String getState() {
     return state;
   }
@@ -122,6 +127,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
    *
    * @return <code>true</code> iff the source has changed.
    */
+  @Override
   public boolean isChanged() {
     return !state.equals(piece.getProperty(Properties.VISIBLE_STATE));
   }

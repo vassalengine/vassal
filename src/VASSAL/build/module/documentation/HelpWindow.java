@@ -74,6 +74,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     setLocation(d.width / 2 - width / 2, 0);
   }
 
+  @Override
   public void hyperlinkUpdate(HyperlinkEvent e) {
     if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
       if (e.getURL() != null) {

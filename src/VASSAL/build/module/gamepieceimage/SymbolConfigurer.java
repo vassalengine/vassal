@@ -41,6 +41,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolNames());
   }
 
+  @Override
   public JComboBox getComboBox() {
     return new SymbolComboBox();
   }
@@ -84,6 +85,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
        * This method finds the image and text corresponding to the selected
        * value and returns the label, set up to display the text and image.
        */
+      @Override
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
           boolean cellHasFocus) {
 

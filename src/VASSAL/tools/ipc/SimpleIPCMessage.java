@@ -6,26 +6,32 @@ public class SimpleIPCMessage implements IPCMessage {
   protected long id;
   protected long inReplyTo;
 
+  @Override
   public long getId() {
     return id;
   }
 
+  @Override
   public void setId(long id) {
     this.id = id;
   }
 
+  @Override
   public boolean expectsReply() {
     return false;
   }
 
+  @Override
   public boolean isReply() {
     return false;
   }
 
+  @Override
   public long getInReplyTo() {
     return inReplyTo;
   }
 
+  @Override
   public void setInReplyTo(long inReplyTo) {
     this.inReplyTo = inReplyTo;
   }

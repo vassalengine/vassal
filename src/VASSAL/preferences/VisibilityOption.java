@@ -32,14 +32,17 @@ public class VisibilityOption extends PositionOption {
     isVisible = f.isVisible();
   }
 
+  @Override
   public void componentShown(ComponentEvent e) {
     isVisible = true;
   }
 
+  @Override
   public void componentHidden(ComponentEvent e) {
     isVisible = false;
   }
 
+  @Override
   public void setValue(String in) {
     StringTokenizer st = new StringTokenizer(in,"\t");
     super.setValue(st.nextToken());
@@ -52,6 +55,7 @@ public class VisibilityOption extends PositionOption {
     theFrame.setVisible(isVisible);
   }
 
+  @Override
   public String getValueString() {
     return super.getValueString()+"\t"+isVisible;
   }

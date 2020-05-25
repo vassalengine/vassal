@@ -67,6 +67,7 @@ public class NodeHybridClient extends DynamicClient {
     return msgSvr;
   }
 
+  @Override
   protected ChatServerConnection buildDelegate() {
     ChatServerConnection c = null;
     try {

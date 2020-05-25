@@ -47,19 +47,23 @@ public class PlayerNode extends Node implements SocketWatcher {
     input.start();
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public boolean isLeaf() {
     return true;
   }
 
+  @Override
   public void send(String msg) {
     input.writeLine(msg);
   }
 
   // Always update IP on client info in case client 'forgets' their IP
+  @Override
   public String getInfo() {
     String ip = input.sock.getInetAddress().getHostAddress();
     return info + (ip.length() > 0 ? "|ip=" + ip : "");
@@ -80,6 +84,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     return id.hashCode();
   }
 
+  @Override
   public void handleMessage(String line) {
     String[] info;
     Properties p;
@@ -134,6 +139,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     }
   }
 
+  @Override
   public void socketClosed(SocketHandler handler) {
     server.disconnect(this);
   }

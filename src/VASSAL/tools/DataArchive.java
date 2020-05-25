@@ -101,6 +101,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     this(zipName, IMAGE_DIR);
   }
 
+  @Override
   public String getName() {
     return archive == null ? "data archive" : archive.getName();
   }
@@ -329,6 +330,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return archive.contains(fileName);
   }
 
+  @Override
   public void close() throws IOException {
     if (archive != null) {
       archive.revert(); // ensure that we don't modify the archive

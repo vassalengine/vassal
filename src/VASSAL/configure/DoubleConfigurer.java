@@ -30,6 +30,7 @@ public class DoubleConfigurer extends StringConfigurer {
     super(key, name, val == null ? null : val.toString());
   }
 
+  @Override
   public void setValue(String s) {
     Double d = null;
     try {
@@ -48,6 +49,7 @@ public class DoubleConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public String getValueString() {
     return value == null ? null : value.toString();
   }

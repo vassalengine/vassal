@@ -323,10 +323,12 @@ public class IconFamily extends AbstractConfigurable {
     return getConfigureName();
   }
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public void setConfigureName(String s) {
     String oldName = name;
     this.name = s;
@@ -338,19 +340,23 @@ public class IconFamily extends AbstractConfigurable {
     return Resources.getString("Editor.IconFamily.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] { NAME_PROPERTY, SCALABLE_ICON, ICON0, ICON1, ICON2,
         ICON3 };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME_PROPERTY.equals(key)) {
       return getConfigureName();
@@ -373,6 +379,7 @@ public class IconFamily extends AbstractConfigurable {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME_PROPERTY.equals(key)) {
       setConfigureName((String) value);
@@ -394,22 +401,27 @@ public class IconFamily extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public void addTo(Buildable parent) {
 
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new IconFamilyConfig(this);
   }
@@ -436,6 +448,7 @@ public class IconFamily extends AbstractConfigurable {
 
       title = new StringConfigurer(null, "", family.getConfigureName()); //$NON-NLS-1$
       title.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
             family.setConfigureName((String) evt.getNewValue());
@@ -450,6 +463,7 @@ public class IconFamily extends AbstractConfigurable {
       errorLabel.setForeground(Color.red);
       errorLabel.setVisible(false);
       family.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             final IconFamily savedFamily = IconFactory.getIconFamily(family
@@ -475,14 +489,17 @@ public class IconFamily extends AbstractConfigurable {
       controls.add(mig);
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getValueString() {
       return null;
     }
 
+    @Override
     public void setValue(String s) {
 
     }
@@ -523,6 +540,7 @@ public class IconFamily extends AbstractConfigurable {
       this(family, -1);
     }
 
+    @Override
     public Component getControls() {
       if (controls == null) {
         controls = new JPanel(new MigLayout());
@@ -531,6 +549,7 @@ public class IconFamily extends AbstractConfigurable {
         final JPanel p = new JPanel() {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void paint(Graphics g) {
             g.clearRect(0, 0, getSize().width, getSize().height);
             final Icon i = getIconValue();
@@ -545,6 +564,7 @@ public class IconFamily extends AbstractConfigurable {
 
         final JButton select = new JButton(Resources.getString(Resources.SELECT));
         select.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             selectImage();
             p.repaint();
@@ -562,6 +582,7 @@ public class IconFamily extends AbstractConfigurable {
       return controls;
     }
 
+    @Override
     public String getValueString() {
       if (size < 0) {
         return family.scalablePath;
@@ -588,6 +609,7 @@ public class IconFamily extends AbstractConfigurable {
       return icon;
     }
 
+    @Override
     public void setValue(String s) {
       if (size < 0) {
         family.setScalableIconPath(buildPath(s));
@@ -689,6 +711,7 @@ public class IconFamily extends AbstractConfigurable {
       familyName = family;
     }
 
+    @Override
     public boolean accept(File f) {
       if (super.accept(f)) {
         final String s = f.getName().split("\\.")[0]; //$NON-NLS-1$

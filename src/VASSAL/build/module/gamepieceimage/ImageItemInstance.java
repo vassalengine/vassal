@@ -50,6 +50,7 @@ public class ImageItemInstance extends ItemInstance {
     imageName = iName;
   }
 
+  @Override
   public String encode() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType())
@@ -71,18 +72,22 @@ public class ImageItemInstance extends ItemInstance {
     return imageName;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] { "Image:  " };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] { Image.class, };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] { IMAGE };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (IMAGE.equals(key)) {
       if (o instanceof String) {
@@ -105,6 +110,7 @@ public class ImageItemInstance extends ItemInstance {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
 
     if (IMAGE.equals(key)) {
@@ -115,6 +121,7 @@ public class ImageItemInstance extends ItemInstance {
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
        return imageCond;
@@ -125,6 +132,7 @@ public class ImageItemInstance extends ItemInstance {
    }
 
   private VisibilityCondition imageCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !((ImageItem) getItem()).isFixed();
     }

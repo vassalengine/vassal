@@ -42,6 +42,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * This implementation is equivalent to {@link #getSize}.
    */
+  @Override
   public Dimension getTileSize() {
     return getSize();
   }
@@ -51,6 +52,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * This implementation is equivalent to {@link #getHeight}.
    */
+  @Override
   public int getTileHeight() {
     return getHeight();
   }
@@ -60,6 +62,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * This implementation is equivalent to {@link #getWidth}.
    */
+  @Override
   public int getTileWidth() {
     return getWidth();
   }
@@ -69,6 +72,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * @return <code>1</code>, always
    */
+  @Override
   public int getNumXTiles() {
     return 1;
   }
@@ -78,6 +82,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * @return <code>1</code>, always
    */
+  @Override
   public int getNumYTiles() {
     return 1;
   }
@@ -89,6 +94,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException
    *    If <code>tileX != 0</code> or <code>tileY != 0</code>.
    */
+  @Override
   public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException
   {
@@ -106,6 +112,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException
    *    If <code>tileX != 0</code> or <code>tileY != 0</code>.
    */
+  @Override
   public Future<BufferedImage> getFutureTile(
     int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
   {
@@ -116,6 +123,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
     return getFutureImage(obs);
   }
 
+  @Override
   public ImageOp getTileOp(int tileX, int tileY) {
     // we are but a single humble tile
     if (tileX != 0 || tileY != 0)
@@ -129,6 +137,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    *
    * @throws IllegalArgumentException if <code>rect == null</code>.
    */
+  @Override
   public Point[] getTileIndices(Rectangle rect) {
     if (rect == null) throw new IllegalArgumentException();
     return rect.intersects(new Rectangle(size)) ?

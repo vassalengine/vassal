@@ -52,6 +52,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage getTile(
     String name,
     int tileX,
@@ -63,6 +64,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Dimension getTileSize(
     String name,
     int tileX,
@@ -74,6 +76,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean tileExists(
     String name,
     int tileX,
@@ -86,26 +89,31 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean contains(String path) throws IOException {
     return new File(cpath + "/" + path).exists();
   }
 
   /** {@inheritDoc} */
+  @Override
   public InputStream getInputStream(String path) throws IOException {
     return new FileInputStream(cpath + "/" + path);
   }
 
   /** {@inheritDoc} */
+  @Override
   public long getSize(String path) throws IOException {
     return new File(cpath + "/" + path).length();
   }
 
   /** {@inheritDoc} */
+  @Override
   public long getMTime(String path) throws IOException {
     return new File(cpath + "/" + path).lastModified();
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<String> getFiles() throws IOException {
     final File[] files = new File(cpath).listFiles();
     final List<String> names = new ArrayList<>(files.length);
@@ -116,6 +124,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<String> getFiles(String root) throws IOException {
     final File[] files = new File(cpath).listFiles();
     final List<String> names = new ArrayList<>(files.length);
@@ -131,10 +140,12 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isClosed() {
     return false;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void close() {}
 }

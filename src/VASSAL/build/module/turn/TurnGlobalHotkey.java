@@ -28,6 +28,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   protected FormattedString format = new FormattedString();
   protected BasicPiece checkPiece = new BasicPiece();
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Description:  ",
@@ -37,6 +38,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -47,15 +49,18 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {NAME, HOTKEY, MATCH, REPORT_FORMAT};
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -73,6 +78,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
       return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -92,14 +98,17 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
 
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public void addTo(Buildable parent) {
 
   }
@@ -108,6 +117,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     return "Global Hotkey";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","Hotkey"); //$NON-NLS-1$ //$NON-NLS-2$
   }

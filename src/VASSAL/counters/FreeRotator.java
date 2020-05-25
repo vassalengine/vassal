@@ -132,10 +132,12 @@ public class FreeRotator extends Decorator
     setInner(inner);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public void setInner(GamePiece p) {
     // The GamePiece stack can be in an invalid state during a setInner()
     // call, so cannot regenerate gpOp now.
@@ -153,6 +155,7 @@ public class FreeRotator extends Decorator
     return (piece.boundingBox().height % 2) / 2.0;
   }
 
+  @Override
   public Rectangle boundingBox() {
     final Rectangle b = piece.boundingBox();
     final double angle = getAngle();
@@ -226,6 +229,7 @@ public class FreeRotator extends Decorator
     return boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     final Shape s = piece.getShape();
 
@@ -243,6 +247,7 @@ public class FreeRotator extends Decorator
     return -PI_180 * getAngle();
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -270,6 +275,7 @@ public class FreeRotator extends Decorator
     commands = null;
   }
 
+  @Override
   public void draw(final Graphics g,
                    final int x,
                    final int y,
@@ -306,6 +312,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public void draw(Graphics g, Map map) {
     if (!drawGhost) {
       return;
@@ -330,6 +337,7 @@ public class FreeRotator extends Decorator
     g2d.dispose();
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
@@ -346,6 +354,7 @@ public class FreeRotator extends Decorator
                      (int) Math.round(newPos2D.getY()));
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
@@ -367,6 +376,7 @@ public class FreeRotator extends Decorator
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     if (validAngles.length == 1) {
       return String.valueOf(validAngles[0]);
@@ -376,6 +386,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public void mySetState(String state) {
     if (validAngles.length == 1) {
       try {
@@ -395,6 +406,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<>();
@@ -445,6 +457,7 @@ public class FreeRotator extends Decorator
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
@@ -523,15 +536,19 @@ public class FreeRotator extends Decorator
     pivot = new Point(x, y);
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (hasPieceMoved()) {
       endInteractiveRotate();
@@ -541,6 +558,7 @@ public class FreeRotator extends Decorator
     startAngle = getRelativeAngle(e.getPoint(), getPosition());
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (hasPieceMoved()) {
       endInteractiveRotate();
@@ -568,6 +586,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (Properties.USE_UNROTATED_SHAPE.equals(key)) {
       useUnrotatedShape = Boolean.TRUE.equals(val);
@@ -588,6 +607,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if ((name + FACING).equals(key)) {
       return String.valueOf(angleIndex + 1);
@@ -600,6 +620,7 @@ public class FreeRotator extends Decorator
     }
   }
 
+  @Override
   public void mouseDragged(MouseEvent e) {
     if (drawGhost) {
       final Point mousePos = getMap().componentToMap(e.getPoint());
@@ -623,6 +644,7 @@ public class FreeRotator extends Decorator
     return myAngle;
   }
 
+  @Override
   public void mouseMoved(MouseEvent e) {
     if (hasPieceMoved()) {
       endInteractiveRotate();
@@ -648,6 +670,7 @@ public class FreeRotator extends Decorator
     return Op.rotateScale(gpOp, angle, 1.0).getImage();
   }
 
+  @Override
   public String getDescription() {
     String d = "Can Rotate";
     if (name.length() > 0) {
@@ -656,14 +679,17 @@ public class FreeRotator extends Decorator
     return d;
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Rotate.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
                        new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
@@ -672,6 +698,7 @@ public class FreeRotator extends Decorator
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(name + FACING);
@@ -761,6 +788,7 @@ public class FreeRotator extends Decorator
       propertyChange(null);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       final boolean any = Boolean.TRUE.equals(anyConfig.getValue());
       anyControls.setVisible(any);
@@ -770,10 +798,12 @@ public class FreeRotator extends Decorator
       panel.revalidate();
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       if (Boolean.TRUE.equals(anyConfig.getValue())) {
@@ -800,6 +830,7 @@ public class FreeRotator extends Decorator
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "0";
     }

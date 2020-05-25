@@ -86,6 +86,7 @@ public class HelpFile extends AbstractConfigurable {
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         showWindow();
       }
@@ -165,6 +166,7 @@ public class HelpFile extends AbstractConfigurable {
     return URLUtils.toURL(f);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
@@ -184,6 +186,7 @@ public class HelpFile extends AbstractConfigurable {
    * <code>FILE</code> the name of an text file in the {@link
    * DataArchive}.  The text is displayed in a window with the same title
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       TITLE,
@@ -193,6 +196,7 @@ public class HelpFile extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (TITLE.equals(key)) {
       return title;
@@ -206,6 +210,7 @@ public class HelpFile extends AbstractConfigurable {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (TITLE.equals(key)) {
       title = (String) val;
@@ -227,6 +232,7 @@ public class HelpFile extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Menu Entry:  ",
@@ -234,6 +240,7 @@ public class HelpFile extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -241,18 +248,21 @@ public class HelpFile extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
   protected MenuItemProxy launchItem;
 
+  @Override
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
     MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
     launch.setEnabled(true);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
                .removeFromSection("Documentation.Module", launchItem);

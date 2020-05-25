@@ -52,6 +52,7 @@ public class Chart extends Widget {
   public Chart() {
   }
 
+  @Override
   public Component getComponent() {
     if (chart == null) {
       label = new JLabel();
@@ -88,16 +89,20 @@ public class Chart extends Widget {
     return fileName;
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ChartWindow.htm", "Chart");
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (NAME.equals(key)) {
       setConfigureName((String) val);
@@ -137,6 +142,7 @@ public class Chart extends Widget {
    *
    * return config; }
    */
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -155,18 +161,22 @@ public class Chart extends Widget {
    *  for the name of the image in the {@link DataArchive}
    * </pre>
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME, FILE};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  ", "Image:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class, Image.class};
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

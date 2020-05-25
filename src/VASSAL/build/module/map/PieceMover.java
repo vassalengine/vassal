@@ -129,6 +129,7 @@ public class PieceMover extends AbstractBuildable
 
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
+  @Override
   public void addTo(Buildable b) {
     dragTargetSelector = createDragTargetSelector();
     dropTargetSelector = createDropTargetSelector();
@@ -159,6 +160,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected PieceFinder createDropTargetSelector() {
     return new PieceFinder.Movable() {
+      @Override
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
@@ -170,6 +172,7 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
+      @Override
       public Object visitDefault(GamePiece piece) {
         GamePiece selected = null;
         if (this.map.getStackMetrics().isStackingEnabled() &&
@@ -194,6 +197,7 @@ public class PieceMover extends AbstractBuildable
         return selected;
       }
 
+      @Override
       public Object visitStack(Stack s) {
         GamePiece selected = null;
         if (this.map.getStackMetrics().isStackingEnabled() &&
@@ -228,6 +232,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected PieceVisitorDispatcher createSelectionProcessor() {
     return new DeckVisitorDispatcher(new DeckVisitor() {
+      @Override
       public Object visitDeck(Deck d) {
         DragBuffer.getBuffer().clear();
         for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
@@ -236,6 +241,7 @@ public class PieceMover extends AbstractBuildable
         return null;
       }
 
+      @Override
       public Object visitStack(Stack s) {
         DragBuffer.getBuffer().clear();
         // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
@@ -275,6 +281,7 @@ public class PieceMover extends AbstractBuildable
         return null;
       }
 
+      @Override
       public Object visitDefault(GamePiece selected) {
         DragBuffer.getBuffer().clear();
         if (KeyBuffer.getBuffer().contains(selected)) {
@@ -305,6 +312,7 @@ public class PieceMover extends AbstractBuildable
    */
   protected PieceFinder createDragTargetSelector() {
     return new PieceFinder.Movable() {
+      @Override
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
@@ -318,12 +326,14 @@ public class PieceMover extends AbstractBuildable
     };
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
       initButton();
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -344,6 +354,7 @@ public class PieceMover extends AbstractBuildable
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
         final ActionListener al = new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             final GamePiece[] p = map.getAllPieces();
             final Command c = new NullCommand();
@@ -395,14 +406,17 @@ public class PieceMover extends AbstractBuildable
     return value;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{ICON_NAME};
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return ICON_NAME.equals(key) ? iconName : null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (ICON_NAME.equals(key)) {
       iconName = (String) value;
@@ -665,6 +679,7 @@ public class PieceMover extends AbstractBuildable
    *
    * @param e
    */
+  @Override
   public void mousePressed(MouseEvent e) {
     if (canHandleEvent(e)) {
       selectMovablePieces(e);
@@ -745,6 +760,7 @@ public class PieceMover extends AbstractBuildable
     return isClick;
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (canHandleEvent(e)) {
       if (!isClick(e.getPoint())) {
@@ -763,12 +779,15 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
@@ -777,6 +796,7 @@ public class PieceMover extends AbstractBuildable
    * completing the drag. This sorts the contents to be in the same order
    * as the pieces were in their original parent stack.
    */
+  @Override
   public int compare(GamePiece p1, GamePiece p2) {
     return pieceSorter.compare(p1, p2);
   }
@@ -1145,6 +1165,7 @@ public class PieceMover extends AbstractBuildable
     //
     ///////////////////////////////////////////////////////////////////////////
     /** Fires after user begins moving the mouse several pixels over a map. */
+    @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       try {
         beginDragging(dge);
@@ -1238,17 +1259,22 @@ public class PieceMover extends AbstractBuildable
     // DRAG SOURCE LISTENER INTERFACE
     //
     ///////////////////////////////////////////////////////////////////////////
+    @Override
     public void dragDropEnd(DragSourceDropEvent e) {
       final DragSource ds = e.getDragSourceContext().getDragSource();
       ds.removeDragSourceMotionListener(this);
     }
 
+    @Override
     public void dragEnter(DragSourceDragEvent e) {}
 
+    @Override
     public void dragExit(DragSourceEvent e) {}
 
+    @Override
     public void dragOver(DragSourceDragEvent e) {}
 
+    @Override
     public void dropActionChanged(DragSourceDragEvent e) {}
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1263,6 +1289,7 @@ public class PieceMover extends AbstractBuildable
     protected Point lastDragLocation = new Point();
 
     /** Moves cursor after mouse */
+    @Override
     abstract public void dragMouseMoved(DragSourceDragEvent e);
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1271,6 +1298,7 @@ public class PieceMover extends AbstractBuildable
     // EVENT uses UNSCALED, DROP-TARGET coordinate system
     ///////////////////////////////////////////////////////////////////////////
     /** switches current drawWin when mouse enters a new DropTarget */
+    @Override
     public void dragEnter(DropTargetDragEvent e) {
        final DropTargetListener forward = getListener(e);
        if (forward != null) forward.dragEnter(e);
@@ -1281,6 +1309,7 @@ public class PieceMover extends AbstractBuildable
      * off-center drag, remove the cursor, and pass the event along
      * listener chain.
      */
+    @Override
     public void drop(DropTargetDropEvent e) {
        // EVENT uses UNSCALED, DROP-TARGET coordinate system
        e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
@@ -1289,18 +1318,21 @@ public class PieceMover extends AbstractBuildable
     }
 
     /** ineffectual. Passes event along listener chain */
+    @Override
     public void dragExit(DropTargetEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragExit(e);
     }
 
     /** ineffectual. Passes event along listener chain */
+    @Override
     public void dragOver(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dragOver(e);
     }
 
     /** ineffectual. Passes event along listener chain */
+    @Override
     public void dropActionChanged(DropTargetDragEvent e) {
       final DropTargetListener forward = getListener(e);
       if (forward != null) forward.dropActionChanged(e);
@@ -1330,6 +1362,7 @@ public class PieceMover extends AbstractBuildable
       super.dragGestureRecognized(dge);
     }
 
+    @Override
     protected int getOffsetMult() {
       return 1;
     }
@@ -1340,6 +1373,7 @@ public class PieceMover extends AbstractBuildable
       super.dragDropEnd(e);
     }
 
+    @Override
     public void dragMouseMoved(DragSourceDragEvent e) {
       if (!e.getLocation().equals(lastDragLocation)) {
         lastDragLocation = e.getLocation();
@@ -1350,6 +1384,7 @@ public class PieceMover extends AbstractBuildable
       }
     }
 
+    @Override
     public void dragEnter(DropTargetDragEvent e) {
       final Component newDropWin = e.getDropTargetContext().getComponent();
       if (newDropWin != dropWin) {
@@ -1364,6 +1399,7 @@ public class PieceMover extends AbstractBuildable
       super.dragEnter(e);
     }
 
+    @Override
     public void drop(DropTargetDropEvent e) {
       removeDragCursor();
       super.drop(e);
@@ -1375,15 +1411,18 @@ public class PieceMover extends AbstractBuildable
    * @Author Pieter Geerkens
    */
   static public class DragHandler extends AbstractDragHandler {
+    @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       if (dragGestureRecognizedPrep(dge) == null) return;
       super.dragGestureRecognized(dge);
     }
 
+    @Override
     protected int getOffsetMult() {
       return -1;
     }
 
+    @Override
     public void dragMouseMoved(DragSourceDragEvent e) {}
   }
 

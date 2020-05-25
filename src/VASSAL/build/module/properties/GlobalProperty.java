@@ -65,6 +65,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public GlobalProperty() {
     numericVisibility = new VisibilityCondition() {
+      @Override
       public boolean shouldBeVisible() {
         return isNumeric();
       }
@@ -81,6 +82,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     maxValue = p.maxValue;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name",
@@ -93,6 +95,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -105,6 +108,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -117,6 +121,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -146,6 +151,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -171,6 +177,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (MIN_VALUE.equals(name) || MAX_VALUE.equals(name) || WRAP.equals(name)) {
       return numericVisibility;
@@ -180,20 +187,24 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     property.removeFromContainer();
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalProperties.htm");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ChangePropertyButton.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
     parentContainer = (MutablePropertiesContainer) parent;
     property.addTo(parentContainer);
@@ -204,10 +215,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     setAllAttributesUntranslatable();
   }
 
+  @Override
   public JToolBar getToolBar() {
     return tempToolbar.getToolBar();
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       property.setPropertyValue(initialValue); // Set value back to default for next New Game
@@ -215,10 +228,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new SetGlobalProperty(this, "", property.getPropertyValue());
   }
 
+  @Override
   public Command decode(String command) {
     Command comm = null;
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, ';');
@@ -248,6 +263,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return parentContainer == null ? "" : parentContainer.getMutablePropertiesContainerId();
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetGlobalProperty) {
@@ -293,10 +309,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       return target;
     }
 
+    @Override
     protected void executeCommand() {
       target.property.setPropertyValue(newValue);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return new SetGlobalProperty(target, newValue, oldValue);
     }
@@ -342,10 +360,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return description;
   }
 
+  @Override
   public Object getProperty(Object key) {
     return propertySource == null ? null : propertySource.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     return propertySource == null ? null : propertySource.getLocalizedProperty(key);
   }
@@ -354,10 +374,12 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return "Global Property";
   }
 
+  @Override
   public void addMutablePropertyChangeListener(PropertyChangeListener l) {
     property.addMutablePropertyChangeListener(l);
   }
 
+  @Override
   public void removeMutablePropertyChangeListener(PropertyChangeListener l) {
     property.removeMutablePropertyChangeListener(l);
   }
@@ -366,14 +388,17 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     property.setPropertyName(name);
   }
 
+  @Override
   public Command setPropertyValue(String newValue) {
     return property.setPropertyValue(newValue);
   }
 
+  @Override
   public String getPropertyValue() {
     return property.getPropertyValue();
   }
 
+  @Override
   public MutablePropertiesContainer getParent() {
     return parentContainer;
   }

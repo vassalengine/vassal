@@ -35,6 +35,7 @@ public class MandatoryComponent implements ValidityChecker {
     this.target = target;
   }
 
+  @Override
   public void validate(Buildable b, ValidationReport report) {
     if (b == this.target &&
         target.getComponentsOf(requiredChildClass).isEmpty()) {

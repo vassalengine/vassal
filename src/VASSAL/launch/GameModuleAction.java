@@ -61,6 +61,7 @@ public abstract class GameModuleAction extends AbstractAction {
     return msg;
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     try {
       performAction(e);

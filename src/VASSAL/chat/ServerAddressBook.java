@@ -242,11 +242,13 @@ public class ServerAddressBook {
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       myList.setCellRenderer(new MyRenderer());
       myList.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent evt) {
           updateButtonVisibility();
         }
       });
       myList.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseClicked(MouseEvent e) {
             if (editButton.isEnabled() && e.getClickCount() == 2) {
                 int index = myList.locationToIndex(e.getPoint());
@@ -263,6 +265,7 @@ public class ServerAddressBook {
       setButton = new JButton(Resources.getString("ServerAddressBook.set_current")); //$NON-NLS-1$
       setButton.setToolTipText(Resources.getString("ServerAddressBook.set_selected_server")); //$NON-NLS-1$
       setButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setCurrentServer(myList.getSelectedIndex());
         }
@@ -271,6 +274,7 @@ public class ServerAddressBook {
       addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.setToolTipText(Resources.getString("ServerAddressBook.add_jabber_server")); //$NON-NLS-1$
       addButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           addServer();
         }
@@ -279,6 +283,7 @@ public class ServerAddressBook {
       removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.setToolTipText(Resources.getString("ServerAddressBook.remove_selected_server")); //$NON-NLS-1$
       removeButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           removeServer(myList.getSelectedIndex());
         }
@@ -287,6 +292,7 @@ public class ServerAddressBook {
       editButton = new JButton(Resources.getString(Resources.EDIT));
       editButton.setToolTipText(Resources.getString("ServerAddressBook.edit_server")); //$NON-NLS-1$
       editButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           editServer(myList.getSelectedIndex());
         }
@@ -415,6 +421,7 @@ public class ServerAddressBook {
       entry = e;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       ServerAddressBook.getInstance().setCurrentServer(entry);
     }
@@ -472,11 +479,13 @@ public class ServerAddressBook {
     final JPopupMenu popup = new JPopupMenu();
     final JMenuItem p2pItem = new JMenuItem(Resources.getString("ServerAddressBook.peer_server"));
     p2pItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new PeerServerEntry());
       }});
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
     jabItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new JabberEntry());
       }});
@@ -713,6 +722,7 @@ public class ServerAddressBook {
       return new PropertiesEncoder(properties).getStringValue();
     }
 
+    @Override
     public int compareTo(AddressBookEntry target) {
       if (getType().equals(target.getType())) {
         return getDescription().compareTo(target.getDescription());
@@ -840,14 +850,17 @@ public class ServerAddressBook {
           + getProperty(JabberClientFactory.JABBER_PWD) + "]"; //$NON-NLS-1$
     }
 
+    @Override
     protected String getIconName() {
       return "jabber"; //$NON-NLS-1$
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return true;
     }
 
+    @Override
     protected void setAdditionalProperties(Properties props) {
       jabberHost.setText(props.getProperty(JabberClientFactory.JABBER_HOST));
       jabberPort.setText(props.getProperty(JabberClientFactory.JABBER_PORT));
@@ -855,6 +868,7 @@ public class ServerAddressBook {
       jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(JabberClientFactory.JABBER_HOST, jabberHost.getText());
       props.setProperty(JabberClientFactory.JABBER_PORT, jabberPort.getText());
@@ -863,6 +877,7 @@ public class ServerAddressBook {
       props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
       jabberHost.setEditable(enabled);
       jabberPort.setEditable(enabled);
@@ -879,6 +894,7 @@ public class ServerAddressBook {
 
       testButton = new JButton(Resources.getString("ServerAddressBook.test_connection")); //$NON-NLS-1$
       testButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           test();
         }
@@ -939,18 +955,22 @@ public class ServerAddressBook {
       return getDescription() + " [" + details + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     protected boolean isRemovable() {
       return false;
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return false;
     }
 
+    @Override
     protected String getIconName() {
       return "VASSAL-jabber"; //$NON-NLS-1$
     }
 
+    @Override
     protected void setAdditionalProperties(Properties props) {
       jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
       jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
@@ -958,6 +978,7 @@ public class ServerAddressBook {
       setProperty(DYNAMIC_TYPE, JABBER_TYPE);
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
       props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
@@ -965,6 +986,7 @@ public class ServerAddressBook {
       props.setProperty(DYNAMIC_TYPE, JABBER_TYPE);
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
       jabberUser.setEditable(enabled);
       jabberPw.setEditable(enabled);
@@ -998,30 +1020,37 @@ public class ServerAddressBook {
       return getDescription();
     }
 
+    @Override
     protected String getIconName() {
       return "VASSAL"; //$NON-NLS-1$
     }
 
+    @Override
     protected boolean isRemovable() {
       return false;
     }
 
+    @Override
     protected boolean isEditable() {
       return false;
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return false;
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
 
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
 
     }
 
+    @Override
     protected void setAdditionalProperties(Properties props) {
 
     }
@@ -1121,18 +1150,22 @@ public class ServerAddressBook {
       return Resources.getString("ServerAddressBook.peer_server") + " ["+getProperty(DESCRIPTION_KEY)+"]";
     }
 
+    @Override
     public boolean isRemovable() {
       return true;
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return true;
     }
 
+    @Override
     protected String getIconName() {
       return "network-server"; //$NON-NLS-1$
     }
 
+    @Override
     protected void setAdditionalProperties(Properties p) {
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
@@ -1140,6 +1173,7 @@ public class ServerAddressBook {
       serverPw.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PW));
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, P2P_TYPE);
       props.setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
@@ -1147,6 +1181,7 @@ public class ServerAddressBook {
       props.setProperty(P2PClientFactory.P2P_SERVER_PW, serverPw.getText());
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
       listenPort.setEditable(enabled);
       c.add(new JLabel(Resources.getString("ServerAddressBook.listen_port"))); //$NON-NLS-1$
@@ -1229,18 +1264,22 @@ public class ServerAddressBook {
       return desc.toString();
     }
 
+    @Override
     public boolean isRemovable() {
       return true;
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return false;
     }
 
+    @Override
     protected String getIconName() {
       return "network-idle"; //$NON-NLS-1$
     }
 
+    @Override
     protected void setAdditionalProperties(Properties p) {
       setType(P2P_TYPE);
       setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
@@ -1251,6 +1290,7 @@ public class ServerAddressBook {
       setDescription(toString());
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, P2P_TYPE);
       props.setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
@@ -1260,6 +1300,7 @@ public class ServerAddressBook {
       props.setProperty(P2PClientFactory.P2P_SERVER_NAME, serverName.getText());
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
       serverName.setEditable(enabled);
       c.add(new JLabel(Resources.getString("ServerAddressBook.server_name"))); //$NON-NLS-1$
@@ -1302,6 +1343,7 @@ public class ServerAddressBook {
     private Font standardFont;
     private Font highlightFont;
 
+    @Override
     public Component getListCellRendererComponent(JList list, Object value, int index,
         boolean isSelected, boolean cellHasFocus) {
 

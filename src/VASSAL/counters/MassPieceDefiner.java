@@ -154,6 +154,7 @@ public class MassPieceDefiner extends PieceDefiner {
   private class Def extends PieceDefiner {
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected boolean edit(int index) {
       Object o = MassPieceDefiner.this.inUseModel.elementAt(index);
       if (!(o instanceof EditablePiece)) {

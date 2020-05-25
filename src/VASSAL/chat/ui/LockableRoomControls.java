@@ -37,6 +37,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
     super(client);
   }
 
+  @Override
   public void doubleClickRoom(Room room, JTree tree) {
     if (!(room instanceof LockableRoom)
         || !((LockableRoom) room).isLocked()) {
@@ -44,6 +45,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
     }
   }
 
+  @Override
   public JPopupMenu buildPopupForRoom(Room target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
     addJoinRoomAction(popup, target);

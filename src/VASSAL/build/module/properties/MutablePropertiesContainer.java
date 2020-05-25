@@ -66,18 +66,22 @@ public interface MutablePropertiesContainer {
       this.id = id;
     }
 
+    @Override
     public String getMutablePropertiesContainerId() {
       return id;
     }
 
+    @Override
     public void addMutableProperty(String key, MutableProperty p) {
       props.put(key,p);
     }
 
+    @Override
     public MutableProperty getMutableProperty(String propertyName) {
       return props.get(propertyName);
     }
 
+    @Override
     public MutableProperty removeMutableProperty(String key) {
       return props.remove(key);
     }

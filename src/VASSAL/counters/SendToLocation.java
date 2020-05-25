@@ -122,6 +122,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -148,6 +149,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     gridLocation.setFormat(st.nextToken(""));
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
@@ -171,6 +173,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
@@ -218,6 +221,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         GameModule.getGameModule().getChatter(),s).execute();
   }
 
+  @Override
   public String myGetState() {
     SequenceEncoder se = new SequenceEncoder(';');
     Map backMap = (Map)getProperty(BACK_MAP);
@@ -345,6 +349,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return dest;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
@@ -417,6 +422,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return i;
   }
 
+  @Override
   public void mySetState(String newState) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState,';');
     String mapId = st.nextToken("");
@@ -435,26 +441,32 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public String getDescription() {
     String d = "Send to Location";
     if (description.length() > 0) {
@@ -463,10 +475,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SendToLocation.htm");
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {commandName, backCommandName},
                        new String[] {getCommandDescription(description, "Send command"), getCommandDescription(description, "Back command")});
@@ -525,6 +539,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
       }
       destInput.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
         }});
@@ -535,6 +550,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       mapControls.add(mapIdInput.getControls());
       JButton select = new JButton("Select");
       select.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           selectMap();
         }
@@ -542,6 +558,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       mapControls.add(select);
       JButton clear = new JButton("Clear");
       clear.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           clearMap();
         }
@@ -554,12 +571,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       boardControls.add(boardNameInput.getControls());
       select = new JButton("Select");
       select.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           selectBoard();
         }
       });
       clear = new JButton("Clear");
       clear.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           clearBoard();
         }
@@ -589,6 +608,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
         }});
@@ -665,10 +685,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
@@ -693,6 +715,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }

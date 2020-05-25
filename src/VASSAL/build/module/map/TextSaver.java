@@ -57,6 +57,7 @@ public class TextSaver extends AbstractConfigurable {
 
   public TextSaver() {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         apply();
       }
@@ -68,6 +69,7 @@ public class TextSaver extends AbstractConfigurable {
   }
 
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       BUTTON_TEXT,
@@ -77,6 +79,7 @@ public class TextSaver extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.BUTTON_TEXT),
@@ -86,6 +89,7 @@ public class TextSaver extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -96,24 +100,29 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((TextSaver) c).launch.getAttributeValueString(ICON_NAME));
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     launch.setAttribute(key, value);
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return launch.getAttributeValueString(key);
   }
 
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     map.getToolBar().add(launch);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.getToolBar().remove(launch);
@@ -162,6 +171,7 @@ public class TextSaver extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "TextCapture");
   }
@@ -174,6 +184,7 @@ public class TextSaver extends AbstractConfigurable {
    * @return an array of Configurer objects representing
    * all possible classes of Buildable children of this Configurable object
    */
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

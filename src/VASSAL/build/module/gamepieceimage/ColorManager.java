@@ -150,33 +150,41 @@ public class ColorManager extends AbstractConfigurable {
     return swatch;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { ColorSwatch.class };
   }
@@ -185,12 +193,14 @@ public class ColorManager extends AbstractConfigurable {
     return "Named Colors";
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof ColorSwatch) {
       ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             userColors.remove(evt.getOldValue());
@@ -202,6 +212,7 @@ public class ColorManager extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void remove(Buildable b) {
     super.remove(b);
     if (b instanceof ColorSwatch) {
@@ -209,10 +220,12 @@ public class ColorManager extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 

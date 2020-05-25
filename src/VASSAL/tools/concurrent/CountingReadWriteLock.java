@@ -38,9 +38,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class CountingReadWriteLock implements ReadWriteLock {
   /** {@inheritDoc} */
+  @Override
   public Lock readLock()  { return r; }
 
   /** {@inheritDoc} */
+  @Override
   public Lock writeLock() { return w; }
 
   protected final ReadLock r  = new ReadLock();
@@ -49,21 +51,27 @@ public class CountingReadWriteLock implements ReadWriteLock {
   protected final Sync sync = new Sync();
 
   protected abstract class BaseLock implements Lock {
+    @Override
     public void lockInterruptibly() {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Condition newCondition() {
       throw new UnsupportedOperationException();
     }
   }
 
   protected class ReadLock extends BaseLock {
+    @Override
     public void lock()    { sync.acquireShared(0); }
+    @Override
     public void unlock()  { sync.releaseShared(0); }
 
+    @Override
     public boolean tryLock() { return sync.tryAcquireShared(0) >= 0; }
 
+    @Override
     public boolean tryLock(long time, TimeUnit unit)
                                                   throws InterruptedException {
       return sync.tryAcquireSharedNanos(0, unit.toNanos(time));
@@ -71,11 +79,15 @@ public class CountingReadWriteLock implements ReadWriteLock {
   }
 
   protected class WriteLock extends BaseLock {
+    @Override
     public void lock()   { sync.acquire(0); }
+    @Override
     public void unlock() { sync.release(0); }
 
+    @Override
     public boolean tryLock() { return sync.tryAcquire(0); }
 
+    @Override
     public boolean tryLock(long time, TimeUnit unit)
                                                   throws InterruptedException {
       return sync.tryAcquireNanos(0, unit.toNanos(time));

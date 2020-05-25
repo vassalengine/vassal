@@ -41,15 +41,18 @@ public abstract class AbstractProxy<T extends JComponent>
 
   protected ParentProxy parent;
 
+  @Override
   public ParentProxy getParent() {
     return parent;
   }
 
+  @Override
   public void setParent(ParentProxy parent) {
     this.parent = parent;
 
     if (parent == null) {
       forEachPeer(new Functor<>() {
+        @Override
         public void apply(T peer) {
           final Container par = peer.getParent();
           if (par != null) {
@@ -60,5 +63,6 @@ public abstract class AbstractProxy<T extends JComponent>
     }
   }
 
+  @Override
   public abstract T createPeer();
 }

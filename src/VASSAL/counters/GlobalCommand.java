@@ -146,6 +146,7 @@ public class GlobalCommand {
       this.stroke = stroke;
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       Object target = null;
       if (selectFromDeck != 0) {
@@ -157,6 +158,7 @@ public class GlobalCommand {
       return target;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
         apply(i.next());
@@ -164,6 +166,7 @@ public class GlobalCommand {
       return null;
     }
 
+    @Override
     public Object visitDefault(GamePiece p) {
       apply(p);
       return null;

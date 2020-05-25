@@ -40,6 +40,7 @@ public class NamedKeyStrokeListener extends KeyStrokeListener {
     setKeyStroke(key);
   }
 
+  @Override
   public void setKeyStroke(KeyStroke newKey) {
     super.setKeyStroke(newKey);
     namedKeyStroke = new NamedKeyStroke(newKey);

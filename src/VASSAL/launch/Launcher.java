@@ -144,6 +144,7 @@ public abstract class Launcher {
     createMenuManager();
 
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         try {
           launch();
@@ -231,11 +232,13 @@ public abstract class Launcher {
   protected class CloseRequestListener implements EventListener<CloseRequest> {
     private boolean shutdown;
 
+    @Override
     public void receive(Object src, CloseRequest msg) {
       final GameModule module = GameModule.getGameModule();
       if (module != null) {
         try {
           SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
             public void run() {
               module.getFrame().toFront();
               shutdown = module.shutDown();

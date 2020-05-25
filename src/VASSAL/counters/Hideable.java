@@ -66,6 +66,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyCommand hideCommand;
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (HIDDEN_BY.equals(key)) {
       hiddenBy = (String) val;
@@ -98,6 +99,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (HIDDEN_BY.equals(key)) {
       return hiddenBy;
@@ -126,6 +128,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     mySetType(type);
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -137,10 +140,12 @@ public class Hideable extends Decorator implements TranslatablePiece {
     commands = null;
   }
 
+  @Override
   public void mySetState(String in) {
     hiddenBy = "null".equals(in) ? null : in;
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(hideKey)
@@ -151,6 +156,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     return hiddenBy == null ? "null" : hiddenBy;
   }
@@ -163,6 +169,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     return hiddenBy != null;
   }
 
+  @Override
   public Shape getShape() {
     if (invisibleToMe()) {
       return new Rectangle();
@@ -172,6 +179,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Rectangle boundingBox() {
     if (invisibleToMe()) {
       return new Rectangle();
@@ -181,6 +189,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (invisibleToMe()) {
       return;
@@ -207,6 +216,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public String getName() {
     if (invisibleToMe()) {
       return "";
@@ -219,6 +229,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       hideCommand = new KeyCommand(command, hideKey, Decorator.getOutermost(this), this);
@@ -233,6 +244,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (hideCommand.matches(stroke)) {
@@ -248,14 +260,17 @@ public class Hideable extends Decorator implements TranslatablePiece {
     return null;
   }
 
+  @Override
   public String getDescription() {
     return "Invisible";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Hideable.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -277,6 +292,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Hide command");
   }
@@ -284,6 +300,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_OTHERS);
@@ -323,10 +340,12 @@ public class Hideable extends Decorator implements TranslatablePiece {
       controls.add(accessConfig.getControls());
     }
 
+    @Override
     public String getState() {
       return "null";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(hideKeyInput.getValueString())
@@ -339,6 +358,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }

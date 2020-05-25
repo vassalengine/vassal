@@ -44,12 +44,14 @@ public class ShowProfileAction extends AbstractAction {
     this.f = f;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     new PlayerInfoWindow(f, p).setVisible(true);
   }
 
   public static PlayerActionFactory factory() {
     return new PlayerActionFactory() {
+      @Override
       public Action getAction(SimplePlayer p, JTree tree) {
         return new ShowProfileAction(p,
           (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));

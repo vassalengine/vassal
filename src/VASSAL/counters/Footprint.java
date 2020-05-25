@@ -126,6 +126,7 @@ public class Footprint extends MovementMarkable {
     return Collections.enumeration(pointList);
   }
 
+  @Override
   public void mySetState(String newState) {
     pointList.clear();
     final SequenceEncoder.Decoder ss =
@@ -145,6 +146,7 @@ public class Footprint extends MovementMarkable {
     }
   }
 
+  @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(globalVisibility)
@@ -161,6 +163,7 @@ public class Footprint extends MovementMarkable {
   /**
    * Type is the character command that toggles footprint visiblity
    */
+  @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -188,6 +191,7 @@ public class Footprint extends MovementMarkable {
 
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(trailKey)
@@ -205,6 +209,7 @@ public class Footprint extends MovementMarkable {
     return ID + se.getValue();
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (Properties.MOVED.equals(key)) {
       setMoved(Boolean.TRUE.equals(val));
@@ -225,6 +230,7 @@ public class Footprint extends MovementMarkable {
     return super.getLocalizedProperty(key);
   }
 
+  @Override
   public Object getProperty(Object key) {
     // If this piece has a real MovementMarkable trait,
     // use it to store the MOVED status
@@ -239,6 +245,7 @@ public class Footprint extends MovementMarkable {
    * setMoved is called with an argument of true each time the piece is moved.
    * The argument is false when the unit is marked as not moved.
    */
+  @Override
   public void setMoved(boolean justMoved) {
     if (justMoved) {
       recordCurrentPosition();
@@ -269,6 +276,7 @@ public class Footprint extends MovementMarkable {
     globalVisibility = initiallyVisible;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("MovementTrail.htm");
   }
@@ -312,11 +320,13 @@ public class Footprint extends MovementMarkable {
     }
   }
 
+  @Override
   public String getDescription() {
     return "Movement trail";
   }
 
 // FIXME: This method is inefficient.
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
 
@@ -566,6 +576,7 @@ public class Footprint extends MovementMarkable {
    * Return a bounding box covering the whole trail if it is visible, otherwise
    * just return the standard piece bounding box
    */
+  @Override
   public Rectangle boundingBox() {
     return isTrailVisible() && getMap() != null ?
       new Rectangle(getMyBoundingBox()) : piece.boundingBox();
@@ -600,14 +611,17 @@ public class Footprint extends MovementMarkable {
     return myBoundingBox;
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       if (trailKey != null && ! trailKey.isNull()) {
@@ -627,6 +641,7 @@ public class Footprint extends MovementMarkable {
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (showTrailCommand != null
@@ -644,10 +659,12 @@ public class Footprint extends MovementMarkable {
     return null;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = super.getI18nData();
     data.add(menuCommand, "Show Movement Trail command");
@@ -724,10 +741,12 @@ public class Footprint extends MovementMarkable {
       controls.add(b);
     }
 
+    @Override
     public String getState() {
       return String.valueOf(gv.booleanValue().booleanValue());
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(ID)
@@ -746,6 +765,7 @@ public class Footprint extends MovementMarkable {
       return se.getValue();
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }

@@ -37,10 +37,12 @@ public class SetPrivateTextCommand extends Command {
     return text;
   }
 
+  @Override
   protected void executeCommand() {
     i.addPrivateText(text);
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }

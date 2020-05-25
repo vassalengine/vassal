@@ -27,6 +27,7 @@ import java.awt.List;
 public class SmallList extends List {
   private static final long serialVersionUID = 1L;
 
+  @Override
   public void paint(Graphics g) {
     while (getItemCount() > 0 &&
 //     getSize().width > g.getFontMetrics().stringWidth(getItem(0))+2)

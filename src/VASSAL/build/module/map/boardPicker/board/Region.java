@@ -89,6 +89,7 @@ public class Region extends AbstractConfigurable {
   public static final String X = "originx"; //$NON-NLS-1$
   public static final String Y = "originy"; //$NON-NLS-1$
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -97,6 +98,7 @@ public class Region extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -105,6 +107,7 @@ public class Region extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -113,11 +116,13 @@ public class Region extends AbstractConfigurable {
     };
   }
 
+  @Override
   public void addTo(Buildable b) {
     myGrid = (RegionGrid) b;
     myGrid.addRegion(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((RegionGrid) b).removeRegion(this);
   }
@@ -130,11 +135,13 @@ public class Region extends AbstractConfigurable {
     return selectionRect.contains(p);
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return null;
   }
 
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -148,6 +155,7 @@ public class Region extends AbstractConfigurable {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (val == null)
       return;
@@ -171,6 +179,7 @@ public class Region extends AbstractConfigurable {
 
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

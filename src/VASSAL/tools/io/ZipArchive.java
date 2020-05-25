@@ -180,21 +180,25 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getName() {
     return archiveFile.getPath();
   }
 
   /** {@inheritDoc} */
+  @Override
   public File getFile() {
     return archiveFile;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isClosed() {
     return closed;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isModified() {
     return modified;
   }
@@ -206,6 +210,7 @@ public class ZipArchive implements FileArchive {
    * stream is eventually closed, since the returned stream holds a read
    * lock on the archive.
    */
+  @Override
   public InputStream getInputStream(String path) throws IOException {
     r.lock();
     try {
@@ -244,6 +249,7 @@ public class ZipArchive implements FileArchive {
    * stream is eventually closed, since the returned stream holds a write
    * lock on the archive.
    */
+  @Override
   public OutputStream getOutputStream(String path) throws IOException {
     return getOutputStream(path, true);
   }
@@ -295,11 +301,13 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void add(String path, String extPath) throws IOException {
     add(path, new File(extPath));
   }
 
   /** {@inheritDoc} */
+  @Override
   public void add(String path, File extPath) throws IOException {
     FileInputStream in = null;
     try {
@@ -313,11 +321,13 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void add(String path, byte[] bytes) throws IOException {
     add(path, new ByteArrayInputStream(bytes));
   }
 
   /** {@inheritDoc} */
+  @Override
   public void add(String path, InputStream in) throws IOException {
     OutputStream out = null;
     try {
@@ -331,6 +341,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean remove(String path) throws IOException {
     w.lock();
     try {
@@ -353,6 +364,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void revert() throws IOException {
     w.lock();
     try {
@@ -375,6 +387,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void flush() throws IOException {
     w.lock();
     try {
@@ -388,6 +401,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void close() throws IOException {
     w.lock();
     try {
@@ -524,6 +538,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean contains(String path) throws IOException {
     r.lock();
     try {
@@ -536,6 +551,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public long getSize(String path) throws IOException {
     r.lock();
     try {
@@ -554,6 +570,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public long getMTime(String path) throws IOException {
     r.lock();
     try {
@@ -572,6 +589,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<String> getFiles() throws IOException {
     r.lock();
     try {
@@ -584,6 +602,7 @@ public class ZipArchive implements FileArchive {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<String> getFiles(String root) throws IOException {
     if (root.length() == 0) {
       return getFiles();

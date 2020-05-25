@@ -239,12 +239,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
     ActionListener zoomIn = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         zoomIn();
       }
     };
 
     ActionListener zoomOut = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         zoomOut();
       }
@@ -253,6 +255,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomMenu = new ZoomMenu();
 
     ActionListener zoomPick = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (zoomPickButton.isShowing()) {
           zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
@@ -294,6 +297,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     return Resources.getString("Editor.Zoom.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       ZOOM_START,
@@ -313,6 +317,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "", //$NON-NLS-1$
@@ -332,6 +337,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       null,   // ZOOM_START is handled by the LevelConfigurer
@@ -352,6 +358,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public static class InIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new IconConfigurer(key, name, IN_DEFAULT_ICON);
@@ -359,6 +366,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public static class PickIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new IconConfigurer(key, name, PICK_DEFAULT_ICON);
@@ -366,6 +374,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public static class OutIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new IconConfigurer(key, name, OUT_DEFAULT_ICON);
@@ -373,6 +382,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public static class LevelConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new LevelConfigurer((Zoomer) c, key, name);
@@ -409,6 +419,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // Add button
       addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) { addLevel(); }
       });
 
@@ -421,8 +432,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // validator for the level entry field
       levelField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
         public void changedUpdate(DocumentEvent e) { }
+        @Override
         public void insertUpdate(DocumentEvent e) { validate(); }
+        @Override
         public void removeUpdate(DocumentEvent e) { validate(); }
 
         private static final String pattern =
@@ -438,6 +452,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // rely on addButton to do the validation
       levelField.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           if (addButton.isEnabled()) addLevel();
         }
@@ -452,6 +467,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // Remove button
       removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           // get the zoom level index to be removed
           final int rm_level = levelList.getSelectedIndex();
@@ -487,6 +503,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // Set Initial button
       initialButton = new JButton(Resources.getString("Editor.zoom.set_initial")); //$NON-NLS-1$
       initialButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           // set the new initial scale level
           final int i = levelList.getSelectedIndex();
@@ -518,6 +535,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelList.setSelectedIndex(0);
 
       levelList.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent e) { updateButtons(); }
       });
 
@@ -597,11 +615,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         fireContentsChanged(this, 0, z.state.getLevelCount()-1);
       }
 
+      @Override
       public Object getElementAt(int i) {
         return z.state.getLevels().get(i) +
           (z.state.getInitialLevel() == i ? " *" : ""); //$NON-NLS-1$ //$NON-NLS-2$
       }
 
+      @Override
       public int getSize() {
         return z.state.getLevelCount();
       }
@@ -647,6 +667,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected static final String OUT_ICON_NAME = "outIconName"; //$NON-NLS-1$
   protected static final String OUT_DEFAULT_ICON = "/images/zoomOut.gif"; //$NON-NLS-1$
 
+  @Override
   public void addTo(Buildable b) {
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
@@ -660,6 +681,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().add(zoomOutButton);
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
       // Notes:
@@ -693,6 +715,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (ZOOM_START.equals(key)) {
       if (val instanceof String) {
@@ -792,10 +815,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
   // end deprecated keys
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.setZoomer(null);
@@ -854,10 +879,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       zoomInButton.setEnabled(state.hasHigherLevel());
@@ -867,6 +894,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomPickButton.setEnabled(gameStarting);
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -942,6 +970,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         state.getLevelCount() - state.getLevel() - 1)).setSelected(true);
     }
 
+    @Override
     public void actionPerformed(ActionEvent a) {
       try {
         setZoomLevel(Integer.parseInt(a.getActionCommand()));
@@ -1136,6 +1165,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       return result;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       result = e.getSource() == okButton ?
                percentModel.getNumber().doubleValue() : 0.0;
@@ -1143,6 +1173,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       setVisible(false);
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
       if (e.getSource() == ratioNumeratorSpinner ||
           e.getSource() == ratioDenominatorSpinner) {

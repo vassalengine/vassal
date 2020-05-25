@@ -59,6 +59,7 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   }
 
+  @Override
   public String getEditorType() {
     return "Extension";
   }
@@ -78,8 +79,10 @@ public class ExtensionEditorWindow extends EditorWindow {
   }
 */
 
+  @Override
   protected void save() {
     ExtensionEditorWindow.this.saver(new Runnable() {
+      @Override
       public void run() {
         try {
           extension.save();
@@ -91,8 +94,10 @@ public class ExtensionEditorWindow extends EditorWindow {
     });
   }
 
+  @Override
   protected void saveAs() {
     ExtensionEditorWindow.this.saver(new Runnable() {
+      @Override
       public void run() {
         try {
           extension.saveAs();

@@ -30,6 +30,7 @@ public class BooleanAndPieceFilter implements PieceFilter {
     this.filter2 = filter2;
   }
 
+  @Override
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) && filter2.accept(piece);
   }

@@ -41,6 +41,7 @@ public class CardSlot extends PieceSlot {
     return "Card";
   }
 
+  @Override
   public Configurer getConfigurer() {
     if (getPiece() == null) {
       GamePiece theCard = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;;;");

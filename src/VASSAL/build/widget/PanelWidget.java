@@ -56,6 +56,7 @@ public class PanelWidget extends Widget {
     return "Panel";
   }
 
+  @Override
   public Component getComponent() {
     if (panel == null) {
       rebuild();
@@ -89,6 +90,7 @@ public class PanelWidget extends Widget {
     }
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       final Widget w = (Widget) b;
@@ -107,6 +109,7 @@ public class PanelWidget extends Widget {
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       final Widget w = (Widget) b;
@@ -129,6 +132,7 @@ public class PanelWidget extends Widget {
    * <code>COLS</code> for the number of columns.  Ignored unless FIXED is true
    * <code>VERTICAL</code> Uses a vertical BoxLayout if <code>true</code>.  otherwise uses a horizontal layout.  Ignored unless FIXED is false
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -138,6 +142,7 @@ public class PanelWidget extends Widget {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name:  ",
@@ -147,6 +152,7 @@ public class PanelWidget extends Widget {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -156,9 +162,11 @@ public class PanelWidget extends Widget {
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLS.equals(name)) {
       VisibilityCondition isFixed = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return fixed;
         }
@@ -167,6 +175,7 @@ public class PanelWidget extends Widget {
     }
     else if (VERTICAL.equals(name)) {
       VisibilityCondition notFixed = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !fixed;
         }
@@ -178,6 +187,7 @@ public class PanelWidget extends Widget {
     }
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (NAME.equals(name)) {
       setConfigureName((String) value);
@@ -216,6 +226,7 @@ public class PanelWidget extends Widget {
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

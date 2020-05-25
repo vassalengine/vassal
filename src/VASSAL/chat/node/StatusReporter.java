@@ -90,6 +90,7 @@ public class StatusReporter implements Runnable {
     }
   }
 
+  @Override
   public void run() {
     while (true) {
       try {

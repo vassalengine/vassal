@@ -85,6 +85,7 @@ public class Mp3AudioClip implements AudioClip {
     return player;
   }
 
+  @Override
   public void play() {
     // load the stream
     final InputStream stream = getStream();
@@ -100,6 +101,7 @@ public class Mp3AudioClip implements AudioClip {
 
     // run in new thread to play in background
     new Thread() {
+      @Override
       public void run() {
         try {
           player.play();

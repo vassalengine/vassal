@@ -59,6 +59,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     return controls;
   }
 
+  @Override
   public void addPrivateText(PrivateText p) {
     notes.remove(p);
     notes.add(p);
@@ -67,6 +68,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     }
   }
 
+  @Override
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -79,6 +81,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetPrivateTextCommand) {
@@ -92,6 +95,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     return s;
   }
 
+  @Override
   public Command getRestoreCommand() {
     Command comm = null;
     for (PrivateText privateText : notes) {
@@ -106,6 +110,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     return comm;
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       notes.clear();

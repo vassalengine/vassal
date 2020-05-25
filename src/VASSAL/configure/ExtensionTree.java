@@ -80,6 +80,7 @@ public class ExtensionTree extends ConfigureTree {
     return path;
   }
 
+  @Override
   public void externalInsert(Configurable parent, Configurable child) {
     super.externalInsert(parent, child);
     if (!isEditable(parent)) {
@@ -87,10 +88,12 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
+  @Override
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
     return new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         Configurable ch = null;
         try {
@@ -112,6 +115,7 @@ public class ExtensionTree extends ConfigureTree {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
+                @Override
                 public void save() {
                   super.save();
                   if (!isEditable(target)) {
@@ -120,6 +124,7 @@ public class ExtensionTree extends ConfigureTree {
                   }
                 }
 
+                @Override
                 public void cancel() {
                   ExtensionTree.this.remove(target, child);
                   dispose();
@@ -139,10 +144,12 @@ public class ExtensionTree extends ConfigureTree {
     };
   }
 
+  @Override
   protected Action buildImportAction(final Configurable target) {
     Action a = new AbstractAction("Add Imported Class") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         final Configurable child = importConfigurable();
         if (child != null) {
@@ -153,6 +160,7 @@ public class ExtensionTree extends ConfigureTree {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
+                @Override
                 public void save() {
                   super.save();
                   insert(c, child, getTreeNode(c).getChildCount());
@@ -162,6 +170,7 @@ public class ExtensionTree extends ConfigureTree {
                   }
                 }
 
+                @Override
                 public void cancel() {
                   dispose();
                 }
@@ -191,14 +200,17 @@ public class ExtensionTree extends ConfigureTree {
     return isEditable(getTreeNode(target));
   }
 
+  @Override
   protected Action buildEditAction(Configurable target) {
     return isEditable(target) ? super.buildEditAction(target) : null;
   }
 
+  @Override
   protected Action buildCutAction(Configurable target) {
     return isEditable(target) ? super.buildCutAction(target) : null;
   }
 
+  @Override
   protected Action buildPasteAction(final Configurable target) {
     Action a = null;
     if (isEditable(target)) {
@@ -208,6 +220,7 @@ public class ExtensionTree extends ConfigureTree {
       a = new AbstractAction("Paste") {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           if (cutData != null) {
             DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -251,6 +264,7 @@ public class ExtensionTree extends ConfigureTree {
     return a;
   }
 
+  @Override
   protected boolean isValidPasteTarget(Configurable target) {
     return
       (cutData != null &&
@@ -265,6 +279,7 @@ public class ExtensionTree extends ConfigureTree {
    *
    * @param c Configurable to update
    */
+  @Override
   public void updateGpIds(Configurable c) {
     if (c instanceof PieceSlot) {
       ((PieceSlot) c).updateGpId(extension);
@@ -274,10 +289,12 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
+  @Override
   protected Action buildMoveAction(Configurable target) {
     return isEditable((DefaultMutableTreeNode) getTreeNode(target).getParent()) ? super.buildMoveAction(target) : null;
   }
 
+  @Override
   protected Action buildDeleteAction(final Configurable target) {
     Action action = null;
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -287,6 +304,7 @@ public class ExtensionTree extends ConfigureTree {
       action = new AbstractAction("Delete") {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
           boolean removed = remove(parent, target);
           if (removed && !isEditable(parent)) {
@@ -305,6 +323,7 @@ public class ExtensionTree extends ConfigureTree {
     return action;
   }
 
+  @Override
   protected Action buildCloneAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
     final DefaultMutableTreeNode parentNode =
@@ -318,6 +337,7 @@ public class ExtensionTree extends ConfigureTree {
       return new AbstractAction("Clone") {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
           Configurable clone = null;
           try {
@@ -343,6 +363,7 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
+  @Override
   protected Action buildEditPiecesAction(Configurable target) {
     Action a = null;
     if (isEditable(target)) {
@@ -351,6 +372,7 @@ public class ExtensionTree extends ConfigureTree {
     return a;
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     TreePath path = getPathForLocation(e.getX(), e.getY());
     if (path != null) {
@@ -360,10 +382,12 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
+  @Override
   protected boolean isValidParent(Configurable parent, Configurable child) {
     return super.isValidParent(parent, child) && isEditable(parent);
   }
 
+  @Override
   protected void updateEditMenu() {
     super.updateEditMenu();
     deleteAction.setEnabled(selected != null && isEditable(selected));
@@ -379,6 +403,7 @@ public class ExtensionTree extends ConfigureTree {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
 

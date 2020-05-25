@@ -102,6 +102,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     conversation.setWrapStyleWord(true);
     conversation.setUI(new UI());
     conversation.addComponentListener(new ComponentAdapter() {
+      @Override
       public void componentResized(ComponentEvent e) {
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
       }
@@ -109,6 +110,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     input = new JTextField(80);
     input.setFocusTraversalKeysEnabled(false);
     input.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         send(formatChat(e.getActionCommand()));
         input.setText(""); //$NON-NLS-1$
@@ -149,6 +151,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   /**
    * Set the Font used by the text area
    */
+  @Override
   public void setFont(Font f) {
     if (input != null) {
       if (input.getText().length() == 0) {
@@ -164,9 +167,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
   }
 
+  @Override
   public void build(org.w3c.dom.Element e) {
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return doc.createElement(getClass().getName());
   }
@@ -175,6 +180,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * Expects to be added to a GameModule.  Adds itself to the
    * controls window and registers itself as a
    * {@link CommandEncoder} */
+  @Override
   public void addTo(Buildable b) {
     GameModule mod = (GameModule) b;
     mod.setChatter(this);
@@ -185,6 +191,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       "ChatFont", Resources.getString("Chatter.chat_font_preference")
     );
     chatFont.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         setFont((Font) evt.getNewValue());
       }
@@ -208,6 +215,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     );
 
     gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         gameMsg = (Color) e.getNewValue();
       }
@@ -229,6 +237,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     );
 
     systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         systemMsg = (Color) e.getNewValue();
       }
@@ -250,6 +259,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     );
 
     myChatColor.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         myChat = (Color) e.getNewValue();
       }
@@ -271,6 +281,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     );
 
     otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         otherChat = (Color) e.getNewValue();
       }
@@ -283,9 +294,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public Command decode(String s) {
     if (s.startsWith("CHAT")) { //$NON-NLS-1$
       return new DisplayText(this, s.substring(4));
@@ -295,6 +308,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof DisplayText) {
       return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
@@ -344,6 +358,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   private class UI extends BasicTextAreaUI {
+    @Override
     public View create(javax.swing.text.Element elem) {
       JTextComponent c = getComponent();
       if (c instanceof JTextArea) {
@@ -377,6 +392,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       super(el, wrap);
     }
 
+    @Override
     protected int drawUnselectedText(Graphics g, int x, int y,
                                      int p0, int p1) throws BadLocationException {
       final Element root = getElement();
@@ -389,6 +405,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       super(el);
     }
 
+    @Override
     protected int drawUnselectedText(Graphics g, int x, int y,
                                      int p0, int p1) throws BadLocationException {
       Element root = getElement();
@@ -451,10 +468,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     }
 
+    @Override
     public void executeCommand() {
       c.show(msg);
     }
 
+    @Override
     public Command myUndoCommand() {
       return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
     }
@@ -463,6 +482,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       return msg;
     }
 
+    @Override
     public String getDetails() {
       return msg;
     }

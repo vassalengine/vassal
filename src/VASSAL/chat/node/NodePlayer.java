@@ -37,6 +37,7 @@ public class NodePlayer extends SimplePlayer {
     this.id = id;
   }
 
+  @Override
   public String getId() {
     return id;
   }

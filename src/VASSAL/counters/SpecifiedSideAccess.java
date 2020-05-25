@@ -37,10 +37,12 @@ public class SpecifiedSideAccess implements PieceAccess {
     this.sides = Collections.unmodifiableList(sides);
   }
 
+  @Override
   public String getCurrentPlayerId() {
     return PlayerRoster.getMySide();
   }
 
+  @Override
   public boolean currentPlayerHasAccess(String ownerId) {
     if (ownerId == null) {
       return true;
@@ -57,6 +59,7 @@ public class SpecifiedSideAccess implements PieceAccess {
     return sides;
   }
 
+  @Override
   public boolean currentPlayerCanModify(String ownerId) {
     return sides.contains(getCurrentPlayerId());
   }

@@ -150,6 +150,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
 
+  @Override
   public void draw(Graphics g, Map map) {
     if (!shadingVisible) {
       return;
@@ -295,6 +296,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       hash = new HashCodeBuilder().append(color).append(pattern).toHashCode();
     }
 
+    @Override
     public BufferedImage eval() throws Exception {
       final BufferedImage im =
         ImageUtils.createCompatibleTranslucentImage(2, 2);
@@ -319,6 +321,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return im;
     }
 
+    @Override
     protected void fixSize() { }
 
     @Override
@@ -336,6 +339,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return 2;
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
     }
@@ -407,10 +411,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Is this Shade drawn over or under counters?
    */
+  @Override
   public boolean drawAboveCounters() {
     return drawOver;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -436,6 +442,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -461,6 +468,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -487,22 +495,26 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public static class TypePrompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{FG_TYPE, BG_TYPE};
     }
   }
 
   public static class PatternPrompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{TYPE_25_PERCENT, TYPE_50_PERCENT, TYPE_75_PERCENT, TYPE_SOLID, TYPE_IMAGE};
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
   public static class BoardPrompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALL_BOARDS, EXC_BOARDS, INC_BOARDS};
     }
@@ -511,6 +523,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public MapShader() {
 
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         toggleShading();
       }
@@ -592,6 +605,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * GameComponent Implementation
    * -----------------------------------------------------------------------
    */
+  @Override
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting);
     if (!gameStarting) {
@@ -599,16 +613,19 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((MapShader) c).launch.getAttributeValueString(ICON));
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -729,6 +746,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName() + "";
@@ -784,9 +802,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ICON.equals(name) || HOT_KEY.equals(name) || BUTTON_TEXT.equals(name) || STARTS_ON.equals(name) || TOOLTIP.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !isAlwaysOn();
         }
@@ -794,6 +814,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (BOARD_LIST.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !boardSelection.equals(ALL_BOARDS);
         }
@@ -801,6 +822,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !pattern.equals(TYPE_IMAGE);
         }
@@ -808,6 +830,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (IMAGE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return pattern.equals(TYPE_IMAGE);
         }
@@ -815,12 +838,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (SCALE_IMAGE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return pattern.equals(TYPE_IMAGE);
         }};
     }
     else if (BORDER_COLOR.equals(name) || BORDER_WIDTH.equals(name) || BORDER_OPACITY.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return border;
         }
@@ -835,6 +860,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return Resources.getString("Editor.MapShader.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     GameModule.getGameModule().getToolBar().remove(launch);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
@@ -842,10 +868,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     idMgr.remove(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "MapShading");
   }
 
+  @Override
   public void addTo(Buildable parent) {
     GameModule.getGameModule().getToolBar().add(launch);
     launch.setAlignmentY(0.0F);
@@ -857,10 +885,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     setAttributeTranslatable(NAME, false);
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }

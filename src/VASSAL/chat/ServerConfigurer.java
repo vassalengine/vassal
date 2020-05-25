@@ -87,6 +87,7 @@ public class ServerConfigurer extends Configurer {
     super(key, name, new Properties());
     this.client = client;
     client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         enableControls(Boolean.TRUE.equals(evt.getNewValue()));
       }
@@ -95,6 +96,7 @@ public class ServerConfigurer extends Configurer {
     setValue(buildLegacyProperties());
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel(new MigLayout());
@@ -103,6 +105,7 @@ public class ServerConfigurer extends Configurer {
       ButtonGroup group = new ButtonGroup();
       jabberButton = new JRadioButton(JABBER_BUTTON);
       jabberButton.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
             noUpdate = true;
@@ -130,6 +133,7 @@ public class ServerConfigurer extends Configurer {
       jabberHost = new JTextField(18);
       jabberHost.setEnabled(false);
       jabberHostPrompt.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           jabberHost.setEnabled(jabberHostPrompt.isSelected() && jabberButton.isSelected());
           docListener.changedUpdate(null);
@@ -137,6 +141,7 @@ public class ServerConfigurer extends Configurer {
       });
       jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST + ":" + JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
       docListener = new DocumentListener() {
+        @Override
         public void changedUpdate(DocumentEvent e) {
           updateValue();
         }
@@ -147,10 +152,12 @@ public class ServerConfigurer extends Configurer {
           noUpdate = false;
         }
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
           updateValue();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
           updateValue();
         }
@@ -186,6 +193,7 @@ public class ServerConfigurer extends Configurer {
       }
       p2pButton = new JRadioButton(P2P_BUTTON);
       p2pButton.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
             noUpdate = true;
@@ -198,6 +206,7 @@ public class ServerConfigurer extends Configurer {
       controls.add(p2pButton, "wrap"); //$NON-NLS-1$
       legacyButton = new JRadioButton(LEGACY_BUTTON);
       legacyButton.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
             noUpdate = true;
@@ -269,6 +278,7 @@ public class ServerConfigurer extends Configurer {
     return p;
   }
 
+  @Override
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -286,6 +296,7 @@ public class ServerConfigurer extends Configurer {
     return s;
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (!noUpdate && o instanceof Properties && controls != null) {
@@ -315,6 +326,7 @@ public class ServerConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void setValue(String s) {
     Properties p = new Properties();
     try {

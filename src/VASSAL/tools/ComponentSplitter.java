@@ -476,6 +476,7 @@ public class ComponentSplitter {
 
         final double divPos = div;
         SwingUtilities.invokeLater(new Runnable() {
+          @Override
           public void run() {
             setDividerLocation(divPos);
           }
@@ -486,6 +487,7 @@ public class ComponentSplitter {
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
         SwingUtilities.invokeLater(new Runnable() {
+          @Override
           public void run() {
             setDividerLocation(getPreferredDividerLocation());
           }
@@ -541,6 +543,7 @@ public class ComponentSplitter {
     /**
      * If the hideable component is not visible, use the base component's preferred size
      */
+    @Override
     public Dimension getPreferredSize() {
       Dimension d = null;
       if (getHideableComponent() == null || getHideableComponent().isVisible()) {
@@ -569,6 +572,7 @@ public class ComponentSplitter {
     JFrame f = new JFrame();
     f.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     f.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         System.exit(0);
       }
@@ -602,6 +606,7 @@ public class ComponentSplitter {
     toolbar.add(new AbstractAction("Left") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         splitLeft.toggleVisibility();
       }
@@ -609,6 +614,7 @@ public class ComponentSplitter {
     toolbar.add(new AbstractAction("Right") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         splitRight.toggleVisibility();
       }
@@ -616,6 +622,7 @@ public class ComponentSplitter {
     toolbar.add(new AbstractAction("Bottom") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         splitBottom.toggleVisibility();
       }

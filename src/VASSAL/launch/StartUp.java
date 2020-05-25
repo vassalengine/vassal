@@ -70,6 +70,7 @@ public class StartUp {
 
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
         public void run() {
           if (SystemUtils.IS_OS_MAC_OSX) {
             // Bug 2505: JEditorPane.registerEditorKitForContentType()

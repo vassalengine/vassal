@@ -48,6 +48,7 @@ public class ModuleEditorWindow extends EditorWindow {
                           "Editor.ModuleEditor.update_saved")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         new SavedGameUpdaterDialog(ModuleEditorWindow.this).setVisible(true);
       }
@@ -62,6 +63,7 @@ public class ModuleEditorWindow extends EditorWindow {
     pack();
   }
 
+  @Override
   public String getEditorType() {
     return "Module";
   }
@@ -94,16 +96,20 @@ public class ModuleEditorWindow extends EditorWindow {
   }
 */
 
+  @Override
   protected void save() {
     ModuleEditorWindow.this.saver(new Runnable() {
+      @Override
       public void run() {
         GameModule.getGameModule().save();
       }
     });
   }
 
+  @Override
   protected void saveAs() {
     ModuleEditorWindow.this.saver(new Runnable() {
+      @Override
       public void run() {
         GameModule.getGameModule().saveAs();
       }

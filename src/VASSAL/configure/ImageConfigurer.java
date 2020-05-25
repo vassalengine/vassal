@@ -38,6 +38,7 @@ public class ImageConfigurer extends FileConfigurer {
     editable = false;
   }
 
+  @Override
   protected FileChooser initFileChooser() {
     final GameModule gm = GameModule.getGameModule();
 

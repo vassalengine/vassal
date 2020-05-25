@@ -71,14 +71,17 @@ public class Restricted extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public String getDescription() {
     return "Restricted Access";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("RestrictedAccess.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
@@ -87,22 +90,27 @@ public class Restricted extends Decorator implements EditablePiece {
     restrictMovement = st.nextBoolean(true);
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
@@ -147,6 +155,7 @@ public class Restricted extends Decorator implements EditablePiece {
     super.setProperty(key, val);
   }
 
+  @Override
   protected KeyCommand[] getKeyCommands() {
     if (!isRestricted()) {
       return super.getKeyCommands();
@@ -169,6 +178,7 @@ public class Restricted extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
       return isRestricted();
@@ -181,18 +191,22 @@ public class Restricted extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public String myGetState() {
     return owningPlayer;
   }
 
+  @Override
   public String myGetType() {
     return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).append(restrictMovement).getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     if (!isRestricted()) {
       return super.keyEvent(stroke);
@@ -202,10 +216,12 @@ public class Restricted extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public void mySetState(String newState) {
     owningPlayer = newState;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -228,14 +244,17 @@ public class Restricted extends Decorator implements EditablePiece {
       box.add(movementConfig.getControls());
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).getValue();
     }
@@ -247,6 +266,7 @@ public class Restricted extends Decorator implements EditablePiece {
    */
   private static class RetirementHandler implements PlayerRoster.SideChangeListener, PieceVisitor {
 
+    @Override
     public void sideChanged(String oldSide, String newSide) {
       if (newSide == null) {
         PieceVisitorDispatcher d = new PieceVisitorDispatcher(this);
@@ -260,6 +280,7 @@ public class Restricted extends Decorator implements EditablePiece {
       }
     }
 
+    @Override
     public Object visitDefault(GamePiece p) {
       Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
       if (r != null
@@ -273,6 +294,7 @@ public class Restricted extends Decorator implements EditablePiece {
       return null;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       Command c = new NullCommand();
       for (Iterator<GamePiece> it = s.getPiecesIterator(); it.hasNext();) {

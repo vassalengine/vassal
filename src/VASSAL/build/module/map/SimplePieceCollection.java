@@ -29,30 +29,37 @@ public class SimplePieceCollection implements PieceCollection {
   /**
    * Returns the index of a piece.  When painting the map, pieces
    * are drawn in order of index */
+  @Override
   public int indexOf(GamePiece p) {
     return pieces.indexOf(p);
   }
 
+  @Override
   public boolean canMerge(GamePiece p1, GamePiece p2) {
     return true;
   }
 
+  @Override
   public void add(GamePiece p) {
     pieces.add(p);
   }
 
+  @Override
   public void clear() {
     pieces.clear();
   }
 
+  @Override
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
   }
 
+  @Override
   public GamePiece[] getPieces() {
     return pieces.toArray(new GamePiece[0]);
   }
 
+  @Override
   public GamePiece[] getAllPieces() {
     return getPieces();
   }
@@ -71,10 +78,12 @@ public class SimplePieceCollection implements PieceCollection {
     }
   }
 
+  @Override
   public void moveToBack(GamePiece p) {
     reposition(p, 0);
   }
 
+  @Override
   public void moveToFront(GamePiece p) {
     final int i = pieces.indexOf(p);
     if (i >= 0) {

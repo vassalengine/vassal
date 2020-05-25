@@ -80,6 +80,7 @@ public class DetailsButton extends JButton {
     setAction(new AbstractAction(showText, collapsedIcon) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         setExpanded(!DetailsButton.this.expander.isVisible());
       }
@@ -177,6 +178,7 @@ public class DetailsButton extends JButton {
     final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         final JTextArea a = new JTextArea(loremIpsum, 25, 80);
         a.setLineWrap(true);
@@ -210,6 +212,7 @@ public class DetailsButton extends JButton {
     });
 
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         final JLabel a = new JLabel("This is an expanding pane.");
 

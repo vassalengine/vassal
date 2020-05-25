@@ -50,6 +50,7 @@ public class TabWidget extends Widget
     return "Tabbed Panel";
   }
 
+  @Override
   public void stateChanged(ChangeEvent e) {
     int index = tab.getSelectedIndex();
     if (index >= 0) {
@@ -57,6 +58,7 @@ public class TabWidget extends Widget
     }
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       final Widget w = (Widget) b;
@@ -76,6 +78,7 @@ public class TabWidget extends Widget
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       final Widget w = (Widget) b;
@@ -90,6 +93,7 @@ public class TabWidget extends Widget
     super.remove(b);
   }
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
       final Widget src = (Widget) evt.getSource();
@@ -99,6 +103,7 @@ public class TabWidget extends Widget
     }
   }
 
+  @Override
   public Component getComponent() {
     if (tab == null) {
       rebuild();
@@ -116,24 +121,29 @@ public class TabWidget extends Widget
     return tab;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (NAME.equals(name)) {
       setConfigureName((String) value);
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

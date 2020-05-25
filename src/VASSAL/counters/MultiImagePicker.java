@@ -49,11 +49,13 @@ public class MultiImagePicker extends JPanel {
 
     imageList = new JList(imageListElements);
     imageList.addListSelectionListener(new ListSelectionListener() {
+      @Override
       public void valueChanged(javax.swing.event.ListSelectionEvent e) {
         showSelected();
       }
     });
     imageList.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyReleased(KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
           showSelected();

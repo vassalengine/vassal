@@ -66,6 +66,7 @@ public class ExtensionsLoader implements CommandEncoder {
         config.setValue(extMgr.getExtensionsDirectory(false).getAbsoluteFile());
       }
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           extMgr.setExtensionsDirectory((File) evt.getNewValue());
           addExtensions();
@@ -152,6 +153,7 @@ public class ExtensionsLoader implements CommandEncoder {
     return Resources.getString("ExtensionsLoader.unable_to_load", name , msg);
   }
 
+  @Override
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -161,6 +163,7 @@ public class ExtensionsLoader implements CommandEncoder {
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof ModuleExtension.RegCmd) {

@@ -68,6 +68,7 @@ public class StrBuilder extends JDialog {
     final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     final JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         save();
       }
@@ -76,6 +77,7 @@ public class StrBuilder extends JDialog {
 
     final JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -89,6 +91,7 @@ public class StrBuilder extends JDialog {
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
          cancel();
       }

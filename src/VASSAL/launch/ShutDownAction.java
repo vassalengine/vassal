@@ -37,6 +37,7 @@ public class ShutDownAction extends AbstractAction {
     super(Resources.getString(Resources.QUIT));
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     if (GameModule.getGameModule() == null) {
       Prefs p = null;

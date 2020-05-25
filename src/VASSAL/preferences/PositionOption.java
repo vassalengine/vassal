@@ -67,10 +67,12 @@ public class PositionOption extends VASSAL.configure.Configurer
     this(key,f,new Rectangle(initialPos,new Dimension(0,0)));
   }
 
+  @Override
   public Object getValue() {
     return bounds;
   }
 
+  @Override
   public void setValue(Object o) {
     if (o instanceof Rectangle) {
       bounds = new Rectangle((Rectangle)o);
@@ -81,10 +83,12 @@ public class PositionOption extends VASSAL.configure.Configurer
     super.setValue(o);
   }
 
+  @Override
   public java.awt.Component getControls() {
     return null;
   }
 
+  @Override
   public void setValue(String in) {
     final StringTokenizer st = new StringTokenizer(in, ",");
     try {
@@ -106,6 +110,7 @@ public class PositionOption extends VASSAL.configure.Configurer
     }
   }
 
+  @Override
   public String getValueString() {
     return bounds.x + "," + bounds.y + "," +
       bounds.width + "," + bounds.height;
@@ -117,6 +122,7 @@ public class PositionOption extends VASSAL.configure.Configurer
       p.y < Toolkit.getDefaultToolkit().getScreenSize().height;
   }
 
+  @Override
   public void componentMoved(ComponentEvent e) {
     if (theFrame.isShowing()) {
       Point p = theFrame.getLocationOnScreen();
@@ -128,6 +134,7 @@ public class PositionOption extends VASSAL.configure.Configurer
     }
   }
 
+  @Override
   public void componentResized(ComponentEvent e) {
     if (theFrame.isShowing()) {
       // A resize when the window is already maximised only happens when
@@ -143,9 +150,11 @@ public class PositionOption extends VASSAL.configure.Configurer
     }
   }
 
+  @Override
   public void componentShown(ComponentEvent e) {
   }
 
+  @Override
   public void componentHidden(ComponentEvent e) {
   }
 

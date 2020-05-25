@@ -30,6 +30,7 @@ public class SaveModuleAction extends SaveAction {
   public SaveModuleAction() {
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     final ValidationReport report = new ValidationReport();
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
@@ -39,10 +40,12 @@ public class SaveModuleAction extends SaveAction {
     else {
       new ValidationReportDialog(report,
         new ValidationReportDialog.CallBack() {
+          @Override
           public void ok() {
             save();
           }
 
+          @Override
           public void cancel() {
           }
         }

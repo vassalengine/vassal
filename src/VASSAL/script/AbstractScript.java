@@ -48,6 +48,7 @@ public abstract class AbstractScript extends AbstractConfigurable {
 
   public abstract CompileResult compile();
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData data = super.getI18nData();
     data.setAllAttributesUntranslatable();
@@ -73,6 +74,7 @@ public abstract class AbstractScript extends AbstractConfigurable {
     return new String[] {NAME, DESC, SCRIPT};
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }

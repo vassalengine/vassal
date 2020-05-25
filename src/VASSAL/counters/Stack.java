@@ -274,6 +274,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @see StackMetrics#draw
    * @see #getDefaultMetrics
    */
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (obs instanceof Map.View) {
       ((Map.View) obs).getMap().getStackMetrics().draw(this, g, x, y, obs, zoom);
@@ -300,14 +301,17 @@ public class Stack implements GamePiece, StateMergeable {
     return val.toString();
   }
 
+  @Override
   public String getName() {
     return getName(false);
   }
 
+  @Override
   public String getLocalizedName() {
     return getName(true);
   }
 
+  @Override
   public Rectangle boundingBox() {
     final Rectangle r = new Rectangle();
     final Rectangle[] childBounds = new Rectangle[getPieceCount()];
@@ -323,6 +327,7 @@ public class Stack implements GamePiece, StateMergeable {
     return r;
   }
 
+  @Override
   public Shape getShape() {
     Area a = new Area();
     Shape[] childBounds = new Shape[getPieceCount()];
@@ -436,6 +441,7 @@ public class Stack implements GamePiece, StateMergeable {
     return nv;
   }
 
+  @Override
   public Command keyEvent(javax.swing.KeyStroke stroke) {
     GamePiece p = topPiece();
     if (p != null) {
@@ -454,6 +460,7 @@ public class Stack implements GamePiece, StateMergeable {
     expanded = b && getPieceCount() > 1;
   }
 
+  @Override
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y);
@@ -463,6 +470,7 @@ public class Stack implements GamePiece, StateMergeable {
     return se.getValue();
   }
 
+  @Override
   public void setState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     final String mapId = st.nextToken();
@@ -500,6 +508,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @param newState
    * @param oldState
    */
+  @Override
   public void mergeState(String newState, String oldState) {
     String mergedState = newState;
     if (!oldState.equals(getState())) {
@@ -536,10 +545,12 @@ public class Stack implements GamePiece, StateMergeable {
     setState(mergedState);
   }
 
+  @Override
   public String getType() {
     return TYPE;
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
   }
 
@@ -559,44 +570,54 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     return null;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }
 
+  @Override
   public void setMap(Map map) {
     this.map = map;
   }
 
+  @Override
   public Map getMap() {
     return map;
   }
 
+  @Override
   public Point getPosition() {
     return new Point(pos);
   }
 
+  @Override
   public void setPosition(Point p) {
     pos = p;
   }
 
+  @Override
   public Stack getParent() {
     return null;
   }
 
+  @Override
   public void setParent(Stack s) {
     if (s != null) {
       ErrorDialog.dataError(new BadDataReport("Cannot add stack to another stack",toString(),null));
     }
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }
@@ -629,10 +650,12 @@ public class Stack implements GamePiece, StateMergeable {
       next = findNext();
     }
 
+    @Override
     public boolean hasNext() {
       return next != null;
     }
 
+    @Override
     public GamePiece next() {
       final GamePiece ret = next;
       next = findNext();
@@ -658,6 +681,7 @@ public class Stack implements GamePiece, StateMergeable {
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -671,14 +695,17 @@ public class Stack implements GamePiece, StateMergeable {
       p = ArrayUtils.copyOf(contents, pieceCount);
     }
 
+    @Override
     public boolean hasNext() {
       return index < p.length;
     }
 
+    @Override
     public GamePiece next() {
       return p[index++];
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -692,14 +719,17 @@ public class Stack implements GamePiece, StateMergeable {
       p = ArrayUtils.copyOf(contents, pieceCount);
     }
 
+    @Override
     public boolean hasNext() {
       return index >= 0;
     }
 
+    @Override
     public GamePiece next() {
       return p[index--];
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }

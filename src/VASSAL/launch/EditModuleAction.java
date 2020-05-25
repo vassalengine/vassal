@@ -44,6 +44,7 @@ public class EditModuleAction extends LoadModuleAction {
     putValue(NAME, Resources.getString("Main.edit_module"));
   }
 
+  @Override
   protected void loadModule(File f) throws IOException {
     GameModule.init(new BasicModule(new ArchiveWriter(new ZipArchive(f))));
 

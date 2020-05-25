@@ -50,6 +50,7 @@ public abstract class Widget extends AbstractConfigurable {
    * The Widget is built from the stored element by invoking {@link #rebuild}.
    * Subclasses should invoke {@link #rebuild} before invoking {@link #getComponent}
    */
+  @Override
   public void build(Element el) {
     buildElement = el;
     if (el != null) {
@@ -73,6 +74,7 @@ public abstract class Widget extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     rebuild();
     return super.getBuildElement(doc);
@@ -82,14 +84,17 @@ public abstract class Widget extends AbstractConfigurable {
    * The allowable Configurable components of a Widget are the same
    * as its parent
    */
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return parent.getAllowableConfigureComponents();
   }
 
+  @Override
   public void addTo(Buildable b) {
     parent = (Widget) b;
   }
 
+  @Override
   public void removeFrom(Buildable b) {
   }
 
@@ -97,6 +102,7 @@ public abstract class Widget extends AbstractConfigurable {
     return parent;
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     rebuild();
     return super.getConfigureComponents();
@@ -109,6 +115,7 @@ public abstract class Widget extends AbstractConfigurable {
    */
   public abstract java.awt.Component getComponent();
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
@@ -116,6 +123,7 @@ public abstract class Widget extends AbstractConfigurable {
   public static class MyCellRenderer extends javax.swing.DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public java.awt.Component getListCellRendererComponent
       (javax.swing.JList list,
        Object value,

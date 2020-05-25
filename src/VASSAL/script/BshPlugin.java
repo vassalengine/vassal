@@ -27,6 +27,7 @@ public class BshPlugin extends Plugin {
     super();
   }
 
+  @Override
   public void init() {
     registerGamePiece(new CalculatedProperty());
     registerCommandEncoder(new BshCommandEncoder());

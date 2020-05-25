@@ -168,22 +168,27 @@ public abstract class FileChooser {
       fc.setFileSelectionMode(mode);
     }
 
+    @Override
     public File getCurrentDirectory() {
       return fc.getCurrentDirectory();
     }
 
+    @Override
     public void setCurrentDirectory(File dir) {
       fc.setCurrentDirectory(dir);
     }
 
+    @Override
     public void rescanCurrentDirectory() {
       fc.rescanCurrentDirectory();
     }
 
+    @Override
     public File getSelectedFile() {
       return fc.getSelectedFile();
     }
 
+    @Override
     public void setSelectedFile(File file) {
       fc.setSelectedFile(file);
     }
@@ -196,20 +201,24 @@ public abstract class FileChooser {
       fc.setFileSelectionMode(mode);
     }
 
+    @Override
     public String getDialogTitle() {
       return fc.getDialogTitle();
     }
 
+    @Override
     public void setDialogTitle(String title) {
       fc.setDialogTitle(title);
     }
 
+    @Override
     public int showOpenDialog(Component parent) {
       int value = fc.showOpenDialog(parent);
       updateDirectoryPreference();
       return value;
     }
 
+    @Override
     public int showSaveDialog(Component parent) {
       int value = fc.showSaveDialog(parent);
       if (value == APPROVE_OPTION
@@ -222,23 +231,28 @@ public abstract class FileChooser {
       return value;
     }
 
+    @Override
     public FileFilter getFileFilter() {
       javax.swing.filechooser.FileFilter ff = fc.getFileFilter();
       return ff instanceof FileFilter ? (FileFilter) ff : null;
     }
 
+    @Override
     public void setFileFilter(FileFilter filter) {
       fc.setFileFilter(filter);
     }
 
+    @Override
     public void addChoosableFileFilter(FileFilter filter) {
       fc.addChoosableFileFilter(filter);
     }
 
+    @Override
     public boolean removeChoosableFileFilter(FileFilter filter) {
       return fc.removeChoosableFileFilter(filter);
     }
 
+    @Override
     public void resetChoosableFileFilters() {
       fc.resetChoosableFileFilters();
     }
@@ -265,21 +279,26 @@ public abstract class FileChooser {
       }
     }
 
+    @Override
     public File getCurrentDirectory() {
       return cur == null ? null : cur.getParentFile();
     }
 
+    @Override
     public void setCurrentDirectory(File dir) {
       cur = dir;
     }
 
+    @Override
     public void rescanCurrentDirectory() {
     }
 
+    @Override
     public File getSelectedFile() {
       return cur;
     }
 
+    @Override
     public void setSelectedFile(File file) {
       cur = file;
     }
@@ -292,10 +311,12 @@ public abstract class FileChooser {
       this.mode = mode;
     }
 
+    @Override
     public String getDialogTitle() {
       return title;
     }
 
+    @Override
     public void setDialogTitle(String title) {
       this.title = title;
     }
@@ -345,6 +366,7 @@ public abstract class FileChooser {
       return fd;
     }
 
+    @Override
     public int showOpenDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.LOAD);
@@ -364,6 +386,7 @@ public abstract class FileChooser {
       return value;
     }
 
+    @Override
     public int showSaveDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.SAVE);
@@ -381,21 +404,26 @@ public abstract class FileChooser {
       return value;
     }
 
+    @Override
     public FileFilter getFileFilter() {
       return filter;
     }
 
+    @Override
     public void setFileFilter(FileFilter filter) {
       this.filter = filter;
     }
 
+    @Override
     public void addChoosableFileFilter(FileFilter filter) {
     }
 
+    @Override
     public boolean removeChoosableFileFilter(FileFilter filter) {
       return false;
     }
 
+    @Override
     public void resetChoosableFileFilters() {
     }
   }

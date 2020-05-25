@@ -49,10 +49,12 @@ public class ExtensionElement implements Buildable {
     this.targetPath = targetPath;
   }
 
+  @Override
   public void add(Buildable child) {
     extension = child;
   }
 
+  @Override
   public void build(Element e) {
     try {
       targetPath =
@@ -79,6 +81,7 @@ public class ExtensionElement implements Buildable {
     return targetPath;
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
     el.setAttribute(TARGET,
@@ -87,6 +90,7 @@ public class ExtensionElement implements Buildable {
     return el;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     final Configurable target = targetPath.length == 0 ?
       GameModule.getGameModule() : targetPath[targetPath.length - 1];

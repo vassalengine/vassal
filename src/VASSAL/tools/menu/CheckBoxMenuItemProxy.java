@@ -58,6 +58,7 @@ public class CheckBoxMenuItemProxy
     this.action = action;
 
     forEachPeer(new Functor<>() {
+      @Override
       public void apply(JCheckBoxMenuItem item) {
         item.setAction(action);
       }
@@ -72,6 +73,7 @@ public class CheckBoxMenuItemProxy
     this.state = state;
 
     forEachPeer(new Functor<>() {
+      @Override
       public void apply(JCheckBoxMenuItem item) {
         item.setSelected(state);
       }
@@ -88,10 +90,12 @@ public class CheckBoxMenuItemProxy
     return item;
   }
 
+  @Override
   public void itemStateChanged(ItemEvent e) {
     state = e.getStateChange() == ItemEvent.SELECTED;
 
     forEachPeer(new Functor<>() {
+      @Override
       public void apply(JCheckBoxMenuItem item) {
         item.setSelected(state);
       }

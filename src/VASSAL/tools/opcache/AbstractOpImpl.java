@@ -56,9 +56,11 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract List<Op<?>> getSources();
 
   /** {@inheritDoc} */
+  @Override
   public abstract V eval() throws Exception;
 
   /** {@inheritDoc} */
@@ -94,6 +96,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
     new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public OpCache.Key<V> newKey() {
     OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);
@@ -107,6 +110,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public void update() {
     final OpCache.Key<V> key = (OpCache.Key<V>) kcache.get(this);

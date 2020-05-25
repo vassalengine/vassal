@@ -94,6 +94,7 @@ public abstract class EditorWindow extends JFrame {
 
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         close();
       }
@@ -181,6 +182,7 @@ public abstract class EditorWindow extends JFrame {
 
     saveAction = new SaveAction() {
       private static final long serialVersionUID = 1L;
+      @Override
       public void actionPerformed(ActionEvent e) {
         save();
         treeStateChanged(false);
@@ -195,6 +197,7 @@ public abstract class EditorWindow extends JFrame {
 
     saveAsAction = new SaveAsAction() {
       private static final long serialVersionUID = 1L;
+      @Override
       public void actionPerformed(ActionEvent e) {
         saveAs();
         treeStateChanged(false);
@@ -215,6 +218,7 @@ public abstract class EditorWindow extends JFrame {
                       "Create " + getEditorType() + " updater") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         new ModuleUpdaterDialog(EditorWindow.this).setVisible(true);
       }
@@ -304,10 +308,12 @@ public abstract class EditorWindow extends JFrame {
     else {
       new ValidationReportDialog(report,
         new ValidationReportDialog.CallBack() {
+          @Override
           public void ok() {
             save.run();
           }
 
+          @Override
           public void cancel() {
           }
         }

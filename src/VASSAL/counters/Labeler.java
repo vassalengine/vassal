@@ -124,6 +124,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     setInner(d);
   }
 
+  @Override
   public void mySetType(String type) {
     commands = null;
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -169,6 +170,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (key.equals(propertyName)) {
       return getLabel();
@@ -181,6 +183,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(labelKey)
@@ -205,14 +208,17 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     return label;
   }
 
+  @Override
   public void mySetState(String s) {
     setLabel(s.trim());
   }
 
+  @Override
   public String getName() {
     String result = "";
     if (label.length() == 0) {
@@ -243,6 +249,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return result;
   }
 
+  @Override
   public String getLocalizedName() {
     if (label.length() == 0) {
       return piece.getLocalizedName();
@@ -300,6 +307,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     updateCachedImage();
     piece.draw(g, x, y, obs, zoom);
@@ -453,10 +461,12 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
                                   .toHashCode();
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
     }
 
+    @Override
     public BufferedImage eval() throws Exception {
       // determine whether we are HTML and fix our size
       final JLabel label = buildDimensions();
@@ -523,6 +533,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return label;
     }
 
+    @Override
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
         buildDimensions();
@@ -562,6 +573,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return f.getLocalizedText(Decorator.getOutermost(this));
   }
 
+  @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
     r.add(new Rectangle(getLabelPosition(), imagePainter.getImageSize()));
@@ -575,6 +587,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    * Return the Shape of the counter by adding the shape of this label to the shape of all inner traits.
    * Minimize generation of new Area objects.
    */
+  @Override
   public Shape getShape() {
     Shape innerShape = piece.getShape();
 
@@ -605,6 +618,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       menuKeyCommand = new KeyCommand(menuCommand, labelKey, Decorator.getOutermost(this), this);
@@ -621,6 +635,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
@@ -645,14 +660,17 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return c;
   }
 
+  @Override
   public String getDescription() {
     return "Text Label" + (description.length() > 0 ? (" - "+description) : "");
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Label.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -660,6 +678,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     if (propertyName.length() > 0) {
@@ -786,10 +805,12 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       controls.add(propertyNameConfig.getControls());
     }
 
+    @Override
     public String getState() {
       return initialValue.getValueString();
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(labelKeyInput.getValueString())
@@ -830,6 +851,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return ID + se.getValue();
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
@@ -837,6 +859,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private static class MyRenderer extends DefaultListCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getListCellRendererComponent(JList list,
                                                     Object value,
                                                     int index,
@@ -864,17 +887,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(
         new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand},
         new String[] {"Label Text", "Label Format", "Change Label Command"});
   }
 
+  @Override
   public String getComponentTypeName() {
     // Use inner name to prevent recursive looping when reporting errors.
     return piece.getName();
   }
 
+  @Override
   public String getComponentName() {
     return getDescription();
   }

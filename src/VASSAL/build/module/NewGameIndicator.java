@@ -36,6 +36,7 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
     GameModule.getGameModule().addCommandEncoder(this);
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new MarkGameNotNew(this);
   }
@@ -49,12 +50,14 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
     return isNewGame;
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       isNewGame = true;
     }
   }
 
+  @Override
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(this.command)) {
@@ -63,6 +66,7 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof MarkGameNotNew
@@ -79,10 +83,12 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
       this.indicator = indicator;
     }
 
+    @Override
     protected void executeCommand() {
       indicator.isNewGame = false;
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

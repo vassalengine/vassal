@@ -94,6 +94,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       (darch != null ? darch.hashCode() : farch.hashCode());
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -108,6 +109,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
+  @Override
   public BufferedImage eval() throws ImageIOException {
     InputStream in = null;
     try {
@@ -133,6 +135,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = getImageSize();
@@ -173,6 +176,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     return new Dimension();
   }
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new SourceTileOpBitmapImpl(this, tileX, tileY);
   }
@@ -182,6 +186,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @return the name of the image in the {@link DataArchive}.
    */
+  @Override
   public String getName() {
     return name;
   }

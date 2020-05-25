@@ -79,10 +79,12 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 
+  @Override
   public BufferedImage eval() throws ImageIOException {
 // FIXME: getting archive this way is a kludge, we should get it from sop
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
@@ -105,8 +107,10 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     }
   }
 
+  @Override
   protected void fixSize() { }
 
+  @Override
   public String getName() {
     return sop.getName();
   }

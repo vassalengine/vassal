@@ -43,12 +43,14 @@ public class JoinRoomAction extends AbstractAction {
     setEnabled(r != null && !r.equals(client.getRoom()));
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     client.setRoom(r);
   }
 
   public static RoomActionFactory factory(final ChatServerConnection chatClient) {
     return new RoomActionFactory() {
+      @Override
       public Action getAction(Room p, JTree tree) {
         return new JoinRoomAction(p, chatClient);
       }

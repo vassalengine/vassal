@@ -80,6 +80,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   public PlayerRoster() {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -91,14 +92,17 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     GameModule.getGameModule().removeCommandEncoder(this);
   }
 
+  @Override
   public void remove(Buildable child) {
   }
 
+  @Override
   public void build(Element e) {
     if (e != null) {
       final NamedNodeMap attributes = e.getAttributes();
@@ -140,6 +144,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
@@ -148,13 +153,16 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return Resources.getString("Editor.PlayerRoster.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void add(Buildable child) {
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     Element el = doc.createElement(getClass().getName());
     String att = retireButton.getAttributeValueString(BUTTON_TEXT);
@@ -174,10 +182,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return el;
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new Con();
   }
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
   }
 
@@ -195,14 +205,17 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addTo(Buildable b) {
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().getGameState().addGameSetupStep(this);
@@ -327,6 +340,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     players.remove(e);
   }
 
+  @Override
   public Command decode(String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
@@ -338,6 +352,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof Add) {
       final Add a = (Add) c;
@@ -350,6 +365,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     Command c = null;
     for (PlayerInfo entry : players) {
@@ -359,6 +375,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return c;
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
       PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
@@ -375,6 +392,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     pickedSide = false;
   }
 
+  @Override
   public void finish() {
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
@@ -386,6 +404,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     pickedSide = true;
   }
 
+  @Override
   public Component getControls() {
     ArrayList<String> availableSides = new ArrayList<>(sides);
     ArrayList<String> alreadyTaken = new ArrayList<>();
@@ -403,11 +422,13 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return sideConfig.getControls();
   }
 
+  @Override
   public String getStepTitle() {
     return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
   }
 
   // Implement GameSetupStep
+  @Override
   public boolean isFinished() {
     if (pickedSide) {
       return true;
@@ -529,10 +550,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       this.side = side;
     }
 
+    @Override
     protected void executeCommand() {
       roster.add(id, name, side);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
@@ -551,6 +574,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[0])); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           sides.clear();
           sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
@@ -559,6 +583,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls.add(sidesConfig.getControls());
       textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString());
         }
@@ -566,6 +591,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls.add(textConfig.getControls());
       tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
       tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
         }
@@ -574,6 +600,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString());
         }
@@ -581,13 +608,16 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls.add(iconConfig.getControls());
     }
 
+    @Override
     public String getValueString() {
       return null;
     }
 
+    @Override
     public void setValue(String s) {
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
@@ -605,6 +635,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * it's own configuration. Implement the rest of the AbstractConfigurable
    * abstract classes for i18n.
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       BUTTON_TEXT,
@@ -613,6 +644,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -621,6 +653,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (SIDES.equals(key)) {
       return getSidesAsString();
@@ -631,6 +664,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   /*
    * Only ever called from Language.translate()
    */
+  @Override
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
       untranslatedSides = sides.toArray(new String[0]);
@@ -678,6 +712,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return side;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.button_text_label"),

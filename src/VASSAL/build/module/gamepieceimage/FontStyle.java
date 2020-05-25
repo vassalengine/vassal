@@ -59,6 +59,7 @@ public class FontStyle extends AbstractConfigurable {
     return font.isOutline();
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Style Name:  ",
@@ -66,6 +67,7 @@ public class FontStyle extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -74,15 +76,18 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FontConfigurer(key, name, ((FontStyle) c).font);
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, STYLE };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -96,6 +101,7 @@ public class FontStyle extends AbstractConfigurable {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -107,14 +113,17 @@ public class FontStyle extends AbstractConfigurable {
       return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayout.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -123,6 +132,7 @@ public class FontStyle extends AbstractConfigurable {
     return "Font Style";
   }
 
+  @Override
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }

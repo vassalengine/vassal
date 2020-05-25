@@ -64,6 +64,7 @@ public class DialogUtils {
 
   public static Future<?> enqueue(final Runnable runnable) {
     return ex.submit(new Runnable() {
+      @Override
       public void run() {
         try {
           SwingUtilities.invokeAndWait(runnable);

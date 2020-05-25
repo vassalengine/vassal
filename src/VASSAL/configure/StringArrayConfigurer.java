@@ -78,6 +78,7 @@ public class StringArrayConfigurer extends Configurer {
     if (oldValue != newValue) setValue(newValue);
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
       panel = new JPanel();
@@ -97,6 +98,7 @@ public class StringArrayConfigurer extends Configurer {
 
       JButton addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           String s = getTextValue();
           addValue(s);
@@ -107,6 +109,7 @@ public class StringArrayConfigurer extends Configurer {
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           Object[] o = list.getSelectedValues();
           for (Object item : o) {
@@ -118,6 +121,7 @@ public class StringArrayConfigurer extends Configurer {
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
       ActionListener insertAction = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           if (value == null) {
             addValue(getTextValue());
@@ -178,6 +182,7 @@ public class StringArrayConfigurer extends Configurer {
     }
   }
 
+  @Override
   public String getValueString() {
     return arrayToString(getStringArray());
   }
@@ -193,6 +198,7 @@ public class StringArrayConfigurer extends Configurer {
     return se.getValue();
   }
 
+  @Override
   public void setValue(Object o) {
     if (o == null) {
       o = EMPTY;
@@ -201,6 +207,7 @@ public class StringArrayConfigurer extends Configurer {
     updateModel();
   }
 
+  @Override
   public void setValue(String s) {
     String[] val = stringToArray(s);
     setValue(val);
@@ -233,6 +240,7 @@ public class StringArrayConfigurer extends Configurer {
     JFrame f = new JFrame();
     final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");
     c.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(c.getName() + " = " + c.getValueString());
       }

@@ -139,6 +139,7 @@ public final class ImportAction extends EditModuleAction {
     return null;
   }
 
+  @Override
   public void performAction(ActionEvent e) throws IOException {
     actionCancelled = true;
 
@@ -159,6 +160,7 @@ public final class ImportAction extends EditModuleAction {
     }
   }
 
+  @Override
   public void loadModule(File f) throws IOException {
     final Class<?> impClass = getImporterClass(f);
     if (impClass == null) {

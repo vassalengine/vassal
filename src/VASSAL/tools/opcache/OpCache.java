@@ -119,24 +119,29 @@ public class OpCache {
       failed = true;
     }
 
+    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
 
+    @Override
     public boolean isCancelled() {
       return false;
     }
 
+    @Override
     public boolean isDone() {
       return done.getCount() == 0;
     }
 
+    @Override
     public V get() throws InterruptedException, ExecutionException {
       done.await();
       if (failed) throw new ExecutionException(new OpFailedException());
       return value;
     }
 
+    @Override
     public V get(long timeout, TimeUnit unit) throws InterruptedException,
                                                      ExecutionException,
                                                      TimeoutException
@@ -153,22 +158,27 @@ public class OpCache {
    * The {@link Future} which is cached on failure of an {@link Op}.
    */
   private static final Future<Void> failure = new Future<>() {
+    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
 
+    @Override
     public Void get() throws ExecutionException {
       throw new ExecutionException(new OpFailedException());
     }
 
+    @Override
     public Void get(long timeout, TimeUnit unit) throws ExecutionException {
       throw new ExecutionException(new OpFailedException());
     }
 
+    @Override
     public boolean isCancelled() {
       return false;
     }
 
+    @Override
     public boolean isDone() {
       return true;
     }

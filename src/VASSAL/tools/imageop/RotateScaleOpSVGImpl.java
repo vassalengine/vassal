@@ -95,6 +95,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -104,6 +105,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
+  @Override
   public BufferedImage eval() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
@@ -127,6 +129,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = ImageUtils.transform(
@@ -139,6 +142,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    *
    * @return the angle of rotation, in degrees.
    */
+  @Override
   public double getAngle() {
     return angle;
   }
@@ -148,14 +152,17 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    *
    * @return the scale factor, in the range <code>(0,Double.MAX_VALUE]</code>.
    */
+  @Override
   public double getScale() {
     return scale;
   }
 
+  @Override
   public String getName() {
     return sop.getName();
   }
 
+  @Override
   public RenderingHints getHints() {
     return hints;
   }

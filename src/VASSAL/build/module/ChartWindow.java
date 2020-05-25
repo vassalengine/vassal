@@ -68,6 +68,7 @@ public class ChartWindow extends Widget {
     ActionListener al = new ActionListener() {
       boolean initialized;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (!initialized) {
           String key = PositionOption.key + id;
@@ -87,6 +88,7 @@ public class ChartWindow extends Widget {
    * Expects to be added to a GameModule. Adds a JButton to the control window's toolbar. Pushing the button displays
    * the window
    */
+  @Override
   public void addTo(Buildable b) {
     rebuild();
     launch.setAlignmentY(0.0F);
@@ -102,10 +104,12 @@ public class ChartWindow extends Widget {
     id = "ChartWindow" + count; //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(launch);
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (DEPRECATED_NAME.equals(key)) {
       setAttribute(NAME, val);
@@ -133,10 +137,12 @@ public class ChartWindow extends Widget {
    * The attributes of a ChartWindow are: <code>NAME</code> Appears as the name of the button in the toolbar and the
    * window itself <code>HOTKEY</code> for the hotkey equivalent for the button
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();
@@ -149,6 +155,7 @@ public class ChartWindow extends Widget {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
       Chart.class,
@@ -161,6 +168,7 @@ public class ChartWindow extends Widget {
     };
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       root.add(((Widget) b).getComponent());
@@ -168,6 +176,7 @@ public class ChartWindow extends Widget {
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       root.remove(((Widget) b).getComponent());
@@ -175,6 +184,7 @@ public class ChartWindow extends Widget {
     super.remove(b);
   }
 
+  @Override
   public java.awt.Component getComponent() {
     return root;
   }
@@ -183,6 +193,7 @@ public class ChartWindow extends Widget {
     return Resources.getString("Editor.ChartWindow.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
@@ -193,6 +204,7 @@ public class ChartWindow extends Widget {
           };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -204,11 +216,13 @@ public class ChartWindow extends Widget {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/chart.gif"); //$NON-NLS-1$
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ChartWindow.htm"); //$NON-NLS-1$
   }

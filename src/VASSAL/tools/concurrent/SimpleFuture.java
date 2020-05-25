@@ -44,6 +44,7 @@ public class SimpleFuture<V> implements SettableFuture<V> {
    *
    * <p>This implementation is uninteruptable, so ignores the parameter.</p>
    */
+  @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
     // fail if already cancelled
     if (cancelled) return false;
@@ -58,28 +59,33 @@ public class SimpleFuture<V> implements SettableFuture<V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isCancelled() {
     return cancelled;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isDone() {
     return cancelled || done.getCount() == 0;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setException(Throwable t) {
     exception = t;
     done.countDown();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void set(V r) {
     result = r;
     done.countDown();
   }
 
   /** {@inheritDoc} */
+  @Override
   public V get() throws CancellationException,
                         ExecutionException,
                         InterruptedException {
@@ -90,6 +96,7 @@ public class SimpleFuture<V> implements SettableFuture<V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public V get(long timeout, TimeUnit unit) throws CancellationException,
                                                    ExecutionException,
                                                    InterruptedException,

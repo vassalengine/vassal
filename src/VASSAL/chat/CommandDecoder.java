@@ -32,10 +32,12 @@ import VASSAL.command.Command;
  *
  */
 public class CommandDecoder implements PropertyChangeListener {
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     final Command c = GameModule.getGameModule().decode((String) evt.getNewValue());
     if (c != null) {
       Runnable runnable = new Runnable() {
+        @Override
         public void run() {
           c.execute();
           GameModule.getGameModule().getLogger().log(c);

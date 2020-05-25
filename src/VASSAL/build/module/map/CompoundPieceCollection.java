@@ -65,10 +65,12 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     return layers[getLayerForPiece(p)];
   }
 
+  @Override
   public void add(GamePiece p) {
     getCollectionForPiece(p).add(p);
   }
 
+  @Override
   public void clear() {
     for (SimplePieceCollection layer : layers) {
       layer.clear();
@@ -79,6 +81,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
    * Return pieces in layer order from the bottom up. Take into account
    * layer rotation and enabled state.
    */
+  @Override
   public GamePiece[] getPieces() {
     return getPieces(false);
   }
@@ -98,10 +101,12 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     return l.toArray(new GamePiece[0]);
   }
 
+  @Override
   public GamePiece[] getAllPieces() {
     return getPieces(true);
   }
 
+  @Override
   public int indexOf(GamePiece p) {
     int layer = getLayerForPiece(p);
     int index = layers[layer].indexOf(p);
@@ -113,18 +118,22 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     return index;
   }
 
+  @Override
   public void remove(GamePiece p) {
     getCollectionForPiece(p).remove(p);
   }
 
+  @Override
   public void moveToBack(GamePiece p) {
     getCollectionForPiece(p).moveToBack(p);
   }
 
+  @Override
   public void moveToFront(GamePiece p) {
     getCollectionForPiece(p).moveToFront(p);
   }
 
+  @Override
   public boolean canMerge(GamePiece p1, GamePiece p2) {
     boolean canMerge = false;
     if (p1 instanceof Deck

@@ -167,6 +167,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     persisting = false;
     mirroring = false;
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -197,6 +198,7 @@ public class LOS_Thread extends AbstractConfigurable implements
    * preferences
    *
    * @see Map#pushMouseListener*/
+  @Override
   public void addTo(Buildable b) {
     idMgr.add(this);
     map = (Map) b;
@@ -216,6 +218,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       threadColor = (Color) GameModule.getGameModule()
                                       .getPrefs().getValue(LOS_COLOR);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           threadColor = (Color) evt.getNewValue();
         }
@@ -224,6 +227,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.removeDrawComponent(this);
@@ -244,6 +248,7 @@ public class LOS_Thread extends AbstractConfigurable implements
    * <code>HIDE_COUNTERS</code>:  If true, hide all {@link GamePiece}s on the map when drawing the thread
    * </pre>
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -268,6 +273,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (DRAW_RANGE.equals(key)) {
       if (value instanceof String) {
@@ -371,6 +377,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (DRAW_RANGE.equals(key)) {
       return String.valueOf(drawRange);
@@ -460,6 +467,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     setMirroring(sd.nextBoolean(false));
   }
 
+  @Override
   public void draw(Graphics g, Map m) {
     if (initializing || !visible) {
       return;
@@ -505,6 +513,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     lastArrow = arrow;
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
@@ -531,10 +540,12 @@ public class LOS_Thread extends AbstractConfigurable implements
    * Commands controlling persistence are passed between players, so LOS Threads
    * must have a unique ID.
    */
+  @Override
   public void setId(String id) {
     threadId = id;
   }
 
+  @Override
   public String getId() {
     return threadId;
   }
@@ -542,15 +553,19 @@ public class LOS_Thread extends AbstractConfigurable implements
   /** Since we register ourselves as a MouseListener using {@link
    * Map#pushMouseListener}, these mouse events are received in map
    * coordinates */
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     initializing = false;
     if (visible && !persisting && !mirroring) {
@@ -569,6 +584,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (!persisting && !mirroring) {
       if (retainAfterRelease && !(ctrlWhenClick && persistence.equals(CTRL_CLICK))) {
@@ -665,9 +681,11 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   /* Since we register ourselves as a MouseMotionListener directly,
      these mouse events are received in component coordinates */
+  @Override
   public void mouseMoved(MouseEvent e) {
   }
 
+  @Override
   public void mouseDragged(MouseEvent e) {
     if (visible && !persisting && !mirroring) {
       retainAfterRelease = true;
@@ -761,10 +779,12 @@ public class LOS_Thread extends AbstractConfigurable implements
     return Resources.getString("Editor.LosThread.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "LOS");
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -787,6 +807,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -810,22 +831,26 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { FROM_LOCATION, TO_LOCATION, RANGE, CHECK_COUNT, CHECK_LIST });
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     VisibilityCondition cond = null;
     if (RANGE_SCALE.equals(name)
       || RANGE_ROUNDING.equals(name)) {
       cond = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return drawRange;
         }
@@ -833,6 +858,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (HIDE_OPACITY.equals(name)) {
       cond = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return hideCounters;
         }
@@ -840,6 +866,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (PERSISTENT_ICON_NAME.equals(name)) {
       cond = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return persistence.equals(CTRL_CLICK) || persistence.equals(ALWAYS);
         }
@@ -850,31 +877,37 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public static class RoundingOptions extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ROUND_UP, ROUND_DOWN, ROUND_OFF};
     }
   }
 
   public static class PersistenceOptions extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{CTRL_CLICK, NEVER, ALWAYS};
     }
   }
 
   public static class GlobalOptions extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{WHEN_PERSISTENT, NEVER, ALWAYS};
     }
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public Command decode(String command) {
     SequenceEncoder.Decoder sd = null;
     if (command.startsWith(LOS_THREAD_COMMAND + getId())) {
@@ -890,6 +923,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     return null;
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof LOSCommand) {
       LOSCommand com = (LOSCommand) c;
@@ -924,12 +958,14 @@ public class LOS_Thread extends AbstractConfigurable implements
       newMirroring = mirroring;
     }
 
+    @Override
     protected void executeCommand() {
       target.setEndPoints(newAnchor, newArrow);
       target.setPersisting(newPersisting);
       target.setMirroring(newMirroring);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return new LOSCommand(target, oldAnchor, oldArrow, oldPersisting, oldMirroring);
     }

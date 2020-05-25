@@ -106,6 +106,7 @@ public class UniqueIdManager implements ValidityChecker {
   }
 
   /** Ensures that no other instance of the same class has the same name */
+  @Override
   public void validate(Buildable target, ValidationReport report) {
     if (target instanceof Identifyable) {
       Identifyable iTarget = (Identifyable) target;

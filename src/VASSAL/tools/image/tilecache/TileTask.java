@@ -64,6 +64,7 @@ class TileTask implements Callable<Void> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Void call() throws IOException {
     final BufferedImage tile = sliceTile();
     TileUtils.write(tile, dst);

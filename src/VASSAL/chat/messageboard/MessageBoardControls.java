@@ -85,6 +85,7 @@ public class MessageBoardControls {
     final JButton refresh = new JButton(
       Resources.getString("Chat.refresh"));  //$NON-NLS-1$
     refresh.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         refresh.setEnabled(false);
 
@@ -116,6 +117,7 @@ public class MessageBoardControls {
 
     final JButton b = new JButton(Resources.getString(Resources.CLOSE));
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         msgFrame.setVisible(false);
       }
@@ -129,6 +131,7 @@ public class MessageBoardControls {
                   Resources.getString("Chat.check_messages")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         setEnabled(false);
 
@@ -169,6 +172,7 @@ public class MessageBoardControls {
                       Resources.getString("Chat.post_message")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         msgComposer.setVisible(true);
       }
@@ -208,6 +212,7 @@ public class MessageBoardControls {
       final JButton okButton =
         new JButton(Resources.getString("Chat.send"));  //$NON-NLS-1$
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           okButton.setEnabled(false);
           msgArea.setEnabled(false);
@@ -233,6 +238,7 @@ public class MessageBoardControls {
 // FIXME: Cancel does not cancel sending a message!
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           setVisible(false);
           msgArea.setText("");  //$NON-NLS-1$

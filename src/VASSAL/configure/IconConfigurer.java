@@ -51,10 +51,12 @@ public class IconConfigurer extends Configurer {
     this.defaultImage = defaultImage;
   }
 
+  @Override
   public String getValueString() {
     return imageName;
   }
 
+  @Override
   public void setValue(String s) {
     icon = null;
     imageName = s == null ? "" : s;
@@ -73,6 +75,7 @@ public class IconConfigurer extends Configurer {
     return icon;
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel();
@@ -81,6 +84,7 @@ public class IconConfigurer extends Configurer {
       final JPanel p = new JPanel() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void paint(Graphics g) {
           g.clearRect(0,0,getSize().width,getSize().height);
           final Icon i = getIconValue();
@@ -95,6 +99,7 @@ public class IconConfigurer extends Configurer {
       controls.add(p);
       final JButton reset = new JButton("Select");
       reset.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           selectImage();
           p.repaint();
@@ -104,6 +109,7 @@ public class IconConfigurer extends Configurer {
       if (defaultImage != null) {
         final JButton useDefault = new JButton("Default");
         useDefault.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             setValue(defaultImage);
             p.repaint();

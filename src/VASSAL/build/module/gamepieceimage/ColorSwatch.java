@@ -69,6 +69,7 @@ public class ColorSwatch extends AbstractConfigurable
     color = c;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Color Name:  ",
@@ -76,6 +77,7 @@ public class ColorSwatch extends AbstractConfigurable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -83,6 +85,7 @@ public class ColorSwatch extends AbstractConfigurable
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -90,6 +93,7 @@ public class ColorSwatch extends AbstractConfigurable
     };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -103,6 +107,7 @@ public class ColorSwatch extends AbstractConfigurable
   }
 
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -114,14 +119,17 @@ public class ColorSwatch extends AbstractConfigurable
       return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -130,6 +138,7 @@ public class ColorSwatch extends AbstractConfigurable
     return "Named Color";
   }
 
+  @Override
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }
@@ -171,6 +180,7 @@ public class ColorSwatch extends AbstractConfigurable
   /* (non-Javadoc)
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
+  @Override
   public int compareTo(ColorSwatch c) {
     return name.compareTo(c.name);
   }

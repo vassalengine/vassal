@@ -68,10 +68,12 @@ public class VassalTranslation extends Translation {
     }
   }
 
+  @Override
   protected String getI18nPrefix() {
     return "";
   }
 
+  @Override
   protected String getDescription() {
     return "VASSAL";
   }
@@ -82,20 +84,24 @@ public class VassalTranslation extends Translation {
     allKeys = null;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return baseValues.getProperty(key);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     initkeys();
     return allKeys;
   }
 
+  @Override
   public String[] getAttributeNames() {
     initkeys();
     return allKeys;
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     initkeys();
     final Class<?>[] types = new Class<?>[allKeys.length];

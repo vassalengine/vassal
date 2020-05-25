@@ -243,6 +243,7 @@ public class ImageUtils {
   }
 
   private static final TemporaryFileFactory tfac = new TemporaryFileFactory() {
+    @Override
     public File create() throws IOException {
       return File.createTempFile("img", null, Info.getTempDir());
     }

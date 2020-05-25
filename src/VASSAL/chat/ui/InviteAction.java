@@ -47,6 +47,7 @@ public class InviteAction extends AbstractAction {
     setEnabled(client.isInvitable(target));
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
       client.sendInvite(invitee);
@@ -56,6 +57,7 @@ public class InviteAction extends AbstractAction {
 
   public static PlayerActionFactory factory(final LockableChatServerConnection client) {
     return new PlayerActionFactory() {
+      @Override
       public Action getAction(SimplePlayer p, JTree tree) {
         final Room r = client.getRoom();
         if (r instanceof LockableRoom && !((LockableRoom) r).isLocked()) {

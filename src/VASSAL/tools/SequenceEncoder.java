@@ -206,14 +206,17 @@ public class SequenceEncoder {
       return value;
     }
 
+    @Override
     public boolean hasNext() {
       return hasMoreTokens();
     }
 
+    @Override
     public String next() {
       return nextToken();
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }

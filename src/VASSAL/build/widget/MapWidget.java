@@ -36,10 +36,12 @@ public class MapWidget extends Widget {
     return "Map";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ChartWindow.htm", "Map");
   }
 
+  @Override
   public void build(Element e) {
     if (e == null) {
       WidgetMap map = new WidgetMap();
@@ -60,6 +62,7 @@ public class MapWidget extends Widget {
   /*
    * Parent Widget has now completed building, so set up Drag Target handling if our parent is a TabWidget
    */
+  @Override
   public Component getComponent() {
     if (tab == null && parent instanceof TabWidget) {
       tab = (JTabbedPane) ((TabWidget) parent).getComponent();
@@ -72,11 +75,13 @@ public class MapWidget extends Widget {
     return panel;
   }
 
+  @Override
   public void addTo(Buildable b) {
     super.addTo(b);
     parent = b;
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof WidgetMap) {
       if (mapHolder != null) {
@@ -92,6 +97,7 @@ public class MapWidget extends Widget {
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof WidgetMap) {
       panel.remove(mapHolder);
@@ -101,24 +107,29 @@ public class MapWidget extends Widget {
     super.remove(b);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class};
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME};
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -126,6 +137,7 @@ public class MapWidget extends Widget {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -136,6 +148,7 @@ public class MapWidget extends Widget {
       this.tab = tab;
     }
 
+    @Override
     public void dragOver(DropTargetDragEvent e) {
       if (tab != null) {
         Point p = e.getLocation();
@@ -147,15 +160,19 @@ public class MapWidget extends Widget {
       }
     }
 
+    @Override
     public void dragEnter(DropTargetDragEvent e) {
     }
 
+    @Override
     public void dropActionChanged(DropTargetDragEvent e) {
     }
 
+    @Override
     public void drop(DropTargetDropEvent e) {
     }
 
+    @Override
     public void dragExit(DropTargetEvent e) {
     }
   }

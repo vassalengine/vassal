@@ -40,6 +40,7 @@ public class DotPrinter<T> implements EventListener<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void receive(Object src, T event) {
     out.print('.');
   }

@@ -65,6 +65,7 @@ public class CgiServerStatus implements ServerStatus {
     timeRanges.put(Resources.getString(LAST_MONTH), DAY * 30);
   }
 
+  @Override
   public ServerStatus.ModuleSummary[] getStatus() {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<>();
@@ -97,11 +98,13 @@ public class CgiServerStatus implements ServerStatus {
     return sortEntriesByModuleName(entries);
   }
 
+  @Override
   public ModuleSummary[] getHistory(String timeRange) {
     final Long l = timeRanges.get(timeRange);
     return l != null ? getHistory(l) : new ModuleSummary[0];
   }
 
+  @Override
   public String[] getSupportedTimeRanges() {
     return times;
   }
@@ -217,6 +220,7 @@ public class CgiServerStatus implements ServerStatus {
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ModuleSummary[0]);
     Arrays.sort(e, new Comparator<>() {
+      @Override
       public int compare(ServerStatus.ModuleSummary a,
                          ServerStatus.ModuleSummary b) {
         return a.getModuleName().compareTo(b.getModuleName());

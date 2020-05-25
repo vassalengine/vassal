@@ -63,14 +63,17 @@ public class SimplePieceEditor implements PieceEditor {
 
   }
 
+  @Override
   public String getType() {
     return typeField.getText();
   }
 
+  @Override
   public String getState() {
     return stateField.getText();
   }
 
+  @Override
   public java.awt.Component getControls() {
     return panel;
   }

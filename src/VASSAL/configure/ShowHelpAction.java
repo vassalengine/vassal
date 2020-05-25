@@ -65,6 +65,7 @@ public class ShowHelpAction extends AbstractAction {
     putValue(Action.NAME, Resources.getString(Resources.HELP));
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
       if (helpWindow == null) {

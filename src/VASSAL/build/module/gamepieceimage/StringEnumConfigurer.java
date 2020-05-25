@@ -54,6 +54,7 @@ public class StringEnumConfigurer extends Configurer {
     this.validValues = validValues;
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
       panel = Box.createHorizontalBox();
@@ -66,6 +67,7 @@ public class StringEnumConfigurer extends Configurer {
         box.setSelectedIndex(0);
       }
       box.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           noUpdate = true;
           setValue(box.getSelectedItem());
@@ -101,6 +103,7 @@ public class StringEnumConfigurer extends Configurer {
   box.setModel(new DefaultComboBoxModel(validValues));
   }
 
+  @Override
   public void setValue(Object o) {
     if (validValues == null
         || isValidValue(o)) {
@@ -111,10 +114,12 @@ public class StringEnumConfigurer extends Configurer {
     }
   }
 
+  @Override
   public String getValueString() {
     return box != null ? (String) box.getSelectedItem() : validValues[0];
   }
 
+  @Override
   public void setValue(String s) {
     setValue((Object) s);
   }
@@ -123,6 +128,7 @@ public class StringEnumConfigurer extends Configurer {
     JFrame f = new JFrame();
     StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     c.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()); //$NON-NLS-1$
       }

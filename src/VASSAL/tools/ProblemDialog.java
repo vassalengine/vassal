@@ -93,6 +93,7 @@ public class ProblemDialog {
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
+      @Override
       public void run() {
         Dialogs.showMessageDialog(
           parent,
@@ -166,6 +167,7 @@ public class ProblemDialog {
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
+      @Override
       public void run() {
         Dialogs.showMessageDialog(
           parent,
@@ -191,6 +193,7 @@ public class ProblemDialog {
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
+      @Override
       public void run() {
         Dialogs.showMessageDialog(
           getFrame(),
@@ -266,6 +269,7 @@ public class ProblemDialog {
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
+      @Override
       public void run() {
         DetailsDialog.showDialog(
           parent,
@@ -351,6 +355,7 @@ public class ProblemDialog {
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
+      @Override
       public void run() {
         DetailsDialog.showDialog(
           parent,

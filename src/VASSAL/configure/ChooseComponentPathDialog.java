@@ -41,6 +41,7 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
     super(owner, targetClass);
   }
 
+  @Override
   public void valueChanged(TreeSelectionEvent e) {
     super.valueChanged(e);
 

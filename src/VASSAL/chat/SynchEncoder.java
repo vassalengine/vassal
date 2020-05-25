@@ -33,6 +33,7 @@ public class SynchEncoder implements CommandEncoder {
     this.client = client;
   }
 
+  @Override
   public Command decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
@@ -43,6 +44,7 @@ public class SynchEncoder implements CommandEncoder {
     }
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof SynchCommand) {
       SynchCommand cmd = (SynchCommand) c;

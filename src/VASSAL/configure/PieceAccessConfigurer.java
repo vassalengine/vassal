@@ -53,6 +53,7 @@ public class PieceAccessConfigurer extends Configurer {
     super(key, name, value);
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     updateControls();
@@ -60,14 +61,17 @@ public class PieceAccessConfigurer extends Configurer {
 
 
 
+  @Override
   public String getValueString() {
     return encode(getPieceAccess());
   }
 
+  @Override
   public void setValue(String s) {
     setValue(decode(s));
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel();
@@ -76,6 +80,7 @@ public class PieceAccessConfigurer extends Configurer {
       box.add(new JLabel(getName()));
       selectType = new JComboBox(getPrompts());
       selectType.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           updateValue();
           sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
@@ -88,6 +93,7 @@ public class PieceAccessConfigurer extends Configurer {
       controls.add(box);
       sideConfig = new StringArrayConfigurer(null, null);
       sideConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateValue();
         }

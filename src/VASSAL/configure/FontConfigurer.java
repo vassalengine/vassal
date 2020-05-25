@@ -55,14 +55,17 @@ public class FontConfigurer extends Configurer {
     this.sizes = sizes;
   }
 
+  @Override
   public String getValueString() {
     return encode((Font) value);
   }
 
+  @Override
   public void setValue(String s) {
     setValue(decode(s));
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -87,6 +90,7 @@ public class FontConfigurer extends Configurer {
       p.add(size);
 
       ItemListener l = new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent evt) {
           setValue(new Font((String) family.getSelectedItem(),
                             Font.PLAIN,
@@ -117,6 +121,7 @@ public class FontConfigurer extends Configurer {
     tf.setText("The quick brown fox jumps over the lazy dog.");
     f.add(new ScrollPane(tf));
     c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      @Override
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         Font font = (Font) evt.getNewValue();
         FontConfigurer fc = new FontConfigurer(null, null, font);

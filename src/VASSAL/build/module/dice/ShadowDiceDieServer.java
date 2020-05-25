@@ -28,6 +28,7 @@ public class ShadowDiceDieServer extends DieServer {
     canDoSeparateDice = true;
   }
 
+  @Override
   public String[] buildInternetRollString(RollSet toss) {
 
     final String CRLF = "%0D%0A"; // CRLF
@@ -98,6 +99,7 @@ public class ShadowDiceDieServer extends DieServer {
     return b.toString();
   }
 
+  @Override
   public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
 
     Enumeration<String> e = results.elements();
@@ -128,6 +130,7 @@ public class ShadowDiceDieServer extends DieServer {
     }
   }
 
+  @Override
   public void roll(RollSet mr, FormattedString format) {
     super.doInternetRoll(mr, format);
   }

@@ -35,11 +35,13 @@ public class MessageBoardControlsInitializer implements ChatControlsInitializer 
     msgMgr.setServer(board, name);
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     checkMsgButton = controls.getToolbar().add(msgMgr.getCheckMessagesAction());
     postMsgButton = controls.getToolbar().add(msgMgr.getPostMessageAction());
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(checkMsgButton);
     controls.getToolbar().remove(postMsgButton);

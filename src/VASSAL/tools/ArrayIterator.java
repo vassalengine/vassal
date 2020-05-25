@@ -38,17 +38,20 @@ public class ArrayIterator<T> implements Iterator<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasNext() {
     return pos < array.length;
   }
 
   /** {@inheritDoc} */
+  @Override
   public T next() {
     if (!hasNext()) throw new NoSuchElementException();
     return array[pos++];
   }
 
   /** {@inheritDoc} */
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

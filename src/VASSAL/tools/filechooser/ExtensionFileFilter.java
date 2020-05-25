@@ -46,6 +46,7 @@ public class ExtensionFileFilter extends FileFilter {
   /**
    * @return Whether the given file is accepted by this filter.
    */
+  @Override
   public boolean accept(File f) {
     if (f.isDirectory()) return true;
     final String name = f.getName().toLowerCase();
@@ -58,6 +59,7 @@ public class ExtensionFileFilter extends FileFilter {
   /**
    * @return The description of this filter.
    */
+  @Override
   public String getDescription() {
     return desc;
   }

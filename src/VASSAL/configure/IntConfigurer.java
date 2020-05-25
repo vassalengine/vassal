@@ -33,6 +33,7 @@ public class IntConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public void setValue(String s) {
     Integer i = null;
     try {
@@ -55,6 +56,7 @@ public class IntConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public void setValue(Object o) {
     if (!noUpdate && nameField != null && o != null) {
       nameField.setText(o.toString());
@@ -62,6 +64,7 @@ public class IntConfigurer extends StringConfigurer {
     super.setValue(o);
   }
 
+  @Override
   public String getValueString() {
     return value == null ? null : value.toString();
   }

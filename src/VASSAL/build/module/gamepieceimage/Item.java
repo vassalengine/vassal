@@ -71,6 +71,7 @@ public abstract class Item extends AbstractConfigurable {
     setConfigureName(name);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Name:  ",
@@ -83,6 +84,7 @@ public abstract class Item extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -96,21 +98,25 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ""); //$NON-NLS-1$
     }
   }
 
   public static class LocationConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return GamePieceLayout.LOCATIONS;
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, LOCATION, ADVANCED, X_OFFSET, Y_OFFSET, ROTATION, ANTIALIAS };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -151,6 +157,7 @@ public abstract class Item extends AbstractConfigurable {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -177,6 +184,7 @@ public abstract class Item extends AbstractConfigurable {
       return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
    if (ROTATION.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name) || ANTIALIAS.equals(name)) {
       return advancedCond;
@@ -186,23 +194,28 @@ public abstract class Item extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }
 
   private VisibilityCondition advancedCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return advanced;
     }

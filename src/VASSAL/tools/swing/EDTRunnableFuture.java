@@ -53,6 +53,7 @@ public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
   protected abstract void runOnEDT() throws Exception;
 
   /** {@inheritDoc} */
+  @Override
   public final void run() {
     try {
       runOnEDT();

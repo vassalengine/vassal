@@ -110,6 +110,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public MassKeyCommand() {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         apply();
       }
@@ -117,6 +118,7 @@ public class MassKeyCommand extends AbstractConfigurable
     launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
   }
 
+  @Override
   public void addTo(Buildable parent) {
     if (parent instanceof Map) {
       map = (Map) parent;
@@ -148,10 +150,12 @@ public class MassKeyCommand extends AbstractConfigurable
     globalCommand.setPropertySource(source);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     if (condition == null) {
       return new String[]{
@@ -187,6 +191,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -208,11 +213,13 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static class Prompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, IF_ACTIVE, IF_INACTIVE};
     }
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     if (condition == null) {
       return new Class<?>[]{
@@ -249,11 +256,13 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/keyCommand.gif");
     }
   }
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[0]);
     }
@@ -277,6 +286,7 @@ public class MassKeyCommand extends AbstractConfigurable
       controls.add(typeConfig.getControls());
       controls.add(intConfig.getControls());
       PropertyChangeListener l = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
           Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
@@ -286,6 +296,7 @@ public class MassKeyCommand extends AbstractConfigurable
         }
       };
       PropertyChangeListener l2 = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           setValue(getIntValue());
         }
@@ -295,10 +306,12 @@ public class MassKeyCommand extends AbstractConfigurable
       intConfig.addPropertyChangeListener(l2);
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getValueString() {
       return String.valueOf(getIntValue());
     }
@@ -316,6 +329,7 @@ public class MassKeyCommand extends AbstractConfigurable
       }
     }
 
+    @Override
     public void setValue(Object o) {
       if (typeConfig != null) {
         typeConfig.setFrozen(true);
@@ -345,12 +359,14 @@ public class MassKeyCommand extends AbstractConfigurable
       }
     }
 
+    @Override
     public void setValue(String s) {
       if (s != null) {
         setValue(Integer.valueOf(s));
       }
     }
 
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       setName(name);
       this.key = key;
@@ -358,6 +374,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -409,10 +426,12 @@ public class MassKeyCommand extends AbstractConfigurable
     this.launch = launch;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "GlobalKeyCommand");
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     if (parent instanceof ToolBarComponent) {
       ((ToolBarComponent)parent).getToolBar().remove(launch);
@@ -433,6 +452,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, new PieceFilter() {
+        @Override
         public boolean accept(GamePiece piece) {
           boolean valid = false;
           if (ALWAYS.equals(condition)) {
@@ -450,6 +470,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (DEPRECATED_NAME.equals(key)) {
       setAttribute(NAME, value);
@@ -478,6 +499,7 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       else {
         filter = new PieceFilter() {
+          @Override
           public boolean accept(GamePiece piece) {
             for (String s : names) {
               if (Decorator.getInnermost(piece).getName().equals(s)) {
@@ -529,10 +551,12 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     return getConfigureName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getConfigureTypeName();
   }

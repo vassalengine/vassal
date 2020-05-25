@@ -98,18 +98,22 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     setInner(inner);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command.length() > 0 && key != null) {
       final KeyCommand c =  new KeyCommand(command, key, Decorator
@@ -124,10 +128,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
   }
 
+  @Override
   public String myGetState() {
     return ""; //$NON-NLS-1$
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
@@ -157,11 +163,13 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    * @param stroke
    * @return
    */
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     Command c = piece.keyEvent(stroke);
     return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     /*
      * 1. Are we interested in this key command? Is it our command key? Does it
@@ -295,6 +303,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return loop && index && indexProperty != null && indexProperty.length() > 0;
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (isIndex() && indexProperty.equals(key)) {
       return String.valueOf(indexValue);
@@ -302,6 +311,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return super.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (isIndex() && indexProperty.equals(key)) {
       return String.valueOf(indexValue);
@@ -348,13 +358,16 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return true;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     String s = Resources.getString("Editor.TriggerAction.component_type"); //$NON-NLS-1$
     if (name.length() > 0) {
@@ -363,10 +376,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return s;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TriggerAction.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -414,6 +429,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     if (isIndex()) {
       final ArrayList<String> l = new ArrayList<>();
@@ -438,10 +454,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     key = k;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command, getCommandDescription(name, "Trigger command")); //$NON-NLS-1$
   }
@@ -470,6 +488,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     public Ed(TriggerAction piece) {
 
       final PropertyChangeListener updateListener = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
         }
@@ -580,14 +599,17 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       }
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getState() {
       return ""; //$NON-NLS-1$
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
@@ -613,11 +635,13 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     // Use inner name to prevent recursive looping when reporting errors.
     return piece.getName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getDescription();
   }

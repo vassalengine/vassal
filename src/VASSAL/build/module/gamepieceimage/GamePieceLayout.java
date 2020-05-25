@@ -132,6 +132,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     imageDefn = new GamePieceImage(this);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name:  ",
@@ -142,6 +143,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -155,6 +157,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public static class LayoutConfig implements ConfigurerFactory {
     protected static LayoutConfigurer configurer;
 
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       configurer = new LayoutConfigurer(key, name, (GamePieceLayout) c);
@@ -169,6 +172,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public static class BorderConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{BORDER_PLAIN, BORDER_FANCY, BORDER_3D, BORDER_NONE};
     }
@@ -178,10 +182,12 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     return border.equals(BORDER_PLAIN) || border.equals(BORDER_FANCY);
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME, WIDTH, HEIGHT, BORDER, ITEMS};
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -208,6 +214,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     LayoutConfig.refresh();
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -228,18 +235,22 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{GamePieceImage.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
     setAllAttributesUntranslatable();
   }
@@ -303,14 +314,17 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     items.set(from, temp);
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     super.remove(b);
   }
 
+  @Override
   public Image getVisualizerImage() {
     if (visImage == null) {
       rebuildVisualizerImage();
@@ -405,15 +419,18 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     return se.getValue();
   }
 
+  @Override
   public int getVisualizerHeight() {
     return getLayoutHeight();
   }
 
+  @Override
   public int getVisualizerWidth() {
     return getLayoutWidth();
   }
 
 
+  @Override
   public void rebuildVisualizerImage() {
     visImage = buildImage(imageDefn);
   }

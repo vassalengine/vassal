@@ -99,6 +99,7 @@ public class GlobalMap implements AutoConfigurable,
     scroll.setAlignmentY(0.0f);
 
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         scroll.setVisible(!scroll.isVisible());
       }
@@ -116,6 +117,7 @@ public class GlobalMap implements AutoConfigurable,
    * Expects to be added to a {@link Map}. Adds itself as a {@link
    * GameComponent} and a {@link Drawable}component
    */
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
 
@@ -136,12 +138,15 @@ public class GlobalMap implements AutoConfigurable,
     map.getLayeredPane().add(scroll, JLayeredPane.PALETTE_LAYER);
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public void remove(Buildable b) {
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.removeDrawComponent(this);
@@ -151,6 +156,7 @@ public class GlobalMap implements AutoConfigurable,
     map.getLayeredPane().remove(scroll);
   }
 
+  @Override
   public void build(Element e) {
     AutoConfigurable.Util.buildAttributes(e, this);
   }
@@ -163,6 +169,7 @@ public class GlobalMap implements AutoConfigurable,
   protected static final String BUTTON_TEXT = "buttonText";
   protected static final String DEFAULT_ICON = "/images/overview.gif";
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       TOOLTIP,
@@ -174,10 +181,12 @@ public class GlobalMap implements AutoConfigurable,
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (SCALE.equals(key)) {
       if (value instanceof String) {
@@ -196,6 +205,7 @@ public class GlobalMap implements AutoConfigurable,
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (SCALE.equals(key)) {
       return String.valueOf(scale);
@@ -208,6 +218,7 @@ public class GlobalMap implements AutoConfigurable,
     }
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString(Resources.TOOLTIP_TEXT),
@@ -219,6 +230,7 @@ public class GlobalMap implements AutoConfigurable,
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -231,16 +243,19 @@ public class GlobalMap implements AutoConfigurable,
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c,
                                     String key, String name) {
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
   }
 
+  @Override
   public void draw(Graphics g, Map m) {
     view.repaint();
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
@@ -300,10 +315,12 @@ public class GlobalMap implements AutoConfigurable,
     return null;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
 
+  @Override
   public void setup(boolean show) {
     if (show) {
       scroll.setMaximumSize(scroll.getPreferredSize());
@@ -328,29 +345,36 @@ public class GlobalMap implements AutoConfigurable,
     return Resources.getString("Editor.GlobalMap.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new AutoConfigurer(this);
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "OverviewWindow");
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
@@ -361,6 +385,7 @@ public class GlobalMap implements AutoConfigurable,
       this.view = GlobalMap.this.view;
     }
 
+    @Override
     protected List<GamePiece> getDisplayablePieces() {
       final Point oldPoint = currentMousePosition.getPoint();
       final Point mapPoint =
@@ -374,6 +399,7 @@ public class GlobalMap implements AutoConfigurable,
       return l;
     }
 
+    @Override
     protected double getZoom() {
       return scale;
     }
@@ -393,6 +419,7 @@ public class GlobalMap implements AutoConfigurable,
     /**
      * @return The display size of the entire zoomed overview map
      */
+    @Override
     public Dimension getPreferredSize() {
       final Dimension d = view.getPreferredSize();
       final Insets i = getInsets();
@@ -404,6 +431,7 @@ public class GlobalMap implements AutoConfigurable,
     /**
      * @return The maximum size of the zoomed overview map and scroll pane
      */
+    @Override
     public Dimension getMaximumSize() {
       final Dimension d = getPreferredSize();
 
@@ -417,6 +445,7 @@ public class GlobalMap implements AutoConfigurable,
       return d;
     }
 
+    @Override
     public void setBounds(Rectangle r) {
       final Dimension availSize = map.getView().getParent().getSize();
       final Dimension viewSize = view.getPreferredSize();
@@ -458,6 +487,7 @@ public class GlobalMap implements AutoConfigurable,
      * This funcion is overridden to make sure that the parent layout
      * is redone when the GlobalMap is shown.
      */
+    @Override
     public void setVisible(boolean visible) {
       super.setVisible(visible);
       if (visible) {
@@ -514,22 +544,28 @@ public class GlobalMap implements AutoConfigurable,
       g2d.setTransform(orig_t);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       map.centerAt(componentToMap(e.getPoint()));
     }
 
+    @Override
     public Dimension getPreferredSize() {
       return new Dimension(
         (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * scale),
@@ -538,6 +574,7 @@ public class GlobalMap implements AutoConfigurable,
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "GlobalMap");

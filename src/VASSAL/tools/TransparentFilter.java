@@ -98,6 +98,7 @@ public class TransparentFilter extends RGBImageFilter {
     setAlpha(alpha, c.getRGB());
   }
 
+  @Override
   public int filterRGB(int x, int y, int rgb) {
     double a = alpha;
     for (int i = 0; i < colors.length; ++i) {

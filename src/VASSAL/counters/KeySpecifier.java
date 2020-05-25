@@ -45,6 +45,7 @@ public class KeySpecifier extends JPanel implements KeyListener {
     add(tf);
   }
 
+  @Override
   public void addFocusListener(FocusListener l) {
     if (tf != null)
       tf.addFocusListener(l);
@@ -54,12 +55,15 @@ public class KeySpecifier extends JPanel implements KeyListener {
     tf.addActionListener(l);
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE
       || e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -91,6 +95,7 @@ public class KeySpecifier extends JPanel implements KeyListener {
     tf.setText(s);
   }
 
+  @Override
   public void setEnabled(boolean enable) {
     tf.setEnabled(enable);
     super.setEnabled(enable);

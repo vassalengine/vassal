@@ -143,6 +143,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected MutablePropertiesContainer propsContainer = new Impl();
   protected PropertyChangeListener repaintOnPropertyChange =
       new PropertyChangeListener() {
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       for (Map map : Map.getMapList()) {
         map.repaint();
@@ -208,6 +209,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         quit();
       }
@@ -230,6 +232,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   protected abstract void build() throws IOException;
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (MODULE_NAME.equals(name)) {
       if (Localization.getInstance().isTranslationInProgress()) {
@@ -264,6 +267,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (MODULE_NAME.equals(name)) {
       return gameName;
@@ -301,6 +305,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return Info.compareVersions(v1, v2);
   }
 
+  @Override
   public void addTo(Buildable b) {
   }
 
@@ -308,13 +313,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return Resources.getString("Editor.GameModule.component_type");  //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm");  //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       MODULE_NAME,
@@ -325,6 +333,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
@@ -333,6 +342,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -341,6 +351,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
       Map.class,
@@ -574,6 +585,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Uses the registered  {@link CommandEncoder}s
    * to decode a String into a {@link Command}.
    */
+  @Override
   public Command decode(String command) {
     if (command == null) {
       return null;
@@ -593,6 +605,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Uses the registered {@link CommandEncoder}s to encode a {@link Command} into a String object
    */
+  @Override
   public String encode(Command c) {
     if (c == null) {
       return null;
@@ -646,6 +659,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * @return the JToolBar of the command window
    */
+  @Override
   public JToolBar getToolBar() {
     return frame.getToolBar();
   }
@@ -891,14 +905,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     lastSavedConfiguration = buildString();
   }
 
+  @Override
   public String generateGpId() {
     return String.valueOf(nextGpId++);
   }
 
+  @Override
   public int getNextGpId() {
     return nextGpId;
   }
 
+  @Override
   public void setNextGpId(int id) {
     nextGpId = id;
   }
@@ -1023,6 +1040,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Return values of Global properties
    */
+  @Override
   public Object getProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMySide();
@@ -1038,15 +1056,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return p == null ? null : p.getPropertyValue();
   }
 
+  @Override
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
 
+  @Override
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
   }
 
+  @Override
   public MutableProperty removeMutableProperty(String key) {
     MutableProperty p = propsContainer.removeMutableProperty(key);
     if (p != null) {
@@ -1055,10 +1076,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return p;
   }
 
+  @Override
   public String getMutablePropertiesContainerId() {
     return "Module";
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMyLocalizedSide();
@@ -1097,6 +1120,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(MODULE_VERSION, false);

@@ -145,6 +145,7 @@ public class ImageIOImageLoader implements ImageLoader {
    * @throws UnrecognizedImageTypeException if the image type is not recognized
    * @throws ImageIOException if reading the image goes wrong
    */
+  @Override
   public BufferedImage load(
     String name,
     InputStream in,
@@ -442,6 +443,7 @@ public class ImageIOImageLoader implements ImageLoader {
      * @throws UnrecognizedImageTypeException if the image type is unknown
      * @throws IOException if reading the image goes wrong
      */
+    @Override
     public BufferedImage run(String name, InputStream in) throws IOException {
       final BufferedImage img =
         ImageIO.read(new MemoryCacheImageInputStream(in));
@@ -464,6 +466,7 @@ public class ImageIOImageLoader implements ImageLoader {
      * @throws UnrecognizedImageTypeException if the image type is unknown
      * @throws IOException if reading the image goes wrong
      */
+    @Override
     public Dimension run(String name, InputStream in) throws IOException {
       final ImageInputStream stream = new MemoryCacheImageInputStream(in);
 
@@ -565,6 +568,7 @@ public class ImageIOImageLoader implements ImageLoader {
    * @throws UnrecognizedImageTypeException if the image type is not recognized
    * @throws ImageIOException if reading the image goes wrong
    */
+  @Override
   public Dimension size(String name, InputStream in) throws ImageIOException {
     return wrapImageIO(name, in, readSize);
   }

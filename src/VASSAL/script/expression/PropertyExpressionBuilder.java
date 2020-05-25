@@ -40,6 +40,7 @@ public class PropertyExpressionBuilder extends ExpressionBuilder {
    * @param s Old-style string
    * @return expression
    */
+  @Override
   public String convert(String s) {
     return PropertiesPieceFilter.toBeanShellString(s);
   }

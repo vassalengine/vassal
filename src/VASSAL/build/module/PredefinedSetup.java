@@ -66,6 +66,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     launchAction = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -75,18 +76,21 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     menu = new MenuProxy();
 
     showFile = new VisibilityCondition() {
+      @Override
       public boolean shouldBeVisible() {
         return !isMenu && useFile;
       }
     };
 
     showUseFile = new VisibilityCondition() {
+      @Override
       public boolean shouldBeVisible() {
         return !isMenu;
       }
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
@@ -96,6 +100,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -105,6 +110,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -114,6 +120,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -132,6 +139,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -158,6 +166,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FILE.equals(name)) {
       return showFile;
@@ -212,6 +221,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     this.isMenu = isMenu;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     if (parent instanceof GameModule) {
       MenuManager.getInstance().addToSection("PredefinedSetup", getMenuInUse()); //$NON-NLS-1$
@@ -225,6 +235,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     GameModule.getGameModule().getWizardSupport().addPredefinedSetup(this);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     if (parent instanceof GameModule) {
       MenuManager.getInstance()
@@ -238,6 +249,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return isMenu ? new Class<?>[]{PredefinedSetup.class} : new Class<?>[0];
   }
@@ -246,6 +258,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
   }
@@ -262,10 +275,12 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return fileName;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     launchAction.setEnabled(!gameStarting);
   }

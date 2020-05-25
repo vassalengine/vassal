@@ -27,6 +27,7 @@ import java.util.Comparator;
  * If in the same Stack, order by position within the Stack
  */
 public class PieceSorter implements Comparator<GamePiece> {
+  @Override
   public int compare(GamePiece p1, GamePiece p2) {
     if (p1.getMap() == null) {
       return p2.getMap() == null ? 0 : 1;

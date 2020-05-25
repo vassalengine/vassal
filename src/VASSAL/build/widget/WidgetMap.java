@@ -14,6 +14,7 @@ public class WidgetMap extends Map {
   /*
    * Minimal setup - remove all docking and toolbar setup
    */
+  @Override
   public void setup(boolean show) {
     if (show) {
       toolBar.setVisible(true);
@@ -29,6 +30,7 @@ public class WidgetMap extends Map {
   /**
    * Widget maps are always undocked
    */
+  @Override
   public boolean shouldDockIntoMainWindow() {
     return false;
   }
@@ -36,9 +38,11 @@ public class WidgetMap extends Map {
   /*
    * Hide options relating to toolbar buttons
    */
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_LAUNCH_BUTTON.equals(name) || BUTTON_NAME.equals(name) || ICON.equals(name) || HOTKEY.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return false;
         }
@@ -49,6 +53,7 @@ public class WidgetMap extends Map {
     }
   }
 
+  @Override
   public JComponent getView() {
     return super.getView();
   }

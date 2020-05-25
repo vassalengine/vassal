@@ -38,6 +38,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     this.log = log;
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(String.valueOf(evt.getNewValue())); //$NON-NLS-1$
       }
@@ -58,6 +59,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     }
   }
 
+  @Override
   public void run() {
     while (true) {
       try {
@@ -72,6 +74,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     }
   }
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     if (log != null
       && evt.getPropertyName().equals(ChatServerConnection.AVAILABLE_ROOMS)) {

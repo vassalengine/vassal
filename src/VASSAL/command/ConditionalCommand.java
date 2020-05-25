@@ -40,6 +40,7 @@ public class ConditionalCommand extends Command {
     this.delegate = delegate;
   }
 
+  @Override
   protected void executeCommand() {
     for (Condition condition : conditions) {
       if (!condition.isSatisfied()) {
@@ -49,6 +50,7 @@ public class ConditionalCommand extends Command {
     delegate.execute();
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }
@@ -101,6 +103,7 @@ public class ConditionalCommand extends Command {
       return Collections.enumeration(allowed);
     }
 
+    @Override
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
@@ -115,6 +118,7 @@ public class ConditionalCommand extends Command {
       this.sub = sub;
     }
 
+    @Override
     public boolean isSatisfied() {
       return !sub.isSatisfied();
     }
@@ -142,6 +146,7 @@ public class ConditionalCommand extends Command {
     }
 
 // FIXME: what versions are being compared here?
+    @Override
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
@@ -167,6 +172,7 @@ public class ConditionalCommand extends Command {
     }
 
 // FIXME: what versions are being compared here?
+    @Override
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);

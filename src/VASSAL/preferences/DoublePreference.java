@@ -37,14 +37,17 @@ public class DoublePreference extends BasicPreference {
     return "Decimal Number Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return Double.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return Double.toString(defaultValue);
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     if (value instanceof String) {
       value = Double.valueOf((String) value);
@@ -53,11 +56,13 @@ public class DoublePreference extends BasicPreference {
 
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config =
         new DoubleConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }

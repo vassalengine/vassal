@@ -231,14 +231,17 @@ public class MovementReporter {
       super(moveCommand);
     }
 
+    @Override
     protected MoveSummary createMoveSummary(AddPiece c) {
       return new HiddenMoveSummary(c);
     }
 
+    @Override
     protected MoveSummary createMoveSummary(MovePiece c) {
       return new HiddenMoveSummary(c);
     }
 
+    @Override
     protected boolean shouldReport(AddPiece addPiece) {
       GamePiece target = addPiece.getTarget();
       if (target != null
@@ -252,6 +255,7 @@ public class MovementReporter {
       }
     }
 
+    @Override
     protected boolean shouldReport(MovePiece movePiece) {
       GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
       if (target == null) {
@@ -273,6 +277,7 @@ public class MovementReporter {
       }
     }
 
+    @Override
     protected String getLocation(Map map, Point p) {
       return "?";
     }
@@ -378,6 +383,7 @@ public class MovementReporter {
       super(c);
     }
 
+    @Override
     public String getPieceName() {
       final StringBuilder names = new StringBuilder();
       boolean first = true;

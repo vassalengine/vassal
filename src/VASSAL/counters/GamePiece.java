@@ -127,5 +127,6 @@ public interface GamePiece extends PropertySource {
    * in the piece's {@link #getState} method.  */
   public void setProperty(Object key, Object val);
 
+  @Override
   public Object getProperty(Object key);
 }

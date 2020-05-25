@@ -109,6 +109,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   protected MultiRoll() {
 
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         rollCancelled = true;
         setVisible(false);
@@ -160,6 +161,7 @@ public class MultiRoll extends JDialog implements ActionListener {
    * Reset the status display before making visible in case preferences
    * have been changed.
    */
+  @Override
   public void setVisible(boolean b) {
     setServerHeader();
     setEmailHeader();
@@ -198,6 +200,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     descText = new JTextField(20);
     descText.setText(GameModule.getGameModule().getChatter().getInputField().getText());
     descText.addKeyListener(new java.awt.event.KeyAdapter() {
+      @Override
       public void keyReleased(java.awt.event.KeyEvent e) {
         description = descText.getText();
       }
@@ -223,6 +226,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     // Add Some buttons
     buttonPanel = new JPanel();
     rollButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         rollCancelled = false;
         int dieCount = 0;
@@ -237,6 +241,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       }
     });
     canButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         rollCancelled = true;
         setVisible(false);
@@ -244,6 +249,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     });
 
     emailButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         updateEmailAddress();
       }
@@ -299,6 +305,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     popup.show(emailButton, emailButton.getX(), emailButton.getY());
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     String address = e.getActionCommand();
     Prefs prefs = GameModule.getGameModule().getPrefs();
@@ -387,6 +394,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     Border loweredbevel = BorderFactory.createLoweredBevelBorder();
     Border myBorder = raisedbevel;
 
+    @Override
     public void setEnabled(boolean enabled) {
       col3.setEnabled(enabled);
       col4.setEnabled(enabled);
@@ -405,6 +413,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col1.setPreferredSize(new Dimension(COL1_WIDTH, ROW_HEIGHT));
       col1.setState(useDie[myRow]);
       col1.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           col1.switchState();
           useDie[myRow] = col1.getState();
@@ -418,11 +427,13 @@ public class MultiRoll extends JDialog implements ActionListener {
       col3.setPreferredSize(new Dimension(COL3_WIDTH, ROW_HEIGHT));
       col3.setText(rolls[myRow].getDescription() + "");
       col3.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
         public void keyReleased(java.awt.event.KeyEvent e) {
           rolls[myRow].setDescription(col3.getText());
         }
       });
       col3.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
           if (!col3.hasFocus()) {
             col3.selectAll();
@@ -444,6 +455,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col4.setSelectedIndex(defaultNDIdx);
       col4.setPreferredSize(new Dimension(COL4_WIDTH, ROW_HEIGHT));
       col4.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
           rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
@@ -464,6 +476,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col5.setSelectedIndex(defaultNSIdx);
       col5.setPreferredSize(new Dimension(COL5_WIDTH, ROW_HEIGHT));
       col5.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           JComboBox cb = (JComboBox) e.getSource();
           rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
@@ -477,6 +490,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col6.setPreferredSize(new Dimension(COL6_WIDTH, ROW_HEIGHT));
       col6.setText(rolls[myRow].getPlus() + "");
       col6.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
         public void keyReleased(java.awt.event.KeyEvent e) {
           try {
             rolls[myRow].setPlus(Integer.parseInt(col3.getText()));
@@ -496,6 +510,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col7.setHorizontalAlignment(JCheckBox.CENTER);
       col7.setSelected(rolls[myRow].isReportTotal());
       col7.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           rolls[myRow].setReportTotal((e.getStateChange() == ItemEvent.SELECTED));
         }

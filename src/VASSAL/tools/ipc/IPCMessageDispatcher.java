@@ -17,6 +17,7 @@ public class IPCMessageDispatcher implements Runnable {
     this.out = out;
   }
 
+  @Override
   public void run() {
     IPCMessage msg;
 

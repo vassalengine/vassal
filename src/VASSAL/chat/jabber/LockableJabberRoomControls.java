@@ -37,9 +37,11 @@ public class LockableJabberRoomControls extends LockableRoomControls {
 
   protected ActionListener extendedRoomCreator;
 
+  @Override
   public void initializeControls(final ChatServerControls controls) {
     super.initializeControls(controls);
     extendedRoomCreator = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (client.isConnected()) {
           final Properties props = JabberRoom.configureNewRoom();
@@ -57,6 +59,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       controls.addExtendedNewRoomHandler(extendedRoomCreator);
   }
 
+  @Override
   public void uninitializeControls(final ChatServerControls controls) {
     super.uninitializeControls(controls);
     controls.removeExtendedNewRoomHandler(extendedRoomCreator);
@@ -66,6 +69,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     super(client);
   }
 
+  @Override
   protected void addLockRoomAction(JPopupMenu popup, Room target) {
     JabberClient c = getJabberClient();
     if (c != null) {
@@ -73,6 +77,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     }
   }
 
+  @Override
   public JPopupMenu buildPopupForRoom(Room target, JTree tree) {
     final JPopupMenu popup = super.buildPopupForRoom(target, tree);
     popup.add(new RoomPropertiesAction((JabberRoom) target));
@@ -97,6 +102,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     client.setRoom(room);
   }
 
+  @Override
   protected void createRoom(String name) {
     if (client.isConnected()) {
       if (name != null && name.length() > 0) {
@@ -124,6 +130,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       this.client = client;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       client.lockRoom(target);
     }
@@ -138,6 +145,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
       target = room;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       target.showConfig();
     }

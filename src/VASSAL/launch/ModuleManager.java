@@ -105,6 +105,7 @@ public class ModuleManager {
     if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
       // show the translation window in translation mode
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           // FIXME: does this window exit on close?
           new TranslateVassalWindow(null).setVisible(true);
@@ -338,6 +339,7 @@ public class ModuleManager {
     else new ModuleManagerMenuManager();
 
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         launch();
       }
@@ -405,6 +407,7 @@ public class ModuleManager {
       this.serverSocket = serverSocket;
     }
 
+    @Override
     public void run() {
       try {
         ObjectInputStream in = null;
@@ -496,6 +499,7 @@ public class ModuleManager {
       this.lr = lr;
     }
 
+    @Override
     public void run() {
       result = handle();
     }

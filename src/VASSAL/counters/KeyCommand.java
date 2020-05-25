@@ -101,10 +101,12 @@ public class KeyCommand extends AbstractAction {
     return target;
   }
 
+  @Override
   public boolean isEnabled() {
     return enabled;
   }
 
+  @Override
   public void setEnabled(boolean b) {
     enabled = b;
   }
@@ -125,6 +127,7 @@ public class KeyCommand extends AbstractAction {
     this.global = global;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     if (stroke != null) {
       if (global) {

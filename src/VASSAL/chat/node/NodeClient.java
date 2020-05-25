@@ -127,6 +127,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     soundEncoder = new SoundEncoder(this);
     inviteEncoder = new InviteEncoder(this);
     nameChangeListener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         SimplePlayer p = (SimplePlayer) getUserInfo();
         p.setName((String) evt.getNewValue());
@@ -134,6 +135,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       }
     };
     profileChangeListener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         SimplePlayer p = (SimplePlayer) getUserInfo();
         SimpleStatus s = (SimpleStatus) p.getStatus();
@@ -146,6 +148,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     };
   }
 
+  @Override
   public void setConnected(boolean connect) {
     if (connect) {
       if (!isConnected()) {
@@ -202,10 +205,12 @@ public abstract class NodeClient implements LockableChatServerConnection,
     this.defaultRoomName = defaultRoomName;
   }
 
+  @Override
   public String getDefaultRoomName() {
     return defaultRoomName;
   }
 
+  @Override
   public boolean isDefaultRoom(Room r) {
     return r == null ? false : r.getName().equals(getDefaultRoomName());
   }
@@ -217,6 +222,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
 
+  @Override
   public void sendToOthers(Command c) {
     sendToOthers(encoder.encode(c));
   }
@@ -255,16 +261,19 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
 
+  @Override
   public void sendTo(Player recipient, Command c) {
     String path = new SequenceEncoder(moduleName, '/')
       .append("*").append(recipient.getId()).getValue(); //$NON-NLS-1$
     forward(path, encoder.encode(c));
   }
 
+  @Override
   public void doKick(Player kickee) {
     send(Protocol.encodeKickCommand(kickee.getId()));
   }
 
+  @Override
   public boolean isKickable(Player kickee) {
     if (kickee != null) {
       final Room room = getRoom();
@@ -286,6 +295,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     return false;
   }
 
+  @Override
   public boolean isInvitable(Player invitee) {
     if (invitee != null) {
       final Room room = getRoom();
@@ -310,6 +320,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
    * @param invitee
    *          Player to invite
    */
+  @Override
   public void sendInvite(Player invitee) {
     sendTo(invitee, new InviteCommand(me.getName(), me.getId(), getRoom()
         .getName()));
@@ -323,6 +334,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
    * @param room
    *          Inviting room
    */
+  @Override
   public void doInvite(String playerId, String roomName) {
     for (Room room : getAvailableRooms()) {
       if (room.getName().equals(roomName)) {
@@ -337,16 +349,19 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
 
+  @Override
   public Room getRoom() {
     return currentRoom;
   }
 
+  @Override
   public Room[] getAvailableRooms() {
     return allRooms;
   }
 
+  @Override
   public void addPropertyChangeListener(String propertyName,
-      PropertyChangeListener l) {
+                                        PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
 
@@ -354,6 +369,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public Player getUserInfo() {
     return me;
   }
@@ -362,6 +378,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     return me;
   }
 
+  @Override
   public void setUserInfo(Player p) {
     me.setName(p.getName());
     me.setStatus(p.getStatus());
@@ -369,6 +386,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     propSupport.firePropertyChange(PLAYER_INFO, null, me);
   }
 
+  @Override
   public void lockRoom(LockableRoom r) {
     if (r instanceof NodeRoom) {
       final NodeRoom n = (NodeRoom) r;
@@ -389,6 +407,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
 
+  @Override
   public void setRoom(Room r) {
     setRoom(r, null);
   }
@@ -565,6 +584,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     msgSvr.postMessage(msg);
   }
 
+  @Override
   public Player stringToPlayer(String s) {
     NodePlayer p = null;
     try {
@@ -579,11 +599,13 @@ public abstract class NodeClient implements LockableChatServerConnection,
     return p;
   }
 
+  @Override
   public String playerToString(Player p) {
     Properties props = ((NodePlayer) p).toProperties();
     return new PropertiesEncoder(props).getStringValue();
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     playerStatusControls.initializeControls(controls);
     messageBoardControls.initializeControls(controls);
@@ -610,6 +632,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     messageBoardControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);

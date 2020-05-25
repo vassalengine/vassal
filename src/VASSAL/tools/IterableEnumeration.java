@@ -43,16 +43,19 @@ public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Iterator<T> iterator() {
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasNext() {
     return e.hasMoreElements();
   }
 
   /** {@inheritDoc} */
+  @Override
   public T next() {
     return e.nextElement();
   }
@@ -63,6 +66,7 @@ public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
    * @throws UnsupportedOperationException becuase <code>Enumeration</code>
    * do not permit removal of elements.
    */
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

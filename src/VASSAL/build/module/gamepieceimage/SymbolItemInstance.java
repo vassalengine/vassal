@@ -52,6 +52,7 @@ public class SymbolItemInstance extends ItemInstance {
     decode(code);
   }
 
+  @Override
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -111,6 +112,7 @@ public class SymbolItemInstance extends ItemInstance {
     return symbol2;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Unit Size:  ",
@@ -122,6 +124,7 @@ public class SymbolItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       SizeConfig.class,
@@ -133,6 +136,7 @@ public class SymbolItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       SIZE,
@@ -144,6 +148,7 @@ public class SymbolItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (SIZE.equals(key)) {
       size = (String) value;
@@ -178,6 +183,7 @@ public class SymbolItemInstance extends ItemInstance {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (SIZE.equals(key)) {
       return size;
@@ -202,36 +208,42 @@ public class SymbolItemInstance extends ItemInstance {
   }
 
   public static class SizeConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new SizeConfigurer(key, name);
     }
   }
 
   public static class Symbol1Config implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new SymbolConfigurer(key, name);
     }
   }
 
   public static class Symbol2Config implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new SymbolConfigurer(key, name);
     }
   }
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getBgColor());
     }
   }
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getFgColor());
     }
   }
 
   public static class SizeColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((SymbolItemInstance) c).getFgColor());
     }

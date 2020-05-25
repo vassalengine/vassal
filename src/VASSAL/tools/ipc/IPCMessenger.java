@@ -60,6 +60,7 @@ public class IPCMessenger {
     this.lsup = new DefaultMultiEventListenerSupport(this);
 
     lsup.addEventListener(IPCMessage.class, new EventListener<>() {
+      @Override
       public void receive(Object src, IPCMessage msg) {
         if (msg.isReply()) {
           final CompletableFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
@@ -70,6 +71,7 @@ public class IPCMessenger {
     });
 
     lsup.addEventListener(Halt.class, new EventListener<>() {
+      @Override
       public void receive(Object src, Halt halt) {
         try {
           send(new Fin(halt));

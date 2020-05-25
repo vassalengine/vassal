@@ -37,22 +37,27 @@ public class StringPreference extends BasicPreference {
     return "String Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return String.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     defaultValue = (String) value;
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new StringConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }});

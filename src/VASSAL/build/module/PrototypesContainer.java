@@ -44,33 +44,41 @@ public class PrototypesContainer extends AbstractConfigurable {
   private Map<String,PrototypeDefinition> definitions =
     new HashMap<>();
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{PrototypeDefinition.class};
   }
@@ -79,12 +87,14 @@ public class PrototypesContainer extends AbstractConfigurable {
     return Resources.getString("Editor.PrototypesContainer.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof PrototypeDefinition) {
       PrototypeDefinition def = (PrototypeDefinition) b;
       definitions.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             definitions.remove(evt.getOldValue());
@@ -96,10 +106,12 @@ public class PrototypesContainer extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Prototypes.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
@@ -119,6 +131,7 @@ public class PrototypesContainer extends AbstractConfigurable {
     return instance.definitions.get(name);
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData data = super.getI18nData();
     data.setPrefix(""); //$NON-NLS-1$

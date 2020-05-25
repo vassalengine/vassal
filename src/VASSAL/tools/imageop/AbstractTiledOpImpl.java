@@ -65,30 +65,35 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Dimension getTileSize() {
     if (tileSize == null) fixTileSize();
     return new Dimension(tileSize);
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getTileHeight() {
     if (tileSize == null) fixTileSize();
     return tileSize.height;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getTileWidth() {
     if (tileSize == null) fixTileSize();
     return tileSize.width;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getNumXTiles() {
     if (tileSize == null) fixTileSize();
     return numXTiles;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getNumYTiles() {
     if (tileSize == null) fixTileSize();
     return numYTiles;
@@ -100,6 +105,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    *
    * @return the <code>ImageOp</code> for tile <code>(tileX,tileY)</code>
    */
+  @Override
   public ImageOp getTileOp(int tileX, int tileY) {
     ImageOp top = tiles[tileY*numXTiles + tileX];
     if (top == null) {
@@ -117,6 +123,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException unless {@code 0 <= tileX < numXTiles}
    * and {@code 0 <= tileY < numYTiles}.
    */
+  @Override
   public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException
   {
@@ -133,6 +140,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException unless {@code 0 <= tileX < numXTiles}
    * and {@code 0 <= tileY < numYTiles}.
    */
+  @Override
   public Future<BufferedImage> getFutureTile(
     int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
   {
@@ -148,6 +156,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    *
    * @throws IllegalArgumentException if <code>rect == null</code>.
    */
+  @Override
   public Point[] getTileIndices(Rectangle rect) {
     if (rect == null) throw new IllegalArgumentException();
 

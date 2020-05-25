@@ -32,6 +32,7 @@ public class ModulePlugin extends ModuleExtension {
     super(archive);
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new RegCmd(getName(), getVersion());
   }
@@ -42,11 +43,13 @@ public class ModulePlugin extends ModuleExtension {
       super(name, version);
     }
 
+    @Override
     protected String getVersionErrorMsg(String v) {
       return Resources.getString("ModulePlugin.wrong_plugin_version", //$NON-NLS-1$
           getVersion(), getName(), v);
     }
 
+    @Override
     protected String getNotLoadedMsg() {
       return Resources.getString("ModulePlugin.load_plugin", getName(), PluginsLoader.getPluginDirectory()); //$NON-NLS-1$
     }

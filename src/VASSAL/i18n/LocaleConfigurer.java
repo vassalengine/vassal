@@ -66,6 +66,7 @@ public class LocaleConfigurer extends Configurer {
     setValue(val);
   }
 
+  @Override
   public String getValueString() {
     return (String) value;
   }
@@ -78,6 +79,7 @@ public class LocaleConfigurer extends Configurer {
     setValue(localeToString(l));
   }
 
+  @Override
   public void setValue(String s) {
     getControls();
     if (!noUpdate && langBox != null && countryBox != null) {
@@ -104,12 +106,14 @@ public class LocaleConfigurer extends Configurer {
     countryBox.setSelectedItem(country);
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (panel == null) {
       panel = Box.createHorizontalBox();
       langBox = new JComboBox(getLanguageList());
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
       langBox.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
         }});
@@ -119,6 +123,7 @@ public class LocaleConfigurer extends Configurer {
       countryBox = new JComboBox(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
       countryBox.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
         }});

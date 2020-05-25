@@ -54,6 +54,7 @@ public class Documentation extends AbstractConfigurable {
     return mb.getMenu(mb.getMenuCount()-1);
   }
 
+  @Override
   public void build(Element el) {
     if (el == null) {
       final AboutScreen about = new AboutScreen();
@@ -80,26 +81,32 @@ public class Documentation extends AbstractConfigurable {
     return Info.getDocDir();
   }
 
+  @Override
   public void addTo(Buildable b) {
     validator =
       new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
+  @Override
   public void removeFrom(Buildable b) {
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
       BrowserHelpFile.class,
@@ -114,10 +121,12 @@ public class Documentation extends AbstractConfigurable {
       "Editor.Documentation.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
@@ -130,13 +139,16 @@ public class Documentation extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     return null;
   }

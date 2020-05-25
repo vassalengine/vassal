@@ -83,6 +83,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -173,6 +174,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       TITLE,
@@ -181,6 +183,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (TITLE.equals(key)) {
       return name;
@@ -191,6 +194,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (TITLE.equals(key)) {
       name = (String) value;
@@ -206,42 +210,51 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   protected MenuItemProxy launchItem;
 
+  @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
     MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
     launch.setEnabled(true);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
                .removeFromSection("Documentation.Module", launchItem);
     launch.setEnabled(false);
   }
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public String getConfigureName() {
     return name;
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new MyConfigurer(new ConfigSupport());
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm","HtmlHelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public void remove(Buildable child) {
   }
 
@@ -258,6 +271,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     public static final String DIR = "dir"; //$NON-NLS-1$
     protected File dir;
 
+    @Override
     public String[] getAttributeDescriptions() {
       return new String[]{
         "Menu Entry:  ",
@@ -266,6 +280,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       };
     }
 
+    @Override
     public String[] getAttributeNames() {
       return new String[]{
         TITLE, DIR,
@@ -273,6 +288,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       };
     }
 
+    @Override
     public Class<?>[] getAttributeTypes() {
       return new Class<?>[]{
         String.class,
@@ -281,6 +297,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       };
     }
 
+    @Override
     public String getAttributeValueString(String key) {
       if (DIR.equals(key)) {
         return dir == null ? null : dir.getPath();
@@ -290,10 +307,12 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       }
     }
 
+    @Override
     public VisibilityCondition getAttributeVisibility(String name) {
       return null;
     }
 
+    @Override
     public void setAttribute(String key, Object value) {
       if (DIR.equals(key)) {
         dir = (File) value;
@@ -353,56 +372,71 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       }
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener l) {
       BrowserHelpFile.this.addPropertyChangeListener(l);
     }
 
+    @Override
     public Class<?>[] getAllowableConfigureComponents() {
       return BrowserHelpFile.this.getAllowableConfigureComponents();
     }
 
+    @Override
     public Configurable[] getConfigureComponents() {
       return BrowserHelpFile.this.getConfigureComponents();
     }
 
+    @Override
     public String getConfigureName() {
       return BrowserHelpFile.this.getConfigureName();
     }
 
+    @Override
     public VASSAL.configure.Configurer getConfigurer() {
       return null;
     }
 
+    @Override
     public HelpFile getHelpFile() {
       return BrowserHelpFile.this.getHelpFile();
     }
 
+    @Override
     public void remove(Buildable child) {
     }
 
+    @Override
     public void removeFrom(Buildable parent) {
     }
 
+    @Override
     public void add(Buildable child) {
     }
 
+    @Override
     public void addTo(Buildable parent) {
     }
 
+    @Override
     public void build(Element e) {
     }
 
+    @Override
     public Element getBuildElement(Document doc) {
       return null;
     }
 
+    @Override
     public ComponentI18nData getI18nData() {
       return null;
     }
   }
   public static class ContentsConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new DirectoryConfigurer(key, name){
+        @Override
         public Component getControls() {
           Component controls = super.getControls();
           tf.setEditable(false);
@@ -423,6 +457,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       super(c);
     }
 
+    @Override
     public Object getValue() {
       if (target != null) {
         ((ConfigSupport)target).packContents();
@@ -431,6 +466,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null,

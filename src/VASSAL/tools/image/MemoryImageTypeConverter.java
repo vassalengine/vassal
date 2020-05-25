@@ -33,6 +33,7 @@ import VASSAL.tools.lang.Reference;
 public class MemoryImageTypeConverter implements ImageTypeConverter {
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage convert(Reference<BufferedImage> ref, int type)
                                                       throws ImageIOException {
     if (ref == null) throw new IllegalArgumentException();

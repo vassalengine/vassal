@@ -102,6 +102,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     setInner(inner);
   }
 
+  @Override
   public String getDescription() {
     String d = "Area Of Effect";
     if (description.length() > 0) {
@@ -110,6 +111,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return d;
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(transparencyColor);
@@ -126,6 +128,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return ID + se.getValue();
   }
 
+  @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();    // Discard ID
@@ -148,17 +151,20 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   // State does not change during the game
+  @Override
   public String myGetState() {
     return alwaysActive ? "" : String.valueOf(active);
   }
 
   // State does not change during the game
+  @Override
   public void mySetState(String newState) {
     if (!alwaysActive) {
       active = "true".equals(newState);
     }
   }
 
+  @Override
   public Rectangle boundingBox() {
     // TODO: Need the context of the parent Component, because the transparency is only drawn
     // on a Map.View object.  Because this context is not known, the bounding box returned by
@@ -167,14 +173,17 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if ((alwaysActive || active) && mapShaderName == null) {
       // The transparency is only drawn on a Map.View component. Only the
@@ -264,6 +273,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   // No hot-keys
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       if (alwaysActive || activateCommand.length() == 0) {
@@ -277,6 +287,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   // No hot-keys
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
@@ -289,14 +300,17 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return c;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("AreaOfEffect.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new TraitEditor(this);
   }
 
+  @Override
   public Area getArea(MapShader shader) {
     Area a = null;
     final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece,MapShader.ShadedPiece.class);
@@ -358,6 +372,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       final JButton b = new JButton("Select");
       selectShader.add(b);
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
           d.setVisible(true);
@@ -380,6 +395,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       fixedRadius = new BooleanConfigurer(null, "Fixed Radius?",
                                           Boolean.valueOf(trait.fixedRadius));
       fixedRadius.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateRangeVisibility();
         }
@@ -399,6 +415,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       updateRangeVisibility();
 
       alwaysActive.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateCommandVisibility();
         }
@@ -406,6 +423,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       updateCommandVisibility();
 
       useMapShader.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateFillVisibility();
         }
@@ -446,14 +464,17 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       }
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getState() {
       return "false";
     }
 
+    @Override
     public String getType() {
       final boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
       final SequenceEncoder se = new SequenceEncoder(';');
@@ -477,6 +498,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(activateCommand, getCommandDescription(description, "Toggle Visible command"));
   }

@@ -43,6 +43,7 @@ public class SoundEncoder implements CommandEncoder {
     playerEncoder = p;
   }
 
+  @Override
   public Command decode(String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
@@ -56,6 +57,7 @@ public class SoundEncoder implements CommandEncoder {
     }
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof Cmd) {
@@ -85,6 +87,7 @@ public class SoundEncoder implements CommandEncoder {
       this.sender = player;
     }
 
+    @Override
     protected void executeCommand() {
       /**
        * Ignore if we don't want to hear from this player anymore, we are
@@ -124,6 +127,7 @@ public class SoundEncoder implements CommandEncoder {
       updating = false;
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

@@ -88,6 +88,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     super(key, name, options);
   }
 
+  @Override
   public java.awt.Component getControls() {
     final JPanel p = (JPanel) super.getControls();
     if (button == null) {
@@ -131,6 +132,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
       setMaximumSize(new Dimension(size, size));
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       new ExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);
     }

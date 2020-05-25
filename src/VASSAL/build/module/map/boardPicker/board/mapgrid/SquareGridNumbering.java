@@ -48,16 +48,19 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   private SquareGrid grid;
 
+  @Override
   public void addTo(Buildable parent) {
     grid = (SquareGrid) parent;
     grid.setGridNumbering(this);
   }
 
+  @Override
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void paint(Graphics g) {
           final Graphics2D g2d = (Graphics2D) g;
           final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
@@ -77,6 +80,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
           g2d.setTransform(orig_t);
         }
 
+        @Override
         public Dimension getPreferredSize() {
           return new Dimension(3 * (int) grid.getDx(), 3 * (int) grid.getDy());
         }
@@ -86,6 +90,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
   }
 
   /** Draw the numbering, if visible */
+  @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
     if (visible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
@@ -179,6 +184,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
     g.setClip(oldClip);
   }
 
+  @Override
   public int getColumn(Point p) {
     int col = (int) Math.floor((p.x - grid.getOrigin().x) / grid.getDx() + 0.5);
     if (hDescending) {
@@ -189,6 +195,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
     }
   }
 
+  @Override
   public int getRow(Point p) {
     int row = (int) ((p.y - grid.getOrigin().y) / grid.getDy() + 0.5);
     if (vDescending) {
@@ -211,6 +218,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
         (int) (row * grid.getDy() + grid.getOrigin().y));
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     grid.setGridNumbering(null);
   }

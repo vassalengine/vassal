@@ -77,6 +77,7 @@ public class SetGlobalProperty extends DynamicProperty {
     super(type, p);
   }
 
+  @Override
   public String getDescription() {
     String s = "Set Global Property";
     if (description.length() > 0) {
@@ -85,6 +86,7 @@ public class SetGlobalProperty extends DynamicProperty {
     return s;
   }
 
+  @Override
   public void mySetType(String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
@@ -105,6 +107,7 @@ public class SetGlobalProperty extends DynamicProperty {
     searchName = sd.nextToken("");
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
@@ -116,10 +119,12 @@ public class SetGlobalProperty extends DynamicProperty {
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public void mySetState(String state) {
   }
 
@@ -127,6 +132,7 @@ public class SetGlobalProperty extends DynamicProperty {
    * Duplicate code from Decorator for setProperty(), getProperty() Do not call super.xxxProperty() as we no longer
    * contain a DynamicProperty that can be manipulated, but you cannot call super.super.xxxProperty().
    */
+  @Override
   public Object getProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getKeyCommands();
@@ -145,6 +151,7 @@ public class SetGlobalProperty extends DynamicProperty {
     }
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getProperty(key);
@@ -163,6 +170,7 @@ public class SetGlobalProperty extends DynamicProperty {
     }
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (Properties.INNER.equals(key)) {
       setInner((GamePiece) val);
@@ -175,6 +183,7 @@ public class SetGlobalProperty extends DynamicProperty {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SetGlobalProperty.htm");
   }
@@ -184,6 +193,7 @@ public class SetGlobalProperty extends DynamicProperty {
    * defined in the appropriate component before a counter can update them. $xxxx$ names are allowed in both the
    * property name and the target containing map/zone name.
    */
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command comm = new NullCommand();
     for (DynamicKeyCommand keyCommand : keyCommands) {
@@ -237,6 +247,7 @@ public class SetGlobalProperty extends DynamicProperty {
     return comm;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -257,6 +268,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
     public Ed(final SetGlobalProperty m) {
       keyCommandListConfig = new ListConfigurer(null, "Key Commands") {
+        @Override
         protected Configurer buildChildConfigurer() {
           return new DynamicKeyCommandConfigurer(m);
         }
@@ -264,6 +276,7 @@ public class SetGlobalProperty extends DynamicProperty {
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           boolean isNumeric = numericConfig.booleanValue();
           minConfig.getControls().setVisible(isNumeric);
@@ -280,6 +293,7 @@ public class SetGlobalProperty extends DynamicProperty {
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
       levelConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateVisibility();
         }
@@ -322,6 +336,7 @@ public class SetGlobalProperty extends DynamicProperty {
       }
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
@@ -331,6 +346,7 @@ public class SetGlobalProperty extends DynamicProperty {
           wrapConfig.getValueString()).getValue();
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString());
@@ -342,6 +358,7 @@ public class SetGlobalProperty extends DynamicProperty {
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }

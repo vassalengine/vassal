@@ -82,6 +82,7 @@ public class NotesWindow extends AbstractConfigurable
     frame = new NotesDialog();
     frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         captureState();
         frame.setVisible(!frame.isShowing());
@@ -142,6 +143,7 @@ public class NotesWindow extends AbstractConfigurable
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e) {
           cancel();
           setVisible(false);
@@ -171,6 +173,7 @@ public class NotesWindow extends AbstractConfigurable
       JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       p.add(saveButton);
       saveButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           save();
           setVisible(false);
@@ -178,6 +181,7 @@ public class NotesWindow extends AbstractConfigurable
       });
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           cancel();
           setVisible(false);
@@ -189,22 +193,27 @@ public class NotesWindow extends AbstractConfigurable
   }
 
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {BUTTON_TEXT, TOOLTIP, ICON, HOT_KEY};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     launch.setAttribute(name, value);
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     return launch.getAttributeValueString(name);
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetScenarioNote) {
@@ -222,6 +231,7 @@ public class NotesWindow extends AbstractConfigurable
     return s;
   }
 
+  @Override
   public Command decode(String command) {
     Command comm;
     if (command.startsWith(SCENARIO_NOTE_COMMAND_PREFIX)) {
@@ -239,6 +249,7 @@ public class NotesWindow extends AbstractConfigurable
     return comm;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.BUTTON_TEXT),
@@ -248,6 +259,7 @@ public class NotesWindow extends AbstractConfigurable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -258,15 +270,18 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((NotesWindow) c).launch.getAttributeValueString(ICON));
     }
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
@@ -279,6 +294,7 @@ public class NotesWindow extends AbstractConfigurable
    * Expects to be added to a {@link VASSAL.build.GameModule}.  Adds a button to
    * the controls window toolbar to show the window containing the
    * notes */
+  @Override
   public void addTo(Buildable b) {
     GameModule.getGameModule().getToolBar().add(launch);
     launch.setAlignmentY(0.0F);
@@ -290,6 +306,7 @@ public class NotesWindow extends AbstractConfigurable
     GameModule.getGameModule().getGameState().addGameComponent(secretNotes);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(launch);
     GameModule.getGameModule().removeCommandEncoder(this);
@@ -300,6 +317,7 @@ public class NotesWindow extends AbstractConfigurable
     GameModule.getGameModule().getGameState().removeGameComponent(secretNotes);
   }
 
+  @Override
   public void setup(boolean show) {
     launch.setEnabled(show);
     if (!show) {
@@ -308,6 +326,7 @@ public class NotesWindow extends AbstractConfigurable
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     Command c = new SetScenarioNote(scenarioNotes.getValueString());
     c.append(new SetPublicNote(publicNotes.getValueString()));
@@ -323,10 +342,12 @@ public class NotesWindow extends AbstractConfigurable
       msg = s;
     }
 
+    @Override
     protected void executeCommand() {
       scenarioNotes.setValue(msg);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
@@ -339,10 +360,12 @@ public class NotesWindow extends AbstractConfigurable
       msg = s;
     }
 
+    @Override
     protected void executeCommand() {
       publicNotes.setValue(msg);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

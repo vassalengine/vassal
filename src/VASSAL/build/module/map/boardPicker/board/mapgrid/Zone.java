@@ -97,6 +97,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   protected PropertyChangeListener globalPropertyListener;
   protected MutablePropertiesContainer propsContainer = new Impl();
   protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       repaint();
     }
@@ -132,6 +133,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return getLocalizedConfigureName();
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -143,6 +145,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name:  ",
@@ -154,6 +157,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -166,16 +170,19 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public static class LocationFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{NAME, GRID_LOCATION});
     }
   }
   public static class ShapeEditor implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new Editor((Zone) c);
     }
   }
 
+  @Override
   public void addTo(Buildable b) {
     parentGrid = (ZonedGrid) b;
     parentGrid.addZone(this);
@@ -190,6 +197,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((ZonedGrid) b).removeZone(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
@@ -199,10 +207,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return "Zone";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -225,6 +235,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (val == null)
       return;
@@ -248,9 +259,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (HIGHLIGHT_PROPERTY.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return useHighlight;
         }
@@ -261,6 +274,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return useParentGrid ?
       new Class<?>[]{ZoneProperty.class} :
@@ -272,11 +286,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       };
   }
 
+  @Override
   public void addMutableProperty(String key, MutableProperty p) {
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
     propsContainer.addMutableProperty(key, p);
   }
 
+  @Override
   public MutableProperty removeMutableProperty(String key) {
     final MutableProperty existing = propsContainer.removeMutableProperty(key);
     if (existing != null) {
@@ -377,6 +393,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return format.getLocalizedText();
   }
 
+  @Override
   public boolean contains(Point p) {
     return myPolygon.contains(p);
   }
@@ -392,16 +409,19 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return snap;
   }
 
+  @Override
   public Dimension getSize() {
     return myPolygon.getBounds().getSize();
   }
 
+  @Override
   public void removeGrid(MapGrid grid) {
     if (this.grid == grid) {
       grid = null;
     }
   }
 
+  @Override
   public Board getBoard() {
     return parentGrid == null ? null : parentGrid.getBoard();
   }
@@ -414,6 +434,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return parentGrid;
   }
 
+  @Override
   public void setGrid(MapGrid m) {
     grid = m;
   }
@@ -504,6 +525,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    *
    * @see VASSAL.build.module.properties.PropertySource#getProperty(java.lang.Object)
    */
+  @Override
   public Object getProperty(Object key) {
     Object value = null;
     final MutableProperty p =
@@ -517,6 +539,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return value;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     Object value = null;
     final MutableProperty p =
@@ -533,6 +556,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   /**
    * Implement PropertNameSource - expose names of my ZoneProperties
    */
+  @Override
   public List<String> getPropertyNames() {
     List<String> l = new ArrayList<>();
     for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
@@ -546,10 +570,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    *
    * @see VASSAL.build.module.properties.GlobalPropertiesContainer#getGlobalProperty(java.lang.String)
    */
+  @Override
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
 
+  @Override
   public String getMutablePropertiesContainerId() {
     return (getMap() == null ? "" : getMap().getMapName())+":"+getConfigureName();
   }
@@ -557,6 +583,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   /*
    * If using a highlighter, then locate the property and set a propertyListener when the game starts.
    */
+  @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
       if (useHighlight && highlightPropertyName.length() > 0) {
@@ -565,6 +592,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         if (highlightProperty != null) {
           if (highlightPropertyChangeListener == null) {
             highlightPropertyChangeListener = new PropertyChangeListener() {
+              @Override
               public void propertyChange(PropertyChangeEvent e) {
                 setHighlighter((String) e.getNewValue());
               }
@@ -592,6 +620,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     repaint();
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -608,6 +637,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       super(PATH, null);
       button = new JButton("Define Shape");
       button.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           init(zone);
         }
@@ -615,6 +645,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         protected void paintBackground(Graphics g) {
           if (board != null) {
             final Graphics2D g2d = (Graphics2D) g;
@@ -655,6 +686,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
       final JButton direct = new JButton("Set Coordinates directly");
       direct.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
               .polygonToString(editor.getPolygon()).replace(';', ' '));
@@ -683,6 +715,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
       final JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setValue((Object) getValueString());
           frame.setVisible(false);
@@ -691,6 +724,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
       final JButton canButton = new JButton("Cancel");
       canButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           editor.setPolygon(savePoly);
           setValue((Object) getValueString());
@@ -720,14 +754,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.setVisible(true);
     }
 
+    @Override
     public Component getControls() {
       return button;
     }
 
+    @Override
     public String getValueString() {
       return PolygonEditor.polygonToString(editor.getPolygon());
     }
 
+    @Override
     public void setValue(String s) {
       PolygonEditor.reset(editor.getPolygon(), s);
     }

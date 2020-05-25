@@ -86,11 +86,13 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasNext() {
     return v.length() > 0 || state == State.EOS;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int next() throws VersionFormatException {
     if (!hasNext()) throw new NoSuchElementException();
 

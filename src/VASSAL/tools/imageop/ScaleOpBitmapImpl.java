@@ -87,6 +87,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
@@ -96,11 +97,13 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
+  @Override
   public BufferedImage eval() throws Exception {
     return ImageUtils.transform(sop.getImage(null), scale, 0.0, hints);
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = ImageUtils.transform(
@@ -108,6 +111,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     }
   }
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new TileOp(this, tileX, tileY);
   }
@@ -157,10 +161,12 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
                                   .toHashCode();
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
+    @Override
     public BufferedImage eval() throws Exception {
       if (dw < 1 || dh < 1) return ImageUtils.NULL_IMAGE;
 
@@ -186,6 +192,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       ));
     }
 
+    @Override
     protected void fixSize() { }
 
     @Override
@@ -216,6 +223,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     }
   }
 
+  @Override
   public RenderingHints getHints() {
     return hints;
   }
@@ -225,6 +233,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @return the scale factor, in the range <code>(0,Double.MAX_VALUE]</code>.
    */
+  @Override
   public double getScale() {
     return scale;
   }

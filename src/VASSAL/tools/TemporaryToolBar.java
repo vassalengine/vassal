@@ -16,6 +16,7 @@ public class TemporaryToolBar implements ToolBarComponent {
   private JToolBar tempToolBar = new JToolBar();
   private ToolBarComponent delegate;
 
+  @Override
   public JToolBar getToolBar() {
     return tempToolBar != null ? tempToolBar : delegate.getToolBar();
   }

@@ -195,6 +195,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       putValue(Action.ACCELERATOR_KEY, key);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       doKeyAction(actionName);
     }
@@ -290,6 +291,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       a = new AbstractAction(moveCmd) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
           d.setTitle(target.getConfigureName() == null ? moveCmd : moveCmd + " " + target.getConfigureName());
@@ -310,6 +312,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           box.add(select);
           JButton ok = new JButton(Resources.getString(Resources.OK));
           ok.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
               int index = select.getSelectedIndex();
               if (currentIndex != index) {
@@ -338,6 +341,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       a = new AbstractAction(cutCmd) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           cutData = getTreeNode(target);
           copyData = null;
@@ -354,6 +358,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       a = new AbstractAction(copyCmd) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           copyData = getTreeNode(target);
           cutData = null;
@@ -368,6 +373,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final Action a = new AbstractAction(pasteCmd) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (cutData != null) {
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -459,6 +465,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action a = new AbstractAction("Add Imported Class") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         final Configurable child = importConfigurable();
         if (child != null) {
@@ -469,11 +476,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
+                @Override
                 public void save() {
                   super.save();
                   insert(c, child, getTreeNode(c).getChildCount());
                 }
 
+                @Override
                 public void cancel() {
                   dispose();
                 }
@@ -504,6 +513,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       a = new AbstractAction(desc) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           new MassPieceLoader(tree, target).load();
         }
@@ -549,6 +559,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         Configurable ch = null;
         try {
@@ -572,10 +583,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
+                @Override
                 public void save() {
                   super.save();
                 }
 
+                @Override
                 public void cancel() {
                   ConfigureTree.this.remove(c, child);
                   dispose();
@@ -612,6 +625,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return new AbstractAction("Clone") {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
           Configurable clone = null;
           try {
@@ -646,6 +660,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
           int row = selectedRow;
           remove(parent, target);
@@ -764,6 +779,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return succeeded;
   }
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     DefaultMutableTreeNode newValue = getTreeNode((Configurable) evt.getSource());
     ((DefaultTreeModel) getModel()).nodeChanged(newValue);
@@ -857,25 +873,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     JPopupMenu popup = buildPopupMenu(target);
     popup.show(ConfigureTree.this, e.getX(), e.getY());
     popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+      @Override
       public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
         repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
         repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
       }
     });
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (e.isPopupTrigger()) {
       maybePopup(e);
     }
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (e.isPopupTrigger()) {
       maybePopup(e);
@@ -908,6 +929,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return nodes.get(target);
   }
 
+  @Override
   public void mouseDragged(MouseEvent evt) {
   }
 
@@ -927,15 +949,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return false;
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseMoved(MouseEvent e) {
   }
 
@@ -1031,6 +1057,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * Tree selection changed, record info about the currently selected component
    */
+  @Override
   public void valueChanged(TreeSelectionEvent e) {
     selected = null;
     TreePath path = e.getPath();

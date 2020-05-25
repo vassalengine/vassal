@@ -26,10 +26,12 @@ import java.io.File;
  * @author Joel Uckelman
  */
 public class DirectoryFileFilter extends FileFilter {
+  @Override
   public boolean accept(File f) {
     return f.isDirectory();
   }
 
+  @Override
   public String getDescription() {
     return "Directories";
   }

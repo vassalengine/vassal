@@ -66,6 +66,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void addTo(Buildable parent) {
     if (parent instanceof Map) {
       map = (Map) parent;
@@ -77,6 +78,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     globalCommand.setPropertySource(propertySource);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((DrawPile) parent).removeGlobalKeyCommand(this);
   }
@@ -92,6 +94,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       super(name, key, deck);
       this.deck = deck;
     }
+    @Override
     public void actionPerformed(ActionEvent e) {
       apply(deck);
     }
@@ -101,6 +104,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    * Since we also limit application of a Deck Global Key command to a specified number of pieces in the
    * Deck, a null match expression should match all pieces, not reject them all.
    */
+  @Override
   public PieceFilter getFilter() {
     if (propertiesFilter == null || propertiesFilter.getExpression() == null || propertiesFilter.getExpression().length() == 0) {
       return null;
@@ -133,6 +137,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     localizedName = sd.nextToken(getConfigureName());
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -143,6 +148,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -154,6 +160,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,

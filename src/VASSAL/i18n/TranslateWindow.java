@@ -119,6 +119,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
         cancel();
       }
@@ -131,6 +132,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     langBox = new JComboBox(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
     boxListener = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         commitTableEdit();
         String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
@@ -145,6 +147,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     JButton addButton = new JButton("Add translation");
     addButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         getNewTranslation();
       }});
@@ -193,10 +196,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       myTarget = target;
       owningWindow = tw;
     }
+    @Override
     public void save() {
       super.save();
       owningWindow.refreshTranslationList(myTarget);
     }
+    @Override
     public void cancel() {
       dispose();
     }
@@ -242,8 +247,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     keyTable.addFocusListener(new FocusListener() {
+      @Override
       public void focusGained(java.awt.event.FocusEvent e) {
       }
+      @Override
       public void focusLost(java.awt.event.FocusEvent e) {
         commitTableEdit();
       }
@@ -269,6 +276,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     final JButton okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         try {
           save();
@@ -284,6 +292,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     final JButton cancelButton = new JButton(
       Resources.getString(Resources.CANCEL));
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -334,6 +343,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * When a new node is selected, display keys for the new component in the keys
    * table
    */
+  @Override
   public void valueChanged(TreeSelectionEvent e) {
     commitTableEdit();
     MyTreeNode node = (MyTreeNode) tree.getLastSelectedPathComponent();
@@ -354,6 +364,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * When a key is selected in the table, display the source and translated
    * texts in the right hand panels
    */
+  @Override
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting())
       return;
@@ -476,6 +487,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     }
 
+    @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
@@ -492,6 +504,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return renderer;
     }
 
+    @Override
     public TableCellEditor getCellEditor(int row, int column) {
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellEditor editor = tableColumn.getCellEditor();
@@ -516,6 +529,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    */
   protected static class JComponentCellRenderer implements TableCellRenderer
   {
+      @Override
       public Component getTableCellRendererComponent(JTable table, Object value,
       boolean isSelected, boolean hasFocus, int row, int column) {
           return (JComponent)value;
@@ -543,14 +557,17 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
 
 
+    @Override
     public Object getCellEditorValue() {
       return editorComponent;
     }
 
+    @Override
     public boolean isCellEditable(EventObject anEvent) {
       return true;
     }
 
+    @Override
     public boolean shouldSelectCell(EventObject anEvent) {
       if( editorComponent != null && anEvent instanceof MouseEvent
         && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
@@ -561,20 +578,25 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return false;
     }
 
+    @Override
     public boolean stopCellEditing() {
       return true;
     }
 
+    @Override
     public void cancelCellEditing() {
     }
 
+    @Override
     public void addCellEditorListener(CellEditorListener l) {
     }
 
+    @Override
     public void removeCellEditorListener(CellEditorListener l) {
     }
 
     // implements javax.swing.tree.TreeCellEditor
+    @Override
     public Component getTreeCellEditorComponent(JTree tree, Object value,
       boolean isSelected, boolean expanded, boolean leaf, int row) {
 //      String stringValue = tree.convertValueToText(value, isSelected,
@@ -586,6 +608,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
 
     // implements javax.swing.table.TableCellEditor
+    @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
       boolean isSelected, int row, int column) {
 
@@ -609,10 +632,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public int getColumnCount() {
       return 4;
     }
 
+    @Override
     public String getColumnName(int col) {
       switch (col) {
       case ATTR_COL:
@@ -627,10 +652,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return null;
     }
 
+    @Override
     public int getRowCount() {
       return keys == null ? 0 : keys.length;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         switch (col) {
         case ATTR_COL:
@@ -652,6 +679,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return null;
     }
 
+    @Override
     public void setValueAt(Object value, int row, int col) {
       if (col == TRAN_COL) {
         currentTranslation.setProperty(currentKey, (String) value);
@@ -661,6 +689,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
     }
 
+    @Override
     public boolean isCellEditable(int row, int col) {
       return col == TRAN_COL || col == CC_COL;
     }
@@ -686,6 +715,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       this.target = target;
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
         boolean hasFocus, int row, int col) {
       Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
@@ -725,6 +755,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       setMargin(new Insets(1, 1, 1, 1));
       checkEnabled();
     }
+    @Override
     public void actionPerformed(ActionEvent e) {
       String key = keys[row];
       currentKey = keyTarget.getI18nData().getFullPrefix() +  key; //$NON-NLS-1$
@@ -751,6 +782,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
 

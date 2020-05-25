@@ -36,6 +36,7 @@ public class LongConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public void setValue(String s) {
     Long l = null;
     try {
@@ -58,6 +59,7 @@ public class LongConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public void setValue(Object o) {
     if (!noUpdate && nameField != null && o != null) {
       nameField.setText(o.toString());
@@ -65,6 +67,7 @@ public class LongConfigurer extends StringConfigurer {
     super.setValue(o);
   }
 
+  @Override
   public String getValueString() {
     return value == null ? null : value.toString();
   }

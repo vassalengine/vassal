@@ -37,14 +37,17 @@ public class BooleanPreference extends BasicPreference {
     return "Checkbox Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return Boolean.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return Boolean.toString(defaultValue);
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     if (value instanceof String) {
       value = Boolean.valueOf((String) value);
@@ -52,10 +55,12 @@ public class BooleanPreference extends BasicPreference {
     defaultValue = (Boolean) value;
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new BooleanConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }});

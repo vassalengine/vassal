@@ -30,6 +30,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 
 public class PlayerHand extends PrivateMap {
+  @Override
   public void build(org.w3c.dom.Element el) {
     super.build(el);
     if (el == null) {
@@ -49,10 +50,12 @@ public class PlayerHand extends PrivateMap {
     return Resources.getString("Editor.PlayerHand.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PlayerHand.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public StackMetrics getStackMetrics() {
     if (metrics == null) {
       metrics = new HandMetrics();
@@ -63,6 +66,7 @@ public class PlayerHand extends PrivateMap {
     return metrics;
   }
 
+  @Override
   public Dimension mapSize() {
     final Rectangle r = new Rectangle(0,0,200,200);
     r.add(new Rectangle(super.mapSize()));

@@ -79,6 +79,7 @@ public class CounterGlobalKeyCommand extends Decorator
     setInner(inner);
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -97,6 +98,7 @@ public class CounterGlobalKeyCommand extends Decorator
     command = null;
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
@@ -113,6 +115,7 @@ public class CounterGlobalKeyCommand extends Decorator
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
@@ -129,38 +132,47 @@ public class CounterGlobalKeyCommand extends Decorator
     return command;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     return myCommand.matches(stroke) ? apply() : null;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public String getDescription() {
     String d = "Global Key Command";
     if (description.length() > 0) {
@@ -169,6 +181,7 @@ public class CounterGlobalKeyCommand extends Decorator
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalKeyCommand.htm");
   }
@@ -197,6 +210,7 @@ public class CounterGlobalKeyCommand extends Decorator
     return c;
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, "Command name"));
   }
@@ -218,6 +232,7 @@ public class CounterGlobalKeyCommand extends Decorator
     public Ed(CounterGlobalKeyCommand p) {
 
       PropertyChangeListener pl = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
 
           boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
@@ -276,10 +291,12 @@ public class CounterGlobalKeyCommand extends Decorator
       pl.propertyChange(null);
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
@@ -296,17 +313,20 @@ public class CounterGlobalKeyCommand extends Decorator
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     // Use inner name to prevent recursive looping when reporting errors.
     return piece.getName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getDescription();
   }

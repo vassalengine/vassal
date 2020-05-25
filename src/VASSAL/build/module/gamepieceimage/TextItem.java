@@ -89,6 +89,7 @@ public class TextItem extends Item {
     setConfigureName(nam);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -98,6 +99,7 @@ public class TextItem extends Item {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       super.getAttributeTypes(), 2,
@@ -109,6 +111,7 @@ public class TextItem extends Item {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       super.getAttributeNames(), 2,
@@ -121,11 +124,13 @@ public class TextItem extends Item {
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new StringEnumConfigurer(key, name, FontManager.getFontManager().getFontNames());
     }
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (FONT.equals(key)) {
       fontStyleName = (String)o;
@@ -146,6 +151,7 @@ public class TextItem extends Item {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
 
     if (FONT.equals(key)) {
@@ -162,6 +168,7 @@ public class TextItem extends Item {
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (TEXT.equals(name)) {
       return fixedCond;
@@ -172,11 +179,13 @@ public class TextItem extends Item {
   }
 
   private VisibilityCondition fixedCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return textSource.equals(SRC_FIXED);
     }
   };
 
+  @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
     TextItemInstance ti = null;
@@ -254,14 +263,17 @@ public class TextItem extends Item {
     }
   }
 
+  @Override
   public String getType() {
     return TYPE;
   }
 
+  @Override
   public String getDisplayName() {
     return "Label";
   }
 
+  @Override
   public Dimension getSize() {
     return new Dimension(0,0);
   }
@@ -291,6 +303,7 @@ public class TextItem extends Item {
 
   }
 
+  @Override
   public String encode() {
 
     SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
@@ -319,12 +332,14 @@ public class TextItem extends Item {
   }
 
   public static class TextSource extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
     }
   }
 
   public static class NameFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{PIECE_NAME, LABEL});
     }

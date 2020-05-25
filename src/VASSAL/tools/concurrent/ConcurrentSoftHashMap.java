@@ -187,14 +187,17 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       this.value = entry.getValue();
     }
 
+    @Override
     public K getKey() {
       return key;
     }
 
+    @Override
     public V getValue() {
       return value;
     }
 
+    @Override
     public V setValue(V value) {
       V oldValue = this.value;
       this.value = value;
@@ -222,35 +225,42 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   /** {@inheritDoc} */
+  @Override
   public Set<Map.Entry<K, V>> entrySet() {
     processQueue();
 
     if (entrySet == null) {
       entrySet = new AbstractSet<>() {
+        @Override
         public Iterator<Map.Entry<K, V>> iterator() {
           return new Iterator<>() {
             private final Iterator<Map.Entry<K, SoftValue<K, V>>> i =
               map.entrySet().iterator();
 
+            @Override
             public boolean hasNext() {
               return i.hasNext();
             }
 
+            @Override
             public Map.Entry<K, V> next() {
               final Map.Entry<K, SoftValue<K, V>> e = i.next();
               return new SimpleEntry<>(e.getKey(), e.getValue().get());
             }
 
+            @Override
             public void remove() {
               i.remove();
             }
           };
         }
 
+        @Override
         public int size() {
           return ConcurrentSoftHashMap.this.size();
         }
 
+        @Override
         public boolean contains(Object v) {
           return ConcurrentSoftHashMap.this.containsValue(v);
         }
@@ -263,6 +273,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   // Concurrent Operations
 
   /** {@inheritDoc} */
+  @Override
   public V putIfAbsent(K key, V value) {
     if (key == null)
       throw new NullPointerException();
@@ -276,6 +287,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean remove(Object key, Object value) {
     if (key == null)
       throw new NullPointerException();
@@ -287,6 +299,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean replace(K key, V oldValue, V newValue) {
     if (key == null)
       throw new NullPointerException();
@@ -302,6 +315,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
   }
 
   /** {@inheritDoc} */
+  @Override
   public V replace(K key, V value) {
     if (key == null)
       throw new NullPointerException();

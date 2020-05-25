@@ -80,6 +80,7 @@ public class LayoutConfigurer extends Configurer {
     layout = def;
   }
 
+  @Override
   public Object getValue() {
     if (layout != null) {
 
@@ -90,12 +91,14 @@ public class LayoutConfigurer extends Configurer {
     return layout;
   }
 
+  @Override
   public void setValue(String s) {
     if (itemPanel != null) {
       itemPanel.reshow();
     }
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
 
@@ -132,6 +135,7 @@ public class LayoutConfigurer extends Configurer {
     return panel;
   }
 
+  @Override
   public String getValueString() {
 
     return null;
@@ -176,6 +180,7 @@ public class LayoutConfigurer extends Configurer {
       }
       ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent e) {
           if (e.getValueIsAdjusting()) return;
 
@@ -245,6 +250,7 @@ public class LayoutConfigurer extends Configurer {
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       String action = e.getActionCommand();
       int pos = layout.getItemCount();
@@ -347,18 +353,22 @@ public class LayoutConfigurer extends Configurer {
 
       private String[] columnNames = new String[] { "Name", "Type", "Position" };
 
+      @Override
       public int getColumnCount() {
         return columnNames.length;
       }
 
+      @Override
       public int getRowCount() {
         return layout.getItemCount();
       }
 
+      @Override
       public String getColumnName(int col) {
         return columnNames[col];
       }
 
+      @Override
       public Object getValueAt(int row, int col) {
         if (col == 0) {
           return (layout.getItem(row)).getConfigureName();
@@ -373,6 +383,7 @@ public class LayoutConfigurer extends Configurer {
           return null;
       }
 
+      @Override
       public Class<String> getColumnClass(int c) {
         return String.class;
       }

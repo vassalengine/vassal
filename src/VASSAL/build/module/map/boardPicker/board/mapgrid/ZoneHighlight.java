@@ -172,6 +172,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     opacity = o;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -184,6 +185,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name:  ",
@@ -196,6 +198,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -209,6 +212,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   public static class Coverage extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{
         COVERAGE_FULL,
@@ -218,6 +222,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   public static class Style extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{
         STYLE_PLAIN,
@@ -229,16 +234,19 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   public static class OpacityConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       final ZoneHighlight zh = (ZoneHighlight) c;
       return zh.new PercentageConfigurer(key, name, zh.opacity);
     }
   }
 
+  @Override
   public void addTo(Buildable b) {
     ((ZonedGridHighlighter) b).addHighlight(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((ZonedGridHighlighter) b).removeHighlight(this);
   }
@@ -247,10 +255,12 @@ public class ZoneHighlight extends AbstractConfigurable  {
     return "Zone Highlight";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ZonedGrid.htm","ZoneHighlighter");
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -276,6 +286,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (val == null)
       return;
@@ -317,13 +328,16 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return STYLE_IMAGE.equals(style);
         }
@@ -331,6 +345,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (WIDTH.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return COVERAGE_BORDER.equals(coverage);
         }
@@ -348,14 +363,17 @@ public class ZoneHighlight extends AbstractConfigurable  {
       opacity = (Integer) val;
     }
 
+    @Override
     public String getValueString() {
       return String.valueOf(opacity);
     }
 
+    @Override
     public void setValue(String s) {
       opacity = Integer.parseInt(s);
     }
 
+    @Override
     public Component getControls() {
 
       final JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
@@ -372,6 +390,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
       slider.addChangeListener(new ChangeListener() {
+        @Override
         public void stateChanged(ChangeEvent e) {
           final JSlider source = (JSlider) e.getSource();
           if (!source.getValueIsAdjusting()) {

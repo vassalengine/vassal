@@ -49,6 +49,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * Build this component by getting all XML attributes of the XML element and
    * calling {@link #setAttribute} with the String value of the attribute
    */
+  @Override
   public void build(Element e) {
     if (e != null) {
       final NamedNodeMap n = e.getAttributes();
@@ -164,6 +165,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
     }
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     Element el = doc.createElement(getClass().getName());
     String[] names = getAttributeNames();
@@ -183,6 +185,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   /**
    * Add a Buildable object to this object
    */
+  @Override
   public void add(Buildable b) {
     buildComponents.add(b);
   }
@@ -210,6 +213,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
     return Collections.unmodifiableList(buildComponents);
   }
 
+  @Override
   public void validate(Buildable target, ValidationReport report) {
     if (validator != null) {
       validator.validate(target, report);
@@ -224,6 +228,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   /**
    * Default implementation of PropertyNameSource - No properties exposed
    */
+  @Override
   public List<String> getPropertyNames() {
     return new ArrayList<>();
   }

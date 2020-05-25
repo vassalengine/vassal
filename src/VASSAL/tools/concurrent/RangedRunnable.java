@@ -50,6 +50,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * <p>Flushes the range and calls {@see #run(Pair<T,T>)}.</p>
    */
+  @Override
   public final void run() {
     run(flush());
   }

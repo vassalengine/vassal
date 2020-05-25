@@ -84,6 +84,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   public DynamicProperty(String type, GamePiece p) {
     setInner(p);
     keyCommandListConfig = new ListConfigurer(null, "Commands") {
+      @Override
       protected Configurer buildChildConfigurer() {
         return new DynamicKeyCommandConfigurer(DynamicProperty.this);
       }
@@ -91,6 +92,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     mySetType(type);
   }
 
+  @Override
   public void mySetType(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
@@ -121,22 +123,27 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return new SequenceEncoder(',').append(numeric).append(minValue).append(maxValue).append(wrap).getValue();
   }
 
+  @Override
   public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public java.awt.Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (key.equals(getKey())) {
       return getValue();
@@ -144,6 +151,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return super.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (key.equals(getKey())) {
       return getValue();
@@ -153,6 +161,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
   }
 
+  @Override
   public void setProperty(Object key, Object value) {
     if (key.equals(getKey())) {
       setValue(null == value ? null : value.toString());
@@ -162,14 +171,17 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
   }
 
+  @Override
   public String myGetState() {
     return getValue();
   }
 
+  @Override
   public Component getComponent() {
     return getMap() != null ? getMap().getView().getTopLevelAncestor() : GameModule.getGameModule().getFrame();
   }
 
+  @Override
   public void mySetState(String state) {
     setValue(state);
   }
@@ -229,6 +241,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return format.getText(Decorator.getOutermost(this));
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
@@ -237,10 +250,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return menuCommands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     final ChangeTracker tracker = new ChangeTracker(this);
     for (DynamicKeyCommand dkc : keyCommands) {
@@ -252,6 +267,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return tracker.getChangeCommand();
   }
 
+  @Override
   public String getDescription() {
     String s = "Dynamic Property";
     if (getKey() != null && getKey().length() > 0) {
@@ -260,22 +276,27 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return s;
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("DynamicProperty.htm");
   }
 
+  @Override
   public int getMaximumValue() {
     return maxValue;
   }
 
+  @Override
   public int getMinimumValue() {
     return minValue;
   }
 
+  @Override
   public boolean isNumeric() {
     return numeric;
   }
 
+  @Override
   public boolean isWrap() {
     return wrap;
   }
@@ -283,20 +304,24 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(key);
     return l;
   }
 
+  @Override
   public PropertySource getPropertySource() {
     return Decorator.getOutermost(this);
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     final String[] commandNames = new String[menuCommands.length];
     final String[] commandDescs = new String[menuCommands.length];
@@ -321,6 +346,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     public Ed(final DynamicProperty m) {
       keyCommandListConfig = new ListConfigurer(null, "Key Commands") {
+        @Override
         protected Configurer buildChildConfigurer() {
           return new DynamicKeyCommandConfigurer(m);
         }
@@ -328,6 +354,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           boolean isNumeric = numericConfig.booleanValue();
           minConfig.getControls().setVisible(isNumeric);
@@ -358,6 +385,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       numericConfig.fireUpdate();
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
@@ -370,6 +398,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
         .append(wrapConfig.getValueString()).getValue();
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString());
@@ -378,6 +407,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return initialValueConfig.getValueString();
     }
@@ -419,6 +449,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 
       PropertyChangeListener pl = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateValue();
         }
@@ -429,12 +460,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       this.target = target;
     }
 
+    @Override
     public String getValueString() {
       SequenceEncoder se = new SequenceEncoder(':');
       se.append(commandConfig.getValueString()).append(keyConfig.getValueString()).append(propChangeConfig.getValueString());
       return se.getValue();
     }
 
+    @Override
     public void setValue(Object value) {
       if (!noUpdate && value instanceof DynamicKeyCommand && commandConfig != null) {
         DynamicKeyCommand dkc = (DynamicKeyCommand) value;
@@ -449,6 +482,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       return (DynamicKeyCommand) getValue();
     }
 
+    @Override
     public void setValue(String s) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s == null ? "" : s, ':');
       commandConfig.setValue(sd.nextToken(""));
@@ -457,6 +491,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       updateValue();
     }
 
+    @Override
     public Component getControls() {
       if (controls == null) {
         buildControls();

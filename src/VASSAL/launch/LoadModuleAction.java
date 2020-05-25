@@ -51,6 +51,7 @@ public class LoadModuleAction extends GameModuleAction {
     this.moduleFile = moduleFile;
   }
 
+  @Override
   public void performAction(ActionEvent e) throws IOException {
     actionCancelled = true;
     File target = moduleFile;

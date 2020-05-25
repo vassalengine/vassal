@@ -121,6 +121,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     mySetType(type);
   }
 
+  @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -132,6 +133,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     commands = null;
   }
 
+  @Override
   public String getType() {
     final SequenceEncoder se =
       new SequenceEncoder(cloneKey > 0 ? String.valueOf(cloneKey) : "", ';');
@@ -140,6 +142,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
                   .append(commonName).getValue();
   }
 
+  @Override
   public void setMap(Map map) {
     if (map != this.map) {
       commands = null;
@@ -147,10 +150,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
   public Map getMap() {
     return getParent() == null ? map : getParent().getMap();
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
       return getName();
@@ -233,6 +238,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return prop;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
       return getLocalizedName();
@@ -319,6 +325,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return prop;
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (props == null) {
       props = new HashMap<>();
@@ -335,6 +342,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return GameModule.getGameModule().getPrefs().getValue(s);
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (imageBounds == null) {
       imageBounds = boundingBox();
@@ -385,10 +393,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return true;
   }
 
+  @Override
   public Point getPosition() {
     return getParent() == null ? new Point(pos) : getParent().getPosition();
   }
 
+  @Override
   public void setPosition(Point p) {
     if (getMap() != null && getParent() == null) {
       getMap().repaint(getMap().boundingBoxOf(Decorator.getOutermost(this)));
@@ -399,14 +409,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
   public Stack getParent() {
     return parent;
   }
 
+  @Override
   public void setParent(Stack s) {
     parent = s;
   }
 
+  @Override
   public Rectangle boundingBox() {
     if (imageBounds == null) {
       imageBounds = ImageUtils.getBounds(imagePainter.getImageSize());
@@ -414,6 +427,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return new Rectangle(imageBounds);
   }
 
+  @Override
   public Shape getShape() {
     return boundingBox();
   }
@@ -422,15 +436,18 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return c == this;
   }
 
+  @Override
   public String getName() {
     return commonName;
   }
 
+  @Override
   public String getLocalizedName() {
     final String key = TranslatablePiece.PREFIX + getName();
     return Localization.getInstance().translate(key, getName());
   }
 
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     getKeyCommands();
     if (!isEnabled(stroke)) {
@@ -546,6 +563,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return comm;
   }
 
+  @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
     final String mapName = map == null ? "null" : map.getIdentifier();
@@ -556,6 +574,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return se.getValue();
   }
 
+  @Override
   public void setState(String s) {
     final GamePiece outer = Decorator.getOutermost(this);
     final Map oldMap = getMap();
@@ -587,16 +606,19 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     setGpId(st.nextToken(""));
   }
 
+  @Override
   public void mergeState(String newState, String oldState) {
     if (!newState.equals(oldState)) {
       setState(newState);
     }
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }
@@ -619,6 +641,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     highlighter = h;
   }
 
+  @Override
   public String getDescription() {
     return "Basic Piece";
   }
@@ -632,10 +655,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     setProperty(Properties.PIECE_ID, id == null ? "" : id);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("BasicPiece.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -686,14 +711,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     public void reset(BasicPiece p) {
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getState() {
       return state;
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(cloneKeyInput.getKey(), ';');
       final String type = se.append(deleteKeyInput.getKey()).append(picker.getImageName()).append(pieceName.getText()).getValue();
@@ -705,6 +733,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]";
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
     data.add(commonName, "Basic piece name");
@@ -714,6 +743,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(LOCATION_NAME);

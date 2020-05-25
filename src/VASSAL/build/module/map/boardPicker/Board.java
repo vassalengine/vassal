@@ -124,13 +124,16 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return s != null ? s : "";
   }
 
+  @Override
   public void addTo(Buildable b) {
     validator = new SingleChildInstance(this, MapGrid.class);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -142,6 +145,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.NAME_LABEL),
@@ -157,6 +161,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return Resources.getString("Editor.Board.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -168,9 +173,11 @@ public class Board extends AbstractConfigurable implements GridContainer {
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REVERSIBLE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return imageFile != null;
         }
@@ -178,6 +185,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
     else if (WIDTH.equals(name) || HEIGHT.equals(name) || COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return imageFile == null;
         }
@@ -188,6 +196,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -210,6 +219,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (NAME.equals(key)) {
       setConfigureName((String) val);
@@ -273,6 +283,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {
       HexGrid.class,
@@ -301,6 +312,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     new ConcurrentHashMap<>();
 
   private static Comparator<Point> tileOrdering = new Comparator<>() {
+    @Override
     public int compare(Point t1, Point t2) {
       if (t1.y < t2.y) return -1;
       if (t1.y > t2.y) return 1;
@@ -565,24 +577,29 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return p;
   }
 
+  @Override
   public void setGrid(MapGrid mg) {
     grid = mg;
   }
 
+  @Override
   public void removeGrid(MapGrid grid) {
     if (this.grid == grid) {
       this.grid = null;
     }
   }
 
+  @Override
   public Board getBoard() {
     return this;
   }
 
+  @Override
   public Dimension getSize() {
     return bounds().getSize();
   }
 
+  @Override
   public boolean contains(Point p) {
     return bounds().contains(p);
   }
@@ -681,6 +698,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     boundaries.setLocation(x, y);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Board.htm");
   }
@@ -736,10 +754,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
       toClean.add(b);
     }
 
+    @Override
     public Command getRestoreCommand() {
       return null;
     }
 
+    @Override
     public void setup(boolean gameStarting) {
       if (gameStarted && !gameStarting) {
         for (Board board : toClean) {

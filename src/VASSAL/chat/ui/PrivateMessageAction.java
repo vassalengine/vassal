@@ -50,6 +50,7 @@ public class PrivateMessageAction extends AbstractAction {
        && !p.equals(client.getUserInfo()));
     }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     PrivateChatter chat = mgr.getChatterFor(p);
     // Chat is null of other player is ignoring us.
@@ -62,6 +63,7 @@ public class PrivateMessageAction extends AbstractAction {
 
     public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
       return new PlayerActionFactory() {
+        @Override
         public Action getAction(SimplePlayer p, JTree tree) {
           return new PrivateMessageAction(p, client, chatMgr);
         }

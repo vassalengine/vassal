@@ -65,54 +65,63 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   protected PropertySource source;
 
   private VisibilityCondition colorVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.isDrawOutline();
     }
   };
 
   private VisibilityCondition reshuffleVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return reshufflable;
     }
   };
 
   private VisibilityCondition faceDownFormatVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.getFaceDownOption().equals(USE_MENU);
     }
   };
 
   private VisibilityCondition reverseFormatVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.isReversible();
     }
   };
 
   private VisibilityCondition shuffleFormatVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.getShuffleOption().equals(USE_MENU);
     }
   };
 
   private VisibilityCondition expressionCountingVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.doesExpressionCounting();
     }
   };
 
   private VisibilityCondition hotkeyOnEmptyVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.isHotkeyOnEmpty();
     }
   };
 
   private VisibilityCondition selectionAllowedVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.isAllowSelectDraw();
     }
   };
 
   private VisibilityCondition restrictExpressionVisibleCondition = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return dummy.isRestrictOption();
     }
@@ -120,6 +129,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
 
+  @Override
   public void addTo(Buildable parent) {
     super.addTo(parent);
     idMgr.add(this);
@@ -200,6 +210,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String DECK_NAME = "deckName";
 
   public static class Prompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, NEVER, USE_MENU};
     }
@@ -218,6 +229,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     /**
      * looks for the names of all decks already defined
      */
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       ArrayList<String> l = new ArrayList<>();
       l.add(NONE);
@@ -234,6 +246,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -275,6 +288,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
@@ -316,6 +330,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class, // NAME
@@ -358,6 +373,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   public static class FormattedStringConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{DECK_NAME,
                                                                            COMMAND_NAME});
@@ -365,11 +381,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   public static class PiecePropertyConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new GamePieceFormattedStringConfigurer(key, name);
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (WIDTH.equals(key)) {
       return String.valueOf(dummy.getSize().width);
@@ -480,6 +498,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (value == null) {
       return;
@@ -670,6 +689,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
       return colorVisibleCondition;
@@ -710,6 +730,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class};
   }
@@ -740,6 +761,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return map.placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
+  @Override
   protected Stack initializeContents() {
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
@@ -759,6 +781,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return myDeck;
   }
 
+  @Override
   protected boolean placeNonStackingSeparately() {
     return false;
   }
@@ -771,6 +794,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return dummy.getSize();
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Deck.htm");
   }
@@ -779,6 +803,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return Resources.getString("Editor.DrawPile.deck"); //$NON-NLS-1$
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(SELECT_DISPLAY_PROPERTY, false);
@@ -786,6 +811,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return myI18nData;
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (source != null) {
       return source.getProperty(key);
@@ -793,6 +819,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return null;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (source != null) {
       return source.getLocalizedProperty(key);
@@ -804,6 +831,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    * Implement PropertyNameSource - Expose the numPieces property
    * and any counting properties.
    */
+  @Override
   public List<String> getPropertyNames() {
     List<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_numPieces");

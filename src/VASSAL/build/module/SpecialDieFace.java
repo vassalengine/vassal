@@ -42,6 +42,7 @@ public class SpecialDieFace extends AbstractConfigurable {
     return Resources.getString("Editor.SpecialDieFace.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString("Editor.SpecialDieFace.text_value"), //$NON-NLS-1$
@@ -50,6 +51,7 @@ public class SpecialDieFace extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -59,6 +61,7 @@ public class SpecialDieFace extends AbstractConfigurable {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(
         AutoConfigurable c,
         String key,
@@ -68,6 +71,7 @@ public class SpecialDieFace extends AbstractConfigurable {
   }
 
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {TEXT, NUMERICAL_VALUE, ICON};
   }
@@ -84,6 +88,7 @@ public class SpecialDieFace extends AbstractConfigurable {
     return imageName;
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (TEXT.equals(key)) {
       setConfigureName((String) o);
@@ -104,6 +109,7 @@ public class SpecialDieFace extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (TEXT.equals(key)) {
       return getConfigureName();
@@ -118,18 +124,22 @@ public class SpecialDieFace extends AbstractConfigurable {
       return null;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
     ((SpecialDie) parent).addFace(this);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((SpecialDie) parent).removeFace(this);
   }

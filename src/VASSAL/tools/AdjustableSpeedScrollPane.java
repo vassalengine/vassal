@@ -79,6 +79,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
     );
 
     config.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         if (SCROLL_SPEED.equals(e.getPropertyName()))
           setSpeed((Integer) e.getNewValue());

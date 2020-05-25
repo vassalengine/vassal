@@ -89,9 +89,11 @@ public class DiceButton extends AbstractConfigurable {
 
   protected void initLaunchButton() {
     final ActionListener rollAction = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (promptAlways) {
           final DiceButton delegate = new DiceButton() {
+            @Override
             protected void initLaunchButton() {
               launch = new LaunchButton(null,BUTTON_TEXT,HOTKEY,null);
             }
@@ -223,6 +225,7 @@ public class DiceButton extends AbstractConfigurable {
     return report;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       NAME,
@@ -241,6 +244,7 @@ public class DiceButton extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -260,17 +264,20 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
     }
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -290,17 +297,20 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   private final VisibilityCondition cond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !promptAlways;
     }
   };
 
   private final VisibilityCondition canSort = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !reportTotal;
     }
   };
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (N_DICE.equals(name)
         || N_SIDES.equals(name)
@@ -320,6 +330,7 @@ public class DiceButton extends AbstractConfigurable {
    * Expects to be added to a GameModule.  Adds the button to the
    * control window's toolbar and registers itself as a {@link
    * KeyStrokeListener} */
+  @Override
   public void addTo(Buildable parent) {
     ran = GameModule.getGameModule().getRNG();
     GameModule.getGameModule().getToolBar().add(getComponent());
@@ -334,6 +345,7 @@ public class DiceButton extends AbstractConfigurable {
     return launch;
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (DEPRECATED_NAME.equals(key)) { // Backward compatibility.  Before v1.3, name and button text were combined into one attribute
       setAttribute(NAME, o);
@@ -412,6 +424,7 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -448,15 +461,18 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(getComponent());
     GameModule.getGameModule().getToolBar().revalidate();
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
@@ -464,6 +480,7 @@ public class DiceButton extends AbstractConfigurable {
   /**
    * Implement PropertyNameSource - Expose roll result property
    */
+  @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_result");

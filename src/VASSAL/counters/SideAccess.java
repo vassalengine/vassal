@@ -37,14 +37,17 @@ public class SideAccess implements PieceAccess {
     return instance;
   }
 
+  @Override
   public String getCurrentPlayerId() {
     return PlayerRoster.getMySide();
   }
 
+  @Override
   public boolean currentPlayerHasAccess(String id) {
     return id == null || (!GlobalAccess.isHideAll() && id.equals(getCurrentPlayerId()));
   }
 
+  @Override
   public boolean currentPlayerCanModify(String ownerId) {
     String currentPlayerId = getCurrentPlayerId();
     return currentPlayerId != null && (ownerId == null || ownerId.equals(currentPlayerId));

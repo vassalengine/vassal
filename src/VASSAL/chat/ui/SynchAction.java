@@ -82,6 +82,7 @@ public class SynchAction extends AbstractAction {
     lastRoom = null;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
       final long now = System.currentTimeMillis();
@@ -97,6 +98,7 @@ public class SynchAction extends AbstractAction {
 
   public static PlayerActionFactory factory(final ChatServerConnection client) {
     return new PlayerActionFactory() {
+      @Override
       public Action getAction(SimplePlayer p, JTree tree) {
         final Room r = client.getRoom();
         if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {

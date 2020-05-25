@@ -37,6 +37,7 @@ public class RenderingClues extends RenderingHints {
   /** Extended interpolation hint key. */
   public static final Key KEY_EXT_INTERPOLATION =
     new Key(INTKEY_EXT_INTERPOLATION) {
+      @Override
       public boolean isCompatibleValue(Object val) {
         return val == VALUE_INTERPOLATION_LANCZOS_MITCHELL ||
                val == VALUE_INTERPOLATION_BICUBIC ||

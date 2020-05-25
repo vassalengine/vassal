@@ -166,6 +166,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       value = value > 0 ? val + 1 : -val - 1;
     }
 
+    @Override
     public void mySetType(String s) {
       if (!s.startsWith(ID)) {
         originalSetType(s);
@@ -286,10 +287,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       loopLevels = true;
     }
 
+    @Override
     public String getLocalizedName() {
       return getName(true);
     }
 
+    @Override
     public String getName() {
       return getName(false);
     }
@@ -325,12 +328,14 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return name;
     }
 
+    @Override
     public void mySetState(String s) {
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       value = st.nextInt(1);
       activationStatus = st.nextToken(value < 0 ? "" : activateKey);
     }
 
+    @Override
     public String myGetType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(activateCommand)
@@ -392,11 +397,13 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return ID + se.getValue();
     }
 
+    @Override
     public String myGetState() {
       final SequenceEncoder se = new SequenceEncoder(';');
       return se.append(String.valueOf(value)).append(activationStatus).getValue();
     }
 
+    @Override
     public void draw(Graphics g, int x, int y, Component obs, double zoom) {
       piece.draw(g, x, y, obs, zoom);
 
@@ -441,6 +448,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return;
     }
 
+    @Override
     public KeyCommand[] myGetKeyCommands() {
       if (commands == null) {
         final ArrayList<KeyCommand> l = new ArrayList<>();
@@ -487,6 +495,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return commands;
     }
 
+    @Override
     public Command myKeyEvent(KeyStroke stroke) {
       char strokeChar = getMatchingActivationChar(stroke);
       ChangeTracker tracker = null;
@@ -587,6 +596,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return imagePainter[value-1].getSource().getImage();
     }
 
+    @Override
     public Rectangle boundingBox() {
       final Rectangle r = piece.boundingBox();
       if (value > 0) r.add(getCurrentImageBounds());
@@ -623,6 +633,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
      * Return the Shape of the counter by adding the shape of this layer to the shape of all inner traits.
      * Minimize generation of new Area objects.
      */
+    @Override
     public Shape getShape() {
       final Shape innerShape = piece.getShape();
 
@@ -652,6 +663,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public String getDescription() {
       String displayName = name;
       if (name == null || name.length() == 0) {
@@ -669,6 +681,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public Object getProperty(Object key) {
       if (key.equals(name + IMAGE)) {
         checkPropertyLevel();
@@ -703,6 +716,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return super.getProperty(key);
     }
 
+    @Override
     public Object getLocalizedProperty(Object key) {
       if (key.equals(name + IMAGE) ||
           key.equals(name + LEVEL) ||
@@ -754,10 +768,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return translation;
     }
 
+    @Override
     public HelpFile getHelpFile() {
       return HelpFile.getReferenceManualPage("Layer.htm");
     }
 
+    @Override
     public PieceEditor getEditor() {
       return new Ed(this);
     }
@@ -882,6 +898,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
         box = Box.createVerticalBox();
         alwaysActive.addItemListener(new ItemListener() {
+          @Override
           public void itemStateChanged(ItemEvent evt) {
             if (alwaysActive.isSelected()) {
               activateCommand.setText("");
@@ -927,6 +944,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         levelBox.add(firstLevelConfig.getControls());
         checkBoxes.add(levelBox);
         followConfig.addPropertyChangeListener(new PropertyChangeListener() {
+          @Override
           public void propertyChange(PropertyChangeEvent e) {
             showHideFields();
           }
@@ -944,6 +962,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         box.add(new JLabel("Level Name:  "));
         levelNameInput.setMaximumSize(levelNameInput.getPreferredSize());
         levelNameInput.addKeyListener(new KeyAdapter() {
+          @Override
           public void keyReleased(KeyEvent evt) {
             changeLevelName();
           }
@@ -953,6 +972,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
         box = Box.createHorizontalBox();
         prefix.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent evt) {
             if (prefix.isSelected()) {
               suffix.setSelected(false);
@@ -961,6 +981,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           }
         });
         suffix.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent evt) {
             if (suffix.isSelected()) {
               prefix.setSelected(false);
@@ -974,6 +995,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
         JButton b = new JButton("Add Level");
         b.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent evt) {
             names.add(null);
             isPrefix.add(null);
@@ -983,6 +1005,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         p2.add(b);
         b = new JButton("Remove Level");
         b.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent evt) {
             final int index = images.getList().getSelectedIndex();
             if (index >= 0) {
@@ -997,6 +1020,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         controls.add(p2);
 
         images.getList().addListSelectionListener(new ListSelectionListener() {
+          @Override
           public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
             updateLevelName();
           }
@@ -1060,10 +1084,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         }
       }
 
+      @Override
       public String getState() {
         return alwaysActive.isSelected() ? "1" : "-1";
       }
 
+      @Override
       public String getType() {
         final SequenceEncoder se = new SequenceEncoder(';');
         final ArrayList<String> imageNames = new ArrayList<>();
@@ -1199,6 +1225,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         return type;
       }
 
+      @Override
       public Component getControls() {
         return controls;
       }
@@ -1270,6 +1297,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public PieceI18nData getI18nData() {
       final PieceI18nData data = new PieceI18nData(this);
       final String prefix = name.length() > 0 ? name+": " : "";

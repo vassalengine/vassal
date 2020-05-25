@@ -54,24 +54,29 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
     hash = image.hashCode();
   }
 
+  @Override
   public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage eval() {
     return image;
   }
 
   /** {@inheritDoc} */
+  @Override
   protected void fixSize() {
     size = new Dimension(image.getWidth(null), image.getHeight(null));
   }
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new SourceTileOpBitmapImpl(this, tileX, tileY);
   }
 
+  @Override
   public String getName() {
     return null;
   }

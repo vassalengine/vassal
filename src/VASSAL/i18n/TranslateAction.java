@@ -53,11 +53,13 @@ public class TranslateAction extends AbstractAction {
     this.tree = tree;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     TranslateWindow w = openWindows.get(target);
     if (w == null) {
       w = new TranslateWindow(dialogOwner, false, target, helpWindow, tree);
       w.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosed(WindowEvent e) {
           openWindows.remove(target);
         }

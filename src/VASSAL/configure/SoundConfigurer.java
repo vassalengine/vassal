@@ -65,6 +65,7 @@ public class SoundConfigurer extends Configurer {
     setValue(DEFAULT);
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel();
@@ -72,6 +73,7 @@ public class SoundConfigurer extends Configurer {
       controls.add(new JLabel(name));
       JButton b = new JButton("Play");
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           play();
         }
@@ -79,6 +81,7 @@ public class SoundConfigurer extends Configurer {
       controls.add(b);
       b = new JButton("Default");
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setValue(DEFAULT);
         }
@@ -86,6 +89,7 @@ public class SoundConfigurer extends Configurer {
       controls.add(b);
       b = new JButton("Select");
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           chooseClip();
         }
@@ -102,6 +106,7 @@ public class SoundConfigurer extends Configurer {
     return controls;
   }
 
+  @Override
   public String getValueString() {
     String s = NO_VALUE;
     if (clipName != null) {
@@ -110,6 +115,7 @@ public class SoundConfigurer extends Configurer {
     return s;
   }
 
+  @Override
   public void setValue(String s) {
     if (clipFactory == null) {
       return;
@@ -157,6 +163,7 @@ public class SoundConfigurer extends Configurer {
 
   protected AudioClipFactory createAudioClipFactory() {
     return new AudioClipFactory() {
+      @Override
       public AudioClip getAudioClip(URL url) {
         try {
           final InputStream in = url.openStream();

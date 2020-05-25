@@ -71,6 +71,7 @@ public class Version implements Comparable<Version> {
    * and zero if {@code this == v} or if the parseable parts of the
    * versions are equal.
    */
+  @Override
   public int compareTo(Version v) {
     final Iterator<Integer> i = this.tokens.iterator();
     final Iterator<Integer> j = v.tokens.iterator();

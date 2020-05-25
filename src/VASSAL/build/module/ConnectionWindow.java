@@ -29,16 +29,20 @@ public class ConnectionWindow extends AbstractBuildable {
   public ConnectionWindow() {
   }
 
+  @Override
   public void addTo(Buildable b) {
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     return null;
   }

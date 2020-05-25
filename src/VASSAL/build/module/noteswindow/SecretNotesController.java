@@ -95,6 +95,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     controls = new Controls();
   }
 
+  @Override
   public Command getRestoreCommand() {
     Command comm = null;
     for (SecretNote note : notes) {
@@ -109,6 +110,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     return comm;
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       notes.clear();
@@ -116,6 +118,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     }
   }
 
+  @Override
   public Command decode(String command) {
     Command comm = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -148,6 +151,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     return comm;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof AddSecretNoteCommand) {
@@ -165,6 +169,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     return s;
   }
 
+  @Override
   public void addSecretNote(SecretNote note) {
     int index = notes.indexOf(note);
     if (index >= 0) {
@@ -250,6 +255,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent e) {
           //Ignore extra messages.
           if (e.getValueIsAdjusting())
@@ -275,6 +281,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       JButton newButton = new JButton(Resources.getString(Resources.NEW));
       newButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           createNewNote();
         }
@@ -283,6 +290,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       revealButton = new JButton(Resources.getString("Notes.reveal")); //$NON-NLS-1$
       revealButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           revealSelectedNote();
         }
@@ -328,18 +336,22 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     public class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public String getColumnName(int col) {
         return columnNames[col];
       }
 
+      @Override
       public int getRowCount() {
         return notes.size();
       }
 
+      @Override
       public int getColumnCount() {
         return columnNames.length;
       }
 
+      @Override
       public Object getValueAt(int row, int col) {
         SecretNote note = notes.get(row);
         switch (col) {
@@ -356,14 +368,17 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         }
       }
 
+      @Override
       public Class<?> getColumnClass(int c) {
         return getValueAt(0, c).getClass();
       }
 
+      @Override
       public boolean isCellEditable(int row, int col) {
         return false;
       }
 
+      @Override
       public void setValueAt(Object value, int row, int col) {
       }
     }
@@ -421,6 +436,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final Box buttonPanel = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           final SecretNote note = new SecretNote(
             name.getValueString(),
@@ -441,6 +457,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       });
 
       final PropertyChangeListener l = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           okButton.setEnabled(name.getValueString() != null
                               && name.getValueString().length() > 0
@@ -456,6 +473,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final JButton cancelButton =
         new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           d.dispose();
         }
@@ -467,6 +485,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       d.setVisible(true);
     }
 
+    @Override
     public void itemStateChanged(ItemEvent e) {
       displaySelected();
     }

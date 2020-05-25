@@ -38,6 +38,7 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
     super(key, name, 0);
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel();
@@ -51,11 +52,13 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
     return controls;
   }
 
+  @Override
   public String getValueString() {
     Object val = getValue();
     return val != null ? val.toString() : "0";
   }
 
+  @Override
   public void setValue(String s) {
     if (s == null) {
       s = "0";
@@ -69,6 +72,7 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
     }
   }
 
+  @Override
   public void setValue(Object o) {
     if (!noUpdate && tf != null) {
       if (o instanceof Integer
@@ -82,12 +86,15 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
     super.setValue(o);
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     setValue(e.getModifiers());
   }

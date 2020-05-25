@@ -100,6 +100,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     synchEncoder = new SynchEncoder(this, this);
     soundEncoder = new SoundEncoder(this);
     nameChangeListener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         SimplePlayer p = (SimplePlayer) getUserInfo();
         p.setName((String) evt.getNewValue());
@@ -112,6 +113,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     return roomMgr;
   }
 
+  @Override
   public void sendToOthers(Command c) {
     sendToOthers(encoder.encode(c));
   }
@@ -139,16 +141,19 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     }
   }
 
+  @Override
   public void sendTo(Player recipient, Command c) {
     if (peerMgr != null) {
       peerMgr.getPeerListenerByInfo(((P2PPlayer) recipient).getInfo()).sendCHAT(encoder.encode(c));
     }
   }
 
+  @Override
   public Room getRoom() {
     return roomMgr.getRoomContaining(me);
   }
 
+  @Override
   public void setRoom(Room r) {
     if (me instanceof P2PPlayer) {
       ((P2PPlayer) me).setRoom(r.getName());
@@ -161,14 +166,17 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     }
   }
 
+  @Override
   public Room[] getAvailableRooms() {
     return roomMgr.getRooms();
   }
 
+  @Override
   public Player getUserInfo() {
     return me;
   }
 
+  @Override
   public void setUserInfo(Player p) {
     if (me instanceof P2PPlayer) {
       ((P2PPlayer) me).setStats(p);
@@ -185,6 +193,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     propSupport.firePropertyChange(PLAYER_INFO, null, me);
   }
 
+  @Override
   public void setConnected(boolean connect) {
     if (connect) {
       try {
@@ -242,6 +251,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     propSupport.firePropertyChange(STATUS, null, msg);
   }
 
+  @Override
   public boolean isConnected() {
     return connected;
   }
@@ -262,14 +272,17 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     return svrStatus;
   }
 
+  @Override
   public Player stringToPlayer(String s) {
     return roomMgr.getPlayerById(s);
   }
 
+  @Override
   public String playerToString(Player p) {
     return p.getId();
   }
 
+  @Override
   public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
@@ -278,42 +291,52 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public void setActivePeerManager(ActivePeerManager pActivePeerManager) {
     peerMgr = pActivePeerManager;
   }
 
+  @Override
   public void setPendingPeerManager(PendingPeerManager pPendingPeerManager) {
     ppm = pPendingPeerManager;
   }
 
+  @Override
   public synchronized void showUnrecognized(PeerInfo pPeerInfo, String pBadMessage) {
   }
 
+  @Override
   public synchronized void showStreamsFailed(PeerInfo pPeerInfo) {
     P2PPlayer p = new P2PPlayer(pPeerInfo);
     propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_lost", p.getName())); //$NON-NLS-1$
   }
 
+  @Override
   public synchronized void showConnectFailed(PeerInfo pPeerInfo) {
     pool.connectFailed(pPeerInfo);
   }
 
+  @Override
   public synchronized void showConnect(PeerInfo pPeerInfo) {
   }
 
+  @Override
   public synchronized void showDisconnect(PeerInfo pPeerInfo) {
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.remove(pPeerInfo));
     propSupport.firePropertyChange(ROOM, null, getRoom());
   }
 
+  @Override
   public synchronized void showCHAT(PeerInfo pPeerInfo, String msg) {
     propSupport.firePropertyChange(INCOMING_MSG,null,msg);
   }
 
+  @Override
   public synchronized void showPMSG(PeerInfo pPeerInfo, String msg) {
     showCHAT(pPeerInfo, msg);
   }
 
+  @Override
   public synchronized void showNAME(PeerInfo pPeerInfo) {
     tracker.init(getRoom());
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
@@ -322,6 +345,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     tracker.finalize(myRoom);
   }
 
+  @Override
   public synchronized void showHELO(PeerInfo pPeerInfo) {
     // We have received a connection request
     final Chatter chatter = GameModule.getGameModule().getChatter();
@@ -351,6 +375,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     propSupport.firePropertyChange(ROOM, null, getRoom());
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     playerStatusControls.initializeControls(controls);
     roomControls.initializeControls(controls);
@@ -365,6 +390,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     }
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     playerStatusControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);

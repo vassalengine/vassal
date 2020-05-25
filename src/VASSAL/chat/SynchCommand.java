@@ -39,6 +39,7 @@ public class SynchCommand extends Command {
     return recipient;
   }
 
+  @Override
   protected void executeCommand() {
     if (recipient != null) {
       GameModule.getGameModule().warn(Resources.getString("Server.sending_game_info", recipient.getName())); //$NON-NLS-1$
@@ -49,12 +50,14 @@ public class SynchCommand extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }
 
   /**
    * Don't log synchronization requests */
+  @Override
   public boolean isLoggable() {
     return false;
   }

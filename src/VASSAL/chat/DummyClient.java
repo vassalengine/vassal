@@ -43,10 +43,12 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
 
   public DummyClient() {
     PeerPoolInfo publicInfo = new PeerPoolInfo() {
+      @Override
       public String getModuleName() {
         return GameModule.getGameModule() == null ? "<unnamed module>" : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
       }
 
+      @Override
       public String getUserName() {
         return GameModule.getGameModule() == null ? "<"+Chatter.getAnonymousUserName()+">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$ //$NON-NLS-2$
       }
@@ -56,10 +58,12 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }
 
+  @Override
   public Room[] getAvailableRooms() {
     return new Room[0];
   }
 
+  @Override
   public Room getRoom() {
     return null;
   }
@@ -68,39 +72,49 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
     return null;
   }
 
+  @Override
   public void sendTo(Player recipient, Command c) {
   }
 
+  @Override
   public void setRoom(Room r) {
   }
 
+  @Override
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
   }
 
+  @Override
   public boolean isConnected() {
     return false;
   }
 
+  @Override
   public void sendToOthers(Command c) {
   }
 
+  @Override
   public void setConnected(boolean connect) {
   }
 
+  @Override
   public Player getUserInfo() {
     return playerInfo;
   }
 
+  @Override
   public void setUserInfo(Player playerInfo) {
     this.playerInfo = playerInfo;
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     msgControls.initializeControls(controls);
     statusControls.initializeControls(controls);
     controls.setRoomControlsVisible(true);
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     msgControls.uninitializeControls(controls);
     statusControls.uninitializeControls(controls);

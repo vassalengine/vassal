@@ -91,6 +91,7 @@ public interface MutableProperty {
       propSupport = new PropertyChangeSupport(this);
     }
 
+    @Override
     public void addMutablePropertyChangeListener(PropertyChangeListener l) {
       propSupport.addPropertyChangeListener(l);
     }
@@ -116,6 +117,7 @@ public interface MutableProperty {
       }
     }
 
+    @Override
     public String getPropertyValue() {
       return value;
     }
@@ -124,10 +126,12 @@ public interface MutableProperty {
       return propertyName;
     }
 
+    @Override
     public MutablePropertiesContainer getParent() {
       return parent;
     }
 
+    @Override
     public void removeMutablePropertyChangeListener(PropertyChangeListener l) {
       propSupport.removePropertyChangeListener(l);
     }
@@ -136,6 +140,7 @@ public interface MutableProperty {
       return new ChangePropertyCommand(this,propertyName, oldValue, newValue);
     }
 
+    @Override
     public Command setPropertyValue(String newValue) {
       if (newValue == null) {
         newValue = "";

@@ -49,10 +49,12 @@ public class NewColorConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  @Override
   public String getValueString() {
     return value == null ? "" : colorToString(colorValue()); //$NON-NLS-1$
   }
 
+  @Override
   public void setValue(Object o) {
 //  if (o == null)
 //      o = Color.black;
@@ -61,6 +63,7 @@ public class NewColorConfigurer extends Configurer {
       cp.repaint();
   }
 
+  @Override
   public void setValue(String s) {
     setValue(stringToColor(s));
   }
@@ -70,6 +73,7 @@ public class NewColorConfigurer extends Configurer {
   BooleanConfigurer bc;
   ColorSwatchConfigurer csc;
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -80,6 +84,7 @@ public class NewColorConfigurer extends Configurer {
       bc = new BooleanConfigurer(null, "", Boolean.FALSE); //$NON-NLS-1$
       box.add(bc.getControls());
       bc.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           colorBox.setVisible(!bc.booleanValue());
           swatchBox.setVisible(bc.booleanValue());
@@ -101,6 +106,7 @@ public class NewColorConfigurer extends Configurer {
 
       b.addActionListener
           (new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed
                 (java.awt.event.ActionEvent e) {
               setValue(JColorChooser.showDialog
@@ -112,6 +118,7 @@ public class NewColorConfigurer extends Configurer {
       swatchBox = Box.createHorizontalBox();
       csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE"); //$NON-NLS-2$
       csc.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           setValue(csc.getValueColor());
         }
@@ -132,6 +139,7 @@ public class NewColorConfigurer extends Configurer {
   private class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void paint(java.awt.Graphics g) {
       if (colorValue() != null) {
         g.setColor(colorValue());

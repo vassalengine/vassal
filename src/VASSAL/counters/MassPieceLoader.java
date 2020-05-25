@@ -137,6 +137,7 @@ public class MassPieceLoader {
       setPreferredSize(new Dimension(800, 600));
 
       dirConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getNewValue() != null) {
             buildTree((File) e.getNewValue());
@@ -146,6 +147,7 @@ public class MassPieceLoader {
       add(dirConfig.getControls());
 
       basicConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getNewValue() != null) {
             buildTree(dirConfig.getFileValue());
@@ -157,6 +159,7 @@ public class MassPieceLoader {
       defineDialog = new DefineDialog(this);
       final JButton defineButton = new JButton("Edit Piece Template");
       defineButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           final GamePiece savePiece = definer.getPiece();
           defineDialog.setVisible(true);
@@ -178,6 +181,7 @@ public class MassPieceLoader {
       final Box buttonBox = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           save();
         }
@@ -187,6 +191,7 @@ public class MassPieceLoader {
       final JButton cancelButton = new JButton(Resources
           .getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           cancel();
         }
@@ -196,6 +201,7 @@ public class MassPieceLoader {
       final JButton helpButton = new JButton(Resources
           .getString(Resources.HELP));
       helpButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.htm");
           BrowserSupport.openURL(h.getContents().toString());
@@ -208,6 +214,7 @@ public class MassPieceLoader {
       setLocationRelativeTo(getParent());
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent we) {
           cancel();
         }
@@ -352,6 +359,7 @@ public class MassPieceLoader {
     class NameRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getTableCellRendererComponent(JTable table,
           Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         Component c = super.getTableCellRendererComponent(table, value,
@@ -367,6 +375,7 @@ public class MassPieceLoader {
     class CopiesRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel renderedLabel = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         final BasicNode node = (BasicNode) tree.getPathForRow(row).getLastPathComponent();
@@ -380,6 +389,7 @@ public class MassPieceLoader {
     class ImageNameRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getTableCellRendererComponent(JTable table,
           Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         final DefaultTableCellRenderer c = (DefaultTableCellRenderer) super.getTableCellRendererComponent(table, value,
@@ -403,6 +413,7 @@ public class MassPieceLoader {
         super(textField);
       }
 
+      @Override
       public Component getTableCellEditorComponent(JTable table, Object value,
           boolean isSelected, int row, int column) {
         Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
@@ -414,6 +425,7 @@ public class MassPieceLoader {
     class SkipRenderer extends DefaultTableCellRenderer {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getTableCellRendererComponent(JTable table,
           Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         Component c = super.getTableCellRendererComponent(table, value,
@@ -634,6 +646,7 @@ public class MassPieceLoader {
       final JButton saveButton = new JButton(Resources
           .getString(Resources.SAVE));
       saveButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           save();
         }
@@ -642,6 +655,7 @@ public class MassPieceLoader {
       final JButton canButton = new JButton(Resources
           .getString(Resources.CANCEL));
       canButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           cancel();
         }
@@ -656,6 +670,7 @@ public class MassPieceLoader {
 
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent we) {
           cancel();
         }
@@ -690,10 +705,12 @@ public class MassPieceLoader {
       super(rootNode);
     }
 
+    @Override
     public int getColumnCount() {
       return COLUMN_COUNT;
     }
 
+    @Override
     public String getColumnName(int col) {
       switch (col) {
       case DESC_COL:
@@ -710,6 +727,7 @@ public class MassPieceLoader {
       return "";
     }
 
+    @Override
     public Class<?> getColumnClass(int column) {
       if (column == SKIP_COL) {
         return Boolean.class;
@@ -722,6 +740,7 @@ public class MassPieceLoader {
       }
     }
 
+    @Override
     public boolean isCellEditable(Object node, int column) {
       if (node instanceof PieceNode) {
         if (column == NAME_COL || column == COPIES_COL) {
@@ -734,10 +753,12 @@ public class MassPieceLoader {
       return false;
     }
 
+    @Override
     public Object getValueAt(Object node, int column) {
       return ((BasicNode) node).getValueAt(column);
     }
 
+    @Override
     public void setValueAt(Object value, Object node, int column) {
       if (node instanceof PieceNode) {
         if (column == NAME_COL) {
@@ -780,6 +801,7 @@ public class MassPieceLoader {
     // }
 
     // Hide the Skip checkbox on rows other than Piece rows
+    @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
       if (column == SKIP_COL || column == COPIES_COL) {
         if (!(this.getPathForRow(row).getLastPathComponent() instanceof PieceNode)) {
@@ -794,6 +816,7 @@ public class MassPieceLoader {
    * Blank Cell Renderer
    */
   class NullRenderer implements TableCellRenderer {
+    @Override
     public Component getTableCellRendererComponent(JTable arg0, Object arg1,
         boolean arg2, boolean arg3, int arg4, int arg5) {
       return new JLabel("");
@@ -857,6 +880,7 @@ public class MassPieceLoader {
       return "Root";
     }
 
+    @Override
     public Object getValueAt(int col) {
       switch (col) {
       case DESC_COL:
@@ -898,6 +922,7 @@ public class MassPieceLoader {
       }
     }
 
+    @Override
     public String getImageName() {
       if (basicConfig.booleanValue()) {
         return "";
@@ -907,15 +932,18 @@ public class MassPieceLoader {
       }
     }
 
+    @Override
     public String getDescription() {
       return "Piece";
     }
 
+    @Override
     public void setName(String name) {
       super.setName(name);
       pieceInfo.put(getImageName(), new PieceInfo(name, isSkip()));
     }
 
+    @Override
     public void setSkip(boolean skip) {
       super.setSkip(skip);
       pieceInfo.put(getImageName(), new PieceInfo(getName(), skip));
@@ -930,10 +958,12 @@ public class MassPieceLoader {
       super(name, "");
     }
 
+    @Override
     public String getDescription() {
       return "Layer" + (name.length() > 0 ? " [" + name + "]" : "");
     }
 
+    @Override
     public String getName() {
       return "";
     }
@@ -951,11 +981,13 @@ public class MassPieceLoader {
       levelNumber = level;
     }
 
+    @Override
     public String getDescription() {
       return "Level " + (levelNumber + 1)
           + (name.length() > 0 ? " [" + name + "]" : "");
     }
 
+    @Override
     public String getName() {
       return "";
     }
@@ -1111,12 +1143,14 @@ public class MassPieceLoader {
         super(e);
       }
 
+      @Override
       protected MultiImagePicker getImagePicker() {
         return new LoaderImagePicker();
       }
 
     }
 
+    @Override
     public PieceEditor getEditor() {
       return new LoaderEd(this);
     }
@@ -1129,6 +1163,7 @@ public class MassPieceLoader {
   static class LoaderImagePicker extends MultiImagePicker {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void addEntry() {
       String entry = "Image " + (imageListElements.size() + 1);
       imageListElements.addElement(entry);
@@ -1138,6 +1173,7 @@ public class MassPieceLoader {
       cl.show(multiPanel, (String) imageList.getSelectedValue());
     }
 
+    @Override
     public List<String> getImageNameList() {
       final int size = imageListElements.size();
       final ArrayList<String> names = new ArrayList<>(size);
@@ -1147,11 +1183,13 @@ public class MassPieceLoader {
       return names;
     }
 
+    @Override
     public void clear() {
       multiPanel.removeAll();
       imageListElements.removeAllElements();
     }
 
+    @Override
     public void setImageList(String[] names) {
       while (names.length > multiPanel.getComponentCount()) {
         addEntry();
@@ -1192,12 +1230,14 @@ public class MassPieceLoader {
       add(warning);
 
       typeConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateVisibility();
         }
       });
 
       nameConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateVisibility();
         }

@@ -147,6 +147,7 @@ public class Node implements MsgSender {
     return n;
   }
 
+  @Override
   public void send(String msg) {
     for (Node n : getChildren()) {
       n.send(msg);

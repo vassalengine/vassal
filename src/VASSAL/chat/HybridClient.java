@@ -47,6 +47,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     setDelegate(new DummyClient());
   }
 
+  @Override
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
     if (delegate != null) {
@@ -54,30 +55,37 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     }
   }
 
+  @Override
   public Room[] getAvailableRooms() {
     return delegate.getAvailableRooms();
   }
 
+  @Override
   public Room getRoom() {
     return delegate.getRoom();
   }
 
+  @Override
   public Player getUserInfo() {
     return delegate.getUserInfo();
   }
 
+  @Override
   public boolean isConnected() {
     return delegate.isConnected();
   }
 
+  @Override
   public void sendTo(Player recipient, Command c) {
     delegate.sendTo(recipient, c);
   }
 
+  @Override
   public void sendToOthers(Command c) {
     delegate.sendToOthers(c);
   }
 
+  @Override
   public void setConnected(boolean connect) {
     delegate.setConnected(connect);
   }
@@ -86,14 +94,17 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     return delegate;
   }
 
+  @Override
   public void setRoom(Room r) {
     delegate.setRoom(r);
   }
 
+  @Override
   public void setUserInfo(Player p) {
     delegate.setUserInfo(p);
   }
 
+  @Override
   public Player stringToPlayer(String s) {
     if (delegate instanceof PlayerEncoder) {
       return ((PlayerEncoder) delegate).stringToPlayer(s);
@@ -101,6 +112,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     return null;
   }
 
+  @Override
   public String playerToString(Player p) {
     if (delegate instanceof PlayerEncoder) {
       return ((PlayerEncoder) delegate).playerToString(p);
@@ -135,6 +147,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     delegate = newDelegate;
    }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     this.controls = controls;
     if (delegate instanceof ChatControlsInitializer) {
@@ -144,6 +157,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     controls.updateClientDisplay(currentIcon, currentText);
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     if (delegate instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer) delegate).uninitializeControls(controls);

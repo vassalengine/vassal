@@ -74,6 +74,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   public HidePiecesButton() {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         setPiecesVisible(!piecesVisible);
       }
@@ -86,6 +87,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   /**
    * Expects to be added to a {@link Map}.  Adds itself as a {@link
    * GameComponent} and a {@link Drawable} component */
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
 
@@ -107,12 +109,15 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     map.repaint();
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public void remove(Buildable b) {
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.removeDrawComponent(this);
@@ -120,6 +125,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (SHOWING_ICON.equals(key)) {
       showingIcon = (String) value;
@@ -132,18 +138,22 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     }
   }
 
+  @Override
   public void build(Element e) {
     AutoConfigurable.Util.buildAttributes(e, this);
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{BUTTON_TEXT, TOOLTIP, HOTKEY, SHOWING_ICON, HIDDEN_ICON};
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     return null;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     String s = null;
     if (HIDDEN_ICON.equals(key)) {
@@ -158,6 +168,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     return s;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.BUTTON_TEXT),
@@ -168,6 +179,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -179,51 +191,64 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   public static class ShowingIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key,name,DEFAULT_SHOWING_ICON);
     }
   }
 
   public static class HiddenIconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key,name,DEFAULT_HIDDEN_ICON);
     }
   }
 
+  @Override
   public void draw(Graphics g, Map m) {
     repaint();
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return false;
   }
 
+  @Override
   public void paint(Graphics g) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
   }
 
+  @Override
   public String getToolTipText(MouseEvent e) {
     return null;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
 
+  @Override
   public void setup(boolean show) {
     if (show) {
       setPiecesVisible(true);
@@ -234,33 +259,41 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     return Resources.getString("Editor.HidePieceButton.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new AutoConfigurer(this);
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "HidePieces");
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "HidePieces");

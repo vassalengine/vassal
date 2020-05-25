@@ -36,10 +36,12 @@ public class PrivateChatter extends Chatter {
   }
 
   /** @deprecated */
+  @Override
   @Deprecated public String getHandle() {
     return GameModule.getGameModule().getChatter().getHandle();
   }
 
+  @Override
   public void send(String msg) {
     if (msg != null
       && msg.length() > 0) {

@@ -34,6 +34,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     super(client);
   }
 
+  @Override
   protected void addLockRoomAction(JPopupMenu popup, Room target) {
     NodeClient c = getNodeClient();
     if (c != null) {
@@ -53,6 +54,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     return c;
   }
 
+  @Override
   protected void createRoom(String name) {
     Room existing = null;
     Room[] rooms = client.getAvailableRooms();
@@ -97,6 +99,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
       this.client = client;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       client.lockRoom(target);
     }

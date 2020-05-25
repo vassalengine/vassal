@@ -57,6 +57,7 @@ public class ChangePiece extends Command {
   /**
    * Changes the state of a {@link GamePiece} by invoking {@link GamePiece#setState}
    */
+  @Override
   protected void executeCommand() {
     GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (target != null) {
@@ -84,6 +85,7 @@ public class ChangePiece extends Command {
     }
   }
 
+  @Override
   public Command append(Command c) {
     Command last = this;
     Command[] sub = getSubCommands();
@@ -107,6 +109,7 @@ public class ChangePiece extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
     if (undo == null && oldState != null) {
       undo = new ChangePiece(id, newState, oldState);
@@ -126,10 +129,12 @@ public class ChangePiece extends Command {
     return oldState;
   }
 
+  @Override
   public boolean isNull() {
     return newState.equals(oldState) && isAtomic();
   }
 
+  @Override
   public String getDetails() {
     return "id="+id+",oldState="+oldState+",newState="+newState;
   }

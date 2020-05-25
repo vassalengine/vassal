@@ -42,10 +42,12 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * Remove a Buildable object from this object
    */
+  @Override
   public void remove(Buildable b) {
     buildComponents.remove(b);
   }
 
+  @Override
   public String getConfigureName() {
     return name;
   }
@@ -79,6 +81,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    * Properties window for this object. The order of descriptions should be the same as the order of names in
    * {@link AbstractBuildable#getAttributeNames}
    */
+  @Override
   public abstract String[] getAttributeDescriptions();
 
   /**
@@ -87,6 +90,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    *
    * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
    */
+  @Override
   public abstract Class<?>[] getAttributeTypes();
 
   /**
@@ -95,6 +99,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    * @param name
    * @return
    */
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     return null;
   }
@@ -102,6 +107,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * Return the i18n data for this component
    */
+  @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, getI18nPrefix());
@@ -135,6 +141,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * Set the owning translatable of this component
    */
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof Translatable) {
@@ -142,6 +149,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     }
   }
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
     if (changeSupport == null) {
       changeSupport = new PropertyChangeSupport(this);
@@ -155,6 +163,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     }
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     final ArrayList<Configurable> l = new ArrayList<>();
     for (Buildable b : getBuildables()) {
@@ -168,6 +177,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * The default {@link Configurer} of an {@link AbstractConfigurable} class is an instance of {@link AutoConfigurer}
    */
+  @Override
   public Configurer getConfigurer() {
     if (config == null) {
       config = new AutoConfigurer(this);

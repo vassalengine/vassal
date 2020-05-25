@@ -41,18 +41,22 @@ public class EnumPreference extends BasicPreference {
     return "Drop-down List Preference";
   }
 
+  @Override
   public Class<?> getDefaultClass() {
     return String.class;
   }
 
+  @Override
   public String getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public void setDefaultValue(Object value) {
     defaultValue = (String) value;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.append(
       super.getAttributeNames(),
@@ -60,6 +64,7 @@ public class EnumPreference extends BasicPreference {
     );
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.append(
       super.getAttributeDescriptions(),
@@ -67,6 +72,7 @@ public class EnumPreference extends BasicPreference {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.append(
       super.getAttributeTypes(),
@@ -74,6 +80,7 @@ public class EnumPreference extends BasicPreference {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (LIST.equals(key)) {
       if (value instanceof String) {
@@ -88,6 +95,7 @@ public class EnumPreference extends BasicPreference {
       super.setAttribute(key, value);
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (LIST.equals(key)) {
       return StringArrayConfigurer.arrayToString(options);
@@ -96,11 +104,13 @@ public class EnumPreference extends BasicPreference {
       return super.getAttributeValueString(key);
   }
 
+  @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new StringEnumConfigurer(getVariableName(), getDescription(), options);
       config.setValue(defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
         }});

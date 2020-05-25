@@ -99,22 +99,27 @@ public class Repainter implements ImageOpObserver {
    * @param op {@inheritDoc}
    * @param success repaint the <code>Component</code> iff <code>true</code>
    */
+  @Override
   public void imageOpChange(ImageOp op, boolean success) {
     if (success) c.repaint(x, y, w, h);
   }
 
+  @Override
   public void succeeded(Op<BufferedImage> op, BufferedImage img) {
     c.repaint(x, y, w, h);
   }
 
+  @Override
   public void cancelled(Op<BufferedImage> op, CancellationException e) {
     ErrorDialog.bug(e);
   }
 
+  @Override
   public void interrupted(Op<BufferedImage> op, InterruptedException e) {
     ErrorDialog.bug(e);
   }
 
+  @Override
   public void failed(Op<BufferedImage> op, ExecutionException e) {
     if (!VASSAL.tools.imageop.Op.handleException(e)) {
       ErrorDialog.bug(e);

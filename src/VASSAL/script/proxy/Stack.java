@@ -40,6 +40,7 @@ public class Stack extends GamePiece {
     super(s);
   }
 
+  @Override
   public Stack getParent() {
     return null;
   }

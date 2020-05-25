@@ -77,6 +77,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launchButtonPressed();
       }
@@ -92,6 +93,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        @Override
         public void propertyChange(java.beans.PropertyChangeEvent e) {
           if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
             d.setTitle((String) e.getNewValue());
@@ -108,6 +110,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
 
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        @Override
         public void propertyChange(java.beans.PropertyChangeEvent e) {
           if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
             d.setTitle((String) e.getNewValue());
@@ -128,10 +131,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PieceWindow.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void build(org.w3c.dom.Element e) {
     super.build(e);
     rebuild();
@@ -141,6 +146,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     return "PieceWindow0".equals(id); //$NON-NLS-1$
   }
 
+  @Override
   public java.awt.Component getComponent() {
     return root;
   }
@@ -153,6 +159,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
    * A PieceWindow may contain a {@link TabWidget}, a {@link
    * PanelWidget}, a {@link BoxWidget}, a {@link ListWidget}, or a
    * {@link PieceSlot} */
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
       TabWidget.class,
@@ -163,6 +170,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     };
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       root.add(((Widget) b).getComponent());
@@ -170,6 +178,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       root.remove(((Widget) b).getComponent());
@@ -182,6 +191,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
    *
    * @return the identifier for this PieceWindow
    */
+  @Override
   public String getId() {
     return id;
   }
@@ -189,6 +199,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   /**
    * Each instanceof PieceWindow has a unique String identifier
    */
+  @Override
   public void setId(String s) {
     id = s;
   }
@@ -196,6 +207,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   /**
    * Expects to be added to a {@link GameModule}.  When added, sets
    * the containing window to visible */
+  @Override
   public void addTo(Buildable parent) {
     idMgr.add(this);
 
@@ -214,6 +226,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     setAttributeTranslatable(NAME, false);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     if (mainWindowDock == null && root != null && root.getTopLevelAncestor() != null) {
       root.getTopLevelAncestor().setVisible(false);
@@ -222,6 +235,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     idMgr.remove(this);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -233,6 +247,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -245,15 +260,18 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/counter.gif"); //$NON-NLS-1$
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (DEPRECATED_NAME.equals(name)) {
       setAttribute(NAME, value);
@@ -281,6 +299,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

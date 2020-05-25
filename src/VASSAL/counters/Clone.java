@@ -58,6 +58,7 @@ public class Clone extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -66,12 +67,14 @@ public class Clone extends Decorator implements TranslatablePiece {
     command = null;
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(key);
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       cloneCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
@@ -89,10 +92,12 @@ public class Clone extends Decorator implements TranslatablePiece {
     return command;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
@@ -112,37 +117,46 @@ public class Clone extends Decorator implements TranslatablePiece {
     return c;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public String getDescription() {
     return "Clone";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.htm","Clone");
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, "Clone command");
   }
@@ -164,16 +178,19 @@ public class Clone extends Decorator implements TranslatablePiece {
 
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString()).append(keyInput.getValueString());
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }

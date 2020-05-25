@@ -97,6 +97,7 @@ public class ProgressDialog extends JDialog {
 
     // forward clicks on the close button to the cancellation listeners
     cancel.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         fireCancelledEvent(e);
       }
@@ -250,6 +251,7 @@ public class ProgressDialog extends JDialog {
                                            final String title,
                                            final String text) {
     final Future<ProgressDialog> f = EDT.submit(new Callable<>() {
+      @Override
       public ProgressDialog call() {
         return new ProgressDialog(parent, title, text);
       }

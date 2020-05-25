@@ -47,10 +47,12 @@ public class Translation extends AbstractConfigurable
     locale = new Locale(Locale.getDefault().getLanguage());
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Locale:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       LocalePrompt.class
@@ -58,15 +60,18 @@ public class Translation extends AbstractConfigurable
   }
 
   public static class LocalePrompt implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new LocaleConfigurer(key, name, "");
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{LOCALE};
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (LOCALE.equals(key)) {
       return LocaleConfigurer.localeToString(locale);
@@ -75,6 +80,7 @@ public class Translation extends AbstractConfigurable
       return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (LOCALE.equals(key)) {
       locale = LocaleConfigurer.stringToLocale((String) value);
@@ -90,22 +96,27 @@ public class Translation extends AbstractConfigurable
     return locale.getLanguage();
   }
 
+  @Override
   public String getConfigureName() {
     return getDescription();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     Localization.getInstance().removeTranslation(this);
   }
 
+  @Override
   public void addTo(Buildable parent) {
     Localization.getInstance().addTranslation(this);
     if (!GameModule.getGameModule().isLocalizationEnabled()) {
@@ -276,6 +287,7 @@ public class Translation extends AbstractConfigurable
     return getBundleName() + ".properties"; //$NON-NLS-1$
   }
 
+  @Override
   public int compareTo(Translation o) {
     return getDescription().compareTo(o.getDescription());
   }

@@ -32,10 +32,12 @@ public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
     this.sop = sop;
   }
 
+  @Override
   public Image getResolutionVariant(double w, double h) {
     return Op.scale(sop, w / sop.getWidth()).getImage();
   }
 
+  @Override
   public List<Image> getResolutionVariants() {
     return Collections.unmodifiableList(Arrays.asList(sop.getImage())); 
   }

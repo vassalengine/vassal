@@ -49,6 +49,7 @@ public class RemovePiece extends Command {
    * piece belongs to a {@link Map}, followed by {@link
    * GameState#removePiece}.
    */
+  @Override
   protected void executeCommand() {
     if (target == null) {
       target = GameModule.getGameModule().getGameState().getPieceForId(id);
@@ -86,6 +87,7 @@ public class RemovePiece extends Command {
     KeyBuffer.getBuffer().remove(target);
   }
 
+  @Override
   protected Command myUndoCommand() {
     if (undo == null && target != null) {
       undo = new AddPiece(target);

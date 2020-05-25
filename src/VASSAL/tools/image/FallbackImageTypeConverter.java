@@ -73,6 +73,7 @@ public class FallbackImageTypeConverter implements ImageTypeConverter {
   }
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage convert(Reference<BufferedImage> ref, int type)
                                                       throws ImageIOException {
     try {

@@ -58,6 +58,7 @@ public class QueueJoiner implements Callable<Void> {
    *
    * @throws Exception when the {@code Callable} from the queue throws
    */
+  @Override
   public Void call() throws Exception {
     final Callable<?> c = queue.poll();
     if (c != null) c.call();

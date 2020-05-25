@@ -25,16 +25,19 @@ public class TextClient {
   public TextClient(ChatServerConnection client) {
     this.client = client;
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         availableRoomsChanged(evt);
       }
     });
     client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         incomingMessageReceived(evt);
       }
     });
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         statusReceived(evt);
       }
@@ -221,16 +224,19 @@ public class TextClient {
       return msg;
     }
 
+    @Override
     protected void executeCommand() {
       System.out.println(msg);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
   }
 
   public static class Encoder implements CommandEncoder {
+    @Override
     public Command decode(String command) {
       Command c = null;
       if (command.startsWith("CHAT")) { //$NON-NLS-1$
@@ -239,6 +245,7 @@ public class TextClient {
       return c;
     }
 
+    @Override
     public String encode(Command c) {
       String s = null;
       if (c instanceof ShowText) {

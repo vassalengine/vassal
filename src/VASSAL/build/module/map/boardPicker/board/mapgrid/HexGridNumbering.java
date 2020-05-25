@@ -69,6 +69,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   private HexGrid grid;
   private boolean stagger = true;
 
+  @Override
   public void addTo(Buildable parent) {
     grid = (HexGrid) parent;
     grid.setGridNumbering(this);
@@ -80,6 +81,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     return grid;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.append(
       super.getAttributeDescriptions(),
@@ -87,6 +89,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.append(
       super.getAttributeNames(),
@@ -94,6 +97,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.append(
       super.getAttributeTypes(),
@@ -101,6 +105,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (STAGGER.equals(key)) {
       if (value instanceof String) {
@@ -113,6 +118,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (STAGGER.equals(key)) {
       return String.valueOf(stagger);
@@ -123,6 +129,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   }
 
   /** Draw the numbering if visible */
+  @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
     if (visible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
@@ -286,6 +293,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     return p;
   }
 
+  @Override
   public int getColumn(Point p) {
 
     int x = getRawColumn(p);
@@ -309,11 +317,13 @@ public class HexGridNumbering extends RegularGridNumbering {
     return x;
   }
 
+  @Override
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void paint(Graphics g) {
           final Graphics2D g2d = (Graphics2D) g;
           final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
@@ -333,6 +343,7 @@ public class HexGridNumbering extends RegularGridNumbering {
           g2d.setTransform(orig_t);
         }
 
+        @Override
         public Dimension getPreferredSize() {
           return new Dimension(4 * (int) grid.getHexSize(), 4 * (int) grid.getHexWidth());
         }
@@ -341,6 +352,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     return visualizer;
   }
 
+  @Override
   public int getRow(Point p) {
 
     int ny = getRawRow(p);
@@ -394,6 +406,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     return ny;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     grid.setGridNumbering(null);
   }
@@ -421,6 +434,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         final JTextField tf = new JTextField("1.0");
         b.add(tf);
         tf.addKeyListener(new KeyAdapter() {
+          @Override
           public void keyReleased(KeyEvent e) {
             try {
               scale = Double.parseDouble(tf.getText());
@@ -434,6 +448,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         });
         final JCheckBox reverseBox = new JCheckBox("Reversed");
         reverseBox.addItemListener(new ItemListener() {
+          @Override
           public void itemStateChanged(ItemEvent e) {
             reversed = reverseBox.isSelected();
             repaint();
@@ -442,6 +457,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         b.add(reverseBox);
         final JCheckBox sidewaysBox = new JCheckBox("Sideways");
         sidewaysBox.addItemListener(new ItemListener() {
+          @Override
           public void itemStateChanged(ItemEvent e) {
             grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
             repaint();
@@ -457,6 +473,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         JPanel p = new JPanel() {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void paint(Graphics g) {
             Rectangle r = new Rectangle(0, 0, getWidth(), getHeight());
             g.clearRect(r.x, r.y, r.width, r.height);
@@ -477,6 +494,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     f.setSize(screenSize);
     f.setVisible(true);
     f.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         System.exit(0);
       }

@@ -50,6 +50,7 @@ public class EditExtensionAction extends LoadModuleAction {
     putValue(NAME,Resources.getString("Editor.edit_extension"));
   }
 
+  @Override
   protected void loadModule(File f) throws IOException {
     final ModuleExtension ext =
       new ModuleExtension(new ArchiveWriter(new ZipArchive(f)));

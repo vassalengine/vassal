@@ -41,6 +41,7 @@ public class Replace extends PlaceMarker {
     super(type, inner);
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     if (command.matches(stroke)) {
@@ -63,10 +64,12 @@ public class Replace extends PlaceMarker {
     return c;
   }
 
+  @Override
   protected void selectMarker(GamePiece marker) {
     KeyBuffer.getBuffer().add(marker);
   }
 
+  @Override
   public String getDescription() {
     String d = "Replace with Other";
     if (description.length() > 0) {
@@ -75,18 +78,22 @@ public class Replace extends PlaceMarker {
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Replace.htm");
   }
 
+  @Override
   public String myGetType() {
     return ID + super.myGetType().substring(PlaceMarker.ID.length());
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public GamePiece createMarker() {
     GamePiece marker = super.createMarker();
     if (marker != null && matchRotation) {
@@ -137,6 +144,7 @@ public class Replace extends PlaceMarker {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, "Replace command"));
   }
@@ -148,14 +156,17 @@ public class Replace extends PlaceMarker {
       defineButton.setText("Define Replacement");
     }
 
+    @Override
     protected BooleanConfigurer createMatchRotationConfig() {
       return new BooleanConfigurer(null, "Match Current State?");
     }
 
+    @Override
     protected BooleanConfigurer createAboveConfig() {
       return new BooleanConfigurer(null, "Only match states above this trait?");
     }
 
+    @Override
     public String getType() {
       return ID + super.getType().substring(PlaceMarker.ID.length());
     }

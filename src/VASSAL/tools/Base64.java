@@ -1413,6 +1413,7 @@ public class Base64
          * @return next byte
          * @since 1.3
          */
+        @Override
         public int read() throws java.io.IOException
         {
             // Do we need to get data?
@@ -1541,7 +1542,8 @@ public class Base64
          * @return bytes read into array or -1 if end of stream is encountered.
          * @since 1.3
          */
-        public int read( byte[] dest, int off, int len ) throws java.io.IOException
+        @Override
+        public int read(byte[] dest, int off, int len ) throws java.io.IOException
         {
             int i;
             int b;
@@ -1657,6 +1659,7 @@ public class Base64
          * @param theByte the byte to write
          * @since 1.3
          */
+        @Override
         public void write(int theByte) throws java.io.IOException
         {
             // Encoding suspended?
@@ -1718,7 +1721,8 @@ public class Base64
          * @param len max number of bytes to read into array
          * @since 1.3
          */
-        public void write( byte[] theBytes, int off, int len ) throws java.io.IOException
+        @Override
+        public void write(byte[] theBytes, int off, int len ) throws java.io.IOException
         {
             // Encoding suspended?
             if( suspendEncoding )
@@ -1763,6 +1767,7 @@ public class Base64
          *
          * @since 1.3
          */
+        @Override
         public void close() throws java.io.IOException
         {
             // 1. Ensure that pending characters are written

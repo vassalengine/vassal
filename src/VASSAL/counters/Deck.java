@@ -146,6 +146,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected PropertySource propertySource;
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {
+    @Override
     public Command decode(String command) {
       Command c = null;
       if (command.startsWith(LoadDeckCommand.PREFIX)) {
@@ -154,6 +155,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return c;
     }
 
+    @Override
     public String encode(Command c) {
       String s = null;
       if (c instanceof LoadDeckCommand) {
@@ -187,6 +189,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  @Override
   public void sideChanged(String oldSide, String newSide) {
     updateCountsAll();
   }
@@ -297,12 +300,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     countProperty.setPropertyValue(String.valueOf(pieceCount));
   }
 
+  @Override
   protected void insertPieceAt(GamePiece p, int index) {
     super.insertPieceAt(p, index);
     updateCounts(p,true);
     fireNumCardsProperty();
   }
 
+  @Override
   protected void removePieceAt(int index) {
     int startCount = pieceCount;
     updateCounts(index,false);
@@ -313,12 +318,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  @Override
   public void removeAll() {
     super.removeAll();
     updateCountsAll();
     fireNumCardsProperty();
   }
 
+  @Override
   public void setMap(Map map) {
     if (map != getMap()) {
       countProperty.removeFromContainer();
@@ -371,6 +378,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     if (shuffleListener == null) {
       shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().sendAndLog(shuffle());
           repaintMap();
@@ -382,6 +390,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     if (reshuffleListener == null) {
       reshuffleListener = new NamedKeyStrokeListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().sendAndLog(sendToDeck());
           repaintMap();
@@ -393,6 +402,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     if (reverseListener == null) {
       reverseListener = new NamedKeyStrokeListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().sendAndLog(reverse());
           repaintMap();
@@ -452,6 +462,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return maxStack;
   }
 
+  @Override
   public int getMaximumVisiblePieceCount() {
     return Math.min(pieceCount, maxStack);
   }
@@ -708,6 +719,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  @Override
   public String getType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(drawOutline)
@@ -799,6 +811,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     dragCount = 0;
     nextDraw = null;
     return new PieceIterator(it) {
+      @Override
       public GamePiece nextPiece() {
         GamePiece p = super.nextPiece();
         if (faceDown) {
@@ -834,6 +847,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return track.getChangeCommand();
   }
 
+  @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
@@ -848,6 +862,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return se.getValue();
   }
 
+  @Override
   public void setState(String state) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ';');
     final String mapId = st.nextToken();
@@ -925,10 +940,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return faceDown;
   }
 
+  @Override
   public Command pieceAdded(GamePiece p) {
     return null;
   }
 
+  @Override
   public Command pieceRemoved(GamePiece p) {
     ChangeTracker tracker = new ChangeTracker(p);
     p.setProperty(Properties.OBSCURED_TO_OTHERS, isFaceDown() && !isDrawFaceUp());
@@ -939,6 +956,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this.faceDown = faceDown;
   }
 
+  @Override
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     int count = Math.min(getPieceCount(), maxStack);
     GamePiece top = (nextDraw != null && nextDraw.size() > 0) ?
@@ -994,10 +1012,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return c;
   }
 
+  @Override
   public StackMetrics getStackMetrics() {
     return deckStackMetrics;
   }
 
+  @Override
   public Rectangle boundingBox() {
     GamePiece top = topPiece();
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
@@ -1011,10 +1031,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return r;
   }
 
+  @Override
   public Shape getShape() {
     return boundingBox();
   }
 
+  @Override
   public Object getProperty(Object key) {
     Object value = null;
     if (Properties.NO_STACK.equals(key)) {
@@ -1034,6 +1056,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(shuffle());
             repaintMap();
@@ -1045,6 +1068,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(reshuffleCommand, getReshuffleKey(), this) {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent evt) {
             GameModule.getGameModule().sendAndLog(sendToDeck());
             repaintMap();
@@ -1056,6 +1080,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         KeyCommand faceDownAction = new KeyCommand(faceDown ? Resources.getString("Deck.face_up") : Resources.getString("Deck.face_down"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             final Command c = setContentsFaceDown(!faceDown);
             GameModule.getGameModule().sendAndLog(c);
@@ -1068,6 +1093,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(reverseCommand, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             final Command c = reverse();
             GameModule.getGameModule().sendAndLog(c);
@@ -1080,6 +1106,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(Resources.getString("Deck.draw_multiple"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             promptForDragCount();
           }
@@ -1090,6 +1117,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(Resources.getString("Deck.draw_specific"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             promptForNextDraw();
             repaintMap();
@@ -1101,6 +1129,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(Resources.getString(Resources.SAVE), NamedKeyStroke.NULL_KEYSTROKE, this) {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(saveDeck());
             repaintMap();
@@ -1110,6 +1139,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         c = new KeyCommand(Resources.getString(Resources.LOAD), NamedKeyStroke.NULL_KEYSTROKE, this) {
           private static final long serialVersionUID = 1L;
 
+          @Override
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(loadDeck());
             repaintMap();
@@ -1185,6 +1215,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         this.piece = piece;
       }
 
+      @Override
       public int compareTo(AvailablePiece other) {
         if (other == null) return 1;
 
@@ -1226,6 +1257,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         int[] selection = list.getSelectedIndices();
         if (selection.length > 0) {
@@ -1243,6 +1275,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         d.dispose();
       }
@@ -1281,6 +1314,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return c;
   }
 
+  @Override
   public boolean isExpanded() {
     return false;
   }
@@ -1454,6 +1488,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       this.target = target;
     }
 
+    @Override
     protected void executeCommand() {
       target.removeAll();
       Command[] sub = getSubCommands();
@@ -1472,6 +1507,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return target == null ? "" : target.getId(); //$NON-NLS-1$
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

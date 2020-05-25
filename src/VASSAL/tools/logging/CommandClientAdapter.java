@@ -30,6 +30,7 @@ public class CommandClientAdapter implements LogListener{
     this.cmdC = cmdC;
   }
 
+  @Override
   public void handle(LogEntry entry) {
 /*
     try {

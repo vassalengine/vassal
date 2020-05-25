@@ -163,6 +163,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     // Listen for changes to our name via VASSAL preferences
     idChangeListener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (me != null) {
           final SimpleStatus s = (SimpleStatus) me.getStatus();
@@ -179,6 +180,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     // Listen for someone kicking us from the current room
     kickListener = new DefaultUserStatusListener() {
+      @Override
       public void kicked(String kicker, String reason) {
         fireStatus(Resources.getString("Chat.kicked", getRoom().getName())); //$NON-NLS-1$
         setRoom(defaultRoom);
@@ -187,6 +189,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     // Listen for someone inviting us to another room
     inviteListener = new InvitationListener() {
+      @Override
       public void invitationReceived(XMPPConnection conn, String room,
           String inviter, String reason, String password, Message mess) {
         if (INVITE.equals(reason)) {
@@ -212,9 +215,11 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
     // Listen for other clients leaving a room I own and revoke their membership
     userListener = new DefaultParticipantStatusListener() {
+      @Override
       public void kicked(String participant, String arg1, String arg2) {
         revokeMembership(participant);
       }
+      @Override
       public void left(String participant) {
         revokeMembership(participant);
       }
@@ -234,6 +239,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     };
   }
 
+  @Override
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
@@ -242,10 +248,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public boolean isConnected() {
     return conn != null && conn.isConnected();
   }
 
+  @Override
   public void sendToOthers(Command c) {
     if (currentChat != null) {
       try {
@@ -258,6 +266,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
   }
 
+  @Override
   public void setConnected(boolean connect) {
     if (connect) {
       if (!isConnected()) {
@@ -377,6 +386,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     playerStatusControls.initializeControls(controls);
     // messageBoardControls.initializeControls(controls);
@@ -389,6 +399,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     // messageBoardControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
@@ -399,6 +410,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     GameModule.getGameModule().removeCommandEncoder(soundEncoder);
   }
 
+  @Override
   public void processPacket(Packet packet) {
     Message m = (Message) packet;
     if (!m.getFrom().equals(currentChat.getRoom() + "/" + currentChat.getNickname())) { //$NON-NLS-1$
@@ -416,6 +428,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     g.warn("##### " + Resources.getString("JabberClient.end_message")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public Room getRoom() {
     return monitor.getCurrentRoom();
   }
@@ -436,6 +449,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     setRoom(roomMgr.getRoomByName(this, roomName));
   }
 
+  @Override
   public void setRoom(Room r) {
     JabberRoom newRoom = null;
     try {
@@ -492,6 +506,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     }
   }
 
+  @Override
   public Room[] getAvailableRooms() {
     return monitor.getAvailableRooms();
   }
@@ -505,24 +520,29 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     propSupport.firePropertyChange(STATUS, null, msg);
   }
 
+  @Override
   public Player getUserInfo() {
     return playerMgr.getPlayerByLogin(this, account.getUserName());
   }
 
+  @Override
   public void setUserInfo(Player p) {
     if (monitor != null) {
       monitor.sendStatus((JabberPlayer) p);
     }
   }
 
+  @Override
   public String getDefaultRoomName() {
     return defaultRoom.getName();
   }
 
+  @Override
   public boolean isDefaultRoom(Room r) {
     return r == null ? false : r.getName().equals(getDefaultRoomName());
   }
 
+  @Override
   public void sendTo(Player recipient, Command c) {
     Chat chat = conn.getChatManager().createChat(((JabberPlayer) recipient).getJid(), null);
     try {
@@ -536,6 +556,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
 
   /** Can a player be invited to this room? */
+  @Override
   public boolean isInvitable(Player invitee) {
     // invitee is not me
     if (!invitee.equals(me)) {
@@ -552,6 +573,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   /** Send invitation to player */
+  @Override
   public void sendInvite(Player invitee) {
     try {
       currentChat.grantMembership(invitee.getId());
@@ -563,11 +585,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   /** Process an invitation */
+  @Override
   public void doInvite(String playerId, String roomName) {
     setRoom(roomName);
   }
 
   /** Is a player kickable from this room? */
+  @Override
   public boolean isKickable(Player kickee) {
     // kickee is not me
     if (!kickee.equals(me)) {
@@ -584,6 +608,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   /** Kick a player from this room */
+  @Override
   public void doKick(Player kickee) {
     try {
       currentChat.kickParticipant(((JabberPlayer) kickee).getLoginName(), ""); //$NON-NLS-1$
@@ -678,6 +703,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   /**
    * Toggle the lock state on the room.
    */
+  @Override
   public void lockRoom(LockableRoom r) {
     if (r instanceof JabberRoom) {
       final JabberRoom room = (JabberRoom) r;
@@ -702,6 +728,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     private static final String ROOM_CHANGE_ACTION = "changedRoom"; //$NON-NLS-1$
     private MultiUserChat monitorRoom;
     private Comparator<Room> roomSortOrder = new Comparator<>() {
+      @Override
       public int compare(Room o1, Room o2) {
         if (o1.equals(defaultRoom) && !o2.equals(defaultRoom)) {
           return -1;
@@ -830,6 +857,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       conn.sendPacket(disco);
     }
 
+    @Override
     public void processPacket(Packet packet) {
       Message m = (Message) packet;
       if (ROOM_CHANGE_ACTION.equals(m.getBody())) {
@@ -839,58 +867,74 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       }
     }
 
+    @Override
     public void joined(String participant) {
       playerMgr.getPlayer(getAbsolutePlayerJID(participant));
     }
 
+    @Override
     public void left(String participant) {
       String jid = getAbsolutePlayerJID(participant);
       playerMgr.deletePlayer(jid);
       fireRoomsUpdated();
     }
 
+    @Override
     public void kicked(String participant, String actor, String reason) {
     }
 
+    @Override
     public void voiceGranted(String participant) {
     }
 
+    @Override
     public void voiceRevoked(String participant) {
     }
 
+    @Override
     public void banned(String participant, String actor, String reason) {
     }
 
+    @Override
     public void membershipGranted(String participant) {
     }
 
+    @Override
     public void membershipRevoked(String participant) {
     }
 
+    @Override
     public void moderatorGranted(String participant) {
     }
 
+    @Override
     public void moderatorRevoked(String participant) {
     }
 
+    @Override
     public void ownershipGranted(String participant) {
     }
 
+    @Override
     public void ownershipRevoked(String participant) {
     }
 
+    @Override
     public void adminGranted(String participant) {
     }
 
+    @Override
     public void adminRevoked(String participant) {
     }
 
+    @Override
     public void nicknameChanged(String participant, String newNickname) {
     }
     private class TrackStatus extends PacketProcessor {
       String prefix;
 
       private PacketFilter changeStatusFilter = new PacketFilter() {
+        @Override
         public boolean accept(Packet packet) {
           boolean accept = false;
           if (packet instanceof Presence) {
@@ -910,10 +954,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         this.prefix = prefix;
       }
 
+      @Override
       public boolean acceptPacket(Packet packet) {
         return packet instanceof Presence;
       }
 
+      @Override
       public void process(Packet packet) {
         // Process a change of status by another user
         if (changeStatusFilter.accept(packet)) {
@@ -983,6 +1029,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       public TrackRooms() {
       }
 
+      @Override
       public void process(Packet packet) {
         if (roomResponseFilter.accept(packet)) {
           final DiscoverItems result = (DiscoverItems) packet;
@@ -1009,6 +1056,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         }
       }
 
+      @Override
       public boolean acceptPacket(Packet packet) {
         boolean accept = false;
         if (roomResponseFilter.accept(packet)) {
@@ -1030,6 +1078,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       private PacketFilter chatFilter = new MessageTypeFilter(Message.Type.chat);
       private PacketFilter serverMessageFilter = new MessageTypeFilter(Message.Type.normal);
 
+      @Override
       protected boolean acceptPacket(Packet packet) {
         if (chatFilter.accept(packet)) {
           return true;
@@ -1040,6 +1089,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
         return false;
       }
 
+      @Override
       protected void process(Packet packet) {
         if (chatFilter.accept(packet)) {
           JabberClient.this.processPacket(packet);
@@ -1060,10 +1110,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     this.encoder = encoder;
   }
 
+  @Override
   public ModuleSummary[] getHistory(String timeRange) {
     return new ModuleSummary[0];
   }
 
+  @Override
   public ModuleSummary[] getStatus() {
     ArrayList<ModuleSummary> entries = new ArrayList<>();
     try {
@@ -1078,13 +1130,16 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     return entries.toArray(new ModuleSummary[0]);
   }
 
+  @Override
   public String[] getSupportedTimeRanges() {
     return new String[0];
   }
   private class ConnectionListener implements org.jivesoftware.smack.ConnectionListener {
+    @Override
     public void connectionClosed() {
     }
 
+    @Override
     public void connectionClosedOnError(Exception e) {
       String msg = e.getMessage();
       if (e instanceof XMPPException) {
@@ -1099,12 +1154,15 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       setConnected(false);
     }
 
+    @Override
     public void reconnectingIn(int seconds) {
     }
 
+    @Override
     public void reconnectionFailed(Exception e) {
     }
 
+    @Override
     public void reconnectionSuccessful() {
     }
   }
@@ -1112,11 +1170,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   public static void main(String[] args) {
     XMPPConnection.DEBUG_ENABLED = true;
     CommandEncoder c = new CommandEncoder() {
+      @Override
       public Command decode(String command) {
         System.err.println(command);
         return null;
       }
 
+      @Override
       public String encode(Command c) {
         return null;
       }
@@ -1125,24 +1185,29 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     final String password = args.length == 0 ? "test" : args[1]; //$NON-NLS-1$
     // JabberClient client = new JabberClient(c, "63.144.41.3", 5222, username, password);
     AccountInfo account = new AccountInfo() {
+      @Override
       public String getPassword() {
         return password;
       }
 
+      @Override
       public String getUserName() {
         return username;
       }
 
+      @Override
       public String getModule() {
         return "JabberTestModule";
       }
 
+      @Override
       public String getRealName() {
         return username;
       }
     };
     JabberClient client = new JabberClient(c, "localhost", 5222, account); //$NON-NLS-1$
     client.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(evt.getPropertyName() + "=" + evt.getNewValue()); //$NON-NLS-1$
       }
@@ -1165,10 +1230,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     return host;
   }
 
+  @Override
   public String playerToString(Player p) {
     return ((JabberPlayer)p).getJid();
   }
 
+  @Override
   public Player stringToPlayer(String s) {
     return playerMgr.getPlayer(s);
   }

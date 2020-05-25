@@ -184,6 +184,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     value = value > 0 ? theVal + 1 : -theVal - 1;
   }
 
+  @Override
   public void mySetType(String s) {
     if (!s.startsWith(ID)) {
       originalSetType(s);
@@ -367,10 +368,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   }
 
+  @Override
   public String getLocalizedName() {
     return getName(true);
   }
 
+  @Override
   public String getName() {
     return getName(false);
   }
@@ -414,11 +417,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return name == null ? "" : name;
   }
 
+  @Override
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(-1);
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(activateCommand)
@@ -485,6 +490,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
 
@@ -495,6 +501,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return se.append(String.valueOf(value)).getValue();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     final boolean drawUnder = drawUnderneathWhenSelected && Boolean.TRUE.equals(getProperty(Properties.SELECTED));
 
@@ -554,6 +561,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return;
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<>();
@@ -612,6 +620,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
 
     final ChangeTracker tracker = new ChangeTracker(this);
@@ -691,6 +700,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return imagePainter[value-1].getSource().getImage();
   }
 
+  @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
     if (value > 0) r.add(getCurrentImageBounds());
@@ -727,6 +737,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * Return the Shape of the counter by adding the shape of this layer to the shape of all inner traits.
    * Minimize generation of new Area objects.
    */
+  @Override
   public Shape getShape() {
     final Shape innerShape = piece.getShape();
 
@@ -756,6 +767,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public String getDescription() {
     String displayName = name;
     if (name == null || name.length() == 0) {
@@ -773,6 +785,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
       checkPropertyLevel();
@@ -809,6 +822,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return super.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (key.equals(name + IMAGE) ||
         key.equals(name + LEVEL) ||
@@ -860,10 +874,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return translation;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Layer.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -899,6 +915,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return getLayerWithMatchingActivateCommand(piece, stroke.getKeyStroke(), active);
   }
 
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(name + IMAGE);
@@ -972,6 +989,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       alwaysActiveConfig = new BooleanConfigurer(null, "Always active?", e.alwaysActive);
       alwaysActiveConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           showHideFields();
         }
@@ -1003,6 +1021,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(levelBox, "span 2,wrap");
 
       followConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           showHideFields();
         }
@@ -1065,6 +1084,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       images = getImagePicker();
       images.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent e) {
           setUpDownEnabled();
         }});
@@ -1072,12 +1092,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       up = new JButton(IconFactory.getIcon("go-up", IconFamily.XSMALL));
       up.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           moveSelectedUp();
         }});
 
       down = new JButton(IconFactory.getIcon("go-down", IconFamily.XSMALL));
       down.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           moveSelectedDown();
         }});
@@ -1093,6 +1115,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       box.add(new JLabel("Level Name:  "));
       levelNameInput.setMaximumSize(levelNameInput.getPreferredSize());
       levelNameInput.addKeyListener(new KeyAdapter() {
+        @Override
         public void keyReleased(KeyEvent evt) {
           changeLevelName();
         }
@@ -1102,6 +1125,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       box = Box.createHorizontalBox();
       prefix.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           if (prefix.isSelected()) {
             suffix.setSelected(false);
@@ -1110,6 +1134,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       });
       suffix.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           if (suffix.isSelected()) {
             prefix.setSelected(false);
@@ -1124,6 +1149,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0","[grow 1]rel[grow 1]"));
       JButton b = new JButton("Add Level");
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           names.add(null);
           isPrefix.add(null);
@@ -1134,6 +1160,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       b = new JButton("Remove Level");
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           final int index = images.getList().getSelectedIndex();
           if (index >= 0) {
@@ -1147,6 +1174,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(buttonPanel, "span 4,center,growx,wrap");
 
       images.getList().addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
           updateLevelName();
         }
@@ -1278,10 +1306,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return new MultiImagePicker();
     }
 
+    @Override
     public String getState() {
       return alwaysActiveConfig.getValueBoolean() ? "1" : "-1";
     }
 
+    @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       final ArrayList<String> imageNames = new ArrayList<>();
@@ -1358,6 +1388,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
@@ -1423,6 +1454,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
     final String prefix = name.length() > 0 ? name+": " : "";

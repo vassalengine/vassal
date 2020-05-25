@@ -66,6 +66,7 @@ public class Tutorial extends AbstractConfigurable {
     launch = new AbstractAction(Resources.getString("Tutorial.tutorial")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       };
@@ -115,6 +116,7 @@ public class Tutorial extends AbstractConfigurable {
     }.execute();
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Menu Text", //$NON-NLS-1$
@@ -125,6 +127,7 @@ public class Tutorial extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -135,6 +138,7 @@ public class Tutorial extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -145,9 +149,11 @@ public class Tutorial extends AbstractConfigurable {
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (name.equals(PROMPT_MESSAGE)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return launchOnFirstStartup;
         }
@@ -156,6 +162,7 @@ public class Tutorial extends AbstractConfigurable {
     return null;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (FILE_NAME.equals(key)) {
       return fileName;
@@ -177,6 +184,7 @@ public class Tutorial extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (FILE_NAME.equals(key)) {
       if (value instanceof File) {
@@ -204,6 +212,7 @@ public class Tutorial extends AbstractConfigurable {
 
   protected MenuItemProxy launchItem;
 
+  @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
     MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
@@ -214,15 +223,18 @@ public class Tutorial extends AbstractConfigurable {
     GameModule.getGameModule().getWizardSupport().setTutorial(this);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
                .removeFromSection("Documentation.Module", launchItem);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
   }

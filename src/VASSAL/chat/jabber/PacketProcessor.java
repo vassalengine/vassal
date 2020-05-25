@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Packet;
  */
 public abstract class PacketProcessor implements PacketListener, PacketFilter {
 
+  @Override
   public void processPacket(Packet packet) {
     try {
       process(packet);
@@ -41,6 +42,7 @@ public abstract class PacketProcessor implements PacketListener, PacketFilter {
 
   protected abstract void process(Packet packet);
 
+  @Override
   public boolean accept(Packet packet) {
     try {
       return acceptPacket(packet);

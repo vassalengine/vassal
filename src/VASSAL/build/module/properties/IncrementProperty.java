@@ -42,6 +42,7 @@ public class IncrementProperty implements PropertyChanger {
     format.setFormat(incr);
   }
 
+  @Override
   public String getNewValue(String oldValue) {
     int value = 0;
     try {

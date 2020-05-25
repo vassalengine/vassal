@@ -36,14 +36,17 @@ public class PlayerAccess implements PieceAccess {
     return instance;
   }
 
+  @Override
   public String getCurrentPlayerId() {
     return GameModule.getUserId();
   }
 
+  @Override
   public boolean currentPlayerHasAccess(String id) {
     return id == null || (!GlobalAccess.isHideAll() && id.equals(getCurrentPlayerId()));
   }
 
+  @Override
   public boolean currentPlayerCanModify(String ownerId) {
     return ownerId == null || ownerId.equals(getCurrentPlayerId());
   }

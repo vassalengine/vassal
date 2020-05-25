@@ -186,6 +186,7 @@ public class ModuleManagerWindow extends JFrame {
     final AbstractAction shutDownAction = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (!AbstractLaunchAction.shutDown()) return;
 
@@ -261,6 +262,7 @@ public class ModuleManagerWindow extends JFrame {
                    Resources.getString("Chat.server_status")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         serverStatusView.toggleVisibility();
         serverStatusConfig.setValue(
@@ -275,6 +277,7 @@ public class ModuleManagerWindow extends JFrame {
                     Resources.getString("ModuleManager.clear_tilecache")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         if (
           Dialogs.showConfirmDialog(
@@ -432,6 +435,7 @@ public class ModuleManagerWindow extends JFrame {
 
     setDividerLocation(getPreferredDividerLocation());
     serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         setPreferredDividerLocation((Integer) e.getNewValue());
       }});
@@ -457,6 +461,7 @@ public class ModuleManagerWindow extends JFrame {
   protected void setDividerLocation(int i) {
     final int loc = i;
     final Runnable r = new Runnable() {
+      @Override
       public void run() {
         serverStatusView.setDividerLocation(loc);
       }
@@ -494,6 +499,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     Collections.sort(moduleList, new Comparator<>() {
+      @Override
       public int compare(ModuleInfo f1, ModuleInfo f2) {
         return f1.compareTo(f2);
       }
@@ -640,11 +646,13 @@ public class ModuleManagerWindow extends JFrame {
     // expansion in order to distinguish these from clicks which
     // might launch a module or game.
     tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+      @Override
       public void treeWillCollapse(TreeExpansionEvent e) {
         lastExpansionTime = System.currentTimeMillis();
         lastExpansionPath = e.getPath();
       }
 
+      @Override
       public void treeWillExpand(TreeExpansionEvent e) {
         lastExpansionTime = System.currentTimeMillis();
         lastExpansionPath = e.getPath();
@@ -657,6 +665,7 @@ public class ModuleManagerWindow extends JFrame {
 
     tree.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     tree.addTreeSelectionListener(new TreeSelectionListener() {
+      @Override
       public void valueChanged(TreeSelectionEvent e) {
         final MyTreeNode node = (MyTreeNode) e.getPath().getLastPathComponent();
         final AbstractInfo target = node.getNodeInfo();
@@ -823,14 +832,17 @@ public class ModuleManagerWindow extends JFrame {
       columnHeadings[SPARE_COLUMN] = Resources.getString("ModuleManager.description");
     }
 
+    @Override
     public int getColumnCount() {
       return COLUMNS;
     }
 
+    @Override
     public String getColumnName(int col) {
       return columnHeadings[col];
     }
 
+    @Override
     public Object getValueAt(Object node, int column)  {
       return ((MyTreeNode) node).getValueAt(column);
     }
@@ -853,6 +865,7 @@ public class ModuleManagerWindow extends JFrame {
      * There appears to be a bug/strange interaction between JXTreetable and the ComponentSplitter
      * when the Component
      */
+    @Override
     public String getToolTipText(MouseEvent event) {
       if (getComponentAt(event.getPoint().x, event.getPoint().y) == null) return null;
       return super.getToolTipText(event);
@@ -869,6 +882,7 @@ public class ModuleManagerWindow extends JFrame {
   private static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public Component getTreeCellRendererComponent(
         JTree tree, Object value, boolean selected, boolean expanded,
         boolean leaf, int row, boolean hasFocus) {
@@ -895,6 +909,7 @@ public class ModuleManagerWindow extends JFrame {
       this.setHorizontalAlignment(CENTER);
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       return this;
@@ -1059,6 +1074,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
 
+    @Override
     public int compareTo(AbstractInfo info) {
       return getSortKey().compareTo(info.getSortKey());
     }
@@ -1169,6 +1185,7 @@ public class ModuleManagerWindow extends JFrame {
       super(null);
     }
 
+    @Override
     public String getSortKey() {
       return "";
     }
@@ -1191,6 +1208,7 @@ public class ModuleManagerWindow extends JFrame {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         final FileChooser fc = FileChooser.createFileChooser(
           ModuleManagerWindow.this, (DirectoryConfigurer)
@@ -1218,6 +1236,7 @@ public class ModuleManagerWindow extends JFrame {
         Resources.getString("ModuleManager.add_save_game_folder")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         final FileChooser fc = FileChooser.createFileChooser(
           ModuleManagerWindow.this, (DirectoryConfigurer)
@@ -1250,6 +1269,7 @@ public class ModuleManagerWindow extends JFrame {
       return metadata == null ? false : Info.isModuleTooNew(metadata.getVassalVersion());
     }
 
+    @Override
     public String getVassalVersion() {
       return metadata == null ? "" : metadata.getVassalVersion();
     }
@@ -1274,6 +1294,7 @@ public class ModuleManagerWindow extends JFrame {
     /**
      * Refresh this module and all children
      */
+    @Override
     public void refresh() {
       loadMetaData();
 
@@ -1393,6 +1414,7 @@ public class ModuleManagerWindow extends JFrame {
       m.add(new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
           cleanupTileCache();
@@ -1455,10 +1477,12 @@ public class ModuleManagerWindow extends JFrame {
         getLocalizedDescription() : super.getValueAt(column);
     }
 
+    @Override
     public String getSortKey() {
       return metadata == null ? "" : metadata.getLocalizedName();
     }
 
+    @Override
     public Color getTreeCellFgColor() {
       return Info.isModuleTooNew(getVassalVersion()) ? Color.GRAY : Color.BLACK;
     }
@@ -1513,6 +1537,7 @@ public class ModuleManagerWindow extends JFrame {
       return metadata == null ? "" : metadata.getVersion();
     }
 
+    @Override
     public String getVassalVersion() {
       return metadata == null ? "" : metadata.getVassalVersion();
     }
@@ -1589,6 +1614,7 @@ public class ModuleManagerWindow extends JFrame {
         setEnabled(!isInUse() && ! moduleInfo.isInUse());
       }
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         setFile(getExtensionsManager().setActive(getFile(), !isActive()));
         setActive(getExtensionsManager().isExtensionActive(getFile()));
@@ -1601,6 +1627,7 @@ public class ModuleManagerWindow extends JFrame {
     /**
      * Sort Extensions by File Name
      */
+    @Override
     public String getSortKey() {
       return getFile().getName();
     }
@@ -1620,11 +1647,13 @@ public class ModuleManagerWindow extends JFrame {
       dtm = f.lastModified();
     }
 
+    @Override
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
       m.add(new AbstractAction(Resources.getString("General.refresh")) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           refresh();
         }
@@ -1633,6 +1662,7 @@ public class ModuleManagerWindow extends JFrame {
       m.add(new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           final MyTreeNode moduleNode = rootNode.findNode(moduleInfo.getFile());
           final MyTreeNode folderNode = moduleNode.findNode(getFile());
@@ -1649,6 +1679,7 @@ public class ModuleManagerWindow extends JFrame {
       return moduleInfo;
     }
 
+    @Override
     public void refresh() {
 
       // Remove any files that no longer exist
@@ -1702,6 +1733,7 @@ public class ModuleManagerWindow extends JFrame {
     /**
      * Force Game Folders to sort after extensions
      */
+    @Override
     public String getSortKey() {
       return "~~~"+getFile().getName();
     }
@@ -1732,6 +1764,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
 
+    @Override
     public void refresh() {
       loadMetaData();
       tree.repaint();
@@ -1792,6 +1825,7 @@ public class ModuleManagerWindow extends JFrame {
     /**
      * Sort Save Files by file name
      */
+    @Override
     public String getSortKey() {
       return this.getFile().getName();
     }
@@ -1907,6 +1941,7 @@ public class ModuleManagerWindow extends JFrame {
       this.frame = frame;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 // FIXME: don't create a new one each time!
       final File logfile = new File(Info.getHomeDir(), "errorLog");

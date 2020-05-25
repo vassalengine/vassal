@@ -71,6 +71,7 @@ public class FirstTimeDialog extends JDialog {
 
     setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         System.exit(0);
       }
@@ -89,6 +90,7 @@ public class FirstTimeDialog extends JDialog {
     final JButton help = new JButton(Resources.getString(Resources.HELP));
 
     final ActionListener closer = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         FirstTimeDialog.this.dispose();
       }
@@ -112,6 +114,7 @@ public class FirstTimeDialog extends JDialog {
     langbox.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         setText(((Locale) value).getDisplayName(Resources.getLocale()));
@@ -121,6 +124,7 @@ public class FirstTimeDialog extends JDialog {
 
     langbox.setSelectedItem(Resources.getLocale());
     langbox.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         Resources.setLocale((Locale) langbox.getSelectedItem());
 

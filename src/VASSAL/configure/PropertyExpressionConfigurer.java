@@ -52,6 +52,7 @@ public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer 
     super(key, name, val, piece);
   }
 
+  @Override
   protected ExpressionButton buildButton() {
     return new PropertyExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);
   }
@@ -64,6 +65,7 @@ public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer 
       super(config, size, piece);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       new PropertyExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);
     }

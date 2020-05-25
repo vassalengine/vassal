@@ -52,13 +52,16 @@ public class HotkeySpecifier extends JTextField implements KeyListener {
     return stroke;
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     stroke = KeyStroke.getKeyStrokeForEvent(e);
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     setText(getString(stroke));
   }

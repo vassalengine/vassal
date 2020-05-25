@@ -38,6 +38,7 @@ public class KeyCommandSubMenu extends KeyCommand {
     super(name, NamedKeyStroke.NULL_KEYSTROKE, target, i18nPiece);
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
   }
 

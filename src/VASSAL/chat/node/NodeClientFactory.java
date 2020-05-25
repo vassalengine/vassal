@@ -48,23 +48,28 @@ public class NodeClientFactory extends ChatServerFactory {
   public NodeClientFactory() {
   }
 
+  @Override
   public ChatServerConnection buildServer(Properties param) {
     final String host = param.getProperty(NODE_HOST,"game.vassalengine.org");  //$NON-NLS-1$
     final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
     NodeServerInfo nodeServerInfo = new NodeServerInfo() {
+      @Override
       public String getHostName() {
         return host;
       }
 
+      @Override
       public int getPort() {
         return port;
       }
     };
     PeerPoolInfo publicInfo = new PeerPoolInfo() {
+      @Override
       public String getModuleName() {
         return GameModule.getGameModule() == null ? UNNAMED_MODULE : GameModule.getGameModule().getGameName();
       }
 
+      @Override
       public String getUserName() {
         return GameModule.getGameModule() == null ? UNKNOWN_USER : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
       }
@@ -74,6 +79,7 @@ public class NodeClientFactory extends ChatServerFactory {
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);

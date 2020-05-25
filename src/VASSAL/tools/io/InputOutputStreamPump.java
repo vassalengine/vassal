@@ -87,6 +87,7 @@ public class InputOutputStreamPump implements InputStreamPump,
    * @param in the input stream
    * @throws UnsupportedOperationException if called after the pump is started
    */
+  @Override
   public void setInputStream(InputStream in) {
     if (running) throw new UnsupportedOperationException();
 
@@ -99,6 +100,7 @@ public class InputOutputStreamPump implements InputStreamPump,
    * @param out the output stream
    * @throws UnsupportedOperationException if called after the pump is started
    */
+  @Override
   public void setOutputStream(OutputStream out) {
     if (running) throw new UnsupportedOperationException();
 
@@ -106,6 +108,7 @@ public class InputOutputStreamPump implements InputStreamPump,
   }
 
   /** {@inheritDoc} */
+  @Override
   public void run() {
     running = true;
 

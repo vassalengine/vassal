@@ -66,6 +66,7 @@ public class ListWidget extends Widget
     return "Scrollable List";
   }
 
+  @Override
   public Component getComponent() {
     if (panel == null) {
       rebuild();
@@ -101,6 +102,7 @@ public class ListWidget extends Widget
     return split;
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       Widget w = (Widget) b;
@@ -113,6 +115,7 @@ public class ListWidget extends Widget
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       widgets.removeElement(b);
@@ -129,6 +132,7 @@ public class ListWidget extends Widget
     return s;
   }
 
+  @Override
   public void valueChanged(ListSelectionEvent e) {
     Object selected = list.getSelectedValue();
     if (selected != null) {
@@ -136,18 +140,22 @@ public class ListWidget extends Widget
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {NAME,WIDTH,HEIGHT,DIVIDER};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (NAME.equals(name)) {
       setConfigureName((String) value);
@@ -163,6 +171,7 @@ public class ListWidget extends Widget
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

@@ -104,6 +104,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
     return p != null && owner != null && owner.equals(p.getId());
   }
 
+  @Override
   public boolean isOwner(String jid) {
     return jid.equals(owner);
   }
@@ -112,6 +113,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
     return owner;
   }
 
+  @Override
   public Player getOwningPlayer() {
     return getPlayer(owner);
   }
@@ -124,6 +126,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
     locked = !locked;
   }
 
+  @Override
   public boolean isLocked() {
     return locked;
   }

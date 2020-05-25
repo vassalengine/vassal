@@ -43,6 +43,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(commandName,commandKey,Decorator.getOutermost(this), this);
@@ -57,16 +58,19 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(commandKey).append(globalHotKey).append(description);
     return ID+se.getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (command.matches(stroke)) {
@@ -80,33 +84,41 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     return null;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g,x,y,obs,zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  "+description;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalHotKey.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()),';');
     commandName = sd.nextToken();
@@ -116,10 +128,12 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     commands = null;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getDescription() + " command");
   }
@@ -149,14 +163,17 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       controls.add(hotKeyConfig.getControls());
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());

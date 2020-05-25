@@ -144,6 +144,7 @@ public class SavedGameUpdater {
       this.replacement = replacement;
     }
 
+    @Override
     public GamePiece createMarker() {
       GamePiece marker = PieceCloner.getInstance().clonePiece(replacement);
       if (matchRotation) {
@@ -152,6 +153,7 @@ public class SavedGameUpdater {
       return marker;
     }
 
+    @Override
     public Command replacePiece() {
       return super.replacePiece();
     }

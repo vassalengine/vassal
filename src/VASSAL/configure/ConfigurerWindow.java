@@ -49,6 +49,7 @@ public class ConfigurerWindow extends JDialog {
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
          dispose();
          cancelled = true;
@@ -59,6 +60,7 @@ public class ConfigurerWindow extends JDialog {
     add(c.getControls());
     c.addPropertyChangeListener
       (new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurer.NAME_PROPERTY
             .equals(evt.getPropertyName())) {
@@ -69,6 +71,7 @@ public class ConfigurerWindow extends JDialog {
     setTitle(c.getName());
 
     okButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         c.getValue();
         dispose();
@@ -77,6 +80,7 @@ public class ConfigurerWindow extends JDialog {
     });
 
     canButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent e) {
         dispose();
         cancelled = true;

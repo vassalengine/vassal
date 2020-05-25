@@ -54,6 +54,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     return Resources.getString("Editor.InternetDiceButton.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     final Class<?>[] c = super.getAttributeTypes();
     for (int i = 0; i < c.length; ++i) {
@@ -65,6 +66,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   public static class InternetReportFormatConfig extends ReportFormatConfig {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       final FormattedStringConfigurer config =
         (FormattedStringConfigurer) super.getConfigurer(c, key, name);
@@ -76,6 +78,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   /**
    * Ask the die manager to do our roll!
    */
+  @Override
   protected void DR() {
     reportFormat.setProperty(NAME, getLocalizedConfigureName());
     dieManager.roll(nDice, nSides, plus, reportTotal, getLocalizedConfigureName(), reportFormat);
@@ -84,6 +87,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   /**
    * Expects to be added to the DieManager.
    */
+  @Override
   public void addTo(Buildable parent) {
     initDieManager();
     dieManager.addDieButton(this);
@@ -99,6 +103,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     }
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     dieManager.removeDieButton(this);
     GameModule.getGameModule().removeCommandEncoder(this);
@@ -106,13 +111,16 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     super.removeFrom(b);
   }
 
+  @Override
   public void setup(boolean gameStarting) {
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new SetSecondaryEmail(dieManager.getServer().getSecondaryEmail());
   }
 
+  @Override
   public Command decode(String command) {
     Command comm = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -121,6 +129,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     return comm;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetSecondaryEmail) {
@@ -136,15 +145,18 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
       msg = s;
     }
 
+    @Override
     protected void executeCommand() {
       dieManager.setSecondaryEmail(msg);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }

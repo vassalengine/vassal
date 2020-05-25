@@ -59,6 +59,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   public PieceRecenterer() {
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GameModule.getGameModule().sendAndLog(recenter(map));
       }
@@ -104,16 +105,19 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   }
 
   /** Implements {@link DeckVisitor}.  Returns Boolean.TRUE if the piece should be moved */
+  @Override
   public Object visitDeck(Deck d) {
     return Boolean.TRUE;
   }
 
   /** Implements {@link DeckVisitor}.  Returns Boolean.TRUE if the piece should be moved */
+  @Override
   public Object visitDefault(GamePiece p) {
     return Boolean.TRUE;
   }
 
   /** Implements {@link DeckVisitor}.  Returns Boolean.TRUE if the piece should be moved */
+  @Override
   public Object visitStack(Stack s) {
     return s.getPieceCount() > 0 ? Boolean.TRUE : Boolean.FALSE;
   }
@@ -122,15 +126,18 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     return Resources.getString("Editor.PieceRecenter.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
     map.getToolBar().add(launch);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.BUTTON_TEXT),
@@ -140,6 +147,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       BUTTON_TEXT,
@@ -148,6 +156,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -158,23 +167,28 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/recenter.gif");
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return launch.getAttributeValueString(key);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "PieceRecenterer");
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     map.getToolBar().remove(launch);
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     launch.setAttribute(key,value);
   }

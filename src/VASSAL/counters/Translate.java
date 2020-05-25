@@ -87,6 +87,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public String getDescription() {
     String d = "Move fixed distance";
     if (description.length() > 0) {
@@ -95,6 +96,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     return d;
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -111,6 +113,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     commands = null;
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       moveCommand = new KeyCommand(commandName, keyCommand, Decorator.getOutermost(this), this);
@@ -125,10 +128,12 @@ public class Translate extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
@@ -144,6 +149,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (moveCommand.matches(stroke)) {
@@ -155,6 +161,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
@@ -172,6 +179,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       mover.addKeyEventTarget(piece);
       // Return a non-null command to indicate that a change actually happened
       c = new NullCommand() {
+        @Override
         public boolean isNull() {
           return false;
         }
@@ -258,33 +266,41 @@ public class Translate extends Decorator implements TranslatablePiece {
     return target;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return getInner().boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     getInner().draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return getInner().getName();
   }
 
+  @Override
   public Shape getShape() {
     return getInner().getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Editor(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Translate.htm");
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, "Move Fixed Distance command"));
   }
@@ -323,6 +339,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateAdvancedVisibility();
         }});
@@ -357,14 +374,17 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
@@ -392,6 +412,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     private KeyStroke stroke;
     private List<GamePiece> innerPieces = new ArrayList<>();
 
+    @Override
     public void run() {
       mover = null;
       Command comm = new NullCommand();
@@ -399,10 +420,12 @@ public class Translate extends Decorator implements TranslatablePiece {
         final Map.Merger merger =
           new Map.Merger(move.map, move.pos, move.piece);
         DeckVisitor v = new DeckVisitor() {
+          @Override
           public Object visitDeck(Deck d) {
             return merger.visitDeck(d);
           }
 
+          @Override
           public Object visitStack(Stack s) {
             if (!pieces.contains(s) &&
                 move.map.getPieceCollection().canMerge(s, move.piece)) {
@@ -413,6 +436,7 @@ public class Translate extends Decorator implements TranslatablePiece {
             }
           }
 
+          @Override
           public Object visitDefault(GamePiece p) {
             if (!pieces.contains(p) &&
                 move.map.getPieceCollection().canMerge(p, move.piece)) {

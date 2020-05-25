@@ -65,6 +65,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   public ChangePropertyButton() {
     launch = new LaunchButton("Change", BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -99,6 +100,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     return propChangeConfig.getPropertyChanger();
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Button text:  ",
@@ -110,6 +112,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -121,6 +124,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       BUTTON_TEXT,
@@ -133,17 +137,20 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] {OLD_VALUE_FORMAT, NEW_VALUE_FORMAT, DESCRIPTION_FORMAT});
     }
   }
 
   public static class PropChangerOptions implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return ((ChangePropertyButton)c).propChangeConfig;
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (PROPERTY_CHANGER.equals(key)) {
       if (value instanceof String) {
@@ -164,6 +171,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (PROPERTY_CHANGER.equals(key)) {
       return propChangeConfig.getValueString();
@@ -176,18 +184,22 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     }
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     property.getToolBar().remove(launch);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalProperties.htm","ChangePropertyToolbarButton");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
     property = (GlobalProperty) parent;
     property.getToolBar().add(launch);
@@ -198,34 +210,42 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     return "Change-property Toolbar Button";
   }
 
+  @Override
   public Component getComponent() {
     return launch.getTopLevelAncestor();
   }
 
+  @Override
   public int getMaximumValue() {
     return property.getMaxValue();
   }
 
+  @Override
   public int getMinimumValue() {
     return property.getMinValue();
   }
 
+  @Override
   public boolean isNumeric() {
     return property.isNumeric();
   }
 
+  @Override
   public boolean isWrap() {
     return property.isWrap();
   }
 
+  @Override
   public Object getProperty(Object key) {
     return property.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     return property.getLocalizedProperty(key);
   }
 
+  @Override
   public PropertySource getPropertySource() {
     return property;
   }

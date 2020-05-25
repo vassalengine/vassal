@@ -84,6 +84,7 @@ public final class GameRefresher implements GameComponent {
     refreshAction = new AbstractAction(Resources.getString("GameRefresher.refresh_counters")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         new GameRefresher(gpIdSupport).start();
       }
@@ -276,6 +277,7 @@ public final class GameRefresher implements GameComponent {
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -283,6 +285,7 @@ public final class GameRefresher implements GameComponent {
   /**
    * Enable Refresh menu item when game is running only.
    */
+  @Override
   public void setup(boolean gameStarting) {
     refreshAction.setEnabled(gameStarting);
   }
@@ -303,6 +306,7 @@ public final class GameRefresher implements GameComponent {
     protected void initComponents() {
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent we) {
            exit();
         }
@@ -313,18 +317,21 @@ public final class GameRefresher implements GameComponent {
 
       final JButton testButton = new JButton(Resources.getString("General.test"));
       testButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           test();
         }});
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           run();
         }});
 
       final JButton exitButton = new JButton(Resources.getString("General.exit"));
       exitButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           exit();
         }});

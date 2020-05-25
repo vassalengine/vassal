@@ -45,6 +45,7 @@ public class TurnComponent extends AbstractConfigurable {
     levels.remove(t);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
@@ -70,33 +71,41 @@ public class TurnComponent extends AbstractConfigurable {
     return levels.iterator();
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 }

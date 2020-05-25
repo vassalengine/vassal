@@ -50,10 +50,12 @@ public class StringConfigurer extends Configurer {
     this.length = length > 0 ? length : DEFAULT_LENGHTH;
   }
 
+  @Override
   public String getValueString() {
     return (String) value;
   }
 
+  @Override
   public void setValue(String s) {
     if (!noUpdate && nameField != null) {
       nameField.setText(s);
@@ -61,6 +63,7 @@ public class StringConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  @Override
   public Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -74,10 +77,13 @@ public class StringConfigurer extends Configurer {
       nameField.setText(getValueString());
       p.add(nameField);
       nameField.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
         public void insertUpdate(DocumentEvent e) { update(); }
 
+        @Override
         public void removeUpdate(DocumentEvent e) { update(); }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {}
 
         private void update() {

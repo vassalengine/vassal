@@ -152,10 +152,12 @@ public class ADC2Module extends Importer {
         }
       }
 
+      @Override
       public boolean hasNext() {
         return cursor < size();
       }
 
+      @Override
       public Pool next() {
         Pool p = get(cursor);
         ++cursor;
@@ -163,6 +165,7 @@ public class ADC2Module extends Importer {
         return p;
       }
 
+      @Override
       public void remove() {
         throw new UnsupportedOperationException();
       }
@@ -796,6 +799,7 @@ public class ADC2Module extends Importer {
     private final int hiddenPieceOptions;
     private final int order;
     private TreeSet<Player> allies = new TreeSet<>(new Comparator<>() {
+      @Override
       public int compare(Player p1, Player p2) { return p1.order - p2.order; }
     });
 

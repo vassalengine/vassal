@@ -68,45 +68,56 @@ public class NonRectangular extends Decorator implements EditablePiece {
     setInner(inner);
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     return type;
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return shape != null ? shape : piece.getShape();
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public String getDescription() {
     return "Non-Rectangular";
   }
 
+  @Override
   public void mySetType(String type) {
     this.type = type;
     final String shapeSpec = type.substring(ID.length());
@@ -144,10 +155,12 @@ public class NonRectangular extends Decorator implements EditablePiece {
     return sh;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("NonRectangular.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -164,6 +177,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
       final JPanel shapePanel = new JPanel() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void paint(Graphics g) {
           final Graphics2D g2d = (Graphics2D) g;
           g2d.setColor(Color.white);
@@ -175,6 +189,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
 
+        @Override
         public Dimension getPreferredSize() {
           final Dimension d = shape == null
             ? new Dimension(60, 60) : shape.getBounds().getSize();
@@ -188,6 +203,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
       final ImagePicker picker = new ImagePicker() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void setImageName(String name) {
           super.setImageName(name);
 
@@ -239,10 +255,12 @@ public class NonRectangular extends Decorator implements EditablePiece {
       controls.getTopLevelAncestor().setCursor(null);
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getType() {
       final StringBuilder buffer = new StringBuilder();
       if (shape != null) {
@@ -279,6 +297,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
       return ID + buffer.toString();
     }
 
+    @Override
     public String getState() {
       return "";
     }

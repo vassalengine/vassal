@@ -27,18 +27,22 @@ public class ModuleAccountInfo implements AccountInfo {
     this.password = password;
   }
 
+  @Override
   public String getPassword() {
     return password;
   }
 
+  @Override
   public String getUserName() {
     return login;
   }
 
+  @Override
   public String getRealName() {
     return login;
   }
 
+  @Override
   public String getModule() {
     return GameModule.getGameModule().getGameName();
   }

@@ -110,6 +110,7 @@ public class DoActionButton extends AbstractConfigurable
 
   public DoActionButton() {
     ActionListener rollAction = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         try {
           doActions();
@@ -132,6 +133,7 @@ public class DoActionButton extends AbstractConfigurable
     return Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -159,6 +161,7 @@ public class DoActionButton extends AbstractConfigurable
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.DESCRIPTION),
@@ -187,24 +190,28 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, null);
     }
   }
 
   public static class SoundConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new AudioClipConfigurer(key, name, GameModule.getGameModule().getArchiveWriter());
     }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{});
     }
   }
 
   public static class HotkeyConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new NamedHotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
     }
@@ -216,6 +223,7 @@ public class DoActionButton extends AbstractConfigurable
       super(key, name, list);
     }
 
+    @Override
     protected Configurer buildChildConfigurer() {
       return new NamedHotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
@@ -223,6 +231,7 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   public static class LoopConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new LoopTypeConfig(key, name, ((DoActionButton) c).loopType);
     }
@@ -238,17 +247,20 @@ public class DoActionButton extends AbstractConfigurable
       return LoopControl.LOOP_TYPE_DESCS;
     }
 
+    @Override
     public String getValueString() {
       return LoopControl.loopDescToType(super.getValueString());
     }
   }
 
   public static class LoopCountConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedExpressionConfigurer(key, name, ((DoActionButton) c).loopCount);
     }
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -276,6 +288,7 @@ public class DoActionButton extends AbstractConfigurable
     };
   }
 
+  @Override
   public void addTo(Buildable parent) {
     GameModule.getGameModule().getToolBar().add(getComponent());
   }
@@ -287,6 +300,7 @@ public class DoActionButton extends AbstractConfigurable
     return launch;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
@@ -385,6 +399,7 @@ public class DoActionButton extends AbstractConfigurable
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -445,51 +460,60 @@ public class DoActionButton extends AbstractConfigurable
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doReport;
         }};
     }
     else if (SOUND_CLIP.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doSound;
         }};
     }
     else if (HOTKEYS.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doHotkey;
         }};
     }
     else if (LOOP_COUNT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
         }};
     }
     else if (WHILE_EXPRESSION.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_WHILE.equals(loopType);
         }};
     }
     else if (UNTIL_EXPRESSION.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
         }};
     }
     else if (LOOP_TYPE.equals(name) || PRE_LOOP_HOTKEY.equals(name) || POST_LOOP_HOTKEY.equals(name) || INDEX.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doLoop;
         }};
     }
     else if (INDEX_PROPERTY.equals(name) || INDEX_START.equals(name) || INDEX_STEP.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return doLoop && hasIndex;
         }};
@@ -519,15 +543,18 @@ public class DoActionButton extends AbstractConfigurable
     return list;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(getComponent());
     GameModule.getGameModule().getToolBar().revalidate();
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("DoActionButton.htm"); //$NON-NLS-1$
   }
@@ -707,10 +734,12 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   // Implement Loopable
+  @Override
   public String getComponentTypeName () {
     return getConfigureTypeName();
   }
 
+  @Override
   public String getComponentName() {
     return getConfigureName();
   }
@@ -718,6 +747,7 @@ public class DoActionButton extends AbstractConfigurable
   /**
    * Implement PropertyNameSource - Expose loop index property if looping turned on
    */
+  @Override
   public List<String> getPropertyNames() {
     if (doLoop && hasIndex) {
       final ArrayList<String> l = new ArrayList<>();

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.packet.Packet;
  *
  */
 public abstract class Interceptor implements PacketInterceptor, PacketFilter {
+  @Override
   public void interceptPacket(Packet packet) {
     try {
       intercept(packet);
@@ -40,6 +41,7 @@ public abstract class Interceptor implements PacketInterceptor, PacketFilter {
 
   protected abstract void intercept(Packet p);
 
+  @Override
   public boolean accept(Packet packet) {
     try {
       return acceptPacket(packet);

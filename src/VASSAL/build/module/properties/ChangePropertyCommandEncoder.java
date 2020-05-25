@@ -37,6 +37,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
     this.container = container;
   }
 
+  @Override
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -63,6 +64,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof ChangePropertyCommand) {

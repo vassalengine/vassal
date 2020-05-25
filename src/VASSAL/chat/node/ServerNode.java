@@ -90,6 +90,7 @@ public class ServerNode extends Node {
     final MsgSender[] senders = ArrayUtils.copyOf(target);
 
     return new MsgSender() {
+      @Override
       public void send(String msg) {
         for (MsgSender sender : senders) {
           sender.send(msg);
@@ -196,6 +197,7 @@ public class ServerNode extends Node {
       }
     }
 
+    @Override
     public void run() {
       HashSet<Node> s = new HashSet<>();
       synchronized (modules) {

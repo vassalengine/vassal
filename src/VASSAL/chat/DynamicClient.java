@@ -77,6 +77,7 @@ public class DynamicClient extends HybridClient {
   }
 */
 
+  @Override
   public void setConnected(final boolean connect) {
     if (connect && !isConnected()) {
       if (!connecting) {

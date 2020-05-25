@@ -79,6 +79,7 @@ public class UsernameAndPasswordDialog extends JDialog {
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
     ok.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final Prefs p = GameModule.getGameModule().getPrefs();
 
@@ -100,6 +101,7 @@ public class UsernameAndPasswordDialog extends JDialog {
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         UsernameAndPasswordDialog.this.dispose();
       }
@@ -190,6 +192,7 @@ public class UsernameAndPasswordDialog extends JDialog {
     // This listener handles validating the input, updating the error
     // message, and enabling the Ok button.
     final PropertyChangeListener pl = new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (nameConfig.getValue() == null ||
             "".equals(nameConfig.getValue())) { //$NON-NLS-1$

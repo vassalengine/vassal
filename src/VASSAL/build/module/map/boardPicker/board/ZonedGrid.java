@@ -55,29 +55,36 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   protected GridContainer container;
   protected ZonedGridHighlighter zoneHighlighters;
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     container = (GridContainer) parent;
     container.setGrid(this);
@@ -87,20 +94,24 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return container;
   }
 
+  @Override
   public Dimension getSize() {
     return container.getSize();
   }
 
+  @Override
   public boolean contains(Point p) {
     return container.contains(p);
   }
 
+  @Override
   public void removeGrid(MapGrid grid) {
     if (background == grid) {
       background = null;
     }
   }
 
+  @Override
   public Board getBoard() {
     return container != null ? container.getBoard() : null;
   }
@@ -109,10 +120,12 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return getBoard() == null ? null : getBoard().getMap();
   }
 
+  @Override
   public void setGrid(MapGrid grid) {
     background = grid;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return background == null ? new Class<?>[]{Zone.class, HexGrid.class, SquareGrid.class, RegionGrid.class}
         : new Class<?>[]{Zone.class};
@@ -122,10 +135,12 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return Resources.getString("Editor.MultiZoneGrid.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ZonedGrid.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((GridContainer) parent).removeGrid(this);
   }
@@ -143,6 +158,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   protected int lastX = -1;
   protected int lastY = -1;
 
+  @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
 
     /*
@@ -208,10 +224,12 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     }
   }
 
+  @Override
   public GridNumbering getGridNumbering() {
     return background != null ? background.getGridNumbering() : null;
   }
 
+  @Override
   public Point getLocation(String location) throws BadCoords {
     for (Zone zone : zones) {
       try {
@@ -229,10 +247,12 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       throw new BadCoords();
   }
 
+  @Override
   public boolean isVisible() {
     return true;
   }
 
+  @Override
   public String locationName(Point p) {
     String name = null;
     for (Zone zone : zones) {
@@ -248,6 +268,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return name;
   }
 
+  @Override
   public String localizedLocationName(Point p) {
     String name = null;
     for (Zone zone : zones) {
@@ -263,6 +284,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return name;
   }
 
+  @Override
   public int range(Point p1, Point p2) {
     MapGrid grid = background;
     Zone z1 = findZone(p1);
@@ -275,6 +297,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return grid != null ? grid.range(p1, p2) : (int)Math.round(p1.distance(p2));
   }
 
+  @Override
   public Area getGridShape(Point center, int range) {
     Area a = null;
     Zone z = findZone(center);
@@ -310,6 +333,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return null;
   }
 
+  @Override
   public Point snapTo(Point p) {
     Point snap = null;
     Zone z = findZone(p);
@@ -322,6 +346,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return snap;
   }
 
+  @Override
   public boolean isLocationRestricted(Point p) {
     for (Zone zone : zones) {
       if (zone.contains(p)) {
@@ -351,6 +376,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     this.background = background;
   }
 
+  @Override
   public void build(Element e) {
     super.build(e);
     if (getComponentsOf(ZonedGridHighlighter.class).isEmpty()) {

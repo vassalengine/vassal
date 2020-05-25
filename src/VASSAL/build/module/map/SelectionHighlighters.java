@@ -26,33 +26,41 @@ public class SelectionHighlighters extends AbstractConfigurable {
     return Resources.getString("Editor.AddedSelectionHighlights.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{SelectionHighlighter.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
     map = (Map) parent;
     for (SelectionHighlighter highlighter : highlighters) {
@@ -60,6 +68,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     for (SelectionHighlighter highlighter : highlighters) {
       removeFromMap(highlighter);
@@ -92,6 +101,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }

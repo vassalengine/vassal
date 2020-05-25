@@ -123,11 +123,13 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    *
    * @param prog the range of progress since the last update
    */
+  @Override
   protected abstract void run(Pair<Integer,Integer> prog);
 
   /**
    * Submits this {@link Runnable} to be run on the Event Dispatch Thread.
    */
+  @Override
   protected void submit() {
     EDT.execute(this);
   }

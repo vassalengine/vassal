@@ -52,6 +52,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     named = val != null && val.isNamed();
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     named = value != null && ((NamedKeyStroke) value).isNamed();
@@ -67,10 +68,12 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     return getString((NamedKeyStroke) getValue());
   }
 
+  @Override
   public Object getValue() {
     return super.getValue();
   }
 
+  @Override
   public String getValueString() {
     return encode((NamedKeyStroke) getValue());
   }
@@ -79,6 +82,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     return (NamedKeyStroke) value;
   }
 
+  @Override
   public void setValue(String s) {
     setValue(s == null ? null : decode(s));
   }
@@ -88,6 +92,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     keyName.setEnabled(b);
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -101,6 +106,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width,keyName.getPreferredSize().height));
       keyName.addKeyListener(new KeyListener() {
+        @Override
         public void keyReleased(KeyEvent e) {
           switch (e.getKeyCode()) {
             case KeyEvent.VK_DELETE:
@@ -130,8 +136,10 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
               }
           }
         }
+        @Override
         public void keyPressed(KeyEvent e) {
         }
+        @Override
         public void keyTyped(KeyEvent e) {
         }
       });
@@ -155,10 +163,12 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     return named;
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
     lastChar = e.getKeyChar();
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
@@ -188,6 +198,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     }
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     if (!named) {
       tf.setText(getString((NamedKeyStroke) getValue()));

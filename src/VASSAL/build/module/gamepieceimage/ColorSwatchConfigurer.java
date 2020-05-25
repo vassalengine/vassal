@@ -61,6 +61,7 @@ public class ColorSwatchConfigurer extends Configurer {
     this(key, name, ColorManager.getColorManager().getColorSwatch(color));
   }
 
+  @Override
   public String getValueString() {
     return "";
   }
@@ -73,6 +74,7 @@ public class ColorSwatchConfigurer extends Configurer {
     return (ColorSwatch) value;
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -90,6 +92,7 @@ public class ColorSwatchConfigurer extends Configurer {
       colorBox = Box.createHorizontalBox();
       config = new ColorConfigurer("", "Select Color  "); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           Color c = (Color) config.getValue();
           ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
@@ -117,6 +120,7 @@ public class ColorSwatchConfigurer extends Configurer {
     }
 
     ItemListener l = new ItemListener() {
+      @Override
       public void itemStateChanged(ItemEvent evt) {
         updateValue();
       }
@@ -146,6 +150,7 @@ public class ColorSwatchConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void setValue(String s) {
     super.setValue(new ColorSwatch(s));
     buildSwatches();

@@ -61,6 +61,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
   public void setMap(Map m) {
     piece.setMap(m);
   }
@@ -72,18 +73,22 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     return piece;
   }
 
+  @Override
   public Map getMap() {
     return piece.getMap();
   }
 
+  @Override
   public void setParent(Stack s) {
     piece.setParent(s);
   }
 
+  @Override
   public Stack getParent() {
     return piece.getParent();
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getKeyCommands();
@@ -105,6 +110,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getProperty(key);
@@ -129,6 +135,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
   public void setProperty(Object key, Object val) {
     if (Properties.INNER.equals(key)) {
       setInner((GamePiece) val);
@@ -160,10 +167,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     return dec;
   }
 
+  @Override
   public void setPosition(Point p) {
     piece.setPosition(p);
   }
 
+  @Override
   public Point getPosition() {
     return piece.getPosition();
   }
@@ -177,6 +186,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Extract the string describing this trait's state and forward the remaining string to the inner piece
    * @param newState the new state of this trait and all inner pieces
    */
+  @Override
   public void setState(String newState) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
     mySetState(st.nextToken());
@@ -194,6 +204,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @param newState
    * @param oldState
    */
+  @Override
   public void mergeState(String newState, String oldState) {
     SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
     String myNewState = stNew.nextToken();
@@ -220,6 +231,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public abstract String myGetState();
 
   /** The state of a Decorator is a composition of {@link #myGetState} and the inner piece's state */
+  @Override
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
     se.append(piece.getState());
@@ -237,6 +249,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * The type of a Decorator is a composition of {@link #myGetType} and the type of its inner piece
    * @return the combined type of this trait and its inner piece
    */
+  @Override
   public String getType() {
     SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
     se.append(piece.getType());
@@ -281,16 +294,19 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @param stroke
    * @return
    */
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     Command c = myKeyEvent(stroke);
     return c == null ? piece.keyEvent(stroke)
       : c.append(piece.keyEvent(stroke));
   }
 
+  @Override
   public String getId() {
     return piece.getId();
   }
 
+  @Override
   public void setId(String id) {
     piece.setId(id);
   }
@@ -349,6 +365,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Return the translated name for this piece. Most pieces do not have
    * translatable elements, so just return the standard name
    */
+  @Override
   public String getLocalizedName() {
     return piece.getLocalizedName();
   }
@@ -406,6 +423,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * Default Property Name Source
    */
+  @Override
   public List<String> getPropertyNames() {
     return new ArrayList<>(0);
   }

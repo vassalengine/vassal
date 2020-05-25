@@ -54,6 +54,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public String getDescription() {
     if ("Sub-Menu".equals(getMenuName())) {
       return "Sub-Menu";
@@ -63,14 +64,17 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SubMenu.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Editor(this);
   }
 
+  @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
     st.nextToken();
@@ -82,14 +86,17 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     keyCommands[0] = keyCommandSubMenu;
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return keyCommands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMenuName()).append(
@@ -109,29 +116,36 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     return subMenu;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return getInner().boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     getInner().draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return getInner().getName();
   }
 
+  @Override
   public Shape getShape() {
     return getInner().getShape();
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(getMenuName(), "Sub Menu Name");
   }
@@ -152,14 +166,17 @@ public class SubMenu extends Decorator implements TranslatablePiece {
       panel.add(commandsConfig.getControls(), "grow,push");
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString()).append(commandsConfig.getValueString());

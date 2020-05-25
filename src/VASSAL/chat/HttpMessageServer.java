@@ -59,6 +59,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     this.info = info;
   }
 
+  @Override
   public Command getWelcomeMessage() {
     Command motd = new NullCommand();
     try {
@@ -74,6 +75,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     return motd;
   }
 
+  @Override
   public Message[] getMessages() {
     final ArrayList<Message> msgList = new ArrayList<>();
     try {
@@ -152,6 +154,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     return input;
   }
 
+  @Override
   public void postMessage(String content) {
     if (content == null || content.length() == 0) {
       return;

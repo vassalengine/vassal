@@ -107,6 +107,7 @@ public class ScrollPane extends JScrollPane {
     // add our own MouseWheelListeners
     // NB: block scrolling isn't used with the mouse wheel
     viewport.addMouseWheelListener(new MouseWheelListener() {
+      @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollAmount() == 0) return;
 
@@ -125,6 +126,7 @@ public class ScrollPane extends JScrollPane {
     });
 
     verticalScrollBar.addMouseWheelListener(new MouseWheelListener() {
+      @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollAmount() == 0) return;
 
@@ -139,6 +141,7 @@ public class ScrollPane extends JScrollPane {
     });
 
     horizontalScrollBar.addMouseWheelListener(new MouseWheelListener() {
+      @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollAmount() == 0) return;
 

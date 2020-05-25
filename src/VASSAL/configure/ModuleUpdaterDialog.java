@@ -56,11 +56,13 @@ public class ModuleUpdaterDialog extends JDialog {
     final JButton saveButton = new JButton("Create Updater");
     saveButton.setEnabled(false);
     fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         saveButton.setEnabled(fileConfig.getValue() != null);
       }
     });
     saveButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final FileChooser fc = GameModule.getGameModule().getFileChooser();
         if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
@@ -89,6 +91,7 @@ public class ModuleUpdaterDialog extends JDialog {
 
     JButton cancelButton = new JButton("Close");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
       }

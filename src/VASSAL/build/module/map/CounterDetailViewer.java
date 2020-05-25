@@ -179,6 +179,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
     delayTimer = new Timer(delay, new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (mouseInView) showDetails();
       }
@@ -187,6 +188,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     delayTimer.setRepeats(false);
   }
 
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     view = map.getView();
@@ -208,6 +210,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);
   }
 
+  @Override
   public void draw(Graphics g, Map map) {
     if (currentMousePosition != null &&
         view.getVisibleRect().contains(currentMousePosition.getPoint())) {
@@ -215,6 +218,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
@@ -499,6 +503,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       topLayer = -1;
     }
 
+    @Override
     public boolean accept(GamePiece piece) {
       return accept(piece, 0, "");
     }
@@ -596,6 +601,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       this.filter = filter;
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       if (foundPieceAt == null) {
         GamePiece top = d.topPiece();
@@ -612,6 +618,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return null;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
@@ -623,6 +630,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return null;
     }
 
+    @Override
     public Object visitDefault(GamePiece p) {
       if (foundPieceAt == null ? super.visitDefault(p) != null
                                : foundPieceAt.equals(p.getPosition())) {
@@ -661,6 +669,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  @Override
   public void mouseMoved(MouseEvent e) {
     // clear details when mouse moved
     if (graphicsVisible || textVisible) {
@@ -685,38 +694,47 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       GameModule.getGameModule().getPrefs().getValue(PREFERRED_DELAY);
   }
 
+  @Override
   public void mouseDragged(MouseEvent e) {
     mouseMoved(e);
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
     mouseInView = true;
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
     mouseInView = false;
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (delayTimer.isRunning()) delayTimer.stop();
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     mouseInView = true;
     if (delayTimer.isRunning()) delayTimer.stop();
   }
 
+  @Override
   public void dragMouseMoved(DragSourceDragEvent e) {
     // This prevents the viewer from popping up during piece drags.
     if (delayTimer.isRunning()) delayTimer.stop();
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     if (hotkey != null && Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(USE_KEYBOARD))) {
       if (hotkey.equals(KeyStroke.getKeyStrokeForEvent(e))) {
@@ -728,6 +746,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
   }
 
@@ -741,6 +760,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * Compatibility. If this component has not yet been saved by this version of
    * vassal, convert the old-style options to new and update the version.
    */
+  @Override
   public Configurer getConfigurer() {
 
     // New version 2 viewer being created
@@ -773,6 +793,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     version = LATEST_VERSION;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       VERSION,
@@ -802,6 +823,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
        Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
@@ -832,6 +854,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -863,18 +886,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public static class DisplayConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS, FILTER};
     }
   }
 
   public static class MinConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {"0", "1", "2"};
     }
   }
 
   public static class EmptyFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
           BasicPiece.CURRENT_ZONE});
@@ -882,6 +908,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public static class ReportFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
           BasicPiece.CURRENT_ZONE, SUM});
@@ -889,24 +916,29 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public static class CounterFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.PIECE_NAME});
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "StackViewer");
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     map.removeDrawComponent(this);
     view.removeMouseMotionListener(this);
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (DELAY.equals(name)) {
       if (value instanceof String) {
@@ -1070,6 +1102,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (DELAY.equals(name)) {
       return String.valueOf(delay);
@@ -1154,9 +1187,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return Resources.getString("Editor.MouseOverStackViewer.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return drawPieces;
         }
@@ -1164,6 +1199,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (FONT_SIZE.equals(name) || SUMMARY_REPORT_FORMAT.equals(name) || COUNTER_REPORT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return showText;
         }
@@ -1171,6 +1207,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (DRAW_PIECES.equals(name) || SHOW_TEXT.equals(name) || SHOW_NOSTACK.equals(name) || SHOW_DECK.equals(name) || DISPLAY.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return true;
         }
@@ -1178,6 +1215,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (LAYER_LIST.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
         }
@@ -1185,6 +1223,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (PROPERTY_FILTER.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return displayWhat.equals(FILTER);
         }
@@ -1192,6 +1231,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return showText && minimumDisplayablePieces == 0;
         }
@@ -1199,6 +1239,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return showNoStack;
         }
@@ -1210,6 +1251,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      */
     else if (VERSION.equals(name) || SHOW_TEXT_SINGLE_DEPRECATED.equals(name) || GRAPH_SINGLE_DEPRECATED.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return false;
         }

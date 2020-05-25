@@ -47,16 +47,19 @@ public class CounterTurnLevel extends TurnLevel {
   /*
    *  Reset counter to initial state
    */
+  @Override
   protected void reset() {
     super.reset();
     setLow();
   }
 
+  @Override
   protected void setLow() {
     current = start;
     super.setLow();
   }
 
+  @Override
   protected void setHigh() {
     current = loopLimit;
     super.setHigh();
@@ -64,6 +67,7 @@ public class CounterTurnLevel extends TurnLevel {
   /*
    * Generate the state of the level
    */
+  @Override
   protected String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(current);
@@ -79,6 +83,7 @@ public class CounterTurnLevel extends TurnLevel {
   /*
    * Set the state of the level
    */
+  @Override
   protected void setState(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
@@ -91,6 +96,7 @@ public class CounterTurnLevel extends TurnLevel {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   protected String getValueString() {
     return String.valueOf(current);
   }
@@ -98,6 +104,7 @@ public class CounterTurnLevel extends TurnLevel {
   /* (non-Javadoc)
    * @see turn.TurnLevel#getLongestValueName()
    */
+  @Override
   protected String getLongestValueName() {
     return start < 10000 ? "9999" : String.valueOf(start); //$NON-NLS-1$
   }
@@ -108,6 +115,7 @@ public class CounterTurnLevel extends TurnLevel {
    * 2. If the sublevels roll over, then advance the counter
    * 3. If LOOP is reached, roll over the counter
    */
+  @Override
   protected void advance() {
     // Advance sub-levels
     super.advance();
@@ -123,6 +131,7 @@ public class CounterTurnLevel extends TurnLevel {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   protected void retreat() {
     // Retreat sub-levels
     super.retreat();
@@ -139,10 +148,12 @@ public class CounterTurnLevel extends TurnLevel {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   protected Component getSetControl() {
 
     final IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         current = (Integer) ((IntConfigurer) e.getSource()).getValue();
         myValue.setPropertyValue(getValueString());
@@ -151,6 +162,7 @@ public class CounterTurnLevel extends TurnLevel {
     return config.getControls();
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.append(
       super.getAttributeDescriptions(),
@@ -161,6 +173,7 @@ public class CounterTurnLevel extends TurnLevel {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.append(
       super.getAttributeTypes(),
@@ -171,6 +184,7 @@ public class CounterTurnLevel extends TurnLevel {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.append(
       super.getAttributeNames(),
@@ -181,6 +195,7 @@ public class CounterTurnLevel extends TurnLevel {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
 
     if (START.equals(key)) {
@@ -215,6 +230,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (START.equals(key)) {
       return start + ""; //$NON-NLS-1$
@@ -236,10 +252,12 @@ public class CounterTurnLevel extends TurnLevel {
     return "Counter";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","Counter"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (LOOP_LIMIT.equals(name)) {
       return loopCond;
@@ -250,6 +268,7 @@ public class CounterTurnLevel extends TurnLevel {
   }
 
   private VisibilityCondition loopCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return loop;
     }

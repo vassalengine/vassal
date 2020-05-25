@@ -79,6 +79,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       myCommand = new KeyCommand(returnCommand, returnKey, Decorator.getOutermost(this), this);
@@ -93,10 +94,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
@@ -106,11 +109,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     selectDeckPrompt = st.nextToken(selectDeckPrompt);
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command comm = null;
@@ -134,18 +139,22 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     return comm;
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
@@ -201,6 +210,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     box.setAlignmentX(0.5F);
     JButton b = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
         if (selection != null)
@@ -211,6 +221,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         d.dispose();
       }
@@ -226,13 +237,16 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     return pile;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public String getDescription() {
     String d = "Return to Deck";
     if (deck != null) {
@@ -244,10 +258,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     return d;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ReturnToDeck.htm");
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(returnCommand, "Return to Deck command");
   }
@@ -273,6 +289,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       tf.setEditable(false);
       updateDeckName();
       select.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           VASSAL.configure.ChooseComponentDialog d = new VASSAL.configure.ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
           d.setTitle("Select Deck");
@@ -294,6 +311,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       promptText.getControls().setVisible(p.deckId == null || p.deckId.length() == 0);
       box.setVisible(p.deckId != null && p.deckId.length() > 0);
       prompt.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           box.setVisible(!prompt.isSelected());
           promptText.getControls().setVisible(prompt.isSelected());
@@ -307,14 +325,17 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       tf.setText(p != null ? p.getConfigureName() : "<none>");
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       return ID + se.append(menuName.getValueString()).append(menuKey.getValueString()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();

@@ -57,6 +57,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
      new VASSAL.configure.ConfigureTree(GameModule.getGameModule(), null) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void mouseReleased(MouseEvent e) {
       }
     };
@@ -66,12 +67,14 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     okButton = new JButton("Ok");
     okButton.setEnabled(false);
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
       }
     });
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         target = null;
         dispose();
@@ -83,6 +86,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     pack();
   }
 
+  @Override
   public void valueChanged(TreeSelectionEvent e) {
     boolean enabled = false;
     target = null;

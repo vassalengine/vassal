@@ -61,11 +61,13 @@ public class Editor extends Launcher {
     super(args);
   }
 
+  @Override
   protected MenuManager createMenuManager() {
     return SystemUtils.IS_OS_MAC_OSX ?
       new MacOSXMenuManager() : new EditorMenuManager();
   }
 
+  @Override
   protected void launch() throws IOException {
     IPCMessage msg = null;
 

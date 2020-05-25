@@ -60,6 +60,7 @@ public class SpecialDie extends AbstractConfigurable {
     return Resources.getString("Editor.SpecialDie.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
@@ -68,20 +69,24 @@ public class SpecialDie extends AbstractConfigurable {
 
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class, ResultFormatConfig.class};
   }
 
   public static class ResultFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{NAME, RESULT, NUMERICAL_VALUE});
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {NAME, FORMAT};
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -91,6 +96,7 @@ public class SpecialDie extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -103,18 +109,22 @@ public class SpecialDie extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{SpecialDieFace.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
     ((SpecialDiceButton) parent).addSpecialDie(this);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((SpecialDiceButton) parent).removeSpecialDie(this);
   }

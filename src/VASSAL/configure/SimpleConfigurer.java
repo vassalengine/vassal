@@ -48,6 +48,7 @@ public class SimpleConfigurer extends Configurer
     target = c;
     setValue(target);
     target.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
           setName((String) evt.getNewValue());
@@ -56,15 +57,18 @@ public class SimpleConfigurer extends Configurer
     });
   }
 
+  @Override
   public String getValueString() {
     return target.getConfigureName();
   }
 
+  @Override
   public void setValue(String s) {
     throw new UnsupportedOperationException(
       "Can't set Configurable from String");
   }
 
+  @Override
   public Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -77,6 +81,7 @@ public class SimpleConfigurer extends Configurer
     return p;
   }
 
+  @Override
   public void propertyChange(final PropertyChangeEvent p1) {
     for (Configurer configurer : attConfig) {
       // System.err.println(configurer.getName()+" = "+configurer.getValue());

@@ -36,6 +36,7 @@ public class SumProperties implements PropertySource {
     this.pieces = pieces;
   }
 
+  @Override
   public Object getProperty(Object key) {
     Object value = null;
     final String keyString = key.toString();
@@ -70,6 +71,7 @@ public class SumProperties implements PropertySource {
     return value;
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }

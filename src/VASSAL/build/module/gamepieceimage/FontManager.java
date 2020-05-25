@@ -65,6 +65,7 @@ public class FontManager extends AbstractConfigurable {
   public FontManager() {
   }
 
+  @Override
   public void build(Element e) {
     super.build(e);
 
@@ -83,34 +84,42 @@ public class FontManager extends AbstractConfigurable {
     return fs == null ? DEFAULT_STYLE : fs;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
     instance = this;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { FontStyle.class };
   }
@@ -119,12 +128,14 @@ public class FontManager extends AbstractConfigurable {
     return "Font Styles";
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof FontStyle) {
       FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             fontStyles.remove(evt.getOldValue());
@@ -136,6 +147,7 @@ public class FontManager extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void remove(Buildable b) {
     super.remove(b);
     if (b instanceof ColorSwatch) {
@@ -143,10 +155,12 @@ public class FontManager extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 

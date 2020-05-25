@@ -69,6 +69,7 @@ public class LaunchButton extends JButton {
     iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
     keyListener = new NamedKeyStrokeListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (isEnabled() && getParent() != null && getParent().isShowing()) {
           al.actionPerformed(e);
@@ -148,6 +149,7 @@ public class LaunchButton extends JButton {
     }
   }
 
+  @Override
   public void setToolTipText(String text) {
     toolTipText = text;
     if (keyListener.getKeyStroke() != null) {

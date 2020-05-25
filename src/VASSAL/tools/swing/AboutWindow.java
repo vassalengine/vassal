@@ -63,6 +63,7 @@ public class AboutWindow extends JWindow {
                 d.height / 2 -getHeight() / 2);
 
     addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseReleased(MouseEvent evt) {
         setVisible(false);
         dispose();

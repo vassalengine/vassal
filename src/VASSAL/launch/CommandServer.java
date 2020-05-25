@@ -56,6 +56,7 @@ public class CommandServer implements Runnable {
    */
   public void init(Command command) {}
 
+  @Override
   public void run() {
     Socket clientSocket = null;
     ObjectOutputStream out = null;

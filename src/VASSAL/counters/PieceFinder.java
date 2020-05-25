@@ -46,10 +46,12 @@ public interface PieceFinder {
   public static final PieceFinder MOVABLE = new Movable();
 
   public static class StackOnly extends Movable {
+    @Override
     public Object visitDefault(GamePiece piece) {
       return null;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       GamePiece selected = (GamePiece) super.visitStack(s);
       if (selected != null
@@ -62,6 +64,7 @@ public interface PieceFinder {
   }
 
   public static class PieceInStack extends Movable {
+    @Override
     public Object visitStack(Stack s) {
       GamePiece selected = (GamePiece) super.visitStack(s);
       if (selected == s
@@ -88,10 +91,12 @@ public interface PieceFinder {
       this.pt = pt;
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       return null;
     }
 
+    @Override
     public Object visitDefault(GamePiece piece) {
       GamePiece selected = null;
       Shape s = piece.getShape();
@@ -103,6 +108,7 @@ public interface PieceFinder {
       return selected;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       GamePiece selected = null;
       if (shapes.length < s.getPieceCount()) {
@@ -128,6 +134,7 @@ public interface PieceFinder {
       return selected;
     }
 
+    @Override
     public GamePiece select(Map map, GamePiece piece, Point pt) {
       this.map = map;
       this.pt = pt;

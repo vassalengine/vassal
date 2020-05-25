@@ -91,6 +91,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return jid;
   }
 
+  @Override
   public boolean isLocked() {
     return info != null && info.isMembersOnly();
   }
@@ -181,6 +182,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return ownedByMe;
   }
 
+  @Override
   public boolean isOwner(String jid) {
     return owners.contains(jid);
   }
@@ -195,6 +197,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     owners.remove(jid);
   }
 
+  @Override
   public Player getOwningPlayer() {
     if (owners.size() == 0) {
       return null;
@@ -428,6 +431,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       add(new JLabel(Resources.getString("Chat.vassal_versions_allowed")));     //$NON-NLS-1$
       vassalVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
       vassalVersionConfig.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
         }});
@@ -439,6 +443,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       add(new JLabel(Resources.getString("Chat.module_versions_allowed"))); //$NON-NLS-1$
       moduleVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
       moduleVersionConfig.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
         }});
@@ -451,6 +456,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       add(new JLabel(Resources.getString("Chat.crc_match"))); //$NON-NLS-1$
       matchCrcConfig = new JCheckBox();
       matchCrcConfig.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           updateVisibility();
         }});
@@ -485,6 +491,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       return updateEnabled;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
       updateEnabled = enabled;
       updateVisibility();

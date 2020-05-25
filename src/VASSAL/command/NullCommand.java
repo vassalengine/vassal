@@ -23,13 +23,16 @@ public class NullCommand extends Command {
     public NullCommand() {
     }
 
+    @Override
     protected void executeCommand() {
     }
 
+    @Override
     protected Command myUndoCommand() {
         return null;
     }
 
+    @Override
     public boolean isNull() {
         return isAtomic();
     }

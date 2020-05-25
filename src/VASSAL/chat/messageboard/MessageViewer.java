@@ -90,6 +90,7 @@ public class MessageViewer extends JPanel {
   }
 
   private class ShowMsgText implements ListSelectionListener {
+    @Override
     public void valueChanged(ListSelectionEvent evt) {
       int index = msgTable.getSelectedRow();
       if (index >= 0 && index < msgList.size()) {

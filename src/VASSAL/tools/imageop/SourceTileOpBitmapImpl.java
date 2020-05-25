@@ -70,10 +70,12 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
+  @Override
   public BufferedImage eval() throws Exception {
     final BufferedImage src = sop.getImage(null);
     final BufferedImage dst = ImageUtils.createCompatibleImage(
@@ -87,6 +89,7 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     return dst;
   }
 
+  @Override
   protected void fixSize() { }
 
   @Override

@@ -41,11 +41,13 @@ public class AcceptPeerThread extends Thread {
     this.ppm = ppm;
   }
 
+  @Override
   public synchronized void start() {
     running = true;
     super.start();
   }
 
+  @Override
   public void run() {
     while (running) {
       try {

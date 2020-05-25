@@ -49,6 +49,7 @@ public class BonesDiceServer extends DieServer {
     canDoSeparateDice = true;
   }
 
+  @Override
   public String[] buildInternetRollString(RollSet toss) {
     DieRoll[] rolls = toss.getDieRolls();
     StringBuilder query = new StringBuilder("req=");
@@ -84,6 +85,7 @@ public class BonesDiceServer extends DieServer {
     return null;
   }
 
+  @Override
   public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
     final Iterator<String> line = results.iterator();
 
@@ -96,10 +98,12 @@ public class BonesDiceServer extends DieServer {
     }
   }
 
+  @Override
   public void roll(RollSet mr, FormattedString format) {
     super.doInternetRoll(mr, format);
   }
 
+  @Override
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
     final Vector<String> returnString = new Vector<>();

@@ -74,6 +74,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   private GridNumbering gridNumbering;
 
 
+  @Override
   public GridNumbering getGridNumbering() {
     return gridNumbering;
   }
@@ -83,40 +84,49 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
 
+  @Override
   public double getDx() {
     return dx;
   }
 
+  @Override
   public void setDx(double d) {
     dx = d;
   }
 
 
+  @Override
   public double getDy() {
     return dy;
   }
 
+  @Override
   public void setDy(double d) {
     dy = d;
   }
 
+  @Override
   public Point getOrigin() {
     return new Point(origin);
   }
 
+  @Override
   public void setOrigin(Point p) {
     origin.x = p.x;
     origin.y = p.y;
   }
 
+  @Override
   public boolean isSideways() {
     return false;
   }
 
+  @Override
   public void setSideways(boolean b) {
     return;
   }
 
+  @Override
   public GridContainer getContainer() {
     return container;
   }
@@ -136,11 +146,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public static final String SNAP_TO = "snapTo"; //$NON-NLS-1$
 
   public static class RangeOptions extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{RANGE_METRIC, RANGE_MANHATTAN};
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       X0,
@@ -157,6 +169,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
@@ -173,6 +186,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Integer.class,
@@ -189,9 +203,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return visible;
         }
@@ -199,6 +215,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return snapTo;
         }
@@ -209,11 +226,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
   }
 
+  @Override
   public void addTo(Buildable b) {
     container = (GridContainer) b;
     container.setGrid(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((GridContainer) b).removeGrid(this);
   }
@@ -222,19 +241,23 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return Resources.getString("Editor.RectangleGrid.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getGridName() {
     return getConfigureTypeName();
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("RectangularGrid.htm"); //$NON-NLS-1$
   }
 
 
+  @Override
   public String getAttributeValueString(String key) {
     if (X0.equals(key)) {
       return String.valueOf(origin.x);
@@ -272,6 +295,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (X0.equals(key)) {
       if (val instanceof String) {
@@ -339,10 +363,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     shapeCache.clear();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{SquareGridNumbering.class};
   }
 
+  @Override
   public Point getLocation(String location) throws BadCoords {
     if (gridNumbering == null)
       throw new BadCoords();
@@ -350,6 +376,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return gridNumbering.getLocation(location);
   }
 
+  @Override
   public int range(Point p1, Point p2) {
     if (rangeOption.equals(RANGE_METRIC)) {
       return max(abs((int) floor((p2.x - p1.x) / dx + 0.5))
@@ -362,6 +389,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
 
+  @Override
   public Area getGridShape(Point center, int range) {
     Area shape = shapeCache.get(range);
     if (shape == null) {
@@ -394,6 +422,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return new Area(rect);
   }
 
+  @Override
   public Point snapTo(Point p) {
     if (! snapTo) {
       return p;
@@ -458,22 +487,27 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return snap;
   }
 
+  @Override
   public boolean isLocationRestricted(Point p) {
     return snapTo;
   }
 
+  @Override
   public String locationName(Point p) {
     return gridNumbering == null ? null : gridNumbering.locationName(p);
   }
 
+  @Override
   public String localizedLocationName(Point p) {
     return gridNumbering == null ? null : gridNumbering.localizedLocationName(p);
   }
 
+  @Override
   public boolean isVisible() {
     return visible == true || (gridNumbering != null && gridNumbering.isVisible());
   }
 
+  @Override
   public void setVisible(boolean b) {
     visible = true;
   }
@@ -484,6 +518,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   /** Draw the grid, if visible, and accompanying numbering, if set */
+  @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
     if (visible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
@@ -549,12 +584,14 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     g2d.setClip(oldClip);
   }
 
+  @Override
   public Configurer getConfigurer() {
     boolean buttonExists = config != null;
     Configurer c = super.getConfigurer();
     if (!buttonExists) {
       JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           editGrid();
         }
@@ -586,6 +623,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     /*
      * Calculate Grid metrics based on three selected points
      */
+    @Override
     public void calculate() {
       if ((isPerpendicular(hp1, hp2) && isPerpendicular(hp1, hp3) && !isPerpendicular(hp2, hp3)) ||
           (isPerpendicular(hp2, hp1) && isPerpendicular(hp2, hp3) && !isPerpendicular(hp1, hp3)) ||

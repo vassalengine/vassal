@@ -132,14 +132,17 @@ public class DieManager extends AbstractConfigurable {
     DefaultListModel m = abook.getModel();
     ListDataListener ldl = new ListDataListener() {
 
+      @Override
       public void contentsChanged(ListDataEvent arg0) {
         setSemailValues();
       }
 
+      @Override
       public void intervalAdded(ListDataEvent arg0) {
         setSemailValues();
       }
 
+      @Override
       public void intervalRemoved(ListDataEvent arg0) {
         setSemailValues();
       }
@@ -324,6 +327,7 @@ public class DieManager extends AbstractConfigurable {
     dieButtons.remove(d);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
@@ -332,6 +336,7 @@ public class DieManager extends AbstractConfigurable {
      };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -340,6 +345,7 @@ public class DieManager extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       DESC,
@@ -348,6 +354,7 @@ public class DieManager extends AbstractConfigurable {
     };
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (DESC.equals(key)) {
       desc = (String) value;
@@ -366,6 +373,7 @@ public class DieManager extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (DESC.equals(key)) {
       return desc;
@@ -380,17 +388,21 @@ public class DieManager extends AbstractConfigurable {
       return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{InternetDiceButton.class};
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 

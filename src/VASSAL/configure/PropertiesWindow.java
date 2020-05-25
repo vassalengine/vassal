@@ -83,6 +83,7 @@ public class PropertiesWindow extends JDialog {
     setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
           setTitle((String) evt.getNewValue());
@@ -96,6 +97,7 @@ public class PropertiesWindow extends JDialog {
     final Box buttonBox = Box.createHorizontalBox();
     final JButton okButton = new JButton("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         save();
       }
@@ -104,6 +106,7 @@ public class PropertiesWindow extends JDialog {
 
     final JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -123,6 +126,7 @@ public class PropertiesWindow extends JDialog {
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
          cancel();
       }

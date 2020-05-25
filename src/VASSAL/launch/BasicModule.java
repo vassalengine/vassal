@@ -83,6 +83,7 @@ public class BasicModule extends GameModule {
     super(archive);
   }
 
+  @Override
   protected void build() throws IOException {
     final DataArchive darch = getDataArchive();
 
@@ -125,6 +126,7 @@ public class BasicModule extends GameModule {
       gameRefresher.getRefreshAction());
   }
 
+  @Override
   public void build(Element e) {
     /*
      * We determine the name of the module at the very beginning, so we
@@ -160,16 +162,19 @@ public class BasicModule extends GameModule {
     idChangeSupport = new PropertyChangeSupport(this);
     StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
     fullName.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
       }});
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
       }});
     StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         GameModule.setUserId((String) evt.getNewValue());
       }
@@ -207,6 +212,7 @@ public class BasicModule extends GameModule {
     addCommandEncoder(theState);
   }
 
+  @Override
   public Command decode(String command) {
     if (command == null) {
       return null;
@@ -237,6 +243,7 @@ public class BasicModule extends GameModule {
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     if (c == null) {
       return null;
@@ -329,6 +336,7 @@ public class BasicModule extends GameModule {
   /*
    * The module I18n key prefix is null for the top level.
    */
+  @Override
   public String getI18nPrefix() {
     return "";
   }

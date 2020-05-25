@@ -124,10 +124,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return pieceSlot;
     }
 
+    @Override
     public void paint(Graphics g) {
       PieceSlot.this.paint(g);
     }
 
+    @Override
     public Dimension getPreferredSize() {
       return PieceSlot.this.getPreferredSize();
     }
@@ -274,21 +276,25 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected void doPopup(MouseEvent e) {
     JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
     popup.addPopupMenuListener(new PopupMenuListener() {
+      @Override
       public void popupMenuCanceled(PopupMenuEvent evt) {
         panel.repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         clearExpandedPiece();
         panel.repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
       }
     });
     popup.show(panel, e.getX(), e.getY());
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (e.isPopupTrigger()) {
       doPopup(e);
@@ -306,6 +312,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (getPiece() != null && e.isPopupTrigger()) {
       doPopup(e);
@@ -314,18 +321,22 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     clearExpandedPiece();
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
     KeyBuffer.getBuffer().remove(getPiece());
     clearExpandedPiece();
     panel.repaint();
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
@@ -333,6 +344,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     panel.repaint();
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
     KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
@@ -340,6 +352,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     panel.repaint();
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
@@ -351,6 +364,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return "Single piece";
   }
 
+  @Override
   public Component getComponent() {
     return panel;
   }
@@ -362,6 +376,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * piece referred to in the Command becomes the piece contained in the
    * PieceSlot
    */
+  @Override
   public void build(org.w3c.dom.Element e) {
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     if (e != null) {
@@ -384,10 +399,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
+  @Override
   public void addTo(Buildable parent) {
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
     DragGestureListener dragGestureListener = new DragGestureListener() {
+      @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
         startDrag();
         AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
@@ -396,6 +413,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dragGestureListener);
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     final org.w3c.dom.Element el = doc.createElement(getClass().getName());
     final String s = getConfigureName();
@@ -415,9 +433,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return el;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public String getConfigureName() {
     if (name != null) {
       return name;
@@ -430,22 +450,27 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.htm");
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
   }
 
@@ -453,6 +478,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * @return an array of Configurer objects representing the Buildable children
    *         of this Configurable object
    */
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
@@ -461,6 +487,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * @return an array of Configurer objects representing all possible classes of
    *         Buildable children of this Configurable object
    */
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -469,11 +496,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * Redirect getAttributeValueString() to return the attribute
    * values for the enclosed pieces
    */
+  @Override
   public String getAttributeValueString(String attr) {
     return getI18nData().getLocalUntranslatedValue(attr);
   }
 
 
+  @Override
   public ComponentI18nData getI18nData() {
     /*
      * Piece can change due to editing, so cannot cache the I18nData
@@ -481,6 +510,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    return new ComponentI18nData(this, getPiece());
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new MyConfigurer(this);
   }
@@ -537,18 +567,22 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       definer.setPiece(slot.getPiece());
     }
 
+    @Override
     @Deprecated
     public void setBaseWindow(HelpWindow w) {
     }
 
+    @Override
     public String getValueString() {
       return null;
     }
 
+    @Override
     public void setValue(String s) {
       throw new UnsupportedOperationException("Cannot set from String");
     }
 
+    @Override
     public Object getValue() {
       PieceSlot slot = (PieceSlot) super.getValue();
       if (slot != null) {
@@ -557,6 +591,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return slot;
     }
 
+    @Override
     public Component getControls() {
       return definer;
     }

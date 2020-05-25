@@ -65,6 +65,7 @@ public class ShapeItem extends Item {
     setConfigureName(n);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -75,6 +76,7 @@ public class ShapeItem extends Item {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       super.getAttributeTypes(), 2,
@@ -87,6 +89,7 @@ public class ShapeItem extends Item {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       super.getAttributeNames(), 2,
@@ -98,10 +101,12 @@ public class ShapeItem extends Item {
   }
 
   public static class ShapeConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { RECT, RRECT, OVAL };
     }
   }
+  @Override
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
       if (o instanceof String) {
@@ -137,6 +142,7 @@ public class ShapeItem extends Item {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
 
     if (WIDTH.equals(key)) {
@@ -156,6 +162,7 @@ public class ShapeItem extends Item {
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
        return falseCond;
@@ -169,12 +176,14 @@ public class ShapeItem extends Item {
    }
 
   private VisibilityCondition falseCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return false;
     }
   };
 
   private VisibilityCondition bevelCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return shape.equals(RRECT);
     }
@@ -188,6 +197,7 @@ public class ShapeItem extends Item {
     return height;
   }
 
+  @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
     ShapeItemInstance si = null;
@@ -238,14 +248,17 @@ public class ShapeItem extends Item {
     }
   }
 
+  @Override
   public String getType() {
     return TYPE;
   }
 
+  @Override
   public String getDisplayName() {
     return "Shape";
   }
 
+  @Override
   public Dimension getSize() {
     return new Dimension(getWidth(),getHeight());
   }
@@ -266,6 +279,7 @@ public class ShapeItem extends Item {
     return item;
   }
 
+  @Override
   public String encode() {
 
     SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');

@@ -39,6 +39,7 @@ public class NewExtensionAction extends GameModuleAction {
     super(Resources.getString("Editor.new_extension"), comp);
   }
 
+  @Override
   public void performAction(ActionEvent e) {
     ModuleExtension ext = new ModuleExtension(new ArchiveWriter((String) null));
     ext.build();

@@ -60,6 +60,7 @@ public class InviteCommand extends Command {
     return playerId;
   }
 
+  @Override
   protected void executeCommand() {
     if (client instanceof NodeClient) {
       final int i = Dialogs.showConfirmDialog(
@@ -80,10 +81,12 @@ public class InviteCommand extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }
 
+  @Override
   public boolean isLoggable() {
     return false;
   }

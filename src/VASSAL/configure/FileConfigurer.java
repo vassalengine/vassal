@@ -83,6 +83,7 @@ public class FileConfigurer extends Configurer {
     this.archive = archive;
   }
 
+  @Override
   public String getValueString() {
     if (archive == null) {
       return getFileValue() == null ? "null" : getFileValue().getPath();
@@ -92,6 +93,7 @@ public class FileConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void setValue(Object o) {
 // FIXME: this creates a problem when the referenced file is in the JAR
     File f = (File) o;
@@ -110,6 +112,7 @@ public class FileConfigurer extends Configurer {
     archive.addFile(f.getPath(), f.getName());
   }
 
+  @Override
   public void setValue(String s) {
     if (s == null)
       setValue((Object) null);
@@ -118,6 +121,7 @@ public class FileConfigurer extends Configurer {
     }
   }
 
+  @Override
   public Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -131,14 +135,17 @@ public class FileConfigurer extends Configurer {
       tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
                                                tf.getPreferredSize().height));
       tf.getDocument().addDocumentListener(new DocumentListener() {
+        @Override
         public void changedUpdate(DocumentEvent evt) {
           update();
         }
 
+        @Override
         public void insertUpdate(DocumentEvent evt) {
           update();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent evt) {
           update();
         }
@@ -153,6 +160,7 @@ public class FileConfigurer extends Configurer {
       });
       p.add(tf);
       b.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
           chooseNewValue();
         }
@@ -179,6 +187,7 @@ public class FileConfigurer extends Configurer {
     final FileConfigurer c =
       new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive"));
     c.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(String.valueOf(evt.getNewValue()));
       }

@@ -38,6 +38,7 @@ public class FormattedStringExpression extends Expression {
    * Evaluate this expression.
    * NB. Code moved from FormattedString.java
    */
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     final StringBuilder buffer = new StringBuilder();
@@ -82,6 +83,7 @@ public class FormattedStringExpression extends Expression {
   /**
    * Convert to a BeanShell expression
    */
+  @Override
   public String toBeanShellString() {
     final String s = getExpression();
 

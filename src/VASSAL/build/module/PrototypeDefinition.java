@@ -64,57 +64,71 @@ public class PrototypeDefinition extends AbstractConfigurable
   private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public Configurable[] getConfigureComponents() {
     return new Configurable[0];
   }
 
+  @Override
   public String getConfigureName() {
     return name;
   }
 
+  @Override
   public void setConfigureName(String s) {
     String oldName = name;
     this.name = s;
     propSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
   }
 
+  @Override
   public Configurer getConfigurer() {
     return new Config(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "Definition"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public void remove(Buildable child) {
     idMgr.remove(this);
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public void add(Buildable child) {
   }
 
+  @Override
   public String getId() {
     return null;
   }
 
+  @Override
   public void setId(String id) {
   }
 
+  @Override
   public void validate(Buildable target, ValidationReport report) {
     idMgr.validate(this, report);
   }
 
+  @Override
   public void addTo(Buildable parent) {
     idMgr.add(this);
   }
@@ -159,6 +173,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     pieces.clear();
   }
 
+  @Override
   public void build(Element e) {
     if (e != null) {
       setConfigureName(e.getAttribute(NAME_PROPERTY));
@@ -166,6 +181,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     }
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     Element el = doc.createElement(getClass().getName());
     el.setAttribute(NAME_PROPERTY, name);
@@ -194,6 +210,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       this.def = def;
     }
 
+    @Override
     public Object getValue() {
       if (def != null) {
         def.setPiece(pieceDefiner.getPiece());
@@ -202,14 +219,17 @@ public class PrototypeDefinition extends AbstractConfigurable
       return def;
     }
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getValueString() {
       return null;
     }
 
+    @Override
     public void setValue(String s) {
     }
     public static class Definer extends PieceDefiner {
@@ -219,6 +239,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         super(s);
       }
 
+      @Override
       public void setPiece(GamePiece piece) {
         if (piece != null) {
           GamePiece inner = Decorator.getInnermost(piece);
@@ -237,6 +258,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         super.setPiece(piece);
       }
 
+      @Override
       protected void removeTrait(int index) {
         if (index > 0) {
           super.removeTrait(index);
@@ -248,10 +270,12 @@ public class PrototypeDefinition extends AbstractConfigurable
           super(ID + ";;;;"); //$NON-NLS-1$
         }
 
+        @Override
         public String getDescription() {
           return ""; //$NON-NLS-1$
         }
 
+        @Override
         public PieceEditor getEditor() {
           return null;
         }
@@ -265,17 +289,21 @@ public class PrototypeDefinition extends AbstractConfigurable
    * translation subsystem.
    */
 
+  @Override
   public void setAttribute(String attr, Object value) {
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
@@ -284,10 +312,12 @@ public class PrototypeDefinition extends AbstractConfigurable
    * Redirect getAttributeValueString() to return the attribute
    * values for the enclosed pieces
    */
+  @Override
   public String getAttributeValueString(String attr) {
     return getI18nData().getLocalUntranslatedValue(attr);
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     /*
      * Prototype definition may change due to editing, so no caching

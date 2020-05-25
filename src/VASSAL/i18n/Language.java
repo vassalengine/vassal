@@ -26,22 +26,27 @@ import VASSAL.build.module.documentation.HelpFile;
  * Container for definitions of Translations.
  */
 public class Language extends AbstractConfigurable {
+   @Override
    public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
@@ -49,9 +54,11 @@ public class Language extends AbstractConfigurable {
     return "";
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{Translation.class};
   }
@@ -60,10 +67,12 @@ public class Language extends AbstractConfigurable {
     return "Translations";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 }

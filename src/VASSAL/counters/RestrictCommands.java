@@ -69,26 +69,32 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     setInner(inner);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
@@ -99,6 +105,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
@@ -106,6 +113,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   /*
    * Cancel execution of watched KeyStrokes
    */
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     if (!matchesFilter()) {
       return super.keyEvent(stroke);
@@ -120,6 +128,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return super.keyEvent(stroke);
   }
 
+  @Override
   protected KeyCommand[] getKeyCommands() {
     KeyCommand[] commands = super.getKeyCommands();
     ArrayList<KeyCommand> newCommands =
@@ -156,13 +165,16 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return true;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getDescription() {
     String s = "Restrict Commands";
     if (name.length() > 0) {
@@ -171,10 +183,12 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return s;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("RestrictCommands.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -194,6 +208,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -232,14 +247,17 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     }
 
 
+    @Override
     public Component getControls() {
       return box;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())

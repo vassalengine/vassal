@@ -96,6 +96,7 @@ public class TranslateVassalWindow extends TranslateWindow {
         new Locale(Locale.getDefault().getLanguage()));
 
     localeConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         Locale l = localeConfig.getValueLocale();
         if (!Resources.getSupportedLocales().contains(l)) {
@@ -140,6 +141,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
     final JButton loadButton = new JButton(Resources.getString(Resources.LOAD));
     loadButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         loadTranslation();
       }
@@ -149,6 +151,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
     final JButton okButton = new JButton(Resources.getString(Resources.SAVE));
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         try {
 // FIXME: can this ever throw?
@@ -164,6 +167,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     final JButton cancelButton =
       new JButton(Resources.getString(Resources.CANCEL));
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -265,6 +269,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         final TranslateVassalWindow w = new TranslateVassalWindow(null);
         w.setVisible(true);

@@ -78,6 +78,7 @@ public abstract class Compressor {
       f.pack();
       f.setVisible(true);
       tf.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {
             final String s = evt.getActionCommand();

@@ -68,6 +68,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected Color color = Color.black;
   protected int thickness = 3;
 
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     map.addLocalMouseListenerFirst(this);
@@ -75,16 +76,20 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     map.addDrawComponent(this);
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     return doc.createElement(getClass().getName());
   }
 
+  @Override
   public void build(Element e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (e.isConsumed()) {
       return;
@@ -161,6 +166,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
   }
 
+  @Override
   public void mouseReleased(MouseEvent evt) {
     if (selection == null) {
       return;
@@ -206,10 +212,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       mapsel = ms;
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       return null;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       if (s.topPiece() != null) {
         if (s.isExpanded()) {
@@ -242,6 +250,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
     // Handle non-stacked units, including Does Not Stack units
     // Does Not Stack units deselect normally once selected
+    @Override
     public Object visitDefault(GamePiece p) {
       if (mapsel.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
         if (selecting) {
@@ -315,6 +324,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   /**
    * Sets the new location of the selection rectangle.
    */
+  @Override
   public void mouseDragged(MouseEvent e) {
     if (selection == null) {
       return;
@@ -333,9 +343,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     repaintSelectionRect();
   }
 
+  @Override
   public void mouseMoved(MouseEvent e) {
   }
 
+  @Override
   public void draw(Graphics g, Map map) {
     if (selection == null) {
       return;
@@ -356,6 +368,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     g2d.setStroke(str);
   }
 
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }

@@ -53,6 +53,7 @@ public class AddressBookServerConfigurer extends Configurer {
     super(key, name, client);
     this.client = client;
     client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         enableControls(Boolean.TRUE.equals(evt.getNewValue()));
       }
@@ -62,6 +63,7 @@ public class AddressBookServerConfigurer extends Configurer {
     client.updateDisplayControls(addressBook.getCurrentIcon(), addressBook.getCurrentDescription());
   }
 
+  @Override
   public Component getControls() {
 
     if (controls == null) {
@@ -70,6 +72,7 @@ public class AddressBookServerConfigurer extends Configurer {
       controls.add(header, "wrap"); //$NON-NLS-1$
       addressBook = new ServerAddressBook();
       addressBook.addPropertyChangeListener(new PropertyChangeListener(){
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           if (ServerAddressBook.CURRENT_SERVER.equals(e.getPropertyName())) {
             addressBook.setFrozen(true);
@@ -88,6 +91,7 @@ public class AddressBookServerConfigurer extends Configurer {
     header.setText(connected ? CONNECTED : DISCONNECTED);
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (!noUpdate && o instanceof Properties && controls != null) {
@@ -107,6 +111,7 @@ public class AddressBookServerConfigurer extends Configurer {
     return p;
   }
 
+  @Override
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -127,6 +132,7 @@ public class AddressBookServerConfigurer extends Configurer {
     return s;
   }
 
+  @Override
   public void setValue(String s) {
     Properties p = new Properties();
     try {

@@ -59,11 +59,13 @@ public class EditPropertiesAction extends AbstractAction {
     this.tree = tree;
   }
 
+  @Override
   public void actionPerformed(ActionEvent evt) {
     PropertiesWindow w = openWindows.get(target);
     if (w == null) {
       w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
       w.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosed(WindowEvent e) {
           openWindows.remove(target);
           if (tree != null && target instanceof ConfigureTree.Mutable) {

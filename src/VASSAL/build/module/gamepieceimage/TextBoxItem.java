@@ -63,6 +63,7 @@ public class TextBoxItem extends TextItem {
     setConfigureName(n);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       super.getAttributeDescriptions(), 2,
@@ -72,6 +73,7 @@ public class TextBoxItem extends TextItem {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     final Class<?>[] c = ArrayUtils.insert(
       super.getAttributeTypes(), 2,
@@ -93,9 +95,11 @@ public class TextBoxItem extends TextItem {
     return c;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !isHTML;
         }
@@ -106,6 +110,7 @@ public class TextBoxItem extends TextItem {
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       super.getAttributeNames(), 2,
@@ -115,6 +120,7 @@ public class TextBoxItem extends TextItem {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
       if (o instanceof String) {
@@ -146,6 +152,7 @@ public class TextBoxItem extends TextItem {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
 
     if (WIDTH.equals(key)) {
@@ -170,6 +177,7 @@ public class TextBoxItem extends TextItem {
     return height;
   }
 
+  @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
     TextBoxItemInstance tbi = null;
@@ -239,14 +247,17 @@ public class TextBoxItem extends TextItem {
     }
   }
 
+  @Override
   public String getType() {
     return TextBoxItem.TYPE;
   }
 
+  @Override
   public String getDisplayName() {
     return "Text Box";
   }
 
+  @Override
   public Dimension getSize() {
     return new Dimension(getWidth(),getHeight());
   }
@@ -270,6 +281,7 @@ public class TextBoxItem extends TextItem {
     return item;
   }
 
+  @Override
   public String encode() {
 
     SequenceEncoder se1 = new SequenceEncoder(TextBoxItem.TYPE, ';');

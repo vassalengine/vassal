@@ -85,6 +85,7 @@ public class TextItemInstance extends ItemInstance {
     outlineColor = c;
   }
 
+  @Override
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -108,6 +109,7 @@ public class TextItemInstance extends ItemInstance {
     setOutlineColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Value:  ",
@@ -117,6 +119,7 @@ public class TextItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -126,6 +129,7 @@ public class TextItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       VALUE,
@@ -135,6 +139,7 @@ public class TextItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
 
     if (VALUE.equals(key)) {
@@ -164,6 +169,7 @@ public class TextItemInstance extends ItemInstance {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (VALUE.equals(key)) {
       return val;
@@ -181,12 +187,14 @@ public class TextItemInstance extends ItemInstance {
       return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (VALUE.equals(name)) {
       return valueCond;
     }
     else if (OUTLINE_COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return isOutline();
         }};
@@ -197,24 +205,28 @@ public class TextItemInstance extends ItemInstance {
   }
 
   private VisibilityCondition valueCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !((TextItem) getItem()).isFixed();
     }
   };
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getBgColor());
     }
   }
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());
     }
   }
 
   public static class OutlineColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((TextItemInstance) c).getOutlineColor());
     }

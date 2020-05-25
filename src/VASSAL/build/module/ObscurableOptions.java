@@ -81,6 +81,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
     GameModule.getGameModule().getPrefs().addOption(c);
     c.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         if (Boolean.TRUE.equals(evt.getNewValue())) {
           ObscurableOptions.getInstance().allow(GameModule.getUserId());
@@ -136,6 +137,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     allowed.remove(id);
   }
 
+  @Override
   public Command decode(String command) {
     if (command.startsWith(COMMAND_ID)) {
       command = command.substring(COMMAND_ID.length());
@@ -151,6 +153,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof SetAllowed) {
       List<String> l = ((SetAllowed) c).getAllowedIds();
@@ -213,10 +216,12 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new SetAllowed(allowed);
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       allowed.clear();
@@ -252,11 +257,13 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       return allowed;
     }
 
+    @Override
     protected void executeCommand() {
       ObscurableOptions.getInstance().override = null;
       ObscurableOptions.getInstance().allowed = this.allowed;
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

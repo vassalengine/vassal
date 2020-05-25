@@ -38,6 +38,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
     new Thread(this).start();
   }
 
+  @Override
   public void run() {
     while (true) {
       try {
@@ -51,6 +52,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
     }
   }
 
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     try {
       log.write("----------" + (new Date()) + "---------\n"); //$NON-NLS-1$ //$NON-NLS-2$

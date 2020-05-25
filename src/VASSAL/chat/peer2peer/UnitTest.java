@@ -108,6 +108,7 @@ public class UnitTest implements UserDialog {
     final Object lock = new Object();
 
     final Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         try {
           ServerSocket server;
@@ -146,44 +147,55 @@ public class UnitTest implements UserDialog {
     }
   }
 
+  @Override
   public void setActivePeerManager(ActivePeerManager pActivePeerManager) {
   }
 
+  @Override
   public void setPendingPeerManager(PendingPeerManager pPendingPeerManager) {
   }
 
+  @Override
   public void showUnrecognized(PeerInfo pPeerInfo, String pBadMessage) {
     System.err.println(this+"Unrecognized "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showStreamsFailed(PeerInfo pPeerInfo) {
     System.err.println(this+"Streams Failed "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showConnectFailed(PeerInfo pPeerInfo) {
     System.err.println(this+"Connect Failed "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showConnect(PeerInfo pPeerInfo) {
     System.err.println(this+"Connect "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showDisconnect(PeerInfo pPeerInfo) {
     System.err.println(this+"Disconnect "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showCHAT(PeerInfo pPeerInfo, String pMessage) {
     System.err.println(this+"Chat "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showPMSG(PeerInfo pPeerInfo, String pMessage) {
     System.err.println(this+"Private Chat "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showNAME(PeerInfo pPeerInfo) {
     System.err.println(this+"Name "+pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public void showHELO(PeerInfo pPeerInfo) {
     System.err.println(this+"Hello "+pPeerInfo); //$NON-NLS-1$
   }

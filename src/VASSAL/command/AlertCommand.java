@@ -29,8 +29,10 @@ public class AlertCommand extends Command {
     this.msg = msg;
   }
 
+  @Override
   protected void executeCommand() {
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         JOptionPane.showMessageDialog(GameModule.getGameModule() == null ? null : GameModule.getGameModule().getFrame(), msg);
       }
@@ -38,6 +40,7 @@ public class AlertCommand extends Command {
     SwingUtilities.invokeLater(runnable);
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }

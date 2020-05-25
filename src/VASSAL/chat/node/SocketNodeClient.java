@@ -41,10 +41,12 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
   public SocketNodeClient(String moduleName, String playerId, CommandEncoder encoder, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this(moduleName, playerId, encoder, new NodeServerInfo() {
 
+      @Override
       public String getHostName() {
         return host;
       }
 
+      @Override
       public int getPort() {
         return port;
       }
@@ -53,10 +55,12 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
 
   }
 
+  @Override
   public void send(String command) {
     sender.writeLine(command);
   }
 
+  @Override
   protected void initializeConnection() throws UnknownHostException, IOException {
     Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
     sender = new BufferedSocketHandler(s, this);
@@ -64,16 +68,19 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
 
   }
 
+  @Override
   protected void closeConnection() {
     SocketHandler s = sender;
     sender = null;
     s.close();
   }
 
+  @Override
   public boolean isConnected() {
     return sender != null;
   }
 
+  @Override
   public void socketClosed(SocketHandler handler) {
     if (sender != null) {
       propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
@@ -82,6 +89,7 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
     }
   }
 
+  @Override
   public void handleMessage(String msg) {
     handleMessageFromServer(msg);
   }

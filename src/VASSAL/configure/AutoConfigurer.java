@@ -61,6 +61,7 @@ public class AutoConfigurer extends Configurer
     target = c;
     setValue(target);
     target.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(final PropertyChangeEvent evt) {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
           setName((String) evt.getNewValue());
@@ -183,19 +184,23 @@ public class AutoConfigurer extends Configurer
     }
   }
 
+  @Override
   public String getValueString() {
     return target.getConfigureName();
   }
 
+  @Override
   public void setValue(String s) {
     throw new UnsupportedOperationException(
       "Can't set Configurable from String");
   }
 
+  @Override
   public Component getControls() {
     return p;
   }
 
+  @Override
   public void propertyChange(final PropertyChangeEvent evt) {
     target.setAttribute(evt.getPropertyName(), evt.getNewValue());
     checkVisibility();

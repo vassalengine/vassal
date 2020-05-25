@@ -37,10 +37,12 @@ public class AddSecretNoteCommand extends Command {
     return note;
   }
 
+  @Override
   protected void executeCommand() {
     i.addSecretNote(note);
   }
 
+  @Override
   protected Command myUndoCommand() {
     return null;
   }

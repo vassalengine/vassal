@@ -65,6 +65,7 @@ public class BoxWidget extends Widget
     return "Pull-down Menu";
   }
 
+  @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
       Widget w = (Widget) b;
@@ -78,6 +79,7 @@ public class BoxWidget extends Widget
     super.add(b);
   }
 
+  @Override
   public void remove(Buildable b) {
     if (b instanceof Widget) {
       widgets.removeElement(b);
@@ -85,6 +87,7 @@ public class BoxWidget extends Widget
     super.remove(b);
   }
 
+  @Override
   public void propertyChange
       (java.beans.PropertyChangeEvent evt) {
     if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())
@@ -93,6 +96,7 @@ public class BoxWidget extends Widget
     }
   }
 
+  @Override
   public java.awt.Component getComponent() {
     if (panel == null) {
       rebuild();
@@ -124,6 +128,7 @@ public class BoxWidget extends Widget
     return s;
   }
 
+  @Override
   public void itemStateChanged(ItemEvent e) {
     if (box.getSelectedItem() != null) {
       Widget w = (Widget) box.getSelectedItem();
@@ -139,18 +144,22 @@ public class BoxWidget extends Widget
     return box != null && box.getModel().getSize() == built.size();
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME,WIDTH,HEIGHT};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Name:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (NAME.equals(name)) {
       setConfigureName((String) value);
@@ -163,6 +172,7 @@ public class BoxWidget extends Widget
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();

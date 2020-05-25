@@ -209,21 +209,26 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
   }
 
+  @Override
   public int getNextGpId() {
     return nextGpId;
   }
 
+  @Override
   public void setNextGpId(int id) {
     nextGpId = id;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new RegCmd(getName(), version);
   }
 
+  @Override
   public void setup(boolean gameStarting) {
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       UNIVERSAL,
@@ -274,6 +279,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     return confirm;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     String s = null;
     if (BASE_MODULE_NAME.equals(key)) {
@@ -303,6 +309,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     return s;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (BASE_MODULE_NAME.equals(key)) {
       if (!universal && !GameModule.getGameModule().getGameName().equals(value)) {
@@ -359,10 +366,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   /**
    * Generate a new Unique GamePiece Id
    */
+  @Override
   public String generateGpId() {
     return extensionId + ":" + nextGpId++;
   }
 
+  @Override
   public void addTo(Buildable parent) {
   }
 
@@ -449,6 +458,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       idBox.add(idDisplay);
       JButton change = new JButton("Change");
       change.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           String s = (String)JOptionPane.showInputDialog(
               GameModule.getGameModule().getFrame(),
@@ -474,6 +484,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton("Save");
       ok.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setAttribute(VERSION, config.getValue());
           setAttribute(DESCRIPTION, dconfig.getValue());
@@ -484,6 +495,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       b.add(ok);
       JButton cancel = new JButton("Cancel");
       cancel.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           d.dispose();
         }
@@ -495,6 +507,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       editAction = new AbstractAction() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           d.setVisible(true);
         }
@@ -531,6 +544,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       return version;
     }
 
+    @Override
     protected void executeCommand() {
       boolean containsExtension = false;
       for (ModuleExtension ext :
@@ -557,6 +571,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory(false)); //$NON-NLS-1$
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }

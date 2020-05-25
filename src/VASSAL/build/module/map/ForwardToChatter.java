@@ -36,29 +36,36 @@ import VASSAL.build.module.Map;
  * @see VASSAL.build.module.Chatter#keyCommand
  * @see InputEvent#isConsumed */
 public class ForwardToChatter implements Buildable, KeyListener {
+  @Override
   public void build(org.w3c.dom.Element e) {
   }
 
+  @Override
   public void addTo(Buildable parent) {
     Map map = (Map) parent;
     map.getView().addKeyListener(this);
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return doc.createElement(getClass().getName());
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     process(e);
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     process(e);
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
     process(e);
   }

@@ -64,23 +64,28 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return name;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
 
+  @Override
   public void addTo(Buildable b) {
     ((ZonedGrid) b).setZoneHighlighter(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((ZonedGrid) b).setZoneHighlighter(null);
   }
@@ -89,18 +94,22 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return "Zone Highlighters";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ZonedGrid.htm","ZoneHighlighter");
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
 
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {ZoneHighlight.class};
   }

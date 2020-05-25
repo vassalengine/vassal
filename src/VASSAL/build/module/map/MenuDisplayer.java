@@ -53,6 +53,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   protected Map map;
   protected PieceFinder targetSelector;
 
+  @Override
   public void addTo(Buildable b) {
     targetSelector = createTargetSelector();
     map = (Map) b;
@@ -67,6 +68,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
    */
   protected PieceFinder createTargetSelector() {
     return new PieceFinder.PieceInStack() {
+      @Override
       public Object visitDeck(Deck d) {
         Point pos = d.getPosition();
         Point p = new Point(pt.x - pos.x, pt.y - pos.y);
@@ -80,13 +82,16 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     };
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     return doc.createElement(getClass().getName());
   }
 
+  @Override
   public void build(Element e) {
   }
 
@@ -199,10 +204,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     return popup;
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
     maybePopup(e);
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     maybePopup(e);
   }
@@ -224,14 +231,17 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
     JPopupMenu popup = createPopup(p, true);
     popup.addPopupMenuListener(new PopupMenuListener() {
+      @Override
       public void popupMenuCanceled(PopupMenuEvent evt) {
         map.repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         map.repaint();
       }
 
+      @Override
       public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
       }
     });

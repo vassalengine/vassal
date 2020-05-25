@@ -114,6 +114,7 @@ public class GameState implements CommandEncoder {
     loadGame = new AbstractAction(Resources.getString("GameState.load_game")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         loadGame();
       }
@@ -125,6 +126,7 @@ public class GameState implements CommandEncoder {
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         saveGame();
       }
@@ -136,6 +138,7 @@ public class GameState implements CommandEncoder {
     saveGameAs = new AbstractAction(Resources.getString("GameState.save_game_as")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         saveGameAs();
       }
@@ -147,6 +150,7 @@ public class GameState implements CommandEncoder {
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         setup(false);
         setup(true);
@@ -160,6 +164,7 @@ public class GameState implements CommandEncoder {
         Resources.getString("GameState.close_game")) {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         setup(false);
       }
@@ -351,6 +356,7 @@ public class GameState implements CommandEncoder {
           final ComponentSplitter.SplitPane sp = (ComponentSplitter.SplitPane) c;
 
           SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
               sp.setDividerLocation(g.getChatter().getPreferredSize().height);
             }
@@ -621,6 +627,7 @@ public class GameState implements CommandEncoder {
         Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
+      @Override
       protected boolean accept(Command c) {
         return c instanceof BasicLogger.LogCommand;
       }
@@ -661,10 +668,12 @@ public class GameState implements CommandEncoder {
       return gameStarting;
     }
 
+    @Override
     protected void executeCommand() {
       GameModule.getGameModule().getGameState().setup(gameStarting);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
@@ -704,6 +713,7 @@ public class GameState implements CommandEncoder {
   /**
    * A GameState recognizes instances of {@link SetupCommand}
    */
+  @Override
   public String encode(Command c) {
     if (c instanceof SetupCommand) {
       return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
@@ -716,6 +726,7 @@ public class GameState implements CommandEncoder {
   /**
    * A GameState recognizes instances of {@link SetupCommand}
    */
+  @Override
   public Command decode(String theCommand) {
     if (BEGIN_SAVE.equals(theCommand)) {
       return new SetupCommand(false);
@@ -863,6 +874,7 @@ public class GameState implements CommandEncoder {
         return pi;
       }
 
+      @Override
       public int compare(GamePiece a, GamePiece b) {
         final VASSAL.build.module.Map amap = a.getMap(), bmap = b.getMap();
 

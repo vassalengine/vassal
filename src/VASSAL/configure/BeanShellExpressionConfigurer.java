@@ -104,6 +104,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
     extraDetails = new JButton("Insert");
     extraDetails.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         doPopup();
       }});
@@ -116,10 +117,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
   }
 
+  @Override
   public String getValueString() {
     return (String) value;
   }
 
+  @Override
   public void setValue(String s) {
     if (!noUpdate && nameField != null) {
       nameField.setText(s);
@@ -127,6 +130,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     setValue((Object) s);
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       expressionPanel = new JPanel(new MigLayout("fillx,ins 0","[][grow][][]"));
@@ -140,6 +144,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       nameField.setText(getValueString());
       expressionPanel.add(nameField, "growx");
       nameField.addKeyListener(new KeyAdapter() {
+        @Override
         public void keyReleased(KeyEvent evt) {
           noUpdate = true;
           setValue(nameField.getText());
@@ -204,6 +209,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenuItem integerItem = new JMenuItem("Number");
     integerItem.setToolTipText("A number");
     integerItem.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         buildInteger();
       }});
@@ -212,6 +218,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenuItem stringItem = new JMenuItem("String");
     stringItem.setToolTipText("A character string");
     stringItem.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         buildString();
       }});
@@ -283,6 +290,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenuItem item = new JMenuItem(op);
     item.setToolTipText(desc);
     item.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         buildFunction(op, desc, parms);
       }});
@@ -317,6 +325,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenuItem item = new JMenuItem(op);
     item.setToolTipText(desc);
     item.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         insertName(op);
       }});
@@ -339,6 +348,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
     final JMenuItem item = new JMenuItem(propName);
     item.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         insertPropertyName(propName);
       }});
@@ -378,6 +388,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
         final JMenuItem item = new JMenuItem(propName);
         item.addActionListener(new ActionListener(){
+          @Override
           public void actionPerformed(ActionEvent e) {
             insertPropertyName(((JMenuItem) e.getSource()).getText());
           }});
@@ -563,6 +574,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
      *  Run the validation in a separate thread. If the expression is updated
      *  while validating, then revalidate.
      */
+    @Override
     public void validate() {
       if (validating) {
         dirty = true;
@@ -576,6 +588,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
     class ValidationThread implements Runnable {
 
+      @Override
       public void run() {
         if (getValueString().length() == 0) {
           validator.setStatus(UNKNOWN);

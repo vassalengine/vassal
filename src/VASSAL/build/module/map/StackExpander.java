@@ -34,21 +34,26 @@ import VASSAL.counters.Stack;
 public class StackExpander extends MouseAdapter implements Buildable {
   protected Map map;
 
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     map.addLocalMouseListener(this);
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     return doc.createElement(getClass().getName());
   }
 
+  @Override
   public void build(Element e) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (!e.isConsumed()) {
       if (e.getClickCount() == 2) {

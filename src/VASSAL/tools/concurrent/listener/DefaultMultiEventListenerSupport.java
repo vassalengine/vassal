@@ -52,6 +52,7 @@ public class DefaultMultiEventListenerSupport
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> void addEventListener(Class<T> c, EventListener<? super T> l) {
     // ensure that a listener list exists for class c
     listeners.putIfAbsent(c, new CopyOnWriteArrayList<>());
@@ -66,6 +67,7 @@ public class DefaultMultiEventListenerSupport
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> void removeEventListener(Class<T> c, EventListener<? super T> l) {
     // add the listener to the list for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
@@ -77,6 +79,7 @@ public class DefaultMultiEventListenerSupport
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasEventListeners(Class<?> c) {
     // check for listeners for every supertype of c
     for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
@@ -92,6 +95,7 @@ public class DefaultMultiEventListenerSupport
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> List<EventListener<? super T>> getEventListeners(Class<T> c) {
     final List<EventListener<? super T>> list = new ArrayList<>();
@@ -108,6 +112,7 @@ public class DefaultMultiEventListenerSupport
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public void notify(Object event) {
     final Class<?> c = event.getClass();

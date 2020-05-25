@@ -61,12 +61,15 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     this.client = client;
   }
 
+  @Override
   public void initializeControls(final ChatServerControls controls) {
     currentRoomPopupBuilder = new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent evt) {
         maybePopup(evt);
       }
 
+      @Override
       public void mouseReleased(MouseEvent evt) {
         maybePopup(evt);
       }
@@ -92,12 +95,14 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     };
     controls.getCurrentRoom().addMouseListener(currentRoomPopupBuilder);
     roomPopupBuilder = new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent evt) {
         if (evt.isPopupTrigger()) {
           maybePopup(evt);
         }
       }
 
+      @Override
       public void mouseReleased(MouseEvent evt) {
         if (evt.isPopupTrigger()) {
           maybePopup(evt);
@@ -146,6 +151,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     };
     controls.getRoomTree().addMouseListener(roomPopupBuilder);
     roomCreator = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         createRoom(controls.getNewRoom().getText());
         controls.getNewRoom().setText(""); //$NON-NLS-1$
@@ -191,6 +197,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     return popup.getComponentCount() == 0 ? null : popup;
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     controls.getRoomTree().removeMouseListener(roomPopupBuilder);
     controls.getCurrentRoom().removeMouseListener(currentRoomPopupBuilder);

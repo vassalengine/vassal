@@ -41,6 +41,7 @@ public class LockWatcher extends Thread {
     this.port = port;
   }
 
+  @Override
   public void run() {
     while (true) {
       try {
@@ -58,10 +59,12 @@ public class LockWatcher extends Thread {
       final Socket s = new Socket("localhost", port); //$NON-NLS-1$
       final Thread t = new Thread(new Timeout());
       SocketWatcher watcher = new SocketWatcher() {
+        @Override
         public void handleMessage(String msg) {
           t.interrupt();
         }
 
+        @Override
         public void socketClosed(SocketHandler handler) {
           System.err.println("Server closed socket"); //$NON-NLS-1$
         }
@@ -84,6 +87,7 @@ public class LockWatcher extends Thread {
     }
   }
   private class Timeout implements Runnable {
+    @Override
     public void run() {
       try {
         sleep(timeout);

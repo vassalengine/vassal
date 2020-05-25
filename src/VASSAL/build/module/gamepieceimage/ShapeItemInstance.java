@@ -46,6 +46,7 @@ public class ShapeItemInstance extends ItemInstance {
     setFgColor(ColorSwatch.getClear());
   }
 
+  @Override
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -73,6 +74,7 @@ public class ShapeItemInstance extends ItemInstance {
     return borderColor;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Foreground Color:  ",
@@ -80,6 +82,7 @@ public class ShapeItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       FgColorSwatchConfig.class,
@@ -87,6 +90,7 @@ public class ShapeItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       FG_COLOR,
@@ -94,6 +98,7 @@ public class ShapeItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
 
     if (FG_COLOR.equals(key)) {
@@ -114,6 +119,7 @@ public class ShapeItemInstance extends ItemInstance {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (FG_COLOR.equals(key)) {
       return fgColor.encode();
@@ -126,12 +132,14 @@ public class ShapeItemInstance extends ItemInstance {
   }
 
   public static class BorderColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getBgColor());
     }
   }
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());
     }

@@ -29,6 +29,7 @@ public class DeckVisitorDispatcher extends PieceVisitorDispatcher {
     this.visitor = visitor;
   }
 
+  @Override
   public Object accept(GamePiece piece) {
     if (piece instanceof Deck) {
       return visitor.visitDeck((Deck)piece);

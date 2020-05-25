@@ -49,6 +49,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   private final ReentrantLock lock = new ReentrantLock();
 
   /** {@inheritDoc} */
+  @Override
   public boolean awaitTermination(long timeout, TimeUnit unit)
                                                   throws InterruptedException {
     // Wait for the poison pill to finish.
@@ -71,16 +72,19 @@ public class EDTExecutorService extends AbstractExecutorService {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isShutdown() {
     return shutdown.get();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isTerminated() {
     return shutdown.get() && poison_pill.isDone();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void shutdown() {
     lock.lock();
     try {
@@ -95,6 +99,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Runnable> shutdownNow() {
     shutdown();
     return Collections.<Runnable>emptyList();
@@ -104,6 +109,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   /** {@inheritDoc} */
   protected <T> RunnableFuture<T> newTask(final Callable<T> cable) {
     return new EDTRunnableFuture<>() {
+      @Override
       protected void runOnEDT() throws Exception {
         result = cable.call();
       }
@@ -114,6 +120,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   /** {@inheritDoc} */
   protected <T> RunnableFuture<T> newTask(final Runnable rable, T result) {
     return new EDTRunnableFuture<>(result) {
+      @Override
       protected void runOnEDT() {
         rable.run();
       }
@@ -166,6 +173,7 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   // FIXME: remove for Java 1.6+
   /** {@inheritDoc} */
+  @Override
   public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
                                                   throws InterruptedException {
     if (tasks == null) throw new NullPointerException();
@@ -201,6 +209,7 @@ public class EDTExecutorService extends AbstractExecutorService {
 
   // FIXME: remove for Java 1.6+
   /** {@inheritDoc} */
+  @Override
   public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
                                        long timeout, TimeUnit unit)
                                                   throws InterruptedException {
@@ -255,6 +264,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void execute(Runnable r) {
     if (r == null) throw new NullPointerException();
 
@@ -272,6 +282,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   // The poision pill task used for shutting down the ExecutorService
   protected final EDTRunnableFuture<Void> poison_pill =
     new EDTRunnableFuture<>() {
+      @Override
       protected void runOnEDT() {}
     };
 }

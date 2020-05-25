@@ -44,6 +44,7 @@ public class JabberClientFactory extends ChatServerFactory {
   public static final String DEFAULT_JABBER_PORT = "5222"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_HOST = "localhost"; //$NON-NLS-1$
 
+  @Override
   public ChatServerConnection buildServer(Properties serverConfig) {
     String host = serverConfig.getProperty(JABBER_HOST, DEFAULT_JABBER_HOST);
     int port = 5222;
@@ -57,6 +58,7 @@ public class JabberClientFactory extends ChatServerFactory {
     ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN),serverConfig.getProperty(JABBER_PWD));
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);

@@ -36,6 +36,7 @@ import VASSAL.counters.GamePiece;
     piece = p;
   }
 
+  @Override
   public String getNewState() {
     if (newState == null) {
       throw new RuntimeException("Must invoke finalize() before getting new state");
@@ -43,6 +44,7 @@ import VASSAL.counters.GamePiece;
     return super.getNewState();
   }
 
+  @Override
   public void finalize() {
     newState = Decorator.getOutermost(piece).getState();
   }

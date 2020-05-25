@@ -123,24 +123,30 @@ public class ImagePicker extends JPanel
     repaint();
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (e.getClickCount() > 1) {
       pickImage();
     }
   }
 
+  @Override
   public void itemStateChanged(ItemEvent e) {
     setImageName((String) select.getSelectedItem());
   }

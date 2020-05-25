@@ -49,6 +49,7 @@ public class Visualizer extends JPanel {
     visPanel = new JPanel() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void paint(Graphics g) {
         g.clearRect(0, 0, observer.getVisualizerWidth(), observer.getVisualizerHeight());
         g.drawImage(observer.getVisualizerImage(), 0, 0, this);

@@ -50,6 +50,7 @@ public class TileSlicerImpl implements TileSlicer {
    * @param exec the executor in which to run tasks
    * @param progress a callback for indicating progress
    */
+  @Override
   public void slice(
     BufferedImage src,
     String iname,
@@ -67,6 +68,7 @@ public class TileSlicerImpl implements TileSlicer {
 
     // slice unscaled 1:1 tiles
     final TaskMaker unscaled = new TaskMaker() {
+      @Override
       public TileTask make(BufferedImage src, File f,
                            int tx, int ty, int tw, int th, int sw, int sh) {
         return new TileTask(src, f, tx, ty, tw, th, sw, sh);
@@ -82,6 +84,7 @@ public class TileSlicerImpl implements TileSlicer {
       private final GeneralFilter.Filter filter =
         new GeneralFilter.Lanczos3Filter();
 
+      @Override
       public TileTask make(BufferedImage src, File f,
                            int tx, int ty, int tw, int th, int dw, int dh) {
         return new ScaledTileTask(src, f, filter, tx, ty, tw, th, dw, dh);

@@ -137,6 +137,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_GRID_LOCATION.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           Board b = getConfigureBoard();
           if (b == null)
@@ -148,6 +149,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (LOCATION.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return isUseGridLocation();
         }
@@ -155,6 +157,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !isUseGridLocation();
         }
@@ -217,6 +220,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
   }
 
+  @Override
   public void setup(boolean gameStarting) {
     if (gameStarting && indicator.isNewGame() && isOwningBoardActive()) {
       Stack s = initializeContents();
@@ -245,10 +249,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return true;
   }
 
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -260,6 +266,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -271,6 +278,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -282,6 +290,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -306,6 +315,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -342,11 +352,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
   }
 
+  @Override
   public void add(Buildable child) {
     super.add(child);
     updateConfigureButton();
   }
 
+  @Override
   public void addTo(Buildable parent) {
     if (indicator == null) {
       indicator = new NewGameIndicator(COMMAND_PREFIX);
@@ -358,10 +370,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     setAttributeTranslatable(NAME, false);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{PieceSlot.class};
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SetupStack.htm");
   }
@@ -370,6 +384,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return Resources.getString("Editor.StartStack.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     idMgr.remove(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
@@ -406,10 +421,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return new Stack();
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }
 
+  @Override
   public String getId() {
     return id;
   }
@@ -457,6 +474,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public OwningBoardPrompt() {
     }
 
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       String[] values;
       if (target instanceof SetupStack) {
@@ -486,6 +504,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    */
   protected Configurer xConfig, yConfig, locationConfig;
 
+  @Override
   public Configurer getConfigurer() {
     config = null; // Don't cache the Configurer so that the list of available boards won't go stale
     Configurer c = super.getConfigurer();
@@ -502,6 +521,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (configureButton == null) {
       configureButton = new JButton("Reposition Stack");
       configureButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           configureStack();
         }
@@ -584,6 +604,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
 
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e) {
           cancel();
         }
@@ -621,6 +642,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       Box buttonPanel = Box.createHorizontalBox();
       JButton snapButton = new JButton("Snap to grid");
       snapButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           snap();
           view.grabFocus();
@@ -630,6 +652,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       JButton okButton = new JButton("Ok");
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           StackConfigurer.this.setVisible(false);
           // Update the Component configurer to reflect the change
@@ -646,6 +669,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       JButton canButton = new JButton("Cancel");
       canButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           cancel();
           StackConfigurer.this.setVisible(false);
@@ -755,10 +779,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return r;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
 
       switch (e.getKeyCode()) {
@@ -814,18 +840,23 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       myStack.pos.y = newY;
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
     }
 
+    @Override
     public void keyTyped(KeyEvent e) {
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -839,12 +870,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (r.contains(e.getPoint())) {
         JPopupMenu popup = MenuDisplayer.createPopup(myPiece);
         popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+          @Override
           public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             view.repaint();
           }
+          @Override
           public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
             view.repaint();
           }
+          @Override
           public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
           }
         });
@@ -854,15 +888,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
       maybePopup(e);
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       maybePopup(e);
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(LOCATION, false);
@@ -907,6 +944,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       setFocusTraversalKeysEnabled(false);
     }
 
+    @Override
     public void paint(Graphics g) {
       final Graphics2D g2d = (Graphics2D) g;
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
@@ -928,11 +966,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       g2d.setTransform(orig_t);
     }
 
+    @Override
     public void update(Graphics g) {
       // To avoid flicker, don't clear the display first *
       paint(g);
     }
 
+    @Override
     public Dimension getPreferredSize() {
       return new Dimension(
           myBoard.bounds().width,
@@ -952,11 +992,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
     }
 
+    @Override
     public void dragEnter(DropTargetDragEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dragOver(DropTargetDragEvent e) {
       scrollAtEdge(e.getLocation(), 15);
     }
@@ -986,11 +1028,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
     }
 
+    @Override
     public void dropActionChanged(DropTargetDragEvent arg0) {
       return;
 
     }
 
+    @Override
     public void drop(DropTargetDropEvent event) {
       removeDragCursor();
       Point pos = event.getLocation();
@@ -1003,37 +1047,44 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     }
 
+    @Override
     public void dragExit(DropTargetEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dragEnter(DragSourceDragEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dragOver(DragSourceDragEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dropActionChanged(DragSourceDragEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dragDropEnd(DragSourceDropEvent arg0) {
       removeDragCursor();
       return;
 
     }
 
+    @Override
     public void dragExit(DragSourceEvent arg0) {
       return;
 
     }
 
+    @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
 
       Point mousePosition = dge.getDragOrigin();
@@ -1181,6 +1232,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       dragCursor.setIcon(new ImageIcon(cursorImage));
     }
 
+    @Override
     public void dragMouseMoved(DragSourceDragEvent event) {
       if (!event.getLocation().equals(lastDragLocation)) {
         lastDragLocation = event.getLocation();

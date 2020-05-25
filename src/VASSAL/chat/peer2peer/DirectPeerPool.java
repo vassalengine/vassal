@@ -81,6 +81,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
     inviteButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     inviteButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         frame.setVisible(true);
       }
@@ -89,6 +90,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     inviteButton.setVisible(P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY)));
   }
 
+  @Override
   public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
     listenPort = 5050;
     String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
@@ -115,6 +117,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     return serverMode;
   }
 
+  @Override
   public void disconnect() {
     if (frame != null) {
       frame.dispose();
@@ -127,6 +130,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
   }
 
+  @Override
   public void connectFailed(PeerInfo peerInfo) {
     JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.could_not_reach", peerInfo.getAddresses(), String.valueOf(peerInfo.getPort())), //$NON-NLS-1$
                                   Resources.getString("Peer2Peer.invite_failed"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
@@ -163,6 +167,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     invitePeerButton.setToolTipText(Resources.getString("Peer2Peer.invite_button_tooltip")); //$NON-NLS-1$))
     invitePeerButton.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         invite(ppm);
       }});
@@ -171,6 +176,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
     addButton.setToolTipText(Resources.getString("Peer2Peer.add_button_tooltip")); //$NON-NLS-1$))
     addButton.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         addEntry();
       }});
@@ -179,6 +185,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
     editButton.setToolTipText(Resources.getString("Peer2Peer.edit_button_tooltip")); //$NON-NLS-1$))
     editButton.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         editEntry();
       }});
@@ -187,6 +194,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
     removeButton.setToolTipText(Resources.getString("Peer2Peer.remove_button_tooltip")); //$NON-NLS-1$))
     removeButton.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         removeEntries();
       }});
@@ -289,10 +297,12 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     addressConfig.setValue(entries);
   }
 
+  @Override
   public void initializeControls(ChatServerControls controls) {
     controls.getToolbar().add(inviteButton);
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(inviteButton);
     controls.getToolbar().repaint();
@@ -359,6 +369,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       return se.getValue();
     }
 
+    @Override
     public int compareTo(Entry e) {
       return toString().compareTo(e.toString());
     }

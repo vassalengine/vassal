@@ -80,6 +80,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     toolbar.setFloatable(false);
     JButton b = new JButton(Resources.getString("Chat.refresh")); //$NON-NLS-1$
     b.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         refresh();
       }
@@ -122,24 +123,28 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     tree.setRowHeight(18);  // FIXME: check whether this is necessary
     tree.addTreeSelectionListener(this);
     tree.addTreeExpansionListener(new TreeExpansionListener() {
+      @Override
       public void treeExpanded(TreeExpansionEvent event) {
         JComponent c = (JComponent) event.getSource();
         c.setSize(c.getPreferredSize());
         c.revalidate();
       }
 
+      @Override
       public void treeCollapsed(TreeExpansionEvent event) {
       }
     });
     return tree;
   }
 
+  @Override
   public void stateChanged(ChangeEvent e) {
     if (status == null) return;
     refresh(getSelectedIndex());
     fireSelectionChanged();
   }
 
+  @Override
   public void valueChanged(TreeSelectionEvent e) {
     fireSelectionChanged();
   }
@@ -311,6 +316,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   public static class Render extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 
+    @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       if (leaf) {

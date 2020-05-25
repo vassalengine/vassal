@@ -176,6 +176,7 @@ public class Tailer {
   }
 
   private class Monitor implements Runnable {
+    @Override
     public void run() {
 
       RandomAccessFile raf = null;
@@ -222,6 +223,7 @@ public class Tailer {
     final Tailer t = new Tailer(new File(args[0]));
 
     t.addEventListener(new EventListener<>() {
+      @Override
       public void receive(Object src, String s) {
         System.out.print(s);
       }

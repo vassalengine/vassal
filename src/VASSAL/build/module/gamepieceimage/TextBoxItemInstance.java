@@ -60,6 +60,7 @@ public class TextBoxItemInstance extends ItemInstance {
     return val;
   }
 
+  @Override
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
@@ -81,6 +82,7 @@ public class TextBoxItemInstance extends ItemInstance {
     setValue(sd.nextToken("")); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Value:  ",
@@ -89,6 +91,7 @@ public class TextBoxItemInstance extends ItemInstance {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       WrappingTextConfigurer.class,
@@ -98,15 +101,18 @@ public class TextBoxItemInstance extends ItemInstance {
   }
 
   public static class WrappingTextConfigurer implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new TextConfigurer(key, name, ((TextBoxItemInstance) c).val, true);
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] { VALUE, FG_COLOR, BG_COLOR };
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
 
     if (VALUE.equals(key)) {
@@ -130,6 +136,7 @@ public class TextBoxItemInstance extends ItemInstance {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (VALUE.equals(key)) {
       return val;
@@ -144,6 +151,7 @@ public class TextBoxItemInstance extends ItemInstance {
       return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (VALUE.equals(name)) {
       return valueCond;
@@ -154,18 +162,21 @@ public class TextBoxItemInstance extends ItemInstance {
   }
 
   private VisibilityCondition valueCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return !((TextItem) getItem()).isFixed();
     }
   };
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());
     }
   }
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getBgColor());
     }

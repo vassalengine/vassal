@@ -36,6 +36,7 @@ public class CreateModuleAction extends GameModuleAction {
     super(Resources.getString("Main.new_module"), comp);
   }
 
+  @Override
   public void performAction(ActionEvent e) throws IOException {
     GameModule.init(new BasicModule(new ArchiveWriter((String) null)));
     JFrame frame = GameModule.getGameModule().getFrame();

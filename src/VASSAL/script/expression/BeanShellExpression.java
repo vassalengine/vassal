@@ -42,6 +42,7 @@ public class BeanShellExpression extends Expression {
   /**
    * Evaluate this expression using a BeanShell Interpreter
    */
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) throws ExpressionException {
     if (interpreter == null) {
@@ -51,6 +52,7 @@ public class BeanShellExpression extends Expression {
   }
 
 
+  @Override
   public String toBeanShellString() {
     return strip(getExpression());
   }
@@ -67,8 +69,10 @@ public class BeanShellExpression extends Expression {
    * Return a PieceFilter that selects GamePieces that cause
    * this expression to evaluate to true
    */
+  @Override
   public PieceFilter getFilter(final PropertySource ps) {
     return new PieceFilter() {
+      @Override
       public boolean accept(GamePiece piece) {
         String result = null;
         try {

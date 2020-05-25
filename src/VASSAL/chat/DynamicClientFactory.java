@@ -26,6 +26,7 @@ public class DynamicClientFactory extends ChatServerFactory {
   public static final String DYNAMIC_TYPE = "dynamic"; //$NON-NLS-1$
   public static final String URL = "url"; //$NON-NLS-1$
 
+  @Override
   public ChatServerConnection buildServer(Properties param) {
     String url = param.getProperty(URL);
     DynamicClient client = url == null ? new DynamicClient() : new DynamicClient(url);

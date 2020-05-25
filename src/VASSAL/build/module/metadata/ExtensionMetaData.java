@@ -80,10 +80,12 @@ public class ExtensionMetaData extends AbstractMetaData {
     return moduleData == null ? "" : moduleData.getVersion();
   }
 
+  @Override
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
 
+  @Override
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
@@ -93,6 +95,7 @@ public class ExtensionMetaData extends AbstractMetaData {
    * @param archive Save game Archive
    * @throws IOException If anything goes wrong
    */
+  @Override
   public void save(ArchiveWriter archive) throws IOException {
     super.save(archive);
 
@@ -108,6 +111,7 @@ public class ExtensionMetaData extends AbstractMetaData {
    * @param doc Document
    * @param root Root element
    */
+  @Override
   protected void addElements(Document doc, Element root) {
     final Element e = doc.createElement(UNIVERSAL_ELEMENT);
     e.appendChild(doc.createTextNode(String.valueOf(universal)));

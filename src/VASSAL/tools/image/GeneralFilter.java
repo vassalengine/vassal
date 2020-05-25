@@ -98,6 +98,7 @@ public final class GeneralFilter {
 
   /** A Hermite filter. */
   public static final class HermiteFilter extends Filter {
+    @Override
     public float apply(float t) {
       // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
       if (t < 0.0f) t = -t;
@@ -105,16 +106,19 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 1.0f; }
   }
 
   /** A box filter. */
   public static final class BoxFilter extends Filter {
+    @Override
     public float apply(float t) {
       if (t > -0.5f && t <= 0.5f) return 1.0f;
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 0.5f; }
   }
 
@@ -137,6 +141,7 @@ public final class GeneralFilter {
       return (float)(Math.sin(t)/t);
     }
 
+    @Override
     public float apply(float t) {
       if (t < -3.0f) return 0.0f;
       if (t <  0.0f) return sinc(-t) * sinc(-t/3.0f);
@@ -144,6 +149,7 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 3.0f; }
   }
 
@@ -159,6 +165,7 @@ public final class GeneralFilter {
     private static final float Q2 = (        6.0f*B+30.0f*C)/6.0f;
     private static final float Q3 = (      - 1.0f*B- 6.0f*C)/6.0f;
 
+    @Override
     public float apply(float t) {
       if (t < -2.0f) return 0.0f;
       if (t < -1.0f) return Q0-t*(Q1-t*(Q2-t*Q3));
@@ -168,11 +175,13 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 2.0f; }
   }
 
   /** A Bell filter. */
   public static final class BellFilter extends Filter {
+    @Override
     public float apply(float t) {
       // box (*) box (*) box
       if (t < 0.0f) t = -t;
@@ -184,11 +193,13 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 1.5f; }
   }
 
   /** A B-spline filter. */
   public static final class BSplineFilter extends Filter {
+    @Override
     public float apply(float t) {
       // box (*) box (*) box (*) box
 
@@ -206,6 +217,7 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
+    @Override
     public float getSamplingRadius() { return 2.0f; }
   }
 

@@ -49,6 +49,7 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   private Map map;
   private char noEcho = 0;
 
+  @Override
   public void addTo(Buildable parent) {
     map = (Map) parent;
     map.getView().addKeyListener(this);
@@ -72,19 +73,23 @@ public class Scroller extends AbstractBuildable implements KeyListener {
     }
   }
 
+  @Override
   public void add(Buildable b) {
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{PROMPT};
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (USE_ARROWS.equals(name)) {
       usingArrows = (String) value;
     }
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     if (USE_ARROWS.equals(name)) {
       return usingArrows;
@@ -97,6 +102,7 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   protected int xStep = 100;
   protected int yStep = 100;
 
+  @Override
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
@@ -131,9 +137,11 @@ public class Scroller extends AbstractBuildable implements KeyListener {
     e.consume();
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
     if (e.isConsumed()) {
       return;

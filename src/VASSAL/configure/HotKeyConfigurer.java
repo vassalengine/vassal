@@ -45,6 +45,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     super(key, name, val);
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (tf != null
@@ -57,14 +58,17 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     return getString((KeyStroke) getValue());
   }
 
+  @Override
   public String getValueString() {
     return encode((KeyStroke) getValue());
   }
 
+  @Override
   public void setValue(String s) {
     setValue(s == null ? null : decode(s));
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -79,9 +83,11 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     return p;
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
@@ -98,6 +104,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     }
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     tf.setText(getString((KeyStroke) getValue()));
   }

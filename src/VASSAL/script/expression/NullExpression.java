@@ -32,11 +32,13 @@ public class NullExpression extends Expression {
     setExpression("");
   }
 
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     return "";
   }
 
+  @Override
   public String toBeanShellString() {
     return "";
   }

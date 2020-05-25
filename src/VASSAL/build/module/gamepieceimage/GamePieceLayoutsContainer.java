@@ -43,34 +43,42 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     return definitions.get(name);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
   }
 
+  @Override
   public Configurer getConfigurer() {
     return null;
   }
 
+  @Override
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
     setAllAttributesUntranslatable();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{GamePieceLayout.class};
   }
@@ -79,12 +87,14 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     return "Game Piece Layouts";
   }
 
+  @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof GamePieceLayout) {
       GamePieceLayout def = (GamePieceLayout) b;
       definitions.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
             definitions.remove(evt.getOldValue());
@@ -96,6 +106,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void remove(Buildable b) {
     super.remove(b);
     if (b instanceof GamePieceLayout) {
@@ -103,10 +114,12 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 

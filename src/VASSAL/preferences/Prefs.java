@@ -252,6 +252,7 @@ public class Prefs implements Closeable {
     save();
   }
 
+  @Override
   public void close() throws IOException {
     save();
     if (this == globalPrefs) {

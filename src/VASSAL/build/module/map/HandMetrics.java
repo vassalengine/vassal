@@ -38,16 +38,19 @@ public class HandMetrics extends StackMetrics {
     super(false, 12, 0, 12, 0);
   }
 
+  @Override
   public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
     stack.setExpanded(true);
     super.draw(stack, g, x, y, obs, zoom);
   }
 
+  @Override
   public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect) {
     stack.setExpanded(true);
     super.draw(stack, location, g, map, zoom, visibleRect);
   }
 
+  @Override
   protected void nextPosition(Point currentPos, Rectangle currentBounds, Point nextPos, Rectangle nextBounds, int dx, int dy) {
     int x = currentPos.x + currentBounds.width + dx;
     int y = currentPos.y;
@@ -55,6 +58,7 @@ public class HandMetrics extends StackMetrics {
     nextPos.setLocation(x, y);
   }
 
+  @Override
   public Command merge(GamePiece fixed, GamePiece moving) {
     Command c =  super.merge(fixed, moving);
     map.getView().revalidate();

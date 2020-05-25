@@ -45,6 +45,7 @@ public class PropertySetter implements PropertyChanger {
     return newValue;
   }
 
+  @Override
   public String getNewValue(String oldValue) {
     String s = newValue;
     if (format != null) {

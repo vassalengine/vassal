@@ -39,6 +39,7 @@ public class IntBuilder extends StrBuilder {
   }
 
 
+  @Override
   protected void save() {
     boolean negative = false;
     final StringBuilder result = new StringBuilder();

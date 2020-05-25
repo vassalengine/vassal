@@ -50,6 +50,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     this.propertySource = propertySource;
   }
 
+  @Override
   public String getNewValue(String oldValue) {
     final String[] finalValues = new String[valueExpressions.length];
     for (int i = 0; i < finalValues.length; i++) {

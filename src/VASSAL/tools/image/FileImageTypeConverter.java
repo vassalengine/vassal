@@ -64,6 +64,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
    * must be the one held by <code>ref</code> in order to allow the source
    * image to be garbage collected after the image data is written to disk.</b>
    */
+  @Override
   public BufferedImage convert(Reference<BufferedImage> ref, int type)
                                                       throws ImageIOException {
     if (ref == null) throw new IllegalArgumentException();

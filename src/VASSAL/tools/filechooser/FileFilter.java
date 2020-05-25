@@ -36,6 +36,7 @@ public abstract class FileFilter extends javax.swing.filechooser.FileFilter
    *
    * @return Whether the given file is accepted by this filter.
    */
+  @Override
   public abstract boolean accept(File f);
 
   /**
@@ -43,6 +44,7 @@ public abstract class FileFilter extends javax.swing.filechooser.FileFilter
    *
    * @return Whether the given file is accepted by this filter.
    */
+  @Override
   public boolean accept(File dir, String name) {
     return accept(new File(dir, name));
   }
@@ -50,5 +52,6 @@ public abstract class FileFilter extends javax.swing.filechooser.FileFilter
   /**
    * @return A description of this filter to be displayed in the file chooser.
    */
+  @Override
   public abstract String getDescription();
 }

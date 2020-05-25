@@ -168,10 +168,12 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
                                   .toHashCode();
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Arrays.<VASSAL.tools.opcache.Op<?>>asList(sop);
     }
 
+    @Override
     public BufferedImage eval() throws Exception {
       if (dw < 1 || dh < 1) return ImageUtils.NULL_IMAGE;
 
@@ -243,6 +245,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       ));
     }
 
+    @Override
     protected void fixSize() { }
 
     /** {@inheritDoc} */

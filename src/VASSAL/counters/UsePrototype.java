@@ -63,14 +63,17 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     setInner(inner);
   }
 
+  @Override
   public String getDescription() {
     return prototypeName != null && prototypeName.length() > 0 ? "Prototype - " + prototypeName : "Prototype";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("UsePrototype.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     this.type = type;
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
@@ -89,10 +92,12 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
         }
       }
       properties = new PropertySource() {
+        @Override
         public Object getProperty(Object key) {
           return p.getProperty(String.valueOf(key));
         }
 
+        @Override
         public Object getLocalizedProperty(Object key) {
           return getProperty(key);
         }
@@ -101,14 +106,17 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     lastCachedPrototype = null;
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   protected KeyCommand[] getKeyCommands() {
     return (KeyCommand[]) getExpandedInner().getProperty(Properties.KEY_COMMANDS);
   }
 
+  @Override
   public void setInner(GamePiece p) {
     super.setInner(p);
     lastCachedPrototype = null;
@@ -164,37 +172,46 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     return prototype != null ? prototype : piece;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     return type;
   }
 
+  @Override
   public Command keyEvent(KeyStroke stroke) {
     return getExpandedInner().keyEvent(stroke);
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return getExpandedInner().boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     getExpandedInner().draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return getExpandedInner().getName();
   }
 
+  @Override
   public Shape getShape() {
     return getExpandedInner().getShape();
   }
@@ -203,6 +220,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     return prototypeName;
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Editor(this);
   }
@@ -213,24 +231,29 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       nameConfig = new StringConfigurer(null, "Prototype name:  ", up.type.substring(ID.length()));
     }
 
+    @Override
     public Component getControls() {
       return nameConfig.getControls();
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       return ID + nameConfig.getValueString();
     }
   }
 
   // Implement Loopable
+  @Override
   public String getComponentName() {
     return piece.getName();
   }
 
+  @Override
   public String getComponentTypeName() {
     return getDescription();
   }

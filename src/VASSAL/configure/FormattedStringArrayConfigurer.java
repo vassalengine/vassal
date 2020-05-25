@@ -50,6 +50,7 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     this.target = target;
   }
 
+  @Override
   protected Component getTextComponent() {
     if (config == null) {
       config = new FormattedExpressionConfigurer(null, "", "", target);
@@ -57,14 +58,17 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     return config.getControls();
   }
 
+  @Override
   protected String getTextValue() {
     return config.getValueString();
   }
 
+  @Override
   protected void setTextValue(String s) {
     config.setValue(s);
   }
 
+  @Override
   protected void addTextActionListener(ActionListener a) {
     return;
   }

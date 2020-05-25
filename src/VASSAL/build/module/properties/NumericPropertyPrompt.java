@@ -39,6 +39,7 @@ public class NumericPropertyPrompt extends PropertyPrompt {
     this.dialogParent = dialogParent;
   }
 
+  @Override
   public String getNewValue(String oldValue) {
     String s = null;
     do {

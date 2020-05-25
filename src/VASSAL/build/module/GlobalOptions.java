@@ -102,6 +102,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private static GlobalOptions instance = new GlobalOptions();
   private boolean useSingleWindow;
 
+  @Override
   public void addTo(Buildable parent) {
     instance = this;
 
@@ -153,6 +154,7 @@ public class GlobalOptions extends AbstractConfigurable {
       }
 
       bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
           PieceMover.AbstractDragHandler.setTheDragHandler(
             (Boolean.TRUE.equals(e.getNewValue()) ||
@@ -187,17 +189,20 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public static class Prompt extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, NEVER, PROMPT};
     }
   }
 
   public static class PlayerIdFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{PLAYER_NAME, PLAYER_SIDE});
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
       StringPreference.class,
@@ -209,6 +214,7 @@ public class GlobalOptions extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
@@ -219,6 +225,7 @@ public class GlobalOptions extends AbstractConfigurable {
    };
   }
 
+  @Override
   public String[] getAttributeNames() {
     final ArrayList<String> attributes = new ArrayList<>(
       Arrays.asList(
@@ -237,6 +244,7 @@ public class GlobalOptions extends AbstractConfigurable {
     return attributes.toArray(new String[0]);
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Prompt.class,
@@ -265,6 +273,7 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void build(Element e) {
     if (e == null) return;
 
@@ -301,6 +310,7 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     final Element e = super.getBuildElement(doc);
     for (Configurer c : optionConfigurers.values()) {
@@ -312,6 +322,7 @@ public class GlobalOptions extends AbstractConfigurable {
     return e;
   }
 
+  @Override
   public Configurer getConfigurer() {
     if (config == null) {
       final Configurer defaultConfig = super.getConfigurer();
@@ -322,6 +333,7 @@ public class GlobalOptions extends AbstractConfigurable {
     return config;
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NON_OWNER_UNMASKABLE.equals(key)) {
       return nonOwnerUnmaskable;
@@ -350,13 +362,16 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalOptions.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NON_OWNER_UNMASKABLE.equals(key)) {
       nonOwnerUnmaskable = (String) value;
@@ -441,6 +456,7 @@ public class GlobalOptions extends AbstractConfigurable {
   /**
    * Implement PropertyNameSource - Expose our preference names
    */
+  @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
     for (Buildable b : getBuildables()) {

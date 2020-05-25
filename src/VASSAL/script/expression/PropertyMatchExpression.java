@@ -36,11 +36,13 @@ public class PropertyMatchExpression extends Expression {
     setExpression(s);
   }
 
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     return null;
   }
 
+  @Override
   public PieceFilter getFilter(PropertySource ps) {
     if (filter == null || isDynamic()) {
       filter = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps));
@@ -52,6 +54,7 @@ public class PropertyMatchExpression extends Expression {
     return getExpression() != null && getExpression().indexOf('$') >= 0;
   }
 
+  @Override
   public String toBeanShellString() {
     return PropertiesPieceFilter.toBeanShellString(getExpression());
   }

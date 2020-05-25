@@ -97,6 +97,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   /*
    * The Generic trait needs a deep copy of the Image Definition
    */
+  @Override
   public Object clone() {
     return new GamePieceImage(this);
   }
@@ -105,6 +106,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return instances;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
       "Name:  ",
@@ -114,6 +116,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -124,12 +127,14 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((GamePieceImage) c).getBgColor());
     }
   }
 
   public static class BorderColorSwatchConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorSwatchConfigurer(key, name, ((GamePieceImage) c).getBorderColor());
     }
@@ -138,6 +143,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public static class DefnConfig implements ConfigurerFactory {
     static GamePieceImage id;
 
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       id = (GamePieceImage) c;
       id.defnConfig = new InstanceConfigurer(key, name, id);
@@ -152,6 +158,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {NAME, BG_COLOR, BORDER_COLOR, PROPS};
   }
@@ -164,6 +171,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return borderColor;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
@@ -212,6 +220,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -229,6 +238,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (BORDER_COLOR.equals(name)) {
       return borderCond;
@@ -239,6 +249,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private VisibilityCondition borderCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       if (getLayout() == null) {
         return false;
@@ -249,18 +260,22 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   };
 
+  @Override
   public void removeFrom(Buildable parent) {
     idMgr.remove(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceImage.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
     layout = (GamePieceLayout) parent;
     idMgr.add(this);
@@ -269,10 +284,12 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     rebuildInstances();
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }
@@ -289,14 +306,17 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return layout;
   }
 
+  @Override
   public int getVisualizerHeight() {
     return getLayout().getVisualizerHeight();
   }
 
+  @Override
   public int getVisualizerWidth() {
     return getLayout().getVisualizerWidth();
   }
 
+  @Override
   public Image getVisualizerImage() {
     if (visImage == null) {
       rebuildVisualizerImage();
@@ -305,6 +325,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   // Build the new image and add to the archive
+  @Override
   public void rebuildVisualizerImage() {
     if (layout != null) {
       visImage = layout.buildImage(this);

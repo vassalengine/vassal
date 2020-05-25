@@ -73,6 +73,7 @@ public class PrefsEditor {
 
       // Handle window closing correctly.
       dialog.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent we) {
           cancel();
         }
@@ -80,6 +81,7 @@ public class PrefsEditor {
 
       final JButton ok = new JButton(Resources.getString(Resources.OK));
       ok.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           save();
         }
@@ -87,6 +89,7 @@ public class PrefsEditor {
 
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           cancel();
         }
@@ -115,6 +118,7 @@ public class PrefsEditor {
         setupDialog.setLayout(new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
         setupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setupDialog.addComponentListener(new ComponentAdapter() {
+          @Override
           public void componentShown(ComponentEvent e) {
             SplashScreen.sendAllToBack();
           }
@@ -126,6 +130,7 @@ public class PrefsEditor {
       setupDialog.add(c.getControls());
       JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           setupDialog.setVisible(false);
         }
@@ -217,6 +222,7 @@ public class PrefsEditor {
           Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           storeValues();
           dialog.pack();

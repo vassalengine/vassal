@@ -33,6 +33,7 @@ public class DirectoryConfigurer extends FileConfigurer {
     super(key, name);
   }
 
+  @Override
   protected FileChooser initFileChooser() {
     FileChooser fc = FileChooser.createFileChooser(null, startingDirectory, FileChooser.DIRECTORIES_ONLY);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
@@ -41,6 +42,7 @@ public class DirectoryConfigurer extends FileConfigurer {
     return fc;
   }
 
+  @Override
   public void setValue(Object o) {
     File f = (File) o;
     if (f != null && !f.isDirectory()) {
@@ -49,9 +51,11 @@ public class DirectoryConfigurer extends FileConfigurer {
     super.setValue(f);
   }
 
+  @Override
   protected void addToArchive(File f) {
   }
 
+  @Override
   public void chooseNewValue() {
     getControls();
     if (getValue() != null) {

@@ -126,6 +126,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     buildComponents.clear();
   }
 
+  @Override
   public GridNumbering getGridNumbering() {
     return gridNumbering;
   }
@@ -142,6 +143,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   public static final String VISIBLE = "visible"; //$NON-NLS-1$
   public static final String FONT_SIZE = "fontsize"; //$NON-NLS-1$
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       SNAPTO,
@@ -150,6 +152,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
@@ -158,6 +161,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Boolean.class,
@@ -166,12 +170,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     };
   }
 
+  @Override
   public Configurer getConfigurer() {
     final boolean buttonExists = config != null;
     final Configurer c = super.getConfigurer();
     if (!buttonExists) {
       final JButton b = new JButton(Resources.getString("Editor.IrregularGrid.define_regions")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           configureRegions();
         }
@@ -181,11 +187,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return c;
   }
 
+  @Override
   public void addTo(Buildable b) {
     container = (GridContainer) b;
     container.setGrid(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     container.removeGrid(this);
     container = null;
@@ -195,14 +203,17 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return Resources.getString("Editor.IrregularGrid.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("IrregularGrid.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (VISIBLE.equals(key)) {
       return String.valueOf(visible);
@@ -216,9 +227,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return null;
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT_SIZE.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return visible;
         }
@@ -229,6 +242,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (val == null)
       return;
@@ -267,6 +281,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   // Force Regions to be drawn when configuring
+  @Override
   public boolean isVisible() {
     return (visible || inConfig);
   }
@@ -279,10 +294,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return container.getBoard();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{Region.class};
   }
 
+  @Override
   public Point getLocation(String name) throws BadCoords {
     Region reg = findRegion(name);
     if (reg == null)
@@ -291,6 +308,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       return new Point(reg.getOrigin());
   }
 
+  @Override
   public int range(Point p1, Point p2) {
     return (int)Math.round(p1.distance(p2));
   }
@@ -298,6 +316,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   //
   // Locate nearest point
   //
+  @Override
   public Point snapTo(Point p) {
 
     //
@@ -310,6 +329,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return doSnap(p);
   }
 
+  @Override
   public boolean isLocationRestricted(Point p) {
     return snapTo;
   }
@@ -335,6 +355,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return new Point(snapPoint);
   }
 
+  @Override
   public String locationName(Point p) {
 
     if (regionList.isEmpty()) {
@@ -345,6 +366,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return region != null ? region.getName() : null;
   }
 
+  @Override
   public String localizedLocationName(Point p) {
 
     if (regionList.isEmpty()) {
@@ -381,6 +403,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   //
   // Get each region to draw labels and dots
   //
+  @Override
   public void draw(
       Graphics g,
       Rectangle bounds,
@@ -448,6 +471,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Main Entry Point
     protected void initComponents() {
       addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e) {
           doCancel();
         }
@@ -476,6 +500,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       final JButton okButton =
         new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           close();
         }
@@ -485,6 +510,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       final JButton canButton =
         new JButton(Resources.getString(Resources.CANCEL));
       canButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           doCancel();
         }
@@ -630,6 +656,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         setFocusTraversalKeysEnabled(false);
       }
 
+      @Override
       public void paint(Graphics g) {
         Rectangle b = getVisibleRect();
         g.clearRect(b.x, b.y, b.width, b.height);
@@ -648,26 +675,32 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         }
       }
 
+      @Override
       public void update(Graphics g) {
         // To avoid flicker, don't clear the display first *
         paint(g);
       }
 
+      @Override
       public Dimension getPreferredSize() {
         return new Dimension(
             myBoard.bounds().width,
             myBoard.bounds().height);
       }
 
+      @Override
       public void dragEnter(DropTargetDragEvent arg0) {
       }
 
+      @Override
       public void dragExit(DropTargetEvent arg0) {
       }
 
+      @Override
       public void dragOver(DropTargetDragEvent arg0) {
       }
 
+      @Override
       public void drop(DropTargetDropEvent event) {
         removeDragCursor();
         final Point dragEnd = event.getLocation();
@@ -681,9 +714,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         repaint();
       }
 
+      @Override
       public void dropActionChanged(DropTargetDragEvent arg0) {
       }
 
+      @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
 
         final Point mousePosition = dge.getDragOrigin();
@@ -718,23 +753,29 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         }
       }
 
+      @Override
       public void dragDropEnd(DragSourceDropEvent arg0) {
         removeDragCursor();
         return;
       }
 
+      @Override
       public void dragEnter(DragSourceDragEvent arg0) {
       }
 
+      @Override
       public void dragExit(DragSourceEvent arg0) {
       }
 
+      @Override
       public void dragOver(DragSourceDragEvent arg0) {
       }
 
+      @Override
       public void dropActionChanged(DragSourceDragEvent arg0) {
       }
 
+      @Override
       public void dragMouseMoved(DragSourceDragEvent event) {
         if (!event.getLocation().equals(lastDragLocation)) {
           lastDragLocation = event.getLocation();
@@ -825,6 +866,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
      */
 
     // Mouse clicked, see if it is on a Region Point
+    @Override
     public void mouseClicked(MouseEvent e) {
       final Point p = e.getPoint();
       lastClick = p;
@@ -877,16 +919,19 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       myPopup
           .addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
             public void popupMenuCanceled(
                 javax.swing.event.PopupMenuEvent evt) {
               view.repaint();
             }
 
+            @Override
             public void popupMenuWillBecomeInvisible(
                 javax.swing.event.PopupMenuEvent evt) {
               view.repaint();
             }
 
+            @Override
             public void popupMenuWillBecomeVisible(
                 javax.swing.event.PopupMenuEvent evt) {
             }
@@ -894,6 +939,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       myPopup.show(e.getComponent(), p.x, p.y);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
       final String command = e.getActionCommand();
@@ -967,11 +1013,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       }
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         PropertiesWindow w = openWindows.get(target);
         if (w == null) {
           w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
           w.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosed(WindowEvent e) {
               openWindows.remove(target);
               owner.setDirty(
@@ -1032,12 +1080,15 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       return rect;
     }
 
+    @Override
     public void mouseEntered(MouseEvent evPt) {
     }
 
+    @Override
     public void mouseExited(MouseEvent evPt) {
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
@@ -1067,6 +1118,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
@@ -1087,10 +1139,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    @Override
     public void mouseMoved(MouseEvent evPt) {
     }
 
     // Scroll map if necessary
+    @Override
     public void mouseDragged(MouseEvent e) {
       if (e.getButton() != 3) {
         scrollAtEdge(e.getPoint(), 15);
@@ -1114,6 +1168,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
 
       /*
@@ -1154,9 +1209,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       e.consume();
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
     }
 
+    @Override
     public void keyTyped(KeyEvent e) {
     }
   }

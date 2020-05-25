@@ -47,54 +47,67 @@ public class TranslatableMarker extends AbstractConfigurable {
     return "Marker Definition";
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     return new ComponentI18nData(this, markerDefinition);
   }
 
+  @Override
   public String getAttributeValueString(String attr) {
     return getI18nData().getLocalUntranslatedValue(attr);
   }
 
 
+  @Override
   public void setAttribute(String attr, Object value) {
 
   }
 
+  @Override
   public void add(Buildable child) {
   }
 
+  @Override
   public void addTo(Buildable parent) {
 
   }
 
+  @Override
   public void build(Element e) {
 
   }
 
+  @Override
   public Element getBuildElement(Document doc) {
     return null;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
 
   }

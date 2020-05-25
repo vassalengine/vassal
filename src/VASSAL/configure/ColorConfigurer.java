@@ -48,10 +48,12 @@ public class ColorConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  @Override
   public String getValueString() {
     return value == null ? "" : colorToString(colorValue());
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (cb != null) {
@@ -59,10 +61,12 @@ public class ColorConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void setValue(String s) {
     setValue(stringToColor(s));
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -71,6 +75,7 @@ public class ColorConfigurer extends Configurer {
 
       cb = new ColorButton(colorValue());
       cb.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setValue(JColorChooser.showDialog(null, getName(), colorValue()));
         }

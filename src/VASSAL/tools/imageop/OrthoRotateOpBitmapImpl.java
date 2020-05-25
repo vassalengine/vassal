@@ -52,10 +52,12 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
                                 .toHashCode();
   }
 
+  @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
+  @Override
   public BufferedImage eval() throws Exception {
     final BufferedImage src = sop.getImage(null);
     if (size == null) fixSize();
@@ -73,6 +75,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     return dst;
   }
 
+  @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = sop.getSize();
@@ -83,15 +86,18 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     }
   }
 
+  @Override
   public double getAngle() {
     return angle * 90;
   }
 
+  @Override
   public RenderingHints getHints() {
 //    return ImageUtils.getDefaultHints();
     return null;
   }
 
+  @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new TileOp(this, tileX, tileY);
   }
@@ -153,10 +159,12 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
                                   .toHashCode();
     }
 
+    @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
+    @Override
     public BufferedImage eval() throws Exception {
       final BufferedImage src = sop.getImage(null);
 
@@ -173,6 +181,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       return dst;
     }
 
+    @Override
     protected void fixSize() { }
 
     @Override

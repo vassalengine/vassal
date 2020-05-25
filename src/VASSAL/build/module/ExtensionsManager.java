@@ -49,6 +49,7 @@ public class ExtensionsManager {
    * are directories.
    */
   private final FilenameFilter filter = new FilenameFilter() {
+    @Override
     public boolean accept(File dir, String name) {
       final File fileCandidate = new File(dir, name);
       return !fileCandidate.isHidden() && !fileCandidate.isDirectory();

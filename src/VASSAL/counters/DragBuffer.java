@@ -77,12 +77,14 @@ public class DragBuffer {
 
   public void addDragSource(Component c) {
     c.addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent e) {
         lastRelease = null;
         dropTarget = null;
         dropHandler = null;
       }
 
+      @Override
       public void mouseReleased(MouseEvent e) {
         e.getComponent().setCursor(null);
         Component source = (Component) e.getSource();
@@ -104,6 +106,7 @@ public class DragBuffer {
 
   public void addDropTarget(final Component c, final MouseListener l) {
     c.addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseEntered(MouseEvent e) {
         Component source = (Component) e.getSource();
         if (source.isShowing()) {
@@ -165,16 +168,19 @@ public class DragBuffer {
     f2.setLocation(200, 0);
     f2.setVisible(true);
     MouseListener l = new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);
         System.err.println("Press at " + evt.getPoint());
       }
 
+      @Override
       public void mouseReleased(MouseEvent evt) {
         //        evt.translatePoint(((JFrame)evt.getSource()).getLocationOnScreen().x,((JFrame)evt.getSource()).getLocationOnScreen().y);
         System.err.println("Release at " + evt.getPoint());
       }
 
+      @Override
       public void mouseEntered(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);
         System.err.println("Enter at " + evt.getPoint());

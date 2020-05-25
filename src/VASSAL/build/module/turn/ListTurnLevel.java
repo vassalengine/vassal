@@ -71,6 +71,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   /*
    * Reset counter to initial state
    */
+  @Override
   protected void reset() {
     super.reset();
     for (int i = 0; i < active.length; i++) {
@@ -79,11 +80,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     setLow();
   }
 
+  @Override
   protected void setLow() {
     current = first;
     super.setLow();
   }
 
+  @Override
   protected void setHigh() {
     current = first;
     current--;
@@ -96,6 +99,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   /*
    * Generate the state of the level
    */
+  @Override
   protected String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(current);
@@ -115,6 +119,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   /*
    * Set the state of the level
    */
+  @Override
   protected void setState(String code) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
@@ -135,6 +140,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   protected String getValueString() {
     if (current >= 0 && current <= (list.length - 1)) {
       return list[current];
@@ -149,6 +155,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    *
    * @see turn.TurnLevel#getLongestValueName()
    */
+  @Override
   protected String getLongestValueName() {
     String s = "X"; //$NON-NLS-1$
     for (String value : list) {
@@ -164,6 +171,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    * sub-level first. 2. If the sublevels roll over, then advance the counter 3.
    * If LOOP is reached, roll over the counter
    */
+  @Override
   protected void advance() {
     super.advance();
 
@@ -188,6 +196,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     myValue.setPropertyValue(getValueString());
   }
 
+  @Override
   protected void retreat() {
     super.retreat();
 
@@ -210,6 +219,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   }
 
   /* A list turn level is active only if at least one item is active */
+  @Override
   protected boolean isActive() {
     for (boolean b : active) {
       if (b) {
@@ -219,6 +229,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     return false;
   }
 
+  @Override
   protected void buildConfigMenu(JMenu configMenu) {
     JMenu menu = getConfigMenu();
     if (menu != null) {
@@ -234,16 +245,19 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   }
 
   // Configure which Items are active
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     configDialog = new ConfigDialog();
     configDialog.setVisible(true);
   }
 
+  @Override
   protected Component getSetControl() {
 
     StringEnumConfigurer config = new StringEnumConfigurer("", " " + getConfigureName() + ":  ", list); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.setValue(list[current]);
     config.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         String option = ((StringEnumConfigurer) e.getSource()).getValueString();
         for (int i = 0; i < list.length; i++) {
@@ -258,6 +272,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     return config.getControls();
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.append(
       super.getAttributeDescriptions(),
@@ -268,6 +283,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     );
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.append(
       super.getAttributeTypes(),
@@ -278,6 +294,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     );
   }
 
+  @Override
   public String[] getAttributeNames() {
     return ArrayUtils.append(
       super.getAttributeNames(),
@@ -288,6 +305,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     );
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
 
     if (LIST.equals(key)) {
@@ -321,6 +339,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (LIST.equals(key)) {
       return StringArrayConfigurer.arrayToString(list);
@@ -342,10 +361,12 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     return "List";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("TurnTracker.htm","List"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (PROMPT.equals(name)) {
       return promptCond;
@@ -356,11 +377,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   }
 
   private VisibilityCondition promptCond = new VisibilityCondition() {
+    @Override
     public boolean shouldBeVisible() {
       return configFirst;
     }
   };
 
+  @Override
   public boolean isConfigurable() {
 
     if (configFirst || configList) {
@@ -386,6 +409,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         StringEnumConfigurer firstItem = new StringEnumConfigurer("", prompt + " :  ", list); //$NON-NLS-1$ //$NON-NLS-2$
         firstItem.setValue(list[first]);
         firstItem.addPropertyChangeListener(new PropertyChangeListener() {
+          @Override
           public void propertyChange(PropertyChangeEvent e) {
             String option = ((StringEnumConfigurer) e.getSource()).getValueString();
             for (int i = 0; i < list.length; i++) {
@@ -404,6 +428,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         for (int i = 0; i < list.length; i++) {
           BooleanConfigurer b = new BooleanConfigurer(null, list[i], active[i]);
           b.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent e) {
               BooleanConfigurer b = (BooleanConfigurer) e.getSource();
               String option = b.getName();
@@ -424,6 +449,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       saveButton.setToolTipText(Resources.getString("TurnTracker.save_changes")); //$NON-NLS-1$
       p.add(saveButton);
       saveButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setVisible(false);
         }
@@ -432,6 +458,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.setToolTipText(Resources.getString("TurnTracker.discard_changes")); //$NON-NLS-1$
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           setVisible(false);
         }
@@ -443,6 +470,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     }
   }
 
+  @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(LIST, true);

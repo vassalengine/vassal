@@ -74,6 +74,7 @@ public class ImageToTiles {
     );
 
     final TemporaryFileFactory tfac = new TemporaryFileFactory() {
+      @Override
       public File create() throws IOException {
         return File.createTempFile("img", null, new File(tpath));
       }
@@ -98,6 +99,7 @@ public class ImageToTiles {
 
     final String iname = new File(ipath).getName();
     final Callback<Void> dotter = new Callback<>() {
+      @Override
       public void receive(Void obj) {
         System.out.print('.');
       }

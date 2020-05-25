@@ -66,12 +66,14 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char NEVER_SELECT = 'n';
 
   public class UseShift implements EventFilter {
+    @Override
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isShiftDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   };
 
   public class UseAlt implements EventFilter {
+    @Override
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isAltDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
@@ -79,12 +81,14 @@ public class Immobilized extends Decorator implements EditablePiece {
 
 
   protected class MoveIfSelected implements EventFilter {
+    @Override
     public boolean rejectEvent(InputEvent evt) {
       return !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   }
 
   protected static EventFilter NEVER = new EventFilter() {
+    @Override
     public boolean rejectEvent(InputEvent evt) {
       return true;
     }
@@ -99,6 +103,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     mySetType(type);
   }
 
+  @Override
   public void mySetType(String type) {
     shiftToSelect = false;
     altToSelect = false;
@@ -163,14 +168,17 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke e) {
     return null;
   }
@@ -200,6 +208,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public Object getProperty(Object key) {
     if (Properties.NO_STACK.equals(key)) {
       return Boolean.TRUE;
@@ -224,18 +233,22 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String myGetType() {
     final StringBuilder buffer = new StringBuilder(ID);
     if (neverSelect) {
@@ -263,21 +276,26 @@ public class Immobilized extends Decorator implements EditablePiece {
     return buffer.toString();
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public void mySetState(String s) {
   }
 
+  @Override
   public String getDescription() {
     return "Does not stack";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("NonStacking.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -285,6 +303,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
@@ -345,10 +364,12 @@ public class Immobilized extends Decorator implements EditablePiece {
       controls.add(ignoreGridBox);
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       String s = ID;
       switch (selectionOption.getSelectedIndex()) {
@@ -379,6 +400,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       return s;
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }

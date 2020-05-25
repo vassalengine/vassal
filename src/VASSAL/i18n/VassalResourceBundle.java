@@ -45,6 +45,7 @@ public class VassalResourceBundle extends PropertyResourceBundle {
   /**
    * Expose the protected setParent() routine in the superclass as public.
    */
+  @Override
   public void setParent(ResourceBundle parent) {
     super.setParent(parent);
   }

@@ -67,6 +67,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected Image image;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
+  @Override
   public void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
     final Graphics2D g2d = (Graphics2D) g;
     if (accept(p)) {
@@ -91,6 +92,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
   }
 
+  @Override
   public Rectangle boundingBox(GamePiece p) {
     final Rectangle r = p.getShape().getBounds();
     if (accept(p)) {
@@ -113,6 +115,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     return Resources.getString("Editor.SelectionHighlight.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
@@ -126,22 +129,27 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class, PropertyExpression.class, Boolean.class, Color.class, Integer.class, IconConfig.class, Integer.class, Integer.class};
   }
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((SelectionHighlighter) c).imageName);
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{NAME, MATCH, USE_IMAGE, COLOR, THICKNESS, IMAGE, X_OFFSET, Y_OFFSET};
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name) || THICKNESS.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return !useImage;
         }
@@ -149,6 +157,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (IMAGE.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return useImage;
         }
@@ -159,6 +168,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (key.equals(NAME)) {
       setConfigureName((String) value);
@@ -214,6 +224,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (key.equals(NAME)) {
       return getConfigureName();
@@ -242,18 +253,22 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     return null;
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     ((SelectionHighlighters) parent).removeHighlighter(this);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "SelectionHighlighter");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public void addTo(Buildable parent) {
     ((SelectionHighlighters) parent).addHighlighter(this);
   }

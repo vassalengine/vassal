@@ -270,6 +270,7 @@ public class WizardSupport {
       super(Resources.getString("WizardSupport.Welcome"), steps, stepDescriptions); //$NON-NLS-1$
     }
 
+    @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
       JComponent c = null;
       if (NAME_STEP.equals(id)) {
@@ -306,11 +307,13 @@ public class WizardSupport {
           // Select tutorial button by default, but not until wizard is built.  Bug #2286742
           final JRadioButton clickOnMe = tutorialButton;
           SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
               clickOnMe.doClick();
             }
           });
           tutorialButton.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
               if (e.getStateChange() == ItemEvent.DESELECTED) {
                 tutorial.markAsViewed();
@@ -328,6 +331,7 @@ public class WizardSupport {
         final JCheckBox show = new JCheckBox(wizardConf.getName());
         show.setSelected(wizardConf.booleanValue());
         show.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             wizardConf.setValue(show.isSelected());
           }
@@ -340,6 +344,7 @@ public class WizardSupport {
     private JRadioButton createTutorialButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
           try {
@@ -357,6 +362,7 @@ public class WizardSupport {
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
@@ -372,6 +378,7 @@ public class WizardSupport {
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
@@ -385,6 +392,7 @@ public class WizardSupport {
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().getGameState().setup(false);
@@ -417,6 +425,7 @@ public class WizardSupport {
         final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
         final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
         PropertyChangeListener pl = new PropertyChangeListener() {
+          @Override
           @SuppressWarnings("unchecked")
           public void propertyChange(PropertyChangeEvent evt) {
             settings.put(GameModule.REAL_NAME, nameConfig.getValue());
@@ -489,11 +498,13 @@ public class WizardSupport {
       this.description = singleDescription;
     }
 
+    @Override
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
       final JComboBox setupSelection = new JComboBox(setups.toArray());
       ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
       setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
+        @Override
         @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
@@ -517,6 +528,7 @@ public class WizardSupport {
       setupSelection.setRenderer(new DefaultListCellRenderer() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
           JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
           if (value instanceof PredefinedSetup) {
@@ -562,10 +574,12 @@ public class WizardSupport {
       this.wizardKey = key;
     }
 
+    @Override
     protected WizardPanelProvider getPanelProviderForStep(String step, Map settings) {
       return (WizardPanelProvider) settings.get(wizardKey);
     }
 
+    @Override
     protected Wizard getWizardForStep(String step, Map settings) {
       Wizard w = null;
       Object next = settings.get(wizardKey);
@@ -601,6 +615,7 @@ public class WizardSupport {
       this.wizardKey = wizardKey;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void run() {
       try {
@@ -626,6 +641,7 @@ public class WizardSupport {
       }
       // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
       setupCommand = new CommandFilter() {
+        @Override
         protected boolean accept(Command c) {
           return !(c instanceof GameState.SetupCommand) ||
                  !((GameState.SetupCommand) c).isGameStarting();
@@ -643,6 +659,7 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
 
+    @Override
     protected Command loadSavedGame() throws IOException {
       String msg = tutorial.getWelcomeMessage();
       Command c = msg == null ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
@@ -664,6 +681,7 @@ public class WizardSupport {
       super(Resources.getString("WizardSupport.LoadGame"), LOAD_GAME_ACTION, Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
       if (fileConfig == null) {
         fileConfig = new FileConfigurer(null,
@@ -671,6 +689,7 @@ public class WizardSupport {
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
           private Set<File> processing = new HashSet<>();
 
+          @Override
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
             if (f == null || !f.exists()) {
@@ -684,6 +703,7 @@ public class WizardSupport {
               processing.add(f);
               try {
                 new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
+                  @Override
                   public void run() {
                     super.run();
                     processing.remove(f);
@@ -776,17 +796,20 @@ public class WizardSupport {
       return panels;
     }
 
+    @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
       int index = indexOfStep(id);
       controller.setForwardNavigationMode(index == pages.length - 1 ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
       return pages[index];
     }
 
+    @Override
     public boolean cancel(Map settings) {
       GameModule.getGameModule().getGameState().setup(false);
       return true;
     }
 
+    @Override
     public Object finish(Map wizardData) throws WizardException {
       for (GameSetupStep step : setupSteps) {
         step.finish();

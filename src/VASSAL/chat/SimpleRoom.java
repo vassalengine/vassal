@@ -47,6 +47,7 @@ public class SimpleRoom implements Room {
     players.addAll(copy.getPlayerList());
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -62,6 +63,7 @@ public class SimpleRoom implements Room {
     }
   }
 
+  @Override
   public void addPlayer(Player p) {
     int index = players.indexOf(p);
     if (index < 0) {
@@ -81,6 +83,7 @@ public class SimpleRoom implements Room {
     return null;
   }
 
+  @Override
   public void removePlayer(Player p) {
     players.remove(p);
   }
@@ -116,6 +119,7 @@ public class SimpleRoom implements Room {
     return players.iterator();
   }
 
+  @Override
   public List<Player> getPlayerList() {
     return Collections.unmodifiableList(players);
   }

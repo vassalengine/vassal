@@ -106,6 +106,7 @@ public class BugDialog extends JDialog {
     setResizable(true);
 
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosed(WindowEvent e) {
         if (checkRequest != null)
           checkRequest.cancel(true);
@@ -172,6 +173,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString(Resources.CANCEL)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           dispose();
         }
@@ -234,6 +236,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString("BugDialog.send_button")) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           showSendingBugReportPanel();
         }
@@ -244,6 +247,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString("BugDialog.dont_send_button")) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           showEmergencySavePanel();
         }
@@ -292,6 +296,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           showEmergencySavePanel();
         }
@@ -335,6 +340,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           showEmergencySavePanel();
         }
@@ -385,6 +391,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           dispose();
         }
@@ -452,6 +459,7 @@ public class BugDialog extends JDialog {
       // that the user has sufficient time to read the message on
       // the first pane.
       timer = new Timer(2000, new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           latch.countDown();
         }
@@ -505,6 +513,7 @@ public class BugDialog extends JDialog {
       new AbstractAction(Resources.getString(Resources.CANCEL)) {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
           dispose();
         }
@@ -530,6 +539,7 @@ public class BugDialog extends JDialog {
       // that the user has sufficient time to read the message on
       // the first pane.
       timer = new Timer(2000, new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           latch.countDown();
         }
@@ -584,6 +594,7 @@ public class BugDialog extends JDialog {
 
   public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         final BugDialog bd = new BugDialog(null, null);
         bd.setVisible(true);

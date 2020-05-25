@@ -57,14 +57,17 @@ public abstract class BasicPreference extends AbstractConfigurable {
     setAttributeTranslatable(DEFAULT, false);
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {"note", TAB, DESC, NAME, DEFAULT};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {"","Preference Tab Name:  ", "Preference Description:  ", "Global Variable Name:  ", "Default Value:  "};
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       NoteConfig.class,
@@ -77,13 +80,17 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   public static class NoteConfig implements ConfigurerFactory {
 
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new Configurer(null, "note") {
+        @Override
         public String getValueString() {
           return null;
         }
+        @Override
         public void setValue(String s) {
         }
+        @Override
         public Component getControls() {
           return new JLabel("Note:  The Preferences window will only be updated after you save and reload the module.");
         }
@@ -92,6 +99,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       variableName = (String) value;
@@ -108,6 +116,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getVariableName();
@@ -130,6 +139,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public abstract void setDefaultValue(Object value);
   public abstract Configurer getPreferenceConfigurer();
 
+  @Override
   public void addTo(Buildable b) {
     final GameModule g = GameModule.getGameModule();
 
@@ -148,14 +158,17 @@ public abstract class BasicPreference extends AbstractConfigurable {
     property.setPropertyValue(newValue);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     property.removeFromContainer();
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalOptions.htm");
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

@@ -52,12 +52,14 @@ public class P2PClientFactory extends ChatServerFactory {
   public static final String P2P_SERVER_NAME = "serverName"; //$NON-NLS-1$
   public static final String P2P_SERVER_PW = "serverPw"; //$NON-NLS-1$
 
+  @Override
   public ChatServerConnection buildServer(Properties param) {
 
     final HttpMessageServer httpMessageServer = new P2PMessageServer();
 
     final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);
@@ -72,24 +74,29 @@ public class P2PClientFactory extends ChatServerFactory {
 
     public P2PMessageServer() {
       super(new PeerPoolInfo() {
+        @Override
         public String getModuleName() {
           return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
         }
 
+        @Override
         public String getUserName() {
           return GameModule.getUserId();
         }
       });
     }
 
+    @Override
     public Command getWelcomeMessage() {
       return new NullCommand();
     }
 
+    @Override
     public Message[] getMessages() {
       return null;
     }
 
+    @Override
     public void postMessage(String content) {
       return;
     }

@@ -68,6 +68,7 @@ public class FormattedStringConfigurer
     return s;
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       super.getControls();
@@ -92,6 +93,7 @@ public class FormattedStringConfigurer
   /*
    * Drop-down list has been clicked, insert selected option onto string
    */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     String item = "";
 
@@ -130,6 +132,7 @@ public class FormattedStringConfigurer
    * Focus gained on text field, so enable insert drop-down
    * and make sure it says 'Insert'
    */
+  @Override
   public void focusGained(FocusEvent arg0) {
     dropList.setSelectedIndex(0);
     dropList.setEnabled(true);
@@ -139,6 +142,7 @@ public class FormattedStringConfigurer
   /*
    * Focus lost on text field, so disable insert drop-down
    */
+  @Override
   public void focusLost(FocusEvent arg0) {
     dropList.setEnabled(false);
 

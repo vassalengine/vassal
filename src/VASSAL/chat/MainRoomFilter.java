@@ -28,6 +28,7 @@ public class MainRoomFilter extends CommandFilter {
   public MainRoomFilter() {
   }
 
+  @Override
   protected boolean accept(Command c) {
     return c instanceof Chatter.DisplayText
         || c instanceof PrivMsgCommand

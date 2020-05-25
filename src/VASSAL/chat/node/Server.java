@@ -43,6 +43,7 @@ public class Server extends Thread {
     start();
   }
 
+  @Override
   public void run() {
     int consecutiveFailures = 0;
     while (consecutiveFailures < 10) {
@@ -75,10 +76,12 @@ public class Server extends Thread {
     if (p.getProperty("test") != null) { //$NON-NLS-1$
       Socket soc = new Socket("localHost", port); //$NON-NLS-1$
       SocketHandler handler = new BufferedSocketHandler(soc, new SocketWatcher() {
+        @Override
         public void handleMessage(String msg) {
           System.err.println(msg);
         }
 
+        @Override
         public void socketClosed(SocketHandler handler) {
         }
       });
@@ -100,10 +103,12 @@ public class Server extends Thread {
           else if (line.startsWith("HELLO")) { //$NON-NLS-1$
             soc = new Socket("localHost", port); //$NON-NLS-1$
             handler = new BufferedSocketHandler(soc, new SocketWatcher() {
+              @Override
               public void handleMessage(String msg) {
                 System.err.println(msg);
               }
 
+              @Override
               public void socketClosed(SocketHandler handler) {
               }
             });

@@ -51,6 +51,7 @@ public class LayerControl extends AbstractConfigurable {
 
   public LayerControl() {
     launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -113,6 +114,7 @@ public class LayerControl extends AbstractConfigurable {
     return launch;
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.BUTTON_TEXT),
@@ -125,6 +127,7 @@ public class LayerControl extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -138,15 +141,18 @@ public class LayerControl extends AbstractConfigurable {
   }
 
   public static class CommandConfig extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return COMMANDS;
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, COMMAND, SKIP, LAYERS};
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -165,6 +171,7 @@ public class LayerControl extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String)value);
@@ -192,9 +199,11 @@ public class LayerControl extends AbstractConfigurable {
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SKIP.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return command.equals(CMD_ROTATE_UP) || command.equals(CMD_ROTATE_DN);
         }
@@ -202,6 +211,7 @@ public class LayerControl extends AbstractConfigurable {
     }
     else if (LAYERS.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return command.equals(CMD_ENABLE) || command.equals(CMD_DISABLE) || command.equals(CMD_TOGGLE);
         }
@@ -212,6 +222,7 @@ public class LayerControl extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void addTo(Buildable parent) {
     pieceLayers = (LayeredPieceCollection) parent;
     pieceLayers.getToolBar().add(launch);
@@ -222,10 +233,12 @@ public class LayerControl extends AbstractConfigurable {
     return pieceLayers.getMap();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayers.htm");
   }
@@ -234,6 +247,7 @@ public class LayerControl extends AbstractConfigurable {
     return Resources.getString("Editor.LayerControl.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     if (getMap() != null) {
       getMap().getToolBar().remove(launch);

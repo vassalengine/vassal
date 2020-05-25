@@ -43,6 +43,7 @@ public class RangeFilter implements PieceFilter {
     }
   }
 
+  @Override
   public boolean accept(GamePiece piece) {
     boolean accept = false;
     if (piece.getMap() == map) {

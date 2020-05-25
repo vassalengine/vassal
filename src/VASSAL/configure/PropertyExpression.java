@@ -46,6 +46,7 @@ public class PropertyExpression implements PieceFilter {
     return expression.getFilter();
   }
 
+  @Override
   public boolean accept(GamePiece piece) {
     return accept(piece, piece);
   }

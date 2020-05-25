@@ -50,6 +50,7 @@ public class UpdateCheckAction extends AbstractAction {
     this.frame = frame;
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     new Request().execute();
   }

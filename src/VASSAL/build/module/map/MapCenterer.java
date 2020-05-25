@@ -38,6 +38,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
   private Map map;
   private PieceFinder finder;
 
+  @Override
   public void addTo(Buildable b) {
     finder = createPieceFinder();
     map = (Map) b;
@@ -51,6 +52,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
    */
   protected PieceFinder createPieceFinder() {
     return new PieceFinder.PieceInStack() {
+      @Override
       public Object visitDeck(Deck d) {
         Point pos = d.getPosition();
         Point p = new Point(pt.x - pos.x, pt.y - pos.y);
@@ -59,17 +61,21 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public String getAttributeValueString(String attName) {
     return null;
   }
 
+  @Override
   public void setAttribute(String attName, Object value) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (e.getButton() == 3) {
       GamePiece found = map.findPiece(e.getPoint(), finder);
@@ -87,15 +93,19 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
     }
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
   }
 }

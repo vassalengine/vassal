@@ -141,6 +141,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       super(owner, false);
     }
 
+    @Override
     public void actionPerformed(ActionEvent event) {
       if (applyButton != null) {
         applyButton.setEnabled(false);
@@ -165,6 +166,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   /** Changes the "type" definition this decoration, which discards all value data and structures.
    *  Format: definition; name; keystroke
    */
+  @Override
   public void mySetType(String s) {
 
     s = s.substring(ID.length());
@@ -194,32 +196,39 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public java.awt.Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String myGetState() {
     return state;
   }
 
+  @Override
   public void mySetState(String state) {
     this.state = state;
     updateFieldsFromState();
   }
 
   /** returns string defining the field types */
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(TYPE_DELIMITOR);
 
@@ -235,6 +244,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
     return new KeyCommand[]{launch};
@@ -344,6 +354,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     isUpdating = false;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
 
@@ -375,6 +386,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           applyButton = new JButton("Apply");
 
           applyButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
               if (applyButton != null) {
                 applyButton.setEnabled(false);
@@ -389,14 +401,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
         // ... enable APPLY button when field changes
         DocumentListener changeListener = new DocumentListener() {
+          @Override
           public void insertUpdate(DocumentEvent e) {
             update(e);
           }
 
+          @Override
           public void removeUpdate(DocumentEvent e) {
             update(e);
           }
 
+          @Override
           public void changedUpdate(DocumentEvent e) {
             update(e);
           }
@@ -408,6 +423,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
                 // queue commit operation because it could do something
                 // unsafe in a an event update
                 SwingUtilities.invokeLater(new Runnable() {
+                  @Override
                   public void run() {
                     updateStateFromFields();
                   }
@@ -519,6 +535,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
 
           closeButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
               updateStateFromFields();
               frame.setVisible(false);
@@ -554,6 +571,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
         // watch for window closing - save state
         frame.addWindowListener(new WindowAdapter() {
+          @Override
           public void windowClosing(WindowEvent evt) {
             updateStateFromFields();
           }
@@ -578,19 +596,23 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     return value == null ? super.getLocalizedProperty(key) : value;
   }
 
+  @Override
   public Object getProperty(Object key) {
     final Object value = properties.get(key);
     return value == null ? super.getProperty(key) : value;
   }
 
+  @Override
   public String getDescription() {
     return "Property Sheet";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertySheet.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -655,6 +677,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         button.setText("sample");
       }
       button.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent event) {
           JButton button = (JButton) event.getSource();
           Color value = button.getBackground();
@@ -710,6 +733,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
 
       //Prepares the editor by querying the data model for the value and selection state of the cell at row, column.    }
+      @Override
       public Component prepareEditor(TableCellEditor editor, int row, int column) {
         if (row == getRowCount() - 1) {
           ((DefaultTableModel) getModel()).addRow(Ed.DEFAULT_ROW);
@@ -757,6 +781,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       JButton addButton = new JButton("Insert Row");
       buttonPanel.add(addButton);
       addButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
 
           if (table.isEditing()) {
@@ -789,6 +814,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       deleteButton.setEnabled(false);
       buttonPanel.add(deleteButton);
       deleteButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
 
           if (table.isEditing()) {
@@ -807,6 +833,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       // Ask to be notified of selection changes.
       table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent event) {
           //Ignore extra messages.
           if (!event.getValueIsAdjusting()) {
@@ -823,10 +850,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return table;
     }
 
+    @Override
     public void focusGained(FocusEvent event) {
     }
 
     // make sure we save user's changes
+    @Override
     public void focusLost(FocusEvent event) {
       if (event.getComponent() instanceof JTable) {
         JTable table = (JTable) event.getComponent();
@@ -837,6 +866,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     final ArrayList<String> items = new ArrayList<>();
     final SequenceEncoder.Decoder defDecoder =
@@ -862,6 +892,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     for (String prop : properties.keySet()) {
@@ -919,6 +950,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return rows;
     }
 
+    @Override
     public Component getControls() {
       return m_panel;
     }
@@ -926,6 +958,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     /** returns the type-definition in the format:
      definition, name, keystroke, commit, red, green, blue
      */
+    @Override
     public String getType() {
 
       if (propertyTable.isEditing()) {
@@ -972,6 +1005,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     /** returns a default value-string for the given definition */
+    @Override
     public String getState() {
       final StringBuilder buf = new StringBuilder();
       for (int i = 0; i < propertyTable.getRowCount(); ++i) {
@@ -1103,6 +1137,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     // field changed
+    @Override
     public void actionPerformed(ActionEvent event) {
 
       if (event.getSource() == maxField || event.getSource() == valField) {
@@ -1146,14 +1181,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     // FocusListener Interface
+    @Override
     public void focusLost(FocusEvent event) {
       commitTextFields();
       ticks.set(numTicks, maxTicks);
     }
 
+    @Override
     public void focusGained(FocusEvent event) {
     }
 
+    @Override
     public void changedUpdate(DocumentEvent event) {
       // do not propagate events unless min/max is valid.  We don't want to trigger both
       // a state update. A state update might trigger a fix-min/max operation, which would
@@ -1163,10 +1201,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public void insertUpdate(DocumentEvent event) {
       changedUpdate(event);
     }
 
+    @Override
     public void removeUpdate(DocumentEvent event) {
       changedUpdate(event);
     }
@@ -1207,6 +1247,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     protected int numCols;
     protected int dx = 1;
 
+    @Override
     public void paint(Graphics g) {
       //Debug.trace("TickLabcmdel.paint(" + numTicks + "/" + maxTicks + ")");
       //Debug.trace("  width=" + getWidth() + " height=" + getHeight());
@@ -1256,6 +1297,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
 
+    @Override
     public void mouseClicked(MouseEvent event) {
 
       if ((event.getButton() == 3 || event.isShiftDown()) && panelType != TICKS_VALMAX) {
@@ -1301,15 +1343,19 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       repaint();
     }
 
+    @Override
     public void mouseEntered(MouseEvent event) {
     }
 
+    @Override
     public void mouseExited(MouseEvent event) {
     }
 
+    @Override
     public void mousePressed(MouseEvent event) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent event) {
     }
 
@@ -1386,26 +1432,32 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         theTickLabel.fireActionEvent();
       }
 
+      @Override
       public void actionPerformed(ActionEvent event) {
         storeValues();
         editorParent.remove(this);
       }
 
+      @Override
       public void changedUpdate(DocumentEvent event) {
         theTickLabel.fireActionEvent();
       }
 
+      @Override
       public void insertUpdate(DocumentEvent event) {
         theTickLabel.fireActionEvent();
       }
 
+      @Override
       public void removeUpdate(DocumentEvent event) {
         theTickLabel.fireActionEvent();
       }
 
+      @Override
       public void focusGained(FocusEvent event) {
       }
 
+      @Override
       public void focusLost(FocusEvent event) {
         storeValues();
       }

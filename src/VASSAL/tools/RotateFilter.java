@@ -104,6 +104,7 @@ public class RotateFilter extends ImageFilter {
    * rotation of coordinate space.
    * @see ImageConsumer#setDimensions
    */
+  @Override
   public void setDimensions(int width, int height) {
     originalSpace = new Rectangle(0, 0, width, height);
     rotatedSpace = new Rectangle(0, 0, width, height);
@@ -119,6 +120,7 @@ public class RotateFilter extends ImageFilter {
    * beneath us (preceding us)
    * @see ImageConsumer#setColorModel
    */
+  @Override
   public void setColorModel(ColorModel model) {
     consumer.setColorModel(defaultRGBModel);
   }
@@ -129,6 +131,7 @@ public class RotateFilter extends ImageFilter {
    * color model (RGB).
    * @see ImageConsumer#setPixels
    */
+  @Override
   public void setPixels(int x, int y, int w, int h,
                         ColorModel model, byte[] pixels,
                         int off, int scansize) {
@@ -151,6 +154,7 @@ public class RotateFilter extends ImageFilter {
    * color model (RGB).
    * @see ImageConsumer#setPixels
    */
+  @Override
   public void setPixels(int x, int y, int w, int h,
                         ColorModel model, int[] pixels,
                         int off, int scansize) {
@@ -172,6 +176,7 @@ public class RotateFilter extends ImageFilter {
    * be no further setPixel calls.
    * @see ImageConsumer#imageComplete
    */
+  @Override
   public void imageComplete(int status) {
     if (status == IMAGEERROR || status == IMAGEABORTED) {
       consumer.imageComplete(status);
@@ -221,6 +226,7 @@ public class RotateFilter extends ImageFilter {
     javax.swing.JFrame f = new javax.swing.JFrame() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void paint(Graphics g) {
         g.setColor(Color.blue);
         g.fillRect(0, 0, getSize().width, getSize().height);

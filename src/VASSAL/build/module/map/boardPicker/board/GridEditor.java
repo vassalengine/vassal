@@ -105,6 +105,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   protected void initComponents() {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent we) {
          cancel();
       }
@@ -133,6 +134,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     okButton = new JButton(OK);
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancelSetMode();
         setVisible(false);
@@ -146,6 +148,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     JButton canButton = new JButton(CANCEL);
     canButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
@@ -154,6 +157,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     setButton = new JButton(SET);
     setButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         startSetMode();
       }
@@ -163,6 +167,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     canSetButton = new JButton(CANCEL_SET);
     canSetButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         cancelSetMode();
       }
@@ -174,6 +179,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     numberingButton = new JButton(NUMBERING);
     numberingButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
         repaint();
@@ -229,6 +235,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     repaint();
   }
 
+  @Override
   public void keyPressed(KeyEvent e) {
     if (setMode) {
       return;
@@ -323,13 +330,16 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
     rebuild();
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
     if (setMode) {
       if (hp1 == null) {
@@ -347,15 +357,19 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     }
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
   }
 
+  @Override
   public void mousePressed(MouseEvent e) {
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
 
   }
@@ -475,6 +489,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return board;
     }
 
+    @Override
     public void paint(Graphics g) {
       if (board != null) {
         final Graphics2D g2d = (Graphics2D) g;
@@ -514,6 +529,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     }
 
+    @Override
     public boolean isFocusable() {
       return true;
     }

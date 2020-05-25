@@ -41,10 +41,12 @@ public class JavaNameConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  @Override
   public String getValueString() {
     return (String) value;
   }
 
+  @Override
   public void setValue(String s) {
     if (!noUpdate && nameField != null) {
       nameField.setText(s);
@@ -52,6 +54,7 @@ public class JavaNameConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -64,6 +67,7 @@ public class JavaNameConfigurer extends Configurer {
       nameField.setText(getValueString());
       p.add(nameField);
       nameField.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
         public void keyReleased(java.awt.event.KeyEvent evt) {
           noUpdate = true;
           String v = nameField.getText();

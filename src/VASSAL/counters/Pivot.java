@@ -73,14 +73,17 @@ public class Pivot extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public String getDescription() {
     return "Can Pivot";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Pivot.htm");
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -93,6 +96,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     commands = null;
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       pivotCommand = new KeyCommand(command, key, Decorator.getOutermost(this), this);
@@ -108,10 +112,12 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(command)
@@ -123,6 +129,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
@@ -192,29 +199,36 @@ public class Pivot extends Decorator implements TranslatablePiece {
     p.y += (int) Math.round(newPos2D.getY());
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return getInner().boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     getInner().draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return getInner().getName();
   }
 
+  @Override
   public Shape getShape() {
     return getInner().getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Pivot command");
   }
@@ -253,20 +267,24 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
       angle.getControls().setVisible(p.fixedAngle);
       fixedAngle.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
         }
       });
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getState() {
       return "";
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(command.getValueString())

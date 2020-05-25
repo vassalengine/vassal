@@ -44,6 +44,7 @@ public class EventAccumulator<T> implements EventListener<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void receive(Object src, T event) {
     col.add(new Pair<>(src, event));
   }

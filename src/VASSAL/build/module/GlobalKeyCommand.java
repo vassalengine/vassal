@@ -30,6 +30,7 @@ import VASSAL.configure.VisibilityCondition;
  */
 public class GlobalKeyCommand extends MassKeyCommand {
 
+  @Override
   public void apply() {
     final List<Map> l = Map.getMapList();
     GameModule.getGameModule().sendAndLog(
@@ -37,9 +38,11 @@ public class GlobalKeyCommand extends MassKeyCommand {
   }
 
   // Hide 'This Map only' option
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SINGLE_MAP.equals(name)) {
       return  new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return false;
         }

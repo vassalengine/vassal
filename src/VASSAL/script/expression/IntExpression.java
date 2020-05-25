@@ -37,11 +37,13 @@ public class IntExpression extends Expression {
     }
   }
 
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties,
       boolean localized) {
     return getExpression();
   }
 
+  @Override
   public String toBeanShellString() {
     return getExpression();
   }

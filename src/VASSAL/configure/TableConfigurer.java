@@ -67,10 +67,12 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     super(key, name);
   }
 
+  @Override
   public String getValueString() {
     return null;
   }
 
+  @Override
   public void setValue(String s) {
 
   }
@@ -87,6 +89,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     return columns.length;
   }
 
+  @Override
   public Component getControls() {
     if (controls == null) {
       buildControls();
@@ -147,6 +150,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     repack();
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     String action = e.getActionCommand();
 

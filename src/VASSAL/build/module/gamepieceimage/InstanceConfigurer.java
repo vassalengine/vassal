@@ -69,6 +69,7 @@ public class InstanceConfigurer extends Configurer {
     me = this;
   }
 
+  @Override
   public String getValueString() {
     return PropertiesToString(getValueList());
   }
@@ -85,6 +86,7 @@ public class InstanceConfigurer extends Configurer {
     return (ArrayList<ItemInstance>) getValue();
   }
 
+  @Override
   public void setValue(String s) {
     setValue(StringToProperties(s, defn));
     if (symbolPanel != null) {
@@ -92,6 +94,7 @@ public class InstanceConfigurer extends Configurer {
     }
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
 
@@ -197,6 +200,7 @@ public class InstanceConfigurer extends Configurer {
       }
       ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(new ListSelectionListener() {
+        @Override
         public void valueChanged(ListSelectionEvent e) {
           if (e.getValueIsAdjusting()) return;
 
@@ -275,18 +279,22 @@ public class InstanceConfigurer extends Configurer {
 
       private String[] columnNames = new String[] { "Name", "Type", "Position" };
 
+      @Override
       public int getColumnCount() {
         return columnNames.length;
       }
 
+      @Override
       public int getRowCount() {
         return getValueList() == null ? 0 : getValueList().size();
       }
 
+      @Override
       public String getColumnName(int col) {
         return columnNames[col];
       }
 
+      @Override
       public Object getValueAt(int row, int col) {
         if (col == NAME_COL) {
           return getValueList().get(row).getName();
@@ -301,14 +309,17 @@ public class InstanceConfigurer extends Configurer {
           return null;
       }
 
+      @Override
       public Class<String> getColumnClass(int col) {
            return String.class;
       }
 
+      @Override
       public boolean isCellEditable(int row, int col) {
         return false;
       }
 
+      @Override
       public void setValueAt(Object value, int row, int col) {
 
 //        fireTableCellUpdated(row, col);

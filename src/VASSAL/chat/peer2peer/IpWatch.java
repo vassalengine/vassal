@@ -42,6 +42,7 @@ public class IpWatch implements Runnable {
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public void run() {
     while (true) {
       String newIp = findIp();
@@ -81,6 +82,7 @@ public class IpWatch implements Runnable {
   public static void main(String[] args) {
     IpWatch w = new IpWatch();
     w.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         System.out.println("Address = " + evt.getNewValue()); //$NON-NLS-1$
       }

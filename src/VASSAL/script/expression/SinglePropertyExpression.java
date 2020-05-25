@@ -38,6 +38,7 @@ public class SinglePropertyExpression extends Expression {
     }
   }
 
+  @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized)
       throws ExpressionException {
     String value = null;
@@ -60,6 +61,7 @@ public class SinglePropertyExpression extends Expression {
     return value == null ? "" : value;
   }
 
+  @Override
   public String toBeanShellString() {
     return BeanShellExpression.convertProperty(getExpression());
   }

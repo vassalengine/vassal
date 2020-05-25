@@ -42,12 +42,14 @@ public interface AutoConfigurable extends Configurable {
    * String value read by the XML attribute.
    * Can also be called with Object value to set the attribute.
    */
+  @Override
   public void setAttribute(String key, Object value);
 
   /**
    * Called by the {@link #getBuildElement} method to write the
    * attributes into an XML element
    */
+  @Override
   public String getAttributeValueString(String key);
 
   /**

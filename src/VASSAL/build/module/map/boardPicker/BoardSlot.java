@@ -71,6 +71,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     reverseCheckBox =
       new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
     reverseCheckBox.addItemListener(new ItemListener() {
+      @Override
       public void itemStateChanged(ItemEvent e) {
         if (getBoard() != null) {
           getBoard().setReversed(reverseCheckBox.isSelected());
@@ -99,6 +100,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     actionPerformed(null);
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     if (prompt.equals(boards.getSelectedItem())) {
       setBoard(null);
@@ -176,6 +178,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   }
 
 // FIXME: This is confusing. The Icon should be an internal object.
+  @Override
   public int getIconHeight() {
     if (board != null) {
       return (int)(picker.getSlotScale() * board.bounds().height);
@@ -188,6 +191,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
   }
 
+  @Override
   public int getIconWidth() {
     if (board != null) {
       return (int)(picker.getSlotScale() * board.bounds().width);
@@ -200,6 +204,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
   }
 
+  @Override
   public void paintIcon(Component c, Graphics g, int x, int y) {
     final Graphics2D g2d = (Graphics2D) g;
 

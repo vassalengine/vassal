@@ -59,6 +59,7 @@ class TileProgressPump implements InputStreamPump {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setInputStream(InputStream in) {
     if (running) throw new UnsupportedOperationException();
 
@@ -66,6 +67,7 @@ class TileProgressPump implements InputStreamPump {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void run() {
     running = true;
 

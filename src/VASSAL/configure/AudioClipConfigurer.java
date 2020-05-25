@@ -43,6 +43,7 @@ public class AudioClipConfigurer extends FileConfigurer {
     this.archive = archive;
   }
 
+  @Override
   protected FileChooser initFileChooser() {
     if (resourceDirPref == null) {
       resourceDirPref = new DirectoryConfigurer("audioDir", null);
@@ -53,10 +54,12 @@ public class AudioClipConfigurer extends FileConfigurer {
     return fc;
   }
 
+  @Override
   protected void addToArchive(java.io.File f) {
     archive.addSound(f.getPath(), f.getName());
   }
 
+  @Override
   public Component getControls() {
     final Component c = super.getControls();
     if (button == null) {

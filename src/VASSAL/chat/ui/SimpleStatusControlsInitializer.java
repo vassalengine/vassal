@@ -50,12 +50,14 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
     this(client, true);
   }
 
+  @Override
   public void initializeControls(final ChatServerControls controls) {
     URL imageURL;
 
     if (includeLooking) {
       lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
       lookingBox.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
           if (client != null) {
             final Player p = client.getUserInfo();
@@ -76,6 +78,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
 
     awayButton = new JButton(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
     awayButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
           final Player p = client.getUserInfo();
@@ -102,6 +105,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
     controls.getToolbar().add(awayButton);
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     if (includeLooking) {
       controls.getToolbar().remove(lookingBox);

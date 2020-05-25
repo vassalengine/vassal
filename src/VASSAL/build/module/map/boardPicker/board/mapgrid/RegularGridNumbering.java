@@ -97,6 +97,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public static final String ROW = "row";
   public static final String COLUMN = "column";
 
+  @Override
   public String getAttributeValueString(String key) {
     if (FIRST.equals(key)) {
       return String.valueOf(first);
@@ -154,6 +155,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (FIRST.equals(key)) {
       first = ((String) value).charAt(0);
@@ -244,6 +246,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
   }
 
+  @Override
   public boolean isVisible() {
     return visible;
   }
@@ -252,20 +255,24 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   public abstract int getColumn(Point p);
 
+  @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(l);
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{FIRST, SEP, H_TYPE, H_LEADING, H_OFF, H_DESCEND,
                         V_TYPE, V_LEADING, V_OFF, V_DESCEND, LOCATION_FORMAT, VISIBLE, FONT_SIZE, COLOR,
                         ROTATE_TEXT, H_DRAW_OFF, V_DRAW_OFF};
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{"Order:  ",
                         "Separator:  ",
@@ -287,29 +294,34 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   }
 
   public static class F extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{"Horizontal first", "Vertical first"};
     }
   }
 
   public static class T extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{"Numerical", "Alphabetic"};
     }
   }
 
   public static class LocationFormatConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION,ROW,COLUMN});
     }
   }
 
   public static class R extends StringEnum {
+    @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{"0", "90", "180", "270"};
     }
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       F.class,
@@ -337,10 +349,12 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
    */
   protected abstract JComponent getGridVisualizer();
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT_SIZE.equals(name)
         || COLOR.equals(name)) {
       VisibilityCondition cond = new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return visible;
         }
@@ -349,6 +363,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (H_LEADING.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return hType == 'N';
         }
@@ -356,6 +371,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (V_LEADING.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return vType == 'N';
         }
@@ -366,11 +382,13 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
   }
 
+  @Override
   public Configurer getConfigurer() {
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     String[] s = getAttributeNames();
     for (String value : s) {
       c.getConfigurer(value).addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           visualizer.repaint();
         }
@@ -384,6 +402,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     return "Grid Numbering";
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GridNumbering.htm");
   }
@@ -412,6 +431,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       return "-?[0-9]{" + (leading+1) + ",}";
   }
 
+  @Override
   public Point getLocation(String location) throws BadCoords {
 
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
@@ -476,6 +496,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   public abstract Point getCenterPoint(int col, int row);
 
+  @Override
   public String locationName(Point pt) {
     int row = getRow(pt);
     int col = getColumn(pt);
@@ -486,6 +507,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     return format.getLocalizedText();
   }
 
+  @Override
   public String localizedLocationName(Point pt) {
     return locationName(pt);
   }

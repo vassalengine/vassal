@@ -60,6 +60,7 @@ public class Marker extends Decorator implements EditablePiece {
     return keys;
   }
 
+  @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
@@ -72,22 +73,27 @@ public class Marker extends Decorator implements EditablePiece {
     Arrays.fill(values, "");
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public Object getProperty(Object key) {
     for (int i = 0; i < keys.length; ++i) {
       if (keys[i].equals(key)) {
@@ -97,6 +103,7 @@ public class Marker extends Decorator implements EditablePiece {
     return super.getProperty(key);
   }
 
+  @Override
   public Object getLocalizedProperty(Object key) {
     for (int i = 0; i < keys.length; ++i) {
       if (keys[i].equals(key)) {
@@ -106,6 +113,7 @@ public class Marker extends Decorator implements EditablePiece {
     return super.getLocalizedProperty(key);
   }
 
+  @Override
   public void setProperty(Object key, Object value) {
     for (int i = 0; i < keys.length; ++i) {
       if (keys[i].equals(key)) {
@@ -116,6 +124,7 @@ public class Marker extends Decorator implements EditablePiece {
     super.setProperty(key, value);
   }
 
+  @Override
   public String myGetState() {
     SequenceEncoder se = new SequenceEncoder(',');
     for (String value : values) {
@@ -124,6 +133,7 @@ public class Marker extends Decorator implements EditablePiece {
     return se.getValue();
   }
 
+  @Override
   public void mySetState(String state) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ',');
     int i = 0;
@@ -132,6 +142,7 @@ public class Marker extends Decorator implements EditablePiece {
     }
   }
 
+  @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(',');
     for (String key : keys) {
@@ -140,14 +151,17 @@ public class Marker extends Decorator implements EditablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
 
+  @Override
   public String getDescription() {
     if (keys != null
         && keys.length > 0 && keys[0].length() > 0
@@ -158,10 +172,12 @@ public class Marker extends Decorator implements EditablePiece {
       return "Marker";
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertyMarker.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -169,6 +185,7 @@ public class Marker extends Decorator implements EditablePiece {
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
     for (String key : keys) {
@@ -201,14 +218,17 @@ public class Marker extends Decorator implements EditablePiece {
       panel.add(propValue.getControls());
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getState() {
       return propValue.getValueString();
     }
 
+    @Override
     public String getType() {
       return Marker.ID + propName.getValueString();
     }

@@ -49,6 +49,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     this.setAttributeTranslatable(PROPERTY_NAME, false);
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
         Resources.getString("Editor.GamePieceLayers.property_layer"), //$NON-NLS-1$
@@ -56,6 +57,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -63,6 +65,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       PROPERTY_NAME,
@@ -70,6 +73,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (PROPERTY_NAME.equals(key)) {
       return collection.propertyName;
@@ -82,6 +86,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     if (PROPERTY_NAME.equals(key)) {
       collection.propertyName = (String) value;
@@ -95,6 +100,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     }
   }
 
+  @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
     validator = new SingleChildInstance(map,getClass());
@@ -114,10 +120,12 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     return tempToolBar.getToolBar();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { LayerControl.class };
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePieceLayers.htm");
   }
@@ -126,6 +134,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     return Resources.getString("Editor.GamePieceLayers.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public void removeFrom(Buildable parent) {
     map.setPieceCollection(new DefaultPieceCollection());
     for (LayerControl lc : this.getComponentsOf(LayerControl.class)) {
@@ -170,10 +179,12 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       this.propertyName = propertyName;
     }
 
+    @Override
     public int getLayerForPiece(GamePiece p) {
       return (Integer) dispatcher.accept(p);
     }
 
+    @Override
     public int getLayerForName(String layer) {
       for (int i=0; i < layerOrder.length; i++) {
         if (layer.equals(layerOrder[i])) {
@@ -183,20 +194,24 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       return -1;
     }
 
+    @Override
     public String getLayerNameForPiece(GamePiece p) {
       int layer = getLayerForPiece(p);
       return layer >= layerOrder.length ? "" : layerOrder[layer];
     }
 
+    @Override
     protected boolean canPiecesMerge(GamePiece p1, GamePiece p2) {
       return super.canPiecesMerge(p1, p2)
           && getLayerForPiece(p1) == getLayerForPiece(p2);
     }
 
+    @Override
     public Object visitDeck(Deck d) {
       return layerOrder.length;
     }
 
+    @Override
     public Object visitDefault(GamePiece p) {
       String property = (String) p.getProperty(propertyName);
       int layer = layerOrder.length;
@@ -210,6 +225,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       return layer;
     }
 
+    @Override
     public Object visitStack(Stack s) {
       GamePiece top = s.topPiece();
       if (top == null) {

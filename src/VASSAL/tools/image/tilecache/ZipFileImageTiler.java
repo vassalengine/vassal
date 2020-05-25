@@ -71,6 +71,7 @@ public class ZipFileImageTiler {
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
                                         new Thread.UncaughtExceptionHandler() {
+        @Override
         public void uncaughtException(Thread thread, Throwable thrown) {
           logger.error(thread.getName(), thrown);
         }
@@ -112,6 +113,7 @@ public class ZipFileImageTiler {
       );
 
       final TemporaryFileFactory tfac = new TemporaryFileFactory() {
+        @Override
         public File create() throws IOException {
           return File.createTempFile("img", null, new File(tpath));
         }
@@ -143,6 +145,7 @@ public class ZipFileImageTiler {
         final DataOutputStream out = dout;
 
         final Callback<String> imageL = new Callback<>() {
+          @Override
           public void receive(String ipath) throws IOException {
             out.writeByte(STARTING_IMAGE);
             out.writeUTF(ipath);
@@ -151,6 +154,7 @@ public class ZipFileImageTiler {
         };
 
         final Callback<Void> tileL = new Callback<>() {
+          @Override
           public void receive(Void obj) throws IOException {
             out.writeByte(TILE_WRITTEN);
             out.flush();
@@ -158,6 +162,7 @@ public class ZipFileImageTiler {
         };
 
         final Callback<Void> doneL = new Callback<>() {
+          @Override
           public void receive(Void obj) throws IOException {
             out.writeByte(TILING_FINISHED);
             out.flush();

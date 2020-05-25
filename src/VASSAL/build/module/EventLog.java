@@ -39,6 +39,7 @@ public class EventLog extends AbstractBuildable
   private List<Event> myEvents;
   private List<Event> savedEvents;
 
+  @Override
   public void addTo(Buildable b) {
     GameModule mod = GameModule.getGameModule();
     mod.addCommandEncoder(this);
@@ -67,6 +68,7 @@ public class EventLog extends AbstractBuildable
               .setValue(encodedEvents(myEvents));
   }
 
+  @Override
   public Command decode(String s) {
     if (s.startsWith(EVENT_LIST)) {
       return new StoreEvents(this, s.substring(EVENT_LIST.length()));
@@ -76,6 +78,7 @@ public class EventLog extends AbstractBuildable
     }
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof StoreEvents) {
       return EVENT_LIST + ((StoreEvents) c).getEvents();
@@ -85,12 +88,14 @@ public class EventLog extends AbstractBuildable
     }
   }
 
+  @Override
   public void setup(boolean starting) {
     if (!starting) {
       clearSaved();
     }
   }
 
+  @Override
   public Command getRestoreCommand() {
     return new StoreEvents(this, encodedEvents(savedEvents));
   }
@@ -103,15 +108,18 @@ public class EventLog extends AbstractBuildable
    */
   public static Iterable<Event> decodedEvents(final String s) {
     return new Iterable<>() {
+      @Override
       public Iterator<Event> iterator() {
         return new Iterator<>() {
           private final SequenceEncoder.Decoder se =
             new SequenceEncoder.Decoder(s, '|');
 
+          @Override
           public boolean hasNext() {
             return se.hasMoreTokens();
           }
 
+          @Override
           public Event next() {
             final SequenceEncoder.Decoder sub =
               new SequenceEncoder.Decoder(se.nextToken(), ',');
@@ -119,6 +127,7 @@ public class EventLog extends AbstractBuildable
                              sub.nextToken(), sub.nextToken());
           }
 
+          @Override
           public void remove() {
             throw new UnsupportedOperationException();
           }
@@ -211,23 +220,28 @@ public class EventLog extends AbstractBuildable
       return events;
     }
 
+    @Override
     public void executeCommand() {
       log.clearSaved();
       for (Event e : decodedEvents(events)) log.store(e);
     }
 
+    @Override
     public Command myUndoCommand() {
       return null;
     }
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     return null;
   }

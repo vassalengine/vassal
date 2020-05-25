@@ -123,6 +123,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
     final ActionListener rollAction = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         DR();
       }
@@ -240,6 +241,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * window or button <code>RESULT_MAP</code> :TODO: if true show result in special area in map <code>MAP_NAME</code>
    * :TODO: name of map <code>RESULT_BUTTON</code> if true show result graphical in button
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[]{
       NAME,
@@ -258,6 +260,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
@@ -276,6 +279,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       String.class,
@@ -295,21 +299,25 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
     }
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     // get size only when output in window or on button
     if (WINDOW_X.equals(name) || WINDOW_Y.equals(name) || BACKGROUND_COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return reportResultInWindow || reportResultInButton;
         }
@@ -317,6 +325,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
     else if (CHAT_RESULT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return reportResultAsText;
         }
@@ -324,6 +333,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return reportResultInWindow;
         }
@@ -345,9 +355,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * Expects to be added to a SymbolDice. Adds the button to the control window's toolbar and registers itself as a
    * {@link KeyStrokeListener}
    */
+  @Override
   public void addTo(Buildable parent) {
     resultsIcon.setResults(new int[dice.size()]);
     launch.addHierarchyListener(new HierarchyListener() {
+      @Override
       public void hierarchyChanged(HierarchyEvent e) {
         if (launch.isShowing()) {
           dialog.setLocationRelativeTo(launch);
@@ -363,6 +375,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     property.addTo((MutablePropertiesContainer)parent);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     final GameModule mod = GameModule.getGameModule();
     mod.removeCommandEncoder(this);
@@ -370,10 +383,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     mod.getToolBar().revalidate();
   }
 
+  @Override
   public void setId(String id) {
     this.id = id;
   }
 
+  @Override
   public String getId() {
     return id;
   }
@@ -407,6 +422,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return false;
   }
 
+  @Override
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -460,6 +476,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -496,10 +513,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {SpecialDie.class};
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SpecialDiceButton.htm"); //$NON-NLS-1$
   }
@@ -548,12 +567,14 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   /**
    * Implement PropertyNameSource - Expose roll result property
    */
+  @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName()+"_result");
     return l;
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof ShowResults) {
       final ShowResults c2 = (ShowResults) c;
@@ -568,6 +589,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
   }
 
+  @Override
   public Command decode(String s) {
     SequenceEncoder.Decoder st = null;
     if (s.startsWith(SHOW_RESULTS_COMMAND + getConfigureName()) || s.startsWith(SHOW_RESULTS_COMMAND + getId())) {
@@ -607,11 +629,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       rolls = ArrayUtils.copyOf(results);
     }
 
+    @Override
     protected void executeCommand() {
       target.setFormat(rolls);
       target.reportResults(rolls);
     }
 
+    @Override
     protected Command myUndoCommand() {
       return null;
     }
@@ -650,6 +674,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       }
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
       if (bgColor != null) {
         g.setColor(bgColor);
@@ -664,10 +689,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       }
     }
 
+    @Override
     public int getIconWidth() {
       return width;
     }
 
+    @Override
     public int getIconHeight() {
       return height;
     }

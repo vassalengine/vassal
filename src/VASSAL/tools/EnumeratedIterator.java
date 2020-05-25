@@ -46,11 +46,13 @@ public class EnumeratedIterator<T> implements Enumeration<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasMoreElements() {
     return i.hasNext();
   }
 
   /** {@inheritDoc} */
+  @Override
   public T nextElement() {
     return i.next();
   }

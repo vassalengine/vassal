@@ -85,6 +85,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     versionBox.add(versionField);
     JButton importButton = new JButton("Import GamePiece info");
     importButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         importPieceInfo();
       }
@@ -93,6 +94,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     add(versionBox);
     JButton exportButton = new JButton("Export GamePiece info");
     exportButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         exportPieceInfo();
       }
@@ -107,6 +109,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     left.add(new JLabel("Saved Games:"));
     JButton chooseGamesButton = new JButton("Choose");
     chooseGamesButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         chooseSavedGames();
       }
@@ -119,6 +122,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     savedGamesList.setCellRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Component getListCellRendererComponent(
           JList list,
           Object value,
@@ -136,6 +140,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     Box buttonsBox = Box.createHorizontalBox();
     updateButton = new JButton("Update games");
     updateButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         updateGames();
       }
@@ -158,6 +163,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     buttonsBox.add(helpButton);
     JButton closeButton = new JButton("Close");
     closeButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
       }
@@ -171,6 +177,7 @@ public class SavedGameUpdaterDialog extends JDialog {
   private void updateGames() {
     updateButton.setEnabled(false);
     Runnable runnable = new Runnable() {
+      @Override
       public void run() {
         for (int i=0,n=savedGamesModel.size();i<n;++i) {
           try {
@@ -181,6 +188,7 @@ public class SavedGameUpdaterDialog extends JDialog {
           // FIXME: review error message
           catch (final IOException e) {
             Runnable showError = new Runnable() {
+              @Override
               public void run() {
                 showErrorMessage(e,"Update failed","Unable to save file");
               }

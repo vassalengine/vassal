@@ -68,13 +68,16 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     setInner(piece);
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(format.getFormat())
@@ -84,6 +87,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(menuText, stroke, Decorator.getOutermost(this), this);
@@ -97,6 +101,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     return commands;
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
@@ -118,26 +123,32 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     return c;
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public String getDescription() {
     return format.getFormat().length() == 0 ? "Play Sound" : "Play Sound - " + format.getFormat();
   }
 
+  @Override
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -148,14 +159,17 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     commands = null;
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PlaySound.htm");
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(menuText, "Play Sound command");
   }
@@ -182,16 +196,19 @@ public class PlaySound extends Decorator implements TranslatablePiece {
       panel.add(sendConfig.getControls());
     }
 
+    @Override
     public Component getControls() {
       return panel;
     }
 
+    @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(soundConfig.getValueString()).append(menuConfig.getValueString()).append(keyConfig.getValueString()).append(sendConfig.getValueString());
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }

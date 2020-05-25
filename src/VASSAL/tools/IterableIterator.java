@@ -42,21 +42,25 @@ public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Iterator<T> iterator() {
     return i;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasNext() {
     return i.hasNext();
   }
 
   /** {@inheritDoc} */
+  @Override
   public T next() {
     return i.next();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void remove() {
     i.remove();
   }

@@ -39,6 +39,7 @@ public class PluginsLoader extends ExtensionsLoader {
 
   private ExtensionsManager extMgr = new ExtensionsManager("plugins");
 
+  @Override
   public void addTo(GameModule mod) {
     mod.addCommandEncoder(this);
     for (File ext : extMgr.getActiveExtensions()) {
@@ -52,6 +53,7 @@ public class PluginsLoader extends ExtensionsLoader {
     return new ModulePlugin(new DataArchive(extname));
   }
 
+  @Override
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
@@ -64,6 +66,7 @@ public class PluginsLoader extends ExtensionsLoader {
     return c;
   }
 
+  @Override
   public String encode(Command c) {
     String s = null;
     if (c instanceof ModulePlugin.RegCmd) {
@@ -82,10 +85,12 @@ public class PluginsLoader extends ExtensionsLoader {
     return new ExtensionsManager("plugins").getExtensionsDirectory(false).getPath();  //$NON-NLS-1$
   }
 
+  @Override
   protected String getLoadedMessage(String name, String version) {
     return Resources.getString("PluginsLoader.plugin_loaded", name, version); //$NON-NLS-1$
   }
 
+  @Override
   protected String getErrorMessage(String name, String msg) {
     return Resources.getString("PluginsLoader.unable_to_load", name , msg);  //$NON-NLS-1$
   }

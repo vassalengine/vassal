@@ -93,6 +93,7 @@ public final class IconFactory {
     // Find all available Icon Familys within Vassal.
     // May take a little while, so run it on a background thread
     preloadThread = new Thread(new Runnable(){
+      @Override
       public void run() {
         synchronized (preloadLock) {
           try {

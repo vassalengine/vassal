@@ -120,12 +120,14 @@ public class Resources {
         Resources.LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
+      @Override
       public Component getControls() {
         if (box == null) {
           final Component c = super.getControls();
           box.setRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
               l.setText(new Locale((String) value).getDisplayLanguage());
@@ -341,6 +343,7 @@ protected static final String BASE_BUNDLE = "VASSAL.properties";
    * @author Brent Easton
    */
   public class VassalPropertyClassLoader extends ClassLoader {
+    @Override
     public URL getResource(String name) {
       URL url = getAResource(name);
 

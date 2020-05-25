@@ -48,6 +48,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     this.client = client;
   }
 
+  @Override
   public void initializeControls(final ChatServerControls controls) {
     JToolBar toolbar = controls.getToolbar();
 
@@ -55,6 +56,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
                           Resources.getString("Chat.connect")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(true);
       }
@@ -72,6 +74,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
                         Resources.getString("Chat.disconnect")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(false);
       }
@@ -89,8 +92,10 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     disconnectButton = toolbar.add(disconnectAction);
 
     connectionListener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(final PropertyChangeEvent evt) {
         SwingUtilities.invokeLater(new Runnable() {
+          @Override
           public void run() {
             boolean connected = Boolean.TRUE.equals(evt.getNewValue());
             connectAction.setEnabled(!connected);
@@ -108,6 +113,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       ServerConnection.CONNECTED, connectionListener);
   }
 
+  @Override
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(connectButton);
     controls.getToolbar().remove(disconnectButton);

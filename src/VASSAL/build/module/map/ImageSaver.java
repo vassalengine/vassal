@@ -89,6 +89,7 @@ public class ImageSaver extends AbstractConfigurable {
 
   public ImageSaver() {
     final ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         writeMapAsImage();
       }
@@ -112,11 +113,13 @@ public class ImageSaver extends AbstractConfigurable {
    * Expects to be added to a {@link Map}. Adds a button to the map window
    * toolbar that initiates the capture
    */
+  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
     map.getToolBar().add(launch);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.getToolBar().remove(launch);
@@ -128,6 +131,7 @@ public class ImageSaver extends AbstractConfigurable {
   protected static final String TOOLTIP = "tooltip";
   protected static final String ICON_NAME = "icon";
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       BUTTON_TEXT,
@@ -137,6 +141,7 @@ public class ImageSaver extends AbstractConfigurable {
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
         Resources.getString(Resources.BUTTON_TEXT),
@@ -146,6 +151,7 @@ public class ImageSaver extends AbstractConfigurable {
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
@@ -156,15 +162,18 @@ public class ImageSaver extends AbstractConfigurable {
   }
 
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
   }
 
+  @Override
   public void setAttribute(String key, Object value) {
     launch.setAttribute(key, value);
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     return launch.getAttributeValueString(key);
   }
@@ -245,6 +254,7 @@ public class ImageSaver extends AbstractConfigurable {
     final SnapshotTask task = new SnapshotTask(file, x, y, w, h);
 
     task.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         if ("progress".equals(e.getPropertyName())) {
           dialog.setProgress((Integer) e.getNewValue());
@@ -261,6 +271,7 @@ public class ImageSaver extends AbstractConfigurable {
     });
 
     dialog.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         task.cancel(true);
       }
@@ -319,6 +330,7 @@ public class ImageSaver extends AbstractConfigurable {
 
       // update the dialog on the EDT
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           dialog.setLabel("Saving map image as " + f.getName() + ":");
           dialog.setIndeterminate(true);
@@ -339,6 +351,7 @@ public class ImageSaver extends AbstractConfigurable {
 
       // update the dialog on the EDT
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           dialog.setIndeterminate(false);
         }
@@ -346,22 +359,29 @@ public class ImageSaver extends AbstractConfigurable {
 
       final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
       iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {
+        @Override
         public void imageComplete(ImageWriter source) { }
 
+        @Override
         public void imageProgress(ImageWriter source, float percentageDone) {
           setProgress(Math.round((100*tilesDone + percentageDone)/tiles));
         }
 
+        @Override
         public void imageStarted(ImageWriter source, int imageIndex) { }
 
+        @Override
         public void thumbnailComplete(ImageWriter source) { }
 
+        @Override
         public void thumbnailProgress(ImageWriter source,
                                       float percentageDone) { }
 
+        @Override
         public void thumbnailStarted(ImageWriter source,
                                      int imageIndex, int thumbnailIndex) { }
 
+        @Override
         public void writeAborted(ImageWriter source) { }
       });
 
@@ -544,6 +564,7 @@ public class ImageSaver extends AbstractConfigurable {
     }
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "ImageCapture");
   }
@@ -552,6 +573,7 @@ public class ImageSaver extends AbstractConfigurable {
     return Resources.getString("Editor.ImageSaver.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }

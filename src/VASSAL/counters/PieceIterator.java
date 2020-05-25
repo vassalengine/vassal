@@ -45,6 +45,7 @@ public class PieceIterator {
     pi = new Iterator<>() {
       private GamePiece next;
 
+      @Override
       public boolean hasNext() {
         if (next != null) return true;
 
@@ -57,6 +58,7 @@ public class PieceIterator {
         return false;
       }
 
+      @Override
       public GamePiece next() {
         if (next != null) {
           final GamePiece ret = next;
@@ -73,6 +75,7 @@ public class PieceIterator {
         }
       }
 
+      @Override
       public void remove() {
         throw new UnsupportedOperationException();
       }
@@ -94,6 +97,7 @@ public class PieceIterator {
 
   public static <T extends GamePiece> PieceIterator visible(Iterator<T> i) {
     return new PieceIterator(i, new PieceFilter() {
+      @Override
       public boolean accept(GamePiece piece) {
         return !Boolean.TRUE.equals(
           piece.getProperty(Properties.INVISIBLE_TO_ME));

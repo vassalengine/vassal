@@ -58,12 +58,14 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     setWordWrap(wrap);
   }
 
+  @Override
   public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
     this.key = key;
     this.name = name;
     return this;
   }
 
+  @Override
   public String getValueString() {
     return escapeNewlines((String) getValue());
   }
@@ -101,11 +103,13 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     return se.getValue() == null ? "" : se.getValue();
   }
 
+  @Override
   public void setValue(String s) {
     String text = restoreNewlines(s);
     setValue((Object) text);
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (!noUpdate && textArea != null) {
@@ -123,6 +127,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     return StringUtils.join(new SequenceEncoder.Decoder(s, '|'), '\n');
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -133,6 +138,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
         textArea.setWrapStyleWord(true);
       }
       textArea.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
         public void keyReleased(java.awt.event.KeyEvent evt) {
           queueForUpdate(textArea.getText());
         }
@@ -160,6 +166,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     else if (!updateQueued) {
       updateQueued = true;
       Runnable delayedUpdate = new Runnable() {
+        @Override
         public void run() {
           try {
             Thread.sleep(updateFrequencey);
@@ -168,6 +175,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
           }
 
           SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
               executeUpdate();
             }

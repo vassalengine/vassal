@@ -81,6 +81,7 @@ public class ColorButton extends JButton {
       swatchHeight = height;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
       final Graphics2D g2d = (Graphics2D) g;
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
@@ -113,10 +114,12 @@ public class ColorButton extends JButton {
       g2d.setTransform(orig_t);
     }
 
+    @Override
     public int getIconWidth() {
       return swatchWidth;
     }
 
+    @Override
     public int getIconHeight() {
       return swatchHeight;
     }

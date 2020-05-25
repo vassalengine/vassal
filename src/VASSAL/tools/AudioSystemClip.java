@@ -108,6 +108,7 @@ public class AudioSystemClip implements AudioClip {
     the_clip = getClip(in);
   }
 
+  @Override
   public void play() {
     the_clip.setFramePosition(0);
     the_clip.start();

@@ -110,10 +110,12 @@ public class ChatServerControls extends AbstractBuildable {
     split.setLeftComponent(roomPanel);
     currentRoom = new RoomTree();
     currentRoom.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
+      @Override
       public void treeWillCollapse(javax.swing.event.TreeExpansionEvent evt) throws javax.swing.tree.ExpandVetoException {
         throw new javax.swing.tree.ExpandVetoException(evt);
       }
 
+      @Override
       public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt) throws javax.swing.tree.ExpandVetoException {
       }
     });
@@ -131,6 +133,7 @@ public class ChatServerControls extends AbstractBuildable {
 
     configServerButton = new JButton();
     configServerButton.addActionListener(new ActionListener(){
+      @Override
       public void actionPerformed(ActionEvent e) {
         ServerAddressBook.editCurrentServer(!client.isConnected());
       }});
@@ -141,10 +144,12 @@ public class ChatServerControls extends AbstractBuildable {
         }
       }
 
+      @Override
       public void mousePressed(MouseEvent e) {
         maybePopup(e);
       }
 
+      @Override
       public void mouseReleased(MouseEvent e) {
         maybePopup(e);
       }
@@ -175,12 +180,14 @@ public class ChatServerControls extends AbstractBuildable {
     return null;
   }
 
+  @Override
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
     setClient((ChatServerConnection) gm.getServer());
     launch = new JButton(Resources.getString("Chat.server"));  //$NON-NLS-1$
     launch.setAlignmentY(0.0F);
     ActionListener al = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         toggleVisible();
       }
@@ -198,6 +205,7 @@ public class ChatServerControls extends AbstractBuildable {
     iconConfig.setValue("/images/connect.gif");  //$NON-NLS-1$
     GlobalOptions.getInstance().addOption(iconConfig);
     iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         launch.setIcon(iconConfig.getIconValue());
       }
@@ -207,6 +215,7 @@ public class ChatServerControls extends AbstractBuildable {
     final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getNamedKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(keyConfig);
     keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent evt) {
         l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
         launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
@@ -224,6 +233,7 @@ public class ChatServerControls extends AbstractBuildable {
         splitter = ComponentSplitter.splitRight(GameModule.getGameModule().getControlPanel(), controlPanel, false);
         splitter.revalidate();
         final Runnable runnable = new Runnable() {
+          @Override
           public void run() {
             splitter.showComponent();
           }
@@ -269,8 +279,10 @@ public class ChatServerControls extends AbstractBuildable {
       oldClient = (ChatControlsInitializer) c;
     }
     PropertyChangeListener roomUpdater = new PropertyChangeListener() {
+      @Override
       public void propertyChange(final PropertyChangeEvent evt) {
         final Runnable runnable = new Runnable() {
+          @Override
           public void run() {
             roomTree.setRooms((VASSAL.chat.Room[]) evt.getNewValue());
           }
@@ -280,8 +292,10 @@ public class ChatServerControls extends AbstractBuildable {
     };
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, roomUpdater);
     PropertyChangeListener currentRoomUpdater = new PropertyChangeListener() {
+      @Override
       public void propertyChange(final PropertyChangeEvent evt) {
         final Runnable runnable = new Runnable() {
+          @Override
           public void run() {
               if (evt.getNewValue() == null) {
                 currentRoom.setRooms(new VASSAL.chat.Room[0]);
@@ -299,6 +313,7 @@ public class ChatServerControls extends AbstractBuildable {
     };
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
     client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener(){
+      @Override
       public void propertyChange(PropertyChangeEvent e) {
         updateConfigServerToolTipText();
       }});
@@ -308,13 +323,16 @@ public class ChatServerControls extends AbstractBuildable {
     return client;
   }
 
+  @Override
   public String[] getAttributeNames() {
     return new String[0];
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
   }
 
+  @Override
   public String getAttributeValueString(String name) {
     return null;
   }

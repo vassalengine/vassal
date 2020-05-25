@@ -57,11 +57,13 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Set<Property<?>> getProperties() {
     return Collections.<Property<?>>singleton(prop);
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> void setValue(Property<T> prop, T value) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
@@ -82,6 +84,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> T getValue(Property<T> prop) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
@@ -95,11 +98,13 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
     new CopyOnWriteArrayList<>();
 
   /** {@inheritDoc} */
+  @Override
   public void addPropertyListener(PropertyListener<Object> l) {
     listeners.add(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> void addPropertyListener(Property<T> prop,
                                       PropertyListener<? super T> l) {
@@ -108,11 +113,13 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void removePropertyListener(PropertyListener<Object> l) {
     listeners.remove(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> void removePropertyListener(Property<T> prop,
                                          PropertyListener<? super T> l) {
@@ -121,6 +128,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?
       Collections.<PropertyListener<Object>>emptyList() :
@@ -128,6 +136,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings("unchecked")
   public <T> List<PropertyListener<? super T>>
                                        getPropertyListeners(Property<T> prop) {
@@ -138,11 +147,13 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasListeners() {
     return !listeners.isEmpty();
   }
 
   /** {@inheritDoc} */
+  @Override
   public <T> boolean hasListeners(Property<T> prop) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
     return !plisteners.isEmpty();

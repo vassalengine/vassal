@@ -27,5 +27,6 @@ package VASSAL.tools.concurrent.listener;
  */
 public class DummyEventListener<T> implements EventListener<T> {
   /** {@inheritDoc} */
+  @Override
   public void receive(Object src, T event) {}
 }

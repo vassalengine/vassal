@@ -65,14 +65,17 @@ public class FontConfigurer extends Configurer {
     setValue(f.font);
     setName(f.getConfigureName());
   }
+  @Override
   public String getValueString() {
     return encode((OutlineFont) value);
   }
 
+  @Override
   public void setValue(String s) {
     setValue(decode(s));
   }
 
+  @Override
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
@@ -113,6 +116,7 @@ public class FontConfigurer extends Configurer {
       updateValue();
 
       ItemListener l = new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent evt) {
           updateValue();
         }
@@ -120,6 +124,7 @@ public class FontConfigurer extends Configurer {
       family.addItemListener(l);
 
       PropertyChangeListener pc = new PropertyChangeListener() {
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
           updateValue();
         }

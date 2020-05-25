@@ -35,6 +35,7 @@ public class PrivateChatEncoder implements CommandEncoder {
     this.pChatMgr = pChatMgr;
   }
 
+  @Override
   public String encode(Command c) {
     if (c instanceof PrivMsgCommand) {
       PrivMsgCommand cmd = (PrivMsgCommand) c;
@@ -48,6 +49,7 @@ public class PrivateChatEncoder implements CommandEncoder {
     }
   }
 
+  @Override
   public Command decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '/');

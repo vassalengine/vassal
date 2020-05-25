@@ -59,6 +59,7 @@ public class PrivateChatManager {
 
       final JFrame f = new JFrame();
       f.addWindowListener(new WindowAdapter() {
+        @Override
         public void windowClosing(WindowEvent e) {
           promptToBan(sender);
         }

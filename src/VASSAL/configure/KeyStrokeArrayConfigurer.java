@@ -53,6 +53,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  @Override
   public Component getControls() {
     if (panel == null) {
       panel = new JPanel(new BorderLayout());
@@ -65,6 +66,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
       JButton button = new JButton("Add");
       b.add(button);
       button.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           addKey(null);
         }
@@ -99,14 +101,17 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     }
   }
 
+  @Override
   public String getValueString() {
     return encode(getKeyStrokes());
   }
 
+  @Override
   public void setValue(String s) {
     setValue(decode(s));
   }
 
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     if (controls != null) {

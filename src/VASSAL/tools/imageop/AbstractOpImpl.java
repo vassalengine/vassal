@@ -70,9 +70,11 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract BufferedImage eval() throws Exception;
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage getImage() {
     try {
       return getImage(null);
@@ -89,6 +91,7 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage getImage(ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException
   {
@@ -96,6 +99,7 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   public Future<BufferedImage> getFutureImage(ImageOpObserver obs)
                                                     throws ExecutionException {
     return getFuture(obs);
@@ -121,39 +125,48 @@ public abstract class AbstractOpImpl
   protected abstract void fixSize();
 
   /** {@inheritDoc} */
+  @Override
   public Dimension getSize() {
     if (size == null) fixSize();
     return new Dimension(size);
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getWidth() {
     if (size == null) fixSize();
     return size.width;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getHeight() {
     if (size == null) fixSize();
     return size.height;
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract Dimension getTileSize();
 
   /** {@inheritDoc} */
+  @Override
   public abstract int getTileHeight();
 
   /** {@inheritDoc} */
+  @Override
   public abstract int getTileWidth();
 
   /** {@inheritDoc} */
+  @Override
   public abstract int getNumXTiles();
 
   /** {@inheritDoc} */
+  @Override
   public abstract int getNumYTiles();
 
   /** {@inheritDoc} */
+  @Override
   public BufferedImage getTile(Point p, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException
   {
@@ -161,11 +174,13 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract BufferedImage getTile(int tileX, int tileY,
                                         ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /** {@inheritDoc} */
+  @Override
   public Future<BufferedImage> getFutureTile(Point p, ImageOpObserver obs)
     throws ExecutionException
   {
@@ -173,17 +188,21 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract Future<BufferedImage> getFutureTile(
     int tileX, int tileY, ImageOpObserver obs) throws ExecutionException;
 
   /** {@inheritDoc} */
+  @Override
   public ImageOp getTileOp(Point p) {
     return getTileOp(p.x, p.y);
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract ImageOp getTileOp(int tileX, int tileY);
 
   /** {@inheritDoc} */
+  @Override
   public abstract Point[] getTileIndices(Rectangle rect);
 }

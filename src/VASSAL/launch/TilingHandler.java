@@ -239,8 +239,10 @@ public class TilingHandler {
 
       // setup the cancel button in the progress dialog
       EDT.execute(new Runnable() {
+        @Override
         public void run() {
           pd.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
               pd.setVisible(false);
               proc.future.cancel(true);
@@ -259,6 +261,7 @@ public class TilingHandler {
           final String ipath = in.readUTF();
 
           EDT.execute(new Runnable() {
+            @Override
             public void run() {
               pd.setLabel("Tiling " + ipath);
               if (!pd.isVisible()) pd.setVisible(true);

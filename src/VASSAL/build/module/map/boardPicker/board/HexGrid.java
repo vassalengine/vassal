@@ -100,6 +100,7 @@ public class HexGrid extends AbstractConfigurable
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
 
+  @Override
   public String[] getAttributeNames() {
     return new String[] {
       SIDEWAYS,
@@ -116,6 +117,7 @@ public class HexGrid extends AbstractConfigurable
     };
   }
 
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.HexGrid.sideways"), //$NON-NLS-1$
@@ -132,6 +134,7 @@ public class HexGrid extends AbstractConfigurable
     };
   }
 
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
       Boolean.class,
@@ -148,9 +151,11 @@ public class HexGrid extends AbstractConfigurable
     };
   }
 
+  @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return visible;
         }
@@ -158,6 +163,7 @@ public class HexGrid extends AbstractConfigurable
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
       return new VisibilityCondition() {
+        @Override
         public boolean shouldBeVisible() {
           return snapTo;
         }
@@ -168,6 +174,7 @@ public class HexGrid extends AbstractConfigurable
     }
   }
 
+  @Override
   public Configurer getConfigurer() {
 
     boolean buttonExists = config != null;
@@ -175,6 +182,7 @@ public class HexGrid extends AbstractConfigurable
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     final Configurer dxConfig = c.getConfigurer(DX);
     c.getConfigurer(DY).addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      @Override
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         if (evt.getNewValue() != null) {
           double hgt = (Double) evt.getNewValue();
@@ -186,6 +194,7 @@ public class HexGrid extends AbstractConfigurable
     if (!buttonExists) {
       JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           editGrid();
         }
@@ -213,6 +222,7 @@ public class HexGrid extends AbstractConfigurable
     this(64.0, false);
   }
 
+  @Override
   public boolean isVisible() {
     return visible == true || (numbering != null && numbering.isVisible());
   }
@@ -225,6 +235,7 @@ public class HexGrid extends AbstractConfigurable
     return cornersLegal;
   }
 
+  @Override
   public void setVisible(boolean legal) {
     visible = legal;
   }
@@ -233,10 +244,12 @@ public class HexGrid extends AbstractConfigurable
     edgesLegal = legal;
   }
 
+  @Override
   public boolean isSideways() {
     return sideways;
   }
 
+  @Override
   public void setSideways(boolean b) {
     sideways = b;
   }
@@ -263,31 +276,38 @@ public class HexGrid extends AbstractConfigurable
     dx = w;
   }
 
+  @Override
   public double getDx() {
     return getHexWidth();
   }
 
+  @Override
   public void setDx(double d) {
     setHexWidth(d);
   }
 
+  @Override
   public double getDy() {
     return getHexSize();
   }
 
+  @Override
   public void setDy(double d) {
     dy = d; // DO NOT call setHexSize() so that dx is not reset
   }
 
+  @Override
   public GridContainer getContainer() {
     return container;
   }
 
+  @Override
   public void addTo(Buildable b) {
     container = (GridContainer) b;
     container.setGrid(this);
   }
 
+  @Override
   public void removeFrom(Buildable b) {
     ((GridContainer) b).removeGrid(this);
   }
@@ -296,18 +316,22 @@ public class HexGrid extends AbstractConfigurable
     return Resources.getString("Editor.HexGrid.component_type"); //$NON-NLS-1$
   }
 
+  @Override
   public String getGridName() {
     return getConfigureTypeName();
   }
 
+  @Override
   public String getConfigureName() {
     return null;
   }
 
+  @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HexGrid.htm"); //$NON-NLS-1$
   }
 
+  @Override
   public String getAttributeValueString(String key) {
     if (X0.equals(key)) {
       return String.valueOf(origin.x);
@@ -345,6 +369,7 @@ public class HexGrid extends AbstractConfigurable
     return null;
   }
 
+  @Override
   public void setAttribute(String key, Object val) {
     if (X0.equals(key)) {
       if (val instanceof String) {
@@ -424,18 +449,22 @@ public class HexGrid extends AbstractConfigurable
     shapeCache.clear();
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{HexGridNumbering.class};
   }
 
+  @Override
   public String locationName(Point p) {
     return numbering == null ? null : numbering.locationName(p);
   }
 
+  @Override
   public String localizedLocationName(Point p) {
     return numbering == null ? null : numbering.localizedLocationName(p);
   }
 
+  @Override
   public Point getLocation(String location) throws BadCoords {
     if (numbering == null)
       throw new BadCoords();
@@ -443,6 +472,7 @@ public class HexGrid extends AbstractConfigurable
       return numbering.getLocation(location);
   }
 
+  @Override
   public Point snapTo(Point p) {
     if (! snapTo) {
       return p;
@@ -487,6 +517,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
+  @Override
   public boolean isLocationRestricted(Point p) {
     return snapTo;
   }
@@ -557,6 +588,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
+  @Override
   public Area getGridShape(Point center, int range) {
     Area shape = shapeCache.get(range);
     if (shape == null) {
@@ -665,6 +697,7 @@ public class HexGrid extends AbstractConfigurable
     return new Area(poly);
   }
 
+  @Override
   public int range(Point p1, Point p2) {
     p1 = new Point(p1);
     rotateIfSideways(p1);
@@ -748,6 +781,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   /** Draw the grid, if visible, and the accompanying numbering */
+  @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double zoom, boolean reversed) {
     if (visible) {
       forceDraw(g, bounds, visibleRect, zoom, reversed);
@@ -876,15 +910,18 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
+  @Override
   public GridNumbering getGridNumbering() {
     return numbering;
   }
 
 
+  @Override
   public Point getOrigin() {
     return new Point(origin);
   }
 
+  @Override
   public void setOrigin(Point p) {
     origin.x = p.x;
     origin.y = p.y;
@@ -916,6 +953,7 @@ public class HexGrid extends AbstractConfigurable
      * Calculate approximate grid metrics based on the three adjacent points
      * picked out by the user.
      */
+    @Override
     public void calculate() {
 
       /*

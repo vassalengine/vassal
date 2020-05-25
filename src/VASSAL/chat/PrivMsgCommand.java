@@ -40,6 +40,7 @@ public class PrivMsgCommand extends Command {
     p = sender;
   }
 
+  @Override
   public void executeCommand() {
     PrivateChatter chat = mgr.getChatterFor(p);
     if (chat == null) {
@@ -67,6 +68,7 @@ public class PrivMsgCommand extends Command {
     chat.show(msg);
   }
 
+  @Override
   public Command myUndoCommand() {
     return null;
   }
@@ -74,6 +76,7 @@ public class PrivMsgCommand extends Command {
   /**
    * Return true, as this command should not be logged
    */
+  @Override
   public boolean isLoggable() {
     return false;
   }

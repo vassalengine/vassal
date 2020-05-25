@@ -54,6 +54,7 @@ public class ColoredBorder implements Highlighter {
     highlighters.remove(h);
   }
 
+  @Override
   public void draw(GamePiece p, Graphics g, int x, int y,
                    Component obs, double zoom) {
     if (thickness > 0) {
@@ -100,6 +101,7 @@ public class ColoredBorder implements Highlighter {
                  (int) (zoom * r.height) + 2 * i - 1);
   }
 
+  @Override
   public Rectangle boundingBox(GamePiece p) {
     final Rectangle r = p.getShape().getBounds();
     r.translate(-thickness, -thickness);
