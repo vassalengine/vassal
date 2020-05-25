@@ -112,9 +112,6 @@ public class UsernameAndPasswordDialog extends JDialog {
     final GroupLayout layout = new GroupLayout(panel);
     panel.setLayout(layout);
 
-/*
-    // FIXME: This is the layout code for Java 1.6
-
     layout.setAutoCreateGaps(true);
     layout.setAutoCreateContainerGaps(true);
 
@@ -148,41 +145,6 @@ public class UsernameAndPasswordDialog extends JDialog {
             .addComponent(cancel)));
 
     layout.linkSize(ok, cancel);
-*/
-
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(error)
-          .addGap(0, 0, Integer.MAX_VALUE))
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(ok)
-          .addComponent(cancel)));
-
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addComponent(error)
-        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .addGroup(
-          layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
-            .addComponent(ok)
-            .addComponent(cancel)));
-
-    layout.linkSize(new Component[]{ok, cancel});
 
     add(panel);
 
