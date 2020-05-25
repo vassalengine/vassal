@@ -90,7 +90,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected Translatable keyTarget;
   protected JTree tree;
   protected Translation currentTranslation = null;
-  protected JComboBox langBox;
+  protected JComboBox<String> langBox;
   protected ActionListener boxListener;
   protected int lastSelectedLangIndex;
   protected String currentKey = ""; //$NON-NLS-1$
@@ -129,7 +129,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected Component getHeaderPanel() {
     JPanel langPanel = new JPanel();
     langPanel.add(new JLabel("Language:  "));
-    langBox = new JComboBox(Localization.getInstance().getTranslationList());
+    langBox = new JComboBox<>(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
     boxListener = new ActionListener() {
       @Override

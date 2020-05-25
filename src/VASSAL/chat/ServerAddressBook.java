@@ -519,7 +519,7 @@ public class ServerAddressBook {
     decodeAddressBook(addressConfig.getValueString());
 
     // Remove any PeerClientEntry's, these are obsolete
-    final DefaultListModel newAddressBook = new DefaultListModel();
+    final DefaultListModel<AddressBookEntry> newAddressBook = new DefaultListModel<>();
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof LegacyEntry) {
@@ -530,7 +530,6 @@ public class ServerAddressBook {
       }
     }
     addressBook = newAddressBook;
-
 
     // Ensure that the Address Book has the basic
     // servers in it.
