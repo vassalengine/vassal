@@ -25,10 +25,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
- * Date: Aug 27, 2003
- */
+
 public class BufferedSocketHandler extends SocketHandler {
   protected BufferedReader reader;
   protected BufferedWriter writer;
