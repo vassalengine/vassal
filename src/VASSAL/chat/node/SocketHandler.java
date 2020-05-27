@@ -80,11 +80,13 @@ public class SocketHandler {
             }
           }
         }
-        // FIXME: review error message
         catch (IOException ignore) {
+          // FIXME: review error message
+/*
           String msg = ignore.getClass().getName();
           msg = msg.substring(msg.lastIndexOf('.') + 1);
-//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") reading socket.");
+          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") reading socket.");
+*/
         }
         closeSocket();
       }
@@ -108,11 +110,13 @@ public class SocketHandler {
             }
           }
         }
-        // FIXME: review error message
         catch (IOException ignore) {
+          // FIXME: review error message
+/*
           String msg = ignore.getClass().getName();
           msg = msg.substring(msg.lastIndexOf('.') + 1);
-//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") writing to socket.");
+          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") writing to socket.");
+*/
         }
         closeSocket();
       }
