@@ -25,7 +25,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-
 public class BufferedSocketHandler extends SocketHandler {
   protected BufferedReader reader;
   protected BufferedWriter writer;

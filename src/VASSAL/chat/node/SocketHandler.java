@@ -23,10 +23,6 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
- * Date: Aug 27, 2003
- */
 public abstract class SocketHandler {
   protected Socket sock;
   protected SocketWatcher handler;
