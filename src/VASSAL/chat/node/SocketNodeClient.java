@@ -40,7 +40,6 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
 
   public SocketNodeClient(String moduleName, String playerId, CommandEncoder encoder, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this(moduleName, playerId, encoder, new NodeServerInfo() {
-
       @Override
       public String getHostName() {
         return host;
@@ -52,7 +51,6 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
       }
 
     }, msgSvr, welcomer);
-
   }
 
   @Override

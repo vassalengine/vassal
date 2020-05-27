@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Watches for thread lock on a server.  Kills the runtime if unable to establish new connection
- * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
- * Date: Jul 20, 2003
+ * Watches for thread lock on a server.
+ * Kills the runtime if unable to establish new connection
  */
 public class LockWatcher extends Thread {
   private long delay;
@@ -86,6 +85,7 @@ public class LockWatcher extends Thread {
       e.printStackTrace();
     }
   }
+
   private class Timeout implements Runnable {
     @Override
     public void run() {

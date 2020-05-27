@@ -116,7 +116,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public void build() {
-    final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
+    final String fileName = GameModule.BUILDFILE;
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
 
@@ -413,7 +413,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
       final String save = buildString();
       w.addFile(GameModule.BUILDFILE,
-                new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8))); //$NON-NLS-1$
+                new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
 
       if (saveAs) w.saveAs(true);
       else w.save(true);

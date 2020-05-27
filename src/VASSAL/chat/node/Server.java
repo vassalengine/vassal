@@ -14,10 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
- * Date: Jun 4, 2003
- */
 package VASSAL.chat.node;
 
 import java.io.BufferedReader;

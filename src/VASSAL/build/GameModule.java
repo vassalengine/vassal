@@ -1020,7 +1020,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     try {
       final String save = buildString();
       writer.addFile(BUILDFILE,
-        new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));  //$NON-NLS-1$
+        new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
 
       if (saveAs) writer.saveAs(true);
       else writer.save(true);
