@@ -31,7 +31,6 @@
 !define VNAME "VASSAL (${VERSION})"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
-!define JAVA_MINIMUM "1.6.0_45"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
