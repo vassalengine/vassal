@@ -63,7 +63,6 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
     Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
     sender = new SocketHandler(s, this);
     sender.start();
-
   }
 
   @Override

@@ -186,6 +186,7 @@ public class ServerNode extends Node {
     final Node defaultRoomNode = roomNode.getParent().getChildren()[0];
     move(kickeeNode, defaultRoomNode.getPath());
   }
+
   private static class SendContentsTask extends TimerTask {
     // FIXME: should modules be wrapped by Collections.synchronizedMap()?
     private Set<Node> modules = new HashSet<>();

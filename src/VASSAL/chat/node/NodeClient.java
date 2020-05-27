@@ -639,13 +639,14 @@ public abstract class NodeClient implements LockableChatServerConnection,
     roomControls.uninitializeControls(controls);
     serverStatusControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);
-    GameModule.getGameModule().removeCommandEncoder(synchEncoder);
-    GameModule.getGameModule().removeCommandEncoder(privateChatEncoder);
-    GameModule.getGameModule().removeCommandEncoder(soundEncoder);
-    GameModule.getGameModule().removeCommandEncoder(inviteEncoder);
-    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME)
-        .removePropertyChangeListener(nameChangeListener);
-    GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO)
-        .removePropertyChangeListener(profileChangeListener);
+    final GameModule g = GameModule.getGameModule();
+    g.removeCommandEncoder(synchEncoder);
+    g.removeCommandEncoder(privateChatEncoder);
+    g.removeCommandEncoder(soundEncoder);
+    g.removeCommandEncoder(inviteEncoder);
+    g.getPrefs().getOption(GameModule.REAL_NAME)
+                .removePropertyChangeListener(nameChangeListener);
+    g.getPrefs().getOption(GameModule.PERSONAL_INFO)
+                .removePropertyChangeListener(profileChangeListener);
   }
 }
