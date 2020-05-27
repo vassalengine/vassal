@@ -68,7 +68,7 @@ public class LockWatcher extends Thread {
           System.err.println("Server closed socket"); //$NON-NLS-1$
         }
       };
-      SocketHandler sender = new BufferedSocketHandler(s, watcher);
+      SocketHandler sender = new SocketHandler(s, watcher);
       sender.start();
       t.start();
       sender.writeLine(Protocol.encodeRegisterCommand("pinger", "ping/Main", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

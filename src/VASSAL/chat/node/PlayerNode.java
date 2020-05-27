@@ -38,8 +38,8 @@ public class PlayerNode extends Node implements SocketWatcher {
 
   public PlayerNode(Socket socket, AsynchronousServerNode server) throws IOException {
     super(null,null,null);
-    this.server = server;
-    this.input = new BufferedSocketHandler(socket,this);
+    server = server;
+    input = new SocketHandler(socket, this);
     input.start();
   }
 
@@ -61,7 +61,7 @@ public class PlayerNode extends Node implements SocketWatcher {
   // Always update IP on client info in case client 'forgets' their IP
   @Override
   public String getInfo() {
-    String ip = input.sock.getInetAddress().getHostAddress();
+    final String ip = input.getInetAddress().getHostAddress();
     return info + (ip.length() > 0 ? "|ip=" + ip : "");
   }
 

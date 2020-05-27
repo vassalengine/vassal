@@ -71,7 +71,7 @@ public class Server extends Thread {
     }
     if (p.getProperty("test") != null) { //$NON-NLS-1$
       Socket soc = new Socket("localHost", port); //$NON-NLS-1$
-      SocketHandler handler = new BufferedSocketHandler(soc, new SocketWatcher() {
+      SocketHandler handler = new SocketHandler(soc, new SocketWatcher() {
         @Override
         public void handleMessage(String msg) {
           System.err.println(msg);
@@ -98,7 +98,7 @@ public class Server extends Thread {
           }
           else if (line.startsWith("HELLO")) { //$NON-NLS-1$
             soc = new Socket("localHost", port); //$NON-NLS-1$
-            handler = new BufferedSocketHandler(soc, new SocketWatcher() {
+            handler = new SocketHandler(soc, new SocketWatcher() {
               @Override
               public void handleMessage(String msg) {
                 System.err.println(msg);

@@ -61,7 +61,7 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
   @Override
   protected void initializeConnection() throws UnknownHostException, IOException {
     Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
-    sender = new BufferedSocketHandler(s, this);
+    sender = new SocketHandler(s, this);
     sender.start();
 
   }

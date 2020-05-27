@@ -18,23 +18,34 @@
  */
 package VASSAL.chat.node;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public abstract class SocketHandler {
-  protected Socket sock;
-  protected SocketWatcher handler;
+public class SocketHandler {
+  private Socket sock;
+  private SocketWatcher handler;
+  private BufferedReader reader;
+  private BufferedWriter writer;
   private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<>();
   private boolean isOpen = true;
   private Thread readThread;
   private Thread writeThread;
+
   private static final String SIGN_OFF = "!BYE"; //$NON-NLS-1$
 
   public SocketHandler(Socket sock, SocketWatcher handler) throws IOException {
     this.sock = sock;
     this.handler = handler;
+    reader = new BufferedReader(new InputStreamReader(sock.getInputStream(), StandardCharsets.UTF_8));
+    writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(), StandardCharsets.UTF_8));
   }
 
   public void start() {
@@ -110,11 +121,19 @@ public abstract class SocketHandler {
     return t;
   }
 
-  protected abstract void closeStreams() throws IOException;
+  private void closeStreams() throws IOException {
+    writer.close();
+    reader.close();
+  }
 
-  protected abstract String readNext() throws IOException;
+  private String readNext() throws IOException {
+    return reader.readLine();
+  }
 
-  protected abstract void writeNext(String line) throws IOException;
+  private void writeNext(String line) throws IOException {
+    writer.write(line + '\n');
+    writer.flush();
+  }
 
   public void writeLine(String pMessage) {
     try {
@@ -159,5 +178,9 @@ public abstract class SocketHandler {
     }
 
     return null;
+  }
+
+  public InetAddress getInetAddress() {
+    return sock.getInetAddress();
   }
 }
