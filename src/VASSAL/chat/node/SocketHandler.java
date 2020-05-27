@@ -58,7 +58,7 @@ public class SocketHandler {
   }
 
   private Thread startReadThread() {
-    Runnable runnable = new Runnable() {
+    final Runnable r = new Runnable() {
       @Override
       public void run() {
         String line;
@@ -89,13 +89,14 @@ public class SocketHandler {
         closeSocket();
       }
     };
-    Thread t = new Thread(runnable, "read " + sock.getInetAddress());
+
+    final Thread t = new Thread(r, "read " + sock.getInetAddress());
     t.start();
     return t;
   }
 
   private Thread startWriteThread() {
-    Runnable runnable = new Runnable() {
+    final Runnable r = new Runnable() {
       @Override
       public void run() {
         String line;
@@ -116,14 +117,10 @@ public class SocketHandler {
         closeSocket();
       }
     };
-    Thread t = new Thread(runnable, "write " + sock.getInetAddress());
+
+    final Thread t = new Thread(r, "write " + sock.getInetAddress());
     t.start();
     return t;
-  }
-
-  private void closeStreams() throws IOException {
-    writer.close();
-    reader.close();
   }
 
   private String readNext() throws IOException {
@@ -144,8 +141,23 @@ public class SocketHandler {
     }
   }
 
+  private String getLine() {
+    try {
+      return writeQueue.take();
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public void close() {
     writeLine(SIGN_OFF);
+  }
+
+  private void closeStreams() throws IOException {
+    writer.close();
+    reader.close();
   }
 
   private synchronized void closeSocket() {
@@ -167,17 +179,6 @@ public class SocketHandler {
       isOpen = false;
       handler.socketClosed(this);
     }
-  }
-
-  private String getLine() {
-    try {
-      return writeQueue.take();
-    }
-    catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    return null;
   }
 
   public InetAddress getInetAddress() {
