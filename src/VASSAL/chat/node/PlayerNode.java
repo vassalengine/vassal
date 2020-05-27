@@ -120,9 +120,7 @@ public class PlayerNode extends Node implements SocketWatcher {
       server.kick(this, info[0]);
     }
     else if ((p = Protocol.decodeRoomsInfo(line)) != null) {
-// FIXME: Use Properties.stringPropertyNames() in 1.6+.
-      for (Object o : p.keySet()) {
-        String roomName = (String) o;
+      for (String roomName : p.stringPropertyNames()) {
         Node target = server.getModule(this).getDescendant(roomName);
         if (target != null) {
           target.setInfo(p.getProperty(roomName));
