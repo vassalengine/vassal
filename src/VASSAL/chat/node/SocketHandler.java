@@ -28,6 +28,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class SocketHandler {
   private Socket sock;
@@ -36,8 +37,8 @@ public class SocketHandler {
   private BufferedWriter writer;
   private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<>();
   private boolean isOpen = true;
-  private Thread readThread;
-  private Thread writeThread;
+  private Thread readThread = null;
+  private Thread writeThread = null;
 
   private static final String SIGN_OFF = "!BYE"; //$NON-NLS-1$
 
@@ -63,7 +64,7 @@ public class SocketHandler {
       public void run() {
         String line;
         try {
-          while ((line = readNext()) != null) {
+          while ((line = reader.readLine()) != null) {
             if (SIGN_OFF.equals(line)) {
               break;
             }
@@ -71,8 +72,8 @@ public class SocketHandler {
               try {
                 handler.handleMessage(line);
               }
-              // FIXME: review error message
               catch (Exception e) {
+                // FIXME: review error message
                 // Handler threw an exception.  Keep reading.
                 System.err.println("Caught " + e.getClass().getName() + " handling " + line); //$NON-NLS-1$ //$NON-NLS-2$
                 e.printStackTrace();
@@ -104,9 +105,26 @@ public class SocketHandler {
         String line;
         try {
           while (true) {
-            if ((line = getLine()) != null) {
+            try {
+              line = writeQueue.poll(2, TimeUnit.MINUTES);
+            }
+            catch (InterruptedException e) {
+              // FIXME: should we really ignore this?!
+              e.printStackTrace();
+              continue;
+            }
+
+            if (line != null) {
+              // send the message we took off the queue
               writeNext(line);
-              if (SIGN_OFF.equals(line)) break;
+              if (SIGN_OFF.equals(line)) {
+                break;
+              }
+            }
+            else {
+              // send a keep-alive, since we timed out
+              writeLine("");
+              System.err.println("Sent keep-alive");
             }
           }
         }
@@ -127,10 +145,6 @@ public class SocketHandler {
     return t;
   }
 
-  private String readNext() throws IOException {
-    return reader.readLine();
-  }
-
   private void writeNext(String line) throws IOException {
     writer.write(line + '\n');
     writer.flush();
@@ -141,17 +155,10 @@ public class SocketHandler {
       writeQueue.put(pMessage);
     }
     catch (InterruptedException e) {
+      // The queue can have Integer.MAX_VALUE elements, so if put() ever
+      // blocks and gets interrupted, everything is hosed anyway so it
+      // doesn't matter what we do here.
       e.printStackTrace();
-    }
-  }
-
-  private String getLine() {
-    try {
-      return writeQueue.take();
-    }
-    catch (InterruptedException e) {
-      e.printStackTrace();
-      return null;
     }
   }
 
@@ -159,6 +166,8 @@ public class SocketHandler {
     writeLine(SIGN_OFF);
   }
 
+  // FIXME: stream closing is probalby totally broken
+  // FIXME: nothing stops the threads
   private void closeStreams() throws IOException {
     writer.close();
     reader.close();
@@ -169,14 +178,14 @@ public class SocketHandler {
       try {
         closeStreams();
       }
-      // FIXME: review error message
       catch (IOException ignore) {
+        // FIXME: review error message
       }
       try {
         sock.close();
       }
-      // FIXME: review error message
       catch (IOException ignore) {
+        // FIXME: review error message
       }
 
       close();
