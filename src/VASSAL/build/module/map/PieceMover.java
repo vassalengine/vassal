@@ -773,7 +773,6 @@ public class PieceMover extends AbstractBuildable
   }
 
   protected void performDrop(Point p) {
-System.out.println("PieceMover.performDrop(): Dropped at"+p);    
     final Command move = movePieces(map, p);
     GameModule.getGameModule().sendAndLog(move);
     if (move != null) {
