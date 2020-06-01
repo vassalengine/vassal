@@ -441,25 +441,26 @@ public class PieceMover extends AbstractBuildable
 
   /** Invoked just before a piece is moved */
   protected Command movedPiece(GamePiece p, Point loc) {
-    setOldLocation(p);
-    Command c = null;
+    Command c = new NullCommand();
+    c = c.append(setOldLocation(p));
     if (!loc.equals(p.getPosition())) {
-      c = markMoved(p, true);
+      c = c.append(markMoved(p, true));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
-      c = c == null ? removedCommand : c.append(removedCommand);
+      c.append(removedCommand);
     }
     return c;
   }
 
-  protected void setOldLocation(GamePiece p) {
+  protected Command setOldLocation(GamePiece p) {
     if (p instanceof Stack) {
       for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {
-        Decorator.setOldProperties(((Stack) p).getPieceAt(i));
+        return Decorator.setOldProperties(((Stack) p).getPieceAt(i));
       }
+      return null; // A stack of 0 pieces - no old properties
     }
-    else Decorator.setOldProperties(p);
+    else return Decorator.setOldProperties(p);
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
@@ -772,6 +773,7 @@ public class PieceMover extends AbstractBuildable
   }
 
   protected void performDrop(Point p) {
+System.out.println("PieceMover.performDrop(): Dropped at"+p);    
     final Command move = movePieces(map, p);
     GameModule.getGameModule().sendAndLog(move);
     if (move != null) {

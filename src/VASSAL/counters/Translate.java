@@ -166,7 +166,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command c = null;
     if (moveCommand.matches(stroke)) {
-      setOldProperties();
+      c = setOldProperties();
       if (mover == null) {
         mover = new MoveExecuter();
         mover.setKeyEvent(stroke);
@@ -174,10 +174,12 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
       GamePiece target = findTarget(stroke);
       if (target != null) {
-        c = moveTarget(target);
+        c = c.append(moveTarget(target));
       }
       mover.addKeyEventTarget(piece);
       // Return a non-null command to indicate that a change actually happened
+      // FIXME - THIS IS WRONG.... it wipes out the previous commands.
+      //     Probably should be if (c== null) {
       c = new NullCommand() {
         @Override
         public boolean isNull() {

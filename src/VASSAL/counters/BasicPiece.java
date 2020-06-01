@@ -50,10 +50,12 @@ import VASSAL.command.AddPiece;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
+import VASSAL.command.SetPersistentPropertyCommand;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -61,7 +63,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 /**
  * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource {
+public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer {
   public static final String ID = "piece;";
   private static Highlighter highlighter;
   /**
@@ -98,6 +100,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   private Point pos = new Point(0, 0);
   private String id;
   private java.util.Map<Object, Object> props;
+  private java.util.Map<Object, Object> persistentProps;
   /** @deprecated Moved into own traits, retained for backward compatibility */
   @Deprecated
   private char cloneKey;
@@ -221,7 +224,16 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
+    
+    // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);
+    
+    // Check for a persistent property
+    if (prop == null && persistentProps != null) {
+      prop = persistentProps.get(key);
+    }
+    
+    // Check for higher level properties. Each level if it exists will check the higher level if required.
     if (prop == null) {
       final Map map = getMap();
       final Zone zone = (map == null ? null : map.findZone(getPosition()));
@@ -235,6 +247,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         prop = GameModule.getGameModule().getProperty(key);
       }
     }
+    
     return prop;
   }
 
@@ -308,7 +321,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return getProperty(key);
     }
+    // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);
+    
+    // Check for a persistent property
+    if (prop == null && persistentProps != null) {
+      prop = persistentProps.get(key);
+    }
+    
+    // Check for higher level properties. Each level if it exists will check the higher level if required.
     if (prop == null) {
       final Map map = getMap();
       final Zone zone = (map == null ? null : map.findZone(getPosition()));
@@ -338,6 +359,26 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
+  public Command setPersistentProperty(Object key, Object val) {
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();
+    }
+    final Object oldVal = persistentProps.get(key);
+    if (val == null) {
+      persistentProps.remove(key);
+    }
+    else {
+      persistentProps.put(key, val);
+    }
+    return new SetPersistentPropertyCommand (getId(), key, oldVal, val);
+  }
+
+  @Override
+  public Object getPersistentProperty (Object key) {
+    return persistentProps == null ? null : persistentProps.get(key);
+  }
+  
   protected Object prefsValue(String s) {
     return GameModule.getGameModule().getPrefs().getValue(s);
   }
@@ -571,6 +612,13 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     final Point p = getPosition();
     se.append(p.x).append(p.y);
     se.append(getGpId());
+    se.append(persistentProps.size());
+    // Persistent Property values will always be String (for now).
+    for (Object key : persistentProps.keySet()) {
+      se.append(key.toString()); 
+      String val = (String) persistentProps.get(key);
+      se.append(key == null ? "" : val);
+    }
     return se.getValue();
   }
 
@@ -604,6 +652,21 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       }
     }
     setGpId(st.nextToken(""));
+    
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();      
+    }
+    else {
+      persistentProps.clear();
+    }
+      
+    // Persistent Property values will always be String (for now).
+    final int propCount = st.nextInt(0);
+    for (int i=0; i < propCount; i++) {
+      final String key = st.nextToken("");
+      final String val = st.nextToken("");
+      persistentProps.put(key, val);
+    }
   }
 
   @Override
