@@ -245,24 +245,10 @@ public class PieceMover extends AbstractBuildable
       public Object visitStack(Stack s) {
         DragBuffer.getBuffer().clear();
         // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
-        // Add whole stack if all pieces are selected - better drag cursor
-        int selectedCount = 0;
         for (int i = 0; i < s.getPieceCount(); i++) {
-          if (Boolean.TRUE.equals(s.getPieceAt(i)
-                                   .getProperty(Properties.SELECTED))) {
-            selectedCount++;
-          }
-        }
-
-        if ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS) || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
-          DragBuffer.getBuffer().add(s);
-        }
-        else {
-          for (int i = 0; i < s.getPieceCount(); i++) {
-            final GamePiece p = s.getPieceAt(i);
-            if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-              DragBuffer.getBuffer().add(p);
-            }
+          final GamePiece p = s.getPieceAt(i);
+          if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+            DragBuffer.getBuffer().add(p);
           }
         }
         // End RFE 1629255
