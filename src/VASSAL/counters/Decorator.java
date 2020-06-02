@@ -164,13 +164,9 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   
   @Override
   public Command setPersistentProperty(Object key, Object val) {
-    // Ugly, but we REALLY don't want GamePiece to implement PersistentPropertyContainer.
-    // Only BasicPiece and Decorators support Persistent properties and piece can only be one of these two types.
-    if (piece instanceof Decorator) {
-      return ((Decorator) piece).setPersistentProperty(key, val);
-    }
-    else if (piece instanceof BasicPiece) {
-      return ((BasicPiece) piece).setPersistentProperty(key, val);
+    // Not all GamePieces have persistent properties (though piece almost certainly will).
+    if (piece instanceof PersistentPropertyContainer) {
+      return ((PersistentPropertyContainer) piece).setPersistentProperty(key, val);
     }
     return null;
   }

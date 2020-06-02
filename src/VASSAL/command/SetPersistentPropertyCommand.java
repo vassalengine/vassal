@@ -1,9 +1,9 @@
 package VASSAL.command;
 
 import VASSAL.build.GameModule;
-import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.property.PersistentPropertyContainer;
 
 /**
  * This Command sets a Persistent Property in a PersistentPropertyContainer.
@@ -28,13 +28,9 @@ public class SetPersistentPropertyCommand extends Command {
   protected void executeCommand() {
     GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (target != null) {
-      // Ugly, but we REALLY don't want GamePiece to implement PersistentPropertyContainer.
-      // Only BasicPiece and Decorators support Persistent properties
-      if (target instanceof Decorator) {
+      // Not all GamePieces will have persistent Properties
+      if (target instanceof PersistentPropertyContainer) {
          ((Decorator) target).setPersistentProperty(getKey(), getNewValue());
-      }
-      else if (target instanceof BasicPiece) {
-           ((BasicPiece) target).setPersistentProperty(getKey(), getNewValue());
       }
     }
   }
