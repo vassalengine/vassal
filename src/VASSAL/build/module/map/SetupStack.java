@@ -322,7 +322,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (OWNING_BOARD.equals(key)) {
       if (OwningBoardPrompt.ANY.equals(value)) {
-        owningBoardName = null;
+        if (map != null) {
+          String[] selectedBoardNames = map.getBoardPicker().getSelectedBoardNames();
+          if (selectedBoardNames.length > 0) {
+            owningBoardName = selectedBoardNames[0];
+          }
+        }
+        else {
+          owningBoardName = null;
+        }
       }
       else {
         owningBoardName = (String) value;

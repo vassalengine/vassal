@@ -414,6 +414,17 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   /**
+   * @return an array of the names of all boards from which have been selected either by the user via the dialog or from reading a savefile
+   */
+  public String[] getSelectedBoardNames() {
+    final ArrayList<String> s = new ArrayList<>(currentBoards.size());
+    for (Board b : currentBoards) {
+      s.add(b.getName());
+    }
+    return s.toArray(new String[0]);
+  }
+
+  /**
    * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
    *         savefile
    * @deprecated Use {@link #getSelectedBoards()} instead.
