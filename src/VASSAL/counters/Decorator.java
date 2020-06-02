@@ -451,8 +451,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   public static Command setOldProperties(GamePiece p) {
     PersistentPropertyContainer container;
-    // Not nice, but we don't want GamePiece to implement PersistentPropertyContainer
-    if (p instanceof Decorator || p instanceof GamePiece) {
+    // Not all GamePieces will have persistent properties
+    if (p instanceof PersistentPropertyContainer) {
       container = (PersistentPropertyContainer) p;
     }
     else {

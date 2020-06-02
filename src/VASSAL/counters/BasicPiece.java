@@ -99,8 +99,21 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   private Stack parent;
   private Point pos = new Point(0, 0);
   private String id;
+  
+  /* 
+   * A set of properties used as scratch-pad storage by various Traits and processes.
+   * These properties are ephemeral and not stored in the GameState.
+   */
   private java.util.Map<Object, Object> props;
+  
+  /* 
+   * A Set of properties that must be persisted in the GameState. 
+   * Will be created as lazily as possible since pieces that don't move will not need them,
+   * The current code only supports String Keys and Values. Non-strings should be serialised 
+   * before set and de-serialised after get. 
+   */
   private java.util.Map<Object, Object> persistentProps;
+  
   /** @deprecated Moved into own traits, retained for backward compatibility */
   @Deprecated
   private char cloneKey;
@@ -661,8 +674,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
       
     // Persistent Property values will always be String (for now).
+    // Create the HashMap as lazily as possible, no point in creating it for pieces that never move
+    if (persistentProps != null) {
+      persistentProps.clear();
+    }
     final int propCount = st.nextInt(0);
     for (int i=0; i < propCount; i++) {
+      if (persistentProps == null) {
+        persistentProps = new HashMap<>();      
+      }
       final String key = st.nextToken("");
       final String val = st.nextToken("");
       persistentProps.put(key, val);
