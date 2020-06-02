@@ -366,17 +366,17 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
         c = tracker.getChangeCommand();
-        c.append(setOldProperties());
+        c = c.append(setOldProperties());
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = map.snapTo(dest);
         }
-        c.append(map.placeOrMerge(outer, dest));
+        c = c.append(map.placeOrMerge(outer, dest));
         // Apply Auto-move key
         if (map.getMoveKey() != null) {
-          c.append(outer.keyEvent(map.getMoveKey()));
+          c = c.append(outer.keyEvent(map.getMoveKey()));
         }
         if (parent != null) {
-          c.append(parent.pieceRemoved(outer));
+          c = c.append(parent.pieceRemoved(outer));
         }
        
       }      
@@ -396,7 +396,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
          // Apply Auto-move key
          if (backMap.getMoveKey() != null) {
-           c.append(outer.keyEvent(backMap.getMoveKey()));
+           c = c.append(outer.keyEvent(backMap.getMoveKey()));
          }
       }
     }

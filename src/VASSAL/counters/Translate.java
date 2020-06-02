@@ -164,12 +164,12 @@ public class Translate extends Decorator implements TranslatablePiece {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
-    Command c = null;
-    if (moveCommand.matches(stroke)) {
-      c = setOldProperties();
+    Command c = new NullCommand();
+    if (moveCommand.matches(stroke)) {      
       if (mover == null) {
         mover = new MoveExecuter();
         mover.setKeyEvent(stroke);
+        mover.setAdditionalCommand (setOldProperties());
         SwingUtilities.invokeLater(mover);
       }
       GamePiece target = findTarget(stroke);
@@ -178,8 +178,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
       mover.addKeyEventTarget(piece);
       // Return a non-null command to indicate that a change actually happened
-      // FIXME - THIS IS WRONG.... it wipes out the previous commands.
-      //     Probably should be if (c== null) {
+      // Note: Looks weird to wipe out the Commands, but they have all been added to the Move Executor.
       c = new NullCommand() {
         @Override
         public boolean isNull() {
@@ -413,11 +412,14 @@ public class Translate extends Decorator implements TranslatablePiece {
     private Set<GamePiece> pieces = new HashSet<>();
     private KeyStroke stroke;
     private List<GamePiece> innerPieces = new ArrayList<>();
+    private Command additionalCommand;
 
     @Override
     public void run() {
       mover = null;
       Command comm = new NullCommand();
+      comm = comm.append(additionalCommand);
+      
       for (final Move move : moves) {
         final Map.Merger merger =
           new Map.Merger(move.map, move.pos, move.piece);
@@ -496,7 +498,14 @@ public class Translate extends Decorator implements TranslatablePiece {
     public void setKeyEvent(KeyStroke stroke) {
       this.stroke = stroke;
     }
+    
+    public void setAdditionalCommand (Command c) {
+      additionalCommand = c;
+    }
 
+    public Command getAdditionalCommand () {
+      return additionalCommand;
+    }
     /**
      * Return the updated position of a piece that has a move
      * calculation recorded
