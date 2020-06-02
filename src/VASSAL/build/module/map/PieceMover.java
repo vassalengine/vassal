@@ -244,10 +244,15 @@ public class PieceMover extends AbstractBuildable
       @Override
       public Object visitStack(Stack s) {
         DragBuffer.getBuffer().clear();
-        // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
+        // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer,
+        // except when global pref "MOVING_STACKS_PICKUP_UNITS" is set
+        final boolean selectAllUnitsInStackRegardlessOfSelection =
+            (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
+
         for (int i = 0; i < s.getPieceCount(); i++) {
           final GamePiece p = s.getPieceAt(i);
-          if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+          final boolean pieceSelected = Boolean.TRUE.equals(p.getProperty(Properties.SELECTED));
+          if (selectAllUnitsInStackRegardlessOfSelection || pieceSelected) {
             DragBuffer.getBuffer().add(p);
           }
         }
