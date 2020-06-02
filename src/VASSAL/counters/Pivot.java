@@ -140,7 +140,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         rotator.setAngle(oldAngle - angle);
         double newAngle = rotator.getAngle();
         if (getMap() != null) {
-          setOldProperties();
+          c = setOldProperties();
           Point pos = getPosition();
           pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
           GamePiece outer = Decorator.getOutermost(this);
@@ -148,7 +148,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
             pos = getMap().snapTo(pos);
           }
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
-          c = t.getChangeCommand();
+          c = c.append(t.getChangeCommand());
           MoveTracker moveTracker = new MoveTracker(outer);
           getMap().placeOrMerge(outer, pos);
           c = c.append(moveTracker.getMoveCommand());

@@ -362,13 +362,15 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           // don't do anything if we're already there.
           return null;
         }
+        final ChangeTracker tracker = new ChangeTracker(this);
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
-        setOldProperties();
+        c = tracker.getChangeCommand();
+        c.append(setOldProperties());
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = map.snapTo(dest);
         }
-        c = map.placeOrMerge(outer, dest);
+        c.append(map.placeOrMerge(outer, dest));
         // Apply Auto-move key
         if (map.getMoveKey() != null) {
           c.append(outer.keyEvent(map.getMoveKey()));
@@ -376,27 +378,27 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (parent != null) {
           c.append(parent.pieceRemoved(outer));
         }
-      }
+       
+      }      
     }
     else if (backCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
       Map backMap = (Map) getProperty(BACK_MAP);
       Point backPoint = (Point) getProperty(BACK_POINT);
+      final ChangeTracker tracker = new ChangeTracker(this);
+      setProperty(BACK_MAP, null);
+      setProperty(BACK_POINT, null);
+      c = tracker.getChangeCommand();
+      
       if (backMap != null && backPoint != null) {
-         setOldProperties();
-         c = backMap.placeOrMerge(outer, backPoint);
-         final ChangeTracker tracker = new ChangeTracker(this);
-         setProperty(BACK_MAP, null);
-         setProperty(BACK_POINT, null);
-         c.append(tracker.getChangeCommand());
+         c = c.append(setOldProperties());
+         c = c.append(backMap.placeOrMerge(outer, backPoint));
 
          // Apply Auto-move key
          if (backMap.getMoveKey() != null) {
            c.append(outer.keyEvent(backMap.getMoveKey()));
          }
       }
-      setProperty(BACK_MAP, null);
-      setProperty(BACK_POINT, null);
     }
     return c;
   }

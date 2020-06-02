@@ -34,9 +34,11 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
@@ -45,7 +47,7 @@ import VASSAL.tools.SequenceEncoder;
  * The abstract class describing a generic 'trait' of a GamePiece.  Follows the Decorator design pattern
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it
  */
-public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource {
+public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource , PersistentPropertyContainer {
   protected GamePiece piece;
   private Decorator dec;
   private boolean selected = false;
@@ -158,6 +160,25 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     else {
       piece.setProperty(key, val);
     }
+  }
+  
+  @Override
+  public Command setPersistentProperty(Object key, Object val) {
+    // Ugly, but we REALLY don't want GamePiece to implement PersistentPropertyContainer.
+    // Only BasicPiece and Decorators support Persistent properties and piece can only be one of these two types.
+    if (piece instanceof Decorator) {
+      return ((Decorator) piece).setPersistentProperty(key, val);
+    }
+    else if (piece instanceof BasicPiece) {
+      return ((BasicPiece) piece).setPersistentProperty(key, val);
+    }
+    return null;
+  }
+  
+  @Override
+  public Object getPersistentProperty (Object key) {
+    // Standard getProperty also returns persistent properties
+    return piece.getProperty(key);
   }
 
   /*
@@ -432,13 +453,23 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Set the Oldxxxx properties related to movement
    * @param p
    */
-  public static void setOldProperties(GamePiece p) {
+  public static Command setOldProperties(GamePiece p) {
+    PersistentPropertyContainer container;
+    // Not nice, but we don't want GamePiece to implement PersistentPropertyContainer
+    if (p instanceof Decorator || p instanceof GamePiece) {
+      container = (PersistentPropertyContainer) p;
+    }
+    else {
+      return null;
+    }
+    
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$
     String zoneName = ""; //$NON-NLS-1$
     String locationName = ""; //$NON-NLS-1$
     final Map m = p.getMap();
     final Point pos = p.getPosition();
+    Command comm = new NullCommand();
 
     if (m != null) {
       mapName = m.getConfigureName();
@@ -453,16 +484,18 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       locationName = m.locationName(pos);
     }
 
-    p.setProperty(BasicPiece.OLD_X, String.valueOf(pos.x));
-    p.setProperty(BasicPiece.OLD_Y, String.valueOf(pos.y));
-    p.setProperty(BasicPiece.OLD_MAP, mapName);
-    p.setProperty(BasicPiece.OLD_BOARD, boardName);
-    p.setProperty(BasicPiece.OLD_ZONE, zoneName);
-    p.setProperty(BasicPiece.OLD_LOCATION_NAME, locationName);
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_X, String.valueOf(pos.x)));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_Y, String.valueOf(pos.y)));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAP, mapName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
+    
+    return comm;
   }
 
-  public void setOldProperties() {
-    setOldProperties(this);
+  public Command setOldProperties() {
+    return setOldProperties(this);
   }
 
   /**
