@@ -625,7 +625,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     final Point p = getPosition();
     se.append(p.x).append(p.y);
     se.append(getGpId());
-    se.append(persistentProps.size());
+    se.append(persistentProps == null ? 0 : persistentProps.size());
     // Persistent Property values will always be String (for now).
     for (Object key : persistentProps.keySet()) {
       se.append(key.toString()); 
