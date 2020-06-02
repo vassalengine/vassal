@@ -377,13 +377,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (persistentProps == null) {
       persistentProps = new HashMap<>();
     }
-    final Object oldVal = persistentProps.get(key);
-    if (val == null) {
-      persistentProps.remove(key);
-    }
-    else {
-      persistentProps.put(key, val);
-    }
+    final Object oldVal = (val == null) ? persistentProps.remove(key) : persistentProps.put(key, val);
     return new SetPersistentPropertyCommand (getId(), key, oldVal, val);
   }
 
@@ -627,11 +621,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     se.append(getGpId());
     se.append(persistentProps == null ? 0 : persistentProps.size());
     // Persistent Property values will always be String (for now).
-    for (Object key : persistentProps.keySet()) {
-      se.append(key.toString()); 
-      String val = (String) persistentProps.get(key);
-      se.append(key == null ? "" : val);
-    }
+    persistentProps.forEach((key, val) -> {
+      se.append(key == null ? "" : key.toString());
+      se.append(val == null ? "" : val.toString());
+    });
     return se.getValue();
   }
 
