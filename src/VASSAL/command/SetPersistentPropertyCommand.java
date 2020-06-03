@@ -39,6 +39,11 @@ public class SetPersistentPropertyCommand extends Command {
     return new SetPersistentPropertyCommand (id, key, newValue, oldValue);
   }
 
+  @Override
+  public String getDetails() {
+     return "id="+id+",key="+key+",old="+oldValue+",new="+newValue;
+  }
+  
   public Object getKey() {
     return key;
   }
