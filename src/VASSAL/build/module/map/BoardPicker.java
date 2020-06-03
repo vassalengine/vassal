@@ -415,7 +415,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   /**
-   * @return an array of the names of all boards from which have been selected either by the user via the dialog or from reading a savefile
+   * @return a List of the names of all boards from which have been selected either by the user via the dialog or from reading a savefile
    */
   public List<String> getSelectedBoardNames() {
     return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
