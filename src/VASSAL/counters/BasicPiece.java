@@ -621,10 +621,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     se.append(getGpId());
     se.append(persistentProps == null ? 0 : persistentProps.size());
     // Persistent Property values will always be String (for now).
-    persistentProps.forEach((key, val) -> {
-      se.append(key == null ? "" : key.toString());
-      se.append(val == null ? "" : val.toString());
-    });
+    if (persistentProps != null) {
+      persistentProps.forEach((key, val) -> {
+        se.append(key == null ? "" : key.toString());
+        se.append(val == null ? "" : val.toString());
+      });
+    }
     return se.getValue();
   }
 
