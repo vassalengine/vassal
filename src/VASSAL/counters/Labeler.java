@@ -154,7 +154,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   protected String clean(String s) {
     // Cannot use $PieceName$ in a label format, must use $pieceName$
-    return s.replaceAll("$"+BAD_PIECE_NAME+"$", "$"+PIECE_NAME+"$");
+    return s.replace("$"+BAD_PIECE_NAME+"$", "$"+PIECE_NAME+"$");
   }
 
   @Override
