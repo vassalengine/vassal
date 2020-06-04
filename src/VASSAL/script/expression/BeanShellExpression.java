@@ -27,6 +27,7 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.script.ExpressionInterpreter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FormattedString;
 
 /**
  * A basic beanShell expression
@@ -65,12 +66,30 @@ public class BeanShellExpression extends Expression {
     return expr;
   }
 
+  protected boolean isDynamic() {
+    return getExpression() != null && getExpression().indexOf('$') >= 0;
+  }
+
+  
   /**
    * Return a PieceFilter that selects GamePieces that cause
    * this expression to evaluate to true
    */
   @Override
   public PieceFilter getFilter(final PropertySource ps) {
+    /*
+     * If this expression contains old-style $....$ variables, then we need to evaluate these first on the source piece
+     * and return a filter using the updated expression.
+     */    
+    if (isDynamic()) {
+      // Strip the Beanshell braces so the expression just looks like a string and evaluate the $...$ variables
+      final String s = (new FormattedString(strip(getExpression()))).getText(ps);
+      
+      // Turn the resulting string back into a Beanshell expression and create a filter.
+      return Expression.createExpression("{"+s+"}").getFilter();
+    }
+    
+    // Non dynamic, just return a standard filter based on the existing expression.
     return new PieceFilter() {
       @Override
       public boolean accept(GamePiece piece) {
