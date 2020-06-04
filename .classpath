@@ -60,7 +60,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-14.0.1">
 		<attributes>
 			<attribute name="module" value="true"/>
-			<attribute name="add-exports" value="java.desktop/sun.java2d.loops=ALL-UNNAMED:java.desktop/sun.java2d.cmm=ALL-UNNAMED"/>
+			<attribute name="add-exports" value="java.desktop/sun.java2d.cmm=ALL-UNNAMED"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
