@@ -29,6 +29,7 @@ import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -379,18 +380,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
 
     final Object oldValue = (newValue == null) ? persistentProps.remove(key) : persistentProps.put(key, newValue);
-     
-    if (oldValue == null) {
-      if (newValue == null) {
-        return null;
-      }
-      else {
-        return newValue.equals(oldValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
-      }
-    }
-    else {
-      return oldValue.equals(newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
-    }
+    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
   }
 
   @Override
