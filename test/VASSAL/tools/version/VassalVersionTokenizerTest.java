@@ -30,16 +30,18 @@ public class VassalVersionTokenizerTest {
     // expected tokens. A null indicates that a VersionFormatException
     // is expected.
     final Object[][] versions = {
-      { "1.2.3",         1, 2, 3           },
-      { "1.2.3.4",       1, 2, 3, 4        },
-      { "1.2.3-svn7890", 1, 2, 3, -2, 7890 },
-      { "1.2.3-rc3",     1, 2, 3, -2, null },
-      { "foobarbaz",     null              },
-      { "1.2.foo",       1, 2, null        },
-      { "1.2-foo",       1, 2, -2, null    },
-      { "1.2-svn1234.8", 1, 2, -2, null    },
-      { "3.0b6",         3, 0, null        },
-      { "3.3.0-beta1",   3, 3, 0, -2, 9367 },
+      { "1.2.3",                    1, 2, 3               },
+      { "1.2.3.4",                  1, 2, 3, 4            },
+      { "1.2.3-svn7890",            1, 2, 3, -2, 7890     },
+      { "1.2.3-rc3",                1, 2, 3, -2, null     },
+      { "foobarbaz",                null                  },
+      { "1.2.foo",                  1, 2, null            },
+      { "1.2-foo",                  1, 2, -2, null        },
+      { "1.2-svn1234.8",            1, 2, -2, null        },
+      { "3.0b6",                    3, 0, null            },
+      { "3.3.0-beta1",              3, 3, 0, -2, 9367     },
+      { "3.3.0-beta3-80",           3, 3, 0, -2, 9384, 80 },
+      { "3.3.0-beta3-80-gf8ef2523", 3, 3, 0, -2, 9384, 80 }
     };
 
     for (Object[] v : versions) {

@@ -10,7 +10,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleIdentifier</key>
   <string>org.vassalengine.VASSAL</string>
   <key>CFBundleVersion</key>
-  <string>%SVNVERSION%</string>
+  <string>%BUILDNUM%</string>
   <key>CFBundleShortVersionString</key>
   <string>%NUMVERSION%</string>
   <key>NSHumanReadableCopyright</key>

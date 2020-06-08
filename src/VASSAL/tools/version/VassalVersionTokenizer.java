@@ -19,7 +19,6 @@
 
 package VASSAL.tools.version;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
@@ -29,25 +28,15 @@ import java.util.regex.Pattern;
  * A finite-state machine for converting VASSAL version numbers into
  * a series of integers. The integers thus returned from two different
  * tokenizers may be compared to determine the temporal ordering of two
- * VASSAL versions. Valid version strings are matched by the following
- * regular expression: <code>\d+(.\d+)*(-(svn\d+|.+)?</code>. Old
- * version numbers which are not valid by current standards (e.g., 3.0b6)
+ * VASSAL versions.
+ *
+ * Valid version strings are dotted decimal digits, followed optionally
+ * by a tag, followed optionally by a build number. Anything beyond the
+ * build nubmer is ignored.
+ *
+ * Old version numbers which are not valid by current standards (e.g., 3.0b6)
  * may be successfully parsed far enough to determine their ordering with
  * respect to post-3.1.0 versions.
- *
- * <p>Nonnumeric parts of a version string are tokenized as follows:</p>
- * <table>
- *  <tr><td>end-of-string</td><td>-1</td></tr>
- *  <tr><td><code>-</code> (tag delimiter)</td><td>-2</td></tr>
- *  <tr><td><code>svn\d+</code></td><td><code>\d+</code></td></tr>
- *  <tr><td>other tags</td><td>mapped to svn version</td></tr>
- * </table>
- * <p>This mapping ensures that of two version strings with the same
- * version number, if one has a tag (the part starting with the hyphen) but
- * the other does not, then one with the tag will have a lexically smaller
- * token stream than the one without. E.g., 3.1.0-svn2708 &lt; 3.1.0,
- * since the two token streams are <code>3 1 0 -2 2708 -1</code> and
- * <code>3 1 0 -1</code>, respectively.</p>
  *
  * @since 3.1.0
  * @author Joel Uckelman
@@ -57,21 +46,19 @@ import java.util.regex.Pattern;
 public class VassalVersionTokenizer implements VersionTokenizer {
   protected String v;
 
-  protected enum State { NUM, DELIM, TAG, EOS, END };
-  protected State state = State.NUM;
+  protected enum State { VNUM, DELIM1, TAG, DELIM2, BUILD, EOS, END };
+  protected State state = State.VNUM;
 
-  protected static Map<String,Integer> tags = new HashMap<>();
-
-  // This is the mapping for tags to svn versions. Only tags which cannot
+  // This is the mapping for tags to versions. Only tags which cannot
   // be distinguished from the current version from the numeric portion
   // alone need to be maintined here. (E.g., the 3.1.0 tags can be removed
   // as soon as 3.1.1 is released.) We keep one tag for testing purposes.
-  static {
-    // 3.3.0
-    tags.put("beta1", 9367);
-    tags.put("beta2", 9373);
-    tags.put("beta3", 9384);
-  }
+  protected static Map<String,Integer> tags = Map.of(
+    "beta1", 9367,
+    "beta2", 9373,
+    "beta3", 9384,
+    "beta4", 9453
+  );
 
   /**
    * Constructs a <code>VersionTokenizer</code> which operates on a
@@ -100,23 +87,27 @@ public class VassalVersionTokenizer implements VersionTokenizer {
 
     while (true) {
       switch (state) {
-      case NUM:   // read a version number
+      case VNUM:   // read a version number
         final Matcher m = Pattern.compile("^\\d+").matcher(v);
         if (!m.lookingAt()) throw new VersionFormatException();
         try {
           n = Integer.parseInt(m.group());
-          if (n < 0) throw new VersionFormatException();
+          if (n < 0) {
+            throw new VersionFormatException();
+          }
         }
         catch (NumberFormatException e) {
           throw new VersionFormatException(e);
         }
         v = v.substring(m.end());
-        state = v.length() == 0 ? State.EOS : State.DELIM;
+
+        state = v.length() == 0 ? State.EOS : State.DELIM1;
         return n;
-      case DELIM: // eat delimiters
+
+      case DELIM1: // eat delimiters
         switch (v.charAt(0)) {
         case '.':
-          state = State.NUM;
+          state = State.VNUM;
           v = v.substring(1);
           break;
         case '-':
@@ -127,30 +118,86 @@ public class VassalVersionTokenizer implements VersionTokenizer {
           throw new VersionFormatException();
         }
         break;
+
       case TAG: // parse the tag
-        if (v.startsWith("svn")) {
+        if (Character.isDigit(v.charAt(0))) {
+          // this is a build number
+          state = State.BUILD;
+          break;
+        }
+        else if (v.startsWith("svn")) {
           // report the svn version
+          // TODO: remove this case when 3.3.1 is released
           v = v.substring(3);
           try {
             n = Integer.parseInt(v);
-            if (n < 0) throw new VersionFormatException();
           }
           catch (NumberFormatException e) {
             throw new VersionFormatException(e);
           }
-        }
-        else if (tags.containsKey(v)) {
-          // convert the tag to an svn version
-          n = tags.get(v);
-        }
-        else throw new VersionFormatException();
 
-        v = "";
-        state = State.EOS;
-        return n;
+          if (n < 0) {
+            throw new VersionFormatException();
+          }
+
+          v = "";
+          state = State.EOS;
+          return n;
+        }
+        else {
+          final int hi = v.indexOf('-');
+          String k;
+          if (hi == -1) {
+            k = v;
+            v = "";
+            state = State.EOS;
+          }
+          else {
+            k = v.substring(0, hi);
+            v = v.substring(hi);
+            state = State.DELIM2;
+          }
+
+          // convert the tag to a version
+          final Integer i = tags.get(k);
+          if (i == null) {
+            throw new VersionFormatException();
+          }
+
+          return i;
+        }
+
+      case DELIM2:
+        v = v.substring(1);
+        state = State.BUILD;
+        break;
+
+      case BUILD:
+        {
+          // there may be stuff beyond the build number, but we don't care
+          final int hi = v.indexOf('-');
+          final String b = v.substring(0, hi == -1 ? v.length() : hi);
+
+          try {
+            n = Integer.parseInt(b);
+          }
+          catch (NumberFormatException e) {
+            throw new VersionFormatException(e);
+          }
+
+          if (n < 0) {
+            throw new VersionFormatException();
+          }
+
+          v = "";
+          state = State.EOS;
+          return n;
+        }
+
       case EOS: // mark the end of the string
         state = State.END;
         return -1;
+
       case END: // this case is terminal
         throw new IllegalStateException();
       }

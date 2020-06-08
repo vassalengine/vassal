@@ -56,10 +56,10 @@ OSXJMODS:=jdk-osx/Contents/Home/jmods
 LINJMODS:=/usr/lib/jvm/java-14/jmods
 
 VNUM:=3.3.0
-#SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
-SVNVERSION:=$(shell git svn log -1 --oneline | grep -oP '^r\K\d+')
-#VERSION:=$(VNUM)-svn$(SVNVERSION)
-VERSION:=$(VNUM)-beta3
+GITCOMMIT:=$(shell git rev-parse --short HEAD)
+BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
+VERSION:=$(shell git describe --tags)
+#VERSION:=$(VNUM)-beta3
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -148,8 +148,7 @@ $(LIBDIR)/Vengine.jar: all $(TMPDIR)
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
-	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
-         -e 's/%NUMVERSION%/$(VNUM)/g' \
+	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
 
@@ -179,7 +178,7 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
-	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
+	sed -i -e 's/%BUILDNUM%/$(BUILDNUM)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
