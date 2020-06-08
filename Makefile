@@ -59,7 +59,6 @@ VNUM:=3.3.0
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
 VERSION:=$(shell git describe --tags)
-#VERSION:=$(VNUM)-beta3
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
