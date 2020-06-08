@@ -270,15 +270,6 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION)
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
-#
-# source
-#
-
-$(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
-#	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
-	git checkout-index -a -f --prefix=$(TMPDIR)/VASSAL-$(VERSION)-src/
-	cd $(TMPDIR) ; zip -9rv $(@F) VASSAL-$(VERSION)-src ; cd ..
-
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
@@ -286,8 +277,6 @@ release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
-
-release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
 release: clean jar test release-other release-linux release-windows release-macosx
 
