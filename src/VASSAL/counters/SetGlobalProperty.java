@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -44,9 +45,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
-import VASSAL.configure.PropertyNameExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -226,14 +227,12 @@ public class SetGlobalProperty extends DynamicProperty {
         prop = MutableProperty.Util.findMutableProperty(propertyName, propertyContainers);
         /*
          * Debugging could be painful, so print a useful message in the
-         * Chat Window if no property can be found to update
+         * Chat Window if no property can be found to update. 
          */
         if (prop == null) {
-          String s = "Set Global Property (" + description + "): Unable to locate Global Property named " + propertyName;
-          if (!propertyLevel.equals(CURRENT_ZONE)) {
-            s += " in " + propertyLevel + " " + searchName;
-          }
-          GameModule.getGameModule().warn(s);
+          final String message = "Unable to locate Global Property in "+propertyLevel+".";
+          final String data = "Property Expression=["+key+"], Property Name="+propertyName+"].";
+          ErrorDialog.dataError(new BadDataReport(this, message, data));
         }
         else {
           String oldValue = prop.getPropertyValue();
@@ -253,7 +252,7 @@ public class SetGlobalProperty extends DynamicProperty {
   }
   protected static class Ed implements PieceEditor {
     protected StringConfigurer descConfig;
-    protected PropertyNameExpressionConfigurer nameConfig;
+    protected FormattedExpressionConfigurer nameConfig;
     protected BooleanConfigurer numericConfig;
     protected IntConfigurer minConfig;
     protected IntConfigurer maxConfig;
@@ -288,7 +287,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new PropertyNameExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), m);
+      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
