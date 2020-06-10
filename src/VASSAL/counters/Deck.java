@@ -815,9 +815,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       @Override
       public GamePiece nextPiece() {
         GamePiece p = super.nextPiece();
-        if (faceDown) {
-          p.setProperty(Properties.OBSCURED_BY, NO_USER);
-        }
+        /*
+         * Bug 12951 results in Cards going back into a Deck via Undo in an inconsistent state.
+         * This statement is the culprit. As far as I can tell, it is not needed as Deck.pieceRemoved()
+         * sets OBSCURED_BY if drawing a facedown card from a face down Deck which is the only case
+         * where this would be needed.
+         * This will need thorough testing in Deck heavy modules.
+         */
+        // if (faceDown) {
+        //  p.setProperty(Properties.OBSCURED_BY, NO_USER);
+        //}
         return p;
       }
     };
