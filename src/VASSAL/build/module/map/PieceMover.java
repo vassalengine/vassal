@@ -442,7 +442,7 @@ public class PieceMover extends AbstractBuildable
   /** Invoked just before a piece is moved */
   protected Command movedPiece(GamePiece p, Point loc) {
     Command c = new NullCommand();
-    c = c.append(setOldLocation(p));
+    c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
       c = c.append(markMoved(p, true));
     }
@@ -452,8 +452,17 @@ public class PieceMover extends AbstractBuildable
     }
     return c;
   }
+  
+  /**
+   * Replaced by {@link #setOldLocations(GamePiece)} to return generated Commands
+   * @param p
+   */
+  @Deprecated
+  protected void setOldLocation(GamePiece p) {
+    setOldLocations(p);
+  }
 
-  protected Command setOldLocation(GamePiece p) {
+  protected Command setOldLocations(GamePiece p) {
     Command comm = new NullCommand();
     if (p instanceof Stack) {
       for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {

@@ -33,7 +33,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
-//import sun.java2d.cmm.ProfileDeferralMgr;
+import sun.java2d.cmm.ProfileDeferralMgr;
 
 import VASSAL.tools.io.RereadableInputStream;
 import VASSAL.tools.lang.Reference;
@@ -121,7 +121,7 @@ public class ImageIOImageLoader implements ImageLoader {
   // stop calls to ProfileDeferralMgr.activateProfiles(), which is where the
   // race happens.
   static {
-    //ProfileDeferralMgr.deferring = false;
+    ProfileDeferralMgr.deferring = false;
    }
 
   /**
