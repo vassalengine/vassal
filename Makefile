@@ -55,10 +55,11 @@ WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
 LINJMODS:=/usr/lib/jvm/java-14/jmods
 
-VNUM:=3.3.0
+VNUM:=3.3.1
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
-VERSION:=$(shell git describe --tags)
+#VERSION:=$(shell git describe --tags)
+VERSION:=$(VNUM)-test-0-$(GITCOMMIT)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 

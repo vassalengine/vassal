@@ -54,10 +54,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   // alone need to be maintined here. (E.g., the 3.1.0 tags can be removed
   // as soon as 3.1.1 is released.) We keep one tag for testing purposes.
   protected static Map<String,Integer> tags = Map.of(
-    "beta1", 9367,
-    "beta2", 9373,
-    "beta3", 9384,
-    "beta4", 9453
+    "test", 0
   );
 
   /**
@@ -124,25 +121,6 @@ public class VassalVersionTokenizer implements VersionTokenizer {
           // this is a build number
           state = State.BUILD;
           break;
-        }
-        else if (v.startsWith("svn")) {
-          // report the svn version
-          // TODO: remove this case when 3.3.1 is released
-          v = v.substring(3);
-          try {
-            n = Integer.parseInt(v);
-          }
-          catch (NumberFormatException e) {
-            throw new VersionFormatException(e);
-          }
-
-          if (n < 0) {
-            throw new VersionFormatException();
-          }
-
-          v = "";
-          state = State.EOS;
-          return n;
         }
         else {
           final int hi = v.indexOf('-');
