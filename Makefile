@@ -67,7 +67,6 @@ JAVAPATH:=/usr/bin
 
 JC:=$(JAVAPATH)/javac
 JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED -source 11 -target 11
-#JCFLAGS:=-d $(CLASSDIR) -nowarn -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -source 1.9 -target 1.9
 
 JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
