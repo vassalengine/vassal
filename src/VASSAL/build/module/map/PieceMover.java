@@ -677,6 +677,14 @@ public class PieceMover extends AbstractBuildable
     return comm;
   }
 
+  /**
+   * Replace by {@link #applyKeyAfterMove(List, KeyStroke)} to return Commands
+   */
+  @Deprecated
+  protected void applyKeyAfterMove(List<GamePiece> pieces, Command comm, KeyStroke key) {
+    comm.append(applyKeyAfterMove(pieces, key));
+  }
+  
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
