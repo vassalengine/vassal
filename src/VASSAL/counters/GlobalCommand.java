@@ -138,6 +138,7 @@ public class GlobalCommand {
     private BoundsTracker tracker;
     private PieceFilter filter;
     private KeyStroke stroke;
+    private int selectedCount;
 
     public Visitor(Command command, PieceFilter filter, KeyStroke stroke) {
       this.command = command;
@@ -149,9 +150,17 @@ public class GlobalCommand {
     @Override
     public Object visitDeck(Deck d) {
       Object target = null;
-      if (selectFromDeck != 0) {
-        d.setDragCount(selectFromDeck < 0 ? d.getPieceCount() : selectFromDeck);
-        for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
+      if (getSelectFromDeck() != 0) {
+        
+        // selectFromDeck = -1 means process all cards in Deck
+        // selectFromDeck > 0 means select that many cards from the Deck
+        
+        // Ask for all cards to be drawn.        
+        d.setDragCount(d.getPieceCount());
+        
+        // Keep drawing until required select count met or all cards in Deck have been processed
+        selectedCount = 0;
+        for (PieceIterator it = d.drawCards(); it.hasMoreElements() && (getSelectFromDeck() < 0 || getSelectFromDeck() > selectedCount);) {
           apply(it.nextPiece());
         }
       }
@@ -178,6 +187,7 @@ public class GlobalCommand {
         p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
         command.append(p.keyEvent(stroke));
         tracker.addPiece(p);
+        selectedCount++;
       }
     }
 
