@@ -717,7 +717,7 @@ public class DoActionButton extends AbstractConfigurable
 
   // Perform an individual Hotkey and return any generated commands
   // if logging has not already been paused.
-  protected void doHotKey (Command c, NamedKeyStroke key) {
+  protected void doHotKey(Command c, NamedKeyStroke key) {
     if (!key.isNull()) {
       final GameModule mod = GameModule.getGameModule();
       boolean loggingPaused = mod.pauseLogging();
@@ -735,7 +735,7 @@ public class DoActionButton extends AbstractConfigurable
 
   // Implement Loopable
   @Override
-  public String getComponentTypeName () {
+  public String getComponentTypeName() {
     return getConfigureTypeName();
   }
 

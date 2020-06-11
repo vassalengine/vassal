@@ -205,7 +205,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     }
   }
 
-  protected boolean isPrintableAscii (char c) {
+  protected boolean isPrintableAscii(char c) {
     return isPrintableAscii((int) c);
   }
 

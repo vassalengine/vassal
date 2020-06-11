@@ -359,7 +359,7 @@ public class ChatServerControls extends AbstractBuildable {
     newRoomButton.setVisible(false);
   }
 
-  public void setRoomControlsVisible (boolean visible) {
+  public void setRoomControlsVisible(boolean visible) {
     newRoom.setVisible(visible);
     newRoomLabel.setVisible(visible);
   }

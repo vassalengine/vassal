@@ -287,7 +287,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return c;
   }
 
-  private int parse (String desc, FormattedString s, GamePiece outer) {
+  private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
     String val = s.getText(outer, "0");
     try {

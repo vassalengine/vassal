@@ -1172,7 +1172,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       pack();
     }
 
-    protected void addChildControls () {
+    protected void addChildControls() {
       if (childControls != null) {
         levelControls.remove(childControls);
       }

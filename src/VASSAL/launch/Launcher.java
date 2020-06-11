@@ -154,7 +154,7 @@ public abstract class Launcher {
         }
       }
 
-      private void warn (Exception e1) {
+      private void warn(Exception e1) {
         if (ipc == null) {
           // we are standalone, so warn the user directly
           ErrorDialog.showDetails(

@@ -736,7 +736,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       return super.getLocalizedProperty(key);
     }
 
-    protected String strip (String s) {
+    protected String strip(String s) {
       if (s == null) {
         return null;
       }

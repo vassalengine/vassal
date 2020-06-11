@@ -188,7 +188,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       command = l.toArray(new KeyCommand[0]);
     }
 
-    for (KeyCommand c : command ) {
+    for (KeyCommand c : command) {
       if (c.getName().equals(backCommandName)) {
         c.setEnabled(getMap() != null &&
                      getProperty(BACK_MAP) != null &&
@@ -203,7 +203,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return command;
   }
 
-  private void LogBadGridLocation ( Point p) {
+  private void LogBadGridLocation(Point p) {
     String s = "* " + Decorator.getOutermost(this).getName();
     if (getMap() == null) {
       s += "getMap is null";
@@ -412,7 +412,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return new Point(xPos, yPos);
   }
 
-  private int parse (String desc, FormattedString s, GamePiece outer) {
+  private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
     String val = s.getText(outer, _0);
     try {

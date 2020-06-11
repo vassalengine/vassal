@@ -83,7 +83,7 @@ public class BeanShell {
     }
   }
 
-  public CompileResult compile (Reader in) {
+  public CompileResult compile(Reader in) {
     try {
       globalInterpreter.eval(in);
     }

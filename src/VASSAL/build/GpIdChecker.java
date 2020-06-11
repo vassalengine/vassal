@@ -177,7 +177,7 @@ public class GpIdChecker {
    * @param oldPiece
    * @return
    */
-  public GamePiece createUpdatedPiece (GamePiece oldPiece) {
+  public GamePiece createUpdatedPiece(GamePiece oldPiece) {
     // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
     if (gpid != null && gpid.length() > 0) {
@@ -203,7 +203,7 @@ public class GpIdChecker {
   }
 
 
-  public boolean findUpdatedPiece (GamePiece oldPiece) {
+  public boolean findUpdatedPiece(GamePiece oldPiece) {
     // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
     if (gpid != null && gpid.length() > 0) {

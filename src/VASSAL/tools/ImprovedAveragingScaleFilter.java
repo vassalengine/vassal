@@ -41,30 +41,30 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
   }
 
   @Override
-  public void setColorModel (ColorModel model) {
+  public void setColorModel(ColorModel model) {
     // Change color model to model you are generating
     consumer.setColorModel (defaultCM);
   }
 
   @Override
-  public void setHints (int hintflags) {
+  public void setHints(int hintflags) {
     consumer.setHints (TOPDOWNLEFTRIGHT | COMPLETESCANLINES |
         SINGLEPASS | (hintflags & SINGLEFRAME));
   }
 
   @Override
-  public void setPixels (int x, int y, int width, int height,
+  public void setPixels(int x, int y, int width, int height,
                          ColorModel cm, byte[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
 
   @Override
-  public void setPixels (int x, int y, int width, int height,
+  public void setPixels(int x, int y, int width, int height,
                          ColorModel cm, int[] pixels, int offset, int scansize) {
     setThePixels (x, y, width, height, cm, pixels, offset, scansize);
   }
 
-  private void setThePixels (int x, int y, int width, int height,
+  private void setThePixels(int x, int y, int width, int height,
       ColorModel cm, Object pixels, int offset, int scansize) {
 
     int sourceOffset = offset;
@@ -84,7 +84,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
   }
 
   @Override
-  public void imageComplete (int status) {
+  public void imageComplete(int status) {
     if ((status == IMAGEABORTED) || (status == IMAGEERROR)) {
       consumer.imageComplete (status);
       return;

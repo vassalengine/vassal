@@ -172,7 +172,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
   
   @Override
-  public Object getPersistentProperty (Object key) {
+  public Object getPersistentProperty(Object key) {
     // Standard getProperty also returns persistent properties
     return piece.getProperty(key);
   }

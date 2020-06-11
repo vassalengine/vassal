@@ -499,11 +499,11 @@ public class Translate extends Decorator implements TranslatablePiece {
       this.stroke = stroke;
     }
     
-    public void setAdditionalCommand (Command c) {
+    public void setAdditionalCommand(Command c) {
       additionalCommand = c;
     }
 
-    public Command getAdditionalCommand () {
+    public Command getAdditionalCommand() {
       return additionalCommand;
     }
     /**

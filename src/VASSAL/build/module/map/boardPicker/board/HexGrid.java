@@ -1005,11 +1005,11 @@ public class HexGrid extends AbstractConfigurable
       }
     }
 
-    protected Point reverse (Point p) {
+    protected Point reverse(Point p) {
       return new Point(p.y, p.x);
     }
 
-    protected void check (boolean sideways, Point p1, Point p2, Point p3) {
+    protected void check(boolean sideways, Point p1, Point p2, Point p3) {
 
       int r = abs(p1.x - p2.x);
       int width = r * 3 / 2;
@@ -1027,7 +1027,7 @@ public class HexGrid extends AbstractConfigurable
       setMetrics(width, height, Xoff, Yoff, sideways);
     }
 
-    protected void checkEnd (boolean sideways, Point p1, Point p2, Point p3) {
+    protected void checkEnd(boolean sideways, Point p1, Point p2, Point p3) {
       if (abs((p1.x + p2.x) / 2 - p3.x) > ERROR_MARGIN) {
         reportShapeError();
         return;

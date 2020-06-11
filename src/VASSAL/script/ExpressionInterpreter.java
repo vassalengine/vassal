@@ -283,7 +283,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * @param value
    * @return wrapped value
    */
-  public Object wrap (String value) {
+  public Object wrap(String value) {
     if (value == null) {
       return "";
     }

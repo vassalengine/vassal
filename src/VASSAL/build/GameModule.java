@@ -796,7 +796,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    *
    * @return
    */
-  public boolean pauseLogging () {
+  public boolean pauseLogging() {
     synchronized(loggingLock) {
       if (loggingPaused) {
         return false;
