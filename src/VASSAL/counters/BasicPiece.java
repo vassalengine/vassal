@@ -379,12 +379,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       persistentProps = new HashMap<>();
     }
 
-    final Object oldValue = (newValue == null) ? persistentProps.remove(key) : persistentProps.put(key, newValue);
+    final Object oldValue = newValue == null ? persistentProps.remove(key) : persistentProps.put(key, newValue);
     return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
   }
 
   @Override
-  public Object getPersistentProperty (Object key) {
+  public Object getPersistentProperty(Object key) {
     return persistentProps == null ? null : persistentProps.get(key);
   }
   
@@ -676,7 +676,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       persistentProps.clear();
     }
     final int propCount = st.nextInt(0);
-    for (int i=0; i < propCount; i++) {
+    for (int i = 0; i < propCount; i++) {
       if (persistentProps == null) {
         persistentProps = new HashMap<>();      
       }

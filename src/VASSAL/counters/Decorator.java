@@ -450,14 +450,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @param p
    */
   public static Command setOldProperties(GamePiece p) {
-    PersistentPropertyContainer container;
+
     // Not all GamePieces will have persistent properties
-    if (p instanceof PersistentPropertyContainer) {
-      container = (PersistentPropertyContainer) p;
-    }
-    else {
+    if (!(p instanceof PersistentPropertyContainer)) {
       return null;
     }
+    PersistentPropertyContainer container = (PersistentPropertyContainer) p;
     
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$
@@ -490,6 +488,10 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     return comm;
   }
 
+  /**
+   * Use {@link #setOldProperties(GamePiece) 
+   */
+  @Deprecated
   public Command setOldProperties() {
     return setOldProperties(this);
   }

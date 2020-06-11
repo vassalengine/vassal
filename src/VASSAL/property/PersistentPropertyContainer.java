@@ -27,5 +27,5 @@ public interface PersistentPropertyContainer {
 
     public Command setPersistentProperty (Object key, Object val);
     
-    public Object getPersistentProperty (Object key);
+    public Object getPersistentProperty(Object key);
 }
