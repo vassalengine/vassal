@@ -29,6 +29,7 @@ import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -50,10 +51,12 @@ import VASSAL.command.AddPiece;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
+import VASSAL.command.SetPersistentPropertyCommand;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -61,7 +64,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 /**
  * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource {
+public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer {
   public static final String ID = "piece;";
   private static Highlighter highlighter;
   /**
@@ -97,7 +100,21 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   private Stack parent;
   private Point pos = new Point(0, 0);
   private String id;
+  
+  /* 
+   * A set of properties used as scratch-pad storage by various Traits and processes.
+   * These properties are ephemeral and not stored in the GameState.
+   */
   private java.util.Map<Object, Object> props;
+  
+  /* 
+   * A Set of properties that must be persisted in the GameState. 
+   * Will be created as lazily as possible since pieces that don't move will not need them,
+   * The current code only supports String Keys and Values. Non-strings should be serialised 
+   * before set and de-serialised after get. 
+   */
+  private java.util.Map<Object, Object> persistentProps;
+  
   /** @deprecated Moved into own traits, retained for backward compatibility */
   @Deprecated
   private char cloneKey;
@@ -221,7 +238,16 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
+    
+    // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);
+    
+    // Check for a persistent property
+    if (prop == null && persistentProps != null) {
+      prop = persistentProps.get(key);
+    }
+    
+    // Check for higher level properties. Each level if it exists will check the higher level if required.
     if (prop == null) {
       final Map map = getMap();
       final Zone zone = (map == null ? null : map.findZone(getPosition()));
@@ -235,6 +261,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         prop = GameModule.getGameModule().getProperty(key);
       }
     }
+    
     return prop;
   }
 
@@ -308,7 +335,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return getProperty(key);
     }
+    // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);
+    
+    // Check for a persistent property
+    if (prop == null && persistentProps != null) {
+      prop = persistentProps.get(key);
+    }
+    
+    // Check for higher level properties. Each level if it exists will check the higher level if required.
     if (prop == null) {
       final Map map = getMap();
       final Zone zone = (map == null ? null : map.findZone(getPosition()));
@@ -338,6 +373,21 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  @Override
+  public Command setPersistentProperty(Object key, Object newValue) {
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();
+    }
+
+    final Object oldValue = newValue == null ? persistentProps.remove(key) : persistentProps.put(key, newValue);
+    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
+  }
+
+  @Override
+  public Object getPersistentProperty(Object key) {
+    return persistentProps == null ? null : persistentProps.get(key);
+  }
+  
   protected Object prefsValue(String s) {
     return GameModule.getGameModule().getPrefs().getValue(s);
   }
@@ -571,6 +621,14 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     final Point p = getPosition();
     se.append(p.x).append(p.y);
     se.append(getGpId());
+    se.append(persistentProps == null ? 0 : persistentProps.size());
+    // Persistent Property values will always be String (for now).
+    if (persistentProps != null) {
+      persistentProps.forEach((key, val) -> {
+        se.append(key == null ? "" : key.toString());
+        se.append(val == null ? "" : val.toString());
+      });
+    }
     return se.getValue();
   }
 
@@ -604,6 +662,28 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       }
     }
     setGpId(st.nextToken(""));
+    
+    if (persistentProps == null) {
+      persistentProps = new HashMap<>();      
+    }
+    else {
+      persistentProps.clear();
+    }
+      
+    // Persistent Property values will always be String (for now).
+    // Create the HashMap as lazily as possible, no point in creating it for pieces that never move
+    if (persistentProps != null) {
+      persistentProps.clear();
+    }
+    final int propCount = st.nextInt(0);
+    for (int i = 0; i < propCount; i++) {
+      if (persistentProps == null) {
+        persistentProps = new HashMap<>();      
+      }
+      final String key = st.nextToken("");
+      final String val = st.nextToken("");
+      persistentProps.put(key, val);
+    }
   }
 
   @Override

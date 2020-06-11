@@ -127,8 +127,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         return null;
       final Map preMap = getMap();
       final Point prePos = getPosition();
-      setOldProperties();
-      comm = pile.addToContents(Decorator.getOutermost(this));
+      comm = setOldProperties();
+      comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
       // Apply Auto-move key if the piece has moved
       Map m = pile.getMap();
       if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {

@@ -441,25 +441,39 @@ public class PieceMover extends AbstractBuildable
 
   /** Invoked just before a piece is moved */
   protected Command movedPiece(GamePiece p, Point loc) {
-    setOldLocation(p);
-    Command c = null;
+    Command c = new NullCommand();
+    c = c.append(setOldLocations(p));
     if (!loc.equals(p.getPosition())) {
-      c = markMoved(p, true);
+      c = c.append(markMoved(p, true));
     }
     if (p.getParent() != null) {
       final Command removedCommand = p.getParent().pieceRemoved(p);
-      c = c == null ? removedCommand : c.append(removedCommand);
+      c = c.append(removedCommand);
     }
     return c;
   }
-
+  
+  /**
+   * Replaced by {@link #setOldLocations(GamePiece)} to return generated Commands
+   * @param p
+   */
+  @Deprecated
   protected void setOldLocation(GamePiece p) {
+    setOldLocations(p);
+  }
+
+  protected Command setOldLocations(GamePiece p) {
+    Command comm = new NullCommand();
     if (p instanceof Stack) {
       for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {
-        Decorator.setOldProperties(((Stack) p).getPieceAt(i));
+        comm = comm.append(Decorator.setOldProperties(((Stack) p).getPieceAt(i)));
       }
     }
-    else Decorator.setOldProperties(p);
+    else {
+      comm = comm.append(Decorator.setOldProperties(p));
+    }
+    return comm;
+    
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
@@ -472,7 +486,7 @@ public class PieceMover extends AbstractBuildable
       if (p instanceof Stack) {
         for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
              i.hasNext();) {
-          c.append(markMoved(i.next(), hasMoved));
+          c = c.append(markMoved(i.next(), hasMoved));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {
@@ -480,7 +494,7 @@ public class PieceMover extends AbstractBuildable
           final ChangeTracker comm = new ChangeTracker(p);
           p.setProperty(Properties.MOVED,
                         hasMoved ? Boolean.TRUE : Boolean.FALSE);
-          c = comm.getChangeCommand();
+          c = c.append(comm.getChangeCommand());
         }
       }
     }
@@ -656,22 +670,31 @@ public class PieceMover extends AbstractBuildable
 
     // Apply key after move to each moved piece
     if (map.getMoveKey() != null) {
-      applyKeyAfterMove(allDraggedPieces, comm, map.getMoveKey());
+      comm = comm.append(applyKeyAfterMove(allDraggedPieces, map.getMoveKey()));
     }
 
     tracker.repaint();
     return comm;
   }
 
-  protected void applyKeyAfterMove(List<GamePiece> pieces,
-                                   Command comm, KeyStroke key) {
+  /**
+   * Replace by {@link #applyKeyAfterMove(List, KeyStroke)} to return Commands
+   */
+  @Deprecated
+  protected void applyKeyAfterMove(List<GamePiece> pieces, Command comm, KeyStroke key) {
+    comm.append(applyKeyAfterMove(pieces, key));
+  }
+  
+  protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
+    Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT,
                           PieceCloner.getInstance().clonePiece(piece));
       }
-      comm.append(piece.keyEvent(key));
+      comm = comm.append(piece.keyEvent(key));
     }
+    return comm;
   }
 
   /**
