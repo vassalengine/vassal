@@ -1,6 +1,9 @@
 3.3.1-beta1 - ???
 
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
+* 12972: Return to Location backMap and backPoint are not sent to clients or
+    undone
+* 12970: Setting values of Old... variables are not encoded in a Command
 * 12952: Evalute $..$ strings in Property Match expressions on source pce
 * 12951: Undo of Send to Deck command does not return cards to hand in same
     state
