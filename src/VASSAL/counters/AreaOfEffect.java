@@ -199,13 +199,14 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
           AlphaComposite.SRC_OVER, transparencyLevel));
 
         Area a = getArea();
-
-        if (zoom != 1.0) {
-          a = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                                      .createTransformedShape(a));
+        
+        if (a != null) {
+          if (zoom != 1.0) {
+            a = new Area(AffineTransform.getScaleInstance(zoom,zoom)
+                        .createTransformedShape(a));
+          }
+          g2d.fill(a);
         }
-
-        g2d.fill(a);
 
         g2d.setColor(oldColor);
         g2d.setComposite(oldComposite);
@@ -219,6 +220,9 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected Area getArea() {
     Area a;
     final Map map = getMap();
+    if (map == null) {
+      return null;
+    }
     // Always draw the area centered on the piece's current position
     // (For instance, don't draw it at an offset if it's in an expanded stack)
     final Point mapPosition = getPosition();
