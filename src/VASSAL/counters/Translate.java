@@ -237,7 +237,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   /*
    * Move a single piece to a destination
    */
-  protected Command movePiece (GamePiece gp, Point dest) {
+  protected Command movePiece(GamePiece gp, Point dest) {
     
     // Is the piece on a map?
     final Map map = gp.getMap();
@@ -278,7 +278,7 @@ public class Translate extends Decorator implements TranslatablePiece {
      if (mover == null) {
        mover = new MoveExecuter();
        mover.setKeyEvent(stroke);
-       mover.setAdditionalCommand (setOldProperties(this));
+       mover.setAdditionalCommand(setOldProperties(this));
        SwingUtilities.invokeLater(mover);
      }
      GamePiece target = findTarget(stroke);
