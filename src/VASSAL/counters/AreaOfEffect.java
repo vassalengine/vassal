@@ -202,8 +202,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         
         if (a != null) {
           if (zoom != 1.0) {
-            a = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                        .createTransformedShape(a));
+            a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
           }
           g2d.fill(a);
         }
