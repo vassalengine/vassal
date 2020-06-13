@@ -1264,9 +1264,9 @@ public class Inventory extends AbstractConfigurable
       if (sortStrategy.equals(ALPHA))
         Collections.sort(children);
       else if (sortStrategy.equals(LENGTHALPHA))
-        Collections.sort(children, new LengthAlpha());
+        children.sort(new LengthAlpha());
       else if (sortStrategy.equals(NUMERIC))
-        Collections.sort(children, new Numerical());
+        children.sort(new Numerical());
       else
         Collections.sort(children);
     }

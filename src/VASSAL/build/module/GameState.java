@@ -847,7 +847,7 @@ public class GameState implements CommandEncoder {
   public Command getRestorePiecesCommand() {
     // TODO remove stacks that were empty when the game was loaded and are still empty now
     final List<GamePiece> pieceList = new ArrayList<>(pieces.values());
-    Collections.sort(pieceList, new Comparator<>() {
+    pieceList.sort(new Comparator<>() {
       private final Map<GamePiece, Integer> indices = new HashMap<>();
 
       // Cache indices because indexOf() is linear;

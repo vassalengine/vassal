@@ -25,7 +25,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -199,7 +198,7 @@ public class DragBuffer {
   }
 
   public void sort(Comparator<GamePiece> comp) {
-    Collections.sort(pieces, comp);
+    pieces.sort(comp);
   }
 
   /**
