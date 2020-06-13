@@ -18,8 +18,6 @@
  */
 package VASSAL.tools;
 
-import static VASSAL.tools.IterableEnumeration.iterate;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -32,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
@@ -232,7 +229,7 @@ public class ZipUpdater implements Runnable {
         try (OutputStream fout = new FileOutputStream(updaterFile);
              OutputStream bout = new BufferedOutputStream(fout);
              JarOutputStream out = new JarOutputStream(bout)) {
-          for (ZipEntry entry : iterate(goal.entries())) {
+          for (ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {
             final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
               getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
