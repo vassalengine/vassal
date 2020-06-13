@@ -2468,10 +2468,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         }
       };
     }
-    if (HOTKEY.equals(name) || BUTTON_NAME.equals(name) || TOOLTIP.equals(name) || ICON.equals(name)) {
+    if (List.of(HOTKEY, BUTTON_NAME, TOOLTIP, ICON).contains(name)) {
       return visibilityCondition;
     }
-    else if (MARK_UNMOVED_TEXT.equals(name) || MARK_UNMOVED_ICON.equals(name) || MARK_UNMOVED_TOOLTIP.equals(name)) {
+    else if (List.of(MARK_UNMOVED_TEXT, MARK_UNMOVED_ICON, MARK_UNMOVED_TOOLTIP).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

@@ -20,6 +20,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -186,7 +187,7 @@ public abstract class Item extends AbstractConfigurable {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-   if (ROTATION.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name) || ANTIALIAS.equals(name)) {
+   if (List.of(ROTATION, X_OFFSET, Y_OFFSET, ANTIALIAS).contains(name)) {
       return advancedCond;
     }
     else {

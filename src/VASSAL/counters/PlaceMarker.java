@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.stream.Stream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -225,12 +226,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       selectMarker(marker);
 
     if (markerText != null) {
-      if (!Boolean.TRUE.equals(
-            outer.getProperty(Properties.OBSCURED_TO_OTHERS)) &&
-          !Boolean.TRUE.equals(
-            outer.getProperty(Properties.OBSCURED_TO_ME)) &&
-          !Boolean.TRUE.equals(
-            outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
+      if (Stream.of(Properties.OBSCURED_TO_OTHERS, Properties.OBSCURED_TO_ME, Properties.INVISIBLE_TO_OTHERS)
+                .noneMatch(s -> Boolean.TRUE.equals(outer.getProperty(s)))) {
         final String location = m.locationName(getPosition());
         if (location != null) {
           Command display = new Chatter.DisplayText(

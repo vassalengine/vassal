@@ -312,10 +312,7 @@ public class DiceButton extends AbstractConfigurable {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (N_DICE.equals(name)
-        || N_SIDES.equals(name)
-        || PLUS.equals(name)
-        || ADD_TO_TOTAL.equals(name)) {
+    if (List.of(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL).contains(name)) {
       return cond;
     }
     else if (SORT_DICE_RESULTS.equals(name)) {

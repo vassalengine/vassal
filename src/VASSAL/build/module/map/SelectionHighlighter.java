@@ -28,6 +28,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -155,7 +156,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         }
       };
     }
-    else if (IMAGE.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name)) {
+    else if (List.of(IMAGE, X_OFFSET, Y_OFFSET).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

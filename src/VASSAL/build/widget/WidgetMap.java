@@ -6,6 +6,8 @@ import javax.swing.JScrollPane;
 import VASSAL.build.module.Map;
 import VASSAL.configure.VisibilityCondition;
 
+import java.util.List;
+
 public class WidgetMap extends Map {
   public WidgetMap() {
     super();
@@ -40,7 +42,7 @@ public class WidgetMap extends Map {
    */
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (USE_LAUNCH_BUTTON.equals(name) || BUTTON_NAME.equals(name) || ICON.equals(name) || HOTKEY.equals(name)) {
+    if (List.of(USE_LAUNCH_BUTTON, BUTTON_NAME, ICON, HOTKEY).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

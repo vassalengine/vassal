@@ -1197,7 +1197,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
       };
     }
-    else if (FONT_SIZE.equals(name) || SUMMARY_REPORT_FORMAT.equals(name) || COUNTER_REPORT_FORMAT.equals(name)) {
+    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
@@ -1205,7 +1205,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
       };
     }
-    else if (DRAW_PIECES.equals(name) || SHOW_TEXT.equals(name) || SHOW_NOSTACK.equals(name) || SHOW_DECK.equals(name) || DISPLAY.equals(name)) {
+    else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
@@ -1249,7 +1249,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * The following fields are not to be displayed. They are either obsolete
      * or maintained for backward compatibility
      */
-    else if (VERSION.equals(name) || SHOW_TEXT_SINGLE_DEPRECATED.equals(name) || GRAPH_SINGLE_DEPRECATED.equals(name)) {
+    else if (List.of(VERSION, SHOW_TEXT_SINGLE_DEPRECATED, GRAPH_SINGLE_DEPRECATED).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

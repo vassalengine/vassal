@@ -28,6 +28,7 @@ import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
@@ -580,11 +581,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (name.equals(EXSEP_X)
-        || name.equals(EXSEP_Y)
-        || name.equals(UNEXSEP_X)
-        || name.equals(UNEXSEP_Y)
-        || name.equals(COLOR)) {
+    if (List.of(EXSEP_X, EXSEP_Y, UNEXSEP_X, UNEXSEP_Y, COLOR).contains(name)) {
       return cond;
     }
     else {

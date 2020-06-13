@@ -728,7 +728,7 @@ public class Inventory extends AbstractConfigurable
         }
       };
     }
-    else if (LEAF_FORMAT.equals(name) || CENTERONPIECE.equals(name) || FORWARD_KEYSTROKE.equals(name) || SHOW_MENU.equals(name) || DRAW_PIECES.equals(name)) {
+    else if (List.of(LEAF_FORMAT, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES).contains(name)) {
       return piecesVisible;
     }
     else {
