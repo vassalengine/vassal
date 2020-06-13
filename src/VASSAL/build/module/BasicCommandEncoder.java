@@ -112,7 +112,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     basicFactories.put(Deck.ID, new BasicPieceFactory() {
       @Override
       public GamePiece createBasicPiece(String type) {
-        return new Deck(type);
+        return new Deck(GameModule.getGameModule(), type);
       }
     });
     decoratorFactories.put(Immobilized.ID, new DecoratorFactory() {
