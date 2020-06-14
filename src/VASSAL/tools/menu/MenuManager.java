@@ -55,11 +55,7 @@ public abstract class MenuManager {
   private Map<String,MenuMarker> markers = new HashMap<>();
 
   public MenuItemProxy addKey(String key) {
-    List<MenuItemProxy> items = actionLocations.get(key);
-    if (items == null) {
-      items = new ArrayList<>();
-      actionLocations.put(key, items);
-    }
+    List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());
 
     final MenuItemProxy item = new MenuItemProxy();
     items.add(item);
