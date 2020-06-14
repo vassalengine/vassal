@@ -188,9 +188,7 @@ public final class IconFactory {
    * @param family
    */
   private void add(IconFamily family) {
-    if (iconFamilies.get(family.getName()) == null) {
-      iconFamilies.put(family.getName(), family);
-    }
+    iconFamilies.putIfAbsent(family.getName(), family);
   }
 
   /**

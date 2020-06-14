@@ -1566,11 +1566,7 @@ private PieceWindow pieceWin;
     if (hiddenFlagImages == null)
       hiddenFlagImages = new HashMap<>();
 
-    HashMap<Dimension,String> map = hiddenFlagImages.get(flag);
-    if (map == null) {
-      map = new HashMap<>();
-      hiddenFlagImages.put(flag, map);
-    }
+    HashMap<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
 
     Dimension d = new Dimension(0, height);
     String imageName = map.get(d);
@@ -1600,11 +1596,7 @@ private PieceWindow pieceWin;
     if (hiddenFlagImages == null)
       hiddenFlagImages = new HashMap<>();
 
-    HashMap<Dimension,String> map = hiddenFlagImages.get(flag);
-    if (map == null) {
-      map = new HashMap<>();
-      hiddenFlagImages.put(flag, map);
-    }
+    HashMap<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
 
     String imageName = map.get(d);
     if (imageName == null) {

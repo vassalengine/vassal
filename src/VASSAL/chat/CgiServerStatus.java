@@ -152,11 +152,7 @@ public class CgiServerStatus implements ServerStatus {
           final String playerName = st.nextToken();
           final Long when = Long.valueOf(st.nextToken());
 
-          List<String[]> l = records.get(when);
-          if (l == null) {
-            l = new ArrayList<>();
-            records.put(when, l);
-          }
+          List<String[]> l = records.computeIfAbsent(when, k -> new ArrayList<>());
 
           l.add(new String[]{ moduleName, roomName, playerName });
         }
