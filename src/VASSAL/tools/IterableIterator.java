@@ -27,7 +27,10 @@ import java.util.Iterator;
  * @author Joel Uckelman
  * @since 3.1.0
  * @see IterableEnumeration
+ *
+ * @deprecated use {@link IteratorUtils#iterate(Iterator)}
  */
+@Deprecated
 public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
   private final Iterator<T> i;
 
@@ -36,7 +39,10 @@ public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
    * <code>Iterator</code>.
    *
    * @param i the <code>Enumeration</code> on which this will iterate
+   *
+   * @deprecated use {@link IteratorUtils#iterate(Iterator)}
    */
+  @Deprecated
   public IterableIterator(Iterator<T> i) {
     this.i = i;
   }
@@ -71,8 +77,11 @@ public final class IterableIterator<T> implements Iterable<T>, Iterator<T> {
    *
    * @param i the <code>Iterator</code>
    * @return an <code>Iterable</code> wrapping <code>i</code>
+   *
+   * @deprecated use {@link IteratorUtils#iterate(Iterator)}
    */
+  @Deprecated
   public static <T> Iterable<T> iterate(Iterator<T> i) {
-    return new IterableIterator<>(i);
+    return IteratorUtils.iterate(i);
   }
 }

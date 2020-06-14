@@ -28,7 +28,10 @@ import java.util.Iterator;
  * @author Joel Uckelman
  * @since 3.1.0
  * @see IterableIterator
+ * @deprecated use {@link Iterator}, {@link Iterable}, {@link java.util.Collection},
+ * {@link Enumeration#asIterator()} or Java Stream API instead.
  */
+@Deprecated
 public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
   private final Enumeration<T> e;
 
@@ -79,6 +82,6 @@ public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
    * @return an <code>Iterable</code> wrapping <code>e</code>
    */
   public static <T> Iterable<T> iterate(Enumeration<T> e) {
-    return new IterableEnumeration<>(e);
+    return IteratorUtils.iterate(e.asIterator());
   }
 }
