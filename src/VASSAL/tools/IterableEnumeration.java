@@ -31,6 +31,7 @@ import java.util.Iterator;
  * @deprecated use {@link Iterator}, {@link Iterable}, {@link java.util.Collection},
  * {@link Enumeration#asIterator()} or Java Stream API instead.
  */
+@Deprecated
 public final class IterableEnumeration<T> implements Iterable<T>, Iterator<T> {
   private final Enumeration<T> e;
 
