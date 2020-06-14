@@ -184,7 +184,6 @@ public class Translate extends Decorator implements TranslatablePiece {
    * recommended for this reason and now defaults to 'N' and is marked in the Editor as 'Not Recommended'.
    */
   protected Command newTranslate (KeyStroke stroke) {
-    Command c = new NullCommand();
     
     GamePiece target = findTarget(stroke);
     if (target == null) {
@@ -216,6 +215,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
     
     // Move the piece(s)
+    Command c = new NullCommand();
     if (target instanceof Stack) {
       
       final Stack s = (Stack) target;
