@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -150,7 +149,7 @@ public class LocaleConfigurer extends Configurer {
         languages.put(lang, s);
         sortedLangs.add(lang);
       }
-      Collections.sort(sortedLangs, Collator.getInstance(Locale.getDefault()));
+      sortedLangs.sort(Collator.getInstance(Locale.getDefault()));
       languageList = sortedLangs.toArray(new String[0]);
     }
     return languageList;
@@ -166,8 +165,7 @@ public class LocaleConfigurer extends Configurer {
         countries.put(country, s);
         sortedCountries.add(country);
       }
-      Collections.sort(sortedCountries,
-                       Collator.getInstance(Locale.getDefault()));
+      sortedCountries.sort(Collator.getInstance(Locale.getDefault()));
       countries.put(ANY_COUNTRY, "");
       sortedCountries.add(0, ANY_COUNTRY);
       countryList = sortedCountries.toArray(new String[0]);

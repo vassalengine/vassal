@@ -498,7 +498,7 @@ public class ModuleManagerWindow extends JFrame {
       recentModuleConfig.removeValue(s);
     }
 
-    Collections.sort(moduleList, new Comparator<>() {
+    moduleList.sort(new Comparator<>() {
       @Override
       public int compare(ModuleInfo f1, ModuleInfo f2) {
         return f1.compareTo(f2);
