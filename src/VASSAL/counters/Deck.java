@@ -199,7 +199,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Deck(GameModule gameModule, String type) {
     this.gameModule = gameModule;
     mySetType(type);
-    PlayerRoster.addSideChangeListener(this);
+    gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
   public Deck(GameModule gameModule, String type, PropertySource source) {
