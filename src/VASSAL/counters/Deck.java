@@ -194,9 +194,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Deck(GameModule gameModule) {
     this(gameModule, ID);
-
-    // the constructor above already adds this listener, why do it a second time?
-    PlayerRoster.addSideChangeListener(this);
   }
 
   public Deck(GameModule gameModule, String type) {
