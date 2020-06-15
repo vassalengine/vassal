@@ -11,6 +11,8 @@ import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -466,7 +468,7 @@ public class StackTest {
   }
 
   @Test
-  public void getPiecesAsListShouldReturnWithCorrectSize() {
+  public void asListShouldReturnWithCorrectSize() {
     // prepare
     final GamePiece gamePiece1 = mock(GamePiece.class);
     final GamePiece gamePiece2 = mock(GamePiece.class);
@@ -477,14 +479,14 @@ public class StackTest {
     s.add(gamePiece1);
     s.add(gamePiece2);
     s.add(gamePiece3);
-    final List<GamePiece> pieces = s.getPiecesAsList();
+    final List<GamePiece> pieces = s.asList();
 
     // assert
     assertEquals(3, pieces.size());
   }
 
   @Test
-  public void getPiecesAsListShouldGetAllPiecesInOrder() {
+  public void asListShouldGetAllPiecesInOrder() {
     // prepare
     final GamePiece gamePiece0 = mock(GamePiece.class);
     final GamePiece gamePiece1 = mock(GamePiece.class);
@@ -495,7 +497,7 @@ public class StackTest {
     s.add(gamePiece0);
     s.add(gamePiece1);
     s.add(gamePiece2);
-    final List<GamePiece> pieces = s.getPiecesAsList();
+    final List<GamePiece> pieces = s.asList();
 
     // assert
     assertEquals(gamePiece0, pieces.get(0));
@@ -504,7 +506,7 @@ public class StackTest {
   }
 
   @Test
-  public void getPiecesAsListShouldReturnDefensiveCopy() {
+  public void asListShouldReturnDefensiveCopy() {
     // prepare
     final GamePiece gamePiece0 = mock(GamePiece.class);
     final GamePiece gamePiece1 = mock(GamePiece.class);
@@ -515,18 +517,32 @@ public class StackTest {
     s.add(gamePiece0);
     s.add(gamePiece1);
     s.add(gamePiece2);
-    final List<GamePiece> pieces = s.getPiecesAsList();
+    final List<GamePiece> pieces = s.asList();
 
     pieces.remove(0);
     pieces.remove(0);
 
     // assert
     assertEquals(3, s.getPieceCount());
-    final List<GamePiece> anotherPiecesList = s.getPiecesAsList();
+    final List<GamePiece> anotherPiecesList = s.asList();
     assertEquals(3, anotherPiecesList.size());
     assertEquals(gamePiece0, anotherPiecesList.get(0));
     assertEquals(gamePiece1, anotherPiecesList.get(1));
     assertEquals(gamePiece2, anotherPiecesList.get(2));
   }
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void asListShouldReturnUnmodifiableList() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    final List<GamePiece> pieces = s.asList();
+
+    // run - trying to modify the list should throw
+    pieces.add(gamePiece0);
+
+    // assert - should not get here
+    Assert.fail();
+  }
 }

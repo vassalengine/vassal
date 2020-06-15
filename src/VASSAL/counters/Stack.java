@@ -26,6 +26,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +78,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @return an Enumeration of the pieces in the stack, from the bottom up This
    *         is a clone of the contents so add/remove operations during read
    *         won't affect it.
-   * @deprecated use {@link #getPiecesAsList()}
+   * @deprecated use {@link #asList()}
    */
   @Deprecated
   public Enumeration<GamePiece> getPieces() {
@@ -86,14 +87,14 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   /**
-   * @return a defensive copy of the {@link List} of {@link GamePiece}s contained in this {@link Stack}
+   * @return an unmodifiable {@link List} of {@link GamePiece}s contained in this {@link Stack}
    */
-  public List<GamePiece> getPiecesAsList() {
+  public List<GamePiece> asList() {
     List<GamePiece> result = new ArrayList<>();
     for (int i = 0; i < pieceCount; i++) {
       result.add(contents[i]);
     }
-    return result;
+    return Collections.unmodifiableList(result);
   }
 
   public Iterator<GamePiece> getPiecesReverseIterator() {
@@ -329,9 +330,9 @@ public class Stack implements GamePiece, StateMergeable {
     final Rectangle[] childBounds = new Rectangle[getPieceCount()];
     getMap().getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
 
-    getPiecesAsList().stream()
-                     .filter(PieceIterator.VISIBLE)
-                     .forEach(p -> r.add(childBounds[indexOf(p)]));
+    asList().stream()
+            .filter(PieceIterator.VISIBLE)
+            .forEach(p -> r.add(childBounds[indexOf(p)]));
 
     return r;
   }
@@ -342,9 +343,9 @@ public class Stack implements GamePiece, StateMergeable {
     Shape[] childBounds = new Shape[getPieceCount()];
     StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
     metrics.getContents(this, null, childBounds, null, 0, 0);
-    getPiecesAsList().stream()
-                     .filter(PieceIterator.VISIBLE)
-                     .forEach(p -> a.add(new Area(childBounds[indexOf(p)])));
+    asList().stream()
+            .filter(PieceIterator.VISIBLE)
+            .forEach(p -> a.add(new Area(childBounds[indexOf(p)])));
 
     return a;
   }
@@ -438,9 +439,9 @@ public class Stack implements GamePiece, StateMergeable {
    * @return Number of GamePieces that are visible to me
    */
   protected int nVisible() {
-    return (int) getPiecesAsList().stream()
-                                  .filter(PieceIterator.VISIBLE)
-                                  .count();
+    return (int) asList().stream()
+                         .filter(PieceIterator.VISIBLE)
+                         .count();
   }
 
   @Override
@@ -567,7 +568,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @param val
    */
   public void setPropertyOnContents(Object key, Object val) {
-    getPiecesAsList().forEach(gamePiece -> gamePiece.setProperty(key, val));
+    asList().forEach(gamePiece -> gamePiece.setProperty(key, val));
   }
 
   @Override

@@ -30,7 +30,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.util.Iterator;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -297,7 +296,7 @@ public class Restricted extends Decorator implements EditablePiece {
     @Override
     public Object visitStack(Stack s) {
       Command c = new NullCommand();
-      for (GamePiece gamePiece : s.getPiecesAsList()) {
+      for (GamePiece gamePiece : s.asList()) {
         c = c.append((Command)visitDefault(gamePiece));
       }
       return c;

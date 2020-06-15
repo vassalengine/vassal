@@ -23,7 +23,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPopupMenu;
@@ -766,7 +765,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
     myDeck.setPropertySource(source);
-    s.getPiecesAsList().forEach(gamePiece -> myDeck.add(gamePiece));
+    s.asList().forEach(gamePiece -> myDeck.add(gamePiece));
     myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()));
     return myDeck;
   }

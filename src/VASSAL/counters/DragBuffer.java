@@ -53,7 +53,7 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED_MOVEMENT))) {
       if (p instanceof Stack) {
-        for (GamePiece gamePiece : ((Stack) p).getPiecesAsList()) {
+        for (GamePiece gamePiece : ((Stack) p).asList()) {
           if (Boolean.TRUE.equals(
                 gamePiece.getProperty(Properties.RESTRICTED_MOVEMENT))) {
             return;

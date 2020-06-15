@@ -27,7 +27,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 
 import javax.swing.KeyStroke;
 
@@ -289,7 +288,7 @@ public class StackMetrics extends AbstractConfigurable {
       }
     }
 
-    stack.getPiecesAsList().stream()
+    stack.asList().stream()
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
            int index = stack.indexOf(gamePiece);
@@ -338,7 +337,7 @@ public class StackMetrics extends AbstractConfigurable {
       }
     }
 
-    stack.getPiecesAsList().stream()
+    stack.asList().stream()
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
            int index = stack.indexOf(gamePiece);
@@ -670,7 +669,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
 
         if (moving instanceof Stack) {
-          for (GamePiece p : ((Stack) moving).getPiecesAsList()) {
+          for (GamePiece p : ((Stack) moving).asList()) {
             final MoveTracker t = new MoveTracker(p);
             fixedParent.insertChild(p, index++);
             comm = comm.append(t.getMoveCommand());

@@ -18,8 +18,6 @@
  */
 package VASSAL.counters;
 
-import java.util.Iterator;
-
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -169,7 +167,7 @@ public class GlobalCommand {
 
     @Override
     public Object visitStack(Stack s) {
-      s.getPiecesAsList().forEach(this::apply);
+      s.asList().forEach(this::apply);
       return null;
     }
 

@@ -232,9 +232,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       expressionProperties.get(index).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
-    getPiecesAsList().stream()
-                     .filter(Objects::nonNull)
-                     .forEach(p -> updateCounts(p, true));
+    asList().stream()
+            .filter(Objects::nonNull)
+            .forEach(p -> updateCounts(p, true));
   }
 
   /**
@@ -859,7 +859,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
     final SequenceEncoder se2 = new SequenceEncoder(',');
-    getPiecesAsList().forEach(gamePiece -> se2.append(gamePiece.getId()));
+    asList().forEach(gamePiece -> se2.append(gamePiece.getId()));
     if (se2.getValue() != null) {
       se.append(se2.getValue());
     }
@@ -1389,7 +1389,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void saveDeck(File f) throws IOException {
     Command comm = new LoadDeckCommand(null);
-    for (GamePiece p : getPiecesAsList()) {
+    for (GamePiece p : asList()) {
       p.setMap(null);
       comm = comm.append(new AddPiece(p));
     }

@@ -77,7 +77,7 @@ public class KeyBuffer {
 
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
-      return pieces.containsAll(((Stack) p).getPiecesAsList());
+      return pieces.containsAll(((Stack) p).asList());
     }
     else {
       return pieces.contains(p);
@@ -138,6 +138,6 @@ public class KeyBuffer {
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
-    return stack.getPiecesAsList().stream().anyMatch(this::contains);
+    return stack.asList().stream().anyMatch(this::contains);
   }
 }

@@ -120,7 +120,7 @@ public class MovementReporter {
     Command c = null;
     if (p instanceof Stack) {
       c = new NullCommand();
-      for (GamePiece gp : ((Stack)p).getPiecesAsList()) {
+      for (GamePiece gp : ((Stack)p).asList()) {
         c.append(markMoved(gp));
       }
     }
@@ -265,7 +265,7 @@ public class MovementReporter {
         final Predicate<GamePiece> gamePiecePredicate =
           piece -> Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
             || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
-        return ((Stack) target).getPiecesAsList().stream().anyMatch(gamePiecePredicate);
+        return ((Stack) target).asList().stream().anyMatch(gamePiecePredicate);
       }
       else {
         return Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
@@ -385,7 +385,7 @@ public class MovementReporter {
       boolean first = true;
       for (GamePiece piece : pieces) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).getPiecesAsList()) {
+          for (GamePiece p : ((Stack) piece).asList()) {
             if (isInvisible(p)) {
               if (!first) {
                 names.append(", ");
