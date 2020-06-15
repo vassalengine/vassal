@@ -8,6 +8,8 @@
 * 12952: Evalute $..$ strings in Property Match expressions on source pce
 * 12951: Undo of Send to Deck command does not return cards to hand in same
     state
+* 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in
+    incorrect position
 * 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number
     of pieces' to a Deck correctly
 
