@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -137,6 +138,14 @@ public class DragBuffer {
 
   public boolean contains(GamePiece p) {
     return pieces.contains(p);
+  }
+
+  /**
+   * @return an unmodifiable {@link List} of {@link GamePiece}s contained in
+   * this {@link DragBuffer}
+   */
+  public List<GamePiece> asList() {
+    return Collections.unmodifiableList(pieces);
   }
 
   public PieceIterator getIterator() {

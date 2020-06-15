@@ -118,6 +118,14 @@ public class KeyBuffer {
     return comm;
   }
 
+  /**
+   * @return an unmodifiable {@link List} of {@link GamePiece}s contained in
+   * this {@link KeyBuffer}
+   */
+  public List<GamePiece> asList() {
+    return Collections.unmodifiableList(pieces);
+  }
+
   public Iterator<GamePiece> getPiecesIterator() {
     return pieces.iterator();
   }

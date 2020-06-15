@@ -217,10 +217,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Move the piece(s)
     Command c = new NullCommand();
     if (target instanceof Stack) {
-      
-      final Stack s = (Stack) target;
-      for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {     
-        final GamePiece gp = i.next();
+      for (GamePiece gp : ((Stack) target).asList()) {
         final boolean pieceSelected = Boolean.TRUE.equals(gp.getProperty(Properties.SELECTED));
         if (pieceSelected || moveStack) {
           c = c.append(movePiece(gp, p));

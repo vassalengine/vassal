@@ -234,38 +234,42 @@ public class PieceMover extends AbstractBuildable
     return new DeckVisitorDispatcher(new DeckVisitor() {
       @Override
       public Object visitDeck(Deck d) {
-        DragBuffer.getBuffer().clear();
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
         for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
-          DragBuffer.getBuffer().add(it.nextPiece());
+          dbuf.add(it.nextPiece());
         }
         return null;
       }
 
       @Override
       public Object visitStack(Stack s) {
-        DragBuffer.getBuffer().clear();
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
         // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer,
         // except when global pref "MOVING_STACKS_PICKUP_UNITS" is set
         final boolean selectAllUnitsInStackRegardlessOfSelection =
             (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
 
-        for (int i = 0; i < s.getPieceCount(); i++) {
-          final GamePiece p = s.getPieceAt(i);
-          final boolean pieceSelected = Boolean.TRUE.equals(p.getProperty(Properties.SELECTED));
-          if (selectAllUnitsInStackRegardlessOfSelection || pieceSelected) {
-            DragBuffer.getBuffer().add(p);
+        s.asList().forEach(
+          selectAllUnitsInStackRegardlessOfSelection ?
+          (p) -> dbuf.add(p) :
+          (p) -> {
+            if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+              dbuf.add(p);
+            }
           }
-        }
+        );
         // End RFE 1629255
-        if (KeyBuffer.getBuffer().containsChild(s)) {
+
+        final KeyBuffer kbuf = KeyBuffer.getBuffer();
+        if (kbuf.containsChild(s)) {
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
-          KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Iterator<GamePiece> i =
-                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
-            final GamePiece piece = i.next();
+          kbuf.sort(PieceMover.this);
+          for (GamePiece piece : kbuf.asList()) {
             if (piece.getParent() != s) {
-              DragBuffer.getBuffer().add(piece);
+              dbuf.add(piece);
             }
           }
         }
@@ -274,19 +278,20 @@ public class PieceMover extends AbstractBuildable
 
       @Override
       public Object visitDefault(GamePiece selected) {
-        DragBuffer.getBuffer().clear();
-        if (KeyBuffer.getBuffer().contains(selected)) {
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
+
+        final KeyBuffer kbuf = KeyBuffer.getBuffer();
+        if (kbuf.contains(selected)) {
           // If clicking on a selected piece, put all selected pieces into the
           // drag buffer
-          KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Iterator<GamePiece> i =
-                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
-            DragBuffer.getBuffer().add(i.next());
+          kbuf.sort(PieceMover.this);
+          for (GamePiece piece : kbuf.asList()) {
+            dbuf.add(piece);
           }
         }
         else {
-          DragBuffer.getBuffer().clear();
-          DragBuffer.getBuffer().add(selected);
+          dbuf.add(selected);
         }
         return null;
       }
