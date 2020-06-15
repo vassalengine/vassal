@@ -623,9 +623,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
-        for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
-          apply(i.next());
-        }
+        s.getPiecesAsList().forEach(this::apply);
       }
       return null;
     }

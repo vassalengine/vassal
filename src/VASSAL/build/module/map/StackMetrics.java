@@ -289,17 +289,15 @@ public class StackMetrics extends AbstractConfigurable {
       }
     }
 
-    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
-                                             selectedVisible);
-         e.hasMoreElements();)
-    {
-      GamePiece next = e.nextPiece();
-      int index = stack.indexOf(next);
-      int nextX = x + (int) (zoom * (positions[index].x - x));
-      int nextY = y + (int) (zoom * (positions[index].y - y));
-      next.draw(g, nextX, nextY, obs, zoom);
-      highlighter.draw(next, g, nextX, nextY, obs, zoom);
-    }
+    stack.getPiecesAsList().stream()
+         .filter(gamePiece -> selectedVisible.accept(gamePiece))
+         .forEach(gamePiece -> {
+           int index = stack.indexOf(gamePiece);
+           int nextX = x + (int) (zoom * (positions[index].x - x));
+           int nextY = y + (int) (zoom * (positions[index].y - y));
+           gamePiece.draw(g, nextX, nextY, obs, zoom);
+           highlighter.draw(gamePiece, g, nextX, nextY, obs, zoom);
+         });
   }
 
   /**
@@ -340,18 +338,16 @@ public class StackMetrics extends AbstractConfigurable {
       }
     }
 
-    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
-                                             selectedVisible);
-         e.hasMoreElements();)
-    {
-      GamePiece next = e.nextPiece();
-      int index = stack.indexOf(next);
-      if (bounds == null || isVisible(region, bounds[index])) {
-        Point pt = map.mapToDrawing(positions[index], os_scale);
-        next.draw(g, pt.x, pt.y, view, zoom);
-        highlighter.draw(next, g, pt.x, pt.y, view, zoom);
-      }
-    }
+    stack.getPiecesAsList().stream()
+         .filter(gamePiece -> selectedVisible.accept(gamePiece))
+         .forEach(gamePiece -> {
+           int index = stack.indexOf(gamePiece);
+           if (bounds == null || isVisible(region, bounds[index])) {
+             Point pt = map.mapToDrawing(positions[index], os_scale);
+             gamePiece.draw(g, pt.x, pt.y, view, zoom);
+             highlighter.draw(gamePiece, g, pt.x, pt.y, view, zoom);
+           }
+         });
   }
 
   private boolean isVisible(Rectangle region, Rectangle bounds) {
@@ -674,9 +670,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
 
         if (moving instanceof Stack) {
-          for (Iterator<GamePiece> i = ((Stack) moving).getPiecesIterator();
-               i.hasNext(); ) {
-            final GamePiece p = i.next();
+          for (GamePiece p : ((Stack) moving).getPiecesAsList()) {
             final MoveTracker t = new MoveTracker(p);
             fixedParent.insertChild(p, index++);
             comm = comm.append(t.getMoveCommand());

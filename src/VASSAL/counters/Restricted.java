@@ -297,8 +297,8 @@ public class Restricted extends Decorator implements EditablePiece {
     @Override
     public Object visitStack(Stack s) {
       Command c = new NullCommand();
-      for (Iterator<GamePiece> it = s.getPiecesIterator(); it.hasNext();) {
-        c = c.append((Command)visitDefault(it.next()));
+      for (GamePiece gamePiece : s.getPiecesAsList()) {
+        c = c.append((Command)visitDefault(gamePiece));
       }
       return c;
     }

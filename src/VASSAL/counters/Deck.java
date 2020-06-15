@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.swing.Action;
@@ -231,12 +232,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       expressionProperties.get(index).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      final GamePiece p = i.next();
-      if (p != null) {
-        updateCounts(p,true);
-      }
-    }
+    getPiecesAsList().stream()
+                     .filter(Objects::nonNull)
+                     .forEach(p -> updateCounts(p, true));
   }
 
   /**
@@ -861,9 +859,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
     final SequenceEncoder se2 = new SequenceEncoder(',');
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      se2.append(i.next().getId());
-    }
+    getPiecesAsList().forEach(gamePiece -> se2.append(gamePiece.getId()));
     if (se2.getValue() != null) {
       se.append(se2.getValue());
     }
@@ -1393,8 +1389,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void saveDeck(File f) throws IOException {
     Command comm = new LoadDeckCommand(null);
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      final GamePiece p = i.next();
+    for (GamePiece p : getPiecesAsList()) {
       p.setMap(null);
       comm = comm.append(new AddPiece(p));
     }

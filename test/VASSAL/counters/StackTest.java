@@ -464,4 +464,69 @@ public class StackTest {
     }
 
   }
+
+  @Test
+  public void getPiecesAsListShouldReturnWithCorrectSize() {
+    // prepare
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final GamePiece gamePiece2 = mock(GamePiece.class);
+    final GamePiece gamePiece3 = mock(GamePiece.class);
+
+    // run
+    Stack s = new Stack();
+    s.add(gamePiece1);
+    s.add(gamePiece2);
+    s.add(gamePiece3);
+    final List<GamePiece> pieces = s.getPiecesAsList();
+
+    // assert
+    assertEquals(3, pieces.size());
+  }
+
+  @Test
+  public void getPiecesAsListShouldGetAllPiecesInOrder() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final GamePiece gamePiece2 = mock(GamePiece.class);
+
+    // run
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    s.add(gamePiece1);
+    s.add(gamePiece2);
+    final List<GamePiece> pieces = s.getPiecesAsList();
+
+    // assert
+    assertEquals(gamePiece0, pieces.get(0));
+    assertEquals(gamePiece1, pieces.get(1));
+    assertEquals(gamePiece2, pieces.get(2));
+  }
+
+  @Test
+  public void getPiecesAsListShouldReturnDefensiveCopy() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final GamePiece gamePiece2 = mock(GamePiece.class);
+
+    // run
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    s.add(gamePiece1);
+    s.add(gamePiece2);
+    final List<GamePiece> pieces = s.getPiecesAsList();
+
+    pieces.remove(0);
+    pieces.remove(0);
+
+    // assert
+    assertEquals(3, s.getPieceCount());
+    final List<GamePiece> anotherPiecesList = s.getPiecesAsList();
+    assertEquals(3, anotherPiecesList.size());
+    assertEquals(gamePiece0, anotherPiecesList.get(0));
+    assertEquals(gamePiece1, anotherPiecesList.get(1));
+    assertEquals(gamePiece2, anotherPiecesList.get(2));
+  }
+
 }

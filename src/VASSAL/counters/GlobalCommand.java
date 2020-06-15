@@ -169,9 +169,7 @@ public class GlobalCommand {
 
     @Override
     public Object visitStack(Stack s) {
-      for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
-        apply(i.next());
-      }
+      s.getPiecesAsList().forEach(this::apply);
       return null;
     }
 

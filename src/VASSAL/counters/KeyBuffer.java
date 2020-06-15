@@ -77,13 +77,7 @@ public class KeyBuffer {
 
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
-      for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-           i.hasNext();) {
-        if (!pieces.contains(i.next())) {
-          return false;
-        }
-      }
-      return true;
+      return pieces.containsAll(((Stack) p).getPiecesAsList());
     }
     else {
       return pieces.contains(p);
@@ -144,11 +138,6 @@ public class KeyBuffer {
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
-    for (Iterator<GamePiece> i = stack.getPiecesIterator(); i.hasNext();) {
-      if (contains(i.next())) {
-        return true;
-      }
-    }
-    return false;
+    return stack.getPiecesAsList().stream().anyMatch(this::contains);
   }
 }

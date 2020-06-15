@@ -766,9 +766,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
     myDeck.setPropertySource(source);
-    for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
-      myDeck.add(i.next());
-    }
+    s.getPiecesAsList().forEach(gamePiece -> myDeck.add(gamePiece));
     myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()));
     return myDeck;
   }

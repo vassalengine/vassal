@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * An iterator for GamePieces.  Takes an optional PieceFilter to
@@ -93,12 +94,14 @@ public class PieceIterator {
     return pi.hasNext();
   }
 
+  public static final Predicate<GamePiece> VISIBLE =
+    gamePiece -> !Boolean.TRUE.equals(gamePiece.getProperty(Properties.INVISIBLE_TO_ME));
+
   public static <T extends GamePiece> PieceIterator visible(Iterator<T> i) {
     return new PieceIterator(i, new PieceFilter() {
       @Override
       public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(
-          piece.getProperty(Properties.INVISIBLE_TO_ME));
+        return VISIBLE.test(piece);
       }
     });
   }
