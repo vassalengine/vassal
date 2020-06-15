@@ -144,19 +144,6 @@ Page custom preConfirm leaveConfirm
 # Macros
 #
 
-
-; sets registry to architecture-appropriate one
-!macro SetNativeRegView
-  ${If} ${RunningX64}
-    SetRegView 64
-  ${Else}
-    SetRegView 32
-  ${EndIf}
-!macroend
-
-!define SetNativeRegView "!insertmacro SetNativeRegView"
-
-
 ; skips a page in a Standard install
 !macro SkipIfNotCustom
   ${If} $CustomSetup == 0
@@ -210,11 +197,6 @@ Page custom preConfirm leaveConfirm
   # Detect running instances of VASSAL.
   # Based on http://nsis.sourceforge.net/Get_a_list_of_running_processes.
   #
-
-  ; no PSAPI on Windows 9x and ME, so don't try there
-  ${IfNot} ${IsNT}
-    Goto cannot_check
-  ${EndIf}
 
 check_processes:
   ; allocate a buffer
@@ -328,21 +310,22 @@ Var RemoveOtherVersions
 # Functions
 #
 Function un.onInit
-  ${SetNativeRegView}
+  SetRegView 64
   ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
-  ${SetNativeRegView}
+  ${IfNot} ${RunningX64}
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires 64-bit Windows.$\n$\nTo use VASSAL ${VERSION} on 32-bit Windows, please install Java 11 or later and download the VASSAL package marked 'other'."
+    Abort
+  ${EndIf}
+
+  SetRegView 64
 
   ${If} $InstDir == "" ; /D= was not used on the command line
-    ${If} ${RunningX64}
       StrCpy $InstDir "$PROGRAMFILES64\VASSAL-${VERSION}"
-    ${Else}
-      StrCpy $InstDir "$PROGRAMFILES32\VASSAL-${VERSION}"
-    ${EndIf}
   ${EndIf}
 
   ${ForceSingleton} "VASSAL-installer"
@@ -397,7 +380,6 @@ Function preUninstallOld
   ${FindVASSALVersions}
   SetRegView 64
   ${FindVASSALVersions}
-  ${SetNativeRegView}
 
   ; remove all versions in Standard setup, skip this page
   ${SkipIfNotCustom}
@@ -646,15 +628,13 @@ Section "-Application" Application
       DetailPrint "Uninstall: $1"
 
       ; look for 64-bit install
-      ${If} ${RunningX64}
-        SetRegView 64
+      SetRegView 64
 
-        ; get old install and uninstaller paths
-        ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
-        ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
-        IfErrors 0 found
-        ClearErrors
-      ${EndIf}
+      ; get old install and uninstaller paths
+      ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
+      ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
+      IfErrors 0 found
+      ClearErrors
 
       ; look for 32-bit install
       SetRegView 32
@@ -681,17 +661,15 @@ Section "-Application" Application
       ClearErrors
 
       ; clean up leftover reg keys
-      ${If} ${RunningX64}
-        SetRegView 64
-        DeleteRegKey HKLM "${UNINST}\$1"
-      ${EndIf}
+      SetRegView 64
+      DeleteRegKey HKLM "${UNINST}\$1"
 
       SetRegView 32
       DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
   ${EndIf}
 
-  ${SetNativeRegView}
+  SetRegView 64
 
   ; set the files to bundle
   !include "${TMPDIR}/install_files.inc"
@@ -770,7 +748,7 @@ SectionEnd
 # Uninstall Section
 #
 Section Uninstall
-  ${SetNativeRegView}
+  SetRegView 64
 
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"
@@ -800,11 +778,9 @@ Section Uninstall
   ; delete registry keys
   DeleteRegKey HKLM "${UROOT}"
 
-  ${If} ${RunningX64}
-    ; kill the 32-bit registry tree if empty
-    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
-    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
-  ${EndIf}
+  ; kill the 32-bit registry tree if empty
+  DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
+  DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
 
   ; kill the registry tree if empty
   DeleteRegKey /ifempty HKLM "Software\vassalengine.org\VASSAL"
