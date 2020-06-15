@@ -90,11 +90,7 @@ public class Stack implements GamePiece, StateMergeable {
    * @return an unmodifiable {@link List} of {@link GamePiece}s contained in this {@link Stack}
    */
   public List<GamePiece> asList() {
-    List<GamePiece> result = new ArrayList<>();
-    for (int i = 0; i < pieceCount; i++) {
-      result.add(contents[i]);
-    }
-    return Collections.unmodifiableList(result);
+    return Collections.unmodifiableList(Arrays.asList(contents).subList(0, pieceCount));
   }
 
   public Iterator<GamePiece> getPiecesReverseIterator() {
