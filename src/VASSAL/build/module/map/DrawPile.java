@@ -59,7 +59,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
 public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource {
-  protected Deck dummy = new Deck(); // Used for storing type information
+  protected Deck dummy = new Deck(GameModule.getGameModule()); // Used for storing type information
   protected boolean reshufflable;
   protected Deck myDeck;
   protected PropertySource source;
@@ -764,7 +764,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   protected Stack initializeContents() {
     Stack s = super.initializeContents();
-    myDeck = new Deck(getDeckType());
+    myDeck = new Deck(GameModule.getGameModule(), getDeckType());
     myDeck.setPropertySource(source);
     for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
       myDeck.add(i.next());
