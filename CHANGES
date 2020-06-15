@@ -10,6 +10,8 @@
     state
 * 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in
     incorrect position
+* 12576: At-Start stack attaches to first board listed in module, even if that
+    board wasn't selected by player and is inactive
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
 * 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number
     of pieces' to a Deck correctly

@@ -325,7 +325,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (OwningBoardPrompt.ANY.equals(value)) {
         if (map != null) {
           List<String> selectedBoardNames = map.getBoardPicker().getSelectedBoardNames();
-          owningBoardName = (!selectedBoardNames.isEmpty()) ? selectedBoardNames.get(0) : null;
+          owningBoardName = selectedBoardNames.isEmpty() ? null : selectedBoardNames.get(0);
         }
         else {
           owningBoardName = null;
