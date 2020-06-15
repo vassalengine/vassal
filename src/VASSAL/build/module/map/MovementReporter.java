@@ -121,7 +121,7 @@ public class MovementReporter {
     if (p instanceof Stack) {
       c = new NullCommand();
       for (GamePiece gp : ((Stack)p).asList()) {
-        c.append(markMoved(gp));
+        c = c.append(markMoved(gp));
       }
     }
     else if (p.getProperty(Properties.MOVED) != null) {
