@@ -109,7 +109,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * can only be created by createInterpreter.
    *
    * @param expr Expression
-   * @throws MalformedExpressionException
+   * @throws ExpressionException
    */
   private ExpressionInterpreter(String expr) throws ExpressionException {
     super();
@@ -331,11 +331,10 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     if (ps instanceof GamePiece) {
       Stack s = ((GamePiece) ps).getParent();
       if (s != null) {
-        for (int i = 0; i < s.getPieceCount(); i++) {
-          
+        for (GamePiece gamePiece : s.asList()) {
           try {
             result +=
-              Integer.parseInt(s.getPieceAt(i).getProperty(property).toString());
+              Integer.parseInt(gamePiece.getProperty(property).toString());
           }
           catch (Exception e) {
             // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
@@ -370,9 +369,9 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           if (here.equals(m.locationName(piece.getPosition()))) {
             if (piece instanceof Stack) {
               Stack s = (Stack) piece;
-              for (int j = 0; j < s.getPieceCount(); j++) {
+              for (GamePiece gamePiece : s.asList()) {
                 try {
-                  result += Integer.parseInt(s.getPieceAt(j).getProperty(property).toString());
+                  result += Integer.parseInt(gamePiece.getProperty(property).toString());
                 }
                 catch (NumberFormatException e) {
                   //

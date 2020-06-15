@@ -123,9 +123,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           }
           else {
             Stack s = p.getParent();
-            for (int i = 0; i < s.getPieceCount(); i++) {
-              KeyBuffer.getBuffer().add(s.getPieceAt(i));
-            }
+            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
           }
         }
         // End RFE 1629255
@@ -138,9 +136,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
             KeyBuffer.getBuffer().remove(p);
           }
           else if (!s.isExpanded()) {
-            for (int i = 0; i < s.getPieceCount(); i++) {
-              KeyBuffer.getBuffer().remove(s.getPieceAt(i));
-            }
+            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
           }
         }
         // End RFE 1659481
@@ -235,14 +231,14 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           }
         }
         else if (mapsel.contains(s.getPosition())) {
-          for (int i = 0, n = s.getPieceCount(); i < n; ++i) {
+          s.asList().forEach(gamePiece -> {
             if (selecting) {
-              KeyBuffer.getBuffer().add(s.getPieceAt(i));
+              KeyBuffer.getBuffer().add(gamePiece);
             }
             else {
-              KeyBuffer.getBuffer().remove(s.getPieceAt(i));
+              KeyBuffer.getBuffer().remove(gamePiece);
             }
-          }
+          });
         }
       }
       return null;

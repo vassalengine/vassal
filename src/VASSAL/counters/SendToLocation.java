@@ -253,9 +253,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
            GameModule.getGameModule().getGameState().getAllPieces()) {
         if (piece instanceof Stack) {
           Stack s = (Stack) piece;
-          for (int i = 0; i < s.getPieceCount(); i++) {
-            if (propertyFilter.accept(this, s.getPieceAt(i))) {
-              target = s.getPieceAt(i);
+          for (GamePiece gamePiece : s.asList()) {
+            if (propertyFilter.accept(this, gamePiece)) {
+              target = gamePiece;
               if (target != null) break;
             }
           }

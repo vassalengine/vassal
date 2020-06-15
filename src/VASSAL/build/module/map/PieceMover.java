@@ -461,8 +461,8 @@ public class PieceMover extends AbstractBuildable
   protected Command setOldLocations(GamePiece p) {
     Command comm = new NullCommand();
     if (p instanceof Stack) {
-      for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {
-        comm = comm.append(Decorator.setOldProperties(((Stack) p).getPieceAt(i)));
+      for (GamePiece gamePiece : ((Stack) p).asList()) {
+        comm = comm.append(Decorator.setOldProperties(gamePiece));
       }
     }
     else {
@@ -540,10 +540,7 @@ public class PieceMover extends AbstractBuildable
        */
       final ArrayList<GamePiece> draggedPieces = new ArrayList<>(0);
       if (dragging instanceof Stack) {
-        int size = ((Stack) dragging).getPieceCount();
-        for (int i = 0; i < size; i++) {
-           draggedPieces.add(((Stack) dragging).getPieceAt(i));
-        }
+        draggedPieces.addAll(((Stack) dragging).asList());
       }
       else {
         draggedPieces.add(dragging);
