@@ -484,9 +484,8 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-             i.hasNext();) {
-          c = c.append(markMoved(i.next(), hasMoved));
+        for (GamePiece gamePiece : ((Stack) p).asList()) {
+          c = c.append(markMoved(gamePiece, hasMoved));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {
