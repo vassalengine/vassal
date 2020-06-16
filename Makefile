@@ -6,6 +6,7 @@
 #
 # Before building, you will need to install (at least) the following packages:
 #
+# Maven    (https://maven.apache.org/)
 # Launch4j (http://launch4j.sourceforge.net)
 # NSIS     (http://nsis.sourceforge.net)
 #
@@ -66,6 +67,7 @@ CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':'):$(shell echo $
 JAVAPATH:=/usr/bin
 
 JC:=$(JAVAPATH)/javac
+MVN:=mvn
 JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED -source 11 -target 11
 
 JAR:=$(JAVAPATH)/jar
@@ -120,13 +122,12 @@ bsh: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.bsh'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
 
 fast-compile: version $(CLASSDIR)
-	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
+	$(MVN) compile
 
 jar: $(LIBDIR)/Vengine.jar
 
 test:
-	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
-	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -l '@Test' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
+	$(MVN) test
 
 #show:
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
@@ -292,6 +293,6 @@ clean-javadoc:
 	$(RM) -r $(JDOCDIR)
 
 clean: clean-release
-	$(RM) -r $(CLASSDIR)/*
+	$(MVN) clean
 
 .PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version jar
