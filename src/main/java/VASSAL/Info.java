@@ -72,56 +72,8 @@ public final class Info {
     if (!tmpDir.exists()) {
       tmpDir.mkdirs();
     }
-  }
 
-  /** The path to the JVM binary. */
-  public static final String javaBinPath =
-    new StringBuilder(System.getProperty("java.home"))
-        .append(File.separator)
-        .append("bin")
-        .append(File.separator)
-        .append("java")
-        .toString();
-
-  /** This class should not be instantiated */
-  private Info() { }
-
-  /**
-   * A valid version format is "w.x.[y|bz]", where 'w','x','y', and 'z' are
-   @* integers. In the version number, w.x are the major/minor release number,
-   * y is the bug-fix release number, and the 'b' indicates a beta release,
-   * e.g. 3.0b2.
-   *
-   * @return the version of the VASSAL engine.
-   */
-  public static String getVersion() {
-    return VERSION;
-  }
-
-  /**
-   * The major/minor portion of the release version. If the version is a
-   * beta-release number, a 'beta' is appended. For example, the minor
-   * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
-   *
-   * @return
-   * @deprecated If you need the minor version number, get it from
-   * a {@link VersionTokenizer}.
-   */
-  @Deprecated
-  public static String getMinorVersion() {
-    final VersionTokenizer tok = new VassalVersionTokenizer(VERSION);
-    try {
-      return tok.next() + "." + tok.next();
-    }
-    catch (VersionFormatException e) {
-      return null;
-    }
-  }
-
-  private static final int instanceID;
-
-  // Set the instance id from the system properties.
-  static {
+    // Set the instance id from the system properties.
     final String idstr = System.getProperty("VASSAL.id");
     if (idstr == null) {
       instanceID = 0;
@@ -139,6 +91,50 @@ public final class Info {
     }
   }
 
+  /** The path to the JVM binary. */
+  public static final String javaBinPath =
+    System.getProperty("java.home") +
+      File.separator +
+      "bin" +
+      File.separator +
+      "java";
+
+  /** This class should not be instantiated */
+  private Info() { }
+
+  /**
+   * A valid version format is "w.x.[y|bz]", where 'w','x','y', and 'z' are
+   * integers. In the version number, w.x are the major/minor release number,
+   * y is the bug-fix release number, and the 'b' indicates a beta release,
+   * e.g. 3.0b2.
+   *
+   * @return the version of the VASSAL engine.
+   */
+  public static String getVersion() {
+    return VERSION;
+  }
+
+  /**
+   * @return The major/minor portion of the release version. If the version is a
+   * beta-release number, a 'beta' is appended. For example, the minor
+   * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
+   *
+   * @deprecated If you need the minor version number, get it from
+   * a {@link VersionTokenizer}.
+   */
+  @Deprecated
+  public static String getMinorVersion() {
+    final VersionTokenizer tok = new VassalVersionTokenizer(VERSION);
+    try {
+      return tok.next() + "." + tok.next();
+    }
+    catch (VersionFormatException e) {
+      return null;
+    }
+  }
+
+  private static final int instanceID;
+
   /**
    * Returns the instance id for this process. The instance id will be
    * be unique across the Module Manager and its children.
@@ -148,9 +144,7 @@ public final class Info {
   }
 
   /**
-   * Get size of screen accounting for the screen insets (i.e. Windows taskbar)
-   *
-   * @return
+   * @return size of screen accounting for the screen insets (i.e. Windows taskbar)
    */
   public static Rectangle getScreenBounds(Component c) {
     final Rectangle bounds =
@@ -163,19 +157,19 @@ public final class Info {
     return bounds;
   }
 
-  /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead */
+  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead */
   @Deprecated
   public static boolean isMacOSX() {
     return SystemUtils.IS_OS_MAC_OSX;
   }
 
-  /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead. */
+  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead. */
   @Deprecated
   public static boolean isMacOsX() {
     return SystemUtils.IS_OS_MAC_OSX;
   }
 
-  /** @depricated Use {@link SystemUtils.IS_OS_WINDOWS} instead */
+  /** @deprecated Use {@link SystemUtils#IS_OS_WINDOWS} instead */
   @Deprecated
   public static boolean isWindows() {
     return SystemUtils.IS_OS_WINDOWS;
@@ -233,7 +227,7 @@ public final class Info {
    * Returns the directory where the VASSAL documentation is installed.
    *
    * @return a {@link File} representing the directory
-   * @deprecated Use {@link getDocDir()} instead.
+   * @deprecated Use {@link #getDocDir()} instead.
    */
   @Deprecated
   public static File getDocsDir() {
@@ -262,7 +256,7 @@ public final class Info {
     return new File(getConfDir(), "prefs");
   }
 
-// FIXME: this is a misleading name for this function
+  // FIXME: this is a misleading name for this function
   public static File getHomeDir() {
     return homeDir;
   }
