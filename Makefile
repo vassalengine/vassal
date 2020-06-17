@@ -252,4 +252,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version jar
+.PHONY: all fast-compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
