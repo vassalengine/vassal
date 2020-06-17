@@ -42,9 +42,8 @@ SHELL:=/bin/bash
 
 SRCDIR:=src
 TESTDIR:=test
-LIBDIR:=lib
-LIBDIRND:=lib-nondist
-CLASSDIR:=bin
+LIBDIR:=target/lib
+CLASSDIR:=target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
@@ -63,16 +62,12 @@ VERSION:=$(shell git describe --tags)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
-CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':'):$(shell echo $(LIBDIRND)/*.jar | tr ' ' ':')
+CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 JAVAPATH:=/usr/bin
 
-JC:=$(JAVAPATH)/javac
 MVN:=mvn
-JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED -source 11 -target 11
 
-JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
-JAVA:=$(JAVAPATH)/java
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
@@ -88,40 +83,9 @@ LAUNCH4J:=~/java/launch4j/launch4j
 vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
 
-#all: $(CLASSDIR) $(CLASSES) i18n icons images help
-all: $(CLASSDIR) fast-compile i18n bsh icons images help
+all: fast-compile
 
-$(CLASSDIR):
-	mkdir -p $(CLASSDIR)
-
-%.class: %.java
-	$(JC) $(JCFLAGS) $<
-
-images: $(CLASSDIR)/images
-
-$(CLASSDIR)/images: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/images $(CLASSDIR)/images
-	cp -a $(SRCDIR)/images $(CLASSDIR)/images
-
-icons: $(CLASSDIR)/icons
-
-$(CLASSDIR)/icons: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/icons $(CLASSDIR)/icons
-	cp -a $(SRCDIR)/icons $(CLASSDIR)/icons
-
-help: $(CLASSDIR)/help
-
-$(CLASSDIR)/help: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/help $(CLASSDIR)/help
-	cp -a $(SRCDIR)/help $(CLASSDIR)/help
-
-i18n: $(CLASSDIR)
-	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
-
-bsh: $(CLASSDIR)
-	for i in `cd $(SRCDIR) && find VASSAL -name '*.bsh'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
-
-fast-compile: version $(CLASSDIR)
+fast-compile: version
 	$(MVN) compile
 
 jar: $(LIBDIR)/Vengine.jar
@@ -135,15 +99,8 @@ test:
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
-$(LIBDIR)/Vengine.jar: all $(TMPDIR)
-	cp dist/Vengine.mf $(TMPDIR)
-	(echo -n 'Class-Path: ' ; \
-		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
-		sed -e '/Vengine.jar/d' -e '/^  $$/d' \
-	) >>$(TMPDIR)/Vengine.mf
-	$(JAR) cvfm $@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
-	cd $(LIBDIR) ; $(JAR) i $(@F) ; cd ..
-	chmod 664 $@
+$(LIBDIR)/Vengine.jar: all
+	$(MVN) package
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)

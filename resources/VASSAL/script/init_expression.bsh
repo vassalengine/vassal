@@ -1,0 +1,126 @@
+/*
+ * $Id: init_expression.bsh,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
+ *
+ * Copyright (c) 2008-2011 by Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+ 
+/**
+ * Initialisation file for Vassal BeanShell Expression interpreters
+ * top level NameSpace. 
+ *
+ * To access variables inside a method that have been set in the calling
+ * NameSpace, (i.e. using ExpressionInterpreter.set(name, value), use:
+ *
+ *   variable = this.caller.namespace.getVariable("variableName");
+ *
+ * Currently, the following variables are set in the ExpressionInterpreter
+ * prior to evaluation:
+ *
+ *  _interp  The ExpressionInterpreter initiating the evaluation
+ *  _source  A PropertySource
+ */
+ 
+/**
+ * Additional useful imports. The following are already imported 
+ * by default:
+ *
+ * javax.swing.event
+ * javax.swing
+ * java.awt.event
+ * java.awt
+ * java.net
+ * java.util
+ * java.io
+ * java.lang
+ */
+
+/**
+ * Unwrap Integer and Boolean values
+ */
+unwrap(Object value) {
+  if (value instanceof Integer) {
+    return ((Integer) value).intValue();
+  }
+  else if (value instanceof Float) {
+    return ((Float) value).floatValue();
+  }  
+  else if (value instanceof Boolean) {
+    return ((Boolean) value).booleanValue();
+  }
+  return value;
+}
+
+/**
+ * If function for Expressions. Note the capitalization to distinguish
+ * it from the if java keyword.
+ *
+ *  Example: If(range < 5, 5, range+2)
+ */
+If(boolean exp, Object o1, Object o2) {
+  if (exp) 
+    return o1; 
+  else 
+    return o2;
+};
+
+/**
+ * Callback to Vassal to sum the value of a property in all
+ * counters in the same stack as the target property
+ *
+ * Example: SumStack("Strength") 
+ */
+SumStack(String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumStack(property, _source));
+}
+
+/**
+ * Callback to Vassal to sum the value of a property in all
+ * counters in the same location as the target property
+ * WARNING - This could be slow on maps with many counters
+ *
+ * Example: SumLocation("Strength") 
+ */
+SumLocation(String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sumLocation(property, _source));
+}
+
+/**
+ * Callback to Vassal to display text in a dialog box
+ */
+Alert(String text) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _interp.alert(text);
+}
+
+/** 
+ * Callback to Vassal to get a property
+ */
+GetProperty(String name) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  return unwrap(_interp.getProperty(name));
+}
+
+/** 
+ * Callback to Vassal to get a localized property
+ */
+GetLocalizedProperty(String name) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  return unwrap(_interp.getLocalizedProperty(name));
+}
