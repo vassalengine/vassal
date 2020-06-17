@@ -193,15 +193,6 @@
 		<!-- Build filename pattern -->
 		<finalName>${project.artifactId}</finalName>
 
-		<!-- Adopting paths to match original makefile -->
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-			</resource>
-		</resources>
-		<testSourceDirectory>test</testSourceDirectory>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>

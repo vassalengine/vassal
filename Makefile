@@ -40,8 +40,8 @@
 
 SHELL:=/bin/bash
 
-SRCDIR:=src
-TESTDIR:=test
+SRCDIR:=src/main/java
+TESTDIR:=src/test/java
 LIBDIR:=target/lib
 CLASSDIR:=target/classes
 TMPDIR:=tmp
