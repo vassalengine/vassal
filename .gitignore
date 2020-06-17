@@ -7,3 +7,11 @@ tmp/
 # IntelliJ
 *.iml
 .idea/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Maven
+target/
