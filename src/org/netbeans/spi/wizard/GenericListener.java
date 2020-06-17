@@ -271,7 +271,7 @@ final class GenericListener
         }
     }
 
-    private void attachToHierarchyOf(Container container) {
+    void attachToHierarchyOf(Container container) {
         container.addContainerListener(this);
         Component[] components = container.getComponents();
         for (int i = 0; i < components.length; i++) {
