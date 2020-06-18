@@ -360,12 +360,6 @@
 			<id>geotoolkit</id>
 			<url>http://maven.geotoolkit.org/</url>
 		</repository>
-
-		<!-- for jivesoftware:smackx-debug -->
-		<repository>
-			<id>collide</id>
-			<url>http://mvn.collide.info/content/repositories/releases/</url>
-		</repository>
 	</repositories>
 
 </project>
