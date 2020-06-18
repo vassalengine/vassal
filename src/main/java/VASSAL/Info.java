@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
+import VASSAL.tools.version.GitProperties;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.tools.version.VassalVersionTokenizer;
@@ -35,7 +36,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.3.0-beta4-91-g9676a469f422"; //$NON-NLS-1$
+  private static final GitProperties gitProperties;
 
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.4";  //$NON-NLS-1$
@@ -89,6 +90,8 @@ public final class Info {
 
       instanceID = id;
     }
+
+    gitProperties = new GitProperties();
   }
 
   /** The path to the JVM binary. */
@@ -111,7 +114,7 @@ public final class Info {
    * @return the version of the VASSAL engine.
    */
   public static String getVersion() {
-    return VERSION;
+    return gitProperties.getVersion();
   }
 
   /**
@@ -124,7 +127,7 @@ public final class Info {
    */
   @Deprecated
   public static String getMinorVersion() {
-    final VersionTokenizer tok = new VassalVersionTokenizer(VERSION);
+    final VersionTokenizer tok = new VassalVersionTokenizer(gitProperties.getVersion());
     try {
       return tok.next() + "." + tok.next();
     }

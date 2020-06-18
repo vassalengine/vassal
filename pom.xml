@@ -230,6 +230,11 @@
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.2.0</version>
 				</plugin>
+				<plugin>
+					<groupId>pl.project13.maven</groupId>
+					<artifactId>git-commit-id-plugin</artifactId>
+					<version>4.0.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -332,6 +337,25 @@
 						</manifestEntries>
 					</archive>
 					<outputDirectory>${vassal.jarlocation}</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<gitDescribe>
+						<tags>true</tags>
+						<abbrev>0</abbrev>
+					</gitDescribe>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -85,7 +85,7 @@ vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
 
 all: fast-compile
 
-fast-compile: version
+fast-compile:
 	$(MVN) compile
 
 jar: $(LIBDIR)/Vengine.jar
@@ -107,9 +107,6 @@ $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
-
-version:
-	sed -ri 's/ VERSION = ".*"/ VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package' | tr -d '\n' >$@
