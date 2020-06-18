@@ -26,9 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-import VASSAL.tools.io.IOUtils;
-
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,16 +33,16 @@ import static org.junit.Assert.*;
 import static VASSAL.tools.image.AssertImage.*;
 
 public class ImageIOImageLoaderTest {
-  protected static final String jpg = "test/VASSAL/tools/image/rainbow.jpg";
+  private static final String jpg = "src/test/resources/test-images/rainbow.jpg";
 
-  protected static BufferedImage src;
+  private static BufferedImage src;
 
   @BeforeClass
   public static void setup() throws IOException {
     src = ImageIO.read(new File(jpg));
   }
 
-  protected BufferedImage read(ImageLoader loader, String file)
+  private BufferedImage read(ImageLoader loader, String file)
                                                            throws IOException {
     try (FileInputStream in = new FileInputStream(file)) {
       final BufferedImage img = loader.load(
@@ -69,8 +66,8 @@ public class ImageIOImageLoaderTest {
 
   @Test
   public void testLoadType2tRNSBug() throws IOException {
-    final String efile = "test/VASSAL/tools/image/non-type2-tRNS.png";
-    final String afile = "test/VASSAL/tools/image/type2-tRNS.png";
+    final String efile = "src/test/resources/test-images/non-type2-tRNS.png";
+    final String afile = "src/test/resources/test-images/type2-tRNS.png";
 
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
@@ -100,7 +97,7 @@ public class ImageIOImageLoaderTest {
     }
   }
 
-  protected Dimension size(ImageLoader loader, String file) throws IOException {
+  private Dimension size(ImageLoader loader, String file) throws IOException {
     try (FileInputStream in = new FileInputStream(file)) {
       final Dimension d = loader.size(file, in);
       return d;
@@ -120,7 +117,7 @@ public class ImageIOImageLoaderTest {
 
   @Test(expected=UnrecognizedImageTypeException.class)
   public void testSizeUnrecognized() throws IOException {
-    final String junk = "test/VASSAL/tools/image/ImageIOImageLoaderTest.java";
+    final String junk = "src/test/resources/test-images/NotAnImageForImageIOImageLoaderTest.txt";
 
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);

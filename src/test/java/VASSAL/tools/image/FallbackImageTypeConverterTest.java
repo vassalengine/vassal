@@ -21,7 +21,6 @@ package VASSAL.tools.image;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
@@ -43,27 +42,23 @@ import static VASSAL.tools.image.AssertImage.*;
 @RunWith(JMock.class)
 public class FallbackImageTypeConverterTest {
 
-  protected static final String test = "test/VASSAL/tools/image/rainbow.jpg";
-  protected static final String tmp = "test/VASSAL/tools/image/img.tmp";
+  private static final String test = "src/test/resources/test-images/rainbow.jpg";
+  private static final String tmp = "src/test/resources/test-images/img.tmp";
 
-  protected static final TemporaryFileFactory tf = new TemporaryFileFactory() {
-    public File create() {
-      return new File(tmp);
-    }
-  };
+  private static final TemporaryFileFactory tf = () -> new File(tmp);
 
-  protected static BufferedImage src;
+  private static BufferedImage src;
+
+  private final Mockery context = new JUnit4Mockery();
 
   @BeforeClass
   public static void setup() throws IOException {
     src = ImageIO.read(new File(test));
   }
 
-  protected final Mockery context = new JUnit4Mockery();
-
   @Test
   public void testLoadMemory() throws IOException {
-    final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
+    final Reference<BufferedImage> ref = new Reference<>(src);
     final File tmpFile = new File(tmp);
 
     BufferedImage dst = null;
@@ -84,7 +79,7 @@ public class FallbackImageTypeConverterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testLoadFile() throws IOException {
-    final Reference<BufferedImage> ref = new Reference<BufferedImage>(src);
+    final Reference<BufferedImage> ref = new Reference<>(src);
     final File tmpFile = new File(tmp);
 
     final ImageTypeConverter mock = context.mock(ImageTypeConverter.class);

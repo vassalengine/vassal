@@ -39,19 +39,15 @@ import static VASSAL.tools.image.AssertImage.*;
 
 public class FileImageTypeConverterTest {
 
-  protected static final String test = "test/VASSAL/tools/image/rainbow.jpg";
-  protected static final String tmp = "test/VASSAL/tools/image/img.tmp";
+  private static final String test = "src/test/resources/test-images/rainbow.jpg";
+  private static final String tmp = "src/test/resources/test-images/img.tmp";
 
-  protected static final TemporaryFileFactory tf = new TemporaryFileFactory() {
-    public File create() {
-      return new File(tmp);
-    }
-  };
+  private static final TemporaryFileFactory tf = () -> new File(tmp);
 
   /**
    * This class exposes read() and write() for testing.
    */
-  protected static class FITC extends FileImageTypeConverter {
+  private static class FITC extends FileImageTypeConverter {
     public FITC() {
       super(tf);
     }
@@ -65,7 +61,7 @@ public class FileImageTypeConverterTest {
     }
   }
 
-  protected static BufferedImage src;
+  private static BufferedImage src;
 
   @BeforeClass
   public static void setup() throws IOException {

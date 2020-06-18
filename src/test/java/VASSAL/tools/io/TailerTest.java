@@ -19,11 +19,10 @@
 
 package VASSAL.tools.io;
 
-import VASSAL.tools.concurrent.listener.EventListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 
@@ -31,19 +30,19 @@ import static org.junit.Assert.*;
 
 public class TailerTest {
 
-  private static String exists    = "test/VASSAL/tools/io/TailerTest.java";
-  private static String notexists = "test/VASSAL/tools/io/notexists";
+  private static final String EXISTS = "src/test/resources/TailerTest.txt";
+  private static final String NOTEXISTS = "src/test/resources/notexists";
 
   @Test
   public void testGetFile() {
-    final File file = new File(exists);
+    final File file = new File(EXISTS);
     final Tailer tailer = new Tailer(file);
     assertEquals(file, tailer.getFile());
   }
 
   @Test
   public void testIsTailingTrue() throws IOException {
-    final File file = new File(exists);
+    final File file = new File(EXISTS);
     final Tailer tailer = new Tailer(file);
     tailer.start();
     assertTrue(tailer.isTailing());
@@ -52,14 +51,14 @@ public class TailerTest {
 
   @Test
   public void testIsTailingFalse() {
-    final File file = new File(exists);
+    final File file = new File(EXISTS);
     final Tailer tailer = new Tailer(file);
     assertFalse(tailer.isTailing());
   }
 
   @Test(expected=IOException.class)
   public void testNoFile() throws IOException {
-    final File file = new File(notexists);
+    final File file = new File(NOTEXISTS);
     final Tailer tailer = new Tailer(file);
     tailer.start();
   }
@@ -73,16 +72,12 @@ public class TailerTest {
 
   @Test
   public void testTailer() throws InterruptedException, IOException {
-    final File file = new File(exists);
+    final File file = new File(EXISTS);
 
     final StringBuilder sb_tailer = new StringBuilder();
 
     final Tailer tailer = new Tailer(file);
-    tailer.addEventListener(new EventListener<String>() {
-      public void receive(Object src, String str) {
-        sb_tailer.append(str);
-      }
-    });
+    tailer.addEventListener((src, str) -> sb_tailer.append(str));
     tailer.start();
 
     // give the Tailer time to work
@@ -92,9 +87,9 @@ public class TailerTest {
 
     final String actual = sb_tailer.toString();
 
-    String expected = null;
+    String expected;
     try (FileInputStream in = new FileInputStream(file)) {
-      expected = IOUtils.toString(in).substring(0, actual.length());
+      expected = IOUtils.toString(in, Charset.defaultCharset()).substring(0, actual.length());
     }
 
     // compare whatever the Tailer had time to read

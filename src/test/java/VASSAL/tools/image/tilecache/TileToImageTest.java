@@ -31,7 +31,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TileToImageTest {
-  protected static final String dir = "test/VASSAL/tools/image/tilecache";
+  private static final String dir = "src/test/resources/test-images";
 
   @Test
   public void testTileToImage() throws IOException {

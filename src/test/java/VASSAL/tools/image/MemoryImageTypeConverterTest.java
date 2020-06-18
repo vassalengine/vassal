@@ -28,12 +28,11 @@ import VASSAL.tools.lang.Reference;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static VASSAL.tools.image.AssertImage.*;
 
 public class MemoryImageTypeConverterTest {
 
-  protected static final String test = "test/VASSAL/tools/image/rainbow.jpg";
+  private static final String test = "src/test/resources/test-images/rainbow.jpg";
 
   @Test
   public void testConvert() throws IOException {

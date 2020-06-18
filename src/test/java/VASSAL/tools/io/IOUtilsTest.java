@@ -24,9 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.ZipFile;
 import javax.imageio.stream.ImageInputStream;
@@ -36,7 +34,6 @@ import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.FileUtils;
 
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -48,12 +45,12 @@ import static org.junit.Assert.*;
 
 @RunWith(JMock.class)
 public class IOUtilsTest {
-  protected final Mockery context = new JUnit4Mockery();
+  private final Mockery context = new JUnit4Mockery();
 
   @Test
   public void testCopyFileChannels() throws IOException {
-    final File ifile = new File("test/VASSAL/tools/io/IOUtilsTest.java");
-    final File ofile = new File("test/VASSAL/tools/io/test.out");
+    final File ifile = new File("src/test/resources/IOUtilsTest.txt");
+    final File ofile = new File("src/test/resources/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -71,8 +68,8 @@ public class IOUtilsTest {
 
   @Test
   public void testCopyLargeFileChannels() throws IOException {
-    final File ifile = new File("test/VASSAL/tools/io/IOUtilsTest.java");
-    final File ofile = new File("test/VASSAL/tools/io/test.out");
+    final File ifile = new File("src/test/resources/IOUtilsTest.txt");
+    final File ofile = new File("src/test/resources/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
