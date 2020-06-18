@@ -55,8 +55,6 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  @Deprecated
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$
   private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<>();
 
@@ -69,10 +67,6 @@ public class ImageUtils {
     defaultHints.put(RenderingHints.KEY_ANTIALIASING,
                      RenderingHints.VALUE_ANTIALIAS_ON);
   }
-
-  /** @deprecated All scaling is done with the high-quality scaler now. */
-  @Deprecated
-  public static void setHighQualityScaling(boolean b) {}
 
   public static RenderingHints getDefaultHints() {
     return new RenderingHints(defaultHints);
@@ -191,15 +185,6 @@ public class ImageUtils {
     }
   }
 
-  @Deprecated
-  public static BufferedImage transform(BufferedImage src,
-                                        double scale,
-                                        double angle,
-                                        RenderingHints hints,
-                                        int quality) {
-    return transform(src, scale, angle, hints);
-  }
-
   @SuppressWarnings("fallthrough")
   public static BufferedImage coerceToIntType(BufferedImage img) {
     // ensure that img is a type which GeneralFilter can handle
@@ -236,12 +221,6 @@ public class ImageUtils {
                           d.height);
   }
 
-  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */
-  @Deprecated
-  public static Dimension getImageSize(InputStream in) throws IOException {
-    return getImageSize("", in);
-  }
-
   private static final TemporaryFileFactory tfac = new TemporaryFileFactory() {
     @Override
     public File create() throws IOException {
@@ -255,12 +234,6 @@ public class ImageUtils {
   public static Dimension getImageSize(String name, InputStream in)
                                                       throws ImageIOException {
     return loader.size(name, in);
-  }
-
-  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */
-  @Deprecated
-  public static BufferedImage getImage(InputStream in) throws IOException {
-    return getImage("", in);
   }
 
   public static BufferedImage getImageResource(String name)
