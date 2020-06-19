@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -163,9 +164,7 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (REPORT_TOTAL.equals(name)
-        || PLUS.equals(name)
-        || ADD_TO_TOTAL.equals(name)) {
+    if (List.of(REPORT_TOTAL, PLUS, ADD_TO_TOTAL).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

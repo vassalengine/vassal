@@ -2,6 +2,7 @@ package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.stream.Stream;
 
 import javax.swing.Icon;
 
@@ -213,7 +214,7 @@ public class LayerControl extends AbstractConfigurable {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
-          return command.equals(CMD_ENABLE) || command.equals(CMD_DISABLE) || command.equals(CMD_TOGGLE);
+          return Stream.of(CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE).anyMatch(s -> command.equals(s));
         }
       };
     }

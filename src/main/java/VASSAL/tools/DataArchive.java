@@ -472,35 +472,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated public static final String SOUNDS_DIR = SOUND_DIR;
   @Deprecated protected String soundsDir = SOUND_DIR;
 
-  @Deprecated
-  private final Map<String,ImageSource> imageSources =
-    new HashMap<>();
-
-  /**
-   * Add an ImageSource under the given name, but only if no source is
-   * yet registered under this name.
-   *
-   * @param name
-   * @param src
-   * @return true if the ImageSource was added, false if it existed already
-   * @deprecated
-   */
-  @Deprecated
-  public boolean addImageSource(String name, ImageSource src) {
-    if (!imageSources.containsKey(name)) {
-      imageSources.put(name,src);
-      localImages = null;
-      return true;
-    }
-    return false;
-  }
-
-  @Deprecated
-  public void removeImageSource(String name) {
-    imageSources.remove(name);
-    localImages = null;
-  }
-
   /**
    * Get the size of an image without loading and decoding it.
    *
@@ -511,21 +482,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    */
   @Deprecated
   public Dimension getImageSize(String name) throws IOException {
-    final ImageSource src;
-
-    if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg"))
-        return SVGImageUtils.getImageSize(name, getImageInputStream(name));
-      else
-        return ImageUtils.getImageSize(name, getImageInputStream(name));
-    }
-    else if ((src = imageSources.get(name)) != null) {
-      final Image image = src.getImage();
-      return image != null ?
-        new Dimension(image.getWidth(null), image.getHeight(null)) :
-        new Dimension();
-    }
-    else if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) {
       return SVGImageUtils.getImageSize(name, getImageInputStream(name));
     }
     else {
@@ -544,21 +501,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    */
   @Deprecated
   public BufferedImage getImage(String name) throws IOException {
-    final ImageSource src;
-
-    if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg")) {
-        return new SVGRenderer(getURL(name),
-                               getImageInputStream(name)).render();
-      }
-      else {
-        return ImageUtils.getImage(name, getImageInputStream(name));
-      }
-    }
-    else if ((src = imageSources.get(name)) != null) {
-      return ImageUtils.toBufferedImage(src.getImage());
-    }
-    else if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) {
       return new SVGRenderer(getURL(name),
                              getImageInputStream(name)).render();
     }
@@ -566,32 +509,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return ImageUtils.getImage(name, getImageInputStream(name));
     }
   }
-
-  /**
-   * Does the actual work of transforming an image.
-   */
-/*
-  @Deprecated
-  protected Image createTransformedInstance(Image im, double zoom,
-    double theta) {
-    // get smoothing preferences
-    if (smoothPrefs == null) {
-      smoothPrefs = (BooleanConfigurer) GameModule.getGameModule()
-        .getPrefs().getOption(GlobalOptions.SCALER_ALGORITHM);
-      if (smoothPrefs == null) {
-        smoothPrefs = new BooleanConfigurer(null, null, Boolean.FALSE);
-      }
-      smoothPrefs.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          clearTransformedImageCache();
-        }
-      });
-    }
-
-    final boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
-    return new RotateScaleOp(new ImageSourceOp(im), theta, zoom).getImage(null);
-  }
-*/
 
   @Deprecated protected String[] imageNames;
 
@@ -773,7 +690,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /** Use {@link ImageUtils.getImage(InputStream)} instead. */
   @Deprecated
   public static Image getImage(InputStream in) throws IOException {
-    return ImageUtils.getImage(in);
+    return ImageUtils.getImage("", in);
   }
 
   /** @deprecated Use {@link getURL()} instead. */

@@ -504,14 +504,14 @@ public class DoActionButton extends AbstractConfigurable
           return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
         }};
     }
-    else if (LOOP_TYPE.equals(name) || PRE_LOOP_HOTKEY.equals(name) || POST_LOOP_HOTKEY.equals(name) || INDEX.equals(name)) {
+    else if (List.of(LOOP_TYPE, PRE_LOOP_HOTKEY, POST_LOOP_HOTKEY, INDEX).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop;
         }};
     }
-    else if (INDEX_PROPERTY.equals(name) || INDEX_START.equals(name) || INDEX_STEP.equals(name)) {
+    else if (List.of(INDEX_PROPERTY, INDEX_START, INDEX_STEP).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {

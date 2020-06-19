@@ -19,6 +19,7 @@
 package VASSAL.build.module.properties;
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.JToolBar;
 
@@ -179,7 +180,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (MIN_VALUE.equals(name) || MAX_VALUE.equals(name) || WRAP.equals(name)) {
+    if (List.of(MIN_VALUE, MAX_VALUE, WRAP).contains(name)) {
       return numericVisibility;
     }
     else {
