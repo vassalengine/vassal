@@ -215,7 +215,7 @@
 									<version>3.5</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>11</version>
+									<version>[11,)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -240,7 +240,6 @@
 						<arg> --add-exports</arg> <arg>java.desktop/java.awt.peer=ALL-UNNAMED</arg>
 						<arg> --add-exports</arg> <arg>java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED</arg>
 					</compilerArgs>
-
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>false</showWarnings>
 				</configuration>
