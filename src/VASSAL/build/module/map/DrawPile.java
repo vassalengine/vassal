@@ -693,23 +693,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     if (COLOR.equals(name)) {
       return colorVisibleCondition;
     }
-    else if (RESHUFFLE_COMMAND.equals(name)
-        || RESHUFFLE_MESSAGE.equals(name)
-        || RESHUFFLE_TARGET.equals(name)
-        || RESHUFFLE_HOTKEY.equals(name)) {
+    else if (List.of(RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_TARGET, RESHUFFLE_HOTKEY).contains(name)) {
       return reshuffleVisibleCondition;
     }
     else if (FACE_DOWN_REPORT_FORMAT.equals(name)) {
       return faceDownFormatVisibleCondition;
     }
-    else if (SHUFFLE_REPORT_FORMAT.equals(name)
-        || SHUFFLE_HOTKEY.equals(name)
-        || SHUFFLE_COMMAND.equals(name)) {
+    else if (List.of(SHUFFLE_REPORT_FORMAT, SHUFFLE_HOTKEY, SHUFFLE_COMMAND).contains(name)) {
       return shuffleFormatVisibleCondition;
     }
-    else if (REVERSE_REPORT_FORMAT.equals(name)
-        || REVERSE_HOTKEY.equals(name)
-        || REVERSE_COMMAND.equals(name)) {
+    else if (List.of(REVERSE_REPORT_FORMAT, REVERSE_HOTKEY, REVERSE_COMMAND).contains(name)) {
       return reverseFormatVisibleCondition;
     }
     else if (COUNTEXPRESSIONS.equals(name)) {

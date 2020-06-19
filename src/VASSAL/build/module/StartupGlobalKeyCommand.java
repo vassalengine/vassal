@@ -26,6 +26,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
 
+import java.util.List;
+
 /**
  * A Global Key Command that is automatically invoked on game start-up,
  * once the various Key Listeners have been started.
@@ -68,8 +70,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
-        ICON.equals(key)        || HOTKEY.equals(key)) {
+    if (List.of(BUTTON_TEXT, TOOLTIP, ICON, HOTKEY).contains(key)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {  return false; }

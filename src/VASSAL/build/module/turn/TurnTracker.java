@@ -130,7 +130,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected static final String LENGTH_MAXIMUM = "Maximum";
   protected static final String LENGTH_FIXED = "Fixed";
 
-  protected FormattedString turnFormat = new FormattedString("$"+LEVEL+"1$ $"+LEVEL+"2$ $"+LEVEL+"3$ $"+LEVEL+"4$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+  protected FormattedString turnFormat = new FormattedString(String.join(LEVEL, "$", "1$ $", "2$ $", "3$ $", "4$")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
   protected FormattedString reportFormat = new FormattedString("* <$" + GlobalOptions.PLAYER_ID //$NON-NLS-1$
       + "$> Turn Updated from $"+OLD_TURN+"$ to $"+NEW_TURN+"$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

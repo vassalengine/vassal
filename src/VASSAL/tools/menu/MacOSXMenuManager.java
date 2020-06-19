@@ -27,6 +27,7 @@ import java.awt.desktop.PreferencesEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -52,9 +53,7 @@ public class MacOSXMenuManager extends MenuManager {
   @Override
   public MenuItemProxy addKey(String key) {
     // don't reserve slots for Quit, Preferences, or About on Macs
-    if ("General.quit".equals(key) ||
-        "Prefs.edit_preferences".equals(key) ||
-        "AboutScreen.about_vassal".equals(key))
+    if (List.of("General.quit", "Prefs.edit_preferences", "AboutScreen.about_vassal").contains(key))
       return null;
 
     return super.addKey(key);

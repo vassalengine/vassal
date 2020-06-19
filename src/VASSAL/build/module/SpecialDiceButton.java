@@ -315,7 +315,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     // get size only when output in window or on button
-    if (WINDOW_X.equals(name) || WINDOW_Y.equals(name) || BACKGROUND_COLOR.equals(name)) {
+    if (List.of(WINDOW_X, WINDOW_Y, BACKGROUND_COLOR).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
