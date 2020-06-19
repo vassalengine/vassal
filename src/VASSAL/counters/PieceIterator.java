@@ -20,8 +20,7 @@ package VASSAL.counters;
 
 import java.util.Enumeration;
 import java.util.Iterator;
-
-import VASSAL.tools.IterableEnumeration;
+import java.util.function.Predicate;
 
 /**
  * An iterator for GamePieces.  Takes an optional PieceFilter to
@@ -37,7 +36,7 @@ public class PieceIterator {
 
   @Deprecated
   public <T extends GamePiece> PieceIterator(Enumeration<T> e) {
-    this(new IterableEnumeration<>(e));
+    this(e.asIterator());
   }
 
   public PieceIterator(final Iterator<? extends GamePiece> i, PieceFilter f) {
@@ -84,7 +83,7 @@ public class PieceIterator {
 
   @Deprecated
   public <T extends GamePiece> PieceIterator(Enumeration<T> e, PieceFilter f) {
-    this(new IterableEnumeration<>(e), f);
+    this(e.asIterator(), f);
   }
 
   public GamePiece nextPiece() {
@@ -95,18 +94,20 @@ public class PieceIterator {
     return pi.hasNext();
   }
 
+  public static final Predicate<GamePiece> VISIBLE =
+    gamePiece -> !Boolean.TRUE.equals(gamePiece.getProperty(Properties.INVISIBLE_TO_ME));
+
   public static <T extends GamePiece> PieceIterator visible(Iterator<T> i) {
     return new PieceIterator(i, new PieceFilter() {
       @Override
       public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(
-          piece.getProperty(Properties.INVISIBLE_TO_ME));
+        return VISIBLE.test(piece);
       }
     });
   }
 
   @Deprecated
   public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
-    return PieceIterator.visible(new IterableEnumeration<>(e));
+    return PieceIterator.visible(e.asIterator());
   }
 }

@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.swing.Action;
@@ -166,18 +167,44 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   };
 
+  private final GameModule gameModule;
+
+  /**
+   * @deprecated use {@link #Deck(GameModule)}
+   */
+  @Deprecated
   public Deck() {
-    this(ID);
-    PlayerRoster.addSideChangeListener(this);
+    this(GameModule.getGameModule());
   }
 
+  /**
+   * @deprecated use {@link #Deck(GameModule, String)}
+   */
+  @Deprecated
   public Deck(String type) {
+    this(GameModule.getGameModule(), type);
+  }
+
+  /**
+   * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
+   */
+  @Deprecated
+  public Deck(String type, PropertySource source) {
+    this(GameModule.getGameModule(), type, source);
+  }
+
+  public Deck(GameModule gameModule) {
+    this(gameModule, ID);
+  }
+
+  public Deck(GameModule gameModule, String type) {
+    this.gameModule = gameModule;
     mySetType(type);
     PlayerRoster.addSideChangeListener(this);
   }
 
-  public Deck (String type, PropertySource source) {
-    this(type);
+  public Deck(GameModule gameModule, String type, PropertySource source) {
+    this(gameModule, type);
     propertySource = source;
   }
 
@@ -231,12 +258,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       expressionProperties.get(index).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      final GamePiece p = i.next();
-      if (p != null) {
-        updateCounts(p,true);
-      }
-    }
+    asList().stream()
+            .filter(Objects::nonNull)
+            .forEach(p -> updateCounts(p, true));
   }
 
   /**
@@ -315,7 +339,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     super.removePieceAt(index);
     fireNumCardsProperty();
     if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
-      GameModule.getGameModule().fireKeyStroke(emptyKey);
+      gameModule.fireKeyStroke(emptyKey);
     }
   }
 
@@ -381,11 +405,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(shuffle());
+          gameModule.sendAndLog(shuffle());
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
+      gameModule.addKeyStrokeListener(shuffleListener);
     }
     shuffleListener.setKeyStroke(getShuffleKey());
 
@@ -393,11 +417,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reshuffleListener = new NamedKeyStrokeListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(sendToDeck());
+          gameModule.sendAndLog(sendToDeck());
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
+      gameModule.addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
 
@@ -405,11 +429,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener = new NamedKeyStrokeListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(reverse());
+          gameModule.sendAndLog(reverse());
           repaintMap();
         }
       });
-      GameModule.getGameModule().addKeyStrokeListener(reverseListener);
+      gameModule.addKeyStrokeListener(reverseListener);
     }
     reverseListener.setKeyStroke(getReverseKey());
 
@@ -765,7 +789,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     System.arraycopy(contents, 0, a, 0, pieceCount);
     final List<GamePiece> l = Arrays.asList(a);
     DragBuffer.getBuffer().clear();
-    Collections.shuffle(l, GameModule.getGameModule().getRNG());
+    Collections.shuffle(l, gameModule.getRNG());
     return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
@@ -793,7 +817,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           indices.add(i);
         }
 
-        final Random rng = GameModule.getGameModule().getRNG();
+        final Random rng = gameModule.getRNG();
 
         while (count-- > 0 && indices.size() > 0) {
           final int i = rng.nextInt(indices.size());
@@ -861,9 +885,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
     final SequenceEncoder se2 = new SequenceEncoder(',');
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      se2.append(i.next().getId());
-    }
+    asList().forEach(gamePiece -> se2.append(gamePiece.getId()));
     if (se2.getValue() != null) {
       se.append(se2.getValue());
     }
@@ -899,8 +921,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final SequenceEncoder.Decoder st2 =
         new SequenceEncoder.Decoder(st.nextToken(), ',');
       while (st2.hasMoreTokens()) {
-        final GamePiece p = GameModule.getGameModule()
-                                      .getGameState()
+        final GamePiece p = gameModule.getGameState()
                                       .getPieceForId(st2.nextToken());
         if (p != null) {
           l.add(p);
@@ -1066,7 +1087,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameModule.getGameModule().sendAndLog(shuffle());
+            gameModule.sendAndLog(shuffle());
             repaintMap();
           }
         };
@@ -1078,7 +1099,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent evt) {
-            GameModule.getGameModule().sendAndLog(sendToDeck());
+            gameModule.sendAndLog(sendToDeck());
             repaintMap();
           }
         };
@@ -1091,7 +1112,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           @Override
           public void actionPerformed(ActionEvent e) {
             final Command c = setContentsFaceDown(!faceDown);
-            GameModule.getGameModule().sendAndLog(c);
+            gameModule.sendAndLog(c);
             repaintMap();
           }
         };
@@ -1104,7 +1125,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           @Override
           public void actionPerformed(ActionEvent e) {
             final Command c = reverse();
-            GameModule.getGameModule().sendAndLog(c);
+            gameModule.sendAndLog(c);
             repaintMap();
           }
         };
@@ -1139,7 +1160,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameModule.getGameModule().sendAndLog(saveDeck());
+            gameModule.sendAndLog(saveDeck());
             repaintMap();
           }
         };
@@ -1149,7 +1170,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           @Override
           public void actionPerformed(ActionEvent e) {
-            GameModule.getGameModule().sendAndLog(loadDeck());
+            gameModule.sendAndLog(loadDeck());
             repaintMap();
           }
         };
@@ -1184,7 +1205,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
     String rep = reportFormat.getLocalizedText();
     if (rep.length() > 0) {
-      c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + rep); //$NON-NLS-1$
+      c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();
     }
 
@@ -1337,7 +1358,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   private File getSaveFileName() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    FileChooser fc = gameModule.getFileChooser();
     File sf = fc.getSelectedFile();
     if (sf != null) {
       String name = sf.getPath();
@@ -1358,7 +1379,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
-         JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
+         JOptionPane.showConfirmDialog(gameModule.getFrame(),
           Resources.getString("Deck.overwrite", outputFile.getName()), Resources.getString("Deck.file_exists"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           JOptionPane.YES_NO_OPTION)) {
         outputFile = null;
@@ -1373,16 +1394,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   private Command saveDeck() {
     final Command c = new NullCommand();
-    GameModule.getGameModule().warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
+    gameModule.warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
 
     final File saveFile = getSaveFileName();
     try {
       if (saveFile != null) {
         saveDeck(saveFile);
-        GameModule.getGameModule().warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
+        gameModule.warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
       }
       else {
-        GameModule.getGameModule().warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
+        gameModule.warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
       }
     }
     catch (IOException e) {
@@ -1393,22 +1414,21 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void saveDeck(File f) throws IOException {
     Command comm = new LoadDeckCommand(null);
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-      final GamePiece p = i.next();
+    for (GamePiece p : asList()) {
       p.setMap(null);
       comm = comm.append(new AddPiece(p));
     }
 
     try (Writer fw = new FileWriter(f);
          BufferedWriter out = new BufferedWriter(fw)) {
-      GameModule.getGameModule().addCommandEncoder(commandEncoder);
-      out.write(GameModule.getGameModule().encode(comm));
-      GameModule.getGameModule().removeCommandEncoder(commandEncoder);
+      gameModule.addCommandEncoder(commandEncoder);
+      out.write(gameModule.encode(comm));
+      gameModule.removeCommandEncoder(commandEncoder);
     }
   }
 
   private File getLoadFileName() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    FileChooser fc = gameModule.getFileChooser();
     fc.selectDotSavFile();
     if (fc.showOpenDialog(map.getView()) != FileChooser.APPROVE_OPTION)
       return null;
@@ -1417,16 +1437,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   private Command loadDeck() {
     Command c = new NullCommand();
-    GameModule.getGameModule().warn(Resources.getString("Deck.loading_deck")); //$NON-NLS-1$
+    gameModule.warn(Resources.getString("Deck.loading_deck")); //$NON-NLS-1$
 
     final File loadFile = getLoadFileName();
     try {
       if (loadFile != null) {
         c = loadDeck(loadFile);
-        GameModule.getGameModule().warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
+        gameModule.warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
       }
       else {
-        GameModule.getGameModule().warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
+        gameModule.warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
       }
     }
     catch (IOException e) {
@@ -1444,9 +1464,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       ds = IOUtils.toString(in);
     }
 
-    GameModule.getGameModule().addCommandEncoder(commandEncoder);
-    Command c = GameModule.getGameModule().decode(ds);
-    GameModule.getGameModule().removeCommandEncoder(commandEncoder);
+    gameModule.addCommandEncoder(commandEncoder);
+    Command c = gameModule.decode(ds);
+    gameModule.removeCommandEncoder(commandEncoder);
     if (c instanceof LoadDeckCommand) {
       /*
        * A LoadDeckCommand doesn't specify the deck to be changed (since the
@@ -1465,7 +1485,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       updateCountsAll();
     }
     else {
-      GameModule.getGameModule().warn(Resources.getString("Deck.not_a_saved_deck", f.getName())); //$NON-NLS-1$
+      gameModule.warn(Resources.getString("Deck.not_a_saved_deck", f.getName())); //$NON-NLS-1$
       c = null;
     }
     return c;

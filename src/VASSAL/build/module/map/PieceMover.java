@@ -234,47 +234,42 @@ public class PieceMover extends AbstractBuildable
     return new DeckVisitorDispatcher(new DeckVisitor() {
       @Override
       public Object visitDeck(Deck d) {
-        DragBuffer.getBuffer().clear();
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
         for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
-          DragBuffer.getBuffer().add(it.nextPiece());
+          dbuf.add(it.nextPiece());
         }
         return null;
       }
 
       @Override
       public Object visitStack(Stack s) {
-        DragBuffer.getBuffer().clear();
-        // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
-        // Add whole stack if all pieces are selected - better drag cursor
-        int selectedCount = 0;
-        for (int i = 0; i < s.getPieceCount(); i++) {
-          if (Boolean.TRUE.equals(s.getPieceAt(i)
-                                   .getProperty(Properties.SELECTED))) {
-            selectedCount++;
-          }
-        }
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
+        // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer,
+        // except when global pref "MOVING_STACKS_PICKUP_UNITS" is set
+        final boolean selectAllUnitsInStackRegardlessOfSelection =
+            (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
 
-        if ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS) || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
-          DragBuffer.getBuffer().add(s);
-        }
-        else {
-          for (int i = 0; i < s.getPieceCount(); i++) {
-            final GamePiece p = s.getPieceAt(i);
+        s.asList().forEach(
+          selectAllUnitsInStackRegardlessOfSelection ?
+          (p) -> dbuf.add(p) :
+          (p) -> {
             if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-              DragBuffer.getBuffer().add(p);
+              dbuf.add(p);
             }
           }
-        }
+        );
         // End RFE 1629255
-        if (KeyBuffer.getBuffer().containsChild(s)) {
+
+        final KeyBuffer kbuf = KeyBuffer.getBuffer();
+        if (kbuf.containsChild(s)) {
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
-          KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Iterator<GamePiece> i =
-                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
-            final GamePiece piece = i.next();
+          kbuf.sort(PieceMover.this);
+          for (GamePiece piece : kbuf.asList()) {
             if (piece.getParent() != s) {
-              DragBuffer.getBuffer().add(piece);
+              dbuf.add(piece);
             }
           }
         }
@@ -283,19 +278,20 @@ public class PieceMover extends AbstractBuildable
 
       @Override
       public Object visitDefault(GamePiece selected) {
-        DragBuffer.getBuffer().clear();
-        if (KeyBuffer.getBuffer().contains(selected)) {
+        final DragBuffer dbuf = DragBuffer.getBuffer();
+        dbuf.clear();
+
+        final KeyBuffer kbuf = KeyBuffer.getBuffer();
+        if (kbuf.contains(selected)) {
           // If clicking on a selected piece, put all selected pieces into the
           // drag buffer
-          KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Iterator<GamePiece> i =
-                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
-            DragBuffer.getBuffer().add(i.next());
+          kbuf.sort(PieceMover.this);
+          for (GamePiece piece : kbuf.asList()) {
+            dbuf.add(piece);
           }
         }
         else {
-          DragBuffer.getBuffer().clear();
-          DragBuffer.getBuffer().add(selected);
+          dbuf.add(selected);
         }
         return null;
       }
@@ -465,8 +461,8 @@ public class PieceMover extends AbstractBuildable
   protected Command setOldLocations(GamePiece p) {
     Command comm = new NullCommand();
     if (p instanceof Stack) {
-      for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {
-        comm = comm.append(Decorator.setOldProperties(((Stack) p).getPieceAt(i)));
+      for (GamePiece gamePiece : ((Stack) p).asList()) {
+        comm = comm.append(Decorator.setOldProperties(gamePiece));
       }
     }
     else {
@@ -484,9 +480,8 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-             i.hasNext();) {
-          c = c.append(markMoved(i.next(), hasMoved));
+        for (GamePiece gamePiece : ((Stack) p).asList()) {
+          c = c.append(markMoved(gamePiece, hasMoved));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {
@@ -545,10 +540,7 @@ public class PieceMover extends AbstractBuildable
        */
       final ArrayList<GamePiece> draggedPieces = new ArrayList<>(0);
       if (dragging instanceof Stack) {
-        int size = ((Stack) dragging).getPieceCount();
-        for (int i = 0; i < size; i++) {
-           draggedPieces.add(((Stack) dragging).getPieceAt(i));
-        }
+        draggedPieces.addAll(((Stack) dragging).asList());
       }
       else {
         draggedPieces.add(dragging);

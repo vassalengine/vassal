@@ -77,13 +77,7 @@ public class KeyBuffer {
 
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
-      for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-           i.hasNext();) {
-        if (!pieces.contains(i.next())) {
-          return false;
-        }
-      }
-      return true;
+      return pieces.containsAll(((Stack) p).asList());
     }
     else {
       return pieces.contains(p);
@@ -124,6 +118,14 @@ public class KeyBuffer {
     return comm;
   }
 
+  /**
+   * @return an unmodifiable {@link List} of {@link GamePiece}s contained in
+   * this {@link KeyBuffer}
+   */
+  public List<GamePiece> asList() {
+    return Collections.unmodifiableList(pieces);
+  }
+
   public Iterator<GamePiece> getPiecesIterator() {
     return pieces.iterator();
   }
@@ -135,7 +137,7 @@ public class KeyBuffer {
   }
 
   public void sort(Comparator<GamePiece> comp) {
-    Collections.sort(pieces, comp);
+    pieces.sort(comp);
   }
 
   /**
@@ -144,11 +146,6 @@ public class KeyBuffer {
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
-    for (Iterator<GamePiece> i = stack.getPiecesIterator(); i.hasNext();) {
-      if (contains(i.next())) {
-        return true;
-      }
-    }
-    return false;
+    return stack.asList().stream().anyMatch(this::contains);
   }
 }

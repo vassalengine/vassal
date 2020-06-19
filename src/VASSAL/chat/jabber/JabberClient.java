@@ -786,11 +786,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       for (JabberPlayer p : playerMgr.getAllPlayers()) {
         JabberRoom room = p.getJoinedRoom();
         if (room != null) {
-          List<JabberPlayer> l = occupants.get(room);
-          if (l == null) {
-            l = new ArrayList<>();
-            occupants.put(room, l);
-          }
+          List<JabberPlayer> l = occupants.computeIfAbsent(room, k -> new ArrayList<>());
           l.add(p);
         }
       }

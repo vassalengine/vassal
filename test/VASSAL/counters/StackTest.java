@@ -11,9 +11,11 @@ import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StackTest {
@@ -463,5 +465,58 @@ public class StackTest {
       assertEquals(gamePieces.get(i++), gamePiece);
     }
 
+  }
+
+  @Test
+  public void asListShouldReturnWithCorrectSize() {
+    // prepare
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final GamePiece gamePiece2 = mock(GamePiece.class);
+    final GamePiece gamePiece3 = mock(GamePiece.class);
+
+    // run
+    Stack s = new Stack();
+    s.add(gamePiece1);
+    s.add(gamePiece2);
+    s.add(gamePiece3);
+    final List<GamePiece> pieces = s.asList();
+
+    // assert
+    assertEquals(3, pieces.size());
+  }
+
+  @Test
+  public void asListShouldGetAllPiecesInOrder() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    final GamePiece gamePiece2 = mock(GamePiece.class);
+
+    // run
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    s.add(gamePiece1);
+    s.add(gamePiece2);
+    final List<GamePiece> pieces = s.asList();
+
+    // assert
+    assertEquals(gamePiece0, pieces.get(0));
+    assertEquals(gamePiece1, pieces.get(1));
+    assertEquals(gamePiece2, pieces.get(2));
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void asListShouldReturnUnmodifiableList() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    final List<GamePiece> pieces = s.asList();
+
+    // run - trying to modify the list should throw
+    pieces.add(gamePiece0);
+
+    // assert - should not get here
+    Assert.fail();
   }
 }

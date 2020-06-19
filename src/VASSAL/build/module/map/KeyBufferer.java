@@ -95,6 +95,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       return;
     }
 
+    final KeyBuffer kbuf = KeyBuffer.getBuffer();
+
     GamePiece p = map.findPiece(e.getPoint(), PieceFinder.PIECE_IN_STACK);
     // Don't clear the buffer until we find the clicked-on piece
     // Because selecting a piece affects its visibility
@@ -105,9 +107,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
-      if (!KeyBuffer.getBuffer().contains(p)) {
+      if (!kbuf.contains(p)) {
         if (!e.isShiftDown() && !e.isControlDown()) {
-          KeyBuffer.getBuffer().clear();
+          kbuf.clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
         // while not selected, then select all of the pieces in the stack
@@ -119,13 +121,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
               e.getButton() == 3 ||
               Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
           {
-            KeyBuffer.getBuffer().add(p);
+            kbuf.add(p);
           }
           else {
             Stack s = p.getParent();
-            for (int i = 0; i < s.getPieceCount(); i++) {
-              KeyBuffer.getBuffer().add(s.getPieceAt(i));
-            }
+            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
           }
         }
         // End RFE 1629255
@@ -135,26 +135,21 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         if (e.isControlDown() && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           Stack s = p.getParent();
           if (s == null) {
-            KeyBuffer.getBuffer().remove(p);
+            kbuf.remove(p);
           }
           else if (!s.isExpanded()) {
-            for (int i = 0; i < s.getPieceCount(); i++) {
-              KeyBuffer.getBuffer().remove(s.getPieceAt(i));
-            }
+            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
           }
         }
         // End RFE 1659481
       }
-      if (p.getParent() != null) {
-        map.getPieceCollection().moveToFront(p.getParent());
-      }
-      else {
-        map.getPieceCollection().moveToFront(p);
-      }
+
+      final GamePiece to_front = p.getParent() != null ? p.getParent() : p;
+      map.getPieceCollection().moveToFront(to_front);
     }
     else {
       if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
-        KeyBuffer.getBuffer().clear();
+        kbuf.clear();
       }
       anchor = map.mapToComponent(e.getPoint());
       selection = new Rectangle(anchor.x, anchor.y, 0, 0);
@@ -220,29 +215,26 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     @Override
     public Object visitStack(Stack s) {
       if (s.topPiece() != null) {
+        final KeyBuffer kbuf = KeyBuffer.getBuffer();
         if (s.isExpanded()) {
           Point[] pos = new Point[s.getPieceCount()];
           map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
           for (int i = 0; i < pos.length; ++i) {
             if (mapsel.contains(pos[i])) {
               if (selecting) {
-                KeyBuffer.getBuffer().add(s.getPieceAt(i));
+                kbuf.add(s.getPieceAt(i));
               }
               else {
-                KeyBuffer.getBuffer().remove(s.getPieceAt(i));
+                kbuf.remove(s.getPieceAt(i));
               }
             }
           }
         }
         else if (mapsel.contains(s.getPosition())) {
-          for (int i = 0, n = s.getPieceCount(); i < n; ++i) {
-            if (selecting) {
-              KeyBuffer.getBuffer().add(s.getPieceAt(i));
-            }
-            else {
-              KeyBuffer.getBuffer().remove(s.getPieceAt(i));
-            }
-          }
+          s.asList().forEach(selecting ?
+            gamePiece -> kbuf.add(gamePiece) :
+            gamePiece -> kbuf.remove(gamePiece)
+          );
         }
       }
       return null;

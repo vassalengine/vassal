@@ -189,26 +189,25 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       // The transparency is only drawn on a Map.View component. Only the
       // GamePiece is drawn within other windows (Counter Palette, etc.).
       if (obs instanceof Map.View && getMap() != null) {
-        final Graphics2D g2d = (Graphics2D) g;
+        Area a = getArea();      
+        if (a != null) {
+          final Graphics2D g2d = (Graphics2D) g;
 
-        final Color oldColor = g2d.getColor();
-        g2d.setColor(transparencyColor);
+          final Color oldColor = g2d.getColor();
+          g2d.setColor(transparencyColor);
 
-        final Composite oldComposite = g2d.getComposite();
-        g2d.setComposite(AlphaComposite.getInstance(
-          AlphaComposite.SRC_OVER, transparencyLevel));
+          final Composite oldComposite = g2d.getComposite();
+          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparencyLevel));
 
-        Area a = getArea();
+          if (zoom != 1.0) {
+            a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
+          }
+          g2d.fill(a);
 
-        if (zoom != 1.0) {
-          a = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                                      .createTransformedShape(a));
+
+          g2d.setColor(oldColor);
+          g2d.setComposite(oldComposite);
         }
-
-        g2d.fill(a);
-
-        g2d.setColor(oldColor);
-        g2d.setComposite(oldComposite);
       }
     }
 
@@ -219,6 +218,9 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected Area getArea() {
     Area a;
     final Map map = getMap();
+    if (map == null) {
+      return null;
+    }
     // Always draw the area centered on the piece's current position
     // (For instance, don't draw it at an offset if it's in an expanded stack)
     final Point mapPosition = getPosition();

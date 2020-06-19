@@ -78,6 +78,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
   public static final String BUG_10295 = "bug10295";
+  public static final String CLASSIC_MFD = "classicMfd";
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -101,6 +102,9 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private static GlobalOptions instance = new GlobalOptions();
   private boolean useSingleWindow;
+  
+  private boolean useClassicMoveFixedDistance = false;
+  private BooleanConfigurer classicMfd;
 
   @Override
   public void addTo(Buildable parent) {
@@ -167,6 +171,16 @@ public class GlobalOptions extends AbstractConfigurable {
 
       prefs.addOption(bug10295Conf);
     }
+    
+    // Move Fixed Distance trait (Translate) has been substantially re-written.
+    // Use new version by default. User may over-ride to use old buggy behaviour.
+    classicMfd = new BooleanConfigurer(
+        CLASSIC_MFD,
+        Resources.getString("GlobalOptions.classic_mfd"),
+        Boolean.FALSE
+      );
+    classicMfd.addPropertyChangeListener( (evt) -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
+    prefs.addOption(classicMfd);
 
     validator = new SingleChildInstance(gm, getClass());
   }
@@ -177,6 +191,14 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public boolean isUseSingleWindow() {
     return useSingleWindow;
+  }
+
+  public boolean isUseClassicMoveFixedDistance() {
+    return useClassicMoveFixedDistance;
+  }
+
+  public void setUseClassicMoveFixedDistance(boolean b) {
+    useClassicMoveFixedDistance = b;
   }
 
   @Deprecated

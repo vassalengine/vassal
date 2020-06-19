@@ -19,8 +19,6 @@
 
 package VASSAL.tools.io;
 
-import static VASSAL.tools.IterableEnumeration.iterate;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -46,6 +44,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import VASSAL.tools.IteratorUtils;
 import org.apache.commons.io.FileUtils;
 
 import VASSAL.Info;
@@ -590,7 +589,7 @@ public class ZipArchive implements FileArchive {
 
     if (archiveFile.exists() && archiveFile.length() > 0) {
       zipFile = new ZipFile(archiveFile);
-      for (ZipEntry e : iterate(zipFile.entries())) {
+      for (ZipEntry e : IteratorUtils.iterate(zipFile.entries().asIterator())) {
         entries.put(e.getName(), new Entry(e, null));
       }
     }

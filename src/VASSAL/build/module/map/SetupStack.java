@@ -60,6 +60,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -322,7 +323,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (OWNING_BOARD.equals(key)) {
       if (OwningBoardPrompt.ANY.equals(value)) {
-        owningBoardName = null;
+        if (map != null) {
+          List<String> selectedBoardNames = map.getBoardPicker().getSelectedBoardNames();
+          owningBoardName = selectedBoardNames.isEmpty() ? null : selectedBoardNames.get(0);
+        }
+        else {
+          owningBoardName = null;
+        }
       }
       else {
         owningBoardName = (String) value;

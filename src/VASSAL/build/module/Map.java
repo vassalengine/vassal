@@ -1262,20 +1262,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   @Override
   public void mousePressed(MouseEvent e) {
-
     // Deselect any counters on the last Map with focus
     if (!this.equals(activeMap)) {
       boolean dirty = false;
 
-      final ArrayList<GamePiece> l = new ArrayList<>();
-      for (Iterator<GamePiece> i = KeyBuffer.getBuffer().getPiecesIterator();
-           i.hasNext(); ) {
-        l.add(i.next());
-      }
+      final KeyBuffer kbuf = KeyBuffer.getBuffer();
+      final ArrayList<GamePiece> l = new ArrayList<>(kbuf.asList());
 
       for (GamePiece p : l) {
         if (p.getMap() == activeMap) {
-          KeyBuffer.getBuffer().remove(p);
+          kbuf.remove(p);
           dirty = true;
         }
       }

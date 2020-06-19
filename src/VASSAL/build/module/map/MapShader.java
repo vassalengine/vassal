@@ -234,9 +234,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected void checkPiece(Area area, GamePiece piece) {
     if (piece instanceof Stack) {
       Stack s = (Stack) piece;
-      for (int i = 0; i < s.getPieceCount(); i++) {
-        checkPiece(area, s.getPieceAt(i));
-      }
+      s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
       ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece,ShadedPiece.class);

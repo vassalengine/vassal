@@ -54,10 +54,9 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED_MOVEMENT))) {
       if (p instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-             i.hasNext();) {
+        for (GamePiece gamePiece : ((Stack) p).asList()) {
           if (Boolean.TRUE.equals(
-                i.next().getProperty(Properties.RESTRICTED_MOVEMENT))) {
+                gamePiece.getProperty(Properties.RESTRICTED_MOVEMENT))) {
             return;
           }
         }
@@ -141,6 +140,14 @@ public class DragBuffer {
     return pieces.contains(p);
   }
 
+  /**
+   * @return an unmodifiable {@link List} of {@link GamePiece}s contained in
+   * this {@link DragBuffer}
+   */
+  public List<GamePiece> asList() {
+    return Collections.unmodifiableList(pieces);
+  }
+
   public PieceIterator getIterator() {
     return new PieceIterator(pieces.iterator());
   }
@@ -199,7 +206,7 @@ public class DragBuffer {
   }
 
   public void sort(Comparator<GamePiece> comp) {
-    Collections.sort(pieces, comp);
+    pieces.sort(comp);
   }
 
   /**

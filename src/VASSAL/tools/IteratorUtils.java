@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 by Joel Uckelman
+ * Copyright (c) 2008 Vassal developers
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,23 +17,21 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.launch;
+package VASSAL.tools;
 
-import java.io.Serializable;
+import java.util.Iterator;
 
-import VASSAL.tools.ipc.IPCMessage;
+public class IteratorUtils {
 
-/**
- * The interface for objects passed by {@link CommandClient} to
- * {@link CommandServer}.
- * @deprecated Use {@link IPCMessage} instead.
- */
-@Deprecated
-public interface Command extends Serializable {
   /**
-   * Execute the command.
+   * A static convenience method for making an <code>Iterator<code>
+   * into an <code>Iterable</code>.
    *
-   * @return the result
+   * @param i the <code>Iterator</code>
+   * @return an <code>Iterable</code> wrapping <code>i</code>
    */
-  Object execute();
+  public static <T> Iterable<T> iterate(Iterator<T> i) {
+    return () -> i;
+  }
+
 }

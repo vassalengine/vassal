@@ -22,6 +22,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -119,9 +120,8 @@ public class MovementReporter {
     Command c = null;
     if (p instanceof Stack) {
       c = new NullCommand();
-      for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
-           i.hasNext();) {
-        c.append(markMoved(i.next()));
+      for (GamePiece gp : ((Stack)p).asList()) {
+        c = c.append(markMoved(gp));
       }
     }
     else if (p.getProperty(Properties.MOVED) != null) {
@@ -262,14 +262,10 @@ public class MovementReporter {
         return false;
       }
       if (target instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) target).getPiecesIterator(); i.hasNext() ;) {
-          GamePiece piece = i.next();
-          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-              || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-            return true;
-          }
-        }
-        return false;
+        final Predicate<GamePiece> gamePiecePredicate =
+          piece -> Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+            || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
+        return ((Stack) target).asList().stream().anyMatch(gamePiecePredicate);
       }
       else {
         return Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
@@ -389,8 +385,7 @@ public class MovementReporter {
       boolean first = true;
       for (GamePiece piece : pieces) {
         if (piece instanceof Stack) {
-          for (Iterator<GamePiece> j = ((Stack) piece).getPiecesIterator(); j.hasNext(); ) {
-            GamePiece p = j.next();
+          for (GamePiece p : ((Stack) piece).asList()) {
             if (isInvisible(p)) {
               if (!first) {
                 names.append(", ");

@@ -36,6 +36,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -411,6 +412,13 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     else {
       return Collections.unmodifiableCollection(currentBoards);
     }
+  }
+
+  /**
+   * @return a List of the names of all boards from which have been selected either by the user via the dialog or from reading a savefile
+   */
+  public List<String> getSelectedBoardNames() {
+    return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
   }
 
   /**
