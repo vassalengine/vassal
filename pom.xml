@@ -232,9 +232,11 @@
 					<source>${version.java.target}</source>
 					<target>${version.java.target}</target>
 					<compilerArgs>
-						<!-- <compilerArg>-Xlint:all</compilerArg> -->
-						<!-- <arg>-Xmaxwarns</arg> <arg>10000</arg> -->
-						<!-- <arg>- -add-modules</arg> <arg>java.xml</arg> -->
+						<!-- next two lines enable warnings -->
+						<!--
+						<arg>-Xlint:all</arg>
+						<arg>-Xmaxwarns</arg> <arg>10000</arg>
+						-->
 						<arg> --add-exports</arg> <arg>java.desktop/sun.java2d.cmm=ALL-UNNAMED</arg>
 						<arg> --add-exports</arg> <arg>java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED</arg>
 						<arg> --add-exports</arg> <arg>java.desktop/java.awt.peer=ALL-UNNAMED</arg>
