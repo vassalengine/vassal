@@ -77,12 +77,6 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-#SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
-#CLASSES:=$(SOURCES:.java=.class)
-
-vpath %.class $(shell find $(CLASSDIR) -type d)
-vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
-
 all: fast-compile
 
 fast-compile:
