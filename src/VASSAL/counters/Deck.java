@@ -1055,7 +1055,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
       ArrayList<KeyCommand> l = new ArrayList<>();
-      KeyCommand c = null;
+      KeyCommand c;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
           private static final long serialVersionUID = 1L;
@@ -1424,7 +1424,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    String ds = null;
+    String ds;
 
     try (Reader fr = new FileReader(f);
          BufferedReader in = new BufferedReader(fr)) {
