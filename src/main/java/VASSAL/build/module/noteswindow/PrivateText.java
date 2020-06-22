@@ -1,7 +1,6 @@
 package VASSAL.build.module.noteswindow;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

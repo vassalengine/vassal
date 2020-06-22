@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2003-2012 by Rodney Kinney, Brent Easton
  * GridLocation modifications copyright (c) 2010-2011 by Pieter Geerkens

@@ -21,7 +21,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /*
- * $Id$
  *
  * Copyright (c) 2003 by Rodney Kinney
  *

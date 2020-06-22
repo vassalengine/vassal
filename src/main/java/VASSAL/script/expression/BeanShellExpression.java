@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2009-2013 Brent Easton
  *

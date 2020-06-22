@@ -23,7 +23,6 @@ import javax.swing.JTree;
 import VASSAL.chat.SimplePlayer;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  */

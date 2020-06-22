@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2004-2012 by Michael Blumohr, Rodney Kinney, Brent Easton
  *

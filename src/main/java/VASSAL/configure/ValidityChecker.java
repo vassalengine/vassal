@@ -3,7 +3,6 @@ package VASSAL.configure;
 import VASSAL.build.Buildable;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

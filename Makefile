@@ -4,7 +4,7 @@
 # This Makefile is intended for use on Linux systems. If you are trying to use
 # it elsewhere, you are on your own.
 #
-# Before building, you will need to install (at least) the following packages:
+# If you want to build Windows releases you will need:
 #
 # Maven    (https://maven.apache.org/)
 # Launch4j (http://launch4j.sourceforge.net)
@@ -34,8 +34,13 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
-# Prior to building the Windows release, unpack the JDK to bundle into the
-# directory specified in WINJDK.
+# For the Windows release, you will need a Windows JDK available for bundling
+# with VASSAL. Set WINJMODS to the directory in the Windows JDK where the
+# jmods are.
+#
+# For the Mac release, you will need a Mac JDK available for bundling
+# with VASSAL. Set OSXJMODS to the directory in the Mac JDK where the
+# jmods are.
 #
 
 SHELL:=/bin/bash
@@ -53,7 +58,6 @@ JDOCLINK:=file:///usr/share/javadoc/java/api
 
 WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
-LINJMODS:=/usr/lib/jvm/java-14/jmods
 
 VNUM:=3.3.1
 GITCOMMIT:=$(shell git rev-parse --short HEAD)

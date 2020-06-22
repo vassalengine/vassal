@@ -1,7 +1,6 @@
 package VASSAL.counters;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

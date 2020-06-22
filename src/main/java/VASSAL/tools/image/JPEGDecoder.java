@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2013 by Joel Uckelman
  *

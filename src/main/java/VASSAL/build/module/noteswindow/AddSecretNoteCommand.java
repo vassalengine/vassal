@@ -3,7 +3,6 @@ package VASSAL.build.module.noteswindow;
 import VASSAL.command.Command;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2004-2011 by Rodney Kinney, Brent Easton
  *
