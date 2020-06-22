@@ -48,8 +48,9 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import VASSAL.Info;
 
 /**
- * Provides support for hidden panels. Use the split methods to create an instance of {@link SplitPane}, which can then
- * be manipulated to show and hide the panel
+ * Provides support for hidden panels. Use the split methods to create an
+ * instance of {@link SplitPane}, which can then be manipulated to show and
+ * hide the panel
  */
 public class ComponentSplitter {
   /**
@@ -64,8 +65,10 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
+   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  public static SplitPane splitRight(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+  @Deprecated
+  public SplitPane splitRight(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
     return split(base, hideableComponent, SplitPane.HIDE_RIGHT, resizeOnVisibilityChange);
   }
 
@@ -81,8 +84,10 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
+   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  public static SplitPane splitLeft(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+  @Deprecated
+  public SplitPane splitLeft(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
     return split(base, hideableComponent, SplitPane.HIDE_LEFT, resizeOnVisibilityChange);
   }
 
@@ -98,8 +103,10 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
+   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  public static SplitPane splitBottom(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+  @Deprecated
+  public SplitPane splitBottom(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
     return split(base, hideableComponent, SplitPane.HIDE_BOTTOM, resizeOnVisibilityChange);
   }
 
@@ -114,13 +121,16 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
+   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  public static SplitPane splitTop(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+  @Deprecated
+  public SplitPane splitTop(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
     return split(base, hideableComponent, SplitPane.HIDE_TOP, resizeOnVisibilityChange);
   }
 
   /**
-   * Search the containment hierarchy for the index-th {@link SplitPane} ancestor of a target component
+   * Search the containment hierarchy for the index-th {@link SplitPane}
+   * ancestor of a target component
    *
    * @param c
    *          the target component
@@ -128,7 +138,21 @@ public class ComponentSplitter {
    *          If -1, return the last {@link SplitPane} ancestor
    * @return the {@link SplitPane} ancestor, or the original component if none is found
    */
-  public static Component getSplitAncestor(Component c, int index) {
+  @Deprecated
+  public Component getSplitAncestor(Component c, int index) {
+    return splitAncestorOf(c, index);
+  }
+
+  /**
+   * Search the containment hierarchy for the ith {@link SplitPane}
+   * ancestor of a target component
+   *
+   * @param c the target component
+   * @param index If -1, return the last {@link SplitPane} ancestor
+   * @return the {@link SplitPane} ancestor, or the original component if
+   * none is found
+   */
+  public static Component splitAncestorOf(Component c, int index) {
     Component next = SwingUtilities.getAncestorOfClass(SplitPane.class, c);
     int count = -1;
     while (next != null && (index < 0 || count++ < index)) {
@@ -138,7 +162,26 @@ public class ComponentSplitter {
     return c;
   }
 
-  private static SplitPane split(Component base, final Component newComponent, int hideablePosition, boolean resize) {
+  /**
+   * Create a new hideable panel beside the base component. The base component
+   * is replaced by a {@link SplitPane}
+   *
+   * @param base the base component
+   * @param hideableComponent the hideable component, one of
+   *   {@link SplitPane.HIDE_TOP}, {@link SplitPane.HIDE_RIGHT},
+   *   {@link SplitPane.HIDE_BOTTOM}, {@link SplitPane.HIDE_LEFT}
+   * @param hideablePosition the position of the hideable component
+   * @param resizeOnVisibilityChange If true, the containing window will
+   *   expand or shrink to an appropriate size when the hideable component is
+   *   shown or hidden
+   * @return the {@link SplitPane} containing the two components
+   */
+  public static SplitPane split(
+    Component base,
+    Component newComponent,
+    int hideablePosition,
+    boolean resize)
+  {
     int index = -1;
     Container parent = base.getParent();
     if (base.getParent() != null) {
@@ -149,6 +192,7 @@ public class ComponentSplitter {
         }
       }
     }
+
     final SplitPane split = new SplitPane(newComponent, base, hideablePosition, resize);
     if (index >= 0) {
       parent.add(split, index);
@@ -597,9 +641,9 @@ public class ComponentSplitter {
     JTextField input = new JTextField(60);
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     text.add(input);
-    final SplitPane splitRight = ComponentSplitter.splitRight(main, smallRight, false);
-    final SplitPane splitLeft = ComponentSplitter.splitLeft(main, smallLeft, false);
-    final SplitPane splitBottom = ComponentSplitter.splitBottom(ComponentSplitter.getSplitAncestor(main, -1), new ScrollPane(large), true);
+    final SplitPane splitRight = ComponentSplitter.split(main, smallRight, SplitPane.HIDE_RIGHT, false);
+    final SplitPane splitLeft = ComponentSplitter.split(main, smallLeft, SplitPane.HIDE_LEFT, false);
+    final SplitPane splitBottom = ComponentSplitter.split(ComponentSplitter.splitAncestorOf(main, -1), new ScrollPane(large), SplitPane.HIDE_BOTTOM, true);
     splitBottom.setResizeWeight(0.0);
     main.add(text, BorderLayout.CENTER);
     toolbar.add(new AbstractAction("Left") {
