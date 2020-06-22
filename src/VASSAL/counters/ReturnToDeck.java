@@ -199,7 +199,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     for (DrawPile p : piles)
       decks[i++] = new AvailableDeck(p);
 
-    final JList list = new JList(decks);
+    final JList<AvailableDeck> list = new JList<>(decks);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JLabel prompt = new JLabel(selectDeckPrompt);
     prompt.setAlignmentX(0.5f);
@@ -211,7 +211,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     b.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
+        AvailableDeck selection = list.getSelectedValue();
         if (selection != null)
           deck = selection.pile;
         d.dispose();
