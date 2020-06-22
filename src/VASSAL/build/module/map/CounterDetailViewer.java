@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2003-2013 by David Sullivan, Rodney Kinney,
  * Brent Easton, and Joel Uckelman.

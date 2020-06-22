@@ -3,7 +3,6 @@ package VASSAL.counters;
 import java.awt.event.InputEvent;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

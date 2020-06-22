@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright (c) 2000-2003 by Ben smith
  *

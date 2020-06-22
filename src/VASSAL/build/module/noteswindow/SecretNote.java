@@ -6,7 +6,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.PlayerRoster;
 
 /*
- * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

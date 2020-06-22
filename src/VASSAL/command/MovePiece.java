@@ -16,7 +16,6 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 
 /*
- * $Id$
  *
  * Copyright (c) 2003 by Rodney Kinney
  *

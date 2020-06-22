@@ -4,7 +4,6 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 
 /*
- * $Id$
  *
  * Copyright (c) 2003-2011 by Rodney Kinney, Brent Easton
  *

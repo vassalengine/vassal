@@ -6,7 +6,6 @@ import VASSAL.build.GameModule;
 import VASSAL.counters.GamePiece;
 
 /*
- * $Id$
  *
  * Copyright (c) 2003 by Rodney Kinney
  *

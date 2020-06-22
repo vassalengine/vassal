@@ -3,7 +3,6 @@ package VASSAL.build.module;
 import VASSAL.command.Command;
 
 /*
- * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *

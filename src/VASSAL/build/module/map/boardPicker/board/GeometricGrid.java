@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.geom.Area;
 
 /*
- * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney
  *

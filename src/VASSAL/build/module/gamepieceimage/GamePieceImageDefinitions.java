@@ -12,7 +12,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
 
 /*
- * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
  *
