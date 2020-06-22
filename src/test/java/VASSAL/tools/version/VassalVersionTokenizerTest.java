@@ -31,7 +31,6 @@ public class VassalVersionTokenizerTest {
     final Object[][] versions = {
       { "1.2.3",                   1, 2, 3            },
       { "1.2.3.4",                 1, 2, 3, 4         },
-      { "1.2.3-svn7890",           1, 2, 3, -2, null  },
       { "1.2.3-rc3",               1, 2, 3, -2, null  },
       { "foobarbaz",               null               },
       { "1.2.foo",                 1, 2, null         },

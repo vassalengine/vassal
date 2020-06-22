@@ -1126,4 +1126,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     myI18nData.setAttributeTranslatable(MODULE_VERSION, false);
     return myI18nData;
   }
+
+  /**
+   * @return the {@link PlayerRoster} instance, or <code>null</code> if no {@link PlayerRoster} exists
+   * within this {@link GameModule}
+   */
+  public PlayerRoster getPlayerRoster() {
+    return getComponentsOf(PlayerRoster.class).stream()
+                                              .findFirst()
+                                              .orElse(null);
+  }
+
+  public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
+    PlayerRoster r = getPlayerRoster();
+    if (r != null) {
+      r.addSideChangeListenerToInstance(l);
+    }
+  }
 }

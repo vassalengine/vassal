@@ -676,9 +676,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
 
-      mainWindowDock = ComponentSplitter.splitBottom(
-        ComponentSplitter.getSplitAncestor(g.getControlPanel(), -1),
-        layeredPane, true
+      mainWindowDock = ComponentSplitter.split(
+        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
+        layeredPane,
+        ComponentSplitter.SplitPane.HIDE_BOTTOM,
+        true
       );
       mainWindowDock.setResizeWeight(0.0);
 
@@ -703,7 +705,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     });
 
-    PlayerRoster.addSideChangeListener(this);
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(

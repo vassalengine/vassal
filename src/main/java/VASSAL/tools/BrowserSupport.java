@@ -58,6 +58,16 @@ public class BrowserSupport {
         }
       }
     }
+
+    // Try xdg-open in case nothing else works
+    final ProcessBuilder pb = new ProcessBuilder("xdg-open", url);
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    try {
+      pb.start();
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, url);
+    }
   }
 
   private static final HyperlinkListener listener = new HyperlinkListener() {

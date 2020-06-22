@@ -108,8 +108,8 @@ public class FirstTimeDialog extends JDialog {
     }
 
     final JLabel lang = new JLabel(Resources.getString("Prefs.language") + ":");
-    final JComboBox langbox =
-      new JComboBox(Resources.getSupportedLocales().toArray());
+    final JComboBox<Locale> langbox =
+      new JComboBox<>(Resources.getSupportedLocales().toArray(new Locale[0]));
     langbox.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
 
