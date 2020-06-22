@@ -1253,7 +1253,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       Arrays.sort(pieces);
     }
 
-    final JList list = new JList(pieces);
+    final JList<AvailablePiece> list = new JList<>(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     d.add(new ScrollPane(list));
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
