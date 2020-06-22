@@ -424,8 +424,12 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    serverStatusView = ComponentSplitter.splitRight(
-      moduleControls, serverStatusControls, false);
+    serverStatusView = ComponentSplitter.split(
+      moduleControls,
+      serverStatusControls,
+      ComponentSplitter.SplitPane.HIDE_RIGHT,
+      false
+    );
     serverStatusView.revalidate();
 
     // show the server status controls according to the prefs
