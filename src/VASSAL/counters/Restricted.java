@@ -65,7 +65,7 @@ public class Restricted extends Decorator implements EditablePiece {
     mySetType(type);
     if (handleRetirement == null) {
       handleRetirement = new RetirementHandler();
-      PlayerRoster.addSideChangeListener(handleRetirement);
+      GameModule.getGameModule().addSideChangeListenerToPlayerRoster(handleRetirement);
     }
   }
 

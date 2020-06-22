@@ -190,15 +190,20 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public void addPropertyChangeListener(PropertyChangeListener l) {
   }
 
+  /**
+   * @deprecated use {@link GameModule#addSideChangeListenerToPlayerRoster(SideChangeListener)}
+   */
+  @Deprecated
   public static void addSideChangeListener(SideChangeListener l) {
-    PlayerRoster r = getInstance();
-    if (r != null) {
-      r.sideChangeListeners.add(l);
-    }
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
+  }
+
+  public void addSideChangeListenerToInstance(SideChangeListener l) {
+    sideChangeListeners.add(l);
   }
 
   public static void removeSideChangeListener(SideChangeListener l) {
-    PlayerRoster r = getInstance();
+    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       r.sideChangeListeners.remove(l);
     }
@@ -289,15 +294,15 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public static boolean isActive() {
-    return getInstance() != null;
+    return GameModule.getGameModule().getPlayerRoster() != null;
   }
 
+  /**
+   * @deprecated use {@link GameModule#getPlayerRoster()}
+   */
+  @Deprecated
   protected static PlayerRoster getInstance() {
-    for (PlayerRoster pr :
-         GameModule.getGameModule().getComponentsOf(PlayerRoster.class)) {
-      return pr;
-    }
-    return null;
+    return GameModule.getGameModule().getPlayerRoster();
   }
 
   public static String getMySide() {
@@ -309,7 +314,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected static String getMySide(boolean localized) {
-    final PlayerRoster r = getInstance();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       for (PlayerInfo pi : r.getPlayers()) {
         if (pi.playerId.equals(GameModule.getUserId())) {
@@ -533,7 +538,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
 
     public String getLocalizedSide() {
-      return PlayerRoster.getInstance().translateSide(side);
+      return GameModule.getGameModule().getPlayerRoster().translateSide(side);
     }
   }
 

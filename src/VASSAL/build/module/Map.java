@@ -705,7 +705,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     });
 
-    PlayerRoster.addSideChangeListener(this);
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(

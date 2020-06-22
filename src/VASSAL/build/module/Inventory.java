@@ -218,8 +218,8 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public void addTo(Buildable b) {
-  // Support for players changing sides
-  PlayerRoster.addSideChangeListener(this);
+    // Support for players changing sides
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(getComponent());
     GameModule.getGameModule().getGameState().addGameComponent(this);
