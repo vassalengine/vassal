@@ -519,4 +519,24 @@ public class StackTest {
     // assert - should not get here
     Assert.fail();
   }
+
+  @Test
+  public void asListShouldReturnDefensiveList() {
+    // prepare
+    final GamePiece gamePiece0 = mock(GamePiece.class);
+    final GamePiece gamePiece1 = mock(GamePiece.class);
+    Stack s = new Stack();
+    s.add(gamePiece0);
+    s.add(gamePiece1);
+
+    // run - trying to modify the list should throw
+    final List<GamePiece> pieces = s.asList();
+    s.removePieceAt(0);
+
+    // assert - should not get here
+    assertEquals(2, pieces.size());
+    assertEquals(gamePiece0, pieces.get(0));
+    assertEquals(gamePiece1, pieces.get(1));
+  }
+
 }
