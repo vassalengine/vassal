@@ -264,7 +264,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
   * Update map-level count property for a piece located at index
-  * @param index, increase
   */
   private void updateCounts(int index, boolean increase) {
     if (!doesExpressionCounting()) {
@@ -288,7 +287,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
   * Update map-level count property for a piece
-  * @param piece, increase
   */
   private void updateCounts(GamePiece p, boolean increase) {
     if (!doesExpressionCounting() || getMap() == null) {
@@ -318,7 +316,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
    * Set the <deckName>_numPieces property in the containing Map
-   * @param oldPieceCount
    */
   protected void fireNumCardsProperty() {
     countProperty.setPropertyValue(String.valueOf(pieceCount));
@@ -639,10 +636,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-   * The popup menu text for the command that sends the entire deck to another
-   * deck
-   *
-   * @return
+   * @return The popup menu text for the command that sends the entire deck to another deck
    */
   public String getReshuffleCommand() {
     return reshuffleCommand;
@@ -673,10 +667,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-   * The message to send to the chat window when the deck is reshuffled to
-   * another deck
-   *
-   * @return
+   * @return The message to send to the chat window when the deck is reshuffled to another deck
    */
   public String getReshuffleMsgFormat() {
     return reshuffleMsgFormat;
@@ -730,9 +721,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * Does the specified GamePiece meet the rules to be contained
    * in this Deck.
-   *
-   * @param piece
-   * @return
    */
   public boolean mayContain(GamePiece piece) {
     if (! restrictOption || restrictExpression.isNull()) {
@@ -865,7 +853,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
    * Set the contents of this Deck to an Iterator of GamePieces
-   * @deprecated Use {@link #setContents(Collection<GamePiece>)} instead.
+   * @deprecated Use {@link #setContents(Collection)} instead.
    */
   @Deprecated
   protected Command setContents(Iterator<GamePiece> it) {
@@ -1029,8 +1017,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * The color used to draw boxes representing cards underneath the top one. If
    * null, then draw each card normally for face-up decks, and duplicate the top
    * card for face-down decks
-   *
-   * @return
    */
   protected Color getBlankColor() {
     Color c = Color.white;
@@ -1572,7 +1558,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the number of cards to be returned by next call to
    * {@link #drawCards()}.
    *
-   * @param dragCount
+   * @param dragCount number of cards to be returned
    */
   public void setDragCount(int dragCount) {
     this.dragCount = dragCount;
