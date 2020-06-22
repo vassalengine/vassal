@@ -79,8 +79,9 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public JComboBox getComboBox() {
-    JComboBox b = new JComboBox(validValues);
-    b.setMaximumSize(new Dimension(b.getMaximumSize().width,b.getPreferredSize().height));
+    JComboBox<String> b = new JComboBox<>(validValues);
+    b.setMaximumSize(new Dimension(b.getMaximumSize().width,
+                                   b.getPreferredSize().height));
     return b;
   }
 
@@ -99,7 +100,7 @@ public class StringEnumConfigurer extends Configurer {
 
   public void setValidValues(String[] s) {
     validValues = s;
-  box.setModel(new DefaultComboBoxModel(validValues));
+    box.setModel(new DefaultComboBoxModel<String>(validValues));
   }
 
   @Override

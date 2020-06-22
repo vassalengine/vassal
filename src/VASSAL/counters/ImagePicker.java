@@ -50,7 +50,7 @@ public class ImagePicker extends JPanel
   private String imageName = null;
   protected static Font FONT = new Font("Dialog", 0, 11);
   private final JTextArea noImage;
-  private final JComboBox select;
+  private final JComboBox<String> select;
   private final OpIcon icon;
   private final JLabel imageView;
   private final JPanel imageViewer;
@@ -76,7 +76,7 @@ public class ImagePicker extends JPanel
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
 
-    select = new JComboBox(ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
+    select = new JComboBox<>(ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
     select.addItemListener(this);
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     add(noImage);

@@ -48,12 +48,12 @@ public class ListWidget extends Widget
     implements ListSelectionListener {
   private JPanel panel;
   private JSplitPane split;
-  private JList list;
-  private DefaultListModel widgets = new DefaultListModel();
+  private JList<Widget> list;
+  private DefaultListModel<Widget> widgets = new DefaultListModel<>();
   private CardLayout layout;
   private JPanel multiPanel;
   private int width, height, divider;
-  private static final String DIVIDER="divider";
+  private static final String DIVIDER = "divider";
 
   private Map<Object,String> keys = new HashMap<>();
   private int count = 0;
@@ -72,7 +72,7 @@ public class ListWidget extends Widget
       panel = new JPanel();
       split = new JSplitPane();
       split.setResizeWeight(1.0);
-      list = new JList(widgets);
+      list = new JList<>(widgets);
       layout = new CardLayout();
       multiPanel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
