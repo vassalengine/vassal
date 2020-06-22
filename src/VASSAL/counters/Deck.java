@@ -25,7 +25,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -398,36 +397,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseKey = st.nextNamedKeyStroke(null);
 
     if (shuffleListener == null) {
-      shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(shuffle());
-          repaintMap();
-        }
+      shuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(shuffle());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(shuffleListener);
     }
     shuffleListener.setKeyStroke(getShuffleKey());
 
     if (reshuffleListener == null) {
-      reshuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(sendToDeck());
-          repaintMap();
-        }
+      reshuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(sendToDeck());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
 
     if (reverseListener == null) {
-      reverseListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(reverse());
-          repaintMap();
-        }
+      reverseListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(reverse());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(reverseListener);
     }
@@ -1270,30 +1260,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int[] selection = list.getSelectedIndices();
-        if (selection.length > 0) {
-          nextDraw = new ArrayList<>();
-          for (int value : selection) {
-            nextDraw.add(pieces[value].piece);
-          }
+    b.addActionListener(e -> {
+      int[] selection = list.getSelectedIndices();
+      if (selection.length > 0) {
+        nextDraw = new ArrayList<>();
+        for (int value : selection) {
+          nextDraw.add(pieces[value].piece);
         }
-        else {
-          nextDraw = null;
-        }
-        d.dispose();
       }
+      else {
+        nextDraw = null;
+      }
+      d.dispose();
     });
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
     d.pack();
