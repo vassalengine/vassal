@@ -179,9 +179,6 @@ public class Footprint extends MovementMarkable {
     st.nextToken();
 
     trailKey = st.nextNamedKeyStroke(DEFAULT_TRAIL_KEY);
-    trailKeyOn = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK));   
-    trailKeyOff = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.ALT_MASK));
-    trailKeyClear = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK + InputEvent.ALT_MASK));
     menuCommand = st.nextToken(DEFAULT_MENU_COMMAND);
     initiallyVisible = st.nextBoolean(DEFAULT_INITIALLY_VISIBLE);
     globallyVisible = st.nextBoolean(DEFAULT_GLOBALLY_VISIBLE);
@@ -193,6 +190,9 @@ public class Footprint extends MovementMarkable {
     edgePointBuffer = st.nextInt(DEFAULT_EDGE_POINT_BUFFER);
     edgeDisplayBuffer = st.nextInt(DEFAULT_EDGE_DISPLAY_BUFFER);
     lineWidth = st.nextDouble(LINE_WIDTH);
+    trailKeyOn = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK));   
+    trailKeyOff = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.ALT_MASK));
+    trailKeyClear = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK + InputEvent.ALT_MASK));
 
     commands = null;
     showTrailCommand = null;
@@ -210,9 +210,6 @@ public class Footprint extends MovementMarkable {
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(trailKey)
-      .append(trailKeyOn)
-      .append(trailKeyOff)      
-      .append(trailKeyClear)
       .append(menuCommand)
       .append(initiallyVisible)
       .append(globallyVisible)
@@ -223,7 +220,10 @@ public class Footprint extends MovementMarkable {
       .append(unSelectedTransparency)
       .append(edgePointBuffer)
       .append(edgeDisplayBuffer)
-      .append(lineWidth);
+      .append(lineWidth)
+      .append(trailKeyOn)
+      .append(trailKeyOff)      
+      .append(trailKeyClear);
     return ID + se.getValue();
   }
 
@@ -831,9 +831,6 @@ public class Footprint extends MovementMarkable {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(ID)
         .append(trailKeyInput.getValueString())
-        .append(trailKeyOn.getValueString())
-        .append(trailKeyOff.getValueString())      
-        .append(trailKeyClear.getValueString())
         .append(mc.getValueString())
         .append(iv.getValueString())
         .append(gv.getValueString())
@@ -844,7 +841,10 @@ public class Footprint extends MovementMarkable {
         .append(ut.getValueString())
         .append(pb.getValueString())
         .append(db.getValueString())
-        .append(lw.getValueString());
+        .append(lw.getValueString())
+        .append(trailKeyOn.getValueString())
+        .append(trailKeyOff.getValueString())      
+        .append(trailKeyClear.getValueString());
       return se.getValue();
     }
 
