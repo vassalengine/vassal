@@ -268,7 +268,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!doesExpressionCounting()) {
       return;
     }
-    if (index >= 0 && index < contents.length) {
+    if (index >= 0 && index < getPieceCount()) {
       GamePiece p = getPieceAt(index);
       if (p == null) {
         //can't figure out the piece, do a full update
