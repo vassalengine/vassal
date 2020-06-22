@@ -298,7 +298,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           Box box = Box.createHorizontalBox();
           box.add(new JLabel("Move to position"));
           box.add(Box.createHorizontalStrut(10));
-          final JComboBox select = new JComboBox();
+          final JComboBox<String> select = new JComboBox<>();
           TreeNode parentNode = getTreeNode(target).getParent();
           for (int i = 0; i < parentNode.getChildCount(); ++i) {
             Configurable c = (Configurable) ((DefaultMutableTreeNode) parentNode.getChildAt(i)).getUserObject();
