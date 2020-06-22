@@ -61,6 +61,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     pane.setEditorKit(myHTMLEditorKit);
 
     JScrollPane scroll = new ScrollPane(pane);
+    scroll.getVerticalScrollBar().setUnitIncrement(40); //BR// Bug 13117 - decent mousewheel scroll rate.
     add(scroll);
     update(contents);
     pack();

@@ -129,6 +129,7 @@ public class HtmlChart extends Widget implements MouseListener {
       scroller = new ScrollPane(htmlWin);
       scroller.getViewport().setPreferredSize(htmlWin.getPreferredSize());
       scroller.getViewport().setAlignmentY(0.0F);
+      scroller.getVerticalScrollBar().setUnitIncrement(40); //BR// Bug 13117 - decent mousewheel scroll rate.
     }
     return scroller;
   }
