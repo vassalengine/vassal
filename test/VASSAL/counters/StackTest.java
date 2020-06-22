@@ -529,11 +529,11 @@ public class StackTest {
     s.add(gamePiece0);
     s.add(gamePiece1);
 
-    // run - trying to modify the list should throw
+    // run
     final List<GamePiece> pieces = s.asList();
     s.removePieceAt(0);
 
-    // assert - should not get here
+    // assert
     assertEquals(2, pieces.size());
     assertEquals(gamePiece0, pieces.get(0));
     assertEquals(gamePiece1, pieces.get(1));
