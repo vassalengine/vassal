@@ -782,7 +782,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       it = nextDraw.iterator();
     }
     else if (getPieceCount() == 0) {
-      it = Collections.<GamePiece>emptyList().iterator();
+      it = Collections.emptyIterator();
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
@@ -1213,7 +1213,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
     class AvailablePiece implements Comparable<AvailablePiece> {
-      private GamePiece piece;
+      private final GamePiece piece;
 
       public AvailablePiece(GamePiece piece) {
         this.piece = piece;
@@ -1329,12 +1329,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     File sf = fc.getSelectedFile();
     if (sf != null) {
       String name = sf.getPath();
-      if (name != null) {
-        int index = name.lastIndexOf('.');
-        if (index > 0) {
-          name = name.substring(0, index) + ".sav"; //$NON-NLS-1$
-          fc.setSelectedFile(new File(name));
-        }
+      int index = name.lastIndexOf('.');
+      if (index > 0) {
+        name = name.substring(0, index) + ".sav"; //$NON-NLS-1$
+        fc.setSelectedFile(new File(name));
       }
     }
 
@@ -1468,7 +1466,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   protected static class LoadDeckCommand extends Command {
     public static final String PREFIX = "DECK\t"; //$NON-NLS-1$
-    private Deck target;
+    private final Deck target;
 
     public LoadDeckCommand(Deck target) {
       this.target = target;
