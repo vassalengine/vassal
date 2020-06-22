@@ -1,3 +1,9 @@
+3.3.1 - 22 June 2020
+
+* 13111: IncompatibleClassChangeError due to change of ComponentSplitter
+    methods to static
+* 13083: BrowserSupport cannot open URLs on Linux without gtk3
+
 3.3.0 - 16 June 2020
 
 * 13103: Windows installer checks for 64-bit Windows, as bundled Java is 64-bit
