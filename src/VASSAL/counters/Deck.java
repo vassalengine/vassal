@@ -264,7 +264,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
   * Update map-level count property for a piece located at index
   */
-  private void updateCounts(int index, boolean increase) {
+  private void updateCounts(int index) {
     if (!doesExpressionCounting()) {
       return;
     }
@@ -275,7 +275,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         updateCountsAll();
       }
       else {
-        updateCounts(p,increase);
+        updateCounts(p, false);
       }
     }
     else {
@@ -330,7 +330,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void removePieceAt(int index) {
     int startCount = pieceCount;
-    updateCounts(index,false);
+    updateCounts(index);
     super.removePieceAt(index);
     fireNumCardsProperty();
     if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
