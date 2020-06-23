@@ -215,6 +215,10 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     public Object visitStack(Stack s) {
       if (s.topPiece() != null) {
         final KeyBuffer kbuf = KeyBuffer.getBuffer();
+        if (s instanceof Deck) {
+          s.asList().forEach(gamePiece -> kbuf.remove(gamePiece)); //BR// Bug13036 - Clear any deck *members* out of the KeyBuffer.
+          return null;
+        }
         if (s.isExpanded()) {
           Point[] pos = new Point[s.getPieceCount()];
           map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
@@ -243,6 +247,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Does Not Stack units deselect normally once selected
     @Override
     public Object visitDefault(GamePiece p) {
+      Stack s = p.getParent();
+      if ((s != null) && (s instanceof Deck)) { //BR// Bug13036 - Clear any deck *members* out of the KeyBuffer. (yes, members of decks can be does-not-stack)
+        KeyBuffer.getBuffer().remove(p);
+        return null;
+      }
       if (mapsel.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
         if (selecting) {
           final EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
