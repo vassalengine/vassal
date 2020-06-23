@@ -108,9 +108,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     for (int i = 0; i < 15; ++i) {
       try {
         kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null);
-      } catch (BadLocationException ble) {
+      } 
+      catch (BadLocationException ble) {
         ErrorDialog.bug(ble);
-      } catch (IOException ex) {
+      } 
+      catch (IOException ex) {
         ErrorDialog.bug(ex);
       }
     }
@@ -157,7 +159,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   {   
     if (s.startsWith(formatChat("").trim())) { //$NON-NLS-1$
       return "mychat";      
-    } else {
+    } 
+    else {
       return "other";
     }   
   }
@@ -185,34 +188,42 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
           style = "msg";
           s = s.replaceFirst("\\|", "");
           html_allowed = true;
-        } else if (s.startsWith("* !") || s.startsWith("*!")) {
+        } 
+        else if (s.startsWith("* !") || s.startsWith("*!")) {
           style = "msg2";
           s = s.replaceFirst("!", "");
           html_allowed = true;
-        } else if (s.startsWith("* ?") || s.startsWith("*?")) {
+        } 
+        else if (s.startsWith("* ?") || s.startsWith("*?")) {
           style = "msg3";
           s = s.replaceFirst("\\?", "");
           html_allowed = true;
-        } else if (s.startsWith("* ~") || s.startsWith("*~")) {
+        } 
+        else if (s.startsWith("* ~") || s.startsWith("*~")) {
           style = "msg4";
           s = s.replaceFirst("~", "");
           html_allowed = true;
-        } else if (s.startsWith("* `") || s.startsWith("*`")) {
+        } 
+        else if (s.startsWith("* `") || s.startsWith("*`")) {
           style = "msg5";
           s = s.replaceFirst("`", "");
           html_allowed = true;
-        } else {
+        } 
+        else {
           style = "msg";
           html_allowed = !htmlCompatibility; //BR// Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
         }
-      } else if (s.startsWith("-")) {
+      } 
+      else if (s.startsWith("-")) {
         style = "sys";
         html_allowed = true;
-      } else {
+      } 
+      else {
         style = getChatStyle(s);
         html_allowed = false;
       }
-    } else {
+    } 
+    else {
       style = "msg";
       html_allowed = false;
     }
@@ -221,8 +232,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     //BR// (1) Anything received from chat channel, for security reasons
     //BR// (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting 
     if (!html_allowed) {
-      s = s.replaceAll("<", "&lt;"); //BR// This prevents any unwanted tag from functioning
-      s = s.replaceAll(">", "&gt;"); //BR// This makes sure > doesn't break any of our legit <div> tags
+      s = s.replaceAll("<", "&lt;") //BR// This prevents any unwanted tag from functioning
+           .replaceAll(">", "&gt;"); //BR// This makes sure > doesn't break any of our legit <div> tags
     }
 
     //BR// Systematically search through for html image tags. When we find one, try
@@ -245,13 +256,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra
                                                           // space between IMG and SRC in the processed
                                                           // version ensures we don't re-find THIS tag as we iterate
-      } catch (IOException ex) {
+      } 
+      catch (IOException ex) {
         replace = "<img  src=\"" + file + "\""; // Or just leave in except alter just enough that we won't find this tag again
       }
 
       if (s.contains(tag)) {
         s = s.replaceFirst(tag, replace); // Swap in our new URL-laden tag for the old one.
-      } else {
+      } 
+      else {
         break; // BR// If something went wrong in matching up the tag, don't loop forever
       }
     }
@@ -268,9 +281,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     //BR//messages.
     try {
       kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null);
-    } catch (BadLocationException ble) {
+    } 
+    catch (BadLocationException ble) {
       ErrorDialog.bug(ble);
-    } catch (IOException ex) {
+    } 
+    catch (IOException ex) {
       ErrorDialog.bug(ex);
     }
     conversation.update(conversation.getGraphics()); //BR// Force graphics to update
@@ -290,8 +305,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   //BR// Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
   private void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
-    style.addRule(s + " {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue())
-                  + "; font-family:" + f.getFamily() + "; font-size:" + (size > 0 ? size : f.getSize()) + "; " + ((font_weight != "") ? "font-weight:" + font_weight + "; " : "") + "}");
+    style.addRule(s + 
+                  " {color:" + 
+                  String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + 
+                  "; font-family:" + 
+                  f.getFamily() + 
+                  "; font-size:" + 
+                  (size > 0 ? size : f.getSize()) + 
+                  "; " + 
+                  ((font_weight != "") ? "font-weight:" + font_weight + "; " : "") + 
+                  "}");
   }
 
   //BR// Build ourselves a CSS stylesheet from our preference font/color settings.
@@ -304,7 +327,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       if (myFont == null) {
         f = new Font("SansSerif", 0, 12);
         myFont = f;
-      } else {
+      } 
+      else {
         f = myFont;
       }
     }
@@ -333,8 +357,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         input.setText("XXX"); //$NON-NLS-1$
         input.setFont(f);
         input.setText(""); //$NON-NLS-1$
-      } else
+      } 
+      else {
         input.setFont(f);
+      }
     }
     if (conversation != null) {
       conversation.setFont(f);
@@ -544,7 +570,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public Command decode(String s) {
     if (s.startsWith("CHAT")) { //$NON-NLS-1$
       return new DisplayText(this, s.substring(4));
-    } else {
+    } 
+    else {
       return null;
     }
   }
@@ -553,9 +580,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public String encode(Command c) {
     if (c instanceof DisplayText) {
       return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
-    } else if (c instanceof VASSAL.build.module.Chatter.DisplayText) {
+    } 
+    else if (c instanceof VASSAL.build.module.Chatter.DisplayText) {
       return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$	
-    } else {
+    } 
+    else {
       return null;
     }
   }
@@ -579,19 +608,20 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
         && !Character.isISOControl(e.getKeyChar())) {
       input.setText(input.getText() + e.getKeyChar());
-    } else if (e.isOnKeyRelease()) {
+    } 
+    else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
-      case KeyEvent.VK_ENTER:
-        if (!input.getText().isEmpty())
-          send(formatChat(input.getText()));
-        input.setText(""); //$NON-NLS-1$
-        break;
-      case KeyEvent.VK_BACK_SPACE:
-      case KeyEvent.VK_DELETE:
-        String s = input.getText();
-        if (!s.isEmpty())
-          input.setText(s.substring(0, s.length() - 1));
-        break;
+        case KeyEvent.VK_ENTER:
+          if (!input.getText().isEmpty())
+            send(formatChat(input.getText()));
+          input.setText(""); //$NON-NLS-1$
+          break;
+        case KeyEvent.VK_BACK_SPACE:
+        case KeyEvent.VK_DELETE:
+          String s = input.getText();
+          if (!s.isEmpty())
+            input.setText(s.substring(0, s.length() - 1));
+          break;
       }
     }
   }
@@ -610,7 +640,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       if (msg.startsWith("<>")) {
         msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // BR// HTML-friendly
         // angle brackets
-      } else {
+      } 
+      else {
         msg = s;
       }
     }
