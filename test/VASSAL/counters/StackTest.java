@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class StackTest {
 
   @Test
-  public void noArgConstructorshouldCreateEmptyStack() {
+  public void noArgConstructorShouldCreateEmptyStack() {
     // run
     Stack s = new Stack();
 
@@ -444,7 +444,7 @@ public class StackTest {
   }
 
   @Test
-  public void getPiecesReverseIteratorSholdIterateInReverseOrder() {
+  public void getPiecesReverseIteratorShouldIterateInReverseOrder() {
     // prepare
     final GamePiece gamePiece1 = mock(GamePiece.class);
     final GamePiece gamePiece2 = mock(GamePiece.class);
