@@ -19,6 +19,7 @@
 
 package VASSAL.tools.image.tilecache;
 
+import static VASSAL.launch.Launcher.VASSAL_PORT_PROP;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
@@ -125,7 +126,7 @@ public class ZipFileImageTiler {
       final TileSlicer slicer = new TileSlicerImpl();
       final FileArchiveImageTiler tiler = new FileArchiveImageTiler();
 
-      final String portProp = System.getProperty("VASSAL.port");
+      final String portProp = System.getProperty(VASSAL_PORT_PROP);
 
       Socket sock = null;
       DataOutputStream dout = null;

@@ -76,6 +76,8 @@ import VASSAL.tools.ipc.IPCMessenger;
 import VASSAL.tools.ipc.SimpleIPCMessage;
 import VASSAL.tools.lang.MemoryUtils;
 
+import static VASSAL.launch.Launcher.VASSAL_PORT_PROP;
+
 /**
  *
  * The base class for {@link Action}s which launch processes from the
@@ -427,7 +429,7 @@ e.printStackTrace();
       al.add("");   // reserved for initial heap
       al.add("");   // reserved for maximum heap
       al.add("-DVASSAL.id=" + id);  // instance id
-      al.add("-DVASSAL.port=" + port); // MM socket port
+      al.add("-D" + VASSAL_PORT_PROP + "=" + port); // MM socket port
 
       // pass on the user's home, if it's set
       final String userHome = System.getProperty("user.home");

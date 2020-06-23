@@ -19,6 +19,7 @@
 
 package VASSAL.launch;
 
+import static VASSAL.launch.Launcher.VASSAL_PORT_PROP;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.STARTING_IMAGE;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
@@ -179,7 +180,7 @@ public class TilingHandler {
       "-Xmx" + maxheap + "M",
       "-DVASSAL.id=" + pid,
       "-Duser.home=" + System.getProperty("user.home"),
-      "-DVASSAL.port=" + port,
+      "-D"+ VASSAL_PORT_PROP + "=" + port,
       "VASSAL.tools.image.tilecache.ZipFileImageTiler",
       aname,
       cdir.getAbsolutePath(),

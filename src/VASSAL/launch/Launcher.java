@@ -51,6 +51,8 @@ import VASSAL.tools.menu.MenuManager;
 public abstract class Launcher {
   private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
 
+  public static final String VASSAL_PORT_PROP = "VASSAL.port";
+
   protected IPCMessenger ipc = null;
 
   protected final LaunchRequest lr;
@@ -117,7 +119,7 @@ public abstract class Launcher {
     // if we're not standalone, contact the module manager for instructions
     if (!standalone) {
       try {
-        final int port = Integer.parseInt(System.getProperty("VASSAL.port"));
+        final int port = Integer.parseInt(System.getProperty(VASSAL_PORT_PROP));
 
         final InetAddress lo = InetAddress.getByName(null);
         final Socket cs = new Socket(lo, port);
