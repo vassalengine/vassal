@@ -21,8 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -30,25 +28,19 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.plaf.basic.BasicTextAreaUI;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.PlainView;
-import javax.swing.text.Segment;
-import javax.swing.text.TabExpander;
-import javax.swing.text.Utilities;
-import javax.swing.text.View;
-import javax.swing.text.WrappedPlainView;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.*;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -56,442 +48,609 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.swing.SwingUtils;
+
+//BR// 23-June-2020 - significant Chatter update to provide full HTML support, including multiple colors/fonts and images, <b>bold</b> and <i>italic</i> 
 
 /**
- * The chat window component.  Displays text messages and
- * accepts input.  Also acts as a {@link CommandEncoder},
- * encoding/decoding commands that display message in the text area
+ * The chat window component. Displays text messages and accepts input. Also
+ * acts as a {@link CommandEncoder}, encoding/decoding commands that display
+ * message in the text area
  */
 public class Chatter extends JPanel implements CommandEncoder, Buildable {
   private static final long serialVersionUID = 1L;
 
-  protected JTextArea conversation;
+  protected JTextPane conversation;
+  protected HTMLDocument doc;
+  protected HTMLEditorKit kit;
+  protected StyleSheet style;
+
   protected JTextField input;
-  protected JScrollPane scroll = new ScrollPane(
-       JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  protected static final String MY_CHAT_COLOR = "myChatColor"; //$NON-NLS-1$
-  protected static final String OTHER_CHAT_COLOR = "otherChatColor"; //$NON-NLS-1$
-  protected static final String GAME_MSG_COLOR = "gameMessageColor"; //$NON-NLS-1$
-  protected static final String SYS_MSG_COLOR = "systemMessageColor"; //$NON-NLS-1$
+  protected JScrollPane scroll = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected JScrollPane scroll2 = new ScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  protected static final String MY_CHAT_COLOR    = "HTMLChatColor";          //$NON-NLS-1$ //BR// Different tags to "restart" w/ new default scheme
+  protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
+  protected static final String GAME_MSG1_COLOR  = "HTMLgameMessage1Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG2_COLOR  = "HTMLgameMessage2Color";  //$NON-NLS-1$ //BR//
+  protected static final String GAME_MSG3_COLOR  = "HTMLgameMessage3Color";  //$NON-NLS-1$ //BR//
+  protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$ //BR//
+  protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$ //BR//
+  protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
+  protected static final String HTML_COMPATIBILITY = "HTMLcompatibility";    //$NON-NLS-1$
 
-  protected Color gameMsg;
-  protected Color systemMsg;
-  protected Color myChat;
-  protected Color otherChat;
+  protected Font myFont;
 
+  protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
+  protected Color systemMsg, myChat, otherChat;
+  
+  protected boolean htmlCompatibility; //BR// Disable HTML parsing unless opted in, to maintain backwards compatibility
+	
   public static String getAnonymousUserName() {
     return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
   }
 
-  public Chatter() {
+  public Chatter() {		
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    conversation = new JTextArea(10, 80);
-    for (int i = 0; i < 10; ++i) {
-      conversation.append("\n"); //$NON-NLS-1$
+
+    //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
+    conversation = new JTextPane();
+    conversation.setPreferredSize(new Dimension(500, 120));
+    conversation.setContentType("text/html");
+    doc = (HTMLDocument) conversation.getDocument();
+    kit = (HTMLEditorKit) conversation.getEditorKit();
+
+    style = kit.getStyleSheet();
+    myFont = new Font("SansSerif", Font.PLAIN, 12); //BR// Will be overridden by the font from Chat preferences
+
+    for (int i = 0; i < 15; ++i) {
+      try {
+          kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null);
+        } catch (BadLocationException ble) {
+          ErrorDialog.bug(ble);
+        } catch (IOException ex) {
+          ErrorDialog.bug(ex);
+      }
     }
-    conversation.setEditable(false);
-    conversation.setLineWrap(true);
-    conversation.setWrapStyleWord(true);
-    conversation.setUI(new UI());
-    conversation.addComponentListener(new ComponentAdapter() {
-      @Override
+
+		conversation.setEditable(false);
+		conversation.addComponentListener(new ComponentAdapter() {
+			@Override
       public void componentResized(ComponentEvent e) {
-        scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
-      }
-    });
-    input = new JTextField(80);
-    input.setFocusTraversalKeysEnabled(false);
-    input.addActionListener(new ActionListener() {
-      @Override
+				scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
+			}
+		});
+
+		input = new JTextField(60);
+		input.setFocusTraversalKeysEnabled(false);
+		input.addActionListener(new ActionListener() {
+			@Override
       public void actionPerformed(ActionEvent e) {
-        send(formatChat(e.getActionCommand()));
-        input.setText(""); //$NON-NLS-1$
-      }
-    });
-    input.setMaximumSize(new Dimension(input.getMaximumSize().width,
-                                       input.getPreferredSize().height));
-    scroll.setViewportView(conversation);
-    add(scroll);
-    add(input);
-  }
+				send(formatChat(e.getActionCommand()));
+				input.setText(""); //$NON-NLS-1$
+			}
+		});
+		input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
 
-  private String formatChat(String text) {
+		conversation.setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height * 11));
+
+		scroll.setViewportView(conversation);
+		scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); // BR// Scroll this faster																									
+		add(scroll);
+		add(input);
+	}
+
+	private String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
-    return "<" + (id.length() == 0 ? "("+getAnonymousUserName()+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
-  }
+    return "&lt;" + (id.length() == 0 ? "(" + getAnonymousUserName() + ")" : id) + "&gt; - " + text; //$NON-NLS-1$ //$NON-NLS-2$ //BR//HTML-friendly angle brackets
+	}
 
-  public JTextField getInputField() {
+	public JTextField getInputField() {
     return input;
-  }
+	}
+	
+	//BR// To make the player colors easy to override in a custom class 
+	//BR// (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
+	protected String getChatStyle(String s)
+	{	  
+    if (s.startsWith(formatChat("").trim())) { //$NON-NLS-1$
+      return "mychat";      
+    } else {
+      return "other";
+    }	  
+	}
 
-  /**
-   * Display a message in the text area
-   */
-  public void show(String s) {
-    conversation.append("\n" + s); //$NON-NLS-1$
-  }
+	/**
+	 * Display a message in the text area
+	 */
+	public void show(String s) {
+		String style;
+		boolean html_allowed;
 
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated public void setHandle(String s) {
-  }
+		//BR// Choose an appropriate style to display this message in
+		s = s.trim();
+		if (s.length() > 0) {
+			if (s.startsWith("*")) {
+				//BR// Here we just extend the convention of looking at first characters, this time to the second character.
+			  //BR// | = msg1 (w/ HTML parsing explicitly opted in)
+				//BR// ! = msg2
+				//BR// ? = msg3
+				//BR// ~ = msg4
+			  //BR// ` = msg5
+				//BR// These characters can be pre-pended to Report messages to produce the color changes. The characters themselves are removed before display.
+				//BR// Reports can also include <b></b> tags for bold and <i></i> for italic.
+			  if (s.startsWith("* |") || s.startsWith("*|")) {
+          style = "msg";
+          s = s.replaceFirst("\\|", "");
+          html_allowed = true;
+			  } else if (s.startsWith("* !") || s.startsWith("*!")) {
+					style = "msg2";
+					s = s.replaceFirst("!", "");
+          html_allowed = true;
+				} else if (s.startsWith("* ?") || s.startsWith("*?")) {
+					style = "msg3";
+					s = s.replaceFirst("\\?", "");
+          html_allowed = true;
+				} else if (s.startsWith("* ~") || s.startsWith("*~")) {
+					style = "msg4";
+					s = s.replaceFirst("~", "");
+          html_allowed = true;
+				} else if (s.startsWith("* `") || s.startsWith("*`")) {
+					style = "msg5";
+					s = s.replaceFirst("`", "");
+          html_allowed = true;
+				} else {
+					style = "msg";
+					html_allowed = !htmlCompatibility; //BR// Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
+				}
+			} else if (s.startsWith("-")) {
+				style = "sys";
+				html_allowed = true;
+			} else {
+			  style = getChatStyle(s);
+			  html_allowed = false;
+			}
+		} else {
+			style = "msg";
+			html_allowed = false;
+		}
 
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated public String getHandle() {
-    return GlobalOptions.getInstance().getPlayerId();
-  }
+		//BR// Disable unwanted HTML tags in contexts where it shouldn't be allowed:
+		//BR// (1) Anything received from chat channel, for security reasons
+		//BR// (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting 
+		if (!html_allowed) {
+		  s = s.replaceAll("<", "&lt;"); //BR// This prevents any unwanted tag from functioning
+      s = s.replaceAll(">", "&gt;"); //BR// This makes sure > doesn't break any of our legit <div> tags
+		}
 
-  /**
-   * Set the Font used by the text area
-   */
-  @Override
+		//BR// Systematically search through for html image tags. When we find one, try
+		//BR// to match it with an image from our DataArchive, and substitute the correct
+		//BR// fully qualified URL into the tag.
+		
+		//BR// There are without a doubt "more efficient ways to do this", but this loop
+		//BR// miraculously ran perfectly the very first time I compiled it, so superstition...		
+		URL url;
+		String keystring = "<img src=\"";
+		String file, tag, replace;
+		int base;
+		while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
+			base = s.toLowerCase().indexOf(keystring);
+			file = s.substring(base + keystring.length(), s.length()).split("\"")[0]; // Pull the filename out from between the quotes
+    	    tag  = s.substring(base, base + keystring.length()) + file + "\"";    // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring						
+			
+			try {
+				url = GameModule.getGameModule().getDataArchive().getURL("images/" + file);
+				replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra
+                                                          // space between IMG and SRC in the processed
+                                                          // version ensures we don't re-find THIS tag as we iterate
+			} catch (IOException ex) {
+				replace = "<img  src=\"" + file + "\""; // Or just leave in except alter just enough that we won't find this tag again
+			}
+
+			if (s.contains(tag)) {
+				s = s.replaceFirst(tag, replace); // Swap in our new URL-laden tag for the old one.
+			} else {
+				break; // BR// If something went wrong in matching up the tag, don't loop forever
+			}
+		}
+		
+		//BR// Now we have to fix up any legacy angle brackets around the word <observer>
+    keystring = Resources.getString("PlayerRoster.observer");
+    replace   = keystring.replace("<","&lt;");
+    replace   = replace.replace(">","&gt;");
+    if (replace != keystring) {
+      s = s.replace(keystring, replace);
+    }	   
+	    
+    //BR// Insert a div of the correct style for our line of text. Module designer
+		//BR//still free to insert <span> tags and <img> tags and the like in Report
+		//BR//messages.
+		try {
+			kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null);
+		} catch (BadLocationException ble) {
+			ErrorDialog.bug(ble);
+		} catch (IOException ex) {
+			ErrorDialog.bug(ex);
+		}
+		conversation.update(conversation.getGraphics()); //BR// Force graphics to update
+	}
+
+	/** @deprecated use GlobalOptions.getPlayerId() */
+	@Deprecated
+	public void setHandle(String s) {
+	}
+
+	/** @deprecated use GlobalOptions.getPlayerId() */
+	@Deprecated
+	public String getHandle() {
+		return GlobalOptions.getInstance().getPlayerId();
+	}
+
+	//BR// Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
+	private void addStyle(String s, Font f, Color c, String font_weight, int size) {
+		if ((style == null) || (c == null)) return;
+		style.addRule(s + " {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue())
+				        + "; font-family:" + f.getFamily() + "; font-size:" + (size > 0 ? size : f.getSize()) + "; " + ((font_weight != "") ? "font-weight:" + font_weight + "; " : "") + "}");
+	}
+
+	//BR// Build ourselves a CSS stylesheet from our preference font/color settings.
+	private void makeStyleSheet(Font f) {
+		if (style != null) {
+			if (f == null) {
+				if (myFont == null) {
+					f = new Font("SansSerif", 0, 12);
+					myFont = f;
+				} else {
+					f = myFont;
+				}
+			}
+			addStyle("body",    f, gameMsg,   "",     0);
+			addStyle("p",       f, gameMsg,   "",     0);
+			addStyle(".msg",    f, gameMsg,   "",     0);
+			addStyle(".msg2",   f, gameMsg2,  "",     0);
+			addStyle(".msg3",   f, gameMsg3,  "",     0);
+			addStyle(".msg4",   f, gameMsg4,  "",     0);
+			addStyle(".msg5",   f, gameMsg5,  "",     0);
+			addStyle(".mychat", f, myChat,    "bold", 0);
+			addStyle(".other ", f, otherChat, "bold", 0);
+			addStyle(".sys",    f, systemMsg, "",     0);
+			
+			//BR// A fun extension would be letting the module designer provide extra class styles. 
+		}
+	}
+
+	/**
+	 * Set the Font used by the text area
+	 */
+	@Override
   public void setFont(Font f) {
-    if (input != null) {
-      if (input.getText().length() == 0) {
-        input.setText("XXX"); //$NON-NLS-1$
-        input.setFont(f);
-        input.setText(""); //$NON-NLS-1$
-      }
-      else
-        input.setFont(f);
-    }
-    if (conversation != null) {
-      conversation.setFont(f);
-    }
-  }
+		myFont = f;
+		if (input != null) {
+			if (input.getText().length() == 0) {
+				input.setText("XXX"); //$NON-NLS-1$
+				input.setFont(f);
+				input.setText(""); //$NON-NLS-1$
+			} else
+				input.setFont(f);
+		}
+		if (conversation != null) {
+			conversation.setFont(f);
+		}
+		makeStyleSheet(f); // BR// When font changes, rebuild our stylesheet
+	}
 
-  @Override
+	@Override
   public void build(org.w3c.dom.Element e) {
-  }
+	}
 
-  @Override
+	@Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
-    return doc.createElement(getClass().getName());
-  }
+		return doc.createElement(getClass().getName());
+	}
 
-  /**
-   * Expects to be added to a GameModule.  Adds itself to the
-   * controls window and registers itself as a
-   * {@link CommandEncoder} */
-  @Override
+	/**
+	 * Expects to be added to a GameModule. Adds itself to the controls window and
+	 * registers itself as a {@link CommandEncoder}
+	 */
+	@Override
   public void addTo(Buildable b) {
-    GameModule mod = (GameModule) b;
-    mod.setChatter(this);
-    mod.addCommandEncoder(this);
-    mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+		GameModule mod = (GameModule) b;
+		mod.removeCommandEncoder(mod.getChatter()); //BR//
+		mod.setChatter(this);
+		mod.addCommandEncoder(this);
+		mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    final FontConfigurer chatFont = new FontConfigurer(
-      "ChatFont", Resources.getString("Chatter.chat_font_preference")
-    );
-    chatFont.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
+		final FontConfigurer chatFont = new FontConfigurer("ChatFont",
+				Resources.getString("Chatter.chat_font_preference"));
+
+		chatFont.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
       public void propertyChange(PropertyChangeEvent evt) {
-        setFont((Font) evt.getNewValue());
-      }
-    });
+				setFont((Font) evt.getNewValue());
+			}
+		});
 
-    mod.getControlPanel().add(this, BorderLayout.CENTER);
+		mod.getControlPanel().add(this, BorderLayout.CENTER);
 
-    chatFont.fireUpdate();
-    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
+		chatFont.fireUpdate();
+		mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
 
-    //Bug 10179 - Do not re-read Chat colors each time the Chat Window is repainted.
-    final Prefs globalPrefs = Prefs.getGlobalPrefs();
+		// Bug 10179 - Do not re-read Chat colors each time the Chat Window is
+		// repainted.
+		final Prefs globalPrefs = Prefs.getGlobalPrefs();
 
-    //
-    // game message color
-    //
-    final ColorConfigurer gameMsgColor = new ColorConfigurer(
-      GAME_MSG_COLOR,
-      Resources.getString("Chatter.game_messages_preference"),
-      Color.magenta
-    );
+		//
+		// game message color
+		//
+		final ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG1_COLOR,
+				Resources.getString("Chatter.game_messages_preference") + "(#1 - standard messages and \"|\"):  ", Color.black);
 
-    gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
+		gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				gameMsg = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsgColor);
+
+		gameMsg = (Color) globalPrefs.getValue(GAME_MSG1_COLOR);
+
+		//BR//
+		//BR// game message color #2 (messages starting with "!") 
+		//BR//
+		final ColorConfigurer gameMsg2Color = new ColorConfigurer(GAME_MSG2_COLOR,
+				Resources.getString("Chatter.game_messages_preference") + "(#2 - first character \"!\"):  ", new Color(0, 153, 51));
+
+		gameMsg2Color.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				gameMsg2 = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg2Color);
+
+		gameMsg2 = (Color) globalPrefs.getValue(GAME_MSG2_COLOR);
+
+		//BR//
+		//BR// game message color #3 (messages starting with "?")
+		//BR//
+		final ColorConfigurer gameMsg3Color = new ColorConfigurer(GAME_MSG3_COLOR,
+				Resources.getString("Chatter.game_messages_preference") + "(#3 - first character \"?\"):  ", new Color(255, 102, 102));
+
+		gameMsg3Color.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				gameMsg3 = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg3Color);
+
+		gameMsg3 = (Color) globalPrefs.getValue(GAME_MSG3_COLOR);
+		
+		
+		//BR//
+		//BR// game message color #4 (messages starting with "~")
+		//BR//
+		final ColorConfigurer gameMsg4Color = new ColorConfigurer(GAME_MSG4_COLOR,
+				Resources.getString("Chatter.game_messages_preference") + "(#4 - first character \"~\"):  ", new Color(255, 0, 0));
+
+		gameMsg4Color.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				gameMsg4 = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg4Color);
+
+		gameMsg4 = (Color) globalPrefs.getValue(GAME_MSG4_COLOR);
+		
+		
+		//BR//
+		//BR// game message color #5 (messages starting with "`")
+		//BR//
+		final ColorConfigurer gameMsg5Color = new ColorConfigurer(GAME_MSG5_COLOR,
+				Resources.getString("Chatter.game_messages_preference") + "(#5 - first character \"`\"):  ", new Color(153, 0, 153));
+
+		gameMsg5Color.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				gameMsg5 = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg5Color);
+
+		gameMsg5 = (Color) globalPrefs.getValue(GAME_MSG5_COLOR);
+
+
+
+		//
+		// system message color
+		//
+		final ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR,
+				Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
+
+		systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) {
+				systemMsg = (Color) e.getNewValue();
+				makeStyleSheet(null);
+			}
+		});
+
+		globalPrefs.addOption(Resources.getString("Chatter.chat_window"), systemMsgColor);
+
+		systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
+
+
+		//
+		// my message color
+		//
+		final ColorConfigurer myChatColor = new ColorConfigurer( MY_CHAT_COLOR,
+		Resources.getString("Chatter.my_text_preference"), new Color(9, 32, 229) );
+		  
+		myChatColor.addPropertyChangeListener(new PropertyChangeListener() { 
+			@Override
+      public void propertyChange(PropertyChangeEvent e) { 
+				myChat = (Color) e.getNewValue(); 
+				makeStyleSheet(null); 
+			} 
+		});
+		  
+		globalPrefs.addOption( Resources.getString("Chatter.chat_window"),
+		myChatColor );
+		  
+		myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);		 
+
+		//
+		// other message color
+		//
+		
+		final ColorConfigurer otherChatColor = new ColorConfigurer( OTHER_CHAT_COLOR,
+		Resources.getString("Chatter.other_text_preference"), new Color (0,153,255) );
+		  
+		otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+      public void propertyChange(PropertyChangeEvent e) { 
+				otherChat = (Color) e.getNewValue(); 
+				makeStyleSheet(null); 
+			} 
+		});
+		  
+		globalPrefs.addOption( Resources.getString("Chatter.chat_window"), otherChatColor );		  
+		otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
+		 
+		makeStyleSheet(myFont);
+		
+		
+    final BooleanConfigurer htmlCompatibilityConfigurer = new BooleanConfigurer(HTML_COMPATIBILITY, Resources.getString("Disable HTML in standard report messages (for pre-3.3 compatibility)"), Boolean.TRUE);  //$NON-NLS-1$
+    htmlCompatibilityConfigurer.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
-        gameMsg = (Color) e.getNewValue();
+        htmlCompatibility = (boolean) e.getNewValue();
       }
-    });
+      });
+    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), htmlCompatibilityConfigurer);
+    htmlCompatibility = (boolean) globalPrefs.getValue(HTML_COMPATIBILITY);    
+	}
 
-    globalPrefs.addOption(
-      Resources.getString("Chatter.chat_window"), gameMsgColor
-    );
-
-    gameMsg = (Color) globalPrefs.getValue(GAME_MSG_COLOR);
-
-    //
-    // system message color
-    //
-    final ColorConfigurer systemMsgColor = new ColorConfigurer(
-      SYS_MSG_COLOR,
-      Resources.getString("Chatter.system_message_preference"),
-      new Color(160, 160, 160)
-    );
-
-    systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        systemMsg = (Color) e.getNewValue();
-      }
-    });
-
-    globalPrefs.addOption(
-      Resources.getString("Chatter.chat_window"), systemMsgColor
-    );
-
-    systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
-
-    //
-    // my message color
-    //
-    final ColorConfigurer myChatColor = new ColorConfigurer(
-      MY_CHAT_COLOR,
-      Resources.getString("Chatter.my_text_preference"),
-      Color.gray
-    );
-
-    myChatColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        myChat = (Color) e.getNewValue();
-      }
-    });
-
-    globalPrefs.addOption(
-      Resources.getString("Chatter.chat_window"), myChatColor
-    );
-
-    myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
-
-    //
-    // other message color
-    //
-    final ColorConfigurer otherChatColor = new ColorConfigurer(
-      OTHER_CHAT_COLOR,
-      Resources.getString("Chatter.other_text_preference"),
-      Color.black
-    );
-
-    otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        otherChat = (Color) e.getNewValue();
-      }
-    });
-
-    globalPrefs.addOption(
-      Resources.getString("Chatter.chat_window"), otherChatColor
-    );
-
-    otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
-  }
-
-  @Override
+	@Override
   public void add(Buildable b) {
-  }
+	}
 
-  @Override
+	@Override
   public Command decode(String s) {
-    if (s.startsWith("CHAT")) { //$NON-NLS-1$
-      return new DisplayText(this, s.substring(4));
-    }
-    else {
-      return null;
-    }
-  }
+		if (s.startsWith("CHAT")) { //$NON-NLS-1$
+			return new DisplayText(this, s.substring(4));
+		} else {
+			return null;
+		}
+	}
 
-  @Override
+	@Override
   public String encode(Command c) {
-    if (c instanceof DisplayText) {
-      return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
-    }
-    else {
-      return null;
-    }
-  }
+		if (c instanceof DisplayText) {
+			return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
+		} else if (c instanceof VASSAL.build.module.Chatter.DisplayText) {
+			return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$	
+		} else {
+			return null;
+		}
+	}
 
-  /**
-   * Displays the message, Also logs and sends to the server
-   * a {@link Command} that displays this message
-   */
-  public void send(String msg) {
-    if (msg != null
-        && msg.length() > 0) {
-      show(msg);
-      GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
-    }
-  }
+	/**
+	 * Displays the message, Also logs and sends to the server a {@link Command}
+	 * that displays this message
+	 */
+	public void send(String msg) {
+		if (msg != null && msg.length() > 0) {
+			show(msg);
+			GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
+		}
+	}
 
+	/**
+	 * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
+	 * using this method
+	 */
+	public void keyCommand(KeyStroke e) {
+		if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
+				&& !Character.isISOControl(e.getKeyChar())) {
+			input.setText(input.getText() + e.getKeyChar());
+		} else if (e.isOnKeyRelease()) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_ENTER:
+				if (input.getText().length() > 0)
+					send(formatChat(input.getText()));
+				input.setText(""); //$NON-NLS-1$
+				break;
+			case KeyEvent.VK_BACK_SPACE:
+			case KeyEvent.VK_DELETE:
+				String s = input.getText();
+				if (s.length() > 0)
+					input.setText(s.substring(0, s.length() - 1));
+				break;
+			}
+		}
+	}
 
-  /**
-   * Classes other than the Chatter itself may forward KeyEvents
-   * to the Chatter by using this method
-   */
-  public void keyCommand(KeyStroke e) {
-    if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
-        && !Character.isISOControl(e.getKeyChar())) {
-      input.setText(input.getText() + e.getKeyChar());
-    }
-    else if (e.isOnKeyRelease()) {
-      switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
-          if (input.getText().length() > 0)
-            send(formatChat(input.getText()));
-          input.setText(""); //$NON-NLS-1$
-          break;
-        case KeyEvent.VK_BACK_SPACE:
-        case KeyEvent.VK_DELETE:
-          String s = input.getText();
-          if (s.length() > 0)
-            input.setText(s.substring(0, s.length() - 1));
-          break;
-      }
-    }
-  }
+	/**
+	 * This is a {@link Command} object that, when executed, displays a text message
+	 * in the Chatter's text area
+	 */
+	public static class DisplayText extends Command {
+		private String msg;
+		private Chatter c;
 
-  private class UI extends BasicTextAreaUI {
-    @Override
-    public View create(javax.swing.text.Element elem) {
-      JTextComponent c = getComponent();
-      if (c instanceof JTextArea) {
-        JTextArea area = (JTextArea) c;
-        View v;
-        if (area.getLineWrap()) {
-          v = new WrappedView(elem, area.getWrapStyleWord());
-        }
-        else {
-          v = new PView(elem);
-        }
-        return v;
-      }
-      return null;
-    }
-  }
+		public DisplayText(Chatter c, String s) {
+			this.c = c;
+			msg = s;
+			if (msg.startsWith("<>")) {
+				msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // BR// HTML-friendly
+																								// angle brackets
+			} else {
+				msg = s;
+			}
+		}
 
-  private int drawColoredText(Graphics g, int x, int y, TabExpander ex, Document doc,
-                              int p0, int p1, Element elem) throws BadLocationException {
-    final Segment s = new Segment();
-    doc.getText(p0, p1 - p0, s);
-    g.setColor(getColor(elem));
-
-    final Graphics2D g2d = (Graphics2D) g;
-    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    return Utilities.drawTabbedText(s, x, y, g, ex, p0);
-  }
-
-  private class WrappedView extends WrappedPlainView {
-    private WrappedView(Element el, boolean wrap) {
-      super(el, wrap);
-    }
-
-    @Override
-    protected int drawUnselectedText(Graphics g, int x, int y,
-                                     int p0, int p1) throws BadLocationException {
-      final Element root = getElement();
-      return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
-    }
-  }
-
-  private class PView extends PlainView {
-    private PView(Element el) {
-      super(el);
-    }
-
-    @Override
-    protected int drawUnselectedText(Graphics g, int x, int y,
-                                     int p0, int p1) throws BadLocationException {
-      Element root = getElement();
-      return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
-    }
-  }
-
-  /**
-   * Determines the color with which to draw a given line of text
-   * @return the Color to draw
-   */
-  protected Color getColor(Element elem) {
-    Color col = null;
-    try {
-      final String s = elem.getDocument().getText(
-        elem.getStartOffset(), elem.getEndOffset() - elem.getStartOffset()
-      ).trim();
-
-      if (s.length() > 0) {
-        switch (s.charAt(0)) {
-          case '*':
-            col = gameMsg;
-            break;
-          case '-':
-            col = systemMsg;
-            break;
-          default:
-            if (s.startsWith(formatChat(""))) { //$NON-NLS-1$
-              col = myChat;
-            }
-            else {
-              col = otherChat;
-            }
-            break;
-        }
-      }
-    }
-    catch (BadLocationException e) {
-      ErrorDialog.bug(e);
-    }
-
-    return col == null ? Color.black : col;
-  }
-
-  /**
-   * This is a {@link Command} object that, when executed, displays
-   * a text message in the Chatter's text area     */
-  public static class DisplayText extends Command {
-    private String msg;
-    private Chatter c;
-
-    public DisplayText(Chatter c, String s) {
-      this.c = c;
-      msg = s;
-      if (msg.startsWith("<>")) {
-        msg = "<(" + Chatter.getAnonymousUserName() + ")>" + s.substring(2);
-      }
-      else {
-        msg = s;
-      }
-    }
-
-    @Override
+		@Override
     public void executeCommand() {
-      c.show(msg);
-    }
+			c.show(msg);
+		}
 
-    @Override
+		@Override
     public Command myUndoCommand() {
-      return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
-    }
+			return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
+		}
 
-    public String getMessage() {
-      return msg;
-    }
+		public String getMessage() {
+			return msg;
+		}
 
-    @Override
+		@Override
     public String getDetails() {
-      return msg;
-    }
-  }
+			return msg;
+		}
+	}
 
-  public static void main(String[] args) {
-    Chatter chat = new Chatter();
-    JFrame f = new JFrame();
-    f.add(chat);
-    f.pack();
-    f.setVisible(true);
-  }
+	public static void main(String[] args) {
+		Chatter chat = new Chatter();
+		JFrame f = new JFrame();
+		f.add(chat);
+		f.pack();
+		f.setVisible(true);
+	}
 }
