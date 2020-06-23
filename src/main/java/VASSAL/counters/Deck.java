@@ -25,7 +25,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -264,20 +263,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
   * Update map-level count property for a piece located at index
-  * @param index, increase
   */
-  private void updateCounts(int index, boolean increase) {
+  private void updateCounts(int index) {
     if (!doesExpressionCounting()) {
       return;
     }
-    if (index >= 0 && index < contents.length) {
+    if (index >= 0 && index < getPieceCount()) {
       GamePiece p = getPieceAt(index);
       if (p == null) {
         //can't figure out the piece, do a full update
         updateCountsAll();
       }
       else {
-        updateCounts(p,increase);
+        updateCounts(p, false);
       }
     }
     else {
@@ -288,7 +286,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
   * Update map-level count property for a piece
-  * @param piece, increase
   */
   private void updateCounts(GamePiece p, boolean increase) {
     if (!doesExpressionCounting() || getMap() == null) {
@@ -318,7 +315,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
    * Set the <deckName>_numPieces property in the containing Map
-   * @param oldPieceCount
    */
   protected void fireNumCardsProperty() {
     countProperty.setPropertyValue(String.valueOf(pieceCount));
@@ -334,7 +330,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void removePieceAt(int index) {
     int startCount = pieceCount;
-    updateCounts(index,false);
+    updateCounts(index);
     super.removePieceAt(index);
     fireNumCardsProperty();
     if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
@@ -401,36 +397,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseKey = st.nextNamedKeyStroke(null);
 
     if (shuffleListener == null) {
-      shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(shuffle());
-          repaintMap();
-        }
+      shuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(shuffle());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(shuffleListener);
     }
     shuffleListener.setKeyStroke(getShuffleKey());
 
     if (reshuffleListener == null) {
-      reshuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(sendToDeck());
-          repaintMap();
-        }
+      reshuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(sendToDeck());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
 
     if (reverseListener == null) {
-      reverseListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          gameModule.sendAndLog(reverse());
-          repaintMap();
-        }
+      reverseListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(reverse());
+        repaintMap();
       });
       gameModule.addKeyStrokeListener(reverseListener);
     }
@@ -639,10 +626,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-   * The popup menu text for the command that sends the entire deck to another
-   * deck
-   *
-   * @return
+   * @return The popup menu text for the command that sends the entire deck to another deck
    */
   public String getReshuffleCommand() {
     return reshuffleCommand;
@@ -673,10 +657,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-   * The message to send to the chat window when the deck is reshuffled to
-   * another deck
-   *
-   * @return
+   * @return The message to send to the chat window when the deck is reshuffled to another deck
    */
   public String getReshuffleMsgFormat() {
     return reshuffleMsgFormat;
@@ -730,9 +711,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * Does the specified GamePiece meet the rules to be contained
    * in this Deck.
-   *
-   * @param piece
-   * @return
    */
   public boolean mayContain(GamePiece piece) {
     if (! restrictOption || restrictExpression.isNull()) {
@@ -804,7 +782,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       it = nextDraw.iterator();
     }
     else if (getPieceCount() == 0) {
-      it = Collections.<GamePiece>emptyList().iterator();
+      it = Collections.emptyIterator();
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
@@ -865,7 +843,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /**
    * Set the contents of this Deck to an Iterator of GamePieces
-   * @deprecated Use {@link #setContents(Collection<GamePiece>)} instead.
+   * @deprecated Use {@link #setContents(Collection)} instead.
    */
   @Deprecated
   protected Command setContents(Iterator<GamePiece> it) {
@@ -1029,8 +1007,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * The color used to draw boxes representing cards underneath the top one. If
    * null, then draw each card normally for face-up decks, and duplicate the top
    * card for face-down decks
-   *
-   * @return
    */
   protected Color getBlankColor() {
     Color c = Color.white;
@@ -1079,7 +1055,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
       ArrayList<KeyCommand> l = new ArrayList<>();
-      KeyCommand c = null;
+      KeyCommand c;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
           private static final long serialVersionUID = 1L;
@@ -1237,7 +1213,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
     class AvailablePiece implements Comparable<AvailablePiece> {
-      private GamePiece piece;
+      private final GamePiece piece;
 
       public AvailablePiece(GamePiece piece) {
         this.piece = piece;
@@ -1277,37 +1253,29 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       Arrays.sort(pieces);
     }
 
-    final JList list = new JList(pieces);
+    final JList<AvailablePiece> list = new JList<>(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     d.add(new ScrollPane(list));
     d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int[] selection = list.getSelectedIndices();
-        if (selection.length > 0) {
-          nextDraw = new ArrayList<>();
-          for (int value : selection) {
-            nextDraw.add(pieces[value].piece);
-          }
+    b.addActionListener(e -> {
+      int[] selection = list.getSelectedIndices();
+      if (selection.length > 0) {
+        nextDraw = new ArrayList<>();
+        for (int value : selection) {
+          nextDraw.add(pieces[value].piece);
         }
-        else {
-          nextDraw = null;
-        }
-        d.dispose();
       }
+      else {
+        nextDraw = null;
+      }
+      d.dispose();
     });
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
     d.pack();
@@ -1361,12 +1329,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     File sf = fc.getSelectedFile();
     if (sf != null) {
       String name = sf.getPath();
-      if (name != null) {
-        int index = name.lastIndexOf('.');
-        if (index > 0) {
-          name = name.substring(0, index) + ".sav"; //$NON-NLS-1$
-          fc.setSelectedFile(new File(name));
-        }
+      int index = name.lastIndexOf('.');
+      if (index > 0) {
+        name = name.substring(0, index) + ".sav"; //$NON-NLS-1$
+        fc.setSelectedFile(new File(name));
       }
     }
 
@@ -1456,7 +1422,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    String ds = null;
+    String ds;
 
     try (Reader fr = new FileReader(f);
          BufferedReader in = new BufferedReader(fr)) {
@@ -1500,7 +1466,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   protected static class LoadDeckCommand extends Command {
     public static final String PREFIX = "DECK\t"; //$NON-NLS-1$
-    private Deck target;
+    private final Deck target;
 
     public LoadDeckCommand(Deck target) {
       this.target = target;
@@ -1572,7 +1538,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the number of cards to be returned by next call to
    * {@link #drawCards()}.
    *
-   * @param dragCount
+   * @param dragCount number of cards to be returned
    */
   public void setDragCount(int dragCount) {
     this.dragCount = dragCount;
