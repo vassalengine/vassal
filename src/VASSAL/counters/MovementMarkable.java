@@ -114,12 +114,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() { //BR// Bug 13123 - perform proper operation to make sure blank line isn't added to popup menu if command line string is blank
+  protected KeyCommand[] myGetKeyCommands() {
 	return command.isEmpty() || key == null || key.isNull() ?
-	 	   new KeyCommand[0] :
-		   new KeyCommand[] {
-		     new KeyCommand(command, key, Decorator.getOutermost(this), this)
-           };
+	  new KeyCommand[0] :
+		new KeyCommand[] {
+		  new KeyCommand(command, key, Decorator.getOutermost(this), this)
+    };
   }
 
   @Override
