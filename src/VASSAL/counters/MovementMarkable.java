@@ -65,8 +65,6 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private int yOffset = 0;
   private String command;
   private NamedKeyStroke key;
-  private KeyCommand kc;        //BR// 13123
-  private KeyCommand[] kclist;  //BR// 13123
   private IconConfigurer movedIcon = new IconConfigurer(null, "Marker Image:  ", "/images/moved.gif");
   private boolean hasMoved = false;
 
@@ -116,16 +114,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
-    if (kc == null) {  //BR// Bug 13123 - perform proper operation to make sure blank line isn't added to popup menu if command line string is blank
-      kc = new KeyCommand(command, key, Decorator.getOutermost(this), this);
-      if (command.length() > 0 && key != null && ! key.isNull()) {
-        kclist = new KeyCommand[]{kc};
-      } else {
-        kclist = new KeyCommand[0];
-      }
-    }
-    return kclist;
+  protected KeyCommand[] myGetKeyCommands() { //BR// Bug 13123 - perform proper operation to make sure blank line isn't added to popup menu if command line string is blank
+	return command.isEmpty() || key == null || key.isNull() ?
+	 	   new KeyCommand[0] :
+		   new KeyCommand[] {
+		     new KeyCommand(command, key, Decorator.getOutermost(this), this)
+           };
   }
 
   @Override
