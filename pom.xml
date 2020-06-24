@@ -241,7 +241,6 @@
 						<arg>-Xlint:all</arg>
 						<arg>-Xmaxwarns</arg> <arg>10000</arg>
 						-->
-						<arg> --add-exports</arg> <arg>java.desktop/sun.java2d.cmm=ALL-UNNAMED</arg>
 					</compilerArgs>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>false</showWarnings>
