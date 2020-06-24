@@ -1,0 +1,71 @@
+/*
+ * $Id: init_script.bsh,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
+ *
+ * Copyright (c) 2008-2009 by Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+ 
+/**
+ * Initialisation file for Vassal BeanShell Global Script NameSpace.
+ */
+
+import javax.swing.KeyStroke;
+
+import VASSAL.script.proxy.Map;
+  
+/*********************************************************
+ * Global call-backs to Vassal
+ */
+   
+/**
+ * Get the value of a Module property
+ */
+Object GetModuleProperty(String name) {
+	_interp = this.caller.namespace.getVariable("_interp");
+	return _interp.getModuleProperty(name);
+}
+
+/**
+ * Set the value of a Module Property
+ */
+SetModuleProperty(String name, value) {
+	_interp = this.caller.namespace.getVariable("_interp");
+	_interp.setModuleProperty(name, value.toString()); 
+}
+
+/**
+ * Find a map by name
+ */
+Map FindMap(String mapName) {
+	_interp = this.caller.namespace.getVariable("_interp");
+	return _interp.findMap(mapName);
+}	
+	
+/**
+ * Display text in a dialog box
+ */
+Alert(String text) {
+	_interp = this.caller.namespace.getVariable("_interp");
+	_interp.alert(text);
+}
+
+/**
+ * Issue a Global Hot Key
+ */
+ GlobalHotKey(KeyStroke hotkey) {
+ 	_interp = this.caller.namespace.getVariable("_interp");
+	_interp.globalHotKey(hotkey);
+}
+
