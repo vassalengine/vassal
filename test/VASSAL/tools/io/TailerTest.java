@@ -23,6 +23,7 @@ import VASSAL.tools.concurrent.listener.EventListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -93,7 +94,8 @@ public class TailerTest {
 
     String expected = null;
     try (FileInputStream in = new FileInputStream(file)) {
-      expected = IOUtils.toString(in).substring(0, actual.length());
+      expected = IOUtils.toString(in, StandardCharsets.UTF_8)
+                        .substring(0, actual.length());
     }
 
     // compare whatever the Tailer had time to read
