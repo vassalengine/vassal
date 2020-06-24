@@ -242,9 +242,6 @@
 						<arg>-Xmaxwarns</arg> <arg>10000</arg>
 						-->
 						<arg> --add-exports</arg> <arg>java.desktop/sun.java2d.cmm=ALL-UNNAMED</arg>
-						<arg> --add-exports</arg> <arg>java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED</arg>
-						<arg> --add-exports</arg> <arg>java.desktop/java.awt.peer=ALL-UNNAMED</arg>
-						<arg> --add-exports</arg> <arg>java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED</arg>
 					</compilerArgs>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>false</showWarnings>
