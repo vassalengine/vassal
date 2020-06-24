@@ -195,7 +195,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override

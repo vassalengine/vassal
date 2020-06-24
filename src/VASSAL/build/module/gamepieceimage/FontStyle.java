@@ -124,7 +124,7 @@ public class FontStyle extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public static String getConfigureTypeName() {

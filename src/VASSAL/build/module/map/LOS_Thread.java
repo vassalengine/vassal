@@ -903,7 +903,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override

@@ -143,7 +143,7 @@ public class Chart extends Widget {
    */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   /**
