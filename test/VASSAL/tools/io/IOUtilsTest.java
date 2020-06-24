@@ -124,6 +124,7 @@ public class IOUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyZipFileOpen() throws IOException {
     final ZipFile zf = new ZipFile("test/VASSAL/tools/io/test.zip");
     IOUtils.closeQuietly(zf);
@@ -138,6 +139,7 @@ public class IOUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyZipFileClosed() throws IOException {
     final ZipFile zf = new ZipFile("test/VASSAL/tools/io/test.zip");
     zf.close();
@@ -145,11 +147,13 @@ public class IOUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyZipFileNull() {
     IOUtils.closeQuietly((ZipFile) null);
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyImageInputStreamOpen() {
     final ImageInputStream in =
       new MemoryCacheImageInputStream(new NullInputStream(1000));
@@ -166,6 +170,7 @@ public class IOUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyImageInputStreamClosed() throws IOException {
     final ImageInputStream in =
       new MemoryCacheImageInputStream(new ClosedInputStream());
@@ -175,6 +180,7 @@ public class IOUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCloseQuietlyImageInputStreamNull() {
     IOUtils.closeQuietly((ImageInputStream) null);
   }
