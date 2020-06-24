@@ -86,7 +86,7 @@ public class SequenceEncoderTest {
   @Test
   @SuppressWarnings("deprecation")
   public void testDecodeKeyStrokeWithDeprecatedModifier() {
-    final String IN = "121\\," + KeyEvent.CTRL_MASK;
+    final String IN = KeyEvent.VK_F10 + "\\," + KeyEvent.CTRL_MASK;
     final KeyStroke OUT = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(IN, ',');
     assertEquals(OUT, sd.nextKeyStroke('X'));
@@ -111,7 +111,7 @@ public class SequenceEncoderTest {
   @Test
   @SuppressWarnings("deprecation")
   public void testDecodeNamedKeyStrokeWithDeprecatedModifier() {
-    final String IN = "121\\," + KeyEvent.CTRL_MASK;
+    final String IN = KeyEvent.VK_F10 + "\\," + KeyEvent.CTRL_MASK;
     final NamedKeyStroke OUT = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK));
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(IN, ',');
     assertEquals(OUT, sd.nextNamedKeyStroke('X'));
