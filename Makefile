@@ -70,7 +70,7 @@ CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':'):$(shell echo $
 JAVAPATH:=/usr/bin
 
 JC:=$(JAVAPATH)/javac
-JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED -source 11 -target 11
+JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -source 11 -target 11
 
 JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
@@ -290,7 +290,7 @@ upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -sourcepath $(SRCDIR) -subpackages VASSAL
+	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
