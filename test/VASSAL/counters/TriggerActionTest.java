@@ -85,7 +85,7 @@ public class TriggerActionTest {
     trigger = new TriggerAction();
     trigger.setInner(new BasicPiece());
     trigger.setCommandName("Trigger");
-    trigger.setKey(NamedKeyStroke.getNamedKeyStroke('T', KeyEvent.CTRL_MASK));
+    trigger.setKey(NamedKeyStroke.getNamedKeyStroke('T', KeyEvent.CTRL_DOWN_MASK));
   }
 
   @Test

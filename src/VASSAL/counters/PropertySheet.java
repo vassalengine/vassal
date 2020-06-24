@@ -188,10 +188,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       launchKeyStroke = NamedHotKeyConfigurer.decode(launchKeyStrokeToken);
     }
     else if (launchKeyToken.length() > 0) {
-      launchKeyStroke = new NamedKeyStroke(launchKeyToken.charAt(0), InputEvent.CTRL_MASK);
+      launchKeyStroke = new NamedKeyStroke(launchKeyToken.charAt(0), InputEvent.CTRL_DOWN_MASK);
     }
     else {
-      launchKeyStroke = new NamedKeyStroke('P', InputEvent.CTRL_MASK);
+      launchKeyStroke = new NamedKeyStroke('P', InputEvent.CTRL_DOWN_MASK);
     }
   }
 

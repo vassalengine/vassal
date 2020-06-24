@@ -404,10 +404,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       final ArrayList<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
-        l.add(new KeyCommand("Clone", KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target));
+        l.add(new KeyCommand("Clone", KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
       }
       if (deleteKey > 0) {
-        l.add(new KeyCommand("Delete", KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target));
+        l.add(new KeyCommand("Delete", KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK), target));
       }
       commands = l.toArray(new KeyCommand[0]);
     }
@@ -504,7 +504,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
     Command comm = null;
     final GamePiece outer = Decorator.getOutermost(this);
-    if (cloneKey != 0 && KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK).equals(stroke)) {
+    if (cloneKey != 0 && KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK).equals(stroke)) {
       final GamePiece newPiece = ((AddPiece) GameModule.getGameModule().decode(GameModule.getGameModule().encode(new AddPiece(outer)))).getTarget();
       newPiece.setId(null);
       GameModule.getGameModule().getGameState().addPiece(newPiece);
@@ -529,7 +529,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         }
       }
     }
-    else if (deleteKey != 0 && KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
+    else if (deleteKey != 0 && KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         String s = "* " + outer.getLocalizedName();

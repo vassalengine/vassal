@@ -116,18 +116,22 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     if (k == null) {
       return null;
     }
+
     String s = KeyEvent.getKeyText(k.getKeyCode());
     s = s.replace(' ', '_');
-    if ((k.getModifiers() & KeyEvent.SHIFT_MASK) > 0) {
+
+    final int mods = k.getModifiers();
+
+    if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    if ((k.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
+    if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    if ((k.getModifiers() & KeyEvent.META_MASK) > 0) {
+    if ((mods & KeyEvent.META_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    if ((k.getModifiers() & KeyEvent.ALT_MASK) > 0) {
+    if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     return s.toUpperCase();

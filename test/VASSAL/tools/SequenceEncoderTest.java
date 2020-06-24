@@ -77,7 +77,7 @@ public class SequenceEncoderTest {
 
   @Test
   public void testEncodeDecodeKeyStroke() {
-    final KeyStroke VALUE = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_MASK);
+    final KeyStroke VALUE = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK);
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     assertEquals(VALUE, sd.nextKeyStroke('X'));
@@ -85,7 +85,7 @@ public class SequenceEncoderTest {
 
   @Test
   public void testEncodeDecodeNamedKeyStroke_1() {
-    final NamedKeyStroke VALUE = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_MASK));
+    final NamedKeyStroke VALUE = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK));
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     assertEquals(VALUE, sd.nextNamedKeyStroke());
@@ -131,7 +131,7 @@ public class SequenceEncoderTest {
     final double doubleIn = 3.1415926535;
     final long longIn = 16777217;
     final Color colorIn = new Color(32, 145, 212);
-    final KeyStroke keyStrokeIn = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_MASK);
+    final KeyStroke keyStrokeIn = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK);
     final NamedKeyStroke namedKeyStrokein1 = new NamedKeyStroke(keyStrokeIn);
     final NamedKeyStroke namedKeyStrokein2 = new NamedKeyStroke("#control");
     final String stringIn = "How many ,'s in this sentence?\n";

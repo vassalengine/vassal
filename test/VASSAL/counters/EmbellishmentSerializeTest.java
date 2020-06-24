@@ -16,13 +16,13 @@ public class EmbellishmentSerializeTest extends SerializeTest<Embellishment> {
   public void serialize() throws Exception {
     Embellishment emb = new Embellishment();
     emb.activateCommand = "testActivateCommand";
-    emb.activateModifiers = InputEvent.CTRL_MASK;
+    emb.activateModifiers = InputEvent.CTRL_DOWN_MASK;
     emb.activateKey = "testActivateKey";
     emb.upCommand = "testUpCommand";
-    emb.upModifiers = InputEvent.CTRL_MASK;
+    emb.upModifiers = InputEvent.CTRL_DOWN_MASK;
     emb.upKey = "testUpKey";
     emb.downCommand = "testDownCommand";
-    emb.downModifiers = InputEvent.CTRL_MASK;
+    emb.downModifiers = InputEvent.CTRL_DOWN_MASK;
     emb.downKey = "testDownKey";
     emb.resetKey = new NamedKeyStroke("A");
     emb.resetLevel = new FormattedString("resetLevel");

@@ -282,7 +282,7 @@ public class SequenceEncoder {
 
     public KeyStroke nextKeyStroke(char defaultValue) {
       return nextKeyStroke(
-        KeyStroke.getKeyStroke(defaultValue, InputEvent.CTRL_MASK));
+        KeyStroke.getKeyStroke(defaultValue, InputEvent.CTRL_DOWN_MASK));
     }
 
     public Color nextColor(Color defaultValue) {
@@ -306,7 +306,7 @@ public class SequenceEncoder {
         }
         else if (s.indexOf(',') < 0) {
           defaultValue =
-            KeyStroke.getKeyStroke(s.charAt(0), InputEvent.CTRL_MASK);
+            KeyStroke.getKeyStroke(s.charAt(0), InputEvent.CTRL_DOWN_MASK);
         }
         else {
           defaultValue = HotKeyConfigurer.decode(s);
@@ -316,7 +316,7 @@ public class SequenceEncoder {
     }
 
     public NamedKeyStroke nextNamedKeyStroke(char defaultValue) {
-      return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_MASK));
+      return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_DOWN_MASK));
     }
 
     public NamedKeyStroke nextNamedKeyStroke() {
@@ -330,7 +330,7 @@ public class SequenceEncoder {
           defaultValue = null;
         }
         else if (s.indexOf(',') < 0) {
-          defaultValue = NamedKeyStroke.getNamedKeyStroke(s.charAt(0), InputEvent.CTRL_MASK);
+          defaultValue = NamedKeyStroke.getNamedKeyStroke(s.charAt(0), InputEvent.CTRL_DOWN_MASK);
         }
         else {
           defaultValue = NamedHotKeyConfigurer.decode(s);

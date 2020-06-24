@@ -401,7 +401,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
         watchKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),
-            InputEvent.CTRL_MASK);
+            InputEvent.CTRL_DOWN_MASK);
       }
     }
 
@@ -413,7 +413,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       actionKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < actionKeys.length; i++) {
         actionKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),
-            InputEvent.CTRL_MASK);
+            InputEvent.CTRL_DOWN_MASK);
       }
     }
     loop = st.nextBoolean(false);
