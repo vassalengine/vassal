@@ -1,9 +1,16 @@
 .*.swp
-bin/
 javadoc/
-lib/Vengine.jar
 tmp/
 
 # IntelliJ
 *.iml
 .idea/
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Maven
+target/
