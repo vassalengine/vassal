@@ -232,6 +232,9 @@ public class IPCMessengerTest {
     d1.get();
     d2.get();
 
+    assertEquals(1000, f1.size());
+    assertEquals(1000, f2.size());
+
     f1.forEach(f -> ackCheck(f));
     f2.forEach(f -> ackCheck(f));
   }
