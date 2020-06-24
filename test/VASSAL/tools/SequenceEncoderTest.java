@@ -84,6 +84,15 @@ public class SequenceEncoderTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
+  public void testDecodeKeyStrokeWithDeprecatedModifier() {
+    final String IN = "121\\," + KeyEvent.CTRL_MASK;
+    final KeyStroke OUT = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(IN, ',');
+    assertEquals(OUT, sd.nextKeyStroke('X'));
+  }
+
+  @Test
   public void testEncodeDecodeNamedKeyStroke_1() {
     final NamedKeyStroke VALUE = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK));
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
@@ -97,6 +106,15 @@ public class SequenceEncoderTest {
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     assertEquals(VALUE, sd.nextNamedKeyStroke());
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void testDecodeNamedKeyStrokeWithDeprecatedModifier() {
+    final String IN = "121\\," + KeyEvent.CTRL_MASK;
+    final NamedKeyStroke OUT = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_DOWN_MASK));
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(IN, ',');
+    assertEquals(OUT, sd.nextNamedKeyStroke('X'));
   }
 
   @Test
