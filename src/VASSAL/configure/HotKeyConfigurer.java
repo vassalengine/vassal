@@ -145,9 +145,10 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     if (index < 0) return null;
 
     try {
-      return KeyStroke.getKeyStroke
-          (Integer.parseInt(s.substring(0, index)),
-           Integer.parseInt(s.substring(index + 1)));
+      return KeyStroke.getKeyStroke(
+        Integer.parseInt(s.substring(0, index)),
+        Integer.parseInt(s.substring(index + 1))
+      );
     }
     // FIXME: review error message
     catch (IllegalArgumentException e) {
