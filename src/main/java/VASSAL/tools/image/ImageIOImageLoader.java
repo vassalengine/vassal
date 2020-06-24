@@ -20,6 +20,8 @@ package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.color.CMMException;
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
@@ -31,8 +33,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-
-import sun.java2d.cmm.ProfileDeferralMgr;
 
 import VASSAL.tools.io.RereadableInputStream;
 import VASSAL.tools.lang.Reference;
@@ -116,12 +116,13 @@ public class ImageIOImageLoader implements ImageLoader {
   // even thread-safe across different instances of JPEGImageReader. Nobody
   // will ever be trying to load more than one JPEG at a time, right? WTF?!
   //
-  // To mitigate this, we attempt to turn off ProfileDeferralMgr, which will
-  // stop calls to ProfileDeferralMgr.activateProfiles(), which is where the
-  // race happens.
+  // ICC_Profile.getPCSType() calls ProfileDeferralMgr.activateProfiles(),
+  // which sets ProfileDeferralMgr.deferring = false, which in turn prevents
+  // further calls to ProfileDeferralMgr.activateProfiles(), which is where
+  // the race happens.
   static {
-    ProfileDeferralMgr.deferring = false;
-   }
+    ICC_Profile.getInstance(ColorSpace.CS_sRGB).getPCSType();
+  }
 
   /**
    * Loads an image.
