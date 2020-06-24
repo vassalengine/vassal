@@ -48,6 +48,7 @@ public class HTMLWindowHelper implements HyperlinkListener {
     pane.addHyperlinkListener(this);
   }
 
+  @Override
   public void hyperlinkUpdate(HyperlinkEvent e) {
     if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
       if (e.getURL() != null) {
