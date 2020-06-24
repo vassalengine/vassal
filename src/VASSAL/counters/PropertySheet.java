@@ -697,7 +697,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public JComboBox addComboBox(String name, String[] values, int initialRow) {
-      JComboBox comboBox = new JComboBox(values);
+      JComboBox<String> comboBox = new JComboBox<>(values);
       comboBox.setEditable(false);
       comboBox.setSelectedIndex(initialRow);
 

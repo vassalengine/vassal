@@ -64,7 +64,7 @@ public class ValidationReportDialog extends JDialog {
     default:
       reportBox.add(new JLabel("The following problems were found in this module."));
       reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
-      JList list = new JList(warnings.toArray());
+      JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(),warnings.size()));
       reportBox.add(new ScrollPane(list));
       buttonPanel.add(createOkButton());

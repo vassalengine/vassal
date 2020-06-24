@@ -312,13 +312,13 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private JComboBox selectionOption;
-    private JComboBox movementOption;
+    private JComboBox<String> selectionOption;
+    private JComboBox<String> movementOption;
     private JCheckBox ignoreGridBox;
     private Box controls;
 
     public Ed(Immobilized p) {
-      selectionOption = new JComboBox();
+      selectionOption = new JComboBox<>();
       selectionOption.addItem("normally");
       selectionOption.addItem("when shift-key down");
       selectionOption.addItem("when alt-key down");
@@ -343,7 +343,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       b.add(selectionOption);
       controls.add(b);
 
-      movementOption = new JComboBox();
+      movementOption = new JComboBox<>();
       movementOption.addItem("normally");
       movementOption.addItem("only if selected");
       movementOption.addItem("never");
@@ -405,4 +405,3 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 }
-

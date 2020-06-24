@@ -151,17 +151,17 @@ public class ImagePicker extends JPanel
   }
 
   public void pickImage() {
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final GameModule gm = GameModule.getGameModule();
+    final FileChooser fc = gm.getFileChooser();
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
          && fc.getSelectedFile().exists()) {
       String name = fc.getSelectedFile().getName();
-      GameModule.getGameModule()
-                .getArchiveWriter()
-                .addImage(fc.getSelectedFile().getPath(), name);
-      select.setModel(new DefaultComboBoxModel(
-          ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE)));
+      gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
+      select.setModel(new DefaultComboBoxModel<String>(
+          ArrayUtils.prepend(gm.getDataArchive().getImageNames(), NO_IMAGE)
+      ));
       setImageName(name);
     }
     else {
