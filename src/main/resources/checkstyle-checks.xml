@@ -94,9 +94,11 @@
             <property name="id" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
             <property name="tokens"
-             value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+             value="CLASS_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
                     INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY,
                     LITERAL_IF, LITERAL_ELSE, LITERAL_DO"/>
+            <!-- other possible tokens: -->
+            <!-- METHOD_DEF -->
         </module>
         <module name="SuppressionXpathSingleFilter">
           <!-- suppresion is required till https://github.com/checkstyle/checkstyle/issues/7541 -->
@@ -235,7 +237,7 @@
             <property name="severity" value="error"/>
             <property name="basicOffset" value="2"/>
             <property name="braceAdjustment" value="0"/>
-            <property name="caseIndent" value="2"/>
+            <property name="caseIndent" value="0"/>
             <property name="throwsIndent" value="2"/>
             <property name="lineWrappingIndentation" value="2"/>
             <property name="arrayInitIndent" value="2"/>

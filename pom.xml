@@ -165,6 +165,16 @@
 		<!-- Build filename pattern -->
 		<finalName>${project.artifactId}</finalName>
 
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>checkstyle-checks.xml</exclude>
+					<exclude>checkstyle-suppressions.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -186,6 +196,13 @@
 				<plugin>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>3.1.1</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>8.33</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<artifactId>maven-dependency-plugin</artifactId>
@@ -260,10 +277,22 @@
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<configuration>
-					<!-- uses builtin sun_checks.xml by default
-					<configLocation>vassal_checks.xml</configLocation>
-					-->
+					<configLocation>src/main/resources/checkstyle-checks.xml</configLocation>
+					<suppressionsLocation>src/main/resources/checkstyle-suppressions.xml</suppressionsLocation>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<failOnViolation>false</failOnViolation>
+					<linkXRef>true</linkXRef>
 				</configuration>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
