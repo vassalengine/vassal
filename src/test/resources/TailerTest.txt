@@ -1,0 +1,2 @@
+This is a file for testing Tailer by TailerTest.
+It has several lines.
