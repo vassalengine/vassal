@@ -1,5 +1,7 @@
 3.3.2-beta1 - ???
 
+* 13123: "Mark When Moved" trait puts blank line in menu, even if Command
+    field left completely empty
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
 * 12972: Return to Location backMap and backPoint are not sent to clients or
