@@ -179,10 +179,6 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<excludes>
-					<exclude>checkstyle-checks.xml</exclude>
-					<exclude>checkstyle-suppressions.xml</exclude>
-				</excludes>
 			</resource>
 		</resources>
 		<pluginManagement>
@@ -286,8 +282,8 @@
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<configuration>
-					<configLocation>src/main/resources/checkstyle-checks.xml</configLocation>
-					<suppressionsLocation>src/main/resources/checkstyle-suppressions.xml</suppressionsLocation>
+					<configLocation>src/test/resources/checkstyle-checks.xml</configLocation>
+					<suppressionsLocation>src/test/resources/checkstyle-suppressions.xml</suppressionsLocation>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<logViolationsToConsole>true</logViolationsToConsole>
 					<failOnViolation>false</failOnViolation>
