@@ -4,8 +4,9 @@
 # This Makefile is intended for use on Linux systems. If you are trying to use
 # it elsewhere, you are on your own.
 #
-# Before building, you will need to install (at least) the following packages:
+# If you want to build Windows releases you will need:
 #
+# Maven    (https://maven.apache.org/)
 # Launch4j (http://launch4j.sourceforge.net)
 # NSIS     (http://nsis.sourceforge.net)
 #
@@ -33,17 +34,21 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
-# Prior to building the Windows release, unpack the JDK to bundle into the
-# directory specified in WINJDK.
+# For the Windows release, you will need a Windows JDK available for bundling
+# with VASSAL. Set WINJMODS to the directory in the Windows JDK where the
+# jmods are.
+#
+# For the Mac release, you will need a Mac JDK available for bundling
+# with VASSAL. Set OSXJMODS to the directory in the Mac JDK where the
+# jmods are.
 #
 
 SHELL:=/bin/bash
 
-SRCDIR:=src
-TESTDIR:=test
-LIBDIR:=lib
-LIBDIRND:=lib-nondist
-CLASSDIR:=bin
+SRCDIR:=src/main/java
+TESTDIR:=src/test/java
+LIBDIR:=target/lib
+CLASSDIR:=target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
@@ -53,7 +58,6 @@ JDOCLINK:=file:///usr/share/javadoc/java/api
 
 WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
-LINJMODS:=/usr/lib/jvm/java-14/jmods
 
 VNUM:=3.3.1
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
@@ -62,15 +66,12 @@ VERSION:=$(shell git describe --tags)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
-CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':'):$(shell echo $(LIBDIRND)/*.jar | tr ' ' ':')
+CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 JAVAPATH:=/usr/bin
 
-JC:=$(JAVAPATH)/javac
-JCFLAGS:=-d $(CLASSDIR) -Xlint:all -Xmaxwarns 10000 -classpath $(CLASSPATH) -sourcepath $(SRCDIR) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED --add-exports java.desktop/java.awt.peer=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED --add-exports java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED -source 11 -target 11
+MVN:=mvn
 
-JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
-JAVA:=$(JAVAPATH)/java
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
@@ -80,53 +81,15 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-#SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
-#CLASSES:=$(SOURCES:.java=.class)
+all: fast-compile
 
-vpath %.class $(shell find $(CLASSDIR) -type d)
-vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
-
-#all: $(CLASSDIR) $(CLASSES) i18n icons images help
-all: $(CLASSDIR) fast-compile i18n bsh icons images help
-
-$(CLASSDIR):
-	mkdir -p $(CLASSDIR)
-
-%.class: %.java
-	$(JC) $(JCFLAGS) $<
-
-images: $(CLASSDIR)/images
-
-$(CLASSDIR)/images: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/images $(CLASSDIR)/images
-	cp -a $(SRCDIR)/images $(CLASSDIR)/images
-
-icons: $(CLASSDIR)/icons
-
-$(CLASSDIR)/icons: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/icons $(CLASSDIR)/icons
-	cp -a $(SRCDIR)/icons $(CLASSDIR)/icons
-
-help: $(CLASSDIR)/help
-
-$(CLASSDIR)/help: $(CLASSDIR)
-#	svn export --force $(SRCDIR)/help $(CLASSDIR)/help
-	cp -a $(SRCDIR)/help $(CLASSDIR)/help
-
-i18n: $(CLASSDIR)
-	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
-
-bsh: $(CLASSDIR)
-	for i in `cd $(SRCDIR) && find VASSAL -name '*.bsh'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
-
-fast-compile: version $(CLASSDIR)
-	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
+fast-compile:
+	$(MVN) compile
 
 jar: $(LIBDIR)/Vengine.jar
 
 test:
-	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
-	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -l '@Test' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
+	$(MVN) test
 
 #show:
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
@@ -134,24 +97,14 @@ test:
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
-$(LIBDIR)/Vengine.jar: all $(TMPDIR)
-	cp dist/Vengine.mf $(TMPDIR)
-	(echo -n 'Class-Path: ' ; \
-		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
-		sed -e '/Vengine.jar/d' -e '/^  $$/d' \
-	) >>$(TMPDIR)/Vengine.mf
-	$(JAR) cvfm $@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
-	cd $(LIBDIR) ; $(JAR) i $(@F) ; cd ..
-	chmod 664 $@
+$(LIBDIR)/Vengine.jar: all
+	$(MVN) package
 
-$(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: fast-compile $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
-
-version:
-	sed -ri 's/ VERSION = ".*"/ VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package' | tr -d '\n' >$@
@@ -286,12 +239,12 @@ upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) --add-exports java.desktop/sun.java2d.cmm=ALL-UNNAMED -sourcepath $(SRCDIR) -subpackages VASSAL
+	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
 
 clean: clean-release
-	$(RM) -r $(CLASSDIR)/*
+	$(MVN) clean
 
-.PHONY: all bsh fast-compile test clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version jar
+.PHONY: all fast-compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar

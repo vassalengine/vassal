@@ -1,0 +1,44 @@
+[size=200][b]VASSAL 3.3.1 Released[/b][/size]
+
+The VASSAL Team is happy to announce the release of VASSAL 3.3.1.
+
+
+[size=150][b]IMPORTANT[/b][/size]
+
+* Things may be broken which worked in 3.2.17. If you find a bug introduced since 3.2.17, please report it.
+
+* If you save a module in VASSAL 3.3, you will NOT be able to open it afterwards with VASSAL 3.2. We recommend keeping a backup copy of any pre-3.3 modules you plan to modify in 3.3 until you've verified that everything works to your satisfaction.
+
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
+
+[size=150][b]Download[/b][/size]
+
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-windows.exe]Windows[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-other.zip]Other[/url]
+
+[size=150][b]Changes since 3.3.0[/b][/size]
+
+* 13111: IncompatibleClassChangeError due to change of ComponentSplitter methods to static
+* 13083: BrowserSupport cannot open URLs on Linux without gtk3
+
+For changes prior to this release, see the change log.
+
+[size=150][b]Minimum Requirements[/b][/size]
+
+VASSAL 3.3 requires Java 11 or later.
+
+The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems.
+
+[size=159][b]Help us test[/b][/size]
+
+Should you find any problems/oddities/bugs, please tell us so that we can
+fix them for a future release of VASSAL.
+
+Report bugs here in the Technical Support & Bugs category at the [url=http://vassalengine.org/forum/viewforum.php?f=3]VASSAL forums[/url] or by email to [email]bugs@vassalengine.org[/email].
+
+
+Cheers,
+
+The VASSAL Team
