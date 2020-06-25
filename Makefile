@@ -1,6 +1,4 @@
 #
-# $Id$
-#
 # This Makefile is intended for use on Linux systems. If you are trying to use
 # it elsewhere, you are on your own.
 #

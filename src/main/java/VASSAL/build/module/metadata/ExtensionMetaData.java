@@ -1,4 +1,4 @@
-/* $Id$
+/*
  *
  * Copyright (c) 2008 by Brent Easton and Joel Uckelman
  *
