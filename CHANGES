@@ -1,5 +1,7 @@
-3.3.1-beta1 - ???
+3.3.2-beta1 - ???
 
+* 13123: "Mark When Moved" trait puts blank line in menu, even if Command
+    field left completely empty
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
 * 12972: Return to Location backMap and backPoint are not sent to clients or
@@ -15,6 +17,12 @@
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
 * 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number
     of pieces' to a Deck correctly
+
+3.3.1 - 22 June 2020
+
+* 13111: IncompatibleClassChangeError due to change of ComponentSplitter
+    methods to static
+* 13083: BrowserSupport cannot open URLs on Linux without gtk3
 
 3.3.0 - 16 June 2020
 
