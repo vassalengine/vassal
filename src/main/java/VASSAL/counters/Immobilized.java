@@ -53,6 +53,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
   protected boolean moveIfSelected = false;
+  protected boolean neverBandSelect = false; //BR//
+  protected boolean altToBandSelect = false; //BR//
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
 
@@ -63,6 +65,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
+  protected static final char NEVER_BAND_SELECT = 'Z';
+  protected static final char ALT_BAND_SELECT = 'A';
 
   public class UseShift implements EventFilter {
     @Override
@@ -110,10 +114,13 @@ public class Immobilized extends Decorator implements EditablePiece {
     ignoreGrid = false;
     neverMove = false;
     moveIfSelected = false;
+    neverBandSelect = false;
+    altToBandSelect = false;
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     String selectionOptions = st.nextToken("");
     String movementOptions = st.nextToken("");
+    String bandselectOptions = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
