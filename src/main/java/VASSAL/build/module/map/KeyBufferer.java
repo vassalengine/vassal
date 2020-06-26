@@ -39,10 +39,12 @@ import VASSAL.build.module.Map;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
+import VASSAL.counters.Decorator;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.KeyBuffer;
+import VASSAL.counters.NonRectangular;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
@@ -66,6 +68,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected Point anchor;
   protected Color color = Color.black;
   protected int thickness = 3;
+  protected GamePiece bandSelectPiece = null;
+  
+  private static final int NOT_BAND_SELECT     = 0;
+  private static final int NORMAL_BAND_SELECT  = 1;
+  private static final int SPECIAL_BAND_SELECT = 2;
 
   @Override
   public void addTo(Buildable b) {
@@ -100,8 +107,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Don't clear the buffer until we find the clicked-on piece
     // Because selecting a piece affects its visibility
     EventFilter filter = null;
+    int bandSelect = NOT_BAND_SELECT;
     if (p != null) {
-      filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
+      filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
+      if (!e.isPopupTrigger() && (boolean)p.getProperty(Properties.NON_MOVABLE)) {
+        bandSelect = SPECIAL_BAND_SELECT; //BR// Don't "eat" band-selects if unit found is non-movable
+      }
     }
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
@@ -147,8 +158,19 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       map.getPieceCollection().moveToFront(to_front);
     }
     else {
+      bandSelect = NORMAL_BAND_SELECT; //BR// Allowed to band-select  
+    }
+    
+    if (bandSelect != NOT_BAND_SELECT) {
+      bandSelectPiece = null;
       if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
         kbuf.clear();
+        
+        //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
+        if ((bandSelect == SPECIAL_BAND_SELECT) && (p != null) && !ignoreEvent) {
+          kbuf.add(p);
+          bandSelectPiece = p; 
+        }
       }
       anchor = map.mapToComponent(e.getPoint());
       selection = new Rectangle(anchor.x, anchor.y, 0, 0);
@@ -169,9 +191,21 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     PieceVisitorDispatcher d = createDragSelector(
       !evt.isControlDown(), evt.isAltDown(), map.componentToMap(selection)
     );
+    
+    //BR// If it was a legit band-select drag (not just a click), our special case only applies if piece is allowed to be band-selected
+    if (bandSelectPiece != null) {
+      Point finish = map.mapToComponent(evt.getPoint());
+      EventFilter bandFilter = (EventFilter) bandSelectPiece.getProperty(Properties.BAND_SELECT_EVENT_FILTER);
+      if ((bandFilter != null) && !(evt.isAltDown() && (bandFilter instanceof Immobilized.UseAlt))) {
+        if (finish.distance(anchor) >= 10) { //BR// Open to suggestions about a better way to distinguish "click" from "lasso" (not that Vassal doesn't already suck immensely at click-vs-drag threshhold). FWIW, this "works".
+          bandSelectPiece = null;
+        }
+      }
+    }
+    
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
-    if (!evt.isShiftDown() && !evt.isControlDown()) {
+    if ((bandSelectPiece == null) && !evt.isShiftDown() && !evt.isControlDown()) {
       KeyBuffer.getBuffer().clear();
     }
     map.apply(d);
@@ -255,8 +289,10 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (mapsel.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
         if (selecting) {
           final EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
+          final EventFilter bandFilter = (EventFilter) p.getProperty(Properties.BAND_SELECT_EVENT_FILTER);
           final boolean altSelect = (altDown && filter instanceof Immobilized.UseAlt);
-          if (filter == null || altSelect) {
+          final boolean altBand = (altDown && bandFilter instanceof Immobilized.UseAlt);
+          if ((filter == null || altSelect) && ((bandFilter == null) || altBand)) { //BR// Band-select filtering support
             KeyBuffer.getBuffer().add(p);
           }
         }

@@ -53,10 +53,11 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
   protected boolean moveIfSelected = false;
-  protected boolean neverBandSelect = false; //BR//
-  protected boolean altToBandSelect = false; //BR//
+  protected boolean neverBandSelect = false; 
+  protected boolean altToBandSelect = false; 
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
+  protected EventFilter bandselectFilter;
 
   protected static final char MOVE_SELECTED = 'I';
   protected static final char MOVE_NORMAL = 'N';
@@ -65,8 +66,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
-  protected static final char NEVER_BAND_SELECT = 'Z';
-  protected static final char ALT_BAND_SELECT = 'A';
+  protected static final char NEVER_BAND_SELECT = 'Z'; 
+  protected static final char ALT_BAND_SELECT = 'A';   
 
   public class UseShift implements EventFilter {
     @Override
@@ -120,7 +121,6 @@ public class Immobilized extends Decorator implements EditablePiece {
     st.nextToken();
     String selectionOptions = st.nextToken("");
     String movementOptions = st.nextToken("");
-    String bandselectOptions = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -135,6 +135,12 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     if (selectionOptions.indexOf(IGNORE_GRID) >= 0) {
       ignoreGrid = true;
+    }
+    if (selectionOptions.indexOf(ALT_BAND_SELECT) >= 0) {
+      altToBandSelect = true;
+    }
+    if (selectionOptions.indexOf(NEVER_BAND_SELECT) >= 0) {
+      neverBandSelect = true;
     }
     if (movementOptions.length() > 0) {
       switch (movementOptions.charAt(0)) {
@@ -171,6 +177,16 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     else {
       moveFilter = null;
+    }
+    
+    if (neverBandSelect) {
+      bandselectFilter = NEVER;
+    }
+    else if (altToBandSelect) {
+      bandselectFilter = new UseAlt();
+    }
+    else {
+      bandselectFilter = null;
     }
   }
 
@@ -209,6 +225,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (Properties.NON_MOVABLE.equals(key)) {
       return neverMove;
     }
+    else if (Properties.BAND_SELECT_EVENT_FILTER.equals(key)) {
+      return bandselectFilter;
+    }
     else {
       return super.getLocalizedProperty(key);
     }
@@ -233,6 +252,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     else if (Properties.NON_MOVABLE.equals(key)) {
         return neverMove;
+    }
+    else if (Properties.BAND_SELECT_EVENT_FILTER.equals(key)) {
+      return bandselectFilter;
     }
     else {
       return super.getProperty(key);
@@ -269,6 +291,13 @@ public class Immobilized extends Decorator implements EditablePiece {
     if (ignoreGrid) {
       buffer.append(IGNORE_GRID);
     }
+    if (neverBandSelect) {
+      buffer.append(NEVER_BAND_SELECT);
+    }
+    else if (altToBandSelect) {
+      buffer.append(ALT_BAND_SELECT);
+    }
+    
     buffer.append(';');
     if (neverMove) {
       buffer.append(NEVER_MOVE);
@@ -321,6 +350,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   private static class Ed implements PieceEditor {
     private JComboBox selectionOption;
     private JComboBox movementOption;
+    private JComboBox bandSelectOption;
     private JCheckBox ignoreGridBox;
     private Box controls;
 
@@ -350,6 +380,25 @@ public class Immobilized extends Decorator implements EditablePiece {
       b.add(selectionOption);
       controls.add(b);
 
+      bandSelectOption = new JComboBox();
+      bandSelectOption.addItem("normally");
+      bandSelectOption.addItem("when alt-key down");
+      bandSelectOption.addItem("never");
+      if (p.neverBandSelect) {
+        bandSelectOption.setSelectedIndex(2);
+      }
+      else if (p.altToBandSelect ) {
+        bandSelectOption.setSelectedIndex(1);
+      }
+      else {
+        bandSelectOption.setSelectedIndex(0);
+      }      
+
+      b = Box.createHorizontalBox();
+      b.add(new JLabel("Band-Select piece:  "));
+      b.add(bandSelectOption);
+      controls.add(b);
+            
       movementOption = new JComboBox();
       movementOption.addItem("normally");
       movementOption.addItem("only if selected");
@@ -368,7 +417,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       b.add(movementOption);
       controls.add(b);
       controls.add(ignoreGridBox);
-    }
+}
 
     @Override
     public String getState() {
@@ -390,6 +439,14 @@ public class Immobilized extends Decorator implements EditablePiece {
       }
       if (ignoreGridBox.isSelected()) {
         s += IGNORE_GRID;
+      }
+      switch (bandSelectOption.getSelectedIndex()) {
+        case 1:
+          s += ALT_BAND_SELECT;
+          break;
+        case 2:
+          s += NEVER_BAND_SELECT;
+          break;
       }
       s += ';';
       switch (movementOption.getSelectedIndex()) {
