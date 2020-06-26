@@ -78,7 +78,7 @@ public class UpdateCheckAction extends AbstractAction {
               JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             BrowserSupport.openURL(
-              "https://sourceforge.net/project/showfiles.php?group_id=90612");
+              "https://github.com/vassalengine/vassal/releases");
           }
         }
         return;

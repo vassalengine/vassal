@@ -24,20 +24,6 @@ public class BugUtils {
     pb.setParameter("description", description);
     pb.setParameter("log", "errorLog", errorLog);
 
-    /*
-      final URL url = new URL("http://sourceforge.net/tracker/index.php");
-      pb.setParameter("group_id", "90612");
-      pb.setParameter("atid", "594231");
-      pb.setParameter("func", "postadd");
-      pb.setParameter("category_id", "100");
-      pb.setParameter("artifact_group_id", "100");
-      pb.setParameter("summary", getSummary(t));
-      pb.setParameter("details", email + "\n\n" + description);
-      pb.setParameter("input_file", "errorLog", errorLog);
-      pb.setParameter("file_description", "the errorLog");
-      pb.setParameter("submit", "SUBMIT");
-    */
-
     try (InputStream in = pb.post(url)) {
       final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
 
