@@ -25,6 +25,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -161,9 +163,10 @@ public class IPCMessengerTest {
   }
 
   protected Future<?> runIPCMessenger(String threadName,
+                                      final int count,
                                       final InputStream in,
                                       final OutputStream out,
-                                      final Future<IPCMessage>[] f) {
+                                      final List<Future<IPCMessage>> f) {
     final SimpleFuture<?> d = new SimpleFuture<Void>();
 
     new Thread(new Runnable() {
@@ -183,8 +186,8 @@ public class IPCMessengerTest {
           });
 
           ipc.start();
-          for (int i = 0; i < f.length; ++i) {
-            f[i] = ipc.send(new Msg());
+          for (int i = 0; i < count; ++i) {
+            f.add(ipc.send(new Msg()));
           }
           ipc.stop();
           d.set(null);
@@ -198,6 +201,15 @@ public class IPCMessengerTest {
     return d;
   }
 
+  private void ackCheck(Future<IPCMessage> f) {
+    try {
+      assertTrue(f.get() instanceof Ack);
+    }
+    catch (ExecutionException | InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Test
   @SuppressWarnings("unchecked")
   public void testBidirectional() throws IOException,
@@ -205,8 +217,8 @@ public class IPCMessengerTest {
                                          ExecutionException,
                                          InterruptedException {
 
-    final Future<IPCMessage> f1[] = new Future[1000];
-    final Future<IPCMessage> f2[] = new Future[1000];
+    final List<Future<IPCMessage>> f1 = new ArrayList<>();
+    final List<Future<IPCMessage>> f2 = new ArrayList<>();
 
     final PipedOutputStream out1 = new PipedOutputStream();
     final PipedInputStream in2 = new PipedInputStream(out1);
@@ -214,18 +226,16 @@ public class IPCMessengerTest {
     final PipedOutputStream out2 = new PipedOutputStream();
     final PipedInputStream in1 = new PipedInputStream(out2);
 
-    final Future<?> d1 = runIPCMessenger("ipc1", in1, out1, f1);
-    final Future<?> d2 = runIPCMessenger("ipc2", in2, out2, f2);
+    final Future<?> d1 = runIPCMessenger("ipc1", 1000, in1, out1, f1);
+    final Future<?> d2 = runIPCMessenger("ipc2", 1000, in2, out2, f2);
 
     d1.get();
     d2.get();
 
-    for (int i = 0; i < f1.length; ++i) {
-      assertTrue(f1[i].get() instanceof Ack);
-    }
+    assertEquals(1000, f1.size());
+    assertEquals(1000, f2.size());
 
-    for (int i = 0; i < f2.length; ++i) {
-      assertTrue(f2[i].get() instanceof Ack);
-    }
+    f1.forEach(f -> ackCheck(f));
+    f2.forEach(f -> ackCheck(f));
   }
 }

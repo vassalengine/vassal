@@ -631,6 +631,8 @@ e.printStackTrace();
 
   protected abstract static class LaunchRequestMessage
                                                      extends SimpleIPCMessage {
+    private static final long serialVersionUID = 1L;
+
     protected final LaunchRequest lr;
 
     public LaunchRequestMessage(LaunchRequest lr) {

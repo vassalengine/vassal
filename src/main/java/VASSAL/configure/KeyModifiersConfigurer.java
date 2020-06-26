@@ -18,6 +18,7 @@
 package VASSAL.configure;
 
 import java.awt.Component;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -74,9 +75,8 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
   @Override
   public void setValue(Object o) {
     if (!noUpdate && tf != null) {
-      if (o instanceof Integer
-          && (Integer) o != 0) {
-        tf.setText(KeyEvent.getKeyModifiersText((Integer) o).toUpperCase());
+      if (o instanceof Integer && (Integer) o != 0) {
+        tf.setText(InputEvent.getModifiersExText((Integer) o).toUpperCase());
       }
       else {
         tf.setText("");
@@ -95,6 +95,6 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    setValue(e.getModifiers());
+    setValue(e.getModifiersEx());
   }
 }

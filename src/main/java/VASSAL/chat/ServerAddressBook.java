@@ -86,7 +86,7 @@ public class ServerAddressBook {
   private boolean frozen;
   private JComponent controls;
   private StringConfigurer addressConfig;
-  private JList myList;
+  private JList<AddressBookEntry> myList;
   private DefaultListModel<AddressBookEntry> addressBook;
   private AddressBookEntry currentEntry;
   private boolean enabled = true;
@@ -237,7 +237,7 @@ public class ServerAddressBook {
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
       addressBook = new DefaultListModel<AddressBookEntry>();
       loadAddressBook();
-      myList = new JList(addressBook);
+      myList = new JList<>(addressBook);
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       myList.setCellRenderer(new MyRenderer());
       myList.addListSelectionListener(new ListSelectionListener() {
