@@ -417,7 +417,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       b.add(movementOption);
       controls.add(b);
       controls.add(ignoreGridBox);
-}
+    }
 
     @Override
     public String getState() {

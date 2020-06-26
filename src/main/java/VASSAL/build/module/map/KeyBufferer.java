@@ -69,10 +69,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected Color color = Color.black;
   protected int thickness = 3;
   protected GamePiece bandSelectPiece = null;
-  
-  private static final int NOT_BAND_SELECT     = 0;
-  private static final int NORMAL_BAND_SELECT  = 1;
-  private static final int SPECIAL_BAND_SELECT = 2;
+
+  private enum BandSelectType {
+    NONE,
+    NORMAL,
+    SPECIAL;
+  }
 
   @Override
   public void addTo(Buildable b) {
@@ -107,11 +109,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Don't clear the buffer until we find the clicked-on piece
     // Because selecting a piece affects its visibility
     EventFilter filter = null;
-    int bandSelect = NOT_BAND_SELECT;
+    BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
       if (!e.isPopupTrigger() && (boolean)p.getProperty(Properties.NON_MOVABLE)) {
-        bandSelect = SPECIAL_BAND_SELECT; //BR// Don't "eat" band-selects if unit found is non-movable
+        bandSelect = BandSelectType.SPECIAL; //BR// Don't "eat" band-selects if unit found is non-movable
       }
     }
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
@@ -158,16 +160,16 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       map.getPieceCollection().moveToFront(to_front);
     }
     else {
-      bandSelect = NORMAL_BAND_SELECT; //BR// Allowed to band-select  
+      bandSelect = BandSelectType.NORMAL; //BR// Allowed to band-select  
     }
     
-    if (bandSelect != NOT_BAND_SELECT) {
+    if (bandSelect != BandSelectType.NONE) {
       bandSelectPiece = null;
       if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
         kbuf.clear();
         
         //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
-        if ((bandSelect == SPECIAL_BAND_SELECT) && (p != null) && !ignoreEvent) {
+        if ((bandSelect == BandSelectType.SPECIAL) && (p != null) && !ignoreEvent) {
           kbuf.add(p);
           bandSelectPiece = p; 
         }
@@ -192,12 +194,17 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       !evt.isControlDown(), evt.isAltDown(), map.componentToMap(selection)
     );
     
-    //BR// If it was a legit band-select drag (not just a click), our special case only applies if piece is allowed to be band-selected
+    //BR// If it was a legit band-select drag (not just a click), our special case only applies if piece is allowed to be band-selected    
     if (bandSelectPiece != null) {
-      Point finish = map.mapToComponent(evt.getPoint());
-      EventFilter bandFilter = (EventFilter) bandSelectPiece.getProperty(Properties.BAND_SELECT_EVENT_FILTER);
-      if ((bandFilter != null) && !(evt.isAltDown() && (bandFilter instanceof Immobilized.UseAlt))) {
-        if (finish.distance(anchor) >= 10) { //BR// Open to suggestions about a better way to distinguish "click" from "lasso" (not that Vassal doesn't already suck immensely at click-vs-drag threshhold). FWIW, this "works".
+      final EventFilter bandFilter = (EventFilter) bandSelectPiece.getProperty(Properties.BAND_SELECT_EVENT_FILTER);
+      final boolean pieceAllowedToBeBandSelected = (bandFilter != null) && !(evt.isAltDown() && (bandFilter instanceof Immobilized.UseAlt));
+
+      if (pieceAllowedToBeBandSelected) {
+        final Point finish = map.mapToComponent(evt.getPoint());
+        
+        //BR// Open to suggestions about a better way to distinguish "click" from "lasso" (not that Vassal doesn't already suck immensely at click-vs-drag threshhold). FWIW, this "works".
+        final boolean isLasso = finish.distance(anchor) >= 10;
+        if (isLasso) { 
           bandSelectPiece = null;
         }
       }
