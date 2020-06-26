@@ -6,7 +6,6 @@
 #
 # If you want to build Windows releases you will need:
 #
-# Maven    (https://maven.apache.org/)
 # Launch4j (http://launch4j.sourceforge.net)
 # NSIS     (http://nsis.sourceforge.net)
 #
@@ -69,7 +68,7 @@ VERSION:=$(shell git describe --tags)
 CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 JAVAPATH:=/usr/bin
 
-MVN:=mvn
+MVN:=./mvnw
 
 JDOC:=$(JAVAPATH)/javadoc
 JDEPS:=$(JAVAPATH)/jdeps
