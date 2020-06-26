@@ -38,21 +38,16 @@ import VASSAL.tools.ScrollPane;
 public class MultiImagePicker extends JPanel {
   private static final long serialVersionUID = 1L;
 
-  protected JList imageList;
-  protected DefaultListModel imageListElements = new DefaultListModel();
+  protected JList<String> imageList;
+  protected DefaultListModel<String> imageListElements = new DefaultListModel<>();
   protected CardLayout cl = new CardLayout();
   protected JPanel multiPanel = new JPanel();
 
   public MultiImagePicker() {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-    imageList = new JList(imageListElements);
-    imageList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-        showSelected();
-      }
-    });
+    imageList = new JList<>(imageListElements);
+    imageList.addListSelectionListener(e -> showSelected());
     imageList.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(KeyEvent evt) {
@@ -81,7 +76,7 @@ public class MultiImagePicker extends JPanel {
 
   public void showSelected() {
     if (imageList.getSelectedValue() != null) {
-      cl.show(multiPanel, (String) imageList.getSelectedValue());
+      cl.show(multiPanel, imageList.getSelectedValue());
     }
   }
 
@@ -91,10 +86,10 @@ public class MultiImagePicker extends JPanel {
     ImagePicker pick = new ImagePicker();
     multiPanel.add(entry, pick);
     imageList.setSelectedIndex(imageListElements.size() - 1);
-    cl.show(multiPanel, (String) imageList.getSelectedValue());
+    cl.show(multiPanel, imageList.getSelectedValue());
   }
 
-  public JList getList() {
+  public JList<String> getList() {
     return imageList;
   }
 
@@ -132,8 +127,7 @@ public class MultiImagePicker extends JPanel {
       imageList.setSelectedIndex(index - 1);
     }
     if (imageList.getSelectedValue() != null) {
-      cl.show(multiPanel,
-              (String) imageList.getSelectedValue());
+      cl.show(multiPanel, imageList.getSelectedValue());
     }
   }
 
@@ -155,7 +149,7 @@ public class MultiImagePicker extends JPanel {
     multiPanel.setLayout(cl);
 
     for (int i = 0; i < imageListElements.size(); i++) {
-      Component c = null;
+      Component c;
       if (i == index1) {
         c = components[index2];
       }

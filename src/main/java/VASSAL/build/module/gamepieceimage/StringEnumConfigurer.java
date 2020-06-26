@@ -45,7 +45,7 @@ import VASSAL.configure.Configurer;
  */
 public class StringEnumConfigurer extends Configurer {
   protected String[] validValues;
-  protected JComboBox box;
+  protected JComboBox<String> box;
   protected Box panel;
 
   public StringEnumConfigurer(String key, String name, String[] validValues) {
@@ -78,7 +78,7 @@ public class StringEnumConfigurer extends Configurer {
     return panel;
   }
 
-  public JComboBox getComboBox() {
+  public JComboBox<String> getComboBox() {
     JComboBox<String> b = new JComboBox<>(validValues);
     b.setMaximumSize(new Dimension(b.getMaximumSize().width,
                                    b.getPreferredSize().height));
@@ -100,7 +100,7 @@ public class StringEnumConfigurer extends Configurer {
 
   public void setValidValues(String[] s) {
     validValues = s;
-    box.setModel(new DefaultComboBoxModel<String>(validValues));
+    box.setModel(new DefaultComboBoxModel<>(validValues));
   }
 
   @Override
@@ -124,6 +124,7 @@ public class StringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  // move test code to manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
     StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

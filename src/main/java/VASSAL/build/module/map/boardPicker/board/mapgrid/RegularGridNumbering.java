@@ -261,7 +261,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override
