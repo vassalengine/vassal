@@ -76,8 +76,9 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
-  public static final String BUG_10295 = "bug10295";
-  public static final String CLASSIC_MFD = "classicMfd";
+  public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
+  public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
+  public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -92,6 +93,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String centerOnMoves = ALWAYS;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
+  
+  private static int dragThreshold = 10;
 
   private Map<String,Object> properties = new HashMap<>();
   private static Map<String,Configurer> optionConfigurers = new LinkedHashMap<>();
@@ -181,6 +184,21 @@ public class GlobalOptions extends AbstractConfigurable {
     classicMfd.addPropertyChangeListener( (evt) -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
     prefs.addOption(classicMfd);
 
+    //BR// Drag Threshold
+    final IntConfigurer dragThresholdConf = new IntConfigurer(
+      DRAG_THRESHOLD,
+      Resources.getString("Mouse Drag Threshold"),  //$NON-NLS-1$
+      10
+    );
+    dragThresholdConf.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
+      public void propertyChange(PropertyChangeEvent e) {
+        dragThreshold = dragThresholdConf.getIntValue(10);
+        System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
+      }
+    });
+    prefs.addOption(dragThresholdConf);
+    
     validator = new SingleChildInstance(gm, getClass());
   }
 
@@ -374,6 +392,9 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (PLAYER_ID_FORMAT.equals(key)) {
       return playerIdFormat.getFormat();
     }
+    else if (DRAG_THRESHOLD.equals(key)) {
+      return Integer.toString(dragThreshold);  
+    }
     else if (!optionConfigurers.containsKey(key)) {
       Object val = properties.get(key);
       return val != null ? val.toString() : null;
@@ -454,6 +475,10 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public boolean isMarkMoveEnabled() {
     return isEnabled(markMoved, MARK_MOVED);
+  }
+  
+  public static int getDragThreshold() {
+    return dragThreshold;
   }
 
   public String getPlayerId() {
