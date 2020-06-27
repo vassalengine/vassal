@@ -250,7 +250,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<enableAssertions>true</enableAssertions>
-					<testFailureIgnore>true</testFailureIgnore>
+					<testFailureIgnore>false</testFailureIgnore>
 					<excludes>
 						<exclude>**/AllTests.java</exclude>
 					</excludes>
