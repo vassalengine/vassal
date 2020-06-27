@@ -126,7 +126,7 @@ public class ColorSwatchConfigurer extends Configurer {
 
   protected void updateValue() {
     String s = (String) swatches.getSelectedItem();
-    if (s != null && s.equals(ColorManager.SELECT_COLOR)) {
+    if (ColorManager.SELECT_COLOR.equals(s)) {
       setValue(ColorManager.getColorManager().getColorSwatch((Color) config.getValue()));
     }
     else {
