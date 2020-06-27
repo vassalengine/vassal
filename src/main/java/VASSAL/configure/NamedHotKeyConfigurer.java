@@ -55,11 +55,8 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   public void setValue(Object o) {
     super.setValue(o);
     named = value != null && ((NamedKeyStroke) value).isNamed();
-    if (! named) {
-      if (tf != null
-          && !tf.getText().equals(keyToString())) {
-        tf.setText(keyToString());
-      }
+    if (!named && tf != null && !tf.getText().equals(keyToString())) {
+      tf.setText(keyToString());
     }
   }
 
@@ -135,9 +132,11 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
               }
           }
         }
+
         @Override
         public void keyPressed(KeyEvent e) {
         }
+
         @Override
         public void keyTyped(KeyEvent e) {
         }
@@ -245,9 +244,10 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     }
 
     try {
-      KeyStroke stroke = KeyStroke.getKeyStroke
-          (Integer.parseInt(parts[0]),
-           Integer.parseInt(parts[1]));
+      KeyStroke stroke = KeyStroke.getKeyStroke(
+        Integer.parseInt(parts[0]),
+        Integer.parseInt(parts[1])
+      );
       String name = null;
       if (parts.length > 2) {
         name = parts[2];
@@ -257,7 +257,6 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     catch (Exception e) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
-
   }
 
   /**

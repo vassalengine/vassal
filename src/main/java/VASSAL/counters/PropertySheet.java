@@ -188,10 +188,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       launchKeyStroke = NamedHotKeyConfigurer.decode(launchKeyStrokeToken);
     }
     else if (launchKeyToken.length() > 0) {
-      launchKeyStroke = new NamedKeyStroke(launchKeyToken.charAt(0), InputEvent.CTRL_MASK);
+      launchKeyStroke = new NamedKeyStroke(launchKeyToken.charAt(0), InputEvent.CTRL_DOWN_MASK);
     }
     else {
-      launchKeyStroke = new NamedKeyStroke('P', InputEvent.CTRL_MASK);
+      launchKeyStroke = new NamedKeyStroke('P', InputEvent.CTRL_DOWN_MASK);
     }
   }
 
@@ -697,7 +697,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public JComboBox addComboBox(String name, String[] values, int initialRow) {
-      JComboBox comboBox = new JComboBox(values);
+      JComboBox<String> comboBox = new JComboBox<>(values);
       comboBox.setEditable(false);
       comboBox.setSelectedIndex(initialRow);
 

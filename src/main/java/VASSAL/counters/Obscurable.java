@@ -116,7 +116,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         case PEEK:
           if (s.length() > 1) {
             if (s.length() == 2) {
-              peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_MASK);
+              peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_DOWN_MASK);
             }
             else {
               peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
@@ -449,7 +449,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
-      keyCommand = NamedKeyStroke.getNamedKeyStroke(obscureKey, InputEvent.CTRL_MASK);
+      keyCommand = NamedKeyStroke.getNamedKeyStroke(obscureKey, InputEvent.CTRL_DOWN_MASK);
     }
 
     hide = new KeyCommand(hideCommand, keyCommand, outer, this);

@@ -178,7 +178,7 @@ public class PieceAccessConfigurer extends Configurer {
   public void setPrompts(String[] prompts) {
     this.prompts = prompts;
     if (selectType == null) {
-      selectType.setModel(new DefaultComboBoxModel(prompts));
+      selectType.setModel(new DefaultComboBoxModel<String>(prompts));
     }
   }
 }

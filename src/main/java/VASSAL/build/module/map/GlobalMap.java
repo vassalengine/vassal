@@ -108,8 +108,10 @@ public class GlobalMap implements AutoConfigurable,
                               HOTKEY, ICON_NAME, al);
     launch.setAttribute(TOOLTIP, "Show/Hide overview window");
     launch.setAttribute(HOTKEY,
-      NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_O,
-                             KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+      NamedKeyStroke.getNamedKeyStroke(
+        KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK
+      )
+    );
   }
 
   /**

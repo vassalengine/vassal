@@ -139,7 +139,7 @@ public class MapWidget extends Widget {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
   protected static class TabSwitcher implements DropTargetListener {
     protected JTabbedPane tab;

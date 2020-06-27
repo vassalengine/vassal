@@ -25,12 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
-import java.util.zip.ZipFile;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 
-import org.apache.commons.io.input.ClosedInputStream;
-import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.FileUtils;
 
 import org.jmock.Mockery;
@@ -119,5 +114,4 @@ public class IOUtilsTest {
     assertEquals("seed == " + seed, expected.length, count);
     assertArrayEquals("seed == " + seed, expected, out.toByteArray());
   }
-
 }
