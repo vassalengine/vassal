@@ -539,4 +539,8 @@ public class StackTest {
     assertEquals(gamePiece1, pieces.get(1));
   }
 
+  @Test
+  public void buildbreaker() {
+    assertEquals(0, 1);
+  }
 }
