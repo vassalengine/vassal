@@ -34,7 +34,7 @@ public class FormattedStringConfigurer
     extends StringConfigurer
     implements ActionListener, FocusListener {
 
-  private DefaultComboBoxModel<String> optionsModel;
+  private final DefaultComboBoxModel<String> optionsModel;
   private JComboBox<String> dropList;
 
   public FormattedStringConfigurer(String key, String name) {
@@ -62,7 +62,7 @@ public class FormattedStringConfigurer
   public String[] getOptions() {
     String[] s = new String[optionsModel.getSize()];
     for (int i=0;i<s.length;++i) {
-      s[i] = (String) optionsModel.getElementAt(i);
+      s[i] = optionsModel.getElementAt(i);
     }
     return s;
   }
@@ -89,6 +89,7 @@ public class FormattedStringConfigurer
       dropList.setVisible(optionsModel.getSize() > 1);
     }
   }
+
   /*
    * Drop-down list has been clicked, insert selected option onto string
    */

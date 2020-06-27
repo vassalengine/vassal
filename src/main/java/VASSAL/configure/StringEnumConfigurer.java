@@ -43,7 +43,7 @@ import javax.swing.JLabel;
  */
 public class StringEnumConfigurer extends Configurer {
   private String[] validValues;
-  private JComboBox box;
+  private JComboBox<String> box;
   private Box panel;
 
   public StringEnumConfigurer(String key, String name, String[] validValues) {
@@ -56,7 +56,7 @@ public class StringEnumConfigurer extends Configurer {
     if (panel == null) {
       panel = Box.createHorizontalBox();
       panel.add(new JLabel(name));
-      box = new JComboBox(validValues);
+      box = new JComboBox<>(validValues);
       box.setMaximumSize(new Dimension(box.getMaximumSize().width,box.getPreferredSize().height));
       if (isValidValue(getValue())) {
         box.setSelectedItem(getValue());
@@ -103,7 +103,7 @@ public class StringEnumConfigurer extends Configurer {
     if (box == null) {
       getControls();
     }
-  box.setModel(new DefaultComboBoxModel(validValues));
+    box.setModel(new DefaultComboBoxModel<>(validValues));
   }
 
   @Override
@@ -127,6 +127,7 @@ public class StringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
     StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"});
