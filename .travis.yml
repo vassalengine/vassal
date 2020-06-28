@@ -6,4 +6,4 @@ cache:
     - $HOME/.m2
 
 git:
-  depth: 3
+  depth: 1
