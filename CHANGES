@@ -1,8 +1,5 @@
-3.3.2-beta1 - ???
+3.3.3-beta1 - ???
 
-* 13140: Versions with a build number are incorrectly sorted before versions
-    without a build number
-* 13136: Update notifier still has old SourceForge URL for downloads
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
@@ -20,6 +17,12 @@
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
 * 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number
     of pieces' to a Deck correctly
+
+3.3.2 - ???
+
+* 13140: Versions with a build number are incorrectly sorted before versions
+    without a build number
+* 13136: Update notifier still has old SourceForge URL for downloads
 
 3.3.1 - 22 June 2020
 
