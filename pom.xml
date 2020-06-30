@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.vassal</groupId>
 	<artifactId>vassalengine</artifactId>
 	<version>3.3.2-SNAPSHOT</version>
+
+	<name>Vassal Engine</name>
+	<url>https://github.com/vassalengine/vassal/</url>
+	<inceptionYear>2001</inceptionYear>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,15 +22,11 @@
 		<version.jmock>2.5.1</version.jmock>
 	</properties>
 
-	<name>Vassal Engine</name>
-	<inceptionYear>2001</inceptionYear>
-	<url>https://github.com/vassalengine/vassal/</url>
-
 	<dependencies>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
-			<version>1.2.3</version>
 			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
@@ -141,14 +139,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jmock</groupId>
-			<version>${version.jmock}</version>
 			<artifactId>jmock-junit4</artifactId>
+			<version>${version.jmock}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jmock</groupId>
-			<version>${version.jmock}</version>
 			<artifactId>jmock-legacy</artifactId>
+			<version>${version.jmock}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -159,12 +157,24 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>mockito</id>
+			<url>https://dl.bintray.com/mockito/maven</url>
+		</repository>
+
+		<!-- for org.netbeans:wizard -->
+		<repository>
+			<id>geotoolkit</id>
+			<url>http://maven.geotoolkit.org/</url>
+		</repository>
+	</repositories>
+
 	<build>
-		<defaultGoal>package</defaultGoal> <!-- compile, test, build artifact(s) -->
+		<defaultGoal>package</defaultGoal>
 
 		<!-- Build filename pattern -->
 		<finalName>${project.artifactId}</finalName>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -202,7 +212,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -322,18 +331,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>mockito</id>
-			<url>https://dl.bintray.com/mockito/maven</url>
-		</repository>
-
-		<!-- for org.netbeans:wizard -->
-		<repository>
-			<id>geotoolkit</id>
-			<url>http://maven.geotoolkit.org/</url>
-		</repository>
-	</repositories>
-
 </project>
