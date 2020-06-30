@@ -2,16 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.vassalengine</groupId>
+		<artifactId>vassal-parent</artifactId>
+		<version>3.3.2-SNAPSHOT</version>
+	</parent>
+
 	<groupId>org.vassal</groupId>
-	<artifactId>vassalengine</artifactId>
+	<artifactId>vassal-app</artifactId>
 	<version>3.3.2-SNAPSHOT</version>
 
-	<name>Vassal Engine</name>
-	<url>https://github.com/vassalengine/vassal/</url>
-	<inceptionYear>2001</inceptionYear>
+	<name>${project.groupId}:${project.artifactId}</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
 		<version.java.build>11</version.java.build>
 		<version.java.target>11</version.java.target>
@@ -175,43 +178,6 @@
 
 		<!-- Build filename pattern -->
 		<finalName>${project.artifactId}</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>3.0.0-M3</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0-M4</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.1.0</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.1.1</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>3.1.2</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.2.0</version>
-				</plugin>
-				<plugin>
-					<groupId>pl.project13.maven</groupId>
-					<artifactId>git-commit-id-plugin</artifactId>
-					<version>4.0.0</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>

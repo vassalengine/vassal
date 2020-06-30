@@ -10,7 +10,7 @@
 #
 # Also you might possibly need mingw32 for use with launch4j, depending on
 # the architecture of your machine.
-# 
+#
 # If your Linux distribution does not package nsis, you can build it. Get
 # both the (Windows) binary and source for NSIS and build with scons:
 #
@@ -43,10 +43,10 @@
 
 SHELL:=/bin/bash
 
-SRCDIR:=src/main/java
-TESTDIR:=src/test/java
-LIBDIR:=target/lib
-CLASSDIR:=target/classes
+SRCDIR:=vassal-app/src/main/java
+TESTDIR:=vassal-app/src/test/java
+LIBDIR:=vassal-app/target/lib
+CLASSDIR:=vassal-app/target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
@@ -90,7 +90,7 @@ test:
 	$(MVN) test
 
 #show:
-#	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
+#	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*))
 
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
@@ -153,7 +153,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.ap
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
-	
+
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
 	$(DMG) dmg $< $@
 
