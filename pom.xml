@@ -32,6 +32,7 @@
 
     <modules>
         <module>vassal-app</module>
+        <module>release-prepare</module>
     </modules>
 
     <scm>

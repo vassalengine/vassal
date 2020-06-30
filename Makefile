@@ -45,7 +45,7 @@ SHELL:=/bin/bash
 
 SRCDIR:=vassal-app/src/main/java
 TESTDIR:=vassal-app/src/test/java
-LIBDIR:=vassal-app/target/lib
+LIBDIR:=release-prepare/target/lib
 CLASSDIR:=vassal-app/target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
@@ -58,6 +58,7 @@ WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.1
+JARNAME:=vassal-app-3.3.2-SNAPSHOT
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
 VERSION:=$(shell git describe --tags)
@@ -97,6 +98,7 @@ $(TMPDIR):
 
 $(LIBDIR)/Vengine.jar: all
 	$(MVN) package
+	mv $(LIBDIR)/$(JARNAME).jar $(LIBDIR)/Vengine.jar
 
 $(TMPDIR)/VASSAL.exe: fast-compile $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
