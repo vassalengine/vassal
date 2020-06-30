@@ -8,7 +8,6 @@
 		<version>3.3.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.vassal</groupId>
 	<artifactId>vassal-app</artifactId>
 	<version>3.3.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
