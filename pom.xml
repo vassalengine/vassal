@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.vassalengine</groupId>
+    <artifactId>vassal-parent</artifactId>
+    <version>3.3.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Vassal Engine</name>
+    <description>Vassal - the open-source boardgame engine</description>
+    <url>http://www.vassalengine.org</url>
+    <inceptionYear>2001</inceptionYear>
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, version 2.1</name>
+            <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+        </license>
+    </licenses>
+
+    <!--
+    developers section needs to be present for mavencentral
+    <developers>
+        <developer>
+            <name>Name</name>
+            <email>name@address.com</email>
+            <organization>organization</organization>
+            <organizationUrl>http://www.organization.com</organizationUrl>
+        </developer>
+    </developers>
+    -->
+
+    <modules>
+        <module>vassal-app</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/vassalengine/vassal.git</connection>
+        <developerConnection>scm:git:ssh://github.com:vassalengine/vassal.git</developerConnection>
+        <url>https://github.com/vassalengine/vassal/tree/master</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.1.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>8.34</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>4.0.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
