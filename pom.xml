@@ -171,7 +171,6 @@
 
 	<build>
 		<defaultGoal>package</defaultGoal>
-		<!-- compile, test, build artifact(s) -->
 
 		<!-- Build filename pattern -->
 		<finalName>${project.artifactId}</finalName>
