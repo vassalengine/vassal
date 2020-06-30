@@ -8,18 +8,16 @@
 		<version>3.3.2-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.vassal</groupId>
 	<artifactId>vassal-app</artifactId>
 	<version>3.3.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-	<name>${project.groupId}:${project.artifactId}</name>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
 		<version.java.build>11</version.java.build>
 		<version.java.target>11</version.java.target>
-
-		<vassal.jarlocation>${project.build.directory}/lib</vassal.jarlocation>
 
 		<version.batik>1.13</version.batik>
 	</properties>
@@ -174,9 +172,6 @@
 
 	<build>
 		<defaultGoal>package</defaultGoal>
-
-		<!-- Build filename pattern -->
-		<finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -259,28 +254,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${vassal.jarlocation}</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<includeScope>compile</includeScope>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<finalName>Vengine</finalName>
 					<archive>
 						<index>true</index>
 						<manifest>
@@ -291,7 +266,6 @@
 							<url>${project.url}</url>
 						</manifestEntries>
 					</archive>
-					<outputDirectory>${vassal.jarlocation}</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>

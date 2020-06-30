@@ -36,7 +36,7 @@ SHELL:=/bin/bash
 
 SRCDIR:=vassal-app/src/main/java
 TESTDIR:=vassal-app/src/test/java
-LIBDIR:=vassal-app/target/lib
+LIBDIR:=release-prepare/target/lib
 CLASSDIR:=vassal-app/target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
@@ -47,6 +47,7 @@ JDKDIR:=jdks
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
 VNUM:=3.3.1
+JARNAME:=vassal-app-3.3.2-SNAPSHOT
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
@@ -98,6 +99,7 @@ $(TMPDIR):
 
 $(LIBDIR)/Vengine.jar:
 	$(MVN) package
+	mv $(LIBDIR)/$(JARNAME).jar $(LIBDIR)/Vengine.jar
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
