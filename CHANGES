@@ -20,6 +20,8 @@
 
 3.3.2 - ???
 
+* 13143:  HTTPS URLs fail to load (handshake_failure) due to missing
+    jdk.crypto.ec module
 * 13140: Versions with a build number are incorrectly sorted before versions
     without a build number
 * 13136: Update notifier still has old SourceForge URL for downloads
