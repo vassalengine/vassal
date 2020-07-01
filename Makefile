@@ -157,7 +157,7 @@ version:
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package' | tr -d '\n' >>$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar >>$@
 
 #dist/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
