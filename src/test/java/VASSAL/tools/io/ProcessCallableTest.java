@@ -36,8 +36,10 @@ public class ProcessCallableTest {
 
   @Test
   public void testNormal() throws Exception {
-    final byte[] eout = "Jackdaws love my big sphinx of quartz.\n".getBytes();
-    final byte[] eerr = "Veldt jynx grimps waqf zho buck.\n".getBytes();
+    final String EOL = System.lineSeparator();
+
+    final byte[] eout = ("Jackdaws love my big sphinx of quartz." + EOL).getBytes();
+    final byte[] eerr = ("Veldt jynx grimps waqf zho buck." + EOL).getBytes();
 
     final ProcessBuilder pb = new ProcessBuilder(
       Info.javaBinPath,
@@ -63,7 +65,7 @@ public class ProcessCallableTest {
 
     pin.write(eout);
     pin.write(eerr);
-    pin.write("42\n".getBytes());
+    pin.write(("42" + EOL).getBytes());
     pin.close();
 
     assertEquals(42, (int) f.get());
