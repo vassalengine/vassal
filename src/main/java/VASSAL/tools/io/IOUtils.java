@@ -87,29 +87,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   }
 
   /**
-   * Copies bytes from a large (over 2GB) <code>InputStream</code> to an
-   * <code>OutputStream</code> via a <code>byte</code> buffer. This
-   * method buffers input internally, so the input stream should not
-   * be a <code>BufferedInputStream</code>.
-   *
-   * @param in the source
-   * @param out the destination
-   * @param buffer the buffer
-   * @return the number of bytes copied
-   * @throws IOException if one occurs while reading or writing
-   */
-  public static long copyLarge(InputStream in, OutputStream out, byte[] buffer)
-                                                           throws IOException {
-    long count = 0;
-    int n = 0;
-    while ((n = in.read(buffer)) != -1) {
-      out.write(buffer, 0, n);
-      count += n;
-    }
-    return count;
-  }
-
-  /**
    * Close an {@link AutoCloseable} unconditionally. Equivalent to
    * calling <code>c.close()</code> when <code>c</code> is nonnull.
    *
