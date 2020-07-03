@@ -9,6 +9,9 @@
 
     with custom adjustments for established Vassal code style
 
+    Note: several INFO-level rules are commented so as not to fill up the build log with their violations, they will
+    need to be activated later on.
+
     Documentation of all available checks: https://checkstyle.org/checks.html
  -->
 
@@ -37,13 +40,16 @@
         <property name="eachLine" value="true"/>
     </module>
 
+    <!--
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
+    -->
 
     <module name="TreeWalker">
+        <!--
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
@@ -71,6 +77,7 @@
             <property name="tokens"
              value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
         </module>
+        -->
         <module name="LeftCurly">
             <property name="severity" value="warning"/>
             <property name="tokens"
@@ -105,6 +112,7 @@
           <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1]
                                                  or preceding-sibling::*[last()][self::LCURLY]]"/>
         </module>
+        <!--
         <module name="WhitespaceAfter">
             <property name="tokens"
              value="COMMA, SEMI, TYPECAST, LITERAL_IF, LITERAL_ELSE,
@@ -152,6 +160,7 @@
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
         </module>
+        -->
         <module name="SeparatorWrap">
             <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
             <property name="id" value="SeparatorWrapEllipsis"/>
@@ -164,6 +173,7 @@
             <property name="tokens" value="ARRAY_DECLARATOR"/>
             <property name="option" value="EOL"/>
         </module>
+        <!--
         <module name="SeparatorWrap">
             <property name="id" value="SeparatorWrapMethodRef"/>
             <property name="tokens" value="METHOD_REF"/>
@@ -230,6 +240,7 @@
             <message key="ws.notPreceded"
              value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
         </module>
+        -->
         <module name="Indentation">
             <property name="severity" value="warning"/>
             <property name="basicOffset" value="2"/>
@@ -239,6 +250,7 @@
             <property name="lineWrappingIndentation" value="2"/>
             <property name="arrayInitIndent" value="2"/>
         </module>
+        <!--
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
             <property name="allowedAbbreviationLength" value="1"/>
@@ -330,11 +342,14 @@
         <module name="CommentsIndentation">
             <property name="tokens" value="SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN"/>
         </module>
+        -->
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
+        <!--
         <module name="SuppressionXpathFilter">
             <property name="file" value="${org.checkstyle.google.suppressionxpathfilter.config}"
                       default="checkstyle-xpath-suppressions.xml" />
             <property name="optional" value="true"/>
         </module>
+        -->
     </module>
 </module>
