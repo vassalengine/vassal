@@ -98,7 +98,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
-       return s.substring(1, s.length()-1);
+      return s.substring(1, s.length()-1);
     }
     return expr;
   }
@@ -139,7 +139,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     setNameSpace(expressionNameSpace);
     if (expression.length() > 0) {
       try {
-       eval("String "+MAGIC2+"() { "+MAGIC3+"=" + expression + "; return "+MAGIC3+".toString();}");
+        eval("String "+MAGIC2+"() { "+MAGIC3+"=" + expression + "; return "+MAGIC3+".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -380,7 +380,8 @@ public class ExpressionInterpreter extends AbstractInterpreter {
             else {
               try {
                 result += Integer.parseInt(piece.getProperty(property).toString());
-              } catch (NumberFormatException e) {
+              }
+              catch (NumberFormatException e) {
                 //
               }
             }

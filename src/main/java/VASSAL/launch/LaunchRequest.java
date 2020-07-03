@@ -47,14 +47,46 @@ public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
   enum Mode {
-    MANAGE    { public String toString() { return "manage"; } },
-    LOAD      { public String toString() { return "load";   } },
-    EDIT      { public String toString() { return "edit";   } },
-    IMPORT    { public String toString() { return "import"; } },
-    NEW       { public String toString() { return "new";    } },
-    EDIT_EXT  { public String toString() { return "edit-extension"; } },
-    NEW_EXT   { public String toString() { return "new-extension";  } },
-    TRANSLATE { public String toString() { return "translate"; } }
+    MANAGE    {
+      public String toString() {
+        return "manage";
+      }
+    },
+    LOAD      {
+      public String toString() {
+        return "load";
+      }
+    },
+    EDIT      {
+      public String toString() {
+        return "edit";
+      }
+    },
+    IMPORT    {
+      public String toString() {
+        return "import";
+      }
+    },
+    NEW       {
+      public String toString() {
+        return "new";
+      }
+    },
+    EDIT_EXT  {
+      public String toString() {
+        return "edit-extension";
+      }
+    },
+    NEW_EXT   {
+      public String toString() {
+        return "new-extension";
+      }
+    },
+    TRANSLATE {
+      public String toString() {
+        return "translate";
+      }
+    }
   }
 
   public Mode mode;
@@ -149,34 +181,34 @@ public class LaunchRequest implements Serializable {
 
   // FIXME: translate this somehow?
   private static final String help =
-"Usage:\n" +
-"  VASSAL -e [option]... module\n" +
-"  VASSAL -i [option]... module\n" +
-"  VASSAL -l [option]... module|save|log...\n" +
-"  VASSAL -n [option]...\n" +
-"  VASSAL -m\n" +
-"  VASSAL -h\n" +
-"  VASSAL --edit-extension [option]... module|extension...\n" +
-"  VASSAL --new-extension [option]...\n" +
-"\n" +
-"Options:\n" +
-"  -a, --auto          TODO\n" +
-"  -e, --edit          Edit a module\n" +
-"  -h, --help          Display this help and exit\n" +
-"  -i, --import        Import a non-VASSAL module\n" +
-"  -l, --load          Load a module and saved game or log\n" +
-"  -m, --manage        Use the module manager\n" +
-"  -n, --new           Create a new module\n" +
-"  -s, --standalone    Run in standalone mode\n" +
-"  --auto-extensions   TODO\n" +
-"  --edit-extension    Edit a module extension\n" +
-"  --new-extension     Create a new module extension\n" +
-"  --port              Set port for manager to listen on\n" +
-"  --version           Display version information and exit\n" +
-"  --                  Terminate the list of options\n" +
-"\n" +
-"VASSAL defaults to '-m' if no options are given.\n" +
-"\n";
+    "Usage:\n" +
+      "  VASSAL -e [option]... module\n" +
+      "  VASSAL -i [option]... module\n" +
+      "  VASSAL -l [option]... module|save|log...\n" +
+      "  VASSAL -n [option]...\n" +
+      "  VASSAL -m\n" +
+      "  VASSAL -h\n" +
+      "  VASSAL --edit-extension [option]... module|extension...\n" +
+      "  VASSAL --new-extension [option]...\n" +
+      "\n" +
+      "Options:\n" +
+      "  -a, --auto          TODO\n" +
+      "  -e, --edit          Edit a module\n" +
+      "  -h, --help          Display this help and exit\n" +
+      "  -i, --import        Import a non-VASSAL module\n" +
+      "  -l, --load          Load a module and saved game or log\n" +
+      "  -m, --manage        Use the module manager\n" +
+      "  -n, --new           Create a new module\n" +
+      "  -s, --standalone    Run in standalone mode\n" +
+      "  --auto-extensions   TODO\n" +
+      "  --edit-extension    Edit a module extension\n" +
+      "  --new-extension     Create a new module extension\n" +
+      "  --port              Set port for manager to listen on\n" +
+      "  --version           Display version information and exit\n" +
+      "  --                  Terminate the list of options\n" +
+      "\n" +
+      "VASSAL defaults to '-m' if no options are given.\n" +
+      "\n";
 
   /**
    * Parse an argument array to a <code>LaunchRequest</code>.

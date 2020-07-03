@@ -106,7 +106,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 1.0f; }
+    public float getSamplingRadius() {
+      return 1.0f;
+    }
   }
 
   /** A box filter. */
@@ -118,7 +120,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 0.5f; }
+    public float getSamplingRadius() {
+      return 0.5f;
+    }
   }
 
   /** A triangle, or bilinear, filter. */
@@ -129,7 +133,9 @@ public final class GeneralFilter {
       return 0.0f;
     }
 
-    public float getSamplingRadius() { return 1.0f; }
+    public float getSamplingRadius() {
+      return 1.0f;
+    }
   }
 
   /** A Lanczos filter with radius 3. */
@@ -149,7 +155,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 3.0f; }
+    public float getSamplingRadius() {
+      return 3.0f;
+    }
   }
 
   /** A Mitchell filter. */
@@ -175,7 +183,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 2.0f; }
+    public float getSamplingRadius() {
+      return 2.0f;
+    }
   }
 
   /** A Bell filter. */
@@ -193,7 +203,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 1.5f; }
+    public float getSamplingRadius() {
+      return 1.5f;
+    }
   }
 
   /** A B-spline filter. */
@@ -217,7 +229,9 @@ public final class GeneralFilter {
     }
 
     @Override
-    public float getSamplingRadius() { return 2.0f; }
+    public float getSamplingRadius() {
+      return 2.0f;
+    }
   }
 
   /**
@@ -264,8 +278,8 @@ public final class GeneralFilter {
     WritableRaster dstR,
     Rectangle dst_fr,
     BufferedImage srcI,
-    final Filter filter)
-  {
+    final Filter filter) {
+
     final int[] dst_data = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final int src_type;
@@ -346,8 +360,8 @@ public final class GeneralFilter {
     int dstHeight,  // height of full destination
     float xscale,
     float yscale,
-    final Filter filter)
-  {
+    final Filter filter) {
+
     final int[] work = new int[sh];
 
     final float fwidth = filter.getSamplingRadius();
@@ -456,8 +470,8 @@ public final class GeneralFilter {
     final int d0,         // dst initial
     final int s0,         // src initial
     final int sl,         // src length along this axis
-    final Filter filter)
-  {
+    final Filter filter) {
+
     // Calculate filter contributions for each destination strip
     final CList[] contrib = new CList[dl];
     for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
@@ -499,8 +513,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work)
-  {
+    final int[] work) {
+
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -522,7 +536,10 @@ public final class GeneralFilter {
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (src[pos + j] != pel) { bPelDelta = true; break; }
+        if (src[pos + j] != pel) {
+          bPelDelta = true;
+          break;
+        }
       }
 
       if (bPelDelta) {
@@ -539,10 +556,10 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         work[k] =
-         (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
-         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
+            (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -558,8 +575,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work)
-  {
+    final int[] work) {
+
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -580,7 +597,10 @@ public final class GeneralFilter {
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (src[pos + j] != pel) { bPelDelta = true; break; }
+        if (src[pos + j] != pel) {
+          bPelDelta = true;
+          break;
+        }
       }
 
       if (bPelDelta) {
@@ -596,9 +616,9 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         work[k] =
-         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -613,8 +633,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw)
-  {
+    final int dw) {
+
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_a = 0.0f;  // alpha sample
@@ -631,7 +651,10 @@ public final class GeneralFilter {
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
+        if (work[c.pixel + j] != pel) {
+          bPelDelta = true;
+          break;
+        }
       }
 
       if (bPelDelta) {
@@ -651,10 +674,10 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         dst[dx + i*dw] =
-         a << 24 |
-         (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-         (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-         (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          a << 24 |
+            (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+            (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+            (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -666,10 +689,10 @@ public final class GeneralFilter {
         final int b = (pel       ) & 0xff;
 
         dst[dx + i*dw] =
-         a << 24 |
-         (r > a ? a : r) << 16 |
-         (g > a ? a : g) <<  8 |
-         (b > a ? a : b);
+          a << 24 |
+            (r > a ? a : r) << 16 |
+            (g > a ? a : g) <<  8 |
+            (b > a ? a : b);
       }
     }
   }
@@ -680,8 +703,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw)
-  {
+    final int dw) {
+
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_r = 0.0f;  // red sample
@@ -697,7 +720,10 @@ public final class GeneralFilter {
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
+        if (work[c.pixel + j] != pel) {
+          bPelDelta = true;
+          break;
+        }
       }
 
       if (bPelDelta) {
@@ -713,9 +739,9 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         dst[dx + i*dw] =
-         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.

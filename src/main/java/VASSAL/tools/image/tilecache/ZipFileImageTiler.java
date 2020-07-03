@@ -69,12 +69,12 @@ public class ZipFileImageTiler {
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-                                        new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread thread, Throwable thrown) {
-          logger.error(thread.getName(), thrown);
-        }
-      });
+        new Thread.UncaughtExceptionHandler() {
+          @Override
+          public void uncaughtException(Thread thread, Throwable thrown) {
+            logger.error(thread.getName(), thrown);
+          }
+        });
 
       // Parse the arguments
       final String zpath = args[0];

@@ -1019,8 +1019,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
             final String roomJID = items.next().getEntityID();
             final JabberRoom room = roomMgr.getRoomByJID(JabberClient.this, roomJID);
             try {
-             room.setInfo(MultiUserChat.getRoomInfo(JabberClient.this
-                  .getConnection(), roomJID));
+              room.setInfo(MultiUserChat.getRoomInfo(JabberClient.this.getConnection(), roomJID));
             }
             catch (XMPPException e) {
               // Ignore Error

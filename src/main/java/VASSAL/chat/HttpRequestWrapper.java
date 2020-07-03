@@ -68,7 +68,7 @@ public class HttpRequestWrapper {
                             Properties props) throws IOException {
     url = baseURL + url;
     if (props != null) {
-       url += "?"; //$NON-NLS-1$
+      url += "?"; //$NON-NLS-1$
       for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
