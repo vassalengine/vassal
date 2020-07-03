@@ -30,14 +30,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TileToImageTest {
-  private static final String dir = "src/test/resources/test-images";
+  private static final String in_dir = "src/test/resources/test-images";
+  private static final String out_dir = "target/test-classes";
 
   @Test
   public void testTileToImage() throws IOException {
 
-    final String tile = dir + "/in.tile";
-    final String out_actual = dir + "/out.png";
-    final String out_expected = dir + "/in.png";
+    final String tile = in_dir + "/in.tile";
+    final String out_actual = out_dir + "/out.png";
+    final String out_expected = in_dir + "/in.png";
 
     TileToImage.main(new String[] { tile, out_actual });
 
@@ -48,6 +49,6 @@ public class TileToImageTest {
 
   @After
   public void cleanup() {
-    new File(dir + "/out.png").delete();
+    new File(out_dir + "/out.png").delete();
   }
 }
