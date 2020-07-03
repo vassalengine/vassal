@@ -12,6 +12,7 @@ out/
 .classpath
 .settings/
 .checkstyle
+bin/
 
 # Maven
 target/
