@@ -44,7 +44,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -63,7 +63,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyLargeFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
