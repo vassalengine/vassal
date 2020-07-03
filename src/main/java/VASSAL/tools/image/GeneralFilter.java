@@ -557,9 +557,9 @@ public final class GeneralFilter {
         // Ugly, but fast.
         work[k] =
           (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
-            (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -617,8 +617,8 @@ public final class GeneralFilter {
         // Ugly, but fast.
         work[k] =
           (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -675,9 +675,9 @@ public final class GeneralFilter {
         // Ugly, but fast.
         dst[dx + i*dw] =
           a << 24 |
-            (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-            (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-            (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+          (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+          (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -690,9 +690,9 @@ public final class GeneralFilter {
 
         dst[dx + i*dw] =
           a << 24 |
-            (r > a ? a : r) << 16 |
-            (g > a ? a : g) <<  8 |
-            (b > a ? a : b);
+          (r > a ? a : r) << 16 |
+          (g > a ? a : g) <<  8 |
+          (b > a ? a : b);
       }
     }
   }
@@ -740,8 +740,8 @@ public final class GeneralFilter {
         // Ugly, but fast.
         dst[dx + i*dw] =
           (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-            (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-            (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.

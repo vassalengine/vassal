@@ -47,46 +47,27 @@ public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
   enum Mode {
-    MANAGE    {
-      public String toString() {
-        return "manage";
-      }
-    },
-    LOAD      {
-      public String toString() {
-        return "load";
-      }
-    },
-    EDIT      {
-      public String toString() {
-        return "edit";
-      }
-    },
-    IMPORT    {
-      public String toString() {
-        return "import";
-      }
-    },
-    NEW       {
-      public String toString() {
-        return "new";
-      }
-    },
-    EDIT_EXT  {
-      public String toString() {
-        return "edit-extension";
-      }
-    },
-    NEW_EXT   {
-      public String toString() {
-        return "new-extension";
-      }
-    },
-    TRANSLATE {
-      public String toString() {
-        return "translate";
-      }
+
+    MANAGE("manage"),
+    LOAD("load"),
+    EDIT("edit"),
+    IMPORT("import"),
+    NEW("new"),
+    EDIT_EXT("edit-extension"),
+    NEW_EXT("new-extension"),
+    TRANSLATE("translate");
+
+    private final String prettyName;
+
+    Mode(String prettyName) {
+      this.prettyName = prettyName;
     }
+
+    @Override
+    public String toString() {
+      return prettyName;
+    }
+
   }
 
   public Mode mode;
@@ -130,7 +111,6 @@ public class LaunchRequest implements Serializable {
     this.game = lr.game;
     this.extension = lr.extension;
     this.importFile = lr.importFile;
-
     this.standalone = lr.standalone;
 
     this.builtInModule = lr.builtInModule;
