@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.2//EN"
+        "https://checkstyle.sourceforge.io/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- exclude non-vassal code from packages bsh.* and org.* -->
+    <suppress checks="." files="[\\/]bsh[\\/].*\.java$"/>
+    <suppress checks="." files="[\\/]org[\\/].*\.java$"/>
+</suppressions>
