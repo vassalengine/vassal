@@ -81,18 +81,16 @@ public class StartUp {
             );
           }
 
-          if (!SystemUtils.IS_OS_WINDOWS) {
-            // use native LookAndFeel
-            // NB: This must be after Mac-specific properties
-            try {
-              UIManager.setLookAndFeel(
-                UIManager.getSystemLookAndFeelClassName()
-              );
-            }
-            catch (ClassNotFoundException | UnsupportedLookAndFeelException
-              | InstantiationException | IllegalAccessException e) {
-              ErrorDialog.bug(e);
-            }
+          // use native LookAndFeel
+          // NB: This must be after Mac-specific properties
+          try {
+            UIManager.setLookAndFeel(
+              UIManager.getSystemLookAndFeelClassName()
+            );
+          }
+          catch (ClassNotFoundException | UnsupportedLookAndFeelException |
+                 InstantiationException | IllegalAccessException e) {
+            ErrorDialog.bug(e);
           }
 
           // Ensure consistent behavior in NOT consuming "mousePressed" events
