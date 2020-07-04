@@ -186,7 +186,7 @@ public abstract class Item extends AbstractConfigurable {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-   if (List.of(ROTATION, X_OFFSET, Y_OFFSET, ANTIALIAS).contains(name)) {
+    if (List.of(ROTATION, X_OFFSET, Y_OFFSET, ANTIALIAS).contains(name)) {
       return advancedCond;
     }
     else {

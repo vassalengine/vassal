@@ -33,7 +33,7 @@ public class TranslatableAttribute {
 
   public void applyTranslation(String translation) {
     if (translation != null && translation.length() > 0) {
-       component.getI18nData().applyTranslation(attributeName, translation);
+      component.getI18nData().applyTranslation(attributeName, translation);
     }
   }
 

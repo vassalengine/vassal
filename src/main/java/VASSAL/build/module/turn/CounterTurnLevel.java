@@ -39,6 +39,13 @@ public class CounterTurnLevel extends TurnLevel {
   protected boolean loop = false;
   protected int loopLimit = -1;
 
+  private final VisibilityCondition loopCond = new VisibilityCondition() {
+    @Override
+    public boolean shouldBeVisible() {
+      return loop;
+    }
+  };
+
   public CounterTurnLevel() {
     super();
   }
@@ -266,10 +273,4 @@ public class CounterTurnLevel extends TurnLevel {
     }
   }
 
-  private VisibilityCondition loopCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return loop;
-    }
-  };
- }
+}

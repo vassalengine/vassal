@@ -164,7 +164,7 @@ public class ShapeItem extends Item {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
-       return falseCond;
+      return falseCond;
     }
     else if (BEVEL.equals(name)) {
       return bevelCond;
@@ -172,7 +172,7 @@ public class ShapeItem extends Item {
     else {
       return super.getAttributeVisibility(name);
     }
-   }
+  }
 
   private VisibilityCondition falseCond = new VisibilityCondition() {
     @Override

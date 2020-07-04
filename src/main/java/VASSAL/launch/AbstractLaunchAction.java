@@ -166,13 +166,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           futures.add(ipc.send(new Launcher.CloseRequest()));
         }
         catch (IOException e) {
-// FIXME
-e.printStackTrace();
+          // FIXME
+          e.printStackTrace();
         }
       }
     }
 
-// FIXME: not working!
+    // FIXME: not working!
     for (Future<IPCMessage> f : futures) {
       try {
         if (f.get() instanceof Launcher.CloseReject) {

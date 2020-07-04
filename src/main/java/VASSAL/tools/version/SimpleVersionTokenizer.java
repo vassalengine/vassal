@@ -41,7 +41,9 @@ import java.util.regex.Pattern;
 public class SimpleVersionTokenizer implements VersionTokenizer {
   protected String v;
 
-  protected enum State { NUM, DELIM, EOS, END };
+  protected enum State {
+    NUM, DELIM, EOS, END
+  }
   protected State state = State.NUM;
 
   protected static Map<String,Integer> tags = new HashMap<>();

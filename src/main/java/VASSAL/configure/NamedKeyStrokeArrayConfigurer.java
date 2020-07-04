@@ -90,7 +90,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     controls.add(config.getControls());
     if (configs.size() > 5) {
       panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 150));
-     }
+    }
     else {
       panel.setPreferredSize(null);
     }

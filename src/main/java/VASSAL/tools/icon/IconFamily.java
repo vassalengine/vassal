@@ -351,8 +351,7 @@ public class IconFamily extends AbstractConfigurable {
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME_PROPERTY, SCALABLE_ICON, ICON0, ICON1, ICON2,
-        ICON3 };
+    return new String[] { NAME_PROPERTY, SCALABLE_ICON, ICON0, ICON1, ICON2, ICON3 };
   }
 
   @Override

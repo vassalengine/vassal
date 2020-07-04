@@ -76,8 +76,8 @@ public abstract class Builder {
         try {
           final Buildable b = create((Element) child);
           if (parent != null) {
-             b.addTo(parent);
-             parent.add(b);
+            b.addTo(parent);
+            parent.add(b);
           }
         }
         catch (IllegalBuildException ex) {

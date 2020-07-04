@@ -71,8 +71,8 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   public Command decode(String command) {
     Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder
-          (command.substring(COMMAND_PREFIX.length()), '\t');
+      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(
+        command.substring(COMMAND_PREFIX.length()), '\t');
       String owner = st.nextToken();
       String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
       return new SetPrivateTextCommand(this, new PrivateText(owner, text));

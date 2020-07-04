@@ -223,7 +223,8 @@ public abstract class ListConfigurer extends Configurer implements
     if (valueString == null) {
       if (otherValueString != null)
         return false;
-    } else if (!valueString.equals(otherValueString))
+    }
+    else if (!valueString.equals(otherValueString))
       return false;
     return true;
   }

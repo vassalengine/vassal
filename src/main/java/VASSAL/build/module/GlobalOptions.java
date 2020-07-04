@@ -243,7 +243,7 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.playerid_format") //$NON-NLS-1$
-   };
+    };
   }
 
   @Override
@@ -258,9 +258,7 @@ public class GlobalOptions extends AbstractConfigurable {
       )
     );
 
-    for (String key : properties.keySet()) {
-      attributes.add(key);
-    }
+    attributes.addAll(properties.keySet());
 
     return attributes.toArray(new String[0]);
   }

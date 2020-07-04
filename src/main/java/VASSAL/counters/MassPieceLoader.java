@@ -1218,8 +1218,8 @@ public class MassPieceLoader {
 
       Box entry = Box.createHorizontalBox();
       entry.add(new JLabel("Image name "));
-      typeConfig = new StringEnumConfigurer(null, "", new String[] { ENDS_WITH,
-          INCLUDES, MATCHES, EQUALS, BASE_IMAGE });
+      typeConfig = new StringEnumConfigurer(null, "", new String[] {
+        ENDS_WITH, INCLUDES, MATCHES, EQUALS, BASE_IMAGE });
       entry.add(typeConfig.getControls());
       nameConfig = new StringConfigurer(null, "");
       entry.add(nameConfig.getControls());

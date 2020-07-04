@@ -43,7 +43,8 @@ public class NumericPropertyPrompt extends PropertyPrompt {
     String s = null;
     do {
       s = (String) JOptionPane.showInputDialog(dialogParent, promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
-    } while (s != null && !isValidValue(s));
+    }
+    while (s != null && !isValidValue(s));
     return s;
   }
 
