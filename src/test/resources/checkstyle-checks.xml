@@ -36,7 +36,7 @@
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.org/config_whitespace.html -->
     <module name="FileTabCharacter">
-        <property name="severity" value="warning"/>
+        <property name="severity" value="error"/>
         <property name="eachLine" value="true"/>
     </module>
 
@@ -95,7 +95,7 @@
         </module>
         -->
         <module name="RightCurly">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="id" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
             <property name="tokens"
@@ -241,7 +241,7 @@
         </module>
         -->
         <module name="Indentation">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="basicOffset" value="2"/>
             <property name="braceAdjustment" value="0"/>
             <property name="caseIndent" value="0"/>
