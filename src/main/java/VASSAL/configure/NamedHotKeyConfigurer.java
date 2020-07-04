@@ -169,30 +169,30 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   @Override
   public void keyPressed(KeyEvent e) {
     switch (e.getKeyCode()) {
-      case KeyEvent.VK_DELETE:
-      case KeyEvent.VK_BACK_SPACE:
-        setValue(NamedKeyStroke.NULL_KEYSTROKE);
-        break;
-      case KeyEvent.VK_SHIFT:
-      case KeyEvent.VK_CONTROL:
-      case KeyEvent.VK_META:
-      case KeyEvent.VK_ALT:
-        break;
-      default:
-        final NamedKeyStroke namedStroke = getValueNamedKeyStroke();
-        if (namedStroke != null) {
-          final int thisChar = e.getKeyChar();
-          if (isPrintableAscii(lastChar) && isPrintableAscii(thisChar)) {
-            final String name = "" + lastChar + e.getKeyChar();
-            named = true;
-            keyName.setText(name);
-            setValue(new NamedKeyStroke(name));
-            updateVisibility();
-            keyName.requestFocus();
-            break;
-          }
+    case KeyEvent.VK_DELETE:
+    case KeyEvent.VK_BACK_SPACE:
+      setValue(NamedKeyStroke.NULL_KEYSTROKE);
+      break;
+    case KeyEvent.VK_SHIFT:
+    case KeyEvent.VK_CONTROL:
+    case KeyEvent.VK_META:
+    case KeyEvent.VK_ALT:
+      break;
+    default:
+      final NamedKeyStroke namedStroke = getValueNamedKeyStroke();
+      if (namedStroke != null) {
+        final int thisChar = e.getKeyChar();
+        if (isPrintableAscii(lastChar) && isPrintableAscii(thisChar)) {
+          final String name = "" + lastChar + e.getKeyChar();
+          named = true;
+          keyName.setText(name);
+          setValue(new NamedKeyStroke(name));
+          updateVisibility();
+          keyName.requestFocus();
+          break;
         }
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+      }
+      setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
     }
   }
 

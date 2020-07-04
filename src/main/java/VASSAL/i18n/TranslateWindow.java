@@ -526,13 +526,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * Custome Cell Renderer to support CopyButtons in JTable cells
    *
    */
-  protected static class JComponentCellRenderer implements TableCellRenderer
-  {
-      @Override
-      public Component getTableCellRendererComponent(JTable table, Object value,
-      boolean isSelected, boolean hasFocus, int row, int column) {
-          return (JComponent)value;
-      }
+  protected static class JComponentCellRenderer implements TableCellRenderer {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
+      return (JComponent)value;
+    }
   }
 
   /**
@@ -568,10 +567,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     @Override
     public boolean shouldSelectCell(EventObject anEvent) {
-      if( editorComponent != null && anEvent instanceof MouseEvent
-        && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
-      {
-              Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
+      if (editorComponent != null && anEvent instanceof MouseEvent
+        && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED ) {
+
+        Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
         ((CopyButton) dispatchComponent).setSelected(true);
       }
       return false;
@@ -658,23 +657,23 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     @Override
     public Object getValueAt(int row, int col) {
-        switch (col) {
-        case ATTR_COL:
-          return keys == null ? null : keyTarget.getI18nData().getAttributeDescription(keys[row]);
-        case SOURCE_COL:
-          return keys == null ? null : keyTarget.getAttributeValueString(keys[row]);
-        case CC_COL:
-          if (copyButtons[row] == null) {
-            copyButtons[row] = new CopyButton(row);
-          }
-          return copyButtons[row];
-
-        case TRAN_COL:
-          if (currentTranslation != null) {
-            String key = keyTarget.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
-            return currentTranslation.translate(key);
-          }
+      switch (col) {
+      case ATTR_COL:
+        return keys == null ? null : keyTarget.getI18nData().getAttributeDescription(keys[row]);
+      case SOURCE_COL:
+        return keys == null ? null : keyTarget.getAttributeValueString(keys[row]);
+      case CC_COL:
+        if (copyButtons[row] == null) {
+          copyButtons[row] = new CopyButton(row);
         }
+        return copyButtons[row];
+
+      case TRAN_COL:
+        if (currentTranslation != null) {
+          String key = keyTarget.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
+          return currentTranslation.translate(key);
+        }
+      }
       return null;
     }
 

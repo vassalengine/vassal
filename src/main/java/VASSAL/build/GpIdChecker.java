@@ -86,8 +86,8 @@ public class GpIdChecker {
     }
 
     if (gp instanceof PlaceMarker) {
-       final PlaceMarker pm = (PlaceMarker) gp;
-       testGpId (pm.getGpId(), new SlotElement(pm, slot));
+      final PlaceMarker pm = (PlaceMarker) gp;
+      testGpId (pm.getGpId(), new SlotElement(pm, slot));
     }
 
     checkTrait(((Decorator) gp).getInner(), slot);
@@ -183,7 +183,7 @@ public class GpIdChecker {
     if (gpid != null && gpid.length() > 0) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-         return element.createPiece(oldPiece);
+        return element.createPiece(oldPiece);
       }
     }
 
@@ -209,7 +209,7 @@ public class GpIdChecker {
     if (gpid != null && gpid.length() > 0) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-         return true;
+        return true;
       }
     }
 

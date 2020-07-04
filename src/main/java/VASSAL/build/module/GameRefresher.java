@@ -308,7 +308,7 @@ public final class GameRefresher implements GameComponent {
       addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent we) {
-           exit();
+          exit();
         }
       });
       setLayout(new MigLayout("wrap 1","[center]"));
@@ -352,23 +352,23 @@ public final class GameRefresher implements GameComponent {
       pack();
     }
 
-     protected void exit() {
-       setVisible(false);
-     }
+    protected void exit() {
+      setVisible(false);
+    }
 
-     protected void test() {
-       results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-       refresher.execute (true, nameCheck.isSelected());
-     }
+    protected void test() {
+      results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
+      refresher.execute (true, nameCheck.isSelected());
+    }
 
-     protected void run() {
-       results.setText("");
-       refresher.execute (false, nameCheck.isSelected());
-       exit();
-     }
+    protected void run() {
+      results.setText("");
+      refresher.execute (false, nameCheck.isSelected());
+      exit();
+    }
 
-     public void addMessage(String mess) {
-       results.setText(results.getText()+"\n"+mess);
-     }
+    public void addMessage(String mess) {
+      results.setText(results.getText()+"\n"+mess);
+    }
   }
 }

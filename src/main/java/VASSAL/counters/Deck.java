@@ -299,16 +299,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       PieceFilter f = PropertiesPieceFilter.parse(formatted.getText());
       if (f.accept(p)) {
         String mapProperty = prop.getPropertyValue();
-          if (mapProperty != null) {
-            int newValue = Integer.decode(mapProperty);
-            if (increase) {
-              newValue++;
-            }
-            else {
-              newValue--;
-            }
-            prop.setPropertyValue(String.valueOf(newValue));
+        if (mapProperty != null) {
+          int newValue = Integer.decode(mapProperty);
+          if (increase) {
+            newValue++;
           }
+          else {
+            newValue--;
+          }
+          prop.setPropertyValue(String.valueOf(newValue));
+        }
       }
     }
   }
@@ -1347,7 +1347,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
          JOptionPane.showConfirmDialog(gameModule.getFrame(),
           Resources.getString("Deck.overwrite", outputFile.getName()), Resources.getString("Deck.file_exists"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           JOptionPane.YES_NO_OPTION)) {
-        outputFile = null;
+      outputFile = null;
     }
 
     return outputFile;

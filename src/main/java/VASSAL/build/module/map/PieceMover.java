@@ -751,7 +751,7 @@ public class PieceMover extends AbstractBuildable
       boolean useGrid = b != null && b.getGrid() != null;
       if (useGrid) {
         final PieceIterator it = DragBuffer.getBuffer().getIterator();
-      final GamePiece dragging = it.hasMoreElements() ? it.nextPiece() : null;
+        final GamePiece dragging = it.hasMoreElements() ? it.nextPiece() : null;
         useGrid =
           dragging != null &&
           !Boolean.TRUE.equals(dragging.getProperty(Properties.IGNORE_GRID)) &&
@@ -837,10 +837,10 @@ public class PieceMover extends AbstractBuildable
    */
   abstract static public class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
-               DragSourceMotionListener,  DropTargetListener
-  {
-	  static private AbstractDragHandler theDragHandler =
-	    DragSource.isDragImageSupported() ?
+               DragSourceMotionListener,  DropTargetListener {
+
+    static private AbstractDragHandler theDragHandler =
+      DragSource.isDragImageSupported() ?
         (SystemUtils.IS_OS_MAC_OSX ?
           new DragHandlerMacOSX() : new DragHandler()) :
         new DragHandlerNoImage();
@@ -1202,9 +1202,8 @@ public class PieceMover extends AbstractBuildable
       for (PieceIterator i = db.getIterator();
            i.hasMoreElements(); pieces.add(i.nextPiece()));
       for (GamePiece piece : pieces) {
-        if (piece.getMap() != null &&
-            Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
-            db.remove(piece);
+        if (piece.getMap() != null && Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+          db.remove(piece);
         }
       }
 
@@ -1251,7 +1250,7 @@ public class PieceMover extends AbstractBuildable
 
     protected void beginDragging(DragGestureEvent dge) {
       // this call is needed to instantiate the boundingBox object
-	    final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
+      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
 
       final Point dragPointOffset = new Point(
         getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
@@ -1314,8 +1313,8 @@ public class PieceMover extends AbstractBuildable
     /** switches current drawWin when mouse enters a new DropTarget */
     @Override
     public void dragEnter(DropTargetDragEvent e) {
-       final DropTargetListener forward = getListener(e);
-       if (forward != null) forward.dragEnter(e);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.dragEnter(e);
     }
 
     /**
@@ -1325,10 +1324,10 @@ public class PieceMover extends AbstractBuildable
      */
     @Override
     public void drop(DropTargetDropEvent e) {
-       // EVENT uses UNSCALED, DROP-TARGET coordinate system
-       e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
-       final DropTargetListener forward = getListener(e);
-       if (forward != null) forward.drop(e);
+      // EVENT uses UNSCALED, DROP-TARGET coordinate system
+      e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.drop(e);
     }
 
     /** ineffectual. Passes event along listener chain */

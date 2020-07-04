@@ -215,14 +215,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     });
 
-    addKeyStrokeSource
-        (new KeyStrokeSource
-            (frame.getRootPane(),
-             JComponent.WHEN_IN_FOCUSED_WINDOW));
+    addKeyStrokeSource(
+      new KeyStrokeSource(frame.getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW));
 
-    validator = new CompoundValidityChecker
-        (new MandatoryComponent(this, Documentation.class),
-         new MandatoryComponent(this, GlobalOptions.class));
+    validator = new CompoundValidityChecker(
+      new MandatoryComponent(this, Documentation.class),
+      new MandatoryComponent(this, GlobalOptions.class));
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }

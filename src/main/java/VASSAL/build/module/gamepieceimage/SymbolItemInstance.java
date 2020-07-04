@@ -44,7 +44,7 @@ public class SymbolItemInstance extends ItemInstance {
     setSize(sz);
     setSymbol1(s1);
     setSymbol2(s2);
-   }
+  }
 
   public SymbolItemInstance(String code, GamePieceImage defn) {
     super(defn);
@@ -165,17 +165,17 @@ public class SymbolItemInstance extends ItemInstance {
       fgColor = (ColorSwatch) value;
     }
     else if (BG_COLOR.equals(key)) {
-        if (value instanceof String) {
-          value = new ColorSwatch((String) value);
-        }
-        bgColor = (ColorSwatch) value;
+      if (value instanceof String) {
+        value = new ColorSwatch((String) value);
+      }
+      bgColor = (ColorSwatch) value;
     }
     else if (SIZE_COLOR.equals(key)) {
       if (value instanceof String) {
         value = new ColorSwatch((String) value);
       }
       sizeColor = (ColorSwatch) value;
-  }
+    }
     if (myConfig != null) {
       myConfig.rebuildViz();
     }

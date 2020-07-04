@@ -86,29 +86,29 @@ public class PropertiesPieceFilter {
                 value = s[1].trim();
               }
               switch (i) {
-                case 0:
-                  f = new NE(name, value);
-                  break;
-                case 1:
-                  f = new LE(name, value);
-                  break;
-                case 2:
-                  f = new GE(name, value);
-                  break;
-                case 3:
-                  f = new GT(name, value);
-                  break;
-                case 4:
-                  f = new LT(name, value);
-                  break;
-                case 5:
-                  f = new MATCH(name, value);
-                  break;
-                case 6:
-                  f = new EQ(name, value);
-                  break;
-                case 7:
-                  f = new NOT_MATCH(name,value);
+              case 0:
+                f = new NE(name, value);
+                break;
+              case 1:
+                f = new LE(name, value);
+                break;
+              case 2:
+                f = new GE(name, value);
+                break;
+              case 3:
+                f = new GT(name, value);
+                break;
+              case 4:
+                f = new LT(name, value);
+                break;
+              case 5:
+                f = new MATCH(name, value);
+                break;
+              case 6:
+                f = new EQ(name, value);
+                break;
+              case 7:
+                f = new NOT_MATCH(name,value);
               }
             }
             break;

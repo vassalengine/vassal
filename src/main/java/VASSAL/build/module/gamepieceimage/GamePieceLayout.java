@@ -95,24 +95,24 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     int x,y;
     final Dimension d = item.getSize();
     switch (s.charAt(s.length() - 1)) {
-      case 'E':
-        x = getLayoutWidth() - d.width;
-        break;
-      case 'W':
-        x = 0;
-        break;
-      default:
-        x = getLayoutWidth() / 2 - d.width / 2;
+    case 'E':
+      x = getLayoutWidth() - d.width;
+      break;
+    case 'W':
+      x = 0;
+      break;
+    default:
+      x = getLayoutWidth() / 2 - d.width / 2;
     }
     switch (s.charAt(0)) {
-      case 'N':
-        y = 0;
-        break;
-      case 'S':
-        y = getLayoutHeight() - d.height;
-        break;
-      default:
-        y = getLayoutHeight() / 2 - d.height / 2;
+    case 'N':
+      y = 0;
+      break;
+    case 'S':
+      y = getLayoutHeight() - d.height;
+      break;
+    default:
+      y = getLayoutHeight() / 2 - d.height / 2;
     }
 
     return new Point(x + item.getXoffset(), y + item.getYoffset());

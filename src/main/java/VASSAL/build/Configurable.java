@@ -28,53 +28,53 @@ import VASSAL.i18n.Translatable;
  * the Configuration window.
  */
 public interface Configurable extends Translatable {
-    public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
+  public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
 
-    /**
-     * Remove this component from its parent
-     */
-    public void removeFrom(Buildable parent);
+  /**
+   * Remove this component from its parent
+   */
+  public void removeFrom(Buildable parent);
 
 
-    /**
-     * Remove a child component
-     */
-    public void remove(Buildable child);
+  /**
+   * Remove a child component
+   */
+  public void remove(Buildable child);
 
-    /**
-     * The name of this Configurable Object
-     */
-    public String getConfigureName();
+  /**
+   * The name of this Configurable Object
+   */
+  public String getConfigureName();
 
-    /**
-     * @return a HelpFilte describing how to use and configure
-     * this component
-     */
-    public HelpFile getHelpFile();
+  /**
+   * @return a HelpFilte describing how to use and configure
+   * this component
+   */
+  public HelpFile getHelpFile();
 
-    /**
-     * @return an array of Configurer objects representing
-     * the Configurable children of this Configurable object
-     */
-    public Configurable[] getConfigureComponents();
+  /**
+   * @return an array of Configurer objects representing
+   * the Configurable children of this Configurable object
+   */
+  public Configurable[] getConfigureComponents();
 
-    /**
-     * Return a {@link Configurer} object which can be used to set the
-     * attributes of this object
-     */
-    public Configurer getConfigurer();
+  /**
+   * Return a {@link Configurer} object which can be used to set the
+   * attributes of this object
+   */
+  public Configurer getConfigurer();
 
-    /**
-     * Return a list of valid sub-component Classes.  If a Class
-     * appears in this list, then instances of that class may be added
-     * to this component from the Configuration Window.
-     */
-    public Class[] getAllowableConfigureComponents();
+  /**
+   * Return a list of valid sub-component Classes.  If a Class
+   * appears in this list, then instances of that class may be added
+   * to this component from the Configuration Window.
+   */
+  public Class[] getAllowableConfigureComponents();
 
-    /**
-     * Add a PropertyChangeListener.  A PropertyChangeEvent should be fired
-     * with property name {@link #NAME_PROPERTY} when the value returned from
-     * {@link #getConfigureName} has changed
-     */
-    public void addPropertyChangeListener(java.beans.PropertyChangeListener l);
+  /**
+   * Add a PropertyChangeListener.  A PropertyChangeEvent should be fired
+   * with property name {@link #NAME_PROPERTY} when the value returned from
+   * {@link #getConfigureName} has changed
+   */
+  public void addPropertyChangeListener(java.beans.PropertyChangeListener l);
 }

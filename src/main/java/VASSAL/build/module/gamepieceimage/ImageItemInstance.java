@@ -30,6 +30,8 @@ public class ImageItemInstance extends ItemInstance {
 
   protected String imageName = ""; //$NON-NLS-1$
 
+  private final VisibilityCondition imageCond = () -> !((ImageItem) getItem()).isFixed();
+
   public ImageItemInstance() {
     super();
   }
@@ -123,17 +125,11 @@ public class ImageItemInstance extends ItemInstance {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
-       return imageCond;
-     }
-     else {
-       return super.getAttributeVisibility(name);
-     }
-   }
-
-  private VisibilityCondition imageCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !((ImageItem) getItem()).isFixed();
+      return imageCond;
     }
-  };
+    else {
+      return super.getAttributeVisibility(name);
+    }
+  }
+
 }

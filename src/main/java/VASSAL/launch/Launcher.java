@@ -260,7 +260,7 @@ public abstract class Launcher {
             ipc.send(new CloseAccept(-msg.getId()));
           }
           catch (IOException e) {
-e.printStackTrace();
+            e.printStackTrace();
           }
         }
         System.exit(0);
@@ -271,7 +271,7 @@ e.printStackTrace();
             ipc.send(new CloseReject(-msg.getId()));
           }
           catch (IOException e) {
-e.printStackTrace();
+            e.printStackTrace();
           }
         }
       }

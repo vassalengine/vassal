@@ -113,27 +113,27 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       String s = st.nextToken(String.valueOf(INSET));
       displayStyle = s.charAt(0);
       switch (displayStyle) {
-        case PEEK:
-          if (s.length() > 1) {
-            if (s.length() == 2) {
-              peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_DOWN_MASK);
-            }
-            else {
-              peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
-            }
-            peeking = false;
+      case PEEK:
+        if (s.length() > 1) {
+          if (s.length() == 2) {
+            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_DOWN_MASK);
           }
           else {
-            peekKey = null;
-            peeking = true;
+            peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
           }
-          break;
-        case IMAGE:
-          if (s.length() > 1) {
-            obscuredToOthersImage = s.substring(1);
-            obscuredToOthersView = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;" + obscuredToOthersImage + ";;");
-            obscuredToMeView.setPosition(new Point());
-          }
+          peeking = false;
+        }
+        else {
+          peekKey = null;
+          peeking = true;
+        }
+        break;
+      case IMAGE:
+        if (s.length() > 1) {
+          obscuredToOthersImage = s.substring(1);
+          obscuredToOthersView = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;" + obscuredToOthersImage + ";;");
+          obscuredToMeView.setPosition(new Point());
+        }
       }
     }
     maskName = st.nextToken(maskName);
@@ -149,19 +149,19 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(keyCommand).append(imageName).append(hideCommand);
     switch (displayStyle) {
-      case PEEK:
-        if (peekKey == null) {
-          se.append(displayStyle);
-        }
-        else {
-          se.append(displayStyle + NamedHotKeyConfigurer.encode(peekKey));
-        }
-        break;
-      case IMAGE:
-        se.append(displayStyle + obscuredToOthersImage);
-        break;
-      default:
+    case PEEK:
+      if (peekKey == null) {
         se.append(displayStyle);
+      }
+      else {
+        se.append(displayStyle + NamedHotKeyConfigurer.encode(peekKey));
+      }
+      break;
+    case IMAGE:
+      se.append(displayStyle + obscuredToOthersImage);
+      break;
+    default:
+      se.append(displayStyle);
     }
     se.append(maskName);
     se.append(PieceAccessConfigurer.encode(access));
@@ -349,31 +349,31 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   protected void drawObscuredToOthers(Graphics g, int x, int y, Component obs, double zoom) {
     switch (displayStyle) {
-      case BACKGROUND:
+    case BACKGROUND:
+      obscuredToMeView.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom * .5);
+      break;
+    case INSET:
+      piece.draw(g, x, y, obs, zoom);
+      Rectangle bounds = piece.getShape().getBounds();
+      Rectangle obsBounds = obscuredToMeView.getShape().getBounds();
+      obscuredToMeView.draw(g, x - (int) (zoom * bounds.width / 2
+          - .5 * zoom * obsBounds.width / 2),
+        y - (int) (zoom * bounds.height / 2
+          - .5 * zoom * obsBounds.height / 2),
+        obs, zoom * 0.5);
+      break;
+    case PEEK:
+      if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
+        piece.draw(g, x, y, obs, zoom);
+      }
+      else {
         obscuredToMeView.draw(g, x, y, obs, zoom);
-        piece.draw(g, x, y, obs, zoom * .5);
-        break;
-      case INSET:
-        piece.draw(g, x, y, obs, zoom);
-        Rectangle bounds = piece.getShape().getBounds();
-        Rectangle obsBounds = obscuredToMeView.getShape().getBounds();
-        obscuredToMeView.draw(g, x - (int) (zoom * bounds.width / 2
-                                            - .5 * zoom * obsBounds.width / 2),
-                              y - (int) (zoom * bounds.height / 2
-                                         - .5 * zoom * obsBounds.height / 2),
-                              obs, zoom * 0.5);
-        break;
-      case PEEK:
-        if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
-          piece.draw(g, x, y, obs, zoom);
-        }
-        else {
-          obscuredToMeView.draw(g, x, y, obs, zoom);
-        }
-        break;
-      case IMAGE:
-        piece.draw(g, x, y, obs, zoom);
-        obscuredToOthersView.draw(g, x, y, obs, zoom);
+      }
+      break;
+    case IMAGE:
+      piece.draw(g, x, y, obs, zoom);
+      obscuredToOthersView.draw(g, x, y, obs, zoom);
     }
   }
 
@@ -389,15 +389,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected Rectangle bBoxObscuredToOthers() {
     final Rectangle r;
     switch (displayStyle) {
-      case BACKGROUND:
-        r = bBoxObscuredToMe();
-        break;
-      case IMAGE:
-        r = piece.boundingBox();
-        r.add(obscuredToOthersView.boundingBox());
-        break;
-      default:
-        r = piece.boundingBox();
+    case BACKGROUND:
+      r = bBoxObscuredToMe();
+      break;
+    case IMAGE:
+      r = piece.boundingBox();
+      r.add(obscuredToOthersView.boundingBox());
+      break;
+    default:
+      r = piece.boundingBox();
     }
     return r;
   }
@@ -742,20 +742,20 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         }
       }
       switch (optionChar) {
-        case PEEK:
-          String valueString = peekKeyInput.getValueString();
-          if (valueString != null) {
-            se.append(optionChar + valueString);
-          }
-          else {
-            se.append(optionChar);
-          }
-          break;
-        case IMAGE:
-          se.append(optionChar + imagePicker.getImageName());
-          break;
-        default:
+      case PEEK:
+        String valueString = peekKeyInput.getValueString();
+        if (valueString != null) {
+          se.append(optionChar + valueString);
+        }
+        else {
           se.append(optionChar);
+        }
+        break;
+      case IMAGE:
+        se.append(optionChar + imagePicker.getImageName());
+        break;
+      default:
+        se.append(optionChar);
       }
       se.append(maskNameInput.getValueString());
       se.append(accessConfig.getValueString());

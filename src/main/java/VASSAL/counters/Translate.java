@@ -261,38 +261,38 @@ public class Translate extends Decorator implements TranslatablePiece {
       
     return c;
   }
-  
-  /*
+
+  /**
    * Classic Translate code.
    * The original Move Fixed Distance code does not work properly in Triggers, creates additional Null
    * actions and does not undo properly. Some modules may depend on this behaviour. Now depends on a Module level
    * preference being turned on to use it.
    */
-   protected Command classicTranslate(KeyStroke stroke) {
-     Command c = new NullCommand();
+  protected Command classicTranslate(KeyStroke stroke) {
+    Command c = new NullCommand();
 
-     if (mover == null) {
-       mover = new MoveExecuter();
-       mover.setKeyEvent(stroke);
-       mover.setAdditionalCommand(setOldProperties(this));
-       SwingUtilities.invokeLater(mover);
-     }
-     GamePiece target = findTarget(stroke);
-     if (target != null) {
-       c = c.append(moveTarget(target));
-     }
-     mover.addKeyEventTarget(piece);
-     // Return a non-null command to indicate that a change actually happened
-     // Note: Looks weird to wipe out the Commands, but they have all been added to the Move Executor.
-     c = new NullCommand() {
-       @Override
-       public boolean isNull() {
-         return false;
-       }
-     };
+    if (mover == null) {
+      mover = new MoveExecuter();
+      mover.setKeyEvent(stroke);
+      mover.setAdditionalCommand(setOldProperties(this));
+      SwingUtilities.invokeLater(mover);
+    }
+    GamePiece target = findTarget(stroke);
+    if (target != null) {
+      c = c.append(moveTarget(target));
+    }
+    mover.addKeyEventTarget(piece);
+    // Return a non-null command to indicate that a change actually happened
+    // Note: Looks weird to wipe out the Commands, but they have all been added to the Move Executor.
+    c = new NullCommand() {
+      @Override
+      public boolean isNull() {
+        return false;
+      }
+    };
 
-     return c;
-   }
+    return c;
+  }
 
   protected Command moveTarget(GamePiece target) {
     // Has this piece already got a move scheduled? If so, then we

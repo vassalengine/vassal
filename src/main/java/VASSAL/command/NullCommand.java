@@ -19,20 +19,20 @@ package VASSAL.command;
 
 
 public class NullCommand extends Command {
-    public NullCommand() {
-    }
+  public NullCommand() {
+  }
 
-    @Override
-    protected void executeCommand() {
-    }
+  @Override
+  protected void executeCommand() {
+  }
 
-    @Override
-    protected Command myUndoCommand() {
-        return null;
-    }
+  @Override
+  protected Command myUndoCommand() {
+    return null;
+  }
 
-    @Override
-    public boolean isNull() {
-        return isAtomic();
-    }
+  @Override
+  public boolean isNull() {
+    return isAtomic();
+  }
 }

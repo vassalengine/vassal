@@ -143,24 +143,24 @@ public class Symbol {
 
     protected static String[] getSymbolNames() {
       return new String[] {
-          NONE,
-          INFANTRY,
-          RECON,
-          ARMORED,
-          ARTILLERY,
-          ENGINEERS,
-          AIRBORNE,
-          AIR_DEFENCE,
-          AIR_FORCE,
-          ANTI_TANK,
-          ARMY_AVIATION,
-          COMMANDO,
-          GLIDER,
-          GUERILLA,
-          //MARINES,
-          MOUNTAIN,
-          NAVY
-          };
+        NONE,
+        INFANTRY,
+        RECON,
+        ARMORED,
+        ARTILLERY,
+        ENGINEERS,
+        AIRBORNE,
+        AIR_DEFENCE,
+        AIR_FORCE,
+        ANTI_TANK,
+        ARMY_AVIATION,
+        COMMANDO,
+        GLIDER,
+        GUERILLA,
+        //MARINES,
+        MOUNTAIN,
+        NAVY
+      };
     }
 
     protected static String[] sizeNames;
@@ -185,22 +185,22 @@ public class Symbol {
     }
 
     protected static final SizeOption[] SIZES = new SizeOption[] {
-        new SizeOption(SZ_NONE, 0, ""), //$NON-NLS-1$
-        new SizeOption(SZ_INSTALLATION, 1, INSTALLATION_SYMBOL),
-        new SizeOption(SZ_TEAM, 1, TEAM_SYMBOL),
-        new SizeOption(SZ_SQUAD, 1, SQUAD_SYMBOL),
-        new SizeOption(SZ_SECTION, 2, SQUAD_SYMBOL),
-        new SizeOption(SZ_PLATOON, 3, SQUAD_SYMBOL),
-        new SizeOption(SZ_ECHELON, 4, SQUAD_SYMBOL),
-        new SizeOption(SZ_COMPANY, 1, COMPANY_SYMBOL),
-        new SizeOption(SZ_BATTALION, 2, COMPANY_SYMBOL),
-        new SizeOption(SZ_REGIMENT, 3, COMPANY_SYMBOL),
-        new SizeOption(SZ_BRIGADE, 1, BRIGADE_SYMBOL),
-        new SizeOption(SZ_DIVISION, 2, BRIGADE_SYMBOL),
-        new SizeOption(SZ_CORPS, 3, BRIGADE_SYMBOL),
-        new SizeOption(SZ_ARMY, 4, BRIGADE_SYMBOL),
-        new SizeOption(SZ_ARMY_GROUP, 5, BRIGADE_SYMBOL),
-        new SizeOption(SZ_REGION, 6, BRIGADE_SYMBOL)
+      new SizeOption(SZ_NONE, 0, ""), //$NON-NLS-1$
+      new SizeOption(SZ_INSTALLATION, 1, INSTALLATION_SYMBOL),
+      new SizeOption(SZ_TEAM, 1, TEAM_SYMBOL),
+      new SizeOption(SZ_SQUAD, 1, SQUAD_SYMBOL),
+      new SizeOption(SZ_SECTION, 2, SQUAD_SYMBOL),
+      new SizeOption(SZ_PLATOON, 3, SQUAD_SYMBOL),
+      new SizeOption(SZ_ECHELON, 4, SQUAD_SYMBOL),
+      new SizeOption(SZ_COMPANY, 1, COMPANY_SYMBOL),
+      new SizeOption(SZ_BATTALION, 2, COMPANY_SYMBOL),
+      new SizeOption(SZ_REGIMENT, 3, COMPANY_SYMBOL),
+      new SizeOption(SZ_BRIGADE, 1, BRIGADE_SYMBOL),
+      new SizeOption(SZ_DIVISION, 2, BRIGADE_SYMBOL),
+      new SizeOption(SZ_CORPS, 3, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY, 4, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY_GROUP, 5, BRIGADE_SYMBOL),
+      new SizeOption(SZ_REGION, 6, BRIGADE_SYMBOL)
     };
 
     protected static void draw(String name1, String name2, Graphics g, Rectangle bounds, Color fg, Color bg,
@@ -497,9 +497,8 @@ public class Symbol {
       return bi;
     }
   }
-}
 
-  class SizeOption {
+  private static class SizeOption {
     String name;
     String type;
     int count;
@@ -522,3 +521,4 @@ public class Symbol {
       return count;
     }
   }
+}
