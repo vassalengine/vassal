@@ -85,7 +85,9 @@ public class TailerTest {
     tailer.stop();
 
     final String actual = sb_tailer.toString();
-    final String expected = Files.readString(file.toPath()).substring(0, actual.length());
+    final String expected = Files.readString(file.toPath())
+                                 .substring(0, actual.length())
+                                 .replace("\r\n", "\n");
 
     // compare whatever the Tailer had time to read
     assertEquals(expected, actual);
