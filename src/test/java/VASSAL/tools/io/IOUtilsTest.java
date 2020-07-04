@@ -44,7 +44,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -63,7 +63,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyLargeFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -92,24 +92,6 @@ public class IOUtilsTest {
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     final int count = IOUtils.copy(in, out, buf);
-
-    assertEquals("seed == " + seed, expected.length, count);
-    assertArrayEquals("seed == " + seed, expected, out.toByteArray());
-  }
-
-  @Test
-  public void testCopyLargeBuffer() throws IOException {
-    final byte[] buf = new byte[1024];
-
-    final byte[] expected = new byte[10000];
-    final long seed = System.currentTimeMillis();
-    final Random rng = new Random(seed);
-    rng.nextBytes(expected);
-
-    final ByteArrayInputStream in = new ByteArrayInputStream(expected);
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-    final long count = IOUtils.copyLarge(in, out, buf);
 
     assertEquals("seed == " + seed, expected.length, count);
     assertArrayEquals("seed == " + seed, expected, out.toByteArray());
