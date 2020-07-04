@@ -65,7 +65,7 @@ public class PropertiesWindow extends JDialog {
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         // Cull Buildables from the state.
         try {
-          final Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(((Element)child).getTagName(), false);
+          final Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(((Element)child).getTagName());
           if (Buildable.class.isAssignableFrom(c)) {
             originalState.removeChild(child);
           }
