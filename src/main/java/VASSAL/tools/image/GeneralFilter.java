@@ -278,8 +278,8 @@ public final class GeneralFilter {
     WritableRaster dstR,
     Rectangle dst_fr,
     BufferedImage srcI,
-    final Filter filter) {
-
+    final Filter filter)
+  {
     final int[] dst_data = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final int src_type;
@@ -360,8 +360,8 @@ public final class GeneralFilter {
     int dstHeight,  // height of full destination
     float xscale,
     float yscale,
-    final Filter filter) {
-
+    final Filter filter)
+  {
     final int[] work = new int[sh];
 
     final float fwidth = filter.getSamplingRadius();
@@ -470,8 +470,8 @@ public final class GeneralFilter {
     final int d0,         // dst initial
     final int s0,         // src initial
     final int sl,         // src length along this axis
-    final Filter filter) {
-
+    final Filter filter)
+  {
     // Calculate filter contributions for each destination strip
     final CList[] contrib = new CList[dl];
     for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
@@ -513,8 +513,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work) {
-
+    final int[] work)
+  {
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -575,8 +575,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work) {
-
+    final int[] work)
+  {
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -633,8 +633,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw) {
-
+    final int dw)
+  {
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_a = 0.0f;  // alpha sample
@@ -703,8 +703,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw) {
-
+    final int dw)
+  {
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_r = 0.0f;  // red sample

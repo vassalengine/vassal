@@ -99,16 +99,16 @@ public class ErrorDialog {
 
   public static Future<?> show(
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.show(JOptionPane.ERROR_MESSAGE, messageKey, args);
   }
 
   public static Future<?> show(
     Component parent,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.show(
       JOptionPane.ERROR_MESSAGE, parent, messageKey, args
     );
@@ -117,8 +117,8 @@ public class ErrorDialog {
   public static Future<?> show(
     Throwable thrown,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.show(
       JOptionPane.ERROR_MESSAGE, thrown, messageKey, args
     );
@@ -128,8 +128,8 @@ public class ErrorDialog {
     final Component parent,
     final Throwable thrown,
     final String messageKey,
-    final Object... args) {
-
+    final Object... args)
+  {
     return ProblemDialog.show(
       JOptionPane.ERROR_MESSAGE, parent, thrown, messageKey, args
     );
@@ -140,8 +140,8 @@ public class ErrorDialog {
     final Throwable thrown,
     final String title,
     final String heading,
-    final String message) {
-
+    final String message)
+  {
     return ProblemDialog.show(
       JOptionPane.ERROR_MESSAGE, parent, thrown, title, heading, message
     );
@@ -150,8 +150,8 @@ public class ErrorDialog {
   public static Future<?> showDisableable(
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDisableable(
       JOptionPane.ERROR_MESSAGE, key, messageKey, args
     );
@@ -161,8 +161,8 @@ public class ErrorDialog {
     Component parent,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDisableable(
       JOptionPane.ERROR_MESSAGE, parent, key, messageKey, args
     );
@@ -172,8 +172,8 @@ public class ErrorDialog {
     Throwable thrown,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDisableable(
       JOptionPane.ERROR_MESSAGE, thrown, key, messageKey, args
     );
@@ -184,8 +184,8 @@ public class ErrorDialog {
     Throwable thrown,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDisableable(
       JOptionPane.ERROR_MESSAGE, parent, thrown, key, messageKey, args
     );
@@ -197,8 +197,8 @@ public class ErrorDialog {
     Object key,
     String title,
     String heading,
-    String message) {
-
+    String message)
+  {
     return ProblemDialog.showDisableable(
       JOptionPane.ERROR_MESSAGE, parent, thrown, key, title, heading, message
     );
@@ -209,8 +209,8 @@ public class ErrorDialog {
     Object key,
     String title,
     String heading,
-    String message) {
-
+    String message)
+  {
     return ProblemDialog.showDisableableNoI18N(
       JOptionPane.ERROR_MESSAGE, thrown, key, title, heading, message
     );
@@ -219,8 +219,8 @@ public class ErrorDialog {
   public static Future<?> showDetails(
     String details,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, details, messageKey, args
     );
@@ -230,8 +230,8 @@ public class ErrorDialog {
     Component parent,
     String details,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, parent, details, messageKey, args
     );
@@ -241,8 +241,8 @@ public class ErrorDialog {
     Throwable thrown,
     String details,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, thrown, details, messageKey, args
     );
@@ -253,8 +253,8 @@ public class ErrorDialog {
     Throwable thrown,
     String details,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, parent, thrown, details, messageKey, args
     );
@@ -266,8 +266,8 @@ public class ErrorDialog {
     String details,
     String title,
     String heading,
-    String message) {
-
+    String message)
+  {
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, parent,
       thrown, details, title, heading, message
@@ -278,8 +278,8 @@ public class ErrorDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetailsDisableable(
       JOptionPane.ERROR_MESSAGE, details, key, messageKey, args
     );
@@ -290,8 +290,8 @@ public class ErrorDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetailsDisableable(
       JOptionPane.ERROR_MESSAGE, parent, details, key, messageKey, args
     );
@@ -302,8 +302,8 @@ public class ErrorDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetailsDisableable(
       JOptionPane.ERROR_MESSAGE, thrown, details, key, messageKey, args
     );
@@ -315,8 +315,8 @@ public class ErrorDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args) {
-
+    Object... args)
+  {
     return ProblemDialog.showDetailsDisableable(
       JOptionPane.ERROR_MESSAGE, parent,
       thrown, details, key, messageKey, args
@@ -330,8 +330,8 @@ public class ErrorDialog {
     Object key,
     String title,
     String heading,
-    String message) {
-
+    String message)
+  {
     return ProblemDialog.showDetailsDisableable(
       JOptionPane.ERROR_MESSAGE, parent, thrown,
       details, key, title, heading, message

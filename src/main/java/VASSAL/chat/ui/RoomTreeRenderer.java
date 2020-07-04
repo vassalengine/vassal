@@ -60,8 +60,8 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
     boolean expanded,
     boolean leaf,
     int row,
-    boolean hasFocus) {
-
+    boolean hasFocus)
+  {
     super.getTreeCellRendererComponent(
       tree, value, sel, expanded, leaf, row, hasFocus
     );
