@@ -106,7 +106,7 @@ $(TMPDIR)/VASSAL.exe: fast-compile $(TMPDIR)
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar >>$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #dist/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
