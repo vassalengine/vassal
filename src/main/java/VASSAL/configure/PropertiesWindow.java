@@ -37,6 +37,7 @@ import org.w3c.dom.Node;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.tools.ErrorDialog;
 
@@ -64,7 +65,7 @@ public class PropertiesWindow extends JDialog {
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         // Cull Buildables from the state.
         try {
-          final Class<?> c = Class.forName(((Element)child).getTagName());
+          final Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(((Element)child).getTagName());
           if (Buildable.class.isAssignableFrom(c)) {
             originalState.removeChild(child);
           }
