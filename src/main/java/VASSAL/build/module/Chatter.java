@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -97,7 +98,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
     conversation = new JTextPane();
-    conversation.setPreferredSize(new Dimension(500, 120));
     conversation.setContentType("text/html");
     doc = (HTMLDocument) conversation.getDocument();
     kit = (HTMLEditorKit) conversation.getEditorKit();
@@ -135,13 +135,18 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
+    
+    FontMetrics fm = getFontMetrics(myFont);
+    int fontHeight = fm.getHeight();
 
-    conversation.setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height * 11));
+    conversation.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
 
     scroll.setViewportView(conversation);
     scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); // BR// Scroll this faster																									
     add(scroll);
     add(input);
+    
+    setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversation.getPreferredSize().height));
   }
 
   private String formatChat(String text) {
