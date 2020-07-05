@@ -1,5 +1,7 @@
 3.3.3-beta1 - ???
 
+* 13146: Custom classes that are children fail to be culled in
+    PropertiesWindow.initialized (resulting in duplicate buildFile entries)
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
