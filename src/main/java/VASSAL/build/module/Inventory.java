@@ -1372,24 +1372,21 @@ public class Inventory extends AbstractConfigurable
     protected class CompareCounterNodes {
       /**
        * Sanity check for arguments.
-       * @param arg0
-       * @param arg1
        * @return true if arguments looks processable, false else
        */
       protected boolean argsOK(Object arg0, Object arg1) {
         return
-          arg0 != null &&
-          arg1 != null &&
           arg0 instanceof CounterNode &&
           arg1 instanceof CounterNode;
       }
 
       protected int compareStrangeArgs(Object arg0, Object arg1) {
-        if (arg1.equals(arg1))
-          return 0;
-
         if (arg0 == null)
           return 1;
+
+        if (arg0.equals(arg1))
+          return 0;
+
         if (arg1 == null)
           return -1;
         if (arg0 instanceof CounterNode && !(arg1 instanceof CounterNode))
