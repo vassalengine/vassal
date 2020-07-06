@@ -900,11 +900,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public static void unload() {
     
-    //BR// Put our old drag threshold back, or if it wasn't set then return it to an unset state.
+    // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
     if (oldDragThreshold != null) {
       System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);      
     } else {
-      System.setProperty("awt.dnd.drag.threshold", "");            
+      System.clearProperty("awt.dnd.drag.threshold");            
     }
     
     if (theModule != null) {
