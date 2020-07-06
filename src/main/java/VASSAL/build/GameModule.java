@@ -186,7 +186,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
   
-  private static String oldDragThreshold; //BR//13137
+  private static String oldDragThreshold; //
 
   /**
    * @return the top-level frame of the controls window
@@ -882,7 +882,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       theModule.checkGpIds();
     }
     
-    //BR//13137 - Save our old drag threshold
+    //Save our old drag threshold
     oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
     System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getDragThreshold()));
 

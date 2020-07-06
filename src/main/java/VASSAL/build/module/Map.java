@@ -1221,6 +1221,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseExited(MouseEvent e) {
   }
+  
+  
+  public MouseEvent translateEvent(MouseEvent e) {
+    //don't write over java's mouse event
+    MouseEvent mapEvent = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+    final Point p = componentToMap(mapEvent.getPoint());
+    mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
+    return mapEvent;
+  }
 
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
@@ -1232,17 +1241,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseClicked(MouseEvent e) {
-    //BR// Bug13137 - don't write over java's mouse event
-    MouseEvent mapEvent = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMap(mapEvent.getPoint());
-      mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-      mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(mapEvent);
+      mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(translateEvent(e));
     }
     else if (multicaster != null) {
-      final Point p = componentToMap(mapEvent.getPoint());
-      mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-      multicaster.mouseClicked(mapEvent);
+      multicaster.mouseClicked(translateEvent(e));
     }
   }
 
@@ -1285,17 +1288,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     activeMap = this;
 
-    //BR// Bug13137 - don't write over java's mouse event    
-    MouseEvent mapEvent = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMap(mapEvent.getPoint());
-      mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-      mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(mapEvent);
+      mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(translateEvent(e));
     }
     else if (multicaster != null) {
-      final Point p = componentToMap(mapEvent.getPoint());
-      mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-      multicaster.mousePressed(mapEvent);
+      multicaster.mousePressed(translateEvent(e));
     }
   }
 
@@ -1310,20 +1307,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseReleased(MouseEvent e) {
-    //BR// Bug13137 - don't write over java's mouse event
-    MouseEvent mapEvent = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+    // don't write over java's mouse event
     Point p = e.getPoint();
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
-        p = componentToMap(mapEvent.getPoint());
-        mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-        mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(mapEvent);
+        mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(translateEvent(e));
       }
       else if (multicaster != null) {
-        p = componentToMap(mapEvent.getPoint());
-        mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
-        multicaster.mouseReleased(mapEvent);
+        multicaster.mouseReleased(translateEvent(e));
       }
       // Request Focus so that keyboard input will be recognized
       theMap.requestFocus();
