@@ -1377,11 +1377,11 @@ public class Inventory extends AbstractConfigurable
        * @return true if arguments looks processable, false else
        */
       protected boolean argsOK(Object arg0, Object arg1) {
-        return (
+        return
           arg0 != null &&
           arg1 != null &&
           arg0 instanceof CounterNode &&
-          arg1 instanceof CounterNode);
+          arg1 instanceof CounterNode;
       }
 
       protected int compareStrangeArgs(Object arg0, Object arg1) {

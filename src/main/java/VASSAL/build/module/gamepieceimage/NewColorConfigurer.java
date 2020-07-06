@@ -105,10 +105,8 @@ public class NewColorConfigurer extends Configurer {
 
       b.addActionListener(new java.awt.event.ActionListener() {
         @Override
-        public void actionPerformed
-          (java.awt.event.ActionEvent e) {
-          setValue(JColorChooser.showDialog
-            (null, getName(), colorValue()));
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+          setValue(JColorChooser.showDialog(null, getName(), colorValue()));
           csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
         }
       });
