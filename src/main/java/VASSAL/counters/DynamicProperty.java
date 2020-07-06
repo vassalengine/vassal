@@ -440,10 +440,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK), Decorator.getOutermost(target), target,
+      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK), Decorator.getOutermost(target), target,
           new PropertyPrompt(target, "Change value of " + target.getKey())));
       commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
-      keyConfig = new NamedHotKeyConfigurer(null, " Key Command:  ", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK));
+      keyConfig = new NamedHotKeyConfigurer(null, " Key Command:  ", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 

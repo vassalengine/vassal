@@ -364,7 +364,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{SquareGridNumbering.class};
+    return new Class<?>[]{SquareGridNumbering.class};
   }
 
   @Override

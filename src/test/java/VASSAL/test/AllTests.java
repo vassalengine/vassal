@@ -85,7 +85,7 @@ public final class AllTests {
       List<File> classFiles = new ArrayList<File>();
       findClasses(classFiles, CLASSES_DIR);
       List<Class<?>> classes = convertToClasses(classFiles, CLASSES_DIR);
-      return classes.toArray(new Class[classes.size()]);
+      return classes.toArray(new Class<?>[0]);
     }
 
     private static void initializeBeforeTests() {

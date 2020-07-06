@@ -65,8 +65,8 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private JButton addButton;
   private JButton editButton;
   private JButton removeButton;
-  private JList addressList;
-  private DefaultListModel addressBook;
+  private JList<Entry> addressList;
+  private DefaultListModel<Entry> addressBook;
   private Properties params;
   private boolean serverMode;
 
@@ -143,8 +143,8 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
     }
     String[] encodedEntries = addressConfig.getStringArray();
-    addressBook = new DefaultListModel();
-    addressList = new JList(addressBook);
+    addressBook = new DefaultListModel<>();
+    addressList = new JList<>(addressBook);
 
     for (String e : encodedEntries) {
       addToList(new Entry(e));
@@ -210,7 +210,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void invite(final PendingPeerManager ppm) {
     final int[] selected = addressList.getSelectedIndices();
     for (int value : selected) {
-      final Entry entry = (Entry) addressBook.getElementAt(value);
+      final Entry entry = addressBook.getElementAt(value);
       final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
       if (info != null) {
         ppm.addNewPeer(info);
@@ -225,7 +225,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void addEntry() {
     final Entry e = new Entry();
     if (e.edit()) {
-      if (! addressBook.contains(e)) {
+      if (!addressBook.contains(e)) {
         addToList(e);
         saveAddressBook();
       }
@@ -235,7 +235,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void addToList(Entry e) {
     boolean added = false;
     for (int i = 0; i < addressBook.getSize() && !added; i++) {
-      if (e.compareTo((Entry) (addressBook.getElementAt(i))) < 0) {
+      if (e.compareTo(addressBook.getElementAt(i)) < 0) {
         addressBook.insertElementAt(e, i);
         added = true;
       }
@@ -248,7 +248,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void editEntry() {
     final int index = addressList.getSelectedIndex();
     if (index >= 0) {
-      final Entry e = (Entry) addressBook.getElementAt(index);
+      final Entry e = addressBook.getElementAt(index);
       if (e.edit()) {
         addressBook.removeElementAt(index);
         addToList(e);
@@ -264,7 +264,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
     final Entry[] entries = new Entry[selected.length];
     for (int i = 0; i < selected.length; i++) {
-      entries[i] = (Entry) addressBook.getElementAt(selected[i]);
+      entries[i] = addressBook.getElementAt(selected[i]);
     }
 
     final JPanel queryPanel = new JPanel(new MigLayout("", "10[][]10"));
@@ -290,8 +290,8 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void saveAddressBook() {
     final String[] entries = new String[addressBook.size()];
     int i = 0;
-    for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements(); ) {
-      entries[i++] = ((Entry) e.nextElement()).encode();
+    for (Enumeration<Entry> e = addressBook.elements(); e.hasMoreElements(); ) {
+      entries[i++] = e.nextElement().encode();
     }
     addressConfig.setValue(entries);
   }

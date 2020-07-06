@@ -37,8 +37,8 @@ import VASSAL.tools.ScrollPane;
  */
 public class FontConfigurer extends Configurer {
   private JPanel p;
-  private JComboBox size;
-  private JComboBox family;
+  private JComboBox<Integer> size;
+  private JComboBox<String> family;
   private int[] sizes;
 
   public FontConfigurer(String key, String name) {
@@ -70,7 +70,7 @@ public class FontConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(name));
-      family = new JComboBox();
+      family = new JComboBox<>();
       String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       for (String element : s) {
         family.addItem(element);
@@ -79,21 +79,24 @@ public class FontConfigurer extends Configurer {
       family.setMaximumSize(new Dimension(family.getMaximumSize().width,family.getPreferredSize().height));
       p.add(family);
 
-      size = new JComboBox();
+      size = new JComboBox<>();
       for (int item : sizes) {
-        size.addItem(item + "");
+        size.addItem(item);
       }
-      size.setSelectedItem(value == null ? sizes[sizes.length / 2] + ""
-                           : ((Font) value).getSize() + "");
+      size.setSelectedItem(
+        value == null ? sizes[sizes.length / 2] : ((Font) value).getSize()
+      );
       size.setMaximumSize(new Dimension(size.getMaximumSize().width,size.getPreferredSize().height));
       p.add(size);
 
       ItemListener l = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent evt) {
-          setValue(new Font((String) family.getSelectedItem(),
-                            Font.PLAIN,
-                            Integer.parseInt((String) size.getSelectedItem())));
+          setValue(new Font(
+            (String) family.getSelectedItem(),
+            Font.PLAIN,
+            (Integer) size.getSelectedItem()
+          ));
         }
       };
       size.addItemListener(l);
@@ -134,4 +137,3 @@ public class FontConfigurer extends Configurer {
     f.setVisible(true);
   }
 }
-

@@ -271,7 +271,7 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
-      JComponent c = null;
+      JComponent c;
       if (NAME_STEP.equals(id)) {
         c = getNameControls(controller, settings);
       }
@@ -285,8 +285,7 @@ public class WizardSupport {
       return c;
     }
 
-    @SuppressWarnings("unchecked")
-    private JComponent getActionControls(WizardController controller, final Map settings) {
+    private JComponent getActionControls(WizardController controller, final Map<String, Object> settings) {
       if (actionControls == null) {
         Box box = Box.createVerticalBox();
         ButtonGroup group = new ButtonGroup();
@@ -340,7 +339,7 @@ public class WizardSupport {
       return actionControls;
     }
 
-    private JRadioButton createTutorialButton(final WizardController controller, final Map settings) {
+    private JRadioButton createTutorialButton(final WizardController controller, final Map<String, Object> settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         @Override
@@ -358,11 +357,10 @@ public class WizardSupport {
       return b;
     }
 
-    private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map settings) {
+    private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map<String, Object> settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
           Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
@@ -374,11 +372,10 @@ public class WizardSupport {
       return b;
     }
 
-    private JRadioButton createPlayOnlineButton(final WizardController controller, final Map settings) {
+    private JRadioButton createPlayOnlineButton(final WizardController controller, final Map<String, Object> settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
@@ -388,11 +385,10 @@ public class WizardSupport {
       return b;
     }
 
-    private JRadioButton createPlayOfflineButton(final WizardController controller, final Map settings) {
+    private JRadioButton createPlayOfflineButton(final WizardController controller, final Map<String, Object> settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().getGameState().setup(false);
           settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
@@ -415,7 +411,7 @@ public class WizardSupport {
       group.add(button);
     }
 
-    protected JComponent getNameControls(final WizardController controller, final Map settings) {
+    protected JComponent getNameControls(final WizardController controller, final Map<String, Object> settings) {
       if (nameControls == null) {
         Box box = Box.createVerticalBox();
         box.add(Box.createVerticalGlue());
@@ -425,7 +421,6 @@ public class WizardSupport {
         final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
         PropertyChangeListener pl = new PropertyChangeListener() {
           @Override
-          @SuppressWarnings("unchecked")
           public void propertyChange(PropertyChangeEvent evt) {
             settings.put(GameModule.REAL_NAME, nameConfig.getValue());
             settings.put(GameModule.SECRET_NAME, pwd.getValue());
@@ -601,12 +596,12 @@ public class WizardSupport {
    */
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
-    private Map settings;
+    private Map<String, Object> settings;
     // FIXME: this is a bad design---when can we safely close this stream?!
     private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
+    public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;
@@ -615,7 +610,6 @@ public class WizardSupport {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
@@ -651,9 +645,9 @@ public class WizardSupport {
   }
 
   public static class TutorialLoader extends SavedGameLoader {
-    private Tutorial tutorial;
+    private final Tutorial tutorial;
 
-    public TutorialLoader(WizardController controller, Map settings, InputStream in, String wizardKey, Tutorial tutorial) {
+    public TutorialLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey, Tutorial tutorial) {
       super(controller, settings, in, wizardKey);
       this.tutorial = tutorial;
     }

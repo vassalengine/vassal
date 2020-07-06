@@ -148,7 +148,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     propertiesCmd = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
-    int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);

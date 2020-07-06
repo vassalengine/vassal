@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -49,8 +50,8 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class StringArrayConfigurer extends Configurer {
   protected JPanel panel;
-  protected JList list;
-  protected DefaultListModel model;
+  protected JList<String> list;
+  protected DefaultListModel<String> model;
   private static final String[] EMPTY = new String[0];
   protected JTextField textField;
 
@@ -62,7 +63,7 @@ public class StringArrayConfigurer extends Configurer {
     super(key, name);
   }
 
-  public DefaultListModel getModel() {
+  public DefaultListModel<String> getModel() {
     return model;
   }
 
@@ -87,10 +88,10 @@ public class StringArrayConfigurer extends Configurer {
       Box buttonBox = Box.createHorizontalBox();
       Box leftBox = Box.createVerticalBox();
 
-      model = new DefaultListModel();
+      model = new DefaultListModel<>();
       updateModel();
 
-      list = new JList(model);
+      list = new JList<>(model);
       list.setPrototypeCellValue("MMMMMMMM");
       list.setVisibleRowCount(2);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -107,15 +108,7 @@ public class StringArrayConfigurer extends Configurer {
       buttonBox.add(addButton);
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Object[] o = list.getSelectedValues();
-          for (Object item : o) {
-            removeValue((String) item);
-          }
-        }
-      });
+      removeButton.addActionListener(e -> list.getSelectedValuesList().forEach(this::removeValue));
       buttonBox.add(removeButton);
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
@@ -218,7 +211,7 @@ public class StringArrayConfigurer extends Configurer {
       return EMPTY;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -235,6 +228,7 @@ public class StringArrayConfigurer extends Configurer {
     }
   }
 
+  // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
     final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");

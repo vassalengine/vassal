@@ -192,13 +192,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       s = s.substring(ID.length());
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
-      activateModifiers = st.nextInt(InputEvent.CTRL_MASK);
+      activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       activateKey = st.nextToken("A");
       upCommand = st.nextToken("");
-      upModifiers = st.nextInt(InputEvent.CTRL_MASK);
+      upModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       upKey = st.nextToken("");
       downCommand = st.nextToken("");
-      downModifiers = st.nextInt(InputEvent.CTRL_MASK);
+      downModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       downKey = st.nextToken("");
       resetCommand = st.nextToken("");
       resetKey = st.nextNamedKeyStroke();
@@ -287,7 +287,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (activateKey != null && activateKey.length() > 0) {
       activateKeyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke(activateKey));
     }
-    activateModifiers = InputEvent.CTRL_MASK;
+    activateModifiers = InputEvent.CTRL_DOWN_MASK;
     if (st2.hasMoreTokens()) {
       resetCommand = st2.nextToken();
       resetKey = st2.nextNamedKeyStroke(null);
@@ -309,11 +309,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     upKey = st.nextToken().toUpperCase();
     upCommand = st.nextToken();
-    upModifiers = InputEvent.CTRL_MASK;
+    upModifiers = InputEvent.CTRL_DOWN_MASK;
 
     downKey = st.nextToken().toUpperCase();
     downCommand = st.nextToken();
-    downModifiers = InputEvent.CTRL_MASK;
+    downModifiers = InputEvent.CTRL_DOWN_MASK;
 
     xOff = st.nextInt(0);
     yOff = st.nextInt(0);

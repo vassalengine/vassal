@@ -25,12 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
-import java.util.zip.ZipFile;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 
-import org.apache.commons.io.input.ClosedInputStream;
-import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.FileUtils;
 
 import org.jmock.Mockery;
@@ -49,7 +44,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -68,7 +63,7 @@ public class IOUtilsTest {
   @Test
   public void testCopyLargeFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
-    final File ofile = new File("src/test/resources/IOUtilsTest.out");
+    final File ofile = new File("target/test-classes/IOUtilsTest.out");
 
     try {
       final FileInputStream in = new FileInputStream(ifile);
@@ -101,23 +96,4 @@ public class IOUtilsTest {
     assertEquals("seed == " + seed, expected.length, count);
     assertArrayEquals("seed == " + seed, expected, out.toByteArray());
   }
-
-  @Test
-  public void testCopyLargeBuffer() throws IOException {
-    final byte[] buf = new byte[1024];
-
-    final byte[] expected = new byte[10000];
-    final long seed = System.currentTimeMillis();
-    final Random rng = new Random(seed);
-    rng.nextBytes(expected);
-
-    final ByteArrayInputStream in = new ByteArrayInputStream(expected);
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-    final long count = IOUtils.copyLarge(in, out, buf);
-
-    assertEquals("seed == " + seed, expected.length, count);
-    assertArrayEquals("seed == " + seed, expected, out.toByteArray());
-  }
-
 }

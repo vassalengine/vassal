@@ -488,7 +488,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   /*

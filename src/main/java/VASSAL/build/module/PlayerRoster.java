@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
@@ -524,6 +525,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       this.side = side;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (o instanceof PlayerInfo && playerId != null) {
         return playerId.equals(((PlayerInfo) o).playerId);
@@ -531,6 +533,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       else {
         return false;
       }
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(playerId);
     }
 
     public String getSide() {

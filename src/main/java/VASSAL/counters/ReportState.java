@@ -277,7 +277,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     else {
       keys = new NamedKeyStroke[encodedKeys.length()];
       for (int i = 0; i < keys.length; i++) {
-        keys[i] = NamedKeyStroke.getNamedKeyStroke(encodedKeys.charAt(i),InputEvent.CTRL_MASK);
+        keys[i] = NamedKeyStroke.getNamedKeyStroke(encodedKeys.charAt(i),InputEvent.CTRL_DOWN_MASK);
       }
     }
     reportFormat = st.nextToken("$" + LOCATION_NAME + "$: $" + NEW_UNIT_NAME + "$ *");
@@ -288,7 +288,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     else {
       cycleDownKeys = new NamedKeyStroke[encodedCycleDownKeys.length()];
       for (int i = 0; i < cycleDownKeys.length; i++) {
-        cycleDownKeys[i] = NamedKeyStroke.getNamedKeyStroke(encodedCycleDownKeys.charAt(i),InputEvent.CTRL_MASK);
+        cycleDownKeys[i] = NamedKeyStroke.getNamedKeyStroke(encodedCycleDownKeys.charAt(i),InputEvent.CTRL_DOWN_MASK);
       }
     }
     cycleReportFormat = StringArrayConfigurer.stringToArray(st.nextToken(""));

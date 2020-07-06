@@ -100,17 +100,15 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-
   }
 
   @Override
   public void addTo(Buildable parent) {
-
   }
 
   public static String getConfigureTypeName() {

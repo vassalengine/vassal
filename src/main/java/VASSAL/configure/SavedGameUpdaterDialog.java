@@ -58,7 +58,7 @@ import VASSAL.tools.ScrollPane;
 public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private DefaultListModel savedGamesModel;
+  private DefaultListModel<File> savedGamesModel;
   private SavedGameUpdater updater = new SavedGameUpdater();
   private Properties oldPieceInfo;
   private JFileChooser fc;
@@ -116,8 +116,8 @@ public class SavedGameUpdaterDialog extends JDialog {
     });
     left.add(chooseGamesButton);
     savedGamesBox.add(left);
-    savedGamesModel = new DefaultListModel();
-    JList savedGamesList = new JList(savedGamesModel);
+    savedGamesModel = new DefaultListModel<>();
+    final JList<File> savedGamesList = new JList<>(savedGamesModel);
     savedGamesList.setVisibleRowCount(5);
     savedGamesList.setCellRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
@@ -179,9 +179,9 @@ public class SavedGameUpdaterDialog extends JDialog {
     Runnable runnable = new Runnable() {
       @Override
       public void run() {
-        for (int i=0,n=savedGamesModel.size();i<n;++i) {
+        for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
           try {
-            File savedGame = (File)savedGamesModel.getElementAt(i);
+            File savedGame = savedGamesModel.getElementAt(i);
             updater.updateSavedGame(oldPieceInfo,savedGame);
             GameModule.getGameModule().warn("Updated "+savedGame.getName()+" from version "+versionField.getText()+" to "+GameModule.getGameModule().getGameVersion());
           }

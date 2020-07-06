@@ -19,7 +19,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
 import java.awt.Window;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -39,7 +38,7 @@ public class ColorSwatchConfigurer extends Configurer {
 
   protected JPanel p;
   protected JPanel swatchPanel;
-  protected JComboBox swatches;
+  protected JComboBox<String> swatches;
   protected Box colorBox;
   protected ColorConfigurer config;
 
@@ -118,12 +117,7 @@ public class ColorSwatchConfigurer extends Configurer {
       swatchPanel.remove(swatches);
     }
 
-    ItemListener l = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent evt) {
-        updateValue();
-      }
-    };
+    ItemListener l = evt -> updateValue();
 
     swatches = new SwatchComboBox(l, ((ColorSwatch) value).getConfigureName());
     swatchPanel.add(swatches);
@@ -132,7 +126,7 @@ public class ColorSwatchConfigurer extends Configurer {
 
   protected void updateValue() {
     String s = (String) swatches.getSelectedItem();
-    if (s.equals(ColorManager.SELECT_COLOR)) {
+    if (ColorManager.SELECT_COLOR.equals(s)) {
       setValue(ColorManager.getColorManager().getColorSwatch((Color) config.getValue()));
     }
     else {

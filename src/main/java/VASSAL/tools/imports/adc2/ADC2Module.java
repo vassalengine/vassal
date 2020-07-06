@@ -950,7 +950,7 @@ public class ADC2Module extends Importer {
     public Obscurable getHiddenDecorator() throws IOException {
       Obscurable p;
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK))); // key command
+      se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
       se.append(getHiddenSymbol().getFileName()); // hide image
       se.append("Hide Piece"); // menu name
       BufferedImage image = getSymbol().getImage();
@@ -1176,7 +1176,7 @@ public class ADC2Module extends Importer {
       String imageName = getFlagTab(image.getHeight(), flag);
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(command)                   // Activate command
-        .append(InputEvent.CTRL_MASK)      // Activate modifiers
+        .append(InputEvent.CTRL_DOWN_MASK) // Activate modifiers
         .append(key)                       // Activate key
         .append("")                        // Up command
         .append(0)                         // Up modifiers
@@ -1208,7 +1208,7 @@ public class ADC2Module extends Importer {
     public Obscurable getPieceValueMask() throws IOException {
       if (getOwner().useHiddenPieces()) {
         SequenceEncoder se = new SequenceEncoder(';');
-        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('I', InputEvent.CTRL_MASK))); // key command
+        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('I', InputEvent.CTRL_DOWN_MASK))); // key command
         se.append(getImageName()); // hide image
         se.append("Hide Info"); // menu name
         BufferedImage image = getSymbol().getImage();
@@ -1250,7 +1250,7 @@ public class ADC2Module extends Importer {
           sides = "sides:" + getOwner().getName();
         }
         SequenceEncoder se = new SequenceEncoder(';');
-        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_MASK))); // key command
+        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
         if (getHiddenSymbol() == null) {
           // TODO Add transparency to background color as well as alpha for unit.
           se.append("Hide Piece"); // command
@@ -2239,7 +2239,7 @@ private PieceWindow pieceWin;
       gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 
     se = new SequenceEncoder(';');
-    se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_MASK)))
+    se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)))
       .append("Movement Trail")
       .append(false)
       .append(false)

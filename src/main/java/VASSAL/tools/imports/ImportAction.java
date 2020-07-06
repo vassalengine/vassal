@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JOptionPane;
 
@@ -126,11 +127,12 @@ public final class ImportAction extends EditModuleAction {
 
     for (int index : indices) {
       try {
-        if (((Importer) (IMPORTERS[index].newInstance())).isValidImportFile(f)) {
+        if (((Importer) (IMPORTERS[index].getDeclaredConstructor().newInstance())).isValidImportFile(f)) {
           return IMPORTERS[index];
         }
       }
-      catch (InstantiationException | IllegalAccessException e) {
+      catch (IllegalAccessException | InvocationTargetException |
+             InstantiationException | NoSuchMethodException e) {
         ErrorDialog.bug(e);
       }
     }
@@ -171,12 +173,13 @@ public final class ImportAction extends EditModuleAction {
 
     final Importer imp;
     try {
-      imp = (Importer) (impClass.newInstance());
+      imp = (Importer) (impClass.getDeclaredConstructor().newInstance());
       imp.importFile(this, f);
       imp.writeToArchive();
     }
     // these should never happen
-    catch (IllegalAccessException | InstantiationException e) {
+    catch (IllegalAccessException | InvocationTargetException |
+           InstantiationException | NoSuchMethodException e) {
       ErrorDialog.bug(e);
     }
 
