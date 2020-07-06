@@ -216,7 +216,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (s.topPiece() != null) {
         final KeyBuffer kbuf = KeyBuffer.getBuffer();
         if (s instanceof Deck) {
-          s.asList().forEach(gamePiece -> kbuf.remove(gamePiece)); //BR// Bug13036 - Clear any deck *members* out of the KeyBuffer.
+          s.asList().forEach(gamePiece -> kbuf.remove(gamePiece)); // Clear any deck *members* out of the KeyBuffer.
           return null;
         }
         if (s.isExpanded()) {
@@ -248,7 +248,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     @Override
     public Object visitDefault(GamePiece p) {
       Stack s = p.getParent();
-      if ((s != null) && (s instanceof Deck)) { //BR// Bug13036 - Clear any deck *members* out of the KeyBuffer. (yes, members of decks can be does-not-stack)
+      if ((s != null) && (s instanceof Deck)) { // Clear any deck *members* out of the KeyBuffer. (yes, members of decks can be does-not-stack)
         KeyBuffer.getBuffer().remove(p);
         return null;
       }
