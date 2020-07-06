@@ -91,7 +91,7 @@
             <property name="id" value="RightCurlySame"/>
             <property name="tokens"
              value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
-                    LITERAL_DO, LITERAL_WHILE"/>
+                    LITERAL_DO, "/>
         </module>
         -->
         <module name="RightCurly">
@@ -101,7 +101,7 @@
             <property name="tokens"
              value="CLASS_DEF, CTOR_DEF, LITERAL_FOR, STATIC_INIT,
                     INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY,
-                    LITERAL_IF, LITERAL_ELSE, LITERAL_DO"/>
+                    LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE"/>
             <!-- other possible tokens: -->
             <!-- METHOD_DEF -->
         </module>
