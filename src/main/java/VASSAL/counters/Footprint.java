@@ -78,10 +78,10 @@ public class Footprint extends MovementMarkable {
   protected List<Point> pointList = new ArrayList<>();
 
   // Type Variables (Configured in Ed)
-  protected NamedKeyStroke trailKey;                // Control Key to invoke
-  protected NamedKeyStroke trailKeyOn;              //BR// Control Key to force trails on
-  protected NamedKeyStroke trailKeyOff;             //BR// Control Key to force trails off
-  protected NamedKeyStroke trailKeyClear;           //BR// Control Key to force trails clear
+  protected NamedKeyStroke trailKey;           // Control Key to invoke
+  private NamedKeyStroke trailKeyOn;           // Control Key to force trails on
+  private NamedKeyStroke trailKeyOff;          // Control Key to force trails off
+  private NamedKeyStroke trailKeyClear;        // Control Key to force trails clear
   protected String menuCommand;                // Menu Command
   protected boolean initiallyVisible = false;  // Are Trails initially visible?
   protected boolean globallyVisible = false;   // Are Trails shared between players?
@@ -112,11 +112,11 @@ public class Footprint extends MovementMarkable {
   protected Font font;
   protected double lastZoom;
   protected boolean localVisibility;
-  protected boolean initialized = false; //BR// Protect against multiple re-initializations (Bug 12980)
+  private   boolean initialized = false; // Protect against multiple re-initializations
 
   protected double lineWidth;
   private KeyCommand showTrailCommand;
-  private KeyCommand showTrailCommandOn;      //BR// Commands to force specific trail states
+  private KeyCommand showTrailCommandOn;      // Commands to force specific trail states
   private KeyCommand showTrailCommandOff;
   private KeyCommand showTrailCommandClear;
 
@@ -649,15 +649,15 @@ public class Footprint extends MovementMarkable {
         showTrailCommand = new KeyCommand(menuCommand, trailKey, Decorator.getOutermost(this), this);
       }
       
-      //BR// Key commands to force trails to specific states
+      // Key commands to force trails to specific states
       if (trailKeyOn != null && !trailKeyOn.isNull( )) {
-    	showTrailCommandOn = new KeyCommand("", trailKeyOn, Decorator.getOutermost(this), this);  
+    	  showTrailCommandOn = new KeyCommand("", trailKeyOn, Decorator.getOutermost(this), this);  
       }
       if (trailKeyOff != null && !trailKeyOff.isNull( )) {
-    	showTrailCommandOff = new KeyCommand("", trailKeyOff, Decorator.getOutermost(this), this);  
+    	  showTrailCommandOff = new KeyCommand("", trailKeyOff, Decorator.getOutermost(this), this);  
       }
       if (trailKeyClear != null && !trailKeyClear.isNull()) {
-    	showTrailCommandClear = new KeyCommand("", trailKeyClear, Decorator.getOutermost(this), this);
+    	  showTrailCommandClear = new KeyCommand("", trailKeyClear, Decorator.getOutermost(this), this);
       }
       
       if (showTrailCommand != null
@@ -680,7 +680,7 @@ public class Footprint extends MovementMarkable {
     if (showTrailCommand != null
         && showTrailCommand.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
-      initialized = true; //BR// Bug 12980
+      initialized = true; 
       if (globallyVisible) {
         globalVisibility = !globalVisibility;
       }
@@ -691,10 +691,10 @@ public class Footprint extends MovementMarkable {
       return tracker.getChangeCommand();
     }
     
-    //BR// These two if blocks allow forcing the trails to a specified on or off state - much easier for a "global trails" function to keep track of.
+    // These two if blocks allow forcing the trails to a specified on or off state - much easier for a "global trails" function to keep track of.
     if ((showTrailCommandOn != null) && showTrailCommandOn.matches(stroke)) {
         final ChangeTracker tracker = new ChangeTracker(this);
-        initialized = true;
+        initialized = true; 
         if (globallyVisible) {
           globalVisibility = true;
         }
@@ -707,7 +707,7 @@ public class Footprint extends MovementMarkable {
 
     if ((showTrailCommandOff != null) && showTrailCommandOff.matches(stroke)) {
         final ChangeTracker tracker = new ChangeTracker(this);
-        initialized = true;
+        initialized = true; 
         if (globallyVisible) {
           globalVisibility = false;
         }
@@ -718,7 +718,7 @@ public class Footprint extends MovementMarkable {
         return tracker.getChangeCommand();    	
     }
     
-    //BR// Clears the movement trail history (without being forced to do any other stuff)
+    // Clears the movement trail history (without being forced to do any other stuff)
     if ((showTrailCommandClear != null) && showTrailCommandClear.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
       clearTrail();      
@@ -774,7 +774,7 @@ public class Footprint extends MovementMarkable {
       mc = new StringConfigurer(null, "Menu Command:  ", p.menuCommand);
       controls.add(mc.getControls());
       
-      //BR// Bug 12980 bonus treats
+      // Trail forcing commands
       trailKeyOn = new NamedHotKeyConfigurer(null, "TURN ON Key Command:  ", p.trailKeyOn);
       controls.add(trailKeyOn.getControls());      
       trailKeyOff = new NamedHotKeyConfigurer(null, "TURN OFF Key Command:  ", p.trailKeyOff);
