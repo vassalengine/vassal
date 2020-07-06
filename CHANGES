@@ -20,6 +20,10 @@
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
 * 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number
     of pieces' to a Deck correctly
+* 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in
+    buggy trail behavior
+*  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off
+    movement trails
 
 3.3.2 - ???
 
