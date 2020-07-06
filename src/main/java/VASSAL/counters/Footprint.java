@@ -76,9 +76,9 @@ public class Footprint extends MovementMarkable {
 
   // Type Variables (Configured in Ed)
   protected NamedKeyStroke trailKey;           // Control Key to invoke
-  private NamedKeyStroke trailKeyOn;           // Control Key to force trails on
-  private NamedKeyStroke trailKeyOff;          // Control Key to force trails off
-  private NamedKeyStroke trailKeyClear;        // Control Key to force trails clear
+  protected NamedKeyStroke trailKeyOn;         // Control Key to force trails on
+  protected NamedKeyStroke trailKeyOff;        // Control Key to force trails off
+  protected NamedKeyStroke trailKeyClear;      // Control Key to force trails clear
   protected String menuCommand;                // Menu Command
   protected boolean initiallyVisible = false;  // Are Trails initially visible?
   protected boolean globallyVisible = false;   // Are Trails shared between players?
@@ -109,7 +109,7 @@ public class Footprint extends MovementMarkable {
   protected Font font;
   protected double lastZoom;
   protected boolean localVisibility;
-  private   boolean initialized = false; // Protect against multiple re-initializations
+  protected boolean initialized = false; // Protect against multiple re-initializations
 
   protected double lineWidth;
   private KeyCommand showTrailCommand;
