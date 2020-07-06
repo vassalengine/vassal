@@ -90,6 +90,7 @@ public class NamedKeyStroke {
     return stroke;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof NamedKeyStroke) {
       if (getKeyStroke() == null) {

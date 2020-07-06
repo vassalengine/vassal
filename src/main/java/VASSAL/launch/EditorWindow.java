@@ -177,7 +177,7 @@ public abstract class EditorWindow extends JFrame {
       mb.add(helpMenu);
     }
 
-    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
     saveAction = new SaveAction() {
       private static final long serialVersionUID = 1L;

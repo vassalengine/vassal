@@ -67,16 +67,16 @@ public class HotkeySpecifier extends JTextField implements KeyListener {
 
   public static String getString(KeyStroke k) {
     String s = KeyEvent.getKeyText(k.getKeyCode());
-    if ((k.getModifiers() & KeyEvent.SHIFT_MASK) > 0) {
+    if ((k.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) > 0) {
       s = KeyEvent.getKeyText(KeyEvent.VK_SHIFT) + "+" + s;
     }
-    if ((k.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
+    if ((k.getModifiers() & KeyEvent.CTRL_DOWN_MASK) > 0) {
       s = KeyEvent.getKeyText(KeyEvent.VK_CONTROL) + "+" + s;
     }
-    if ((k.getModifiers() & KeyEvent.META_MASK) > 0) {
+    if ((k.getModifiers() & KeyEvent.META_DOWN_MASK) > 0) {
       s = KeyEvent.getKeyText(KeyEvent.VK_META) + "+" + s;
     }
-    if ((k.getModifiers() & KeyEvent.ALT_MASK) > 0) {
+    if ((k.getModifiers() & KeyEvent.ALT_DOWN_MASK) > 0) {
       s = KeyEvent.getKeyText(KeyEvent.VK_ALT) + "+" + s;
     }
     return s;

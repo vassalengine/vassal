@@ -346,7 +346,7 @@ public class IconFamily extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override
@@ -402,7 +402,7 @@ public class IconFamily extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   @Override

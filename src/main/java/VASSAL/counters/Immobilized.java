@@ -469,4 +469,3 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 }
-

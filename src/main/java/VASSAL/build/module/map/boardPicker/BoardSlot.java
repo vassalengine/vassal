@@ -41,13 +41,12 @@ import VASSAL.tools.swing.SwingUtils;
 public class BoardSlot extends JPanel implements Icon, ActionListener {
   private static final long serialVersionUID = 1L;
 
-  private String prompt =
-    Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
+  private final String prompt;
 
   protected BoardPicker picker;
   protected Board board = null;
 
-  protected JComboBox boards;
+  protected JComboBox<String> boards;
   protected JCheckBox reverseCheckBox;
 
   public BoardSlot(BoardPicker bp) {
@@ -57,7 +56,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   public BoardSlot(BoardPicker bp, String prompt) {
     this.prompt = prompt;
     picker = bp;
-    boards = new JComboBox();
+    boards = new JComboBox<>();
     boards.addItem(prompt);
 
     final String[] lbn = picker.getAllowableLocalizedBoardNames();

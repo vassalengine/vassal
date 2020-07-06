@@ -47,8 +47,8 @@ import VASSAL.build.Widget;
 public class BoxWidget extends Widget
     implements ItemListener, PropertyChangeListener {
   private JPanel panel;
-  private JComboBox box;
-  private DefaultComboBoxModel widgets = new DefaultComboBoxModel();
+  private JComboBox<Widget> box;
+  private DefaultComboBoxModel<Widget> widgets = new DefaultComboBoxModel<>();
   private CardLayout layout = new CardLayout();
   private JPanel multiPanel = new JPanel();
   private List<Widget> built = new ArrayList<>();
@@ -87,8 +87,7 @@ public class BoxWidget extends Widget
   }
 
   @Override
-  public void propertyChange
-      (java.beans.PropertyChangeEvent evt) {
+  public void propertyChange(java.beans.PropertyChangeEvent evt) {
     if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())
         && box != null) {
       box.revalidate();
@@ -99,12 +98,11 @@ public class BoxWidget extends Widget
   public java.awt.Component getComponent() {
     if (panel == null) {
       rebuild();
-      box = new JComboBox();
+      box = new JComboBox<Widget>();
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       multiPanel.setLayout(layout);
-      if (size.width > 0
-        && size.height > 0) {
+      if (size.width > 0 && size.height > 0) {
         multiPanel.setPreferredSize(size);
       }
 

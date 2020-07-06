@@ -405,7 +405,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected IntConfigurer yOffsetConfig = new IntConfigurer(null, "Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
     protected BooleanConfigurer aboveConfig;
-    protected JComboBox placementConfig;
+    protected JComboBox<String> placementConfig;
     protected NamedHotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
     private String slotId;
@@ -473,7 +473,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         });
         aboveConfig.getControls().setVisible(piece.matchRotation);
       }
-      placementConfig = new JComboBox(new String[]{"On top of stack","On bottom of stack","Above this piece","Below this piece"});
+      placementConfig = new JComboBox<>(new String[]{"On top of stack", "On bottom of stack", "Above this piece", "Below this piece"});
       placementConfig.setSelectedIndex(piece.placement);
       Box placementBox = Box.createHorizontalBox();
       placementBox.add(new JLabel("Place marker:  "));

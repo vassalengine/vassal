@@ -34,8 +34,8 @@ public class FormattedStringConfigurer
     extends StringConfigurer
     implements ActionListener, FocusListener {
 
-  private DefaultComboBoxModel optionsModel;
-  private JComboBox dropList;
+  private final DefaultComboBoxModel<String> optionsModel;
+  private JComboBox<String> dropList;
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
@@ -46,7 +46,7 @@ public class FormattedStringConfigurer
       String name,
       String[] options) {
     super(key, name);
-    optionsModel = new DefaultComboBoxModel();
+    optionsModel = new DefaultComboBoxModel<>();
     setOptions(options);
   }
 
@@ -62,7 +62,7 @@ public class FormattedStringConfigurer
   public String[] getOptions() {
     String[] s = new String[optionsModel.getSize()];
     for (int i=0;i<s.length;++i) {
-      s[i] = (String) optionsModel.getElementAt(i);
+      s[i] = optionsModel.getElementAt(i);
     }
     return s;
   }
@@ -73,7 +73,7 @@ public class FormattedStringConfigurer
       super.getControls();
 
       nameField.addFocusListener(this);
-      dropList = new JComboBox(optionsModel);
+      dropList = new JComboBox<>(optionsModel);
       dropList.setSelectedIndex(0);
       dropList.setEnabled(false);
       dropList.addActionListener(this);
@@ -89,6 +89,7 @@ public class FormattedStringConfigurer
       dropList.setVisible(optionsModel.getSize() > 1);
     }
   }
+
   /*
    * Drop-down list has been clicked, insert selected option onto string
    */
@@ -144,6 +145,5 @@ public class FormattedStringConfigurer
   @Override
   public void focusLost(FocusEvent arg0) {
     dropList.setEnabled(false);
-
   }
 }

@@ -1,6 +1,4 @@
 #
-# $Id$
-#
 # This Makefile is intended for use on Linux systems. If you are trying to use
 # it elsewhere, you are on your own.
 #
@@ -107,7 +105,8 @@ $(TMPDIR)/VASSAL.exe: fast-compile $(TMPDIR)
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | grep -v 'split package' | tr -d '\n' >$@
+	echo -n jdk.crypto.ec, >$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #dist/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png

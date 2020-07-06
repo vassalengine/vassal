@@ -399,7 +399,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     private JPanel panel;
     private LevelModel model;
-    private JList levelList;
+    private final JList<String> levelList;
     private JButton addButton;
     private JButton removeButton;
     private JButton initialButton;
@@ -529,7 +529,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // level list
       model = new LevelModel();
-      levelList = new JList(model);
+      levelList = new JList<>(model);
       levelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       levelList.setSelectedIndex(0);
 
@@ -607,7 +607,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     /**
      * A {@link ListModel} built on the {@link State}.
      */
-    protected class LevelModel extends AbstractListModel {
+    protected class LevelModel extends AbstractListModel<String> {
       private static final long serialVersionUID = 1L;
 
       public void updateModel() {
@@ -615,7 +615,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
 
       @Override
-      public Object getElementAt(int i) {
+      public String getElementAt(int i) {
         return z.state.getLevels().get(i) +
           (z.state.getInitialLevel() == i ? " *" : ""); //$NON-NLS-1$ //$NON-NLS-2$
       }

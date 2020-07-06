@@ -383,9 +383,9 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     private JCheckBox startLockedConfig;
     private JCheckBox matchCrcConfig;
     private JTextField crcConfig;
-    private JComboBox vassalVersionConfig;
+    private JComboBox<String> vassalVersionConfig;
     private JTextField minimumVassalVersionConfig;
-    private JComboBox moduleVersionConfig;
+    private JComboBox<String> moduleVersionConfig;
     private JTextField minimumModuleVersionConfig;
     private String vassalVersion;
     private String moduleVersion;
@@ -428,7 +428,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       add(startLockedConfig, "wrap"); //$NON-NLS-1$
 
       add(new JLabel(Resources.getString("Chat.vassal_versions_allowed")));     //$NON-NLS-1$
-      vassalVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
+      vassalVersionConfig = new JComboBox<>(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
       vassalVersionConfig.addItemListener(new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
@@ -440,7 +440,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       add(minimumVassalVersionConfig, "wrap"); //$NON-NLS-1$
 
       add(new JLabel(Resources.getString("Chat.module_versions_allowed"))); //$NON-NLS-1$
-      moduleVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
+      moduleVersionConfig = new JComboBox<>(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
       moduleVersionConfig.addItemListener(new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
@@ -497,8 +497,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     }
 
     private void updateVisibility() {
-      minimumVassalVersionConfig.setVisible(! ANY_VERSION.equals(vassalVersionConfig.getSelectedItem()));
-      minimumModuleVersionConfig.setVisible(! ANY_VERSION.equals(moduleVersionConfig.getSelectedItem()));
+      minimumVassalVersionConfig.setVisible(!ANY_VERSION.equals(vassalVersionConfig.getSelectedItem()));
+      minimumModuleVersionConfig.setVisible(!ANY_VERSION.equals(moduleVersionConfig.getSelectedItem()));
       crcConfig.setVisible(matchCrcConfig.isSelected());
 
       roomNameConfig.setEditable(isUpdateEnabled());

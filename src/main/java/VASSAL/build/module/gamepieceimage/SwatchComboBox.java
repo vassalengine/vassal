@@ -34,7 +34,7 @@ import javax.swing.table.TableCellRenderer;
 
 import VASSAL.tools.image.ImageUtils;
 
-public class SwatchComboBox extends JComboBox {
+public class SwatchComboBox extends JComboBox<String> {
   private static final long serialVersionUID = 1L;
 
   public SwatchComboBox() {
@@ -57,7 +57,7 @@ public class SwatchComboBox extends JComboBox {
     addItemListener(l);
   }
 
-  public class SwatchRenderer extends JLabel implements ListCellRenderer {
+  public class SwatchRenderer extends JLabel implements ListCellRenderer<String> {
     private static final long serialVersionUID = 1L;
 
     public SwatchRenderer() {
@@ -71,10 +71,10 @@ public class SwatchComboBox extends JComboBox {
      * value and returns the label, set up to display the text and image.
      */
     @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+    public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected,
         boolean cellHasFocus) {
 
-      ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch((String) value);
+      ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch(value);
 
       if (isSelected) {
         setBackground(list.getSelectionBackground());
@@ -96,7 +96,7 @@ public class SwatchComboBox extends JComboBox {
       g.dispose();
 
       setIcon(new ImageIcon(img));
-      setText((String) value);
+      setText(value);
       setFont(list.getFont());
 
       return this;
