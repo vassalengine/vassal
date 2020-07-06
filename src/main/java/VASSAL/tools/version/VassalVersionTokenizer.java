@@ -152,7 +152,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
         state = State.BUILD;
         break;
 
-      case BUILD:
+      case BUILD: {
         // there may be stuff beyond the build number, but we don't care
         final int hi = v.indexOf('-');
         final String b = v.substring(0, hi == -1 ? v.length() : hi);
@@ -171,7 +171,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
         v = "";
         state = State.EOS;
         return n;
-
+      }
       case EOS: // mark the end of the string
         state = State.END;
         return -1;
