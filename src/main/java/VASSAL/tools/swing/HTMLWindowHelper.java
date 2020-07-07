@@ -19,12 +19,15 @@
 package VASSAL.tools.swing;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -72,9 +75,13 @@ public class HTMLWindowHelper implements HyperlinkListener {
   }
 
   public void setup(Window w, URL contents) {
-    w.add(new ScrollPane(pane));
+    ScrollPane s = new ScrollPane(pane);
+    final Font f = new JLabel().getFont();
+    FontMetrics fm = w.getFontMetrics(f);
+    s.getVerticalScrollBar().setUnitIncrement(fm.getHeight()*3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
+    w.add(s);
     update(contents);
-    w.pack();
+    w.pack();    
 
     final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     int width = Math.max(d.width / 2, w.getSize().width);

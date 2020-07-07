@@ -39,6 +39,7 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
     super(parent);
     setTitle(title);
     setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+
     helper.setup(this, contents);
   }
 
