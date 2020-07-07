@@ -18,6 +18,8 @@
 package VASSAL.build.widget;
 
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -129,6 +131,10 @@ public class HtmlChart extends Widget implements MouseListener {
       scroller = new ScrollPane(htmlWin);
       scroller.getViewport().setPreferredSize(htmlWin.getPreferredSize());
       scroller.getViewport().setAlignmentY(0.0F);
+      
+      final Font f = new JLabel().getFont();
+      FontMetrics fm = htmlWin.getFontMetrics(f);
+      scroller.getVerticalScrollBar().setUnitIncrement(fm.getHeight()*3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     }
     return scroller;
   }
