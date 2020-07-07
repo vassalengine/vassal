@@ -26,8 +26,7 @@ public class IPCMessageDispatcher implements Runnable {
         msg = queue.take();
         out.writeObject(msg);
         out.flush();
-      }
-      while (!(msg instanceof Fin));
+      } while (!(msg instanceof Fin));
 
       out.close();
     }

@@ -38,8 +38,7 @@ class IPCMessageReceiver implements Runnable {
 //System.err.println("received " + msg);
 
         lsup.notify(msg);
-      }
-      while (!(msg instanceof Fin));
+      } while (!(msg instanceof Fin));
 
       in.close();
     }

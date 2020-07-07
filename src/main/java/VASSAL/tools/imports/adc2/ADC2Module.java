@@ -2057,8 +2057,7 @@ public class ADC2Module extends Importer {
         Player player = new Player(name, hiddenSymbol, hiddenPieceOptions);
         players.add(player);
       }
-    }
-    while (name.length() > 0);
+    } while (name.length() > 0);
   }
 
   @SuppressWarnings("fallthrough")
@@ -2399,8 +2398,7 @@ public class ADC2Module extends Importer {
                   line = line.replaceFirst("^ ", "&nbsp;");
                   sb.append("<p>" + line + "</p>");
                 }
-              }
-              while (line != null);
+              } while (line != null);
 
               sb.append("</body></html>");
               gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());

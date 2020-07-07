@@ -140,8 +140,7 @@ public abstract class Importer {
         sb.append(File.separatorChar);
       else if (ch != 0)
         sb.append(ch);
-    }
-    while (ch != 0);
+    } while (ch != 0);
     return sb.toString();
   }
 

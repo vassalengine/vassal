@@ -548,8 +548,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       do {
         val += ALPHABET.charAt(rowOrColumn % 26);
         rowOrColumn -= 26;
-      }
-      while (rowOrColumn >= 0);
+      } while (rowOrColumn >= 0);
       return val;
     default: // Numeric
       while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {

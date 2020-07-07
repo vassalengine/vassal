@@ -118,8 +118,7 @@ class JPEGDecoder {
         System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
 
 
-      }
-      while (ch.type != JPEGDecoder.EOI);
+      } while (ch.type != JPEGDecoder.EOI);
     }
   }
 }
