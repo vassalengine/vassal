@@ -45,6 +45,12 @@ public interface Properties {
    * @see VASSAL.build.GameModule#getUserId
    */
   public static final String OBSCURED_BY = Obscurable.ID;
+  
+  /**
+   * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to band-select events if the
+   * filter rejects them
+   */
+  public static final String BAND_SELECT_EVENT_FILTER = "bandSelectEventFilter";
 
   /**
    * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to selection events if the
