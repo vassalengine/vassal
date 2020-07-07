@@ -884,7 +884,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     
     //Save our old drag threshold
     oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
-    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getDragThreshold()));
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
 
     /*
      * Tell any Plugin components that the build is complete so that they

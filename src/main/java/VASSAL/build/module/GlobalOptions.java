@@ -94,7 +94,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   
-  private static int dragThreshold = 10;
+  private int dragThreshold = 10;
 
   private Map<String,Object> properties = new HashMap<>();
   private static Map<String,Configurer> optionConfigurers = new LinkedHashMap<>();
@@ -477,10 +477,10 @@ public class GlobalOptions extends AbstractConfigurable {
     return isEnabled(markMoved, MARK_MOVED);
   }
   
-  public static int getDragThreshold() {
+  public int getDragThreshold() {
     return dragThreshold;
   }
-
+  
   public String getPlayerId() {
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());
