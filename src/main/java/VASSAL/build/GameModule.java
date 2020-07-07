@@ -185,6 +185,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
+  
+  private static String oldDragThreshold; //
 
   /**
    * @return the top-level frame of the controls window
@@ -871,7 +873,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         throw e;
       }
     }
-
+    
     /*
      *  If we are editing, check for duplicate, illegal or missing GamePiece Id's
      *  and update if necessary.
@@ -879,6 +881,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
     }
+    
+    //Save our old drag threshold
+    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
 
     /*
      * Tell any Plugin components that the build is complete so that they
@@ -893,6 +899,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Unload the module
    */
   public static void unload() {
+    
+    // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
+    if (oldDragThreshold != null) {
+      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);      
+    } else {
+      System.clearProperty("awt.dnd.drag.threshold");            
+    }
+    
     if (theModule != null) {
       if (theModule.shutDown()) {
         theModule = null;

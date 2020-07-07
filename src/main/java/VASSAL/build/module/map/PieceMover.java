@@ -1216,9 +1216,7 @@ public class PieceMover extends AbstractBuildable
       final Map map = dge.getComponent() instanceof Map.View ?
                       ((Map.View) dge.getComponent()).getMap() : null;
 
-      final Point mousePosition = (map == null)
-                        ? dge.getDragOrigin()
-                        : map.mapToComponent(dge.getDragOrigin());
+      final Point mousePosition = dge.getDragOrigin(); //BR// Bug13137 - now that we're not pre-adulterating dge's event, it already arrives in component coordinates
       Point piecePosition = (map == null)
                     ?  piece.getPosition()
                     : map.mapToComponent(piece.getPosition());
