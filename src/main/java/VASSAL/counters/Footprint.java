@@ -690,29 +690,29 @@ public class Footprint extends MovementMarkable {
 
     // These two if blocks allow forcing the trails to a specified on or off state - much easier for a "global trails" function to keep track of.
     if (showTrailCommandOn != null && showTrailCommandOn.matches(stroke)) {
-        final ChangeTracker tracker = new ChangeTracker(this);
-        initialized = true;
-        if (globallyVisible) {
-          globalVisibility = true;
-        }
-        else {
-          localVisibility = true;
-        }
-        redraw();
-        return tracker.getChangeCommand();
+      final ChangeTracker tracker = new ChangeTracker(this);
+      initialized = true;
+      if (globallyVisible) {
+        globalVisibility = true;
+      }
+      else {
+        localVisibility = true;
+      }
+      redraw();
+      return tracker.getChangeCommand();
     }
 
     if (showTrailCommandOff != null && showTrailCommandOff.matches(stroke)) {
-        final ChangeTracker tracker = new ChangeTracker(this);
-        initialized = true;
-        if (globallyVisible) {
-          globalVisibility = false;
-        }
-        else {
-          localVisibility = false;
-        }
-        redraw();
-        return tracker.getChangeCommand();
+      final ChangeTracker tracker = new ChangeTracker(this);
+      initialized = true;
+      if (globallyVisible) {
+        globalVisibility = false;
+      }
+      else {
+        localVisibility = false;
+      }
+      redraw();
+      return tracker.getChangeCommand();
     }
 
     // Clears the movement trail history (without being forced to do any other stuff)
