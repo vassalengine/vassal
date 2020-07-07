@@ -187,7 +187,7 @@ public class GlobalOptions extends AbstractConfigurable {
     //BR// Drag Threshold
     final IntConfigurer dragThresholdConf = new IntConfigurer(
       DRAG_THRESHOLD,
-      Resources.getString("Mouse Drag Threshold"),  //$NON-NLS-1$
+      Resources.getString("GlobalOptions.mouse_drag_threshold"),  //$NON-NLS-1$
       10
     );
     dragThresholdConf.addPropertyChangeListener(new PropertyChangeListener() {
