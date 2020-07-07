@@ -112,7 +112,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
-      if (!e.isPopupTrigger() && (boolean)p.getProperty(Properties.NON_MOVABLE)) {
+      if (!e.isPopupTrigger() && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
         bandSelect = BandSelectType.SPECIAL; //BR// Don't "eat" band-selects if unit found is non-movable
       }
     }
