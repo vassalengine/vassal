@@ -4,6 +4,7 @@
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
+* 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
 * 13036: Entire contents of a deck can be inadvertently group-selected and moved
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
