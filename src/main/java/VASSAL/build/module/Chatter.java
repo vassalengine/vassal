@@ -142,7 +142,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     conversation.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
 
     scroll.setViewportView(conversation);
-    scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster																									
+    scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster
     add(scroll);
     add(input);
     
@@ -160,8 +160,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   // To make the player colors easy to override in a custom class 
   // (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
-  protected String getChatStyle(String s)
-  {   
+  protected String getChatStyle(String s) {   
     if (s.startsWith(formatChat("").trim())) { //$NON-NLS-1$
       return "mychat";      
     } 
@@ -171,8 +170,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
     
   // A hook for inserting a console class that accepts commands 
-  protected void consoleHook(String s, String style, boolean html_allowed)
-  {
+  protected void consoleHook(String s, String style, boolean html_allowed) {
     
   }
 
@@ -257,7 +255,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
       base = s.toLowerCase().indexOf(keystring);
       file = s.substring(base + keystring.length(), s.length()).split("\"")[0]; // Pull the filename out from between the quotes
-      tag  = s.substring(base, base + keystring.length()) + file + "\"";    // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring						
+      tag  = s.substring(base, base + keystring.length()) + file + "\""; // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
 
       try {
         url = GameModule.getGameModule().getDataArchive().getURL("images/" + file);
@@ -420,7 +418,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // game message color
     //
     final ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG1_COLOR,
-                                                             Resources.getString("Chatter.game_messages_preference") + "(#1 - standard messages and \"|\"):  ", Color.black);
+                                                             Resources.getString("Chatter.game_messages_preference"), Color.black);
 
     gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -436,7 +434,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #2 (messages starting with "!") 
     final ColorConfigurer gameMsg2Color = new ColorConfigurer(GAME_MSG2_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference") + "(#2 - first character \"!\"):  ", new Color(0, 153, 51));
+                                                              Resources.getString("Chatter.game_messages_preference_2"), new Color(0, 153, 51));
 
     gameMsg2Color.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -452,7 +450,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #3 (messages starting with "?")
     final ColorConfigurer gameMsg3Color = new ColorConfigurer(GAME_MSG3_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference") + "(#3 - first character \"?\"):  ", new Color(255, 102, 102));
+                                                              Resources.getString("Chatter.game_messages_preference_3"), new Color(255, 102, 102));
 
     gameMsg3Color.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -469,7 +467,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #4 (messages starting with "~")
     final ColorConfigurer gameMsg4Color = new ColorConfigurer(GAME_MSG4_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference") + "(#4 - first character \"~\"):  ", new Color(255, 0, 0));
+                                                              Resources.getString("Chatter.game_messages_preference_4"), new Color(255, 0, 0));
 
     gameMsg4Color.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -486,7 +484,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // game message color #5 (messages starting with "`")
     final ColorConfigurer gameMsg5Color = new ColorConfigurer(GAME_MSG5_COLOR,
-                                                              Resources.getString("Chatter.game_messages_preference") + "(#5 - first character \"`\"):  ", new Color(153, 0, 153));
+                                                              Resources.getString("Chatter.game_messages_preference_5"), new Color(153, 0, 153));
 
     gameMsg5Color.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -582,7 +580,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
     } 
     else if (c instanceof VASSAL.build.module.Chatter.DisplayText) {
-      return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$	
+      return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$
     } 
     else {
       return null;
@@ -611,17 +609,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     } 
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
-          if (!input.getText().isEmpty())
-            send(formatChat(input.getText()));
-          input.setText(""); //$NON-NLS-1$
-          break;
-        case KeyEvent.VK_BACK_SPACE:
-        case KeyEvent.VK_DELETE:
-          String s = input.getText();
-          if (!s.isEmpty())
-            input.setText(s.substring(0, s.length() - 1));
-          break;
+      case KeyEvent.VK_ENTER:
+        if (!input.getText().isEmpty())
+          send(formatChat(input.getText()));
+        input.setText(""); //$NON-NLS-1$
+        break;
+      case KeyEvent.VK_BACK_SPACE:
+      case KeyEvent.VK_DELETE:
+        String s = input.getText();
+        if (!s.isEmpty())
+          input.setText(s.substring(0, s.length() - 1));
+        break;
       }
     }
   }
