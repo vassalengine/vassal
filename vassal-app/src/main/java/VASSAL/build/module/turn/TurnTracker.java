@@ -804,16 +804,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
 
-  /** @deprecated Use {@link #replace(StringBuilder,String,String)} instead. */
-  @Deprecated
-  public void replace(StringBuffer s, String from, String to) {
-    int i = s.indexOf(from);
-    while (i >= 0) {
-      s = s.replace(i, i+2, to);
-      i = s.indexOf(from);
-    }
-  }
-
   @Override
   public Command getRestoreCommand() {
     return new SetTurn(getState(), this);

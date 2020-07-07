@@ -138,7 +138,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected int borderOpacity = 100;
 
   protected Area shape;
-  @Deprecated protected BufferedImage shadePattern = null;
   protected Rectangle patternRect = new Rectangle();
 
   protected ImageOp srcOp;

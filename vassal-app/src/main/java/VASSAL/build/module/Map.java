@@ -765,16 +765,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     setBoardBoundaries();
   }
 
-  /**
-   * Set the boards for this map. Each map may contain more than one
-   * {@link Board}.
-   * @deprecated Use {@link #setBoards(Collection<Board>)} instead.
-   */
-  @Deprecated
-  public synchronized void setBoards(Enumeration<Board> boardList) {
-    setBoards(Collections.list(boardList));
-  }
-
   @Override
   public Command getRestoreCommand() {
     return null;
@@ -955,11 +945,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return componentToMap(p);
   }
 
-  @Deprecated
-  public Rectangle mapRectangle(Rectangle r) {
-    return componentToMap(r);
-  }
-
   /**
    * Translate a point from map coordinates to component coordinates
    *
@@ -968,11 +953,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Deprecated
   public Point componentCoordinates(Point p) {
     return mapToComponent(p);
-  }
-
-  @Deprecated
-  public Rectangle componentRectangle(Rectangle r) {
-    return mapToComponent(r);
   }
 
   protected int scale(int c, double zoom) {
@@ -2174,14 +2154,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       p.setMap(this);
       theMap.repaint();
     }
-  }
-
-  /**
-   * Reorder the argument GamePiece to the new index. When painting the map, pieces are drawn in order of index
-   *
-   * @deprecated use {@link PieceCollection#moveToFront}
-   */
-  @Deprecated public void reposition(GamePiece s, int pos) {
   }
 
   /**

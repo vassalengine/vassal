@@ -63,8 +63,6 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected int x = 0;
   protected int y = 0;
   protected VisibilityCondition visibilityCondition;
-  @Deprecated
-  protected Image image;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   @Override

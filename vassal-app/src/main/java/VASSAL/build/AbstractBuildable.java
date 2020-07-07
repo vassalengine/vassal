@@ -106,15 +106,6 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
 
   /**
    * @return all build components that are an instance of the given class
-   * @deprecated Use {@link #getComponentsOf(Class<T>)} instead.
-   */
-  @Deprecated
-  public <T> Enumeration<T> getComponents(Class<T> target) {
-    return Collections.enumeration(getComponentsOf(target));
-  }
-
-  /**
-   * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<>();
@@ -124,19 +115,6 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
       }
     }
     return l;
-  }
-
-  /**
-   * Recursively descend the build tree and return an enumeration of all
-   * components that are instances of the given class
-   *
-   * @param target
-   * @return
-   * @deprecated Use {@link #getAllDescendantComponentsOf(Class<T>)} instead.
-   */
-  @Deprecated
-  public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
-    return Collections.enumeration(getAllDescendantComponentsOf(target));
   }
 
   /**

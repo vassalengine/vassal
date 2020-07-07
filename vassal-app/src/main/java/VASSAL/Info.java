@@ -116,25 +116,6 @@ public final class Info {
     return gitProperties.getVersion();
   }
 
-  /**
-   * @return The major/minor portion of the release version. If the version is a
-   * beta-release number, a 'beta' is appended. For example, the minor
-   * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
-   *
-   * @deprecated If you need the minor version number, get it from
-   * a {@link VersionTokenizer}.
-   */
-  @Deprecated
-  public static String getMinorVersion() {
-    final VersionTokenizer tok = new VassalVersionTokenizer(gitProperties.getVersion());
-    try {
-      return tok.next() + "." + tok.next();
-    }
-    catch (VersionFormatException e) {
-      return null;
-    }
-  }
-
   private static final int instanceID;
 
   /**
@@ -163,18 +144,6 @@ public final class Info {
   @Deprecated
   public static boolean isMacOSX() {
     return SystemUtils.IS_OS_MAC_OSX;
-  }
-
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead. */
-  @Deprecated
-  public static boolean isMacOsX() {
-    return SystemUtils.IS_OS_MAC_OSX;
-  }
-
-  /** @deprecated Use {@link SystemUtils#IS_OS_WINDOWS} instead */
-  @Deprecated
-  public static boolean isWindows() {
-    return SystemUtils.IS_OS_WINDOWS;
   }
 
   public static boolean isModuleTooNew(String version) {
@@ -223,17 +192,6 @@ public final class Info {
    */
   public static File getBaseDir() {
     return new File(System.getProperty("user.dir"));
-  }
-
-  /**
-   * Returns the directory where the VASSAL documentation is installed.
-   *
-   * @return a {@link File} representing the directory
-   * @deprecated Use {@link #getDocDir()} instead.
-   */
-  @Deprecated
-  public static File getDocsDir() {
-    return getDocDir();
   }
 
   public static File getBinDir() {

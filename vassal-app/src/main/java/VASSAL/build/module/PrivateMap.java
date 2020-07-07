@@ -258,17 +258,6 @@ public class PrivateMap extends Map {
     super.setBoards(c);
   }
 
-  /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
-  @Override
-  @Deprecated
-  public void setBoards(Enumeration<Board> boardList) {
-    if (surrogate != null) {
-      boardList = surrogate.getAllBoards();
-      edgeBuffer = surrogate.getEdgeBuffer();
-    }
-    super.setBoards(boardList);
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PrivateMap.component_type"); //$NON-NLS-1$
   }
