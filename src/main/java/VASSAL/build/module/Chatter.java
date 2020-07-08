@@ -161,12 +161,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   // To make the player colors easy to override in a custom class 
   // (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
   protected String getChatStyle(String s) {   
-    if (s.startsWith(formatChat("").trim())) { //$NON-NLS-1$
-      return "mychat";      
-    } 
-    else {
-      return "other";
-    }   
+    return s.startsWith(formatChat("").trim()) ? "mychat" : "other";
   }
     
   // A hook for inserting a console class that accepts commands 
