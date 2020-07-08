@@ -1,7 +1,10 @@
 3.3.3-beta1 - ???
 
+* 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects,
+    and band-select gets Does-Not-Stack filter
 * 13146: Custom classes that are children fail to be culled in
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
+* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making         double-click difficult; also added preference for drag threshold adjustment
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel

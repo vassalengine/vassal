@@ -19,47 +19,63 @@
 package VASSAL.tools.version;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
 public class VassalVersionTokenizerTest {
+
+  private final String inputVersionString;
+  private final Object[] expectedResult;
+
+  public VassalVersionTokenizerTest(String inputVersionString, Object[] expectedResult) {
+    this.inputVersionString = inputVersionString;
+    this.expectedResult = expectedResult;
+  }
+
+  /**
+   * The first element is the input, the second is the array of expected tokens.
+   * A null indicates that a VersionFormatException is expected.
+   */
+  @Parameterized.Parameters
+  public static Collection<Object[]> testData() {
+    return Arrays.asList(new Object[][]{
+      { "1.2.3",                   new Object[] { 1, 2, 3         }},
+      { "1.2.3.4",                 new Object[] { 1, 2, 3, 4      }},
+      { "1.2.3-rc3",               new Object[] { 1, 2, 3, null   }},
+      { "foobarbaz",               new Object[] { null            }},
+      { "1.2.foo",                 new Object[] { 1, 2, null      }},
+      { "3.0b6",                   new Object[] { 3, 0, null      }},
+      { "3.3.1-test",              new Object[] { 3, 3, 1, -1     }},
+      { "3.3.1-test-80",           new Object[] { 3, 3, 1, -1, 80 }},
+      { "3.3.1-test-80-gf8ef2523", new Object[] { 3, 3, 1, -1, 80 }},
+      { "3.3.1-80",                new Object[] { 3, 3, 1, 80     }},
+      { "3.3.1-80-gf8ef2523",      new Object[] { 3, 3, 1, 80     }}
+    });
+  }
+
   @Test
   public void testTokenizer() throws VersionFormatException {
-    // The first element is the input, following elements are the
-    // expected tokens. A null indicates that a VersionFormatException
-    // is expected.
-    final Object[][] versions = {
-      { "1.2.3",                   1, 2, 3         },
-      { "1.2.3.4",                 1, 2, 3, 4      },
-      { "1.2.3-rc3",               1, 2, 3, null   },
-      { "foobarbaz",               null            },
-      { "1.2.foo",                 1, 2, null      },
-      { "3.0b6",                   3, 0, null      },
-      { "3.3.1-test",              3, 3, 1, -1     },
-      { "3.3.1-test-80",           3, 3, 1, -1, 80 },
-      { "3.3.1-test-80-gf8ef2523", 3, 3, 1, -1, 80 },
-      { "3.3.1-80",                3, 3, 1, 80     },
-      { "3.3.1-80-gf8ef2523",      3, 3, 1, 80     }
-    };
-
-    for (Object[] v : versions) {
-      final String vs = (String) v[0];
-      final VassalVersionTokenizer tok = new VassalVersionTokenizer(vs);
-      for (int i = 1; i < v.length; ++i) {
-        if (v[i] != null) {
-          assertEquals(vs, v[i], tok.next());
+    final VassalVersionTokenizer tok = new VassalVersionTokenizer(inputVersionString);
+    for (Object nextExpected : expectedResult) {
+      if (nextExpected != null) {
+        assertEquals(inputVersionString, nextExpected, tok.next());
+      }
+      else {
+        try {
+          tok.next();
         }
-        else {
-          try {
-            tok.next();
-          }
-          catch (VersionFormatException e) {
-            // This is expected.
-            continue;
-          }
-
-          fail("expected exception from " + vs + ", token " + i);
+        catch (VersionFormatException e) {
+          // This is expected.
+          continue;
         }
+
+        fail("expected exception from " + inputVersionString + ", token " + nextExpected);
       }
     }
   }
