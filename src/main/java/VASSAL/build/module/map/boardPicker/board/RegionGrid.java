@@ -91,6 +91,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;
@@ -1145,7 +1146,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Scroll map if necessary
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (e.getButton() != 3) {
+      if (!SwingUtils.isRightMouseButton(e)) {
         scrollAtEdge(e.getPoint(), 15);
       }
 

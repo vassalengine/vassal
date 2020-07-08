@@ -43,6 +43,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 public class PolygonEditor extends JPanel {
   private static final long serialVersionUID = 1L;
@@ -230,7 +231,7 @@ public class PolygonEditor extends JPanel {
        selected = -1;
        double minDist = Float.MAX_VALUE;
 
-       if (e.getButton() != 3) {
+       if (!SwingUtils.isRightMouseButton(e)) {
          // move an existing vertex
                for (int i = 0; i < polygon.npoints; ++i) {
                        double dist = Point2D.distance(polygon.xpoints[i], polygon.ypoints[i], e.getX(), e.getY());

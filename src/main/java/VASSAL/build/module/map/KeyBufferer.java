@@ -49,6 +49,7 @@ import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This component listens for mouse clicks on a map and draws the selection
@@ -130,7 +131,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           if (movingStacksPickupUnits ||
               p.getParent() == null ||
               p.getParent().isExpanded() ||
-              e.getButton() == 3 ||
+              SwingUtils.isRightMouseButton(e) ||
               Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
           {
             kbuf.add(p);

@@ -29,6 +29,7 @@ import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Centers the map when user right-clicks on an empty hex
@@ -76,7 +77,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (e.getButton() == 3) {
+    if (SwingUtils.isRightMouseButton(e)) {
       GamePiece found = map.findPiece(e.getPoint(), finder);
       if (found != null) {
         EventFilter filter = (EventFilter) found.getProperty(Properties.SELECT_EVENT_FILTER);
