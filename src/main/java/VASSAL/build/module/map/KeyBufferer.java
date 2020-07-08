@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -112,7 +113,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
-      if (!e.isPopupTrigger() && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
+      if (!SwingUtilities.isRightMouseButton(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {  // Stack Overflow's top-rated way to detect right-button-down ;-) 
         bandSelect = BandSelectType.SPECIAL; //BR// Don't "eat" band-selects if unit found is non-movable
       }
     }
