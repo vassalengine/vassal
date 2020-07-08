@@ -33,8 +33,8 @@ import static org.junit.Assume.*;
 
 public class MemoryUtilsTest {
   @Test
-  public void testGetPhysicalMemoryUNIX() throws IOException {
-    assumeTrue(SystemUtils.IS_OS_UNIX);
+  public void testGetPhysicalMemoryLinux() throws IOException {
+    assumeTrue(SystemUtils.IS_OS_LINUX);
 
     // get the total RAM from the system, in kB
     final Process p = Runtime.getRuntime().exec(new String[] {
