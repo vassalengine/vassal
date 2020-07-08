@@ -19,8 +19,11 @@
 package VASSAL.tools.swing;
 
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Map;
+
+import org.apache.commons.lang3.SystemUtils;
 
 public class SwingUtils {
   public static AffineTransform descaleTransform(AffineTransform t) {
@@ -32,4 +35,17 @@ public class SwingUtils {
   }
 
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+
+  public static boolean isRightMouseButton(MouseEvent e) {
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      return true;
+    }
+
+    if (!SystemUtils.IS_OS_MAC_OSX) {
+      return false;
+    }
+
+    return e.getButton() == MouseEvent.BUTTON1 &&
+      (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0;
+  }
 }

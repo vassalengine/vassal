@@ -82,6 +82,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Decorator class that endows a GamePiece with a dialog.
@@ -1299,8 +1300,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     @Override
     public void mouseClicked(MouseEvent event) {
-
-      if ((event.getButton() == 3 || event.isShiftDown()) && panelType != TICKS_VALMAX) {
+      if (panelType != TICKS_VALMAX && (event.isShiftDown() || SwingUtils.isRightMouseButton(event))) {
         new EditTickLabelValueDialog(this);
         return;
       }

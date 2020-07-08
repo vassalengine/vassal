@@ -95,6 +95,7 @@ import VASSAL.counters.Stack;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is a MouseListener that moves pieces onto a Map window
@@ -720,7 +721,7 @@ public class PieceMover extends AbstractBuildable
   protected boolean canHandleEvent(MouseEvent e) {
     return !e.isShiftDown() &&
            !e.isControlDown() &&
-            e.getButton() != 3 &&
+           !SwingUtils.isRightMouseButton(e) &&
             e.getClickCount() < 2 &&
            !e.isConsumed();
   }
