@@ -59,8 +59,8 @@ OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.1
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
-BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
 VERSION:=$(shell git describe --tags)
+YEAR:=$(shell date +%Y)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -128,9 +128,8 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
-	sed -i -e 's/%BUILDNUM%/$(BUILDNUM)/g' \
-         -e 's/%NUMVERSION%/$(VNUM)/g' \
-				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
+	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
+         -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
 	$(JLINK) --module-path $(OSXJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources

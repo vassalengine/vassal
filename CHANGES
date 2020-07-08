@@ -31,6 +31,7 @@
 
 3.3.2 - ???
 
+* 13152: Version number and year set incorrectly in Mac DMG's Info.plist
 * 13143: HTTPS URLs fail to load (handshake_failure) due to missing
     jdk.crypto.ec module
 * 13140: Versions with a build number are incorrectly sorted before versions
