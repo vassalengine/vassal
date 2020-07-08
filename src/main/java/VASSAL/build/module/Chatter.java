@@ -165,7 +165,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
     
   // A hook for inserting a console class that accepts commands 
-  protected void consoleHook(String s, String style, boolean html_allowed) {
+  public void consoleHook(String s, String style, boolean html_allowed) {
     
   }
 
@@ -305,7 +305,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   // Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
-  private void addStyle(String s, Font f, Color c, String font_weight, int size) {
+  protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
     style.addRule(s + 
                   " {color:" + 
@@ -320,7 +320,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   // Build ourselves a CSS stylesheet from our preference font/color settings.
-  private void makeStyleSheet(Font f) {
+  protected void makeStyleSheet(Font f) {
     if (style == null) {
       return;
     }
