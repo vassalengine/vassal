@@ -440,12 +440,12 @@ public class Immobilized extends Decorator implements EditablePiece {
         s += IGNORE_GRID;
       }
       switch (bandSelectOption.getSelectedIndex()) {
-        case 1:
-          s += ALT_BAND_SELECT;
-          break;
-        case 2:
-          s += NEVER_BAND_SELECT;
-          break;
+      case 1:
+        s += ALT_BAND_SELECT;
+        break;
+      case 2:
+        s += NEVER_BAND_SELECT;
+        break;
       }
       s += ';';
       switch (movementOption.getSelectedIndex()) {
