@@ -136,7 +136,7 @@ public class KeyCommand extends AbstractAction {
         BoundsTracker t = new BoundsTracker();
         GamePiece outer = Decorator.getOutermost(target);
         t.addPiece(outer);
-        outer.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(outer)); // save state prior to command
+        outer.setProperty(Properties.SNAPSHOT, ((PropertyExporter) outer).getProperties()); // save state prior to command
         Command c = outer.keyEvent(stroke);
         if (target.getId() != null) {
           GameModule.getGameModule().sendAndLog(c);
