@@ -104,7 +104,6 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -731,10 +730,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       catch (IOException e) {
         WriteErrorDialog.error(e, p.getFile());
       }
-      finally {
-        IOUtils.closeQuietly(p);
-      }
 
+      // TODO remove this code if it is not needed anymore
       // write and close global prefs
       // Bug 10179 - Global prefs are now written out each time a preference is changed
       // try {
