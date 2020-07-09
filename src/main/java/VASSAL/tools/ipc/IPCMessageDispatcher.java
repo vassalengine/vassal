@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.util.concurrent.BlockingQueue;
 
-import VASSAL.tools.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IPCMessageDispatcher implements Runnable {
+
+  private static final Logger log = LoggerFactory.getLogger(IPCMessageDispatcher.class);
 
   protected final BlockingQueue<IPCMessage> queue;
   protected final ObjectOutput out;
@@ -21,21 +24,16 @@ public class IPCMessageDispatcher implements Runnable {
   public void run() {
     IPCMessage msg;
 
-    try {
+    try (out) {
       do {
         msg = queue.take();
         out.writeObject(msg);
         out.flush();
       } while (!(msg instanceof Fin));
-
-      out.close();
     }
     catch (IOException | InterruptedException e) {
-// FIXME
-      e.printStackTrace();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
+      // FIXME
+      log.error("Error while writing into IPC channel", e);
     }
   }
 }
