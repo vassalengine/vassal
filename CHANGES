@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13155: Correct Dutch translations
 * 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects,
     and band-select gets Does-Not-Stack filter
 * 13146: Custom classes that are children fail to be culled in
