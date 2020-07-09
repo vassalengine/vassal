@@ -79,9 +79,9 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-all: fast-compile
+all: compile
 
-fast-compile:
+compile:
 	$(MVN) compile
 
 jar: $(LIBDIR)/Vengine.jar
@@ -89,16 +89,13 @@ jar: $(LIBDIR)/Vengine.jar
 test:
 	$(MVN) test
 
-#show:
-#	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
-
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
 $(LIBDIR)/Vengine.jar: all
 	$(MVN) package
 
-$(TMPDIR)/VASSAL.exe: fast-compile $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
@@ -134,9 +131,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDI
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
 	$(JLINK) --module-path $(OSXJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
-#	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
-#	svn export $(DOCDIR) $@/Contents/Resources/doc
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
@@ -246,4 +241,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: all fast-compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
+.PHONY: all compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
