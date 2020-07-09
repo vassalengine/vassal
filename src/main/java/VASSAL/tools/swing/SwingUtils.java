@@ -22,6 +22,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.lang3.SystemUtils;
 
 public class SwingUtils {
@@ -34,6 +36,10 @@ public class SwingUtils {
   }
 
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+
+  public static boolean isLeftMouseButton(MouseEvent e) {
+    return SwingUtilities.isLeftMouseButton(e);
+  }
 
   public static boolean isRightMouseButton(MouseEvent e) {
     if (e.getButton() == MouseEvent.BUTTON3) {

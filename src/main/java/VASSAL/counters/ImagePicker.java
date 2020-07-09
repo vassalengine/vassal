@@ -43,6 +43,7 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.swing.SwingUtils;
 
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {
@@ -133,6 +134,9 @@ public class ImagePicker extends JPanel
 
   @Override
   public void mouseClicked(MouseEvent e) {
+    if (SwingUtils.isLeftMouseButton(e) && e.getClickCount() > 1) {
+      pickImage();
+    }
   }
 
   @Override
@@ -141,9 +145,6 @@ public class ImagePicker extends JPanel
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (e.getClickCount() > 1) {
-      pickImage();
-    }
   }
 
   @Override
