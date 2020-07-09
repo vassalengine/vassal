@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -65,7 +66,6 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
@@ -558,7 +558,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       }
     }
     if (defaultRoomIndex < 0) {
-      allRooms = ArrayUtils.prepend(rooms, new NodeRoom(defaultRoomName));
+      allRooms = ArrayUtils.addFirst(rooms, new NodeRoom(defaultRoomName));
     }
     else {
       allRooms = rooms;

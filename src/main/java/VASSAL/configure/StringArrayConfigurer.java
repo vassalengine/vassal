@@ -40,8 +40,9 @@ import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -69,12 +70,12 @@ public class StringArrayConfigurer extends Configurer {
 
   public void addValue(String s) {
     setValue(value == null ?
-      new String[]{s} : ArrayUtils.append((String[]) value, s));
+      new String[]{s} : ArrayUtils.add((String[]) value, s));
   }
 
   public void removeValue(String s) {
     final String[] oldValue = getStringArray();
-    final String[] newValue = ArrayUtils.remove(oldValue, s);
+    final String[] newValue = ArrayUtils.removeElement(oldValue, s);
     if (oldValue != newValue) setValue(newValue);
   }
 
@@ -121,7 +122,7 @@ public class StringArrayConfigurer extends Configurer {
           else {
             int pos = list.getSelectedIndex();
             if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
+            setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
             setTextValue("");
             list.setSelectedIndex(pos+1);
           }
