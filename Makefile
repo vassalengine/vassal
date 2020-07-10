@@ -31,9 +31,9 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
-# For the Windows release, you will need a Windows JDK available for bundling
-# with VASSAL. Set WINJMODS to the directory in the Windows JDK where the
-# jmods are.
+# For the Windows release, you will need 32- and 64-bit Windows JDKs available
+# for bundling with VASSAL. Set WIN32JMODS and WIN64JMODS to the directories in
+# the Windows JDKs where the 32- and 64-bit jmods are.
 #
 # For the Mac release, you will need a Mac JDK available for bundling
 # with VASSAL. Set OSXJMODS to the directory in the Mac JDK where the
@@ -53,7 +53,8 @@ DISTDIR:=dist
 
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
-WINJMODS:=jdk-win/jmods
+WIN32JMODS:=jdk-win32/jmods
+WIN64JMODS:=jdk-win64/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.1
@@ -199,7 +200,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
 	mkdir -p $@
 	cp $(TMPDIR)/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
@@ -210,7 +211,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	$(JLINK) --module-path $(WINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	$(JLINK) --module-path $(WIN$(*)JMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 	for i in `find $@ -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
@@ -221,14 +222,17 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
 		tac	>$(TMPDIR)/uninstall_files.inc
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION)
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
+# prevents make from trying to delete these, as they're intermediate files
+.SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION)
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION)
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer$*.nsi
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
-release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
+release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
@@ -238,7 +242,7 @@ clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
 upload:
-	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
+	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
 	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
