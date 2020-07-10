@@ -62,7 +62,7 @@ public class IPCMessageReceiverTest {
         oneOf(in).readObject(); will(returnValue(fin));
         oneOf(lsup).notify(with(equal(fin)));
 
-        exactly(2).of(in).close();
+        exactly(1).of(in).close();
       }
     });
 
