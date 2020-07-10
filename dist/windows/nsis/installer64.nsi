@@ -1,7 +1,5 @@
 #
-#  $Id$
-#
-#  Copyright (c) 2008-2012 by Joel Uckelman
+#  Copyright (c) 2008-2020 by Joel Uckelman
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -33,7 +31,7 @@
 !define AROOT "Software\Classes"
 
 Name "VASSAL"
-OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
+OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-64.exe"
 
 ; InstDir is set in .onInit based on the architecture
 InstallDir ""
