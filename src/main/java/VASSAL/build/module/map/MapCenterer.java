@@ -75,10 +75,12 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
   public void setAttribute(String attName, Object value) {
   }
 
+// FIXME: mouseClicked()?
   @Override
   public void mouseReleased(MouseEvent e) {
     if (SwingUtils.isRightMouseButton(e)) {
       GamePiece found = map.findPiece(e.getPoint(), finder);
+
       if (found != null) {
         EventFilter filter = (EventFilter) found.getProperty(Properties.SELECT_EVENT_FILTER);
         if (filter != null
@@ -86,6 +88,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
           found = null;
         }
       }
+
       if (found == null) {
         Map.View m = (Map.View) e.getSource();
         m.getMap().centerAt(e.getPoint());

@@ -80,6 +80,7 @@ import VASSAL.launch.EditorWindow;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is the Configuration Tree that appears in the Configuration window
@@ -895,12 +896,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
+// FIXME: should clicked handling be in mouseClicked()?
   @Override
   public void mouseReleased(MouseEvent e) {
     if (e.isPopupTrigger()) {
       maybePopup(e);
     }
-    else if (e.getClickCount() == 2) {
+    else if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
       Configurable target = getTarget(e.getX(), e.getY());
       if (target == null) {
         return;

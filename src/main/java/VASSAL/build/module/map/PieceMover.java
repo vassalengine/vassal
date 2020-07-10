@@ -733,11 +733,12 @@ public class PieceMover extends AbstractBuildable
   }
 
   protected boolean canHandleEvent(MouseEvent e) {
-    return !e.isShiftDown() &&
+    return !e.isConsumed() &&
+           !e.isShiftDown() &&
            !e.isControlDown() &&
-           !SwingUtils.isRightMouseButton(e) &&
-            e.getClickCount() < 2 &&
-           !e.isConsumed();
+           e.getClickCount() < 2 &&
+           (e.getButton() == MouseEvent.NOBUTTON ||
+            SwingUtils.isLeftMouseButton(e));
   }
 
   /**

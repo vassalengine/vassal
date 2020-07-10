@@ -1298,26 +1298,29 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     @Override
-    public void mouseClicked(MouseEvent event) {
-      if (panelType != TICKS_VALMAX && (event.isShiftDown() || SwingUtils.isRightMouseButton(event))) {
+    public void mouseClicked(MouseEvent e) {
+      if (panelType != TICKS_VALMAX &&
+          ((SwingUtils.isLeftMouseButton(e) && e.isShiftDown()) ||
+            SwingUtils.isRightMouseButton(e))) {
         new EditTickLabelValueDialog(this);
-        return;
       }
-      int col = Math.min((event.getX() - leftMargin + 1) / dx, numCols - 1);
-      int row = Math.min((event.getY() - topMargin + 1) / dx, numRows - 1);
-      int num = row * numCols + col + 1;
+      else if (SwingUtils.isLeftMouseButton(e)) {
+        int col = Math.min((e.getX() - leftMargin + 1) / dx, numCols - 1);
+        int row = Math.min((e.getY() - topMargin + 1) / dx, numRows - 1);
+        int num = row * numCols + col + 1;
 
-      // Checkbox behavior; toggle the box clicked on
-      // numTicks = num > numTicks ? num : num - 1;
+        // Checkbox behavior; toggle the box clicked on
+        // numTicks = num > numTicks ? num : num - 1;
 
-      // Slider behavior; set the box clicked on and all to left and clear all boxes to right,
-      // UNLESS user clicked on last set box (which would do nothing), in this case, toggle the
-      // box clicked on.  This is the only way the user can clear the first box.
+        // Slider behavior; set the box clicked on and all to left and clear all boxes to right,
+        // UNLESS user clicked on last set box (which would do nothing), in this case, toggle the
+        // box clicked on.  This is the only way the user can clear the first box.
 
-      numTicks = (num == numTicks) ? num - 1 : num;
-      fireActionEvent();
+        numTicks = (num == numTicks) ? num - 1 : num;
+        fireActionEvent();
 
-      repaint();
+        repaint();
+      }
     }
 
     public void fireActionEvent() {

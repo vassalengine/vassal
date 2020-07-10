@@ -18,6 +18,8 @@
 package VASSAL.tools.swing;
 
 import java.awt.Toolkit;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Map;
@@ -37,20 +39,104 @@ public class SwingUtils {
 
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
-  public static boolean isLeftMouseButton(MouseEvent e) {
-    return SwingUtilities.isLeftMouseButton(e);
+  private static interface MouseButtonClassifier {
+    /*
+     * @return whether the event is effectively for the left button
+     */
+    boolean isLeftMouseButton(MouseEvent e);
+
+    /*
+     * @return whether the event is effectively for the right button
+     */
+    boolean isRightMouseButton(MouseEvent e);
   }
 
+  private static class DefaultMouseButtonClassifier implements MouseButtonClassifier {
+    public boolean isLeftMouseButton(MouseEvent e) {
+      return SwingUtilities.isLeftMouseButton(e);
+    }
+
+    public boolean isRightMouseButton(MouseEvent e) {
+      return SwingUtilities.isRightMouseButton(e);
+    }
+  }
+
+  private static class MacMouseButtonClassifier implements MouseButtonClassifier {
+    private static final int B1_MASK = MouseEvent.BUTTON1_DOWN_MASK |
+                                       MouseEvent.CTRL_DOWN_MASK;
+
+    public boolean isLeftMouseButton(MouseEvent e) {
+      // The left button on a Mac is the left button, except when it's the
+      // right button because Ctrl is depressed.
+      switch (e.getID()) {
+      case MouseEvent.MOUSE_PRESSED:
+      case MouseEvent.MOUSE_RELEASED:
+      case MouseEvent.MOUSE_CLICKED:
+        return e.getButton() == MouseEvent.BUTTON1 &&
+               (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == 0;
+
+      case MouseEvent.MOUSE_ENTERED:
+      case MouseEvent.MOUSE_EXITED:
+      case MouseEvent.MOUSE_DRAGGED:
+        return (e.getModifiersEx() & B1_MASK) == MouseEvent.BUTTON1_DOWN_MASK;
+
+      default:
+        return (e.getModifiersEx() & B1_MASK) == MouseEvent.BUTTON1_DOWN_MASK ||
+               (e.getButton() == MouseEvent.BUTTON1 &&
+                (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == 0);
+      }
+    }
+
+    public boolean isRightMouseButton(MouseEvent e) {
+      // The right button on a Mac can be either a real right button, or
+      // Ctrl + the left button.
+      switch (e.getID()) {
+      case MouseEvent.MOUSE_PRESSED:
+      case MouseEvent.MOUSE_RELEASED:
+      case MouseEvent.MOUSE_CLICKED:
+        return e.getButton() == MouseEvent.BUTTON3 ||
+               (e.getButton() == MouseEvent.BUTTON1 &&
+                (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
+
+      case MouseEvent.MOUSE_ENTERED:
+      case MouseEvent.MOUSE_EXITED:
+      case MouseEvent.MOUSE_DRAGGED:
+        return (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0 ||
+               (e.getModifiersEx() & B1_MASK) == B1_MASK;
+
+      default:
+        return (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0 ||
+               (e.getModifiersEx() & B1_MASK) == B1_MASK ||
+               e.getButton() == MouseEvent.BUTTON3 ||
+               (e.getButton() == MouseEvent.BUTTON1 &&
+               (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
+      }
+    }
+  }
+
+  private static final MouseButtonClassifier mouseButtonClassifier =
+    SystemUtils.IS_OS_MAC_OSX ?
+      new MacMouseButtonClassifier() : new DefaultMouseButtonClassifier();
+
+  /*
+   * @return whether the event is effectively for the left button
+   */
+  public static boolean isLeftMouseButton(MouseEvent e) {
+    return mouseButtonClassifier.isLeftMouseButton(e);
+  }
+
+  /*
+   * @return whether the event is effectively for the right button
+   */
   public static boolean isRightMouseButton(MouseEvent e) {
-    if (e.getButton() == MouseEvent.BUTTON3) {
-      return true;
-    }
+    return mouseButtonClassifier.isRightMouseButton(e);
+  }
 
-    if (!SystemUtils.IS_OS_MAC_OSX) {
-      return false;
-    }
-
-    return e.getButton() == MouseEvent.BUTTON1 &&
-      (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0;
+  /*
+   * @return whether the drag is non-mouse or effectively from the left button
+   */
+  public static boolean isDragTrigger(DragGestureEvent e) {
+    final InputEvent te = e.getTriggerEvent();
+    return !(te instanceof MouseEvent) || isLeftMouseButton((MouseEvent) te);
   }
 }

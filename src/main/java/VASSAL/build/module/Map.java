@@ -658,7 +658,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     final DragGestureListener dgl = new DragGestureListener() {
       @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
-        if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
+        if (dragGestureListener != null &&
+            mouseListenerStack.isEmpty() &&
+            SwingUtils.isDragTrigger(dge)) {
           dragGestureListener.dragGestureRecognized(dge);
         }
       }
@@ -1181,10 +1183,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Because MouseEvents are received in component coordinates, it is inconvenient for MouseListeners on the map to have
-   * to translate to map coordinates. MouseListeners added with this method will receive mouse events with points
-   * already translated into map coordinates.
-   * addLocalMouseListenerFirst inserts the new listener at the start of the chain.
+   * Because MouseEvents are received in component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to map
+   * coordinates. MouseListeners added with this method will receive mouse
+   * events with points already translated into map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the
+   * chain.
    */
   public void addLocalMouseListener(MouseListener l) {
     multicaster = AWTEventMulticaster.add(multicaster, l);
@@ -1224,8 +1228,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   
   
   public MouseEvent translateEvent(MouseEvent e) {
-    //don't write over java's mouse event
-    MouseEvent mapEvent = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+    // don't write over Java's mouse event
+    final MouseEvent mapEvent = new MouseEvent(
+      e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(),
+      e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(),
+      e.getClickCount(), e.isPopupTrigger(), e.getButton()
+    );
     final Point p = componentToMap(mapEvent.getPoint());
     mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
     return mapEvent;
@@ -1307,7 +1315,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseReleased(MouseEvent e) {
-    // don't write over java's mouse event
+    // don't write over Java's mouse event
     Point p = e.getPoint();
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
@@ -1354,7 +1362,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * This listener will be notified when a drag event is initiated, assuming that no MouseListeners are on the stack.
+   * This listener will be notified when a drag event is initiated, assuming
+   * that no MouseListeners are on the stack.
    *
    * @see #pushMouseListener
    * @param dragGestureListener
@@ -1400,7 +1409,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         dtde.getLocation().x,
         dtde.getLocation().y,
         1,
-        false
+        false,
+        MouseEvent.NOBUTTON
       );
       theMap.dispatchEvent(evt);
       dtde.dropComplete(true);

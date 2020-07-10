@@ -74,6 +74,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -720,6 +722,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
+        if (!SwingUtils.isDragTrigger(dge)) {
+          return;
+        }
 
         final Point mousePosition = dge.getDragOrigin();
         dragStart = new Point(mousePosition);
@@ -868,25 +873,27 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Mouse clicked, see if it is on a Region Point
     @Override
     public void mouseClicked(MouseEvent e) {
-      final Point p = e.getPoint();
-      lastClick = p;
+      if (SwingUtils.isLeftMouseButton(e)) {
+        final Point p = e.getPoint();
+        lastClick = p;
 
-      if (lastClickedRegion != null) {
-        if (e.getClickCount() >= 2) { // Double click show properties
-          if (lastClickedRegion.getConfigurer() != null) {
-            final Action a =
-              new EditPropertiesAction(lastClickedRegion, null, this);
-            if (a != null) {
-              a.actionPerformed(
-                  new ActionEvent(
-                      e.getSource(),
-                      ActionEvent.ACTION_PERFORMED,
-                      "Edit")); //$NON-NLS-1$
+        if (lastClickedRegion != null) {
+          if (e.getClickCount() >= 2) { // Double click show properties
+            if (lastClickedRegion.getConfigurer() != null) {
+              final Action a =
+                new EditPropertiesAction(lastClickedRegion, null, this);
+              if (a != null) {
+                a.actionPerformed(
+                    new ActionEvent(
+                        e.getSource(),
+                        ActionEvent.ACTION_PERFORMED,
+                        "Edit")); //$NON-NLS-1$
+              }
             }
           }
         }
+        view.repaint(); // Clean up selection
       }
-      view.repaint(); // Clean up selection
     }
 
     protected static final String ADD_REGION = Resources.getString("Editor.IrregularGrid.add_region"); //$NON-NLS-1$
@@ -894,7 +901,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected static final String PROPERTIES = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
 
     protected void doPopupMenu(MouseEvent e) {
-
       myPopup = new JPopupMenu();
 
       JMenuItem menuItem = new JMenuItem(ADD_REGION);
@@ -917,25 +923,21 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       final Point p = e.getPoint();
 
-      myPopup
-          .addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            @Override
-            public void popupMenuCanceled(
-                javax.swing.event.PopupMenuEvent evt) {
-              view.repaint();
-            }
+      myPopup.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent evt) {
+          view.repaint();
+        }
 
-            @Override
-            public void popupMenuWillBecomeInvisible(
-                javax.swing.event.PopupMenuEvent evt) {
-              view.repaint();
-            }
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+          view.repaint();
+        }
 
-            @Override
-            public void popupMenuWillBecomeVisible(
-                javax.swing.event.PopupMenuEvent evt) {
-            }
-          });
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+        }
+      });
       myPopup.show(e.getComponent(), p.x, p.y);
     }
 
@@ -1081,11 +1083,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     @Override
-    public void mouseEntered(MouseEvent evPt) {
+    public void mouseEntered(MouseEvent e) {
     }
 
     @Override
-    public void mouseExited(MouseEvent evPt) {
+    public void mouseExited(MouseEvent e) {
     }
 
     @Override
@@ -1093,7 +1095,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else {
+      else if (SwingUtils.isLeftMouseButton(e)) {
         final Point p = e.getPoint();
         lastClick = p;
         lastClickedRegion = grid.getRegion(p);
@@ -1123,7 +1125,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else if (selectionRect != null) {
+      else if (selectionRect != null && SwingUtils.isLeftMouseButton(e)) {
         for (Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
             if (e.isControlDown()) {
@@ -1140,13 +1142,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     @Override
-    public void mouseMoved(MouseEvent evPt) {
+    public void mouseMoved(MouseEvent e) {
     }
 
     // Scroll map if necessary
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (!SwingUtils.isRightMouseButton(e)) {
+      if (SwingUtils.isLeftMouseButton(e)) {
         scrollAtEdge(e.getPoint(), 15);
       }
 

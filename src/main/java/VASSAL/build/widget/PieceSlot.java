@@ -29,6 +29,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -253,7 +254,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   // Puts counter in DragBuffer. Call when mouse gesture recognized
   protected void startDrag() {
-
     // Recenter piece; panel may have been resized at some point resulting
     // in pieces with inaccurate positional information.
     final Dimension size = panel.getSize();
@@ -273,7 +273,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   protected void doPopup(MouseEvent e) {
-    JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
+    final JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
     popup.addPopupMenuListener(new PopupMenuListener() {
       @Override
       public void popupMenuCanceled(PopupMenuEvent evt) {
@@ -298,7 +298,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (e.isPopupTrigger()) {
       doPopup(e);
     }
-    else {
+    else if (SwingUtils.isLeftMouseButton(e)) {
       KeyBuffer.getBuffer().clear();
       Map.clearActiveMap();
       if (getPiece() != null) {
@@ -313,11 +313,20 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (getPiece() != null && e.isPopupTrigger()) {
-      doPopup(e);
+    boolean doClear = false;
+    if (e.isPopupTrigger()) {
+      if (getPiece() != null) {
+        doPopup(e);
+      }
+      doClear = true;
+    }
+    else if (SwingUtils.isLeftMouseButton(e)) {
+      doClear = true;
     }
 
-    clearExpandedPiece();
+    if (doClear) {
+      clearExpandedPiece();
+    }
   }
 
   @Override
@@ -405,11 +414,16 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     DragGestureListener dragGestureListener = new DragGestureListener() {
       @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
-        startDrag();
-        AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
+        if (SwingUtils.isDragTrigger(dge)) {
+          startDrag();
+          AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
+        }
       }
     };
-    DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dragGestureListener);
+
+    DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(
+      panel, DnDConstants.ACTION_MOVE, dragGestureListener
+    );
   }
 
   @Override

@@ -43,6 +43,7 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A trait that acts like a button on a GamePiece, such that clicking on a
@@ -299,12 +300,14 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       @Override
       public void mouseClicked(MouseEvent e) {
-        Point point = e.getPoint();
-        final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
-        if (p != null) {
-          Point rel = map.positionOf(p);
-          point.translate(-rel.x, -rel.y);
-          doClick(p, point);
+        if (SwingUtils.isLeftMouseButton(e)) {
+          final Point point = e.getPoint();
+          final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
+          if (p != null) {
+            final Point rel = map.positionOf(p);
+            point.translate(-rel.x, -rel.y);
+            doClick(p, point);
+          }
         }
       }
     }
@@ -322,13 +325,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       @Override
       public void mouseClicked(MouseEvent e) {
-        Point point = e.getPoint();
-        point.translate(-xOffset,-yOffset);
-        doClick(target, point);
-        e.getComponent().repaint();
+        if (SwingUtils.isLeftMouseButton(e)) {
+          final Point point = e.getPoint();
+          point.translate(-xOffset,-yOffset);
+          doClick(target, point);
+          e.getComponent().repaint();
+        }
       }
     }
-
   }
-
 }

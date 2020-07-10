@@ -201,14 +201,13 @@ public class PolygonEditor extends JPanel {
   }
 
   private class ModifyPolygon extends MouseInputAdapter {
-    // implements java.awt.event.MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
-      moveSelectedPoint(e);
       if (SwingUtilities.isLeftMouseButton(e)) {
+        moveSelectedPoint(e);
         scrollAtEdge(e.getPoint(), 15);
+        repaint();
       }
-      repaint();
     }
 
     private void moveSelectedPoint(MouseEvent e) {
@@ -218,20 +217,20 @@ public class PolygonEditor extends JPanel {
       }
     }
 
-    // implements java.awt.event.MouseListener
     @Override
     public void mouseReleased(MouseEvent e) {
-      moveSelectedPoint(e);
-      repaint();
+      if (SwingUtils.isLeftMouseButton(e)) {
+        moveSelectedPoint(e);
+        repaint();
+      }
     }
 
-    // implements java.awt.event.MouseListener
     @Override
     public void mousePressed(MouseEvent e) {
        selected = -1;
        double minDist = Float.MAX_VALUE;
 
-       if (!SwingUtils.isRightMouseButton(e)) {
+       if (SwingUtils.isLeftMouseButton(e)) {
          // move an existing vertex
                for (int i = 0; i < polygon.npoints; ++i) {
                        double dist = Point2D.distance(polygon.xpoints[i], polygon.ypoints[i], e.getX(), e.getY());
@@ -241,7 +240,7 @@ public class PolygonEditor extends JPanel {
                        }
                }
        } 
-       else {
+       else if (SwingUtils.isRightMouseButton(e)) {
                // find closest segment/vertex
                selected = -1;
                minDist = Float.MAX_VALUE;
@@ -338,34 +337,37 @@ public class PolygonEditor extends JPanel {
   }
 
   private class DefineRectangle extends MouseInputAdapter {
-    // implements java.awt.event.MouseListener
     @Override
     public void mousePressed(MouseEvent e) {
-      polygon = new Polygon();
-      polygon.addPoint(e.getX(), e.getY());
-      polygon.addPoint(e.getX(), e.getY());
-      polygon.addPoint(e.getX(), e.getY());
-      polygon.addPoint(e.getX(), e.getY());
-      addMouseMotionListener(this);
+      if (SwingUtils.isLeftMouseButton(e)) {
+        polygon = new Polygon();
+        polygon.addPoint(e.getX(), e.getY());
+        polygon.addPoint(e.getX(), e.getY());
+        polygon.addPoint(e.getX(), e.getY());
+        polygon.addPoint(e.getX(), e.getY());
+        addMouseMotionListener(this);
+      }
     }
 
-    // implements java.awt.event.MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
-      polygon.xpoints[1] = e.getX();
-      polygon.xpoints[2] = e.getX();
-      polygon.ypoints[2] = e.getY();
-      polygon.ypoints[3] = e.getY();
-      repaint();
+      if (SwingUtils.isLeftMouseButton(e)) {
+        polygon.xpoints[1] = e.getX();
+        polygon.xpoints[2] = e.getX();
+        polygon.ypoints[2] = e.getY();
+        polygon.ypoints[3] = e.getY();
+        repaint();
+      }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      removeMouseListener(this);
-      removeMouseMotionListener(this);
-      setupForEdit();
+      if (SwingUtils.isLeftMouseButton(e)) {
+        removeMouseListener(this);
+        removeMouseMotionListener(this);
+        setupForEdit();
+      }
     }
-
   }
 
   public static void main(String[] args) {
