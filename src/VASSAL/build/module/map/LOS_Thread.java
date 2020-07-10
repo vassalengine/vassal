@@ -68,6 +68,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A class that allows the user to draw a straight line on a Map (LOS
@@ -567,6 +568,10 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mousePressed(MouseEvent e) {
+    if (!SwingUtils.isLeftMouseButton(e)) {
+      return;
+    }
+
     initializing = false;
     if (visible && !persisting && !mirroring) {
       Point p = e.getPoint();
@@ -586,6 +591,10 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mouseReleased(MouseEvent e) {
+    if (!SwingUtils.isLeftMouseButton(e)) {
+      return;
+    }
+
     if (!persisting && !mirroring) {
       if (retainAfterRelease && !(ctrlWhenClick && persistence.equals(CTRL_CLICK))) {
         retainAfterRelease = false;
@@ -687,6 +696,10 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mouseDragged(MouseEvent e) {
+    if (!SwingUtils.isLeftMouseButton(e)) {
+      return;
+    }
+
     if (visible && !persisting && !mirroring) {
       retainAfterRelease = true;
 

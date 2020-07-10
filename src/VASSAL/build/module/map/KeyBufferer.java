@@ -103,6 +103,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
     }
+
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
@@ -168,19 +169,20 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   @Override
-  public void mouseReleased(MouseEvent evt) {
+  public void mouseReleased(MouseEvent e) {
     if (selection == null) {
       return;
     }
 
     PieceVisitorDispatcher d = createDragSelector(
-      !evt.isControlDown(), evt.isAltDown(), map.componentToMap(selection)
+      !e.isControlDown(), e.isAltDown(), map.componentToMap(selection)
     );
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
     if (!evt.isShiftDown() && !evt.isControlDown()) {
       KeyBuffer.getBuffer().clear();
     }
+
     map.apply(d);
     repaintSelectionRect();
     selection = null;
@@ -327,7 +329,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (selection == null) {
+    if (selection == null || !SwingUtils.isLeftMouseButton(e)) {
       return;
     }
 
