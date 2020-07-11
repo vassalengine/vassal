@@ -39,7 +39,7 @@ public class SwingUtils {
 
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
-  private static interface MouseButtonClassifier {
+  private static interface InputClassifier {
     /*
      * @return whether the event is effectively for the left button
      */
@@ -51,7 +51,7 @@ public class SwingUtils {
     boolean isRightMouseButton(MouseEvent e);
   }
 
-  private static class DefaultMouseButtonClassifier implements MouseButtonClassifier {
+  private static class DefaultInputClassifier implements InputClassifier {
     public boolean isLeftMouseButton(MouseEvent e) {
       return SwingUtilities.isLeftMouseButton(e);
     }
@@ -61,7 +61,7 @@ public class SwingUtils {
     }
   }
 
-  private static class MacMouseButtonClassifier implements MouseButtonClassifier {
+  private static class MacInputClassifier implements InputClassifier {
     private static final int B1_MASK = MouseEvent.BUTTON1_DOWN_MASK |
                                        MouseEvent.CTRL_DOWN_MASK;
 
@@ -114,22 +114,22 @@ public class SwingUtils {
     }
   }
 
-  private static final MouseButtonClassifier mouseButtonClassifier =
+  private static final InputClassifier inputClassifier =
     SystemUtils.IS_OS_MAC_OSX ?
-      new MacMouseButtonClassifier() : new DefaultMouseButtonClassifier();
+      new MacInputClassifier() : new DefaultInputClassifier();
 
   /*
    * @return whether the event is effectively for the left button
    */
   public static boolean isLeftMouseButton(MouseEvent e) {
-    return mouseButtonClassifier.isLeftMouseButton(e);
+    return inputClassifier.isLeftMouseButton(e);
   }
 
   /*
    * @return whether the event is effectively for the right button
    */
   public static boolean isRightMouseButton(MouseEvent e) {
-    return mouseButtonClassifier.isRightMouseButton(e);
+    return inputClassifier.isRightMouseButton(e);
   }
 
   /*
