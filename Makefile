@@ -57,8 +57,18 @@ WINJMODS:=jdk-win/jmods
 OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.1
+
+GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
-VERSION:=$(shell git describe --tags)
+BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
+GITDESC:=$(shell git describe --tags)
+
+ifeq ($(GITBRANCH), master)
+VERSION:=$(GITDESC)
+else
+VERSION:=$(GITDESC)-$(GITBRANCH)
+endif
+
 YEAR:=$(shell date +%Y)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
