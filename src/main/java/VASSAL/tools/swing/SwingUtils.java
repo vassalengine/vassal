@@ -39,7 +39,7 @@ public class SwingUtils {
 
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
-  private static interface InputClassifier {
+  private interface InputClassifier {
     /*
      * @return whether the event is effectively for the left button
      */
