@@ -20,10 +20,11 @@ package VASSAL.preferences;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.tools.ArrayUtils;
 
 /**
  * A Drop-down list preference.
@@ -57,7 +58,7 @@ public class EnumPreference extends BasicPreference {
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeNames(),
       LIST
     );
@@ -65,7 +66,7 @@ public class EnumPreference extends BasicPreference {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeDescriptions(),
       "List Values:  "
     );
@@ -73,7 +74,7 @@ public class EnumPreference extends BasicPreference {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeTypes(),
       String[].class
     );

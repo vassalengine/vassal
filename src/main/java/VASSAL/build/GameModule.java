@@ -40,6 +40,8 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -91,7 +93,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
@@ -477,7 +478,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void addCommandEncoder(CommandEncoder ce) {
-    commandEncoders = ArrayUtils.append(commandEncoders, ce);
+    commandEncoders = ArrayUtils.add(commandEncoders, ce);
   }
 
   /**
@@ -489,7 +490,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void removeCommandEncoder(CommandEncoder ce) {
-    commandEncoders = ArrayUtils.remove(commandEncoders, ce);
+    commandEncoders = ArrayUtils.removeElement(commandEncoders, ce);
   }
 
   /**

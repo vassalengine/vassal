@@ -35,8 +35,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.GameModule;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
@@ -76,7 +77,7 @@ public class ImagePicker extends JPanel
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
 
-    select = new JComboBox<>(ArrayUtils.prepend(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
+    select = new JComboBox<>(ArrayUtils.addFirst(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
     select.addItemListener(this);
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     add(noImage);
@@ -160,7 +161,7 @@ public class ImagePicker extends JPanel
       String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel<String>(
-          ArrayUtils.prepend(gm.getDataArchive().getImageNames(), NO_IMAGE)
+        ArrayUtils.addFirst(gm.getDataArchive().getImageNames(), NO_IMAGE)
       ));
       setImageName(name);
     }
