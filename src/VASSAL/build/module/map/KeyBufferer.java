@@ -108,13 +108,13 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
       if (!KeyBuffer.getBuffer().contains(p)) {
-        if (!e.isShiftDown() && !e.isControlDown()) {
+        if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) {
           KeyBuffer.getBuffer().clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
         // while not selected, then select all of the pieces in the stack
         // RFE 1659481 - Control clicking only deselects
-        if (!e.isControlDown()) {
+        if (!SwingUtils.isControlDown(e)) {
           if (movingStacksPickupUnits ||
               p.getParent() == null ||
               p.getParent().isExpanded() ||
@@ -134,7 +134,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
       else {
         // RFE 1659481 Ctrl-click deselects clicked units
-        if (e.isControlDown() && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+        if (SwingUtils.isControlDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           Stack s = p.getParent();
           if (s == null) {
             KeyBuffer.getBuffer().remove(p);
@@ -155,7 +155,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
     }
     else {
-      if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
+      if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) { // No deselect if shift key down
         KeyBuffer.getBuffer().clear();
       }
       anchor = map.mapToComponent(e.getPoint());
@@ -175,11 +175,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
 
     PieceVisitorDispatcher d = createDragSelector(
-      !e.isControlDown(), e.isAltDown(), map.componentToMap(selection)
+      !SwingUtils.isControlDown(e), e.isAltDown(), map.componentToMap(selection)
     );
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
-    if (!evt.isShiftDown() && !evt.isControlDown()) {
+    if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) {
       KeyBuffer.getBuffer().clear();
     }
 
