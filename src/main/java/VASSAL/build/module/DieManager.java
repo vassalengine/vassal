@@ -128,7 +128,7 @@ public class DieManager extends AbstractConfigurable {
 
     setSemailValues();
 
-    DefaultListModel m = abook.getModel();
+    DefaultListModel<String> m = abook.getModel();
     ListDataListener ldl = new ListDataListener() {
 
       @Override
