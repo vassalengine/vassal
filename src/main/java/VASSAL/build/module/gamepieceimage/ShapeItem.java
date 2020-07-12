@@ -26,10 +26,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItem extends Item {
@@ -67,7 +68,7 @@ public class ShapeItem extends Item {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Width:  ",
       "Height:  ",
       "Shape:  ",
@@ -78,7 +79,7 @@ public class ShapeItem extends Item {
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[] {
         Integer.class,
         Integer.class,
@@ -91,7 +92,7 @@ public class ShapeItem extends Item {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       WIDTH,
       HEIGHT,
       SHAPE,

@@ -51,13 +51,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -82,7 +83,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeDescriptions(),
       "Odd-numbered rows numbered higher?"
     );
@@ -90,7 +91,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeNames(),
       STAGGER
     );
@@ -98,7 +99,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.append(
+    return ArrayUtils.add(
       super.getAttributeTypes(),
       Boolean.class
     );

@@ -31,9 +31,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JTextPane;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 
@@ -65,7 +66,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Width:  ",
       "Height:  ",
       "Use HTML:  "
@@ -75,7 +76,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public Class<?>[] getAttributeTypes() {
     final Class<?>[] c = ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[] {
         Integer.class,
         Integer.class,
@@ -112,7 +113,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       WIDTH,
       HEIGHT,
       USE_HTML

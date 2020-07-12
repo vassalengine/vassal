@@ -39,6 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.documentation.HelpFile;
@@ -50,7 +52,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -435,7 +436,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
-      else return ArrayUtils.append(KeyCommand[].class, myC, c);
+      else return ArrayUtils.addAll(myC, c);
     }
     else {
       return super.getKeyCommands();

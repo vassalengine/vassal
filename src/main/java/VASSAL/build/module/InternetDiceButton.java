@@ -22,8 +22,9 @@ package VASSAL.build.module;
  * @author Brent Easton
  *
  * Enhanced Dice Button includes access to Internet Die Servers via the DieManager.
- *
  */
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -33,7 +34,6 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArrayUtils;
 
 /**
  * This component places a button into the controls window toolbar. Pressing the button generates random numbers and
@@ -69,7 +69,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       final FormattedStringConfigurer config =
         (FormattedStringConfigurer) super.getConfigurer(c, key, name);
-      config.setOptions(ArrayUtils.append(config.getOptions(), DETAILS));
+      config.setOptions(ArrayUtils.add(config.getOptions(), DETAILS));
       return config;
     }
   }

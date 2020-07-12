@@ -29,13 +29,14 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class TextItem extends Item {
@@ -91,7 +92,7 @@ public class TextItem extends Item {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Font style:  ",
       "Text is:  ",
       "Text:  "
@@ -101,7 +102,7 @@ public class TextItem extends Item {
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[] {
         FontStyleConfig.class,
         TextSource.class,
@@ -113,7 +114,7 @@ public class TextItem extends Item {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       new String[] {
         FONT,
         SOURCE,
