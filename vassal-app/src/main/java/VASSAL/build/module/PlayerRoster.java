@@ -452,6 +452,51 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
 
     availableSides.removeAll(alreadyTaken);
+
+    // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+    // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+    // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+    // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+    boolean found = false;       // Haven't found our own side in the list.
+    String mySide = getMySide(); // Get our own side, so we can find the "next" one
+    String nextChoice = translatedObserver; // For now default to observer
+    if (mySide != null) {                   // If I'm presently an observer, then my next side is just going to be the first real one we find later
+      for (String s : sides) {
+        if (mySide.equals(s)) {             // We're looking for "our" side
+          found = true;                     // We found it, so next "real" one is the one we want
+          continue;            
+        }
+        if (alreadyTaken.contains(s)) {     // Don't want anything that's already taken
+          continue;
+        }
+        if (Resources.getString("PlayerRoster.solitaire").equals(s) ||   // Don't want a solitaire side
+            Resources.getString("PlayerRoster.solo").equals(s) ||
+            Resources.getString("PlayerRoster.referee").equals(s)) {
+          continue;
+        }
+        if (!found) {                       // Don't actually want ANYTHING until we've found "our" current side in the list
+          continue;
+        }
+        nextChoice = s;                     // Aha! We've found a next side after ours, AND it's not taken. THAT's the default we want. 
+        break;
+      }      
+    }
+    
+    if (translatedObserver.equals(nextChoice)) {
+      // If we get in here, that either means "our" side was the last available one we found in the list,
+      // or that there are no other "real" sides left. In either case we now want the first "real" side in the
+      // that's not taken. And if we don't find one we'll just stick with observer as the default.
+      for (String s : availableSides) {
+        if (Resources.getString("PlayerRoster.solitaire").equals(s) ||
+            Resources.getString("PlayerRoster.solo").equals(s) ||
+            Resources.getString("PlayerRoster.referee").equals(s)) {
+          continue;
+        }
+        nextChoice = s;
+        break;
+      }                  
+    }
+
     availableSides.add(0, translatedObserver);
 
     final GameModule g = GameModule.getGameModule();
@@ -462,7 +507,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       JOptionPane.QUESTION_MESSAGE,
       null,
       availableSides.toArray(new String[0]),
-      translatedObserver
+      nextChoice // Offer calculated most likely "next side" as the default
     );
 
     // OBSERVER must always be stored internally in English.
@@ -470,14 +515,6 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       newSide = OBSERVER;
     }
     return newSide;
-/*
-    if (newSide != null) {
-      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
-      final Add a = new Add(this, me.playerId, me.playerName, me.side);
-      a.execute();
-      g.getServer().sendToOthers(a);
-    }
-*/
   }
 
   public static class PlayerInfo {
