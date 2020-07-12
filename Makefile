@@ -241,7 +241,7 @@ upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
+	$(JDOC) --no-module-directories -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
