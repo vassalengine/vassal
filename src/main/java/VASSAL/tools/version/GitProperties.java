@@ -70,7 +70,8 @@ public class GitProperties {
     );
 
     final String versionSuffix = gitProperties.getProperty(KEY_GIT_BRANCH, DEFAULT_BRANCH);
-    if (!versionSuffix.equals(DEFAULT_BRANCH) && !versionSuffix.equals(SUPPRESS_BRANCH)) {
+    final boolean appendBranchName = !versionSuffix.equals(DEFAULT_BRANCH) && !versionSuffix.equals(SUPPRESS_BRANCH);
+    if (appendBranchName) {
       return String.format("%s-%s", versionPrefix, versionSuffix);
     }
 
