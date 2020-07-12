@@ -123,7 +123,10 @@ public class SwingUtils {
     }
 
     public boolean isControlDown(MouseEvent e) {
-      return e.isControlDown();
+      // The Command key on a Mac corresponds to Control everywhere else,
+      // but it obviously can't be called "Command" in Java; here it's
+      // called "Meta".
+      return e.isMetaDown();
     }
   }
 
