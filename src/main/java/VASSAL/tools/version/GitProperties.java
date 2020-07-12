@@ -21,12 +21,15 @@ public class GitProperties {
   private static final String KEY_GIT_CLOSEST_TAG_NAME = "git.closest.tag.name";
   private static final String KEY_GIT_CLOSEST_TAG_COMMIT_COUNT = "git.closest.tag.commit.count";
   private static final String KEY_GIT_COMMIT_ID = "git.commit.id";
+  private static final String KEY_GIT_BRANCH = "git.branch";
 
   private static final String DEFAULT_CLOSEST_TAG_NAME = "3.3.0";
   private static final String DEFAULT_CLOSEST_TAG_COMMIT_COUNT = "0";
   private static final String DEFAULT_COMMIT_ID = "_developmentversion";
+  private static final String DEFAULT_BRANCH = "";
 
   private static final int GIT_COMMIT_ID_ABBREVIATED_LENGTH = 12;
+  private static final String SUPPRESS_BRANCH = "master";
 
   private final String filename;
   private final Properties gitProperties;
@@ -59,12 +62,19 @@ public class GitProperties {
   }
 
   public String getVersion() {
-    return String.format(
+    final String versionPrefix = String.format(
       "%s-%s-g%s",
       gitProperties.getProperty(KEY_GIT_CLOSEST_TAG_NAME, DEFAULT_CLOSEST_TAG_NAME),
       gitProperties.getProperty(KEY_GIT_CLOSEST_TAG_COMMIT_COUNT, DEFAULT_CLOSEST_TAG_COMMIT_COUNT),
       gitProperties.getProperty(KEY_GIT_COMMIT_ID, DEFAULT_COMMIT_ID).substring(0, GIT_COMMIT_ID_ABBREVIATED_LENGTH)
     );
+
+    final String versionSuffix = gitProperties.getProperty(KEY_GIT_BRANCH, DEFAULT_BRANCH);
+    if (!versionSuffix.equals(DEFAULT_BRANCH) && !versionSuffix.equals(SUPPRESS_BRANCH)) {
+      return String.format("%s-%s", versionPrefix, versionSuffix);
+    }
+
+    return versionPrefix;
   }
 
 }
