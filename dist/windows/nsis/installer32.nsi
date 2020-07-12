@@ -322,7 +322,7 @@ Function .onInit
   SetRegView 32
 
   ${If} $InstDir == "" ; /D= was not used on the command line
-      StrCpy $InstDir "$PROGRAMFILES32\VASSAL-${VERSION}"
+    StrCpy $InstDir "$PROGRAMFILES\VASSAL-${VERSION}"
   ${EndIf}
 
   ${ForceSingleton} "VASSAL-installer"
