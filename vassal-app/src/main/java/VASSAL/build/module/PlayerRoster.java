@@ -233,59 +233,28 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     if (mySide == null && allSidesAllocated()) {
       return;
     }
+          
+    final String oldSide = getMySide();
 
-    final String[] options = allSidesAllocated() ?
-      new String[]{
-        Resources.getString(Resources.YES),
-        Resources.getString(Resources.NO)
-      } :
-      new String[]{
-        Resources.getString("PlayerRoster.become_observer"), //$NON-NLS-1$
-        Resources.getString("PlayerRoster.join_another_side"), //$NON-NLS-1$
-        Resources.getString(Resources.CANCEL)
-      };
-
-    final int CANCEL = options.length - 1;
-
-    final int option = JOptionPane.showOptionDialog(
-      GameModule.getGameModule().getFrame(),
-      Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()),
-      Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$
-      JOptionPane.YES_NO_OPTION,
-      JOptionPane.QUESTION_MESSAGE,
-      null,
-      options,
-      Resources.getString("PlayerRoster.become_observer") //$NON-NLS-1$
-    );
-
-    if (option != CANCEL) {
-      final String oldSide = getMySide();
-
-      String newSide;
-      if (option == 0) {
-        newSide = OBSERVER;
-      }
-      else {
-        newSide = promptForSide();
-        if (newSide == null) {
-          return;
-        }
-      }
-
-      remove(GameModule.getUserId());
-
-      final PlayerInfo me = new PlayerInfo(
-        GameModule.getUserId(),
-        GlobalOptions.getInstance().getPlayerId(),
-        newSide
-      );
-      final Add a = new Add(this, me.playerId, me.playerName, me.side);
-      a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
-
-      newSide = getMySide();
-      fireSideChange(oldSide, newSide);
+    String newSide;
+    newSide = promptForSide();
+    if (newSide == null) {
+      return;
     }
+
+    remove(GameModule.getUserId());
+
+    final PlayerInfo me = new PlayerInfo(
+      GameModule.getUserId(),
+      GlobalOptions.getInstance().getPlayerId(),
+      newSide
+    );
+    final Add a = new Add(this, me.playerId, me.playerName, me.side);
+    a.execute();
+    GameModule.getGameModule().getServer().sendToOthers(a);
+
+    newSide = getMySide();
+    fireSideChange(oldSide, newSide);      
   }
 
   protected void fireSideChange(String oldSide, String newSide) {
@@ -488,7 +457,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     final GameModule g = GameModule.getGameModule();
     String newSide = (String) JOptionPane.showInputDialog(
       g.getFrame(),
-      Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
+      Resources.getString("PlayerRoster.switch_sides"), //$NON-NLS-1$
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,
       null,
