@@ -1100,7 +1100,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         lastClick = p;
         lastClickedRegion = grid.getRegion(p);
 
-        if (!e.isShiftDown() && !e.isControlDown() &&
+        if (!e.isShiftDown() && !SwingUtils.isControlDown(e) &&
             (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
           unSelectAll();
         }
@@ -1110,7 +1110,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           selectionRect = new Rectangle(anchor.x, anchor.y, 0, 0);
         }
         else {
-          if (e.isControlDown()) {
+          if (SwingUtils.isControlDown(e)) {
             unselect(lastClickedRegion);
           }
           else {
@@ -1128,7 +1128,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       else if (selectionRect != null && SwingUtils.isLeftMouseButton(e)) {
         for (Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
-            if (e.isControlDown()) {
+            if (SwingUtils.isControlDown(e)) {
               unselect(r);
             }
             else {

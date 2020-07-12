@@ -49,6 +49,11 @@ public class SwingUtils {
      * @return whether the event is effectively for the right button
      */
     boolean isRightMouseButton(MouseEvent e);
+
+    /*
+     * @return whether the event effectively has Control down
+     */
+    boolean isControlDown(MouseEvent e);
   }
 
   private static class DefaultInputClassifier implements InputClassifier {
@@ -58,6 +63,10 @@ public class SwingUtils {
 
     public boolean isRightMouseButton(MouseEvent e) {
       return SwingUtilities.isRightMouseButton(e);
+    }
+
+    public boolean isControlDown(MouseEvent e) {
+      return e.isControlDown();
     }
   }
 
@@ -112,6 +121,10 @@ public class SwingUtils {
                (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
       }
     }
+
+    public boolean isControlDown(MouseEvent e) {
+      return e.isControlDown();
+    }
   }
 
   private static final InputClassifier inputClassifier =
@@ -138,5 +151,12 @@ public class SwingUtils {
   public static boolean isDragTrigger(DragGestureEvent e) {
     final InputEvent te = e.getTriggerEvent();
     return !(te instanceof MouseEvent) || isLeftMouseButton((MouseEvent) te);
+  }
+
+  /*
+   * @return whether the event effectively has Control down
+   */
+  public static boolean isControlDown(MouseEvent e) {
+    return inputClassifier.isControlDown(e);
   }
 }

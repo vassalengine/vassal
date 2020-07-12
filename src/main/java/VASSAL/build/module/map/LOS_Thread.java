@@ -584,7 +584,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       lastLocation = anchorLocation;
       lastRange = "";
       checkList.clear();
-      ctrlWhenClick = e.isControlDown();
+      ctrlWhenClick = SwingUtils.isControlDown(e);
     }
   }
 
