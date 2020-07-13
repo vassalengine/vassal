@@ -27,7 +27,8 @@ import java.util.NoSuchElementException;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang3.ArrayUtils;
+//import org.apache.commons.lang3.ArrayUtils;
+import VASSAL.tools.ArrayUtils;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
@@ -294,7 +295,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
     if (c == null) return myC;
     else if (myC == null)  return c;
-    else return ArrayUtils.addAll(myC, c);
+    else return ArrayUtils.append(KeyCommand[].class, myC, c);
   }
 
   /**
