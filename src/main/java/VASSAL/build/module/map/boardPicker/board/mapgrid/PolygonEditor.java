@@ -280,7 +280,7 @@ public class PolygonEditor extends JPanel {
             isVertex = false;
             minDist = dist;
             selected = i+1;
-           }
+          }
         }
       }
 
