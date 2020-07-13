@@ -20,6 +20,8 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
@@ -55,6 +58,8 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -67,6 +72,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
+  public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -85,17 +91,19 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         launch();
       }
     };
-    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
+            
+    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, BUTTON_KEYSTROKE, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
-    retireButton.setVisible(false);
+    retireButton.setVisible(false);    
 
-    translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
+    translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$    
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
-    GameModule.getGameModule().removeCommandEncoder(this);
+    final GameModule gm = GameModule.getGameModule();
+    gm.getGameState().removeGameComponent(this);
+    gm.removeCommandEncoder(this);
   }
 
   @Override
@@ -174,6 +182,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     att = retireButton.getAttributeValueString(TOOL_TIP);
     if (att != null)
       el.setAttribute(TOOL_TIP, att);
+    att = retireButton.getAttributeValueString(BUTTON_KEYSTROKE);
+    if (att != null) {
+      el.setAttribute(BUTTON_KEYSTROKE, att);
+    }
     for (String s : sides) {
       Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode(s));
@@ -221,13 +233,15 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   @Override
-  public void addTo(Buildable b) {
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    GameModule.getGameModule().getGameState().addGameSetupStep(this);
-    GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getToolBar().add(retireButton);
+  public void addTo(Buildable b) {  
+    final GameModule gm = GameModule.getGameModule();
+    gm.getGameState().addGameComponent(this);
+    gm.getGameState().addGameSetupStep(this);
+    gm.addCommandEncoder(this);
+    gm.getToolBar().add(retireButton);    
   }
 
+  
   protected void launch() {
     final String mySide = getMySide();
     if (mySide == null && allSidesAllocated()) {
@@ -583,6 +597,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     private IconConfigurer iconConfig;
     private StringConfigurer textConfig;
     private StringConfigurer tooltipConfig;
+    private NamedHotKeyConfigurer keyConfig;
     private JPanel controls;
 
     private Con() {
@@ -598,6 +613,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(sidesConfig.getControls());
+      
       textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
@@ -606,6 +622,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(textConfig.getControls());
+      
       tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
       tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
@@ -614,6 +631,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(tooltipConfig.getControls());
+      
       iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -623,6 +641,16 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(iconConfig.getControls());
+      
+      keyConfig = (NamedHotKeyConfigurer)retireButton.getHotkeyConfigurer();
+      keyConfig.setName(Resources.getString("Editor.PlayerRoster.retire_button_keystroke"));
+      keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+          retireButton.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString());
+        }
+      });
+      controls.add(keyConfig.getControls());
     }
 
     @Override
@@ -657,7 +685,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new String[] {
       BUTTON_TEXT,
       TOOL_TIP,
-      SIDES
+      SIDES,
+      BUTTON_KEYSTROKE,
     };
   }
 
@@ -666,7 +695,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new Class<?>[] {
       String.class,
       String.class,
-      String.class
+      String.class,
+      NamedKeyStroke.class,
     };
   }
 
@@ -734,7 +764,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new String[] {
       Resources.getString("Editor.button_text_label"),
       Resources.getString("Editor.tooltip_text_label"),
-      Resources.getString("Editor.PlayerRoster.sides_label")
+      Resources.getString("Editor.PlayerRoster.sides_label"),
+      Resources.getString("Editor.hotkey_label")
     };
   }
 }
