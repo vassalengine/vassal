@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13171: SetGlobalProperty makes menuCommands the wrong type of array
 * 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
     commons-lang3 3.10
 * 13155: Correct Dutch translations
