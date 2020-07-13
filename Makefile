@@ -217,7 +217,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncom
 # other
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -250,6 +250,12 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 #
 # Windows
 #
+
+$(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
+	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
+	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
+				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
+	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
 	mkdir -p $@
