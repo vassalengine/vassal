@@ -6,7 +6,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class GitPropertiesTest {
