@@ -131,7 +131,7 @@ public class SwingUtils {
     }
   }
 
-  private static final InputClassifier inputClassifier =
+  private static final InputClassifier INPUT_CLASSIFIER =
     SystemUtils.IS_OS_MAC_OSX ?
       new MacInputClassifier() : new DefaultInputClassifier();
 
@@ -139,28 +139,30 @@ public class SwingUtils {
    * @return whether the event is effectively for the left button
    */
   public static boolean isLeftMouseButton(MouseEvent e) {
-    return inputClassifier.isLeftMouseButton(e);
+    return INPUT_CLASSIFIER.isLeftMouseButton(e);
   }
 
   /*
    * @return whether the event is effectively for the right button
    */
   public static boolean isRightMouseButton(MouseEvent e) {
-    return inputClassifier.isRightMouseButton(e);
-  }
-
-  /*
-   * @return whether the drag is non-mouse or effectively from the left button
-   */
-  public static boolean isDragTrigger(DragGestureEvent e) {
-    final InputEvent te = e.getTriggerEvent();
-    return !(te instanceof MouseEvent) || isLeftMouseButton((MouseEvent) te);
+    return INPUT_CLASSIFIER.isRightMouseButton(e);
   }
 
   /*
    * @return whether the event effectively has Control down
    */
   public static boolean isControlDown(MouseEvent e) {
-    return inputClassifier.isControlDown(e);
+    return INPUT_CLASSIFIER.isControlDown(e);
+  }
+
+  /*
+   * @return whether the drag is non-mouse or effectively from the left button
+   */
+  public static boolean isDragTrigger(DragGestureEvent e) {
+    // NB: Will any non-mouse drags happen? Not sure, but as we never checked
+    // for them before, this won't change behavior by excluding them.
+    final InputEvent te = e.getTriggerEvent();
+    return !(te instanceof MouseEvent) || isLeftMouseButton((MouseEvent) te);
   }
 }
