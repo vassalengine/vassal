@@ -39,7 +39,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
 import VASSAL.tools.SequenceEncoder;
@@ -203,7 +202,7 @@ public class PolygonEditor extends JPanel {
   private class ModifyPolygon extends MouseInputAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (SwingUtilities.isLeftMouseButton(e)) {
+      if (SwingUtils.isLeftMouseButton(e)) {
         moveSelectedPoint(e);
         scrollAtEdge(e.getPoint(), 15);
         repaint();
