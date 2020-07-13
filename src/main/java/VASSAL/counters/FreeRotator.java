@@ -65,6 +65,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Decorator that rotates a GamePiece to an arbitrary angle
@@ -549,39 +550,43 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (hasPieceMoved()) {
-      endInteractiveRotate();
-      return;
+    if (SwingUtils.isLeftMouseButton(e)) {
+      if (hasPieceMoved()) {
+        endInteractiveRotate();
+        return;
+      }
+      drawGhost = true;
+      startAngle = getRelativeAngle(e.getPoint(), getPosition());
     }
-    drawGhost = true;
-    startAngle = getRelativeAngle(e.getPoint(), getPosition());
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (hasPieceMoved()) {
-      endInteractiveRotate();
-      return;
-    }
-
-    final Map m = getMap();
-
-    try {
-      final Point ghostPosition = getGhostPosition();
-      Command c = null;
-      final ChangeTracker tracker = new ChangeTracker(this);
-      if (!getPosition().equals(ghostPosition)) {
-        final GamePiece outer = Decorator.getOutermost(this);
-        outer.setProperty(Properties.MOVED, Boolean.TRUE);
-        c = m.placeOrMerge(outer, m.snapTo(ghostPosition));
+    if (SwingUtils.isLeftMouseButton(e)) {
+      if (hasPieceMoved()) {
+        endInteractiveRotate();
+        return;
       }
-      setAngle(tempAngle);
-      c = tracker.getChangeCommand().append(c);
 
-      GameModule.getGameModule().sendAndLog(c);
-    }
-    finally {
-      endInteractiveRotate();
+      final Map m = getMap();
+
+      try {
+        final Point ghostPosition = getGhostPosition();
+        Command c = null;
+        final ChangeTracker tracker = new ChangeTracker(this);
+        if (!getPosition().equals(ghostPosition)) {
+          final GamePiece outer = Decorator.getOutermost(this);
+          outer.setProperty(Properties.MOVED, Boolean.TRUE);
+          c = m.placeOrMerge(outer, m.snapTo(ghostPosition));
+        }
+        setAngle(tempAngle);
+        c = tracker.getChangeCommand().append(c);
+
+        GameModule.getGameModule().sendAndLog(c);
+      }
+      finally {
+        endInteractiveRotate();
+      }
     }
   }
 
@@ -621,12 +626,14 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (drawGhost) {
-      final Point mousePos = getMap().componentToMap(e.getPoint());
-      final double myAngle = getRelativeAngle(mousePos, pivot);
-      tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
+    if (SwingUtils.isLeftMouseButton(e)) {
+      if (drawGhost) {
+        final Point mousePos = getMap().componentToMap(e.getPoint());
+        final double myAngle = getRelativeAngle(mousePos, pivot);
+        tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
+      }
+      getMap().repaint();
     }
-    getMap().repaint();
   }
 
   private double getRelativeAngle(Point p, Point origin) {
@@ -647,7 +654,6 @@ public class FreeRotator extends Decorator
   public void mouseMoved(MouseEvent e) {
     if (hasPieceMoved()) {
       endInteractiveRotate();
-      return;
     }
   }
 

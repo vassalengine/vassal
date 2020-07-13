@@ -86,14 +86,14 @@ public class DragBuffer {
       public void mouseReleased(MouseEvent e) {
         e.getComponent().setCursor(null);
         Component source = (Component) e.getSource();
+
+        e.translatePoint(source.getLocationOnScreen().x,
+                         source.getLocationOnScreen().y);
+
         if (dropTarget == null) {
-          e.translatePoint(source.getLocationOnScreen().x,
-                           source.getLocationOnScreen().y);
           lastRelease = e;
         }
         else {
-          e.translatePoint(source.getLocationOnScreen().x,
-                           source.getLocationOnScreen().y);
           e.translatePoint(-dropTarget.getLocationOnScreen().x,
                            -dropTarget.getLocationOnScreen().y);
           dropHandler.mouseReleased(e);

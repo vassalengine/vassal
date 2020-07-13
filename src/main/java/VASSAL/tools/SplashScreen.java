@@ -29,6 +29,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * Displays an image centered on the screen
  */
@@ -46,8 +48,10 @@ public class SplashScreen extends JWindow {
                 d.height / 2 - getSize().height / 2);
     addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent evt) {
-        setVisible(false);
+      public void mouseReleased(MouseEvent e) {
+        if (SwingUtils.isLeftMouseButton(e)) {
+          setVisible(false);
+        }
       }
     });
   }

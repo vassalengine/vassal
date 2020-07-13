@@ -340,7 +340,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (setMode) {
+    if (setMode && SwingUtils.isLeftMouseButton(e)) {
       if (hp1 == null) {
         hp1 = e.getPoint();
       }
