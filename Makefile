@@ -53,13 +53,13 @@ TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
+JDKDIR:=jdks
+
+MACOSX_JDK=$(JDKDIR)/OpenJDK14U-jdk_x64_mac_hotspot_14.0.1_7.tar.gz
+WIN32_JDK=$(JDKDIR)/OpenJDK14U-jdk_x86-32_windows_hotspot_14.0.1_7.zip
+WIN64_JDK=$(JDKDIR)/OpenJDK14U-jdk_x64_windows_hotspot_14.0.1_7.zip
 
 JDOCLINK:=file:///usr/share/javadoc/java/api
-
-WIN32JMODS:=jdk-win32/jmods
-WIN64JMODS:=jdk-win64/jmods
-OSXJMODS:=jdk-osx/Contents/Home/jmods
-LINJMODS:=/usr/lib/jvm/java-14/jmods
 
 VNUM:=3.3.1
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
@@ -87,6 +87,7 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
+<<<<<<< HEAD
 #SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 #CLASSES:=$(SOURCES:.java=.class)
 
@@ -178,16 +179,20 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 #
-# OS X
+# Mac OS X
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
+$(JDKDIR)/macosx: $(MACOSX_JDK)
+	mkdir $@
+	tar -C $@ --strip-components=1 -xvf $<
+
+$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macosx
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
-	$(JLINK) --module-path $(OSXJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	$(JLINK) --module-path $(JDKDIR)/macosx/Contents/Home/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
 #	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
@@ -214,10 +219,10 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncom
 	$(DMG) dmg $< $@
 
 #
-# other
+# Other
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
+$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -234,7 +239,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-
 # Linux
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
+$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -251,13 +256,23 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
+$(JDKDIR)/win32: $(WIN32_JDK)
+	mkdir $@
+	unzip -d $@ $<
+	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
+
+$(JDKDIR)/win64: $(WIN64_JDK)
+	mkdir $@
+	unzip -d $@ $<
+	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
+
 $(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps $(JDKDIR)/win%
 	mkdir -p $@
 	cp $(TMPDIR)/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
@@ -268,7 +283,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.j
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	$(JLINK) --module-path $(WIN$(*)JMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	$(JLINK) --module-path $(JDKDIR)/win$(*)/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 	for i in `find $@ -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
