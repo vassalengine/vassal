@@ -54,6 +54,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -381,9 +382,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     inUseList.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent evt) {
-        if (evt.getClickCount() == 2) {
-          int index = inUseList.locationToIndex(evt.getPoint());
+// FIXME: mouseClicked()?
+      public void mouseReleased(MouseEvent e) {
+        if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
+          int index = inUseList.locationToIndex(e.getPoint());
           if (index >= 0) {
             edit(index);
           }

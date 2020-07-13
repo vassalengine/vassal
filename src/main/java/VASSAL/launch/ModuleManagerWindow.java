@@ -122,6 +122,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
 public class ModuleManagerWindow extends JFrame {
@@ -571,7 +572,7 @@ public class ModuleManagerWindow extends JFrame {
     tree.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
+        if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
           final TreePath path =
             tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
 

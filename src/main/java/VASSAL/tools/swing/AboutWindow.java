@@ -31,6 +31,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * @since 3.1.0
  * @author Joel Uckelman
@@ -63,9 +65,11 @@ public class AboutWindow extends JWindow {
 
     addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseReleased(MouseEvent evt) {
-        setVisible(false);
-        dispose();
+      public void mouseReleased(MouseEvent e) {
+        if (SwingUtils.isLeftMouseButton(e)) {
+          setVisible(false);
+          dispose();
+        }
       }
     });
   }

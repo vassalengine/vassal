@@ -36,6 +36,7 @@ import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Adds mouse listeners to the RoomTree components: double-click to join a room, etc. Builds a popup when right-clicking
@@ -64,19 +65,19 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   public void initializeControls(final ChatServerControls controls) {
     currentRoomPopupBuilder = new MouseAdapter() {
       @Override
-      public void mousePressed(MouseEvent evt) {
-        maybePopup(evt);
+      public void mousePressed(MouseEvent e) {
+        maybePopup(e);
       }
 
       @Override
-      public void mouseReleased(MouseEvent evt) {
-        maybePopup(evt);
+      public void mouseReleased(MouseEvent e) {
+        maybePopup(e);
       }
 
-      private void maybePopup(MouseEvent evt) {
-        if (evt.isPopupTrigger()) {
-          JTree tree = (JTree) evt.getSource();
-          TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
+      private void maybePopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          JTree tree = (JTree) e.getSource();
+          TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {
             Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
             if (target instanceof Player) {
@@ -85,7 +86,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
                 for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
                   popup.getComponent(i).setFont(POPUP_MENU_FONT);
                 }
-                popup.show(tree, evt.getX(), evt.getY());
+                popup.show(tree, e.getX(), e.getY());
               }
             }
           }
@@ -95,24 +96,24 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     controls.getCurrentRoom().addMouseListener(currentRoomPopupBuilder);
     roomPopupBuilder = new MouseAdapter() {
       @Override
-      public void mousePressed(MouseEvent evt) {
-        if (evt.isPopupTrigger()) {
-          maybePopup(evt);
+      public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          maybePopup(e);
         }
       }
 
       @Override
-      public void mouseReleased(MouseEvent evt) {
-        if (evt.isPopupTrigger()) {
-          maybePopup(evt);
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          maybePopup(e);
         }
-        else if (evt.getClickCount() == 2) {
-          JTree tree = (JTree) evt.getSource();
-          TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
+        else if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
+          JTree tree = (JTree) e.getSource();
+          TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {
             Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
             if (target instanceof SimpleRoom) {
-              int row = tree.getRowForLocation(evt.getX(), evt.getY());
+              int row = tree.getRowForLocation(e.getX(), e.getY());
               if (tree.isCollapsed(row)) {
                 tree.expandRow(row);
               }
@@ -125,9 +126,9 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
         }
       }
 
-      private void maybePopup(MouseEvent evt) {
-        JTree tree = (JTree) evt.getSource();
-        TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
+      private void maybePopup(MouseEvent e) {
+        JTree tree = (JTree) e.getSource();
+        TreePath path = tree.getPathForLocation(e.getX(), e.getY());
         if (path != null) {
           Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
           JPopupMenu popup = null;
@@ -143,7 +144,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
             for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
               popup.getComponent(i).setFont(POPUP_MENU_FONT);
             }
-            popup.show(tree, evt.getX(), evt.getY());
+            popup.show(tree, e.getX(), e.getY());
           }
         }
       }

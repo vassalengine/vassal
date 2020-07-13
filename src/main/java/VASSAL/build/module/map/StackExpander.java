@@ -29,6 +29,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Stack;
+import VASSAL.tools.swing.SwingUtils;
 
 public class StackExpander extends MouseAdapter implements Buildable {
   protected Map map;
@@ -52,18 +53,18 @@ public class StackExpander extends MouseAdapter implements Buildable {
   public void build(Element e) {
   }
 
+// FIXME: should be mouseClicked()?
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (!e.isConsumed()) {
-      if (e.getClickCount() == 2) {
-        GamePiece p = map.findPiece(e.getPoint(), PieceFinder.STACK_ONLY);
-        if (p != null) {
-          KeyBuffer.getBuffer().clear();
-          ((Stack) p).setExpanded(!((Stack) p).isExpanded());
-          KeyBuffer.getBuffer().add(((Stack) p).topPiece());
-        }
-        e.consume();
+    if (!e.isConsumed() && e.getClickCount() == 2
+                        && SwingUtils.isLeftMouseButton(e)) {
+      final GamePiece p = map.findPiece(e.getPoint(), PieceFinder.STACK_ONLY);
+      if (p != null) {
+        KeyBuffer.getBuffer().clear();
+        ((Stack) p).setExpanded(!((Stack) p).isExpanded());
+        KeyBuffer.getBuffer().add(((Stack) p).topPiece());
       }
+      e.consume();
     }
   }
 }

@@ -30,6 +30,8 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
@@ -97,7 +99,7 @@ public class SetGlobalProperty extends DynamicProperty {
       new DynamicKeyCommand[0]);
 
     menuCommands = Arrays.stream(keyCommands).filter(
-      kc -> kc.getName() != null && !kc.getName().isEmpty()
+      kc -> !StringUtils.isEmpty(kc.getName())
     ).toArray(KeyCommand[]::new);
 
     description = sd.nextToken("");

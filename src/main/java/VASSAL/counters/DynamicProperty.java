@@ -30,6 +30,8 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -102,7 +104,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       new DynamicKeyCommand[0]);
 
     menuCommands = Arrays.stream(keyCommands).filter(
-      kc -> kc.getName() != null && !kc.getName().isEmpty()
+      kc -> !StringUtils.isEmpty(kc.getName())
     ).toArray(KeyCommand[]::new);
   }
 

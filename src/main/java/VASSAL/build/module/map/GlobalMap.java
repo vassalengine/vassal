@@ -561,9 +561,12 @@ public class GlobalMap implements AutoConfigurable,
     public void mouseClicked(MouseEvent e) {
     }
 
+// FIXME: mouseClicked()?
     @Override
     public void mouseReleased(MouseEvent e) {
-      map.centerAt(componentToMap(e.getPoint()));
+      if (SwingUtils.isLeftMouseButton(e)) {
+        map.centerAt(componentToMap(e.getPoint()));
+      }
     }
 
     @Override

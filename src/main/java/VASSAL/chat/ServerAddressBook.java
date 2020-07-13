@@ -66,6 +66,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
 
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
@@ -249,10 +250,11 @@ public class ServerAddressBook {
       myList.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (editButton.isEnabled() && e.getClickCount() == 2) {
-                int index = myList.locationToIndex(e.getPoint());
-                editServer(index);
-             }
+          if (editButton.isEnabled() && e.getClickCount() == 2
+                                     && SwingUtils.isLeftMouseButton(e)) {
+            int index = myList.locationToIndex(e.getPoint());
+            editServer(index);
+          }
         }
       });
 

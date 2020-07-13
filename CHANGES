@@ -41,6 +41,7 @@
 * 13140: Versions with a build number are incorrectly sorted before versions
     without a build number
 * 13136: Update notifier still has old SourceForge URL for downloads
+* 13126: Right mouse button and Control-Click broken on Macs
 
 3.3.1 - 22 June 2020
 
