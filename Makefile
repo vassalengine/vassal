@@ -152,7 +152,7 @@ $(LIBDIR)/Vengine.jar: all $(TMPDIR)
 	cd $(LIBDIR) ; $(JAR) i $(@F) ; cd ..
 	chmod 664 $@
 
-$(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
@@ -266,7 +266,7 @@ $(JDKDIR)/win64: $(WIN64_JDK)
 	unzip -d $@ $<
 	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
 
-$(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
