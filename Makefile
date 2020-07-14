@@ -31,14 +31,6 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
-# For the Windows release, you will need 32- and 64-bit Windows JDKs available
-# for bundling with VASSAL. Set WIN32JMODS and WIN64JMODS to the directories in
-# the Windows JDKs where the 32- and 64-bit jmods are.
-#
-# For the Mac release, you will need a Mac JDK available for bundling
-# with VASSAL. Set OSXJMODS to the directory in the Mac JDK where the
-# jmods are.
-#
 
 SHELL:=/bin/bash
 
@@ -51,10 +43,6 @@ JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 JDKDIR:=jdks
-
-MACOSX_JDK=$(JDKDIR)/OpenJDK14U-jdk_x64_mac_hotspot_14.0.1_7.tar.gz
-WIN32_JDK=$(JDKDIR)/OpenJDK14U-jdk_x86-32_windows_hotspot_14.0.1_7.zip
-WIN64_JDK=$(JDKDIR)/OpenJDK14U-jdk_x64_windows_hotspot_14.0.1_7.zip
 
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
@@ -123,9 +111,16 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 # Mac OS X
 #
 
-$(JDKDIR)/macosx: $(MACOSX_JDK)
+$(JDKDIR)/macosx_jdk.tar.gz:
+	wget 'https://api.adoptopenjdk.net/v3/binary/latest/14/ga/mac/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk' -O $@
+
+.PRECIOUS: $(JDKDIR)/macosx_jdk.tar.gz
+
+$(JDKDIR)/macosx: $(JDKDIR)/macosx_jdk.tar.gz
 	mkdir $@
 	tar -C $@ --strip-components=1 -xvf $<
+
+.SECONDARY: $(JDKDIR)/macosx
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macosx
 	mkdir -p $@/Contents/{MacOS,Resources}
@@ -195,15 +190,17 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(JDKDIR)/win32: $(WIN32_JDK)
+$(JDKDIR)/win%_jdk.zip:
+	wget 'https://api.adoptopenjdk.net/v3/binary/latest/14/ga/windows/x$(*)/jdk/hotspot/normal/adoptopenjdk?project=jdk' -O $@
+
+.PRECIOUS: $(JDKDIR)/win32_jdk.zip $(JDKDIR)/win64_jdk.zip
+
+$(JDKDIR)/win%: $(JDKDIR)/win%_jdk.zip
 	mkdir $@
 	unzip -d $@ $<
 	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
 
-$(JDKDIR)/win64: $(WIN64_JDK)
-	mkdir $@
-	unzip -d $@ $<
-	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
+.SECONDARY: $(JDKDIR)/win32 $(JDKDIR)/win64
 
 $(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
