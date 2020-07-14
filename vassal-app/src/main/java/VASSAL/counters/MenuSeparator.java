@@ -136,8 +136,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return null;
-    //return HelpFile.getReferenceManualPage("GamePiece.htm","MenuSeparator");
+    return HelpFile.getReferenceManualPage("MenuSeparator.htm");
   }
 
 
