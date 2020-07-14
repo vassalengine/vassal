@@ -73,8 +73,6 @@ endif
 
 YEAR:=$(shell date +%Y)
 
-#CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
-
 CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 JAVAPATH:=/usr/bin
 
@@ -101,7 +99,7 @@ test:
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
-$(LIBDIR)/Vengine.jar: compile
+$(LIBDIR)/Vengine.jar:
 	$(MVN) package
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
@@ -207,7 +205,7 @@ $(JDKDIR)/win64: $(WIN64_JDK)
 	unzip -d $@ $<
 	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
 
-$(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
 	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
@@ -249,7 +247,7 @@ release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(V
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean jar test release-other release-linux release-windows release-macosx
+release: clean jar release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
