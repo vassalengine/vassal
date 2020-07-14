@@ -19,7 +19,7 @@
 		<vassal.jarlocation>${project.build.directory}/lib</vassal.jarlocation>
 
 		<version.batik>1.13</version.batik>
-		<version.jmock>2.5.1</version.jmock>
+		<version.jmock>2.11.0</version.jmock>
 	</properties>
 
 	<dependencies>
