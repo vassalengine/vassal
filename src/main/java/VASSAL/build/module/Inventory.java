@@ -241,6 +241,7 @@ public class Inventory extends AbstractConfigurable
     tree = new JTree();
     tree.setRootVisible(false);
     tree.setShowsRootHandles(true);
+    tree.setRowHeight(0);
     tree.setCellRenderer(initTreeCellRenderer());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     // If wanted center on a selected counter
@@ -348,7 +349,6 @@ public class Inventory extends AbstractConfigurable
         }
         return this;
       }
-
     };
   }
 
