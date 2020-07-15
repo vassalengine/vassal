@@ -24,24 +24,14 @@ import java.io.IOException;
 
 import org.apache.commons.io.input.NullInputStream;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.lib.legacy.ClassImposteriser;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import static org.junit.Assert.*;
 
-@RunWith(JMock.class)
-public class RereadableInputStreamTest {
-  protected final Mockery context = new Mockery() {
-    {
-      setImposteriser(ClassImposteriser.INSTANCE);
-    }
-  };
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+public class RereadableInputStreamTest {
   @Test
   public void testMarkSupported() {
     final InputStream in = new RereadableInputStream(new NullInputStream(10));
@@ -107,15 +97,11 @@ public class RereadableInputStreamTest {
 
   @Test
   public void testClose() throws IOException {
-    final InputStream child = context.mock(InputStream.class);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(child).close();
-      }
-    });
+    final InputStream child = mock(InputStream.class);
 
     final InputStream in = new RereadableInputStream(child);
     in.close();
+
+    verify(child, times(1)).close();
   }
 }
