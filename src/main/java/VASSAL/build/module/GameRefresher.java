@@ -34,8 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +53,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * GameRefresher Replace all counters in the same game with the current version
@@ -122,6 +121,14 @@ public final class GameRefresher implements GameComponent {
     for (PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
+    
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      for (PrototypeDefinition pd : pc.getDefinitions()) {
+        gpIdChecker.add(pd);
+      }
+    }    
+    
     if (gpIdChecker.hasErrors()) {
       // Any errors should have been resolved by the GpId check at startup, so
       // this error indicates
@@ -146,8 +153,7 @@ public final class GameRefresher implements GameComponent {
       else if (piece instanceof Stack) {
         for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
-          if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
-              && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+          if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
             pieces.add(0, p);
           }
           else {
@@ -156,8 +162,7 @@ public final class GameRefresher implements GameComponent {
         }
       }
       else if (piece.getParent() == null) {
-        if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+        if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
           pieces.add(0, piece);
         }
         else {
@@ -234,7 +239,7 @@ public final class GameRefresher implements GameComponent {
     else {
       updatedCount++;
 
-      if (! isTestMode()) {
+      if (!isTestMode()) {
         // Place the new Piece.
         final Command place = map.placeOrMerge(newPiece, pos);
         command.append(place);
@@ -246,7 +251,7 @@ public final class GameRefresher implements GameComponent {
       }
     }
 
-    if (! isTestMode()) {
+    if (!isTestMode()) {
       // If still in the same stack, move to correct position
       final Stack newStack = newPiece.getParent();
       if (newStack != null && oldStack != null && newStack == oldStack) {
@@ -296,7 +301,7 @@ public final class GameRefresher implements GameComponent {
     private JTextArea results;
     private JCheckBox nameCheck;
 
-    RefreshDialog (GameRefresher refresher) {
+    RefreshDialog(GameRefresher refresher) {
       this.refresher = refresher;
       setTitle(Resources.getString("GameRefresher.refresh_counters"));
       setModal(true);
@@ -308,10 +313,10 @@ public final class GameRefresher implements GameComponent {
       addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent we) {
-           exit();
+          exit();
         }
       });
-      setLayout(new MigLayout("wrap 1","[center]"));
+      setLayout(new MigLayout("wrap 1", "[center]"));
 
       final JPanel buttonPanel = new JPanel(new MigLayout());
 
@@ -320,21 +325,24 @@ public final class GameRefresher implements GameComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
           test();
-        }});
+        }
+      });
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           run();
-        }});
+        }
+      });
 
       final JButton exitButton = new JButton(Resources.getString("General.exit"));
       exitButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           exit();
-        }});
+        }
+      });
 
       buttonPanel.add(testButton);
       buttonPanel.add(runButton);
@@ -352,23 +360,23 @@ public final class GameRefresher implements GameComponent {
       pack();
     }
 
-     protected void exit() {
-       setVisible(false);
-     }
+    protected void exit() {
+      setVisible(false);
+    }
 
-     protected void test() {
-       results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-       refresher.execute (true, nameCheck.isSelected());
-     }
+    protected void test() {
+      results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
+      refresher.execute(true, nameCheck.isSelected());
+    }
 
-     protected void run() {
-       results.setText("");
-       refresher.execute (false, nameCheck.isSelected());
-       exit();
-     }
+    protected void run() {
+      results.setText("");
+      refresher.execute(false, nameCheck.isSelected());
+      exit();
+    }
 
-     public void addMessage(String mess) {
-       results.setText(results.getText()+"\n"+mess);
-     }
+    public void addMessage(String mess) {
+      results.setText(results.getText() + "\n" + mess);
+    }
   }
 }

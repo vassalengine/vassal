@@ -19,6 +19,7 @@ package VASSAL.build.module;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,6 +44,10 @@ public class PrototypesContainer extends AbstractConfigurable {
   private Map<String,PrototypeDefinition> definitions =
     new HashMap<>();
 
+  public Collection<PrototypeDefinition> getDefinitions() {
+    return definitions.values();
+  }
+  
   @Override
   public String[] getAttributeDescriptions() {
     return new String[0];

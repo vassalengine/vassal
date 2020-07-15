@@ -169,12 +169,16 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
   }
 
+  // Recursively add all sub-components of a Buildable to the GPId checker
   protected void checkGpIds(Buildable b, GpIdChecker checker) {
     if (b instanceof PieceSlot) {
       checker.add((PieceSlot) b);
     }
+    else if (b instanceof PrototypeDefinition) {
+      checker.add((PrototypeDefinition) b);
+    }
     else if (b instanceof ExtensionElement) {
-     checkGpIds(((ExtensionElement) b).getExtension(), checker);
+      checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
       for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
@@ -552,7 +556,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         if (ext.getName().equals(name)) {
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) > 0) {
-             GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
+            GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;
         }

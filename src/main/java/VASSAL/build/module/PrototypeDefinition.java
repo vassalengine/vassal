@@ -323,4 +323,4 @@ public class PrototypeDefinition extends AbstractConfigurable
      */
     return new ComponentI18nData(this, getPiece());
   }
- }
+}

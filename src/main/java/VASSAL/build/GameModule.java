@@ -65,6 +65,7 @@ import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.PrivateMap;
+import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.ServerConnection;
@@ -952,6 +953,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      for (PrototypeDefinition pd : pc.getDefinitions()) {
+        checker.add(pd);
+      }
+    }  
     checker.fixErrors();
   }
 

@@ -20,6 +20,8 @@ package VASSAL.build;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
@@ -42,6 +44,7 @@ public class GpIdChecker {
   protected boolean extensionsLoaded = false;
   final HashMap<String, SlotElement> goodSlots = new HashMap<>();
   final ArrayList<SlotElement> errorSlots = new ArrayList<>();
+  private Chatter chatter;
 
   public GpIdChecker() {
     this(null);
@@ -69,10 +72,19 @@ public class GpIdChecker {
     testGpId(pieceSlot.getGpId(), new SlotElement(pieceSlot));
 
     // PlaceMarker traits within the PieceSlot definition also contain GpId's.
-    GamePiece gp = pieceSlot.getPiece();
+    final GamePiece gp = pieceSlot.getPiece();
     checkTrait(gp, pieceSlot);
   }
 
+  /**
+   * Add any PieceSlots contained in traits in a Prototype Definition
+   * @param protoype
+   */
+  public void add(PrototypeDefinition prototype) {
+    final GamePiece gp = prototype.getPiece();
+    checkTrait(gp, prototype, gp);
+  }
+  
   /**
    * Check for PlaceMarker traits in a GamePiece and add them to
    * the cross-reference
@@ -86,14 +98,28 @@ public class GpIdChecker {
     }
 
     if (gp instanceof PlaceMarker) {
-       final PlaceMarker pm = (PlaceMarker) gp;
-       testGpId (pm.getGpId(), new SlotElement(pm, slot));
-    }
-
+      final PlaceMarker pm = (PlaceMarker) gp;
+      testGpId (pm.getGpId(), new SlotElement(pm));
+    }     
+    
     checkTrait(((Decorator) gp).getInner(), slot);
 
   }
 
+  protected void checkTrait(final GamePiece gp, PrototypeDefinition prototype, GamePiece definition) {
+    if (gp == null || gp instanceof BasicPiece) {
+      return;
+    }
+
+    if (gp instanceof PlaceMarker) {
+      final PlaceMarker pm = (PlaceMarker) gp;
+      testGpId (pm.getGpId(), new SlotElement(pm, prototype, definition));
+    }     
+    
+    checkTrait(((Decorator) gp).getInner(), prototype, definition);
+
+  }
+  
   /**
    * Validate a GamePieceId.
    *  - non-null
@@ -130,7 +156,6 @@ public class GpIdChecker {
       try {
         if (extensionsLoaded) {
           goodSlots.put(id, element);
-          System.out.println("Add Id "+id);
         }
         else {
           final int iid = Integer.parseInt(id);
@@ -153,6 +178,14 @@ public class GpIdChecker {
   public boolean hasErrors() {
     return errorSlots.size() > 0;
   }
+  
+  private void chat (String text) {
+    if (chatter == null) {
+      chatter = GameModule.getGameModule().getChatter();
+    }
+    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- "+text);
+    mess.execute();
+  }
 
   /**
    * Repair any errors
@@ -161,10 +194,13 @@ public class GpIdChecker {
    */
   public void fixErrors() {
     if (maxId >= gpIdSupport.getNextGpId()) {
+      chat("Next GPID updated from "+ gpIdSupport.getNextGpId()+"  to "+(maxId+1));
       gpIdSupport.setNextGpId(maxId+1);
     }
     for (SlotElement slotElement : errorSlots) {
+      final String before = slotElement.getGpId();
       slotElement.updateGpId();
+      chat(slotElement.toString()+" GPID updated from "+before+" to "+slotElement.getGpId());
     }
   }
 
@@ -183,7 +219,7 @@ public class GpIdChecker {
     if (gpid != null && gpid.length() > 0) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-         return element.createPiece(oldPiece);
+        return element.createPiece(oldPiece);
       }
     }
 
@@ -209,7 +245,7 @@ public class GpIdChecker {
     if (gpid != null && gpid.length() > 0) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-         return true;
+        return true;
       }
     }
 
@@ -232,6 +268,7 @@ public class GpIdChecker {
   /**
    * Wrapper class for components that contain a GpId - They will all be either
    * PieceSlot components or PlaceMarker Decorator's.
+   * PlaceMarker's may exist inside Prototypes and require special handling
    * Ideally we would add an interface to these components, but this
    * will break any custom code based on PlaceMarker
    *
@@ -241,10 +278,14 @@ public class GpIdChecker {
     private PieceSlot slot;
     private PlaceMarker marker;
     private String id;
+    private PrototypeDefinition prototype;
+    private GamePiece expandedPrototype;
 
     public SlotElement() {
       slot = null;
       marker = null;
+      prototype = null;
+      expandedPrototype = null;
     }
 
     public SlotElement(PieceSlot ps) {
@@ -253,10 +294,17 @@ public class GpIdChecker {
       id = ps.getGpId();
     }
 
-    public SlotElement(PlaceMarker pm, PieceSlot ps) {
+    public SlotElement(PlaceMarker pm) {
       this();
       marker = pm;
-      slot = ps;
+      id = pm.getGpId();
+    }
+    
+    public SlotElement(PlaceMarker pm, PrototypeDefinition pd, GamePiece definition) {
+      this();
+      marker = pm;
+      prototype = pd;
+      expandedPrototype = definition;
       id = pm.getGpId();
     }
 
@@ -264,12 +312,22 @@ public class GpIdChecker {
       return id;
     }
 
+    public String toString() {
+      return marker == null ? "PieceSlot "+slot.getConfigureName() : "Place/Replace trait "+marker.getDescription();
+    }
+    
     public void updateGpId() {
       if (marker == null) {
         slot.updateGpId();
+        id = slot.getGpId();
       }
       else {
         marker.updateGpId();
+        id = marker.getGpId();    
+        // If this PlaceMarker trait lives in a Prototype, then the Prototype definition has to be updated
+        if (prototype != null) {
+          prototype.setPiece(expandedPrototype);          
+        }
       }
     }
 
