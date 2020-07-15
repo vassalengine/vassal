@@ -31,14 +31,6 @@
 #
 # 	https://github.com/vasi/libdmg-hfsplus.git
 #
-# For the Windows release, you will need a Windows JDK available for bundling
-# with VASSAL. Set WINJMODS to the directory in the Windows JDK where the
-# jmods are.
-#
-# For the Mac release, you will need a Mac JDK available for bundling
-# with VASSAL. Set OSXJMODS to the directory in the Mac JDK where the
-# jmods are.
-#
 
 SHELL:=/bin/bash
 
@@ -50,11 +42,9 @@ TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
+JDKDIR:=jdks
 
 JDOCLINK:=file:///usr/share/javadoc/java/api
-
-WINJMODS:=jdk-win/jmods
-OSXJMODS:=jdk-osx/Contents/Home/jmods
 
 VNUM:=3.3.1
 
@@ -71,8 +61,6 @@ endif
 
 YEAR:=$(shell date +%Y)
 
-#CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
-
 CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 JAVAPATH:=/usr/bin
 
@@ -88,8 +76,6 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-all: compile
-
 compile:
 	$(MVN) compile
 
@@ -101,14 +87,8 @@ test:
 $(TMPDIR):
 	mkdir -p $(TMPDIR)
 
-$(LIBDIR)/Vengine.jar: all
+$(LIBDIR)/Vengine.jar:
 	$(MVN) package
-
-$(TMPDIR)/VASSAL.exe: compile $(TMPDIR)
-	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
-	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
-				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
-	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
@@ -128,16 +108,27 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 #
-# OS X
+# Mac OS X
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: all $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps
+$(JDKDIR)/macosx_jdk.tar.gz:
+	wget 'https://api.adoptopenjdk.net/v3/binary/latest/14/ga/mac/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk' -O $@
+
+.PRECIOUS: $(JDKDIR)/macosx_jdk.tar.gz
+
+$(JDKDIR)/macosx: $(JDKDIR)/macosx_jdk.tar.gz
+	mkdir $@
+	tar -C $@ --strip-components=1 -xvf $<
+
+.SECONDARY: $(JDKDIR)/macosx
+
+$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macosx
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
-	$(JLINK) --module-path $(OSXJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	$(JLINK) --module-path $(JDKDIR)/macosx/Contents/Home/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
@@ -162,10 +153,10 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncom
 	$(DMG) dmg $< $@
 
 #
-# other
+# Other
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -182,7 +173,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-
 # Linux
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
+$(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
@@ -199,7 +190,25 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps
+$(JDKDIR)/win%_jdk.zip:
+	wget 'https://api.adoptopenjdk.net/v3/binary/latest/14/ga/windows/x$(*)/jdk/hotspot/normal/adoptopenjdk?project=jdk' -O $@
+
+.PRECIOUS: $(JDKDIR)/win32_jdk.zip $(JDKDIR)/win64_jdk.zip
+
+$(JDKDIR)/win%: $(JDKDIR)/win%_jdk.zip
+	mkdir $@
+	unzip -d $@ $<
+	f=($@/*) && mv $@/*/* $@ && rmdir "$${f[@]}"
+
+.SECONDARY: $(JDKDIR)/win32 $(JDKDIR)/win64
+
+$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
+	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
+	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
+				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
+	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps $(JDKDIR)/win%
 	mkdir -p $@
 	cp $(TMPDIR)/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
@@ -210,7 +219,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	$(JLINK) --module-path $(WINJMODS) --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	$(JLINK) --module-path $(JDKDIR)/win$(*)/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 	for i in `find $@ -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
@@ -221,24 +230,27 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION): all $(LIBDIR)/Vengine.jar
 			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
 		tac	>$(TMPDIR)/uninstall_files.inc
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows/VASSAL-$(VERSION)
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
+# prevents make from trying to delete these, as they're intermediate files
+.SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION)
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION)
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer$*.nsi
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
-release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
+release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean jar test release-other release-linux release-windows release-macosx
+release: clean jar release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
 upload:
-	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
+	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
 	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
@@ -249,4 +261,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: all compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
