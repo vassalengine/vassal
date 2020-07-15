@@ -75,7 +75,6 @@ DMG:=../libdmg-hfsplus/dmg/dmg
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-<<<<<<< HEAD
 #SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 #CLASSES:=$(SOURCES:.java=.class)
 
@@ -140,18 +139,12 @@ $(LIBDIR)/Vengine.jar: all $(TMPDIR)
 	cd $(LIBDIR) ; $(JAR) i $(@F) ; cd ..
 	chmod 664 $@
 
-$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
-	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
-	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
-				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
-	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
-
 version:
 	sed -ri 's/ VERSION = ".*"/ VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar >>$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #dist/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
