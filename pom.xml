@@ -19,7 +19,6 @@
 		<vassal.jarlocation>${project.build.directory}/lib</vassal.jarlocation>
 
 		<version.batik>1.13</version.batik>
-		<version.jmock>2.5.1</version.jmock>
 	</properties>
 
 	<dependencies>
@@ -140,13 +139,7 @@
 		<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
-			<version>${version.jmock}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-legacy</artifactId>
-			<version>${version.jmock}</version>
+			<version>2.11.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
