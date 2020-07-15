@@ -103,19 +103,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
   
   
-  // If we're a child of a piece palette, try to get a scale from that. Otherwise default to 1.0 
-  protected double getScale() {
+  // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0 
+  public double getScale() {
     Widget w = this;
     while (w.getParent() != null) {
       w = w.getParent();
-      if (w instanceof PieceWindow) {
-        return ((PieceWindow)w).getScale();
-      }
-      else if (w instanceof PanelWidget) {
-        return ((PanelWidget)w).getScale();
-      }
-      else if (w instanceof ListWidget) {
-        return ((ListWidget)w).getScale();
+      if (w.hasScale()) {
+        return w.getScale();
       }
     }    
     return 1.0;
@@ -248,6 +242,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       );
     }
     else {
+      // We apply both our os_scale and our module-specified scale as factors
       getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale * getScale());
 
       // NB: The piece, not the expanded piece, receives events, so we check
@@ -262,12 +257,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public Dimension getPreferredSize() {
+    // Preferred size is affected by our module-specified scale 
     if (c != null && panel.getGraphics() != null) {
-
       Dimension bound = c.boundingBox().getSize();
       bound.width = (int) ((double)bound.width * getScale()); 
       bound.height = (int) ((double)bound.height * getScale());
-      return c.boundingBox().getSize();
+      return bound;
     }
     else {
       return new Dimension((int) ((double)width * getScale()), (int) ((double)height * getScale()));

@@ -88,6 +88,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     scale = 1.0;
   }
   
+  @Override
+  public boolean hasScale() {
+    return true;
+  }
+  
+  @Override
   public double getScale() {
     return scale;
   }

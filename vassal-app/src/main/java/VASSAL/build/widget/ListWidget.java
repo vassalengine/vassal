@@ -34,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
+import VASSAL.build.module.PieceWindow;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -68,8 +69,26 @@ public class ListWidget extends Widget
     return "Scrollable List";
   }
   
+  @Override
+  public boolean hasScale() {
+    return true;
+  }
+  
+  @Override
   public double getScale() {
     return scale;
+  }  
+  
+  // True if we're part of main (docked) Piece Palette
+  protected boolean isMainPiecePalette() {
+    Widget w = this;
+    while (w.getParent() != null) {
+      w = w.getParent();
+      if (w instanceof PieceWindow) {
+        return ((PieceWindow)w).shouldDockIntoMainWindow();
+      }
+    }    
+    return false;    
   }
   
 
@@ -99,10 +118,13 @@ public class ListWidget extends Widget
       split.setLeftComponent(multiPanel);
       split.setRightComponent(new ScrollPane(list));
 
-      if (width > 0 && height > 0) {
-        split.setPreferredSize(new Dimension(width,height)); 
+      if (width > 0 && height > 0) { 
+        // This was causing bad behavior in piece palettes - Jlist aggressively grabs space. This lets the size of the rest of the Piece Palette and/or Chatter govern.
+        int grabWidth  = isMainPiecePalette() ? width/2 : width;
+        int grabHeight = isMainPiecePalette() ? height/2 : height;
+        split.setPreferredSize(new Dimension(grabWidth, grabHeight));
       }
-      if (divider > 0){
+      if (divider > 0) {
         split.setDividerLocation(divider);
       }
     }

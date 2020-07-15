@@ -55,11 +55,15 @@ public class PanelWidget extends Widget {
     scale = 1.0;
   }
   
-  
-  public double getScale() {
-    return scale;
+  @Override
+  public boolean hasScale() {
+    return true;
   }
   
+  @Override
+  public double getScale() {
+    return scale;
+  }  
 
   public static String getConfigureTypeName() {
     return "Panel";
