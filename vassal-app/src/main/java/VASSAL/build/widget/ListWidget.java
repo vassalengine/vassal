@@ -54,16 +54,24 @@ public class ListWidget extends Widget
   private JPanel multiPanel;
   private int width, height, divider;
   private static final String DIVIDER = "divider";
+  public static final String SCALE = "scale"; //$NON-NLS-1$
+  protected double scale;
 
   private Map<Object,String> keys = new HashMap<>();
   private int count = 0;
 
   public ListWidget() {
+    scale = 1.0;
   }
 
   public static String getConfigureTypeName() {
     return "Scrollable List";
   }
+  
+  public double getScale() {
+    return scale;
+  }
+  
 
   @Override
   public Component getComponent() {
@@ -92,7 +100,7 @@ public class ListWidget extends Widget
       split.setRightComponent(new ScrollPane(list));
 
       if (width > 0 && height > 0) {
-        split.setPreferredSize(new Dimension(width,height));
+        split.setPreferredSize(new Dimension(width,height)); 
       }
       if (divider > 0){
         split.setDividerLocation(divider);
@@ -141,17 +149,17 @@ public class ListWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {NAME,WIDTH,HEIGHT,DIVIDER};
+    return new String[] {NAME,SCALE,WIDTH,HEIGHT,DIVIDER};
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{"Name:  ", "Image Scale:  "};
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{String.class};
+    return new Class<?>[]{String.class, Double.class};
   }
 
   @Override
@@ -168,6 +176,18 @@ public class ListWidget extends Widget
     else if (DIVIDER.equals(name)) {
       divider = Integer.parseInt((String)value);
     }
+    else if (SCALE.equals(name)) {
+      if (value instanceof String) {
+        value = Double.valueOf((String) value);
+      }
+      scale = (Double) value;
+      if (scale < 0.01) { //BR// Just gonna go with some sanity.
+        scale = 0.01;
+      } 
+      else if (scale >= 4) {
+        scale = 4.0; 
+      } 
+    }
   }
 
   @Override
@@ -183,6 +203,9 @@ public class ListWidget extends Widget
     }
     else if (DIVIDER.equals(name)) {
       return String.valueOf(split == null ? divider : split.getDividerLocation());
+    }
+    else if (SCALE.equals(name)) {
+      return String.valueOf(scale);
     }
     return null;
   }

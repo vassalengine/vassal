@@ -68,10 +68,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String HIDDEN = "hidden"; //$NON-NLS-1$
+  public static final String SCALE = "scale"; //$NON-NLS-1$
   protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
   protected JComponent root;
   protected ComponentSplitter.SplitPane mainWindowDock;
   protected String tooltip = ""; //$NON-NLS-1$
+  protected double scale;
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
@@ -83,6 +85,11 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     };
     launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
+    scale = 1.0;
+  }
+  
+  public double getScale() {
+    return scale;
   }
 
   private Window initFrame() {
@@ -247,7 +254,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString("Editor.PieceWindow.show_hide") //$NON-NLS-1$
+      Resources.getString("Editor.PieceWindow.show_hide"), //$NON-NLS-1$
+      Resources.getString("Editor.PieceWindow.scale")
     };
   }
 
@@ -259,7 +267,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       String.class,
       String.class,
       IconConfig.class,
-      NamedKeyStroke.class
+      NamedKeyStroke.class,
+      Double.class
     };
   }
 
@@ -272,7 +281,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, SCALE };
   }
 
   @Override
@@ -294,6 +303,18 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       }
       hidden = (Boolean) value;
     }
+    else if (SCALE.equals(name)) {
+      if (value instanceof String) {
+        value = Double.valueOf((String)value);
+      }
+      scale = (Double) value;      
+      if (scale < 0.01) { //BR// Just gonna go with some sanity.
+        scale = 0.01;
+      } 
+      else if (scale >= 4) {
+        scale = 4.0; 
+      } 
+    }
     else if (TOOLTIP.equals(name)) {
       tooltip = (String) value;
       launch.setAttribute(name, value);
@@ -303,6 +324,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
   }
 
+  
   @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
@@ -310,6 +332,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
     else if (HIDDEN.equals(name)) {
       return String.valueOf(hidden);
+    }
+    else if (SCALE.equals(name)) {
+      return String.valueOf(scale);
     }
     else if (TOOLTIP.equals(name)) {
       return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;

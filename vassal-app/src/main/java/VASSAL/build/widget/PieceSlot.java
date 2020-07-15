@@ -29,7 +29,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -48,6 +47,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -101,6 +101,26 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public PieceSlot(CardSlot card) {
     this((PieceSlot) card);
   }
+  
+  
+  // If we're a child of a piece palette, try to get a scale from that. Otherwise default to 1.0 
+  protected double getScale() {
+    Widget w = this;
+    while (w.getParent() != null) {
+      w = w.getParent();
+      if (w instanceof PieceWindow) {
+        return ((PieceWindow)w).getScale();
+      }
+      else if (w instanceof PanelWidget) {
+        return ((PanelWidget)w).getScale();
+      }
+      else if (w instanceof ListWidget) {
+        return ((ListWidget)w).getScale();
+      }
+    }    
+    return 1.0;
+  }
+  
 
   protected void copyFrom(PieceSlot piece) {
     c = piece.c;
@@ -150,8 +170,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
     panel.revalidate();
     panel.repaint();
-    pieceDefinition = c == null ? null :
-      GameModule.getGameModule().encode(new AddPiece(c));
+    pieceDefinition = c == null ? null : GameModule.getGameModule().encode(new AddPiece(c));
   }
 
   /**
@@ -229,13 +248,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       );
     }
     else {
-      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale);
+      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale * getScale());
 
       // NB: The piece, not the expanded piece, receives events, so we check
       // the piece, not the expanded piece, for its selection status.
       if (Boolean.TRUE.equals(getPiece().getProperty(Properties.SELECTED))) {
         BasicPiece.getHighlighter().draw(getExpandedPiece(), g,
-          size.width / 2, size.height / 2, panel, os_scale);
+          size.width / 2, size.height / 2, panel, os_scale * getScale());
       }
     }
 
@@ -244,11 +263,14 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public Dimension getPreferredSize() {
     if (c != null && panel.getGraphics() != null) {
-//      c.draw(panel.getGraphics(), 0, 0, panel, 1.0);
+
+      Dimension bound = c.boundingBox().getSize();
+      bound.width = (int) ((double)bound.width * getScale()); 
+      bound.height = (int) ((double)bound.height * getScale());
       return c.boundingBox().getSize();
     }
     else {
-      return new Dimension(width, height);
+      return new Dimension((int) ((double)width * getScale()), (int) ((double)height * getScale()));
     }
   }
 
@@ -408,7 +430,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   @Override
-  public void addTo(Buildable parent) {
+  public void addTo(Buildable par) {
+    // Need to "keep our Widgets in a row" for scale purposes 
+    if (par instanceof Widget) {
+      parent = (Widget)par;
+    }
+    
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
     DragGestureListener dragGestureListener = new DragGestureListener() {
