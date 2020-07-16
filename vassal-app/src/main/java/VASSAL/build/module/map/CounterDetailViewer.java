@@ -110,6 +110,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde";
   public static final String SHOW_NON_MOVABLE = "showNonMovable";
   public static final String SHOW_DECK = "showDeck";
+  public static final String SHOW_OVERLAP = "showOverlap";
   public static final String UNROTATE_PIECES = "unrotatePieces";
   public static final String DISPLAY = "display";
   public static final String LAYER_LIST = "layerList";
@@ -148,6 +149,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showTextSingleDeprecated = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
+  protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;
@@ -476,7 +478,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     Visitor visitor = new Visitor(new Filter(), map,
-      map.componentToMap(currentMousePosition.getPoint()));
+      map.componentToMap(currentMousePosition.getPoint()), showOverlap);
     DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -589,14 +591,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected int lastLayer = -1;
     protected int insertPos = 0;
     protected Point foundPieceAt;
+    protected boolean showingOverlap;
 
-    public Visitor(Filter filter, Map map, Point pt) {
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
       super(map,pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
       }
       pieces = new ArrayList<>();
       this.filter = filter;
+      showingOverlap = showOverlap;
     }
 
     @Override
@@ -652,8 +656,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           lastLayer = layer;
         }
 
+        // Our show-overlap setting controls whether we're allowed to show all pieces overlapping this spot, or only pieces at the exact location of the first piece we find.
+        if (!showingOverlap) {
         if (foundPieceAt == null) {
           foundPieceAt = p.getPosition();
+        }
         }
 
         pieces.add(insertPos++, p);
@@ -815,7 +822,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_MOVE_SELECTED,
       SHOW_NON_MOVABLE,
       UNROTATE_PIECES,
-      SHOW_DECK
+      SHOW_DECK,
+      SHOW_OVERLAP,
     };
   }
 
@@ -847,6 +855,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
+       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
       };
   }
 
@@ -877,7 +886,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Boolean.class,
-      Boolean.class
+      Boolean.class,
+      Boolean.class,
     };
   }
 
@@ -902,7 +912,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
-        BasicPiece.CURRENT_ZONE});
+          BasicPiece.CURRENT_ZONE});
     }
   }
 
@@ -913,7 +923,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
-        BasicPiece.CURRENT_ZONE, SUM});
+          BasicPiece.CURRENT_ZONE, SUM});
     }
   }
 
@@ -1041,14 +1051,22 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showDeck = "true".equals(value);
       }
     }
-    else if (UNROTATE_PIECES.equals(name)) {
+    else if (SHOW_OVERLAP.equals(name)) {
       if (value instanceof Boolean) {
-        unrotatePieces = (Boolean) value;
+        showOverlap = (Boolean) value;
       }
       else if (value instanceof String) {
-        unrotatePieces = "true".equals(value);
+        showOverlap = "true".equals(value);
       }
-    }
+    }    
+    else if (UNROTATE_PIECES.equals(name)) {
+        if (value instanceof Boolean) {
+          unrotatePieces = (Boolean) value;
+        }
+        else if (value instanceof String) {
+          unrotatePieces = "true".equals(value);
+        }
+      }
     else if (DISPLAY.equals(name)) {
       displayWhat = (String) value;
     }
@@ -1145,8 +1163,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_DECK.equals(name)) {
       return String.valueOf(showDeck);
     }
+    else if (SHOW_OVERLAP.equals(name)) {
+      return String.valueOf(showOverlap);
+    }
     else if (UNROTATE_PIECES.equals(name)) {
-      return String.valueOf(unrotatePieces);
+        return String.valueOf(unrotatePieces);
     }
     else if (DISPLAY.equals(name)) {
       return displayWhat;
