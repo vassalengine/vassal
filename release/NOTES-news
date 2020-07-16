@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.3.1.
+The VASSAL Team is happy to announce the release of VASSAL 3.3.2.
 </p>
 <h2>IMPORTANT</h2>
 <ul>
@@ -10,17 +10,25 @@ The VASSAL Team is happy to announce the release of VASSAL 3.3.1.
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-windows.exe' target='_new'>Windows</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.3.0</h2>
-Bug fixes:
+<h2>Changes since 3.3.1</h2>
 <ul>
-<li>13111: IncompatibleClassChangeError due to change of ComponentSplitter methods to static prevents some modules from opening</li>
-<li>13083: BrowserSupport cannot open URLs on Linux without gtk3</li>
+<li>13182: Piece images in Inventory windows are drawn offset on HiDPI screens</li>
+<li>13181: Piece images in Inventory windows have truncated height on Macs</li>
+<li>13176: Bundled Java fails to start on Mac OS X < 10.13</li>
+<li>13175: Add bundle for 32-bit Windows</li>
+<li>13152: Version number and year set incorrectly in Mac DMG's Info.plist</li>
+<li>13143: HTTPS URLs fail to load (handshake_failure) due to missing jdk.crypto.ec module</li>
+<li>13140: Versions with a build number are incorrectly sorted before versions without a build number</li>
+<li>13136: Update notifier still has old SourceForge URL for downloads</li>
+<li>13126: Right mouse button and Control-Click broken on Macs</li>
+<li>12861: Improved behavior of Zone editor</li>
 </ul>
 <p>
 For changes prior to this release, see the change log.
