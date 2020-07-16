@@ -1,5 +1,7 @@
 3.3.2 - ???
 
+* 13182: Piece images in Inventory windows are drawn offset on HiDPI screens
+* 13181: Piece images in Inventory windows have truncated height on Macs
 * 13176: Bundled Java fails to start on Mac OS X < 10.13
 * 13175: Add bundle for 32-bit Windows
 * 13152: Version number and year set incorrectly in Mac DMG's Info.plist
