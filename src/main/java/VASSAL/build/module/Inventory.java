@@ -339,7 +339,13 @@ public class Inventory extends AbstractConfigurable
                 final AffineTransform orig_t = g2d.getTransform();
                 g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
-                piece.draw(g, -r.x, -r.y, c, pieceZoom * os_scale);
+                piece.draw(
+                  g,
+                  (int)(-r.x * os_scale),
+                  (int)(-r.y * os_scale),
+                  c,
+                  pieceZoom * os_scale
+                );
 
                 g2d.setTransform(orig_t);
               }
