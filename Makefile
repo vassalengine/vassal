@@ -52,7 +52,7 @@ JDOCLINK:=file:///usr/share/javadoc/java/api
 VNUM:=3.3.2
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 #VERSION:=$(shell git describe --tags)
-VERSION:=$(VNUM)-test-1
+VERSION:=$(VNUM)-test-2
 YEAR:=$(shell date +%Y)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
