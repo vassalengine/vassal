@@ -1,0 +1,220 @@
+VASSAL *
+    Info *
+        is2dEnabled() *
+            <-- VASL.build.module.map.PieceMover$DragHandler.dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+        isDndEnabled() *
+            <-- VASL.build.module.map.PieceMover.addTo(VASSAL.build.Buildable)
+            <-- VASL.build.module.map.PieceMover.mousePressed(java.awt.event.MouseEvent)
+        isMacOSX() *
+            <-- VASSAL.launch.Player.createMenuManager()
+            <-- net.cantab.hayward.george.OCS.Parsing.ScenarioBuilder.createMenuManager()
+VASSAL.build
+    AbstractBuildable *
+        getBuildComponents() *
+            <-- jep.Refresher.checkBuildable(VASSAL.counters.GamePiece, VASSAL.build.AbstractBuildable)
+            <-- wga.Refresher.checkBuildable(VASSAL.counters.GamePiece, VASSAL.build.AbstractBuildable)
+    GameModule
+        fireKeyStroke(javax.swing.KeyStroke)
+            <-- wat.WatPlugin.startSequence()
+        getGlobalPrefs()
+            <-- VASSAL.build.GameModule.shutDown()
+VASSAL.build.module *
+    Chatter *
+        getHandle() *
+            <-- ddm.jDiceButton.getReportSuffix()
+            <-- random.DiceButton.getReportSuffix()
+    GameState *
+        getPieces() *
+            <-- Inventory.Inventory.generateInventory()
+            <-- VSQL.VSQLGamePieceRefresher.refresh()
+            <-- VSQL.VSQLInventory.buildTreeModel()
+            <-- avl.AvlInventory.getCount(java.lang.String, java.lang.String[], java.lang.String[], java.lang.String)
+            <-- jep.Refresher.refresh()
+            <-- wga.Refresher.refresh()
+    Map *
+        componentCoordinates(java.awt.Point) *
+            <-- CASL.VASL.VASLThread.mapCASLPointToScreen(java.awt.Point)
+            <-- FlatTop.FlatTopPropertySheet.myKeyEvent(javax.swing.KeyStroke)
+            <-- ForThePeople.FTPKeyBufferer.mousePressed(java.awt.event.MouseEvent)
+            <-- ForThePeople.FTPMenuDisplayer.mouseReleased(java.awt.event.MouseEvent)
+            <-- VASL.build.module.map.CASLThread.draw(java.awt.Graphics, VASSAL.build.module.Map)
+            <-- VASL.build.module.map.CASLThread.mapCASLPointToScreen(java.awt.Point)
+            <-- VASL.build.module.map.HindranceKeeper.draw(java.awt.Graphics, VASSAL.build.module.Map)
+            <-- VASL.build.module.map.PieceMover$DragHandler.dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+            <-- VASSAL.build.module.map.PieceMover$DragHandler.dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+            <-- VSQL.TrackRotator.draw(java.awt.Graphics, VASSAL.build.module.Map)
+            <-- VSQL.VSQLHindranceKeeper.apply(VASSAL.counters.GamePiece, java.awt.Graphics, VASSAL.build.module.Map)
+            <-- cc.PieceMover$DragHandler.dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+            <-- com.btinternet.george973.MenuDisplayerOverride.mouseReleased(java.awt.event.MouseEvent)
+            <-- net.cantab.hayward.george.OCS.PieceMoverOverride$myDragHandler.dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+            <-- tdc.TdcThread.draw(java.awt.Graphics, VASSAL.build.module.Map)
+            <-- tdc.TdcThread.mouseDragged(java.awt.event.MouseEvent)
+            <-- tdc.UnitInfo$InfoDialog.UnitInfo$InfoDialog(tdc.UnitInfo, tdc.UnitInfo)
+            <-- tdc.WizardThread.draw(java.awt.Graphics, VASSAL.build.module.Map)
+            <-- tdc.WizardThread.drawRange(java.awt.Graphics, int, java.awt.Color)
+            <-- tdc.WizardThread.mouseDragged(java.awt.event.MouseEvent)
+        getAllBoards() *
+            <-- CASL.VASL.VASLThread.initCaslMap()
+            <-- CASL.VASL.VASLThread.mapMouseToCASLCoordinates(java.awt.Point)
+            <-- VASL.build.module.map.BoardVersionChecker.setup(boolean)
+        getAllMaps() *
+            <-- tdc.TdcScenarioOptions$AttachOption.doGlobalKey(java.lang.String)
+        mapCoordinates(java.awt.Point) *
+            <-- CASL.VASL.VASLThread.loadPiece(VASSAL.counters.GamePiece)
+            <-- CASL.VASL.VASLThread.mouseDragged(java.awt.event.MouseEvent)
+            <-- ForThePeople.FTPKeyBufferer.mouseReleased(java.awt.event.MouseEvent)
+            <-- VASL.build.module.map.CASLThread.loadPiece(VASSAL.counters.GamePiece)
+            <-- VASL.build.module.map.CASLThread.mouseDragged(java.awt.event.MouseEvent)
+            <-- VSQL.TrackRotator.mouseDragged(java.awt.event.MouseEvent)
+            <-- VSQL.VSQLZoomer.zoomMax()
+            <-- VSQL.VSQLZoomer.zoomMin()
+            <-- ca.mkiefte.CardZoomer.getDisplayablePieces()
+            <-- net.cantab.hayward.george.OCS.DragHandlerReplace$myDragHandler.dragMouseMoved(java.awt.dnd.DragSourceDragEvent)
+            <-- net.cantab.hayward.george.OCS.PieceMoverOverride$myDragHandler.dragMouseMoved(java.awt.dnd.DragSourceDragEvent)
+            <-- tdc.OldTdcCounterDetailViewer.drawText(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)
+            <-- tdc.TdcCounterDetailViewer.drawText(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)
+            <-- tdc.TdcCounterDetailViewer.getDisplayablePieces()
+            <-- tdc.TdcThread.mouseDragged(java.awt.event.MouseEvent)
+            <-- tdc.WizardThread.drawRange(java.awt.Graphics, int, java.awt.Color)
+            <-- tdc.WizardThread.launch(VASSAL.counters.GamePiece, int, boolean)
+            <-- tdc.WizardThread.mouseDragged(java.awt.event.MouseEvent)
+VASSAL.build.module.map
+    PieceMover
+        applyKeyAfterMove(java.util.List, VASSAL.command.Command, javax.swing.KeyStroke)
+            <-- VASSAL.build.module.map.PieceMover.movePieces(VASSAL.build.module.Map, java.awt.Point)
+        setOldLocation(VASSAL.counters.GamePiece)
+            <-- VASSAL.build.module.map.PieceMover.movedPiece(VASSAL.counters.GamePiece, java.awt.Point)
+VASSAL.build.module.map.boardPicker *
+    Board *
+        fixImage(java.awt.Component) *
+            <-- terrain.TerrainHexGridEditor.initComponents()
+VASSAL.counters *
+    DragBuffer *
+        sort(VASSAL.tools.Sort$Comparator) *
+            <-- VASL.build.module.map.PieceMover.movePieces(VASSAL.build.module.Map, java.awt.Point)
+    Hideable *
+        setAllHidden(boolean) *
+            <-- VASL.build.module.map.PieceMover.movePieces(VASSAL.build.module.Map, java.awt.Point)
+    KeyBuffer *
+        getPieces() *
+            <-- VASL.build.module.map.PieceMover$2.processPiece(VASSAL.counters.GamePiece)
+            <-- cc.PieceMover$2.visitDefault(VASSAL.counters.GamePiece)
+            <-- cc.PieceMover$2.visitStack(VASSAL.counters.Stack)
+    MultiImagePicker *
+        getImageNames() *
+            <-- cc.CCEmbellishment$Ed.getType()
+            <-- cc.CCEmbellishment$Ed.oldgetType()
+            <-- cc.CCEmbellishment$Ed.reset(cc.CCEmbellishment)
+    Obscurable *
+        setAllHidden(boolean) *
+            <-- VASL.build.module.map.PieceMover.movePieces(VASSAL.build.module.Map, java.awt.Point)
+    PieceImage *
+        <-- VSQL.TrackRotator.getRotatedImage(double, java.awt.Component)
+        <-- VSQL.TrackRotator.setInner(VASSAL.counters.GamePiece)
+        <-- VSQL.TrackRotator.unrotated
+        PieceImage(VASSAL.counters.GamePiece) *
+            <-- VSQL.TrackRotator.setInner(VASSAL.counters.GamePiece)
+        getImage(java.awt.Component) *
+            <-- VSQL.TrackRotator.getRotatedImage(double, java.awt.Component)
+        isChanged() *
+            <-- VSQL.TrackRotator.getRotatedImage(double, java.awt.Component)
+    PieceIterator *
+        PieceIterator(java.util.Enumeration) *
+            <-- CASL.VASL.VASLThread.resetScenario()
+            <-- VASL.build.module.map.ASLPieceMover.extractMovable()
+            <-- VSQL.VSQLPieceMover.extractMovable()
+            <-- vip.VIPCounterDetailViewer.drawGraphics(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)
+        PieceIterator(java.util.Enumeration, VASSAL.counters.PieceFilter) *
+            <-- Inventory.Inventory.generateInventory()
+            <-- VASL.build.module.map.HindranceKeeper.getVisibleHindrances(VASSAL.counters.Stack)
+            <-- VSQL.VSQLInventory.buildTreeModel()
+            <-- avl.AvlInventory.getCount(java.lang.String, java.lang.String[], java.lang.String[], java.lang.String)
+    Stack *
+        getPieces() *
+            <-- CASL.VASL.VASLThread.resetScenario()
+            <-- VASL.build.module.map.ASLPieceMover.extractMovable()
+            <-- VASL.build.module.map.HindranceKeeper.getVisibleHindrances(VASSAL.counters.Stack)
+            <-- VASL.build.module.map.MassRemover.removePiecesWithName(java.lang.String)
+            <-- VASL.build.module.map.PieceMover.markMoved(VASSAL.counters.GamePiece, boolean)
+            <-- VSQL.VSQLGamePieceRefresher.refresh()
+            <-- VSQL.VSQLPieceMover.extractMovable()
+            <-- cc.PieceMover.markMoved(VASSAL.counters.GamePiece, boolean)
+            <-- com.locehilios.vassal.ScoreControl.findAllScoreMeeples()
+            <-- com.locehilios.vassal.ScoreControl.findMyScoreMeeple()
+            <-- jep.Refresher.refresh()
+            <-- tdc.TdcPieceMover.movedPiece(VASSAL.counters.GamePiece, java.awt.Point)
+            <-- wga.Refresher.refresh()
+        getPiecesInReverseOrder() *
+            <-- VASL.counters.PlaceDM.myKeyEvent(javax.swing.KeyStroke)
+VASSAL.tools *
+    ArchiveWriter *
+        ArchiveWriter(java.util.zip.ZipFile) *
+            <-- net.cantab.hayward.george.OCS.Parsing.ScenarioBuilder.launch()
+        write(boolean) *
+            <-- VASSAL.build.GameModule.save(boolean)
+    BackgroundTask *
+        <-- CASL.VASL.VASLThread$2
+        BackgroundTask() *
+            <-- CASL.VASL.VASLThread$2.VASLThread$2(CASL.VASL.VASLThread)
+    DataArchive *
+        getCachedImage(java.lang.String) *
+            <-- FlatTop.FlatTopPlayerRoster.setRetireButtonIcon()
+            <-- VASL.build.module.map.PieceMover.initButton()
+            <-- VASL.counters.MarkMoved.draw(java.awt.Graphics, int, int, java.awt.Component, double)
+            <-- cc.CCEmbellishment.getCurrentImage()
+            <-- cc.PieceMover.initButton()
+        getFileStream(java.io.File, java.lang.String) *
+            <-- CASL.VASL.VASLThread.initCaslMap()
+        getFileStream(java.lang.String) *
+            <-- terrain.TerrainMap.load()
+        getImage(java.lang.String) *
+            <-- VASL.build.module.map.boardPicker.Underlay.loadImage()
+        getImageBounds(java.awt.Image) *
+            <-- cc.CCEmbellishment.getCurrentImageBounds()
+        getImageInputStream(java.lang.String) *
+            <-- VASL.build.module.map.boardPicker.ASLBoard$BoardOp$1.eval()
+            <-- VASL.build.module.map.boardPicker.Overlay.loadImage()
+            <-- VASL.build.module.map.boardPicker.SSROverlay.loadImage()
+        getImageSize(java.lang.String) *
+            <-- VASL.build.module.map.boardPicker.Overlay.setBounds()
+            <-- VASL.build.module.map.boardPicker.SSROverlay.SSROverlay(java.lang.String, java.io.File)
+        getScaledImage(java.awt.Image, double) *
+            <-- VASL.counters.MarkMoved.draw(java.awt.Graphics, int, int, java.awt.Component, double)
+            <-- VSQL.TrackRotator.draw(java.awt.Graphics, int, int, java.awt.Component, double)
+            <-- cc.CCEmbellishment.draw(java.awt.Graphics, int, int, java.awt.Component, double)
+        unCacheImage(java.awt.Image) *
+            <-- VSQL.TrackRotator.clearCachedImages()
+    FutureUtils *
+        wait(java.util.concurrent.Future) *
+            <-- VASSAL.build.GameModule.shutDown()
+    HashCode *
+        hash(java.lang.Object) *
+            <-- ca.mkiefte.ConditionalLabeler$LabelOp.ConditionalLabeler$LabelOp(ca.mkiefte.ConditionalLabeler, java.lang.String, java.awt.Font, java.awt.Color, java.awt.Color)
+    PlayerIdFormattedString *
+        <-- turn.TurnTracker.TurnTracker()
+        <-- turn.TurnTracker.getAttributeValueString(java.lang.String)
+        <-- turn.TurnTracker.reportFormat
+        <-- turn.TurnTracker.save()
+        <-- turn.TurnTracker.setAttribute(java.lang.String, java.lang.Object)
+        PlayerIdFormattedString() *
+            <-- UpFront.Messenger.Messenger()
+            <-- VASL.build.module.map.PieceMover.PieceMover()
+        PlayerIdFormattedString(java.lang.String) *
+            <-- ddm.jDiceButton.jDiceButton()
+            <-- turn.TurnTracker.TurnTracker()
+    Sort$Alpha *
+        Sort$Alpha() *
+            <-- VASL.build.module.map.PieceMover.compare(java.lang.Object, java.lang.Object)
+        compare(java.lang.Object, java.lang.Object) *
+            <-- VASL.build.module.map.PieceMover.compare(java.lang.Object, java.lang.Object)
+    Sort$Comparator *
+        <-- VASL.build.module.map.PieceMover
+        <-- VASL.build.module.map.PieceMover.movePieces(VASSAL.build.module.Map, java.awt.Point)
+VASSAL.tools.logging *
+    Logger *
+        log(java.lang.Throwable) *
+            <-- net.cantab.hayward.george.OCS.HexGridNumberingOverride$1TestPanel$1.keyReleased(java.awt.event.KeyEvent)
+        log(java.lang.Throwable, java.lang.String) *
+            <-- VASSAL.build.GameModule.buildCrc()
+        logAndWait(java.lang.String) *
+            <-- VASSAL.build.GameModule.shutDown()
