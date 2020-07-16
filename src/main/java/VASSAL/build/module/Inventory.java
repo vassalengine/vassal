@@ -241,6 +241,7 @@ public class Inventory extends AbstractConfigurable
     tree = new JTree();
     tree.setRootVisible(false);
     tree.setShowsRootHandles(true);
+    tree.setRowHeight(0);
     tree.setCellRenderer(initTreeCellRenderer());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     // If wanted center on a selected counter
@@ -338,7 +339,13 @@ public class Inventory extends AbstractConfigurable
                 final AffineTransform orig_t = g2d.getTransform();
                 g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
-                piece.draw(g, -r.x, -r.y, c, pieceZoom * os_scale);
+                piece.draw(
+                  g,
+                  (int)(-r.x * os_scale),
+                  (int)(-r.y * os_scale),
+                  c,
+                  pieceZoom * os_scale
+                );
 
                 g2d.setTransform(orig_t);
               }
@@ -348,7 +355,6 @@ public class Inventory extends AbstractConfigurable
         }
         return this;
       }
-
     };
   }
 
