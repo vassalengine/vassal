@@ -344,11 +344,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
   }
 
-  protected void drawObscuredToMe(Graphics g, int x, int y, Component obs, double zoom) {
+  public void drawObscuredToMe(Graphics g, int x, int y, Component obs, double zoom) {
     obscuredToMeView.draw(g, x, y, obs, zoom);
   }
 
-  protected void drawObscuredToOthers(Graphics g, int x, int y, Component obs, double zoom) {
+  public void drawObscuredToOthers(Graphics g, int x, int y, Component obs, double zoom) {
     switch (displayStyle) {
     case BACKGROUND:
       obscuredToMeView.draw(g, x, y, obs, zoom);

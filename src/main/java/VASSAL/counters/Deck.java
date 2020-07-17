@@ -968,9 +968,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     GamePiece top = (nextDraw != null && nextDraw.size() > 0) ?
       nextDraw.get(0) : topPiece();
 
-    if (top != null) {
-      Object owner = top.getProperty(Properties.OBSCURED_BY);
-      top.setProperty(Properties.OBSCURED_BY, faceDown ? NO_USER : null);
+    if (top != null) {      
       Color blankColor = getBlankColor();
       Rectangle r = top.getShape().getBounds();
       r.setLocation(x + (int) (zoom * (r.x)), y + (int) (zoom * (r.y)));
@@ -983,14 +981,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           g.drawRect(r.x + (int) (zoom * 2 * i), r.y - (int) (zoom * 2 * i), r.width, r.height);
         }
         else if (faceDown) {
-          top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          // If this is an obscurable ("Mask trait") piece, and deck is set to "face down" we use the special obscured method  
+          Obscurable o = (Obscurable)Decorator.getDecorator(Decorator.getOutermost(top), Obscurable.class);
+          if (o != null) {
+            o.drawObscuredToMe(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          } 
+          else {
+            top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          }
         }
         else {
           getPieceAt(count - i - 1).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
         }
       }
-      top.draw(g, x + (int) (zoom * 2 * (count - 1)), y - (int) (zoom * 2 * (count - 1)), obs, zoom);
-      top.setProperty(Properties.OBSCURED_BY, owner);
     }
     else {
       if (drawOutline) {
