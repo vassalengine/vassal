@@ -1093,8 +1093,8 @@ public class PieceMover extends AbstractBuildable
 
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
-        final Map map = piece.getMap();
-
+        final Map map = piece.getMap();        
+        
         if (piece instanceof Stack){
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
@@ -1112,10 +1112,19 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
-
+          
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
+          
+          String owner = "";
+          if (piece.getParent() instanceof Deck) {
+            owner = (String)piece.getProperty(Properties.OBSCURED_BY);
+            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+          }
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
+          if (piece.getParent() instanceof Deck) {
+            piece.setProperty(Properties.OBSCURED_BY, owner);
+          }
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
