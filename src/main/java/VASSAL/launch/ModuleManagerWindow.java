@@ -1818,8 +1818,8 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
-       return belongsToModule() ? Color.black : Color.gray;
-     }
+      return belongsToModule() ? Color.black : Color.gray;
+    }
 
     @Override
     public String getVersion() {

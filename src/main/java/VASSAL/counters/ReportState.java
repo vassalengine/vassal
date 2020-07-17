@@ -345,13 +345,18 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(keys.getControls());
       cycle = new JCheckBox("Cycle through different messages?");
       box.add(cycle);
-      format = new PlayerIdFormattedStringConfigurer(null, "Report format:  ", new String[]{COMMAND_NAME,
-                                                                                         OLD_UNIT_NAME,
-                                                                                         NEW_UNIT_NAME,
-                                                                                         MAP_NAME,
-                                                                                         OLD_MAP_NAME,
-                                                                                         LOCATION_NAME,
-                                                                                         OLD_LOCATION_NAME});
+      format = new PlayerIdFormattedStringConfigurer(
+        null,
+        "Report format:  ",
+        new String[]{
+          COMMAND_NAME,
+          OLD_UNIT_NAME,
+          NEW_UNIT_NAME,
+          MAP_NAME,
+          OLD_MAP_NAME,
+          LOCATION_NAME,
+          OLD_LOCATION_NAME});
+
       format.setValue(piece.reportFormat);
       box.add(format.getControls());
       cycleFormat = new StringArrayConfigurer(null, "Message formats", piece.cycleReportFormat);

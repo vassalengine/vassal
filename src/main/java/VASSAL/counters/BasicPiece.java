@@ -209,7 +209,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       else {
         return "0";
       }
-     }
+    }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {
         final Board b = getMap().findBoard(getPosition());

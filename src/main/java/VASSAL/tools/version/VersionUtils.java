@@ -40,6 +40,7 @@ public class VersionUtils {
     }
   }
 
+  // TODO delete commented code or reactivate it
 /*
   public static boolean isReportable(String version)
       throws IOException, NumberFormatException {
@@ -69,16 +70,15 @@ public class VersionUtils {
       return current;
     case  0: // version is the current release
       return version;
-    case  1: // version is newer than the current release
-      {
-        current = VersionUtils.getBeta();
-        switch (sgn(version.compareTo(current))) {
-        case -1:  // version is older than the current beta
-          return current;
-        case  0:  // version is the current beta
-        case  1:  // version is newer than the current beta
-          return version;
-        }
+    case  1:
+      // version is newer than the current release
+      current = VersionUtils.getBeta();
+      switch (sgn(version.compareTo(current))) {
+      case -1:  // version is older than the current beta
+        return current;
+      case  0:  // version is the current beta
+      case  1:  // version is newer than the current beta
+        return version;
       }
     }
 
@@ -86,7 +86,7 @@ public class VersionUtils {
   }
 
   private static int sgn(int i) {
-    return i < 0 ? -1 : (i > 0 ? 1 : 0);
+    return Integer.compare(i, 0);
   }
 
   public static void main(String[] args) throws IOException {

@@ -204,47 +204,47 @@ public class MapBoard extends Importer {
     protected Rectangle getCropRectangle(BufferedImage image) {
       Rectangle r = new Rectangle(getLayout().getBoardSize());
       leftside:
-        while (true) {
-          for (int i = r.y; i < r.y + r.height; ++i) {
-            if (image.getRGB(r.x, i) != 0) {
-              break leftside;
-            }
-          }
-          ++r.x;
-          --r.width;
-          if (r.width == 0) {
-            r.height = 0;
-            return r;
+      while (true) {
+        for (int i = r.y; i < r.y + r.height; ++i) {
+          if (image.getRGB(r.x, i) != 0) {
+            break leftside;
           }
         }
+        ++r.x;
+        --r.width;
+        if (r.width == 0) {
+          r.height = 0;
+          return r;
+        }
+      }
       topside:
-        while (true) {
-          for (int i = r.x; i < r.x + r.width; ++i) {
-            if (image.getRGB(i, r.y) != 0) {
-              break topside;
-            }
+      while (true) {
+        for (int i = r.x; i < r.x + r.width; ++i) {
+          if (image.getRGB(i, r.y) != 0) {
+            break topside;
           }
-          ++r.y;
-          --r.height;
         }
+        ++r.y;
+        --r.height;
+      }
       rightside:
-        while (true) {
-          for (int i = r.y; i < r.y + r.height; ++i) {
-            if (image.getRGB(r.x + r.width - 1, i) != 0) {
-              break rightside;
-            }
+      while (true) {
+        for (int i = r.y; i < r.y + r.height; ++i) {
+          if (image.getRGB(r.x + r.width - 1, i) != 0) {
+            break rightside;
           }
-          --r.width;
         }
+        --r.width;
+      }
       bottomside:
-        while (true) {
-          for (int i = r.x; i < r.x + r.width; ++i) {
-            if (image.getRGB(i, r.y + r.height - 1) != 0) {
-              break bottomside;
-            }
+      while (true) {
+        for (int i = r.x; i < r.x + r.width; ++i) {
+          if (image.getRGB(i, r.y + r.height - 1) != 0) {
+            break bottomside;
           }
-          --r.height;
         }
+        --r.height;
+      }
       return r;
     }
 
@@ -316,7 +316,7 @@ public class MapBoard extends Importer {
       File underlay = action.getCaseInsensitiveFile(new File(forceExtension(path, "sml")), null, false, null);
       if (underlay == null) {
         underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"),
-            null, false, null);
+          null, false, null);
       }
       return underlay != null;
     }
@@ -339,7 +339,7 @@ public class MapBoard extends Importer {
       }
       else if (getSet().underlay != null) {
         // If sml file doesn't exist, see if there is a single-sheet underlay image
-      g.drawImage(getSet().underlay, null, 0, 0);
+        g.drawImage(getSet().underlay, null, 0, 0);
       }
       return true;
     }
@@ -387,7 +387,8 @@ public class MapBoard extends Importer {
         int xx = getDeltaX() * x;
         int yy = getDeltaY() * y;
         return new Point(xx, yy);
-      } else
+      }
+      else
         return null;
     }
 
@@ -430,7 +431,7 @@ public class MapBoard extends Importer {
 
       Point upperLeft = coordinatesToPosition(r.x, r.y, false);
       Point lowerRight = coordinatesToPosition(r.x + r.width - 1, r.y
-          + r.height - 1, false);
+        + r.height - 1, false);
 
       // get lower right-hand corner of lower right-hand square
       lowerRight.x += getHexSize() - 1;
@@ -439,7 +440,7 @@ public class MapBoard extends Importer {
       constrainRectangle(upperLeft, lowerRight);
 
       return new Rectangle(upperLeft.x, upperLeft.y, lowerRight.x
-          - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
+        - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
     }
 
     @Override
@@ -590,7 +591,7 @@ public class MapBoard extends Importer {
           Point n = lo.getNorth(hexIndex);
           n.translate(size / 2, size / 2);
           l.addLine(pos.x, pos.y, (pos.x + n.x) / 2.0f,
-              (pos.y + n.y) / 2.0f);
+            (pos.y + n.y) / 2.0f);
         }
         // if ((direction & 0x200) > 0) // horizontal north east
         if ((direction & 0xC00) > 0) { // north east; 0x800 = version 1
@@ -627,7 +628,7 @@ public class MapBoard extends Importer {
 
   /**
    * The edges of a hex or square.
-    */
+   */
   protected class HexSide extends Line {
 
     // flags indicating which side to draw.
@@ -868,7 +869,8 @@ public class MapBoard extends Importer {
         int xx = getDeltaX() * x + (y % 2) * getDeltaX() / 2;
         int yy = getDeltaY() * y;
         return new Point(xx, yy);
-      } else
+      }
+      else
         return null;
     }
 
@@ -893,7 +895,7 @@ public class MapBoard extends Importer {
 
       Point upperLeft = coordinatesToPosition(r.x, r.y, false);
       Point lowerRight = coordinatesToPosition(r.x + r.width - 1, r.y
-          + r.height - 1, false);
+        + r.height - 1, false);
 
       // adjust for staggering of hexes
       if (map.firstHexLeft()) // next one down is to the left
@@ -929,7 +931,7 @@ public class MapBoard extends Importer {
       constrainRectangle(upperLeft, lowerRight);
 
       return new Rectangle(upperLeft.x, upperLeft.y, lowerRight.x
-          - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
+        - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
     }
 
     @Override
@@ -1086,12 +1088,12 @@ public class MapBoard extends Importer {
 
     void addLine(int x1, int y1, float x2, float y2) {
       addLine(new Point2D.Float(x1, y1),
-          new Point2D.Float(x2, y2));
+        new Point2D.Float(x2, y2));
     }
 
     void addLine(int x1, int y1, int x2, int y2) {
       addLine(new Point2D.Float(x1, y1),
-          new Point2D.Float(x2, y2));
+        new Point2D.Float(x2, y2));
     }
 
     /**
@@ -1117,7 +1119,8 @@ public class MapBoard extends Importer {
               if (lineA.size() < lineB.size()) { // insert A before B
                 for (Point2D.Float aFloat : lineA) lineB.add(0, aFloat);
                 points.remove(i);
-              } else { // insert B before A
+              }
+              else { // insert B before A
                 for (Point2D.Float aFloat : lineB) lineA.add(0, aFloat);
                 points.remove(j);
               }
@@ -1154,7 +1157,8 @@ public class MapBoard extends Importer {
                 for (int k = lineA.size() - 1; k >= 0; --k)
                   lineB.add(lineA.get(k));
                 points.remove(i);
-              } else { // add line B to A
+              }
+              else { // add line B to A
                 for (int k = lineB.size() - 1; k >= 0; --k)
                   lineA.add(lineB.get(k));
                 points.remove(j);
@@ -1169,8 +1173,8 @@ public class MapBoard extends Importer {
         // find out if the segment already exists
         for (int j = 1; j < lineA.size() - 1; ++j)
           if (a.equals(lineA.get(j))
-              && (b.equals(lineA.get(j - 1)) || b.equals(lineA
-                  .get(j + 1))))
+            && (b.equals(lineA.get(j - 1)) || b.equals(lineA
+            .get(j + 1))))
             return;
       }
 
@@ -1258,7 +1262,7 @@ public class MapBoard extends Importer {
         return new BasicStroke(size, cap, BasicStroke.JOIN_ROUND);
       else
         return new BasicStroke(size, BasicStroke.CAP_BUTT,
-            BasicStroke.JOIN_ROUND, 0.0f, dash, 0.0f);
+          BasicStroke.JOIN_ROUND, 0.0f, dash, 0.0f);
     }
   }
 
@@ -1367,8 +1371,8 @@ public class MapBoard extends Importer {
       if (r == null)
         return null;
       return r.x + "," + r.y + ";" + (r.x + r.width - 1) + "," + r.y
-          + ";" + (r.x + r.width - 1) + "," + (r.y + r.height - 1)
-          + ";" + r.x + "," + (r.y + r.height - 1);
+        + ";" + (r.x + r.width - 1) + "," + (r.y + r.height - 1)
+        + ";" + r.x + "," + (r.y + r.height - 1);
     }
 
     /**
@@ -1653,13 +1657,13 @@ public class MapBoard extends Importer {
     boolean draw(Graphics2D g) {
       if (getSize() != 0) {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g.setFont(getFont());
         g.setColor(color);
         Point p = getPosition(g);
         g.drawString(text, p.x, p.y);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+          RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         return true;
       }
       else {
@@ -1801,12 +1805,12 @@ public class MapBoard extends Importer {
 
     @Override
     Point coordinatesToPosition(int x, int y, boolean nullIfOffBoard) {
-      if (!nullIfOffBoard || isOnMapBoard(x, y)) {
-        int xx = getDeltaX() * x;
-        int yy = getDeltaY() * y + x % 2 * getDeltaY() / 2;
-        return new Point(xx, yy);
-      } else
+      if (nullIfOffBoard && !isOnMapBoard(x, y)) {
         return null;
+      }
+      int xx = getDeltaX() * x;
+      int yy = getDeltaY() * y + x % 2 * getDeltaY() / 2;
+      return new Point(xx, yy);
     }
 
     @Override
@@ -1832,7 +1836,7 @@ public class MapBoard extends Importer {
 
       Point upperLeft = coordinatesToPosition(r.x, r.y, false);
       Point lowerRight = coordinatesToPosition(r.x + r.width - 1, r.y
-          + r.height - 1, false);
+        + r.height - 1, false);
 
       // adjust for staggering of hexes
       if (map.firstHexUp()) // next one over is above
@@ -1869,7 +1873,7 @@ public class MapBoard extends Importer {
       constrainRectangle(upperLeft, lowerRight);
 
       return new Rectangle(upperLeft.x, upperLeft.y, lowerRight.x
-          - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
+        - upperLeft.x + 1, lowerRight.y - upperLeft.y + 1);
     }
 
     @Override
@@ -2129,8 +2133,8 @@ public class MapBoard extends Importer {
 
   // fonts available to ADC
   private static final String[] defaultFontNames = { "Courier", "Fixedsys",
-      "MS Sans Serif", "MS Serif", "Impact", "Brush Script MT",
-      "System", "Times New Roman", "Arial" };
+    "MS Sans Serif", "MS Serif", "Impact", "Brush Script MT",
+    "System", "Times New Roman", "Arial" };
 
   private static final String PLACE_NAMES = "Place Names";
 
@@ -2732,7 +2736,7 @@ public class MapBoard extends Importer {
       String symbolSetFileName = forceExtension(s, "set");
       set = new SymbolSet();
       File setFile = action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true,
-          new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
+        new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
       if (setFile == null)
         throw new FileNotFoundException("Unable to find symbol set file.");
       set.importFile(action, setFile);
@@ -2835,7 +2839,7 @@ public class MapBoard extends Importer {
    */
   Point indexToPosition(int index, boolean nullIfOffBoard) {
     return getLayout().coordinatesToPosition(index % columns, index / columns,
-        nullIfOffBoard);
+      nullIfOffBoard);
   }
 
   /**

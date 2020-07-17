@@ -409,7 +409,7 @@ public class MovementReporter {
 
     protected boolean isInvisible(GamePiece piece) {
       return Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-      || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
+        || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
     }
 
   }

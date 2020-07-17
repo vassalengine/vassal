@@ -472,8 +472,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void paste() {
-    final Decorator c = (Decorator)
-    GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+    final Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
     if (c instanceof PlaceMarker) {
       ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
     }
@@ -704,8 +703,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public java.awt.Component getListCellRendererComponent
-        (JList list, Object value, int index, boolean selected, boolean hasFocus) {
+    public java.awt.Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+
       super.getListCellRendererComponent(list, value, index, selected, hasFocus);
       if (value instanceof EditablePiece) {
         setText(((EditablePiece) value).getDescription());

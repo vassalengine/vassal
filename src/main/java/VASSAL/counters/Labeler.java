@@ -276,20 +276,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     int x0 = x;
     int y0 = y;
     switch (hAlign) {
-      case CENTER:
-        x0 = x - width / 2;
-        break;
-      case LEFT:
-        x0 = x - width;
-        break;
+    case CENTER:
+      x0 = x - width / 2;
+      break;
+    case LEFT:
+      x0 = x - width;
+      break;
     }
     switch (vAlign) {
-      case CENTER:
-        y0 = y - height / 2;
-        break;
-      case BOTTOM:
-        y0 = y - height;
-        break;
+    case CENTER:
+      y0 = y - height / 2;
+      break;
+    case BOTTOM:
+      y0 = y - height;
+      break;
     }
     if (bgColor != null) {
       g.setColor(bgColor);
@@ -366,35 +366,35 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final Rectangle selBnds = piece.getShape().getBounds();
 
     switch (verticalPos) {
-      case 't':
-        y += selBnds.y;
-        break;
-      case 'b':
-        y += selBnds.y + selBnds.height;
+    case 't':
+      y += selBnds.y;
+      break;
+    case 'b':
+      y += selBnds.y + selBnds.height;
     }
 
     switch (horizontalPos) {
-      case 'l':
-        x += selBnds.x;
-        break;
-      case 'r':
-        x += selBnds.x + selBnds.width;
+    case 'l':
+      x += selBnds.x;
+      break;
+    case 'r':
+      x += selBnds.x + selBnds.width;
     }
 
     switch (verticalJust) {
-      case 'b':
-        y -= lblSize.height;
-        break;
-      case 'c':
-        y -= lblSize.height / 2;
+    case 'b':
+      y -= lblSize.height;
+      break;
+    case 'c':
+      y -= lblSize.height / 2;
     }
 
     switch (horizontalJust) {
-      case 'c':
-        x -= lblSize.width / 2;
-        break;
-      case 'r':
-        x -= lblSize.width;
+    case 'c':
+      x -= lblSize.width / 2;
+      break;
+    case 'r':
+      x -= lblSize.width;
     }
 
     final Point result = new Point(x, y);
@@ -866,20 +866,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
                                                     boolean focus) {
         super.getListCellRendererComponent(list, value, index, sel, focus);
         switch ((Character) value) {
-          case 't':
-            setText("Top");
-            break;
-          case 'b':
-            setText("Bottom");
-            break;
-          case 'c':
-            setText("Center");
-            break;
-          case 'l':
-            setText("Left");
-            break;
-          case 'r':
-            setText("Right");
+        case 't':
+          setText("Top");
+          break;
+        case 'b':
+          setText("Bottom");
+          break;
+        case 'c':
+          setText("Center");
+          break;
+        case 'l':
+          setText("Left");
+          break;
+        case 'r':
+          setText("Right");
         }
         return this;
       }

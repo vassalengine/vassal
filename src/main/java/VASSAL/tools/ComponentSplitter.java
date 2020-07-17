@@ -359,20 +359,21 @@ public class ComponentSplitter {
             ancestor.validate();
           }
         }
+        // TODO delete commented code or activate it again
         // Running later causes race conditions in the Module Manager
         //Runnable runnable = new Runnable() {
         //  public void run() {
-            ((BasicSplitPaneUI) getUI()).getDivider().setVisible(false);
-            getHideableComponent().setVisible(false);
-            switch (hideablePosition) {
-            case HIDE_LEFT:
-            case HIDE_TOP:
-              setDividerLocation(0.0);
-              break;
-            case HIDE_RIGHT:
-            case HIDE_BOTTOM:
-              setDividerLocation(1.0);
-            }
+        ((BasicSplitPaneUI) getUI()).getDivider().setVisible(false);
+        getHideableComponent().setVisible(false);
+        switch (hideablePosition) {
+        case HIDE_LEFT:
+        case HIDE_TOP:
+          setDividerLocation(0.0);
+          break;
+        case HIDE_RIGHT:
+        case HIDE_BOTTOM:
+          setDividerLocation(1.0);
+        }
         //  }
         //};
         //SwingUtilities.invokeLater(runnable);

@@ -42,15 +42,15 @@ public class TextItemInstance extends ItemInstance {
     super(nam, typ, loc);
     if (val == null) {
       switch (nam.length()) {
-        case 0:
-          setValue("Xx"); //$NON-NLS-1$
-          break;
-        case 1:
-          setValue(nam);
-          break;
-        default:
-          setValue(nam.substring(0, 2));
-          break;
+      case 0:
+        setValue("Xx"); //$NON-NLS-1$
+        break;
+      case 1:
+        setValue(nam);
+        break;
+      default:
+        setValue(nam.substring(0, 2));
+        break;
       }
     }
     else {

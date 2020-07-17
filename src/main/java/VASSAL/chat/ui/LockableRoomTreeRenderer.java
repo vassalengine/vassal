@@ -66,14 +66,14 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
       final DefaultMutableTreeNode roomNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) value).getParent();
       final Object room = roomNode.getUserObject();
       if (room instanceof LockableRoom) {
-         if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
-           if (ownerFont == null) {
-             nonOwnerFont = this.getFont();
-             ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle()+Font.BOLD, nonOwnerFont.getSize());
-           }
-           setFont(ownerFont);
-           return l;
-         }
+        if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
+          if (ownerFont == null) {
+            nonOwnerFont = this.getFont();
+            ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle()+Font.BOLD, nonOwnerFont.getSize());
+          }
+          setFont(ownerFont);
+          return l;
+        }
       }
     }
     setFont(nonOwnerFont);

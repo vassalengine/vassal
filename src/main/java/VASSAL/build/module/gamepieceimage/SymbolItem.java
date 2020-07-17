@@ -193,7 +193,7 @@ public class SymbolItem extends Item {
       Graphics2D g2d = (Graphics2D) g;
       AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
-        g2d.transform(newXForm);
+      g2d.transform(newXForm);
     }
 
     if (isAntialias()) {

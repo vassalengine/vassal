@@ -33,11 +33,11 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
  * Provides methods for assigning names to locations on a MapGrid, and drawing those locations when drawing a grid
  */
 public interface GridNumbering {
-    public String locationName(Point pt);
-    public String localizedLocationName(Point pt);
+  public String locationName(Point pt);
+  public String localizedLocationName(Point pt);
 
-    public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
+  public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
 
-    public boolean isVisible();
-    public Point getLocation(String location) throws BadCoords;
+  public boolean isVisible();
+  public Point getLocation(String location) throws BadCoords;
 }

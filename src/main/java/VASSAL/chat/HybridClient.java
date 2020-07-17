@@ -145,7 +145,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
       }
     }
     delegate = newDelegate;
-   }
+  }
 
   @Override
   public void initializeControls(ChatServerControls controls) {

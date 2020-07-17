@@ -332,7 +332,7 @@ public class ModuleManager {
 
     long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
     if (nextVersionCheck < System.currentTimeMillis()) {
-        new UpdateCheckRequest().execute();
+      new UpdateCheckRequest().execute();
     }
 
     // set the time for the next version check

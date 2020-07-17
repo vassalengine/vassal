@@ -150,22 +150,22 @@ public class SquareGridNumbering extends RegularGridNumbering {
         // When rotating text, keep basic label position as in center along edge
         int newX = 0, newY = 0;
         switch (rotateTextDegrees) {
-          case 90:
-            newX = (int) (x + deltaX / 2);
-            newY = (int) y;
-            break;
-          case 180:
-            newX = (int) x;
-            newY = (int) (y + deltaY / 2);
-            break;
-          case 270:
-            newX = (int) (x - deltaX / 2);
-            newY = (int) y;
-            break;
-          default :
-            newX = (int) x;
-            newY = (int) (y - deltaY / 2);
-            break;
+        case 90:
+          newX = (int) (x + deltaX / 2);
+          newY = (int) y;
+          break;
+        case 180:
+          newX = (int) x;
+          newY = (int) (y + deltaY / 2);
+          break;
+        case 270:
+          newX = (int) (x - deltaX / 2);
+          newY = (int) y;
+          break;
+        default :
+          newX = (int) x;
+          newY = (int) (y - deltaY / 2);
+          break;
         }
 
         centerPoint = offsetLabelCenter(newX, newY, scale);

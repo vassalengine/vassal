@@ -23,8 +23,13 @@ import VASSAL.counters.BasicPiece;
 public class GamePieceFormattedStringConfigurer extends FormattedStringConfigurer {
   public GamePieceFormattedStringConfigurer(String key, String name) {
     super(key, name);
-    String[] allOptions = new String[] {BasicPiece.PIECE_NAME, BasicPiece.BASIC_NAME, BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
-        BasicPiece.CURRENT_ZONE};
+    String[] allOptions = new String[] {
+      BasicPiece.PIECE_NAME,
+      BasicPiece.BASIC_NAME,
+      BasicPiece.LOCATION_NAME,
+      BasicPiece.CURRENT_MAP,
+      BasicPiece.CURRENT_BOARD,
+      BasicPiece.CURRENT_ZONE};
     setOptions(allOptions);
   }
 }

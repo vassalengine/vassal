@@ -65,7 +65,7 @@ public class Logger {
     enqueue(new LogEntry(pid, type, thrown, message, false));
   }
 
- public static Future<?> logAndWait(String message) {
+  public static Future<?> logAndWait(String message) {
     return logAndWait(null, message, MESSAGE);
   }
 

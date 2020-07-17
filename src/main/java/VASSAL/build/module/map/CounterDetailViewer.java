@@ -898,16 +898,22 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static class EmptyFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
-          BasicPiece.CURRENT_ZONE});
+      return new FormattedStringConfigurer(key, name, new String[] {
+        BasicPiece.LOCATION_NAME,
+        BasicPiece.CURRENT_MAP,
+        BasicPiece.CURRENT_BOARD,
+        BasicPiece.CURRENT_ZONE});
     }
   }
 
   public static class ReportFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] {BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
-          BasicPiece.CURRENT_ZONE, SUM});
+      return new FormattedStringConfigurer(key, name, new String[] {
+        BasicPiece.LOCATION_NAME,
+        BasicPiece.CURRENT_MAP,
+        BasicPiece.CURRENT_BOARD,
+        BasicPiece.CURRENT_ZONE, SUM});
     }
   }
 
@@ -1036,13 +1042,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
     else if (UNROTATE_PIECES.equals(name)) {
-        if (value instanceof Boolean) {
-          unrotatePieces = (Boolean) value;
-        }
-        else if (value instanceof String) {
-          unrotatePieces = "true".equals(value);
-        }
+      if (value instanceof Boolean) {
+        unrotatePieces = (Boolean) value;
       }
+      else if (value instanceof String) {
+        unrotatePieces = "true".equals(value);
+      }
+    }
     else if (DISPLAY.equals(name)) {
       displayWhat = (String) value;
     }
@@ -1140,7 +1146,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return String.valueOf(showDeck);
     }
     else if (UNROTATE_PIECES.equals(name)) {
-        return String.valueOf(unrotatePieces);
+      return String.valueOf(unrotatePieces);
     }
     else if (DISPLAY.equals(name)) {
       return displayWhat;

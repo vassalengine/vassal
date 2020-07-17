@@ -410,10 +410,10 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     String rowName = getName(row + vOff, vType, vLeading);
     String colName = getName(column + hOff, hType, hLeading);
     switch (first) {
-      case 'H':
-        return colName + sep + rowName;
-      default:
-        return rowName + sep + colName;
+    case 'H':
+      return colName + sep + rowName;
+    default:
+      return rowName + sep + colName;
     }
   }
 
@@ -544,17 +544,17 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     String val = rowOrColumn < 0 ? "-" : "";
     rowOrColumn = Math.abs(rowOrColumn);
     switch (type) {
-      case 'A': // Alphabetic
-        do {
-          val += ALPHABET.charAt(rowOrColumn % 26);
-          rowOrColumn -= 26;
-        } while (rowOrColumn >= 0);
-        return val;
-      default: // Numeric
-        while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
-          val += "0";
-        }
-        return val + rowOrColumn;
+    case 'A': // Alphabetic
+      do {
+        val += ALPHABET.charAt(rowOrColumn % 26);
+        rowOrColumn -= 26;
+      } while (rowOrColumn >= 0);
+      return val;
+    default: // Numeric
+      while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
+        val += "0";
+      }
+      return val + rowOrColumn;
     }
   }
 
@@ -569,22 +569,22 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public Point offsetLabelCenter(int x, int y, double zoom) {
     Point n = new Point(x, y);
     switch (rotateTextDegrees) {
-      case 0:
-        break;
-      case 90:
-        n.x = y;
-        n.y = -x;
-        break;
-      case 180:
-        n.x = -x;
-        n.y = -y;
-        break;
-      case 270:
-        n.x = -y;
-        n.y = x;
-        break;
-      default  :
-        break;
+    case 0:
+      break;
+    case 90:
+      n.x = y;
+      n.y = -x;
+      break;
+    case 180:
+      n.x = -x;
+      n.y = -y;
+      break;
+    case 270:
+      n.x = -y;
+      n.y = x;
+      break;
+    default  :
+      break;
     }
     n.x += (hDrawOff * zoom);
     n.y += (vDrawOff * zoom);

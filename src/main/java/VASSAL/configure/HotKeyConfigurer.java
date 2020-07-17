@@ -89,17 +89,17 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
   @Override
   public void keyPressed(KeyEvent e) {
     switch (e.getKeyCode()) {
-      case KeyEvent.VK_DELETE:
-      case KeyEvent.VK_BACK_SPACE:
-        setValue(null);
-        break;
-      case KeyEvent.VK_SHIFT:
-      case KeyEvent.VK_CONTROL:
-      case KeyEvent.VK_META:
-      case KeyEvent.VK_ALT:
-        break;
-      default:
-        setValue(KeyStroke.getKeyStrokeForEvent(e));
+    case KeyEvent.VK_DELETE:
+    case KeyEvent.VK_BACK_SPACE:
+      setValue(null);
+      break;
+    case KeyEvent.VK_SHIFT:
+    case KeyEvent.VK_CONTROL:
+    case KeyEvent.VK_META:
+    case KeyEvent.VK_ALT:
+      break;
+    default:
+      setValue(KeyStroke.getKeyStrokeForEvent(e));
     }
   }
 

@@ -2398,8 +2398,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MESSAGE, ReportState.COMMAND_NAME, ReportState.OLD_UNIT_NAME,
-          ReportState.NEW_UNIT_NAME, ReportState.MAP_NAME, ReportState.LOCATION_NAME });
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[] {
+        MESSAGE,
+        ReportState.COMMAND_NAME,
+        ReportState.OLD_UNIT_NAME,
+        ReportState.NEW_UNIT_NAME,
+        ReportState.MAP_NAME,
+        ReportState.LOCATION_NAME });
     }
   }
 
@@ -2458,8 +2463,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     Class<?>[] c = { GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
-        CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-        MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
+      CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
     return c;
   }
 

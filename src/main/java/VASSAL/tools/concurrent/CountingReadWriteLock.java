@@ -49,7 +49,7 @@ public class CountingReadWriteLock implements ReadWriteLock {
 
   protected final Sync sync = new Sync();
 
-  protected abstract class BaseLock implements Lock {
+  protected static abstract class BaseLock implements Lock {
     @Override
     public void lockInterruptibly() {
       throw new UnsupportedOperationException();

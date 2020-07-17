@@ -462,47 +462,47 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           String name = code.substring(1);
           JComponent field;
           switch (type) {
-            case TEXT_FIELD:
-              field = new JTextField(stateDecoder.nextToken(""));
-              ((JTextComponent) field).getDocument()
-                                      .addDocumentListener(changeListener);
-              ((JTextField) field).addActionListener(frame);
-              m_fields.add(field);
-              break;
-            case TEXT_AREA:
-              field = new JTextArea(
-                stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
-              ((JTextComponent) field).getDocument()
-                                      .addDocumentListener(changeListener);
-              m_fields.add(field);
-              field = new ScrollPane(field);
-              break;
-            case TICKS:
-            case TICKS_VAL:
-            case TICKS_MAX:
-            case TICKS_VALMAX:
-              field = new TickPanel(stateDecoder.nextToken(""), type);
-              ((TickPanel) field).addDocumentListener(changeListener);
-              ((TickPanel) field).addActionListener(frame);
-              if (backgroundColor != null)
-                field.setBackground(backgroundColor);
-              m_fields.add(field);
-              break;
-            case SPINNER:
-              JSpinner spinner = new JSpinner();
-              JTextField textField =
-                ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-              textField.setText(stateDecoder.nextToken(""));
-              textField.getDocument().addDocumentListener(changeListener);
-              m_fields.add(textField);
-              field = spinner;
-              break;
-            case LABEL_ONLY:
-            default :
-              stateDecoder.nextToken("");
-              field = null;
-              m_fields.add(field);
-              break;
+          case TEXT_FIELD:
+            field = new JTextField(stateDecoder.nextToken(""));
+            ((JTextComponent) field).getDocument()
+                                    .addDocumentListener(changeListener);
+            ((JTextField) field).addActionListener(frame);
+            m_fields.add(field);
+            break;
+          case TEXT_AREA:
+            field = new JTextArea(
+              stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
+            ((JTextComponent) field).getDocument()
+                                    .addDocumentListener(changeListener);
+            m_fields.add(field);
+            field = new ScrollPane(field);
+            break;
+          case TICKS:
+          case TICKS_VAL:
+          case TICKS_MAX:
+          case TICKS_VALMAX:
+            field = new TickPanel(stateDecoder.nextToken(""), type);
+            ((TickPanel) field).addDocumentListener(changeListener);
+            ((TickPanel) field).addActionListener(frame);
+            if (backgroundColor != null)
+              field.setBackground(backgroundColor);
+            m_fields.add(field);
+            break;
+          case SPINNER:
+            JSpinner spinner = new JSpinner();
+            JTextField textField =
+              ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+            textField.setText(stateDecoder.nextToken(""));
+            textField.getDocument().addDocumentListener(changeListener);
+            m_fields.add(textField);
+            field = spinner;
+            break;
+          case LABEL_ONLY:
+          default :
+            stateDecoder.nextToken("");
+            field = null;
+            m_fields.add(field);
+            break;
           }
           c.gridwidth = type == TEXT_AREA || type == LABEL_ONLY ? 2 : 1;
 
@@ -1387,19 +1387,19 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           JButton okButton = new JButton("Ok");
 
           switch (panelType) {
-            case TICKS_VAL:
-              valueField = new JTextField(Integer.toString(owner.getMaxTicks()));
-              valueField.setToolTipText("max value");
-              break;
-            case TICKS_MAX:
-              valueField = new JTextField(Integer.toString(owner.getNumTicks()));
-              valueField.setToolTipText("current value");
-              break;
-            case TICKS:
-            default:
-              valueField = new JTextField(owner.numTicks + "/" + owner.maxTicks);
-              valueField.setToolTipText("current value / max value");
-              break;
+          case TICKS_VAL:
+            valueField = new JTextField(Integer.toString(owner.getMaxTicks()));
+            valueField.setToolTipText("max value");
+            break;
+          case TICKS_MAX:
+            valueField = new JTextField(Integer.toString(owner.getNumTicks()));
+            valueField.setToolTipText("current value");
+            break;
+          case TICKS:
+          default:
+            valueField = new JTextField(owner.numTicks + "/" + owner.maxTicks);
+            valueField.setToolTipText("current value / max value");
+            break;
           }
 
           valueField.addActionListener(this);
@@ -1420,16 +1420,16 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       public void storeValues() {
         String value = valueField.getText();
         switch (panelType) {
-          case TICKS_VAL:
-            theTickLabel.set(theTickLabel.getNumTicks(), atoi(value));
-            break;
-          case TICKS_MAX:
-            theTickLabel.set(atoi(value), theTickLabel.getMaxTicks());
-            break;
-          case TICKS:
-          default:
-            theTickLabel.set(atoi(value), atoiRight(value));
-            break;
+        case TICKS_VAL:
+          theTickLabel.set(theTickLabel.getNumTicks(), atoi(value));
+          break;
+        case TICKS_MAX:
+          theTickLabel.set(atoi(value), theTickLabel.getMaxTicks());
+          break;
+        case TICKS:
+        default:
+          theTickLabel.set(atoi(value), atoiRight(value));
+          break;
         }
         theTickLabel.fireActionEvent();
       }

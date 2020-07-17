@@ -132,15 +132,15 @@ public class TextSaver extends AbstractConfigurable {
 
     switch (JOptionPane.showConfirmDialog
         (null, "Write contents as seen by opponents?", "", JOptionPane.YES_NO_OPTION)) {
-      case JOptionPane.NO_OPTION:
-        writeMapAsText();
-        break;
-      case JOptionPane.YES_OPTION:
-        String myId = GameModule.getUserId();
-        GameModule.setUserId("yendoR117");
-        writeMapAsText();
-        GameModule.setUserId(myId);
-        break;
+    case JOptionPane.NO_OPTION:
+      writeMapAsText();
+      break;
+    case JOptionPane.YES_OPTION:
+      String myId = GameModule.getUserId();
+      GameModule.setUserId("yendoR117");
+      writeMapAsText();
+      GameModule.setUserId(myId);
+      break;
     }
   }
 

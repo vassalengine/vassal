@@ -200,7 +200,7 @@ public class ChartWindow extends Widget {
           Resources.getString(Resources.TOOLTIP_TEXT),
           Resources.getString(Resources.BUTTON_ICON),
           Resources.getString(Resources.HOTKEY_LABEL)
-          };
+    };
   }
 
   @Override

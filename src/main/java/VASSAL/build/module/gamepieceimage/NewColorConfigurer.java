@@ -103,16 +103,13 @@ public class NewColorConfigurer extends Configurer {
       colorBox.add(b);
       p.add(colorBox);
 
-      b.addActionListener
-          (new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed
-                (java.awt.event.ActionEvent e) {
-              setValue(JColorChooser.showDialog
-                       (null, getName(), colorValue()));
-              csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
-            }
-          });
+      b.addActionListener(new java.awt.event.ActionListener() {
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+          setValue(JColorChooser.showDialog(null, getName(), colorValue()));
+          csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
+        }
+      });
 
       swatchBox = Box.createHorizontalBox();
       csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE"); //$NON-NLS-2$

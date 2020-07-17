@@ -341,17 +341,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
-          if (input.getText().length() > 0)
-            send(formatChat(input.getText()));
-          input.setText(""); //$NON-NLS-1$
-          break;
-        case KeyEvent.VK_BACK_SPACE:
-        case KeyEvent.VK_DELETE:
-          String s = input.getText();
-          if (s.length() > 0)
-            input.setText(s.substring(0, s.length() - 1));
-          break;
+      case KeyEvent.VK_ENTER:
+        if (input.getText().length() > 0)
+          send(formatChat(input.getText()));
+        input.setText(""); //$NON-NLS-1$
+        break;
+      case KeyEvent.VK_BACK_SPACE:
+      case KeyEvent.VK_DELETE:
+        String s = input.getText();
+        if (s.length() > 0)
+          input.setText(s.substring(0, s.length() - 1));
+        break;
       }
     }
   }
@@ -425,20 +425,20 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
       if (s.length() > 0) {
         switch (s.charAt(0)) {
-          case '*':
-            col = gameMsg;
-            break;
-          case '-':
-            col = systemMsg;
-            break;
-          default:
-            if (s.startsWith(formatChat(""))) { //$NON-NLS-1$
-              col = myChat;
-            }
-            else {
-              col = otherChat;
-            }
-            break;
+        case '*':
+          col = gameMsg;
+          break;
+        case '-':
+          col = systemMsg;
+          break;
+        default:
+          if (s.startsWith(formatChat(""))) { //$NON-NLS-1$
+            col = myChat;
+          }
+          else {
+            col = otherChat;
+          }
+          break;
         }
       }
     }

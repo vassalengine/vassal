@@ -257,10 +257,10 @@ public class Resources {
   }
 
   private String getInstanceString(String id) {
-  return getBundleForKey(id).getString(id);
-}
+    return getBundleForKey(id).getString(id);
+  }
 
-protected BundleHelper getBundleForKey(String id) {
+  protected BundleHelper getBundleForKey(String id) {
     return id.startsWith(EDITOR_PREFIX) ? getEditorBundle() : getVassalBundle();
   }
 
@@ -331,8 +331,7 @@ protected BundleHelper getBundleForKey(String id) {
     return getInstance().getBundleForKey(id).getString(id, params);
   }
 
-
-protected static final String BASE_BUNDLE = "VASSAL.properties";
+  protected static final String BASE_BUNDLE = "VASSAL.properties";
   protected static final String EN_BUNDLE = "VASSAL_en.properties";
 
   /**

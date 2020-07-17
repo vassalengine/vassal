@@ -143,15 +143,15 @@ public class ImageItem extends Item {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
-       return falseCond;
-     }
+      return falseCond;
+    }
     else if (IMAGE.equals(name)) {
       return fixedCond;
     }
-     else {
-       return super.getAttributeVisibility(name);
-     }
-   }
+    else {
+      return super.getAttributeVisibility(name);
+    }
+  }
 
   private VisibilityCondition falseCond = new VisibilityCondition() {
     @Override

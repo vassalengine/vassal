@@ -50,23 +50,22 @@ public class ConfigurerWindow extends JDialog {
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {
-         dispose();
-         cancelled = true;
+        dispose();
+        cancelled = true;
       }
     });
 
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     add(c.getControls());
-    c.addPropertyChangeListener
-      (new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurer.NAME_PROPERTY
-            .equals(evt.getPropertyName())) {
-            setTitle((String) evt.getNewValue());
-          }
+    c.addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (Configurer.NAME_PROPERTY
+          .equals(evt.getPropertyName())) {
+          setTitle((String) evt.getNewValue());
         }
-      });
+      }
+    });
     setTitle(c.getName());
 
     okButton.addActionListener(new java.awt.event.ActionListener() {

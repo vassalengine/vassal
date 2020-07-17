@@ -106,7 +106,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {
-         cancel();
+        cancel();
       }
     });
 
@@ -243,80 +243,80 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     boolean sideways = grid.isSideways();
 
     switch (e.getKeyCode()) {
-      case KeyEvent.VK_UP:
-        if (e.isControlDown()) {
-          if (sideways) {
-             adjustDx(-1, e);
-          }
-          else {
-             adjustDy(-1, e);
-          }
+    case KeyEvent.VK_UP:
+      if (e.isControlDown()) {
+        if (sideways) {
+          adjustDx(-1, e);
         }
         else {
-          if (sideways) {
-            adjustX0(-1, e);
-          }
-          else {
-            adjustY0(-1, e);
-          }
+          adjustDy(-1, e);
         }
-        break;
-      case KeyEvent.VK_DOWN:
-        if (e.isControlDown()) {
-          if (sideways) {
-            adjustDx(1, e);
-         }
-         else {
-            adjustDy(1, e);
-         }
+      }
+      else {
+        if (sideways) {
+          adjustX0(-1, e);
         }
         else {
-          if (sideways) {
-            adjustX0(1, e);
-          }
-          else {
-            adjustY0(1, e);
-          }
+          adjustY0(-1, e);
         }
-        break;
-      case KeyEvent.VK_LEFT:
-        if (e.isControlDown()) {
-          if (sideways) {
-            adjustDy(-1, e);
-         }
-         else {
-            adjustDx(-1, e);
-         }
+      }
+      break;
+    case KeyEvent.VK_DOWN:
+      if (e.isControlDown()) {
+        if (sideways) {
+          adjustDx(1, e);
         }
         else {
-          if (sideways) {
-            adjustY0(-1, e);
-          }
-          else {
-            adjustX0(-1, e);
-          }
+          adjustDy(1, e);
         }
-        break;
-      case KeyEvent.VK_RIGHT:
-        if (e.isControlDown()) {
-          if (sideways) {
-            adjustDy(1, e);
-         }
-         else {
-            adjustDx(1, e);
-         }
+      }
+      else {
+        if (sideways) {
+          adjustX0(1, e);
         }
         else {
-          if (sideways) {
-            adjustY0(1, e);
-          }
-          else {
-            adjustX0(1, e);
-          }
+          adjustY0(1, e);
         }
-        break;
-      default :
-        return;
+      }
+      break;
+    case KeyEvent.VK_LEFT:
+      if (e.isControlDown()) {
+        if (sideways) {
+          adjustDy(-1, e);
+        }
+        else {
+          adjustDx(-1, e);
+        }
+      }
+      else {
+        if (sideways) {
+          adjustY0(-1, e);
+        }
+        else {
+          adjustX0(-1, e);
+        }
+      }
+      break;
+    case KeyEvent.VK_RIGHT:
+      if (e.isControlDown()) {
+        if (sideways) {
+          adjustDy(1, e);
+        }
+        else {
+          adjustDx(1, e);
+        }
+      }
+      else {
+        if (sideways) {
+          adjustY0(1, e);
+        }
+        else {
+          adjustX0(1, e);
+        }
+      }
+      break;
+    default :
+      return;
     }
 
 

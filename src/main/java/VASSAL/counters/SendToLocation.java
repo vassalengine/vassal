@@ -281,23 +281,23 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         map = getMap();
       }
       if (map != null) {
-         Board b;
-         switch (destination.charAt(0)) {
-         case 'G':
-            b = map.getBoardByName(boardName.getText(outer));
-            if (b != null ) {
-              try {
-                dest = b.getGrid().getLocation(gridLocation.getText(outer));
-                if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
-              }
-              catch (BadCoords e) {
-                LogBadGridLocation(dest);
-                reportDataError(this, Resources.getString(
-                   "Error.not_found", "Grid Location"),map.getMapName());
-                ; // ignore SendTo request.
-              }
+        Board b;
+        switch (destination.charAt(0)) {
+        case 'G':
+          b = map.getBoardByName(boardName.getText(outer));
+          if (b != null ) {
+            try {
+              dest = b.getGrid().getLocation(gridLocation.getText(outer));
+              if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
             }
-            break;
+            catch (BadCoords e) {
+              LogBadGridLocation(dest);
+              reportDataError(this, Resources.getString(
+                "Error.not_found", "Grid Location"),map.getMapName());
+              ; // ignore SendTo request.
+            }
+          }
+          break;
         case 'L':
           final int xValue = x.getTextAsInt(outer, "Xlocation", this);
           final int yValue = y.getTextAsInt(outer, "YLocation", this);
@@ -320,7 +320,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             Rectangle r = z.getBounds();
             Rectangle r2 = z.getBoard().bounds();
             dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
-           }
+          }
           break;
 
         case 'R':
@@ -388,15 +388,15 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
       c = tracker.getChangeCommand();
-      
-      if (backMap != null && backPoint != null) {
-         c = c.append(setOldProperties(this));
-         c = c.append(backMap.placeOrMerge(outer, backPoint));
 
-         // Apply Auto-move key
-         if (backMap.getMoveKey() != null) {
-           c = c.append(outer.keyEvent(backMap.getMoveKey()));
-         }
+      if (backMap != null && backPoint != null) {
+        c = c.append(setOldProperties(this));
+        c = c.append(backMap.placeOrMerge(outer, backPoint));
+
+        // Apply Auto-move key
+        if (backMap.getMoveKey() != null) {
+          c = c.append(outer.keyEvent(backMap.getMoveKey()));
+        }
       }
     }
     return c;
@@ -634,9 +634,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
     private void updateVisibility() {
 //      boolean advancedVisible = advancedInput.booleanValue();
-       advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
-       boolean advancedVisible = advancedInput.booleanValue()
-                       && advancedInput.getControls().isVisible();
+      advancedInput.getControls().setVisible(!destInput.getValue().equals(DEST_GRIDLOCATION));
+      boolean advancedVisible = advancedInput.booleanValue()
+        && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);
       yIndexInput.getControls().setVisible(advancedVisible);
@@ -647,7 +647,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       mapControls.setVisible(!destOption.equals(DEST_COUNTER));
       boardControls.setVisible(destOption.equals(DEST_LOCATION)
-          || destOption.equals(DEST_GRIDLOCATION));
+        || destOption.equals(DEST_GRIDLOCATION));
       zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
       regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
       propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));

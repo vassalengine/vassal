@@ -115,7 +115,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   public void addRegion(Region a) {
     regionList.put(a.getOrigin(), a);
     if (inConfig && regionConfigurer != null) {
-        regionConfigurer.view.repaint();
+      regionConfigurer.view.repaint();
     }
   }
 
@@ -413,9 +413,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       double scale,
       boolean reversed)
   {
-      if (visible) {
-        forceDraw(g, bounds, visibleRect, scale, reversed);
-      }
+    if (visible) {
+      forceDraw(g, bounds, visibleRect, scale, reversed);
+    }
   }
 
   public void forceDraw(
@@ -539,11 +539,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (dirty) {
         if (JOptionPane.YES_OPTION ==
           JOptionPane.showConfirmDialog(this,
-              Resources.getString("Editor.IrregularGrid.changes_made"), //$NON-NLS-1$
-              "", JOptionPane.YES_NO_OPTION)) { //$NON-NLS-1$
-            restore();
-            close();
-         }
+            Resources.getString("Editor.IrregularGrid.changes_made"), //$NON-NLS-1$
+            "", JOptionPane.YES_NO_OPTION)) { //$NON-NLS-1$
+          restore();
+          close();
+        }
       }
       else {
         close();
@@ -1047,12 +1047,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     protected void unselect(Region r) {
       if (r != null) {
-          r.setSelected(false);
-          selectedRegions.remove(r);
-          if (lastClickedRegion==r) {
-            lastClickedRegion=null;
-          }
-          view.repaint(r.getSelectionRect());
+        r.setSelected(false);
+        selectedRegions.remove(r);
+        if (lastClickedRegion==r) {
+          lastClickedRegion=null;
+        }
+        view.repaint(r.getSelectionRect());
       }
     }
 
@@ -1187,20 +1187,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
 
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-          dy = -delta;
-          break;
-        case KeyEvent.VK_DOWN:
-          dy = delta;
-          break;
-        case KeyEvent.VK_LEFT:
-          dx = -delta;
-          break;
-        case KeyEvent.VK_RIGHT:
-          dx = delta;
-          break;
-        default :
-          return;
+      case KeyEvent.VK_UP:
+        dy = -delta;
+        break;
+      case KeyEvent.VK_DOWN:
+        dy = delta;
+        break;
+      case KeyEvent.VK_LEFT:
+        dx = -delta;
+        break;
+      case KeyEvent.VK_RIGHT:
+        dx = delta;
+        break;
+      default :
+        return;
       }
 
       for (Region r : selectedRegions) {

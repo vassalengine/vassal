@@ -200,7 +200,7 @@ public class MassKeyCommand extends AbstractConfigurable
       DECK_COUNT,
       BUTTON_TEXT,
       TOOLTIP,
-       ICON,
+      ICON,
       HOTKEY,
       REPORT_SINGLE,
       REPORT_FORMAT,

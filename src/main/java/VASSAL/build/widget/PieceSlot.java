@@ -520,7 +520,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     /*
      * Piece can change due to editing, so cannot cache the I18nData
      */
-   return new ComponentI18nData(this, getPiece());
+    return new ComponentI18nData(this, getPiece());
   }
 
   @Override

@@ -160,7 +160,7 @@ public class WizardSupport {
       // but no username is set
       // FIXME: this belongs outside of the wizard, not here
       if (!isRealName()) {
-          new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
+        new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
       }
       return;
     }
@@ -256,12 +256,11 @@ public class WizardSupport {
    * 
    * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
    * 
-	 * @return <code>true</code> if user supplied a real name
-   */    
-  private boolean isRealName()
-  {
-	  final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-	  return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+   * @return <code>true</code> if user supplied a real name
+   */
+  private boolean isRealName() {
+    final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
   
@@ -449,11 +448,9 @@ public class WizardSupport {
             else {
               final Prefs p = GameModule.getGameModule().getPrefs();
 
-              p.getOption(GameModule.REAL_NAME)
-               .setValue(nameConfig.getValueString());
+              p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
 
-              p.getOption(GameModule.SECRET_NAME)
-               .setValue(pwd.getValueString());
+              p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
               try {
                 p.save();
