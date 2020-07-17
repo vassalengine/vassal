@@ -375,7 +375,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
   }
 
-  private int drawColoredText(Graphics g, int x, int y, TabExpander ex, Document doc,
+  private float drawColoredText(Graphics g, float x, float y, TabExpander ex, Document doc,
                               int p0, int p1, Element elem) throws BadLocationException {
     final Segment s = new Segment();
     doc.getText(p0, p1 - p0, s);
@@ -383,7 +383,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     final Graphics2D g2d = (Graphics2D) g;
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    return Utilities.drawTabbedText(s, x, y, g, ex, p0);
+    return Utilities.drawTabbedText(s, x, y, g2d, ex, p0);
+  }
+
+  @Deprecated private int drawColoredText(Graphics g, int x, int y, TabExpander ex, Document doc,
+                              int p0, int p1, Element elem) throws BadLocationException {
+    return (int) drawColoredText(g, (float) x, (float) y, ex, doc, p0, p1, elem);
   }
 
   private class WrappedView extends WrappedPlainView {
@@ -392,10 +397,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
 
     @Override
-    protected int drawUnselectedText(Graphics g, int x, int y,
+    protected float drawUnselectedText(Graphics2D g, float x, float y,
                                      int p0, int p1) throws BadLocationException {
       final Element root = getElement();
       return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
+    }
+
+    @Override
+    @Deprecated protected int drawUnselectedText(Graphics g, int x, int y,
+                                     int p0, int p1) throws BadLocationException {
+      final Graphics2D g2d = (Graphics2D) g;
+      return (int) drawUnselectedText(g2d, (float) x, (float) y, p0, p1);
     }
   }
 
@@ -405,10 +417,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
 
     @Override
-    protected int drawUnselectedText(Graphics g, int x, int y,
+    protected float drawUnselectedText(Graphics2D g, float x, float y,
                                      int p0, int p1) throws BadLocationException {
       Element root = getElement();
       return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
+    }
+
+    @Override
+    @Deprecated protected int drawUnselectedText(Graphics g, int x, int y,
+                                     int p0, int p1) throws BadLocationException {
+      final Graphics2D g2d = (Graphics2D) g;
+      return (int) drawUnselectedText(g2d, (float) x, (float) y, p0, p1);
     }
   }
 
