@@ -50,7 +50,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -753,7 +752,7 @@ public class PieceMover extends AbstractBuildable
       boolean useGrid = b != null && b.getGrid() != null;
       if (useGrid) {
         final PieceIterator it = DragBuffer.getBuffer().getIterator();
-      final GamePiece dragging = it.hasMoreElements() ? it.nextPiece() : null;
+        final GamePiece dragging = it.hasMoreElements() ? it.nextPiece() : null;
         useGrid =
           dragging != null &&
           !Boolean.TRUE.equals(dragging.getProperty(Properties.IGNORE_GRID)) &&
@@ -839,12 +838,10 @@ public class PieceMover extends AbstractBuildable
    */
   abstract static public class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
-               DragSourceMotionListener,  DropTargetListener
-  {
-	  static private AbstractDragHandler theDragHandler =
-	    DragSource.isDragImageSupported() ?
-        (SystemUtils.IS_OS_MAC_OSX ?
-          new DragHandlerMacOSX() : new DragHandler()) :
+               DragSourceMotionListener,  DropTargetListener   {
+    static private AbstractDragHandler theDragHandler = 
+        DragSource.isDragImageSupported() ? (SystemUtils.IS_OS_MAC_OSX ?
+        new DragHandlerMacOSX() : new DragHandler()) :
         new DragHandlerNoImage();
 
     /** returns the singleton DragHandler instance */
@@ -861,8 +858,8 @@ public class PieceMover extends AbstractBuildable
 
 
     protected JLabel dragCursor; // An image label. Lives on current DropTarget's
-      // LayeredPane.
-//      private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
+    // LayeredPane.
+    //      private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
     private Point drawOffset = new Point(); // translates event coords to local
                                             // drawing coords
     private Rectangle boundingBox; // image bounds
@@ -1093,8 +1090,8 @@ public class PieceMover extends AbstractBuildable
 
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
-        final Map map = piece.getMap();
-
+        final Map map = piece.getMap();        
+        
         if (piece instanceof Stack){
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
@@ -1112,10 +1109,19 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
-
+          
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
+          
+          String owner = "";
+          if (piece.getParent() instanceof Deck) {
+            owner = (String)piece.getProperty(Properties.OBSCURED_BY);
+            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+          }
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
+          if (piece.getParent() instanceof Deck) {
+            piece.setProperty(Properties.OBSCURED_BY, owner);
+          }
 
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
@@ -1142,11 +1148,11 @@ public class PieceMover extends AbstractBuildable
 
     private BufferedImage featherDragImage(BufferedImage src,
                                            int w, int h, int b) {
-// FIXME: This should be redone so that we draw the feathering onto the
-// destination first, and then pass the Graphics2D on to draw the pieces
-// directly over it. Presently this doesn't work because some of the
-// pieces screw up the Graphics2D when passed it... The advantage to doing
-// it this way is that we create only one BufferedImage instead of two.
+      // FIXME: This should be redone so that we draw the feathering onto the
+      // destination first, and then pass the Graphics2D on to draw the pieces
+      // directly over it. Presently this doesn't work because some of the
+      // pieces screw up the Graphics2D when passed it... The advantage to doing
+      // it this way is that we create only one BufferedImage instead of two.
       final BufferedImage dst =
         ImageUtils.createCompatibleTranslucentImage(w, h);
 
@@ -1206,7 +1212,7 @@ public class PieceMover extends AbstractBuildable
       for (GamePiece piece : pieces) {
         if (piece.getMap() != null &&
             Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
-            db.remove(piece);
+          db.remove(piece);
         }
       }
 
@@ -1251,7 +1257,7 @@ public class PieceMover extends AbstractBuildable
 
     protected void beginDragging(DragGestureEvent dge) {
       // this call is needed to instantiate the boundingBox object
-	    final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
+      final BufferedImage bImage = makeDragImage(dragPieceOffCenterZoom);
 
       final Point dragPointOffset = new Point(
         getOffsetMult() * (boundingBox.x + currentPieceOffsetX - EXTRA_BORDER),
@@ -1314,8 +1320,10 @@ public class PieceMover extends AbstractBuildable
     /** switches current drawWin when mouse enters a new DropTarget */
     @Override
     public void dragEnter(DropTargetDragEvent e) {
-       final DropTargetListener forward = getListener(e);
-       if (forward != null) forward.dragEnter(e);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) {
+        forward.dragEnter(e);
+      }
     }
 
     /**
@@ -1325,10 +1333,12 @@ public class PieceMover extends AbstractBuildable
      */
     @Override
     public void drop(DropTargetDropEvent e) {
-       // EVENT uses UNSCALED, DROP-TARGET coordinate system
-       e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
-       final DropTargetListener forward = getListener(e);
-       if (forward != null) forward.drop(e);
+      // EVENT uses UNSCALED, DROP-TARGET coordinate system
+      e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) {
+        forward.drop(e);
+      }
     }
 
     /** ineffectual. Passes event along listener chain */
