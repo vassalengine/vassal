@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.3.1.
+The VASSAL Team is happy to announce the release of VASSAL 3.3.2.
 
 ********************************************************************************
 IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
@@ -29,30 +29,41 @@ Download
 
 For Linux:
 
-  https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-linux.tar.bz2
+  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-linux.tar.bz2
 
 For Mac OS X:
 
-  https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-macosx.dmg
+  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-macosx.dmg
 
-For Windows:
+For Windows (64-bit):
 
-  https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-windows.exe
+  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-64.exe
+
+For Windows (32-bit):
+
+  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-32.exe
 
 For other operating systems:
 
-  https://github.com/vassalengine/vassal/releases/download/3.3.1/VASSAL-3.3.1-other.zip
+  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-other.zip
 
 
 *************************
-Changes since 3.3.0
+Changes since 3.3.1
 *************************
 
-Bug fixes:
-
-* 13111: IncompatibleClassChangeError due to change of ComponentSplitter
-    methods to static prevents some modules from opening
-* 13083: BrowserSupport cannot open URLs on Linux without gtk3
+* 13182: Piece images in Inventory windows are drawn offset on HiDPI screens
+* 13181: Piece images in Inventory windows have truncated height on Macs
+* 13176: Bundled Java fails to start on Mac OS X < 10.13
+* 13175: Add bundle for 32-bit Windows
+* 13152: Version number and year set incorrectly in Mac DMG's Info.plist
+* 13143: HTTPS URLs fail to load (handshake_failure) due to missing
+    jdk.crypto.ec module
+* 13140: Versions with a build number are incorrectly sorted before versions
+    without a build number
+* 13136: Update notifier still has old SourceForge URL for downloads
+* 13126: Right mouse button and Control-Click broken on Macs
+* 12861: Improved behavior of Zone editor
 
 For changes prior to this release, see the change log.
 

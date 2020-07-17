@@ -550,7 +550,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     // Therefore, un-select the piece if turning it face down
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
-// FIXME: This probably causes a race condition. Can we do this directly?
+      // FIXME: This probably causes a race condition. Can we do this directly?
       Runnable runnable = new Runnable() {
         @Override
         public void run() {
