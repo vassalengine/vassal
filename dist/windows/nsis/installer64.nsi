@@ -316,7 +316,7 @@ FunctionEnd
 
 Function .onInit
   ${IfNot} ${RunningX64}
-    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires 64-bit Windows.$\n$\nTo use VASSAL ${VERSION} on 32-bit Windows, please install Java 11 or later and download the VASSAL package marked 'other'."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires 64-bit Windows.$\n$\nTo use VASSAL ${VERSION} on 32-bit Windows, please install the 32-bit Windows package."
     Abort
   ${EndIf}
 
