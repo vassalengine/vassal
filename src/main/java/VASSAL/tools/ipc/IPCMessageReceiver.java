@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.tools.concurrent.listener.MultiEventListenerSupport;
-import VASSAL.tools.io.IOUtils;
 
 class IPCMessageReceiver implements Runnable {
 
@@ -31,7 +30,7 @@ class IPCMessageReceiver implements Runnable {
   public void run() {
     IPCMessage msg;
 
-    try {
+    try (in) {
       do {
         msg = (IPCMessage) in.readObject();
 
@@ -39,8 +38,6 @@ class IPCMessageReceiver implements Runnable {
 
         lsup.notify(msg);
       } while (!(msg instanceof Fin));
-
-      in.close();
     }
     catch (ClassCastException | OptionalDataException | StreamCorruptedException
       | InvalidClassException | ClassNotFoundException e) {
@@ -51,10 +48,7 @@ class IPCMessageReceiver implements Runnable {
     }
     catch (IOException e) {
 // FIXME: should communicate this outward somehow
-      logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      logger.error("Error while reading IPC message", e);
     }
   }
 }

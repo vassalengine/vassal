@@ -67,7 +67,6 @@ import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.ipc.IPCMessage;
@@ -77,7 +76,7 @@ import VASSAL.tools.lang.MemoryUtils;
 
 /**
  *
- * The base class for {@link Action}s which launch processes from the
+ * The base class for {@link javax.swing.Action}s which launch processes from the
  * {@link ModuleManagerWindow}.
  *
  * @author Joel Uckelman
@@ -618,8 +617,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       }
       finally {
-        IOUtils.closeQuietly(clientSocket);
-        IOUtils.closeQuietly(serverSocket);
+        if (clientSocket != null) {
+          try {
+            clientSocket.close();
+          }
+          catch (IOException e) {
+            logger.error("Error while closing clientSocket", e);
+          }
+        }
+
+        if (serverSocket != null) {
+          try {
+            serverSocket.close();
+          }
+          catch (IOException e) {
+            logger.error("Error while closing serverSocket", e);
+          }
+        }
         children.remove(ipc);
       }
     }

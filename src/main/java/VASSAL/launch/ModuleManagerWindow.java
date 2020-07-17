@@ -114,7 +114,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -196,9 +195,6 @@ public class ModuleManagerWindow extends JFrame {
         }
         catch (IOException ex) {
           WriteErrorDialog.error(ex, gp.getFile());
-        }
-        finally {
-          IOUtils.closeQuietly(gp);
         }
 
         try {

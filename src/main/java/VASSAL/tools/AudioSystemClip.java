@@ -28,10 +28,13 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import VASSAL.tools.AudioClip;
-import VASSAL.tools.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AudioSystemClip implements AudioClip {
+
+  private static final Logger log = LoggerFactory.getLogger(AudioSystemClip.class);
+
   protected Clip the_clip;
 
   protected Clip getClip(InputStream in) throws IOException {
@@ -81,7 +84,14 @@ public class AudioSystemClip implements AudioClip {
       }
     }
     catch (Exception e) {
-      IOUtils.closeQuietly(clip);
+      if (clip != null) {
+        try {
+          clip.close();
+        }
+        catch (Exception e2) {
+          log.error("Error while closing clip {}", clip, e2);
+        }
+      }
       throw e;
     }
   }

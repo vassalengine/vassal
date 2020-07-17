@@ -50,24 +50,26 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    */
   @Override
   public void build(Element e) {
-    if (e != null) {
-      final NamedNodeMap n = e.getAttributes();
-      for (int i = 0; i < n.getLength(); ++i) {
-        final Attr att = (Attr) n.item(i);
-        setAttribute(att.getName(), att.getValue());
-
-        /*
-         * Save a record of all Attributes for later translation. Need to save
-         * all attributes, not just translatable ones as the current component
-         * has not been completely built yet and a ComponentI18nData object
-         * cannot be built.
-         */
-        if (this instanceof Translatable) {
-          Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
-        }
-      }
-      Builder.build(e, this);
+    if (e == null) {
+      return;
     }
+
+    final NamedNodeMap n = e.getAttributes();
+    for (int i = 0; i < n.getLength(); ++i) {
+      final Attr att = (Attr) n.item(i);
+      setAttribute(att.getName(), att.getValue());
+
+      /*
+       * Save a record of all Attributes for later translation. Need to save
+       * all attributes, not just translatable ones as the current component
+       * has not been completely built yet and a ComponentI18nData object
+       * cannot be built.
+       */
+      if (this instanceof Translatable) {
+        Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
+      }
+    }
+    Builder.build(e, this);
   }
 
   /**
