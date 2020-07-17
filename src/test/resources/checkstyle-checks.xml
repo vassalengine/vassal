@@ -49,36 +49,48 @@
     -->
 
     <module name="TreeWalker">
-        <!--
-        <module name="OuterTypeFilename"/>
+        <module name="OuterTypeFilename">
+            <property name="severity" value="error"/>
+        </module>
         <module name="IllegalTokenText">
+            <property name="severity" value="error"/>
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
             <property name="format"
              value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
             <property name="message"
              value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
         </module>
+        <!--
         <module name="AvoidEscapedUnicodeCharacters">
             <property name="allowEscapesForControlCharacters" value="true"/>
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
-        <module name="AvoidStarImport"/>
-        <module name="OneTopLevelClass"/>
+        -->
+        <module name="AvoidStarImport">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="OneTopLevelClass">
+            <property name="severity" value="error"/>
+        </module>
         <module name="NoLineWrap">
+            <property name="severity" value="error"/>
             <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
         </module>
         <module name="EmptyBlock">
+            <property name="severity" value="warning"/>
             <property name="option" value="TEXT"/>
             <property name="tokens"
              value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
         </module>
+        <!--
         <module name="NeedBraces">
             <property name="tokens"
              value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
         </module>
         -->
         <module name="LeftCurly">
+            <property name="severity" value="warning"/>
             <property name="tokens"
              value="ANNOTATION_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF,
                     INTERFACE_DEF, LAMBDA, LITERAL_CASE, LITERAL_CATCH, LITERAL_DEFAULT,
@@ -91,7 +103,7 @@
             <property name="id" value="RightCurlySame"/>
             <property name="tokens"
              value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
-                    LITERAL_DO, "/>
+                    LITERAL_DO"/>
         </module>
         -->
         <module name="RightCurly">
@@ -99,9 +111,9 @@
             <property name="id" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
             <property name="tokens"
-             value="CLASS_DEF, CTOR_DEF, LITERAL_FOR, STATIC_INIT,
-                    INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY,
-                    LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE"/>
+             value="CLASS_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF,
+                    LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE"/>
             <!-- other possible tokens: -->
             <!-- METHOD_DEF -->
         </module>
@@ -138,35 +150,51 @@
         </module>
         <module name="OneStatementPerLine"/>
         <module name="MultipleVariableDeclarations"/>
-        <module name="ArrayTypeStyle"/>
+        -->
+        <module name="ArrayTypeStyle">
+            <property name="severity" value="error"/>
+        </module>
+        <!--
         <module name="MissingSwitchDefault"/>
-        <module name="FallThrough"/>
-        <module name="UpperEll"/>
-        <module name="ModifierOrder"/>
+        -->
+        <module name="FallThrough">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="UpperEll">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ModifierOrder">
+            <property name="severity" value="warning"/>
+        </module>
+        <!--
         <module name="EmptyLineSeparator">
             <property name="tokens"
-             value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+             value="PACKAGE_DEF, IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
                     STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
             <property name="allowNoEmptyLineBetweenFields" value="true"/>
         </module>
+        -->
         <module name="SeparatorWrap">
+            <property name="severity" value="warning"/>
             <property name="id" value="SeparatorWrapDot"/>
             <property name="tokens" value="DOT"/>
             <property name="option" value="nl"/>
         </module>
         <module name="SeparatorWrap">
+            <property name="severity" value="warning"/>
             <property name="id" value="SeparatorWrapComma"/>
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
         </module>
-        -->
         <module name="SeparatorWrap">
+            <property name="severity" value="error"/>
             <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
             <property name="id" value="SeparatorWrapEllipsis"/>
             <property name="tokens" value="ELLIPSIS"/>
             <property name="option" value="EOL"/>
         </module>
         <module name="SeparatorWrap">
+            <property name="severity" value="error"/>
             <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
             <property name="id" value="SeparatorWrapArrayDeclarator"/>
             <property name="tokens" value="ARRAY_DECLARATOR"/>
@@ -178,11 +206,14 @@
             <property name="tokens" value="METHOD_REF"/>
             <property name="option" value="nl"/>
         </module>
+        -->
         <module name="PackageName">
+            <property name="severity" value="error"/>
             <property name="format" value="^(VASSAL)|[a-z]+(\.[a-z][a-z0-9]*)*$"/>
             <message key="name.invalidPattern"
              value="Package name ''{0}'' must match pattern ''{1}''."/>
         </module>
+        <!--
         <module name="TypeName">
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF"/>
             <message key="name.invalidPattern"
@@ -213,33 +244,39 @@
             <message key="name.invalidPattern"
              value="Local variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
+        -->
         <module name="ClassTypeParameterName">
+            <property name="severity" value="error"/>
             <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
             <message key="name.invalidPattern"
              value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="MethodTypeParameterName">
+            <property name="severity" value="error"/>
             <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
             <message key="name.invalidPattern"
              value="Method type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="InterfaceTypeParameterName">
+            <property name="severity" value="error"/>
             <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
             <message key="name.invalidPattern"
              value="Interface type name ''{0}'' must match pattern ''{1}''."/>
         </module>
-        <module name="NoFinalizer"/>
+        <module name="NoFinalizer">
+            <property name="severity" value="warning"/>
+        </module>
         <module name="GenericWhitespace">
+            <property name="severity" value="warning"/>
             <message key="ws.followed"
              value="GenericWhitespace ''{0}'' is followed by whitespace."/>
             <message key="ws.preceded"
              value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
             <message key="ws.illegalFollow"
-             value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+             value="GenericWhitespace ''{0}'' should be followed by whitespace."/>
             <message key="ws.notPreceded"
              value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
         </module>
-        -->
         <module name="Indentation">
             <property name="severity" value="error"/>
             <property name="basicOffset" value="2"/>
@@ -255,7 +292,7 @@
             <property name="allowedAbbreviationLength" value="1"/>
             <property name="tokens"
              value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF,
-                    PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF"/>
+                    PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF, PATTERN_VARIABLE_DEF"/>
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
