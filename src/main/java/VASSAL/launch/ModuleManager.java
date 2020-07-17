@@ -411,7 +411,14 @@ public class ModuleManager {
             ErrorDialog.bug(e);
           }
           finally {
-            IOUtils.closeQuietly(clientSocket);
+            if (clientSocket != null) {
+              try {
+                clientSocket.close();
+              }
+              catch (IOException e) {
+                logger.error("Error while closing client socket", e);
+              }
+            }
           }
         }
       }
