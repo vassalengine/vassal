@@ -128,7 +128,7 @@ public class DieManager extends AbstractConfigurable {
 
     setSemailValues();
 
-    DefaultListModel m = abook.getModel();
+    DefaultListModel<String> m = abook.getModel();
     ListDataListener ldl = new ListDataListener() {
 
       @Override
@@ -332,7 +332,7 @@ public class DieManager extends AbstractConfigurable {
         Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
         Resources.getString("Editor.DieManager.ndice"), //$NON-NLS-1$
         Resources.getString("Editor.DieManager.nsides") //$NON-NLS-1$
-     };
+    };
   }
 
   @Override

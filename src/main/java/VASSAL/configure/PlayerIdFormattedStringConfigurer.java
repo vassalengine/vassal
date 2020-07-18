@@ -17,8 +17,9 @@
  */
 package VASSAL.configure;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.module.GlobalOptions;
-import VASSAL.tools.ArrayUtils;
 
 /** Utility subclass of {@link FormattedStringConfigurer} which includes variable
  * keys for player name, side, and id
@@ -27,7 +28,7 @@ public class PlayerIdFormattedStringConfigurer extends FormattedStringConfigurer
   public PlayerIdFormattedStringConfigurer(String key, String name, String[] options) {
     super(key, name);
 
-    final String[] allOptions = ArrayUtils.append(
+    final String[] allOptions = ArrayUtils.addAll(
       new String[]{
         GlobalOptions.PLAYER_NAME,
         GlobalOptions.PLAYER_SIDE,

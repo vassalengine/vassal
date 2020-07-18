@@ -69,9 +69,9 @@ public class RoomTree extends JTree {
           break;
         }
         else if (room[j].equals(r)) {
-          model.valueForPathChanged
-            (new TreePath(((DefaultMutableTreeNode) root.getChildAt(i))
-                          .getPath()), room[j]);
+          model.valueForPathChanged(
+            new TreePath(((DefaultMutableTreeNode) root.getChildAt(i))
+              .getPath()), room[j]);
           break;
         }
       }
@@ -88,8 +88,7 @@ public class RoomTree extends JTree {
         }
       }
       if (j >= root.getChildCount()) {
-        model.insertNodeInto
-          (new DefaultMutableTreeNode(room[i]), root, i);
+        model.insertNodeInto(new DefaultMutableTreeNode(room[i]), root, i);
       }
     }
 // Update players
@@ -100,13 +99,11 @@ public class RoomTree extends JTree {
         model.removeNodeFromParent((DefaultMutableTreeNode) node.getChildAt(0));
       }
       while (p.size() > node.getChildCount()) {
-        model.insertNodeInto
-          (new DefaultMutableTreeNode(room[i]), node, 0);
+        model.insertNodeInto(new DefaultMutableTreeNode(room[i]), node, 0);
       }
       for (int j = 0; j < node.getChildCount(); ++j) {
-        model.valueForPathChanged
-          (new TreePath(((DefaultMutableTreeNode) node.getChildAt(j))
-                        .getPath()), p.get(j));
+        model.valueForPathChanged(
+          new TreePath(((DefaultMutableTreeNode) node.getChildAt(j)).getPath()), p.get(j));
       }
     }
   }

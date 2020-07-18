@@ -451,28 +451,15 @@ public class ZipArchive implements FileArchive {
     }
 
     // Replace old archive with temp archive.
-    if (!tmpFile.renameTo(archiveFile)) {
-      try {
-        FileUtils.forceDelete(archiveFile);
-        FileUtils.moveFile(tmpFile, archiveFile);
-      }
-      catch (IOException e) {
-        String err =
-          "Unable to overwrite " + archiveFile.getAbsolutePath() + ": ";
-
-        if (!archiveFile.exists()) {
-          err += " file does not exist.";
-        }
-        else if (!archiveFile.canWrite()) {
-          err += " file is not writable.";
-        }
-        else if (!archiveFile.isFile()) {
-          err += " not a normal file.";
-        }
-
-        err += " Data written to " + tmpFile.getAbsolutePath() + " instead.";
-        throw new IOException(err, e);
-      }
+    try {
+      FileUtils.forceDelete(archiveFile);
+      FileUtils.moveFile(tmpFile, archiveFile);
+    }
+    catch (IOException e) {
+      final String fmt = "Unable to overwrite %s: %s Data written to %s instead.";
+      throw new IOException(
+        String.format(fmt, archiveFile.getAbsolutePath(), e.getMessage(), tmpFile.getAbsolutePath()),
+        e);
     }
 
     // Delete all temporary files
@@ -582,7 +569,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /** Rebuilds the {@link ZipEntries} from our underlying {@link ZipFile}. */
+  /** Rebuilds the {@link Entry}s from our underlying {@link ZipFile}. */
   private synchronized void readEntries() throws IOException {
     entries.clear();
 

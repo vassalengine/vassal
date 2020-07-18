@@ -162,7 +162,7 @@ public class WarningDialog {
     );
   }
 
-   public static Future<?> showDetails(
+  public static Future<?> showDetails(
     Component parent,
     Throwable thrown,
     String details,
@@ -176,7 +176,7 @@ public class WarningDialog {
     );
   }
 
-    public static Future<?> showDetailsDisableable(
+  public static Future<?> showDetailsDisableable(
     String details,
     Object key,
     String messageKey,

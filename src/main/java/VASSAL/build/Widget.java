@@ -123,14 +123,14 @@ public abstract class Widget extends AbstractConfigurable {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public java.awt.Component getListCellRendererComponent
-      (javax.swing.JList list,
-       Object value,
-       int index,
-       boolean isSelected,
-       boolean cellHasFocus) {
-      super.getListCellRendererComponent
-        (list, value, index, isSelected, cellHasFocus);
+    public java.awt.Component getListCellRendererComponent(
+      javax.swing.JList list,
+      Object value,
+      int index,
+      boolean isSelected,
+      boolean cellHasFocus) {
+
+      super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       if (value instanceof Configurable)
         setText(((Configurable) value).getConfigureName());
       return this;

@@ -90,8 +90,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * Close an {@link AutoCloseable} unconditionally. Equivalent to
    * calling <code>c.close()</code> when <code>c</code> is nonnull.
    *
-   * @param c a (possibly <code>null</code>) <code>AutoCloseable</code>
+   * @param c a (possibly <code>null</code>) {@link AutoCloseable}
+   * @deprecated use try with resources or close and catch manually
    */
+  @Deprecated
   public static void closeQuietly(AutoCloseable c) {
     if (c == null) return;
 

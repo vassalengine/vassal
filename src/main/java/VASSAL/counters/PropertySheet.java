@@ -81,6 +81,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Decorator class that endows a GamePiece with a dialog.
@@ -461,47 +462,47 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           String name = code.substring(1);
           JComponent field;
           switch (type) {
-            case TEXT_FIELD:
-              field = new JTextField(stateDecoder.nextToken(""));
-              ((JTextComponent) field).getDocument()
-                                      .addDocumentListener(changeListener);
-              ((JTextField) field).addActionListener(frame);
-              m_fields.add(field);
-              break;
-            case TEXT_AREA:
-              field = new JTextArea(
-                stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
-              ((JTextComponent) field).getDocument()
-                                      .addDocumentListener(changeListener);
-              m_fields.add(field);
-              field = new ScrollPane(field);
-              break;
-            case TICKS:
-            case TICKS_VAL:
-            case TICKS_MAX:
-            case TICKS_VALMAX:
-              field = new TickPanel(stateDecoder.nextToken(""), type);
-              ((TickPanel) field).addDocumentListener(changeListener);
-              ((TickPanel) field).addActionListener(frame);
-              if (backgroundColor != null)
-                field.setBackground(backgroundColor);
-              m_fields.add(field);
-              break;
-            case SPINNER:
-              JSpinner spinner = new JSpinner();
-              JTextField textField =
-                ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-              textField.setText(stateDecoder.nextToken(""));
-              textField.getDocument().addDocumentListener(changeListener);
-              m_fields.add(textField);
-              field = spinner;
-              break;
-            case LABEL_ONLY:
-            default :
-              stateDecoder.nextToken("");
-              field = null;
-              m_fields.add(field);
-              break;
+          case TEXT_FIELD:
+            field = new JTextField(stateDecoder.nextToken(""));
+            ((JTextComponent) field).getDocument()
+                                    .addDocumentListener(changeListener);
+            ((JTextField) field).addActionListener(frame);
+            m_fields.add(field);
+            break;
+          case TEXT_AREA:
+            field = new JTextArea(
+              stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
+            ((JTextComponent) field).getDocument()
+                                    .addDocumentListener(changeListener);
+            m_fields.add(field);
+            field = new ScrollPane(field);
+            break;
+          case TICKS:
+          case TICKS_VAL:
+          case TICKS_MAX:
+          case TICKS_VALMAX:
+            field = new TickPanel(stateDecoder.nextToken(""), type);
+            ((TickPanel) field).addDocumentListener(changeListener);
+            ((TickPanel) field).addActionListener(frame);
+            if (backgroundColor != null)
+              field.setBackground(backgroundColor);
+            m_fields.add(field);
+            break;
+          case SPINNER:
+            JSpinner spinner = new JSpinner();
+            JTextField textField =
+              ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+            textField.setText(stateDecoder.nextToken(""));
+            textField.getDocument().addDocumentListener(changeListener);
+            m_fields.add(textField);
+            field = spinner;
+            break;
+          case LABEL_ONLY:
+          default :
+            stateDecoder.nextToken("");
+            field = null;
+            m_fields.add(field);
+            break;
           }
           c.gridwidth = type == TEXT_AREA || type == LABEL_ONLY ? 2 : 1;
 
@@ -1297,27 +1298,29 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     @Override
-    public void mouseClicked(MouseEvent event) {
-
-      if ((event.getButton() == 3 || event.isShiftDown()) && panelType != TICKS_VALMAX) {
+    public void mouseClicked(MouseEvent e) {
+      if (panelType != TICKS_VALMAX &&
+          ((SwingUtils.isLeftMouseButton(e) && e.isShiftDown()) ||
+            SwingUtils.isRightMouseButton(e))) {
         new EditTickLabelValueDialog(this);
-        return;
       }
-      int col = Math.min((event.getX() - leftMargin + 1) / dx, numCols - 1);
-      int row = Math.min((event.getY() - topMargin + 1) / dx, numRows - 1);
-      int num = row * numCols + col + 1;
+      else if (SwingUtils.isLeftMouseButton(e)) {
+        int col = Math.min((e.getX() - leftMargin + 1) / dx, numCols - 1);
+        int row = Math.min((e.getY() - topMargin + 1) / dx, numRows - 1);
+        int num = row * numCols + col + 1;
 
-      // Checkbox behavior; toggle the box clicked on
-      // numTicks = num > numTicks ? num : num - 1;
+        // Checkbox behavior; toggle the box clicked on
+        // numTicks = num > numTicks ? num : num - 1;
 
-      // Slider behavior; set the box clicked on and all to left and clear all boxes to right,
-      // UNLESS user clicked on last set box (which would do nothing), in this case, toggle the
-      // box clicked on.  This is the only way the user can clear the first box.
+        // Slider behavior; set the box clicked on and all to left and clear all boxes to right,
+        // UNLESS user clicked on last set box (which would do nothing), in this case, toggle the
+        // box clicked on.  This is the only way the user can clear the first box.
 
-      numTicks = (num == numTicks) ? num - 1 : num;
-      fireActionEvent();
+        numTicks = (num == numTicks) ? num - 1 : num;
+        fireActionEvent();
 
-      repaint();
+        repaint();
+      }
     }
 
     public void fireActionEvent() {
@@ -1384,19 +1387,19 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           JButton okButton = new JButton("Ok");
 
           switch (panelType) {
-            case TICKS_VAL:
-              valueField = new JTextField(Integer.toString(owner.getMaxTicks()));
-              valueField.setToolTipText("max value");
-              break;
-            case TICKS_MAX:
-              valueField = new JTextField(Integer.toString(owner.getNumTicks()));
-              valueField.setToolTipText("current value");
-              break;
-            case TICKS:
-            default:
-              valueField = new JTextField(owner.numTicks + "/" + owner.maxTicks);
-              valueField.setToolTipText("current value / max value");
-              break;
+          case TICKS_VAL:
+            valueField = new JTextField(Integer.toString(owner.getMaxTicks()));
+            valueField.setToolTipText("max value");
+            break;
+          case TICKS_MAX:
+            valueField = new JTextField(Integer.toString(owner.getNumTicks()));
+            valueField.setToolTipText("current value");
+            break;
+          case TICKS:
+          default:
+            valueField = new JTextField(owner.numTicks + "/" + owner.maxTicks);
+            valueField.setToolTipText("current value / max value");
+            break;
           }
 
           valueField.addActionListener(this);
@@ -1417,16 +1420,16 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       public void storeValues() {
         String value = valueField.getText();
         switch (panelType) {
-          case TICKS_VAL:
-            theTickLabel.set(theTickLabel.getNumTicks(), atoi(value));
-            break;
-          case TICKS_MAX:
-            theTickLabel.set(atoi(value), theTickLabel.getMaxTicks());
-            break;
-          case TICKS:
-          default:
-            theTickLabel.set(atoi(value), atoiRight(value));
-            break;
+        case TICKS_VAL:
+          theTickLabel.set(theTickLabel.getNumTicks(), atoi(value));
+          break;
+        case TICKS_MAX:
+          theTickLabel.set(atoi(value), theTickLabel.getMaxTicks());
+          break;
+        case TICKS:
+        default:
+          theTickLabel.set(atoi(value), atoiRight(value));
+          break;
         }
         theTickLabel.fireActionEvent();
       }

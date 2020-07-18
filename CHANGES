@@ -1,9 +1,14 @@
 3.3.3-beta1 - ???
 
+* 13171: SetGlobalProperty makes menuCommands the wrong type of array
+* 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
+    commons-lang3 3.10
+* 13155: Correct Dutch translations
 * 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects,
     and band-select gets Does-Not-Stack filter
 * 13146: Custom classes that are children fail to be culled in
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
+* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making         double-click difficult; also added preference for drag threshold adjustment
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
@@ -28,13 +33,20 @@
 *  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off
     movement trails
 
-3.3.2 - ???
+3.3.2 - 16 July 2020
 
+* 13182: Piece images in Inventory windows are drawn offset on HiDPI screens
+* 13181: Piece images in Inventory windows have truncated height on Macs
+* 13176: Bundled Java fails to start on Mac OS X < 10.13
+* 13175: Add bundle for 32-bit Windows
+* 13152: Version number and year set incorrectly in Mac DMG's Info.plist
 * 13143: HTTPS URLs fail to load (handshake_failure) due to missing
     jdk.crypto.ec module
 * 13140: Versions with a build number are incorrectly sorted before versions
     without a build number
 * 13136: Update notifier still has old SourceForge URL for downloads
+* 13126: Right mouse button and Control-Click broken on Macs
+* 12861: Improved behavior of Zone editor
 
 3.3.1 - 22 June 2020
 

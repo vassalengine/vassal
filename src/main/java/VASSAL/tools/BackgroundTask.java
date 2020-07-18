@@ -29,33 +29,33 @@ import javax.swing.SwingUtilities;
  */
 @Deprecated
 public abstract class BackgroundTask {
-    public abstract void doFirst();
+  public abstract void doFirst();
 
-    public abstract void doLater();
+  public abstract void doLater();
 
-    public Thread start() {
-        final Runnable later = new Runnable() {
-            @Override
-            public void run() {
-                doLater();
-            }
-        };
-        Runnable first = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    doFirst();
-                }
-                catch (Throwable t) {
-                  t.printStackTrace();
-                }
-                finally {
-                    SwingUtilities.invokeLater(later);
-                }
-            }
-        };
-        Thread t = new Thread(first);
-        t.start();
-        return t;
-    }
+  public Thread start() {
+    final Runnable later = new Runnable() {
+      @Override
+      public void run() {
+          doLater();
+      }
+    };
+    Runnable first = new Runnable() {
+      @Override
+      public void run() {
+        try {
+            doFirst();
+        }
+        catch (Throwable t) {
+            t.printStackTrace();
+        }
+        finally {
+            SwingUtilities.invokeLater(later);
+        }
+      }
+    };
+    Thread t = new Thread(first);
+    t.start();
+    return t;
+  }
 }

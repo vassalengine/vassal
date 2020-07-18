@@ -25,8 +25,8 @@ import VASSAL.build.module.documentation.HelpFile;
  * Container for definitions of Translations.
  */
 public class Language extends AbstractConfigurable {
-   @Override
-   public String[] getAttributeDescriptions() {
+  @Override
+  public String[] getAttributeDescriptions() {
     return new String[0];
   }
 

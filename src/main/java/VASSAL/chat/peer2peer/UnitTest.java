@@ -20,6 +20,7 @@ public class UnitTest implements UserDialog {
     this.id = id;
   }
 
+  // TODO: move unit test to src/test/java, make this a JUnit test
   public static void main(String[] args) throws Exception {
     final Properties p = new Properties();
 
@@ -91,8 +92,8 @@ public class UnitTest implements UserDialog {
 //      peer.sendCHAT("A message");
 
       try {
-         writer.writeLine("A message"); //$NON-NLS-1$
-         Thread.sleep(2000);
+        writer.writeLine("A message"); //$NON-NLS-1$
+        Thread.sleep(2000);
       }
       finally {
         writer.close();

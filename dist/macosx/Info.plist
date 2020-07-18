@@ -10,11 +10,11 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleIdentifier</key>
   <string>org.vassalengine.VASSAL</string>
   <key>CFBundleVersion</key>
-  <string>%BUILDNUM%</string>
+  <string>%NUMVERSION%</string>
   <key>CFBundleShortVersionString</key>
   <string>%NUMVERSION%</string>
   <key>NSHumanReadableCopyright</key>
-  <string>2019, The VASSAL Team</string>
+  <string>%YEAR%, The VASSAL Team</string>
   <key>CFBundleIconFile</key>
   <string>VASSAL.icns</string>
   <key>CFBundleExecutable</key>
@@ -27,8 +27,6 @@ com/DTDs/PropertyList-1.0.dtd">
   <string>APPL</string>
   <key>CFBundleSignature</key>
   <string>????</string>
-  <key>CFBundleGetInfoString</key>
-  <string>VASSAL version %FULLVERSION%</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleDocumentTypes</key>

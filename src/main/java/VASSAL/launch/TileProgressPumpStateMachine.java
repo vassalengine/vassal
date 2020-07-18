@@ -109,15 +109,15 @@ class TileProgressPumpStateMachine {
   protected int[] runNameLF(byte[] buf, int beg, int end, StringBuilder sb) {
     // look for a linefeed
     switch (buf[beg]) {
-      case '\n':
-        // found a linefeed
-        // now look for dots
-        return new int[] { DOTS, beg+1 };
+    case '\n':
+      // found a linefeed
+      // now look for dots
+      return new int[] { DOTS, beg+1 };
 
-      default:
-        // found something else, protocol violation
-        throw new IllegalStateException(
-          "found '" + buf[beg] + "', expecting '\\n'");
+    default:
+      // found something else, protocol violation
+      throw new IllegalStateException(
+        "found '" + buf[beg] + "', expecting '\\n'");
     }
   }
 
@@ -125,31 +125,31 @@ class TileProgressPumpStateMachine {
     // look for end of line
     for (int pos = beg; pos < end; ++pos) {
       switch (buf[pos]) {
-        case '\r':
-        case '\n':
-          // found the end of line
+      case '\r':
+      case '\n':
+        // found the end of line
 
-          // send the buffer up to this position as the progress
-          sendProgress(pos-beg);
+        // send the buffer up to this position as the progress
+        sendProgress(pos-beg);
 
-          // found a carriage return
-          if (buf[pos] == '\r') {
-            // now look for a linefeed
-            return new int[] { DOTS_LF, pos+1 };
-          }
-          else {
-            // now look for filename
-            return new int[] { NAME, pos+1 };
-          }
+        // found a carriage return
+        if (buf[pos] == '\r') {
+          // now look for a linefeed
+          return new int[] { DOTS_LF, pos+1 };
+        }
+        else {
+          // now look for filename
+          return new int[] { NAME, pos+1 };
+        }
 
-        case '.':
-          // found a progress dot, keep looking
-          break;
+      case '.':
+        // found a progress dot, keep looking
+        break;
 
-        default:
-          // found somethine else, protocol violation
-          throw new IllegalStateException(
-            "found '" + buf[pos] + "', expecting '.'");
+      default:
+        // found somethine else, protocol violation
+        throw new IllegalStateException(
+          "found '" + buf[pos] + "', expecting '.'");
       }
     }
 
@@ -165,15 +165,15 @@ class TileProgressPumpStateMachine {
   protected int[] runDotsLF(byte[] buf, int beg, int end, StringBuilder sb) {
     // look for a linefeed
     switch (buf[beg]) {
-      case '\n':
-        // found a linefeed
-        // now look for filename
-        return new int[] { NAME, beg+1 };
+    case '\n':
+      // found a linefeed
+      // now look for filename
+      return new int[] { NAME, beg+1 };
 
-      default:
-        // found something else, protocol violation
-        throw new IllegalStateException(
-          "found '" + buf[beg] + "', expecting '\\n'");
+    default:
+      // found something else, protocol violation
+      throw new IllegalStateException(
+        "found '" + buf[beg] + "', expecting '\\n'");
     }
   }
 
@@ -199,14 +199,14 @@ class TileProgressPumpStateMachine {
       int[] result;
 
       switch (state) {
-        case NAME:    result = runName(  buf, beg, end, sb); break;
-        case NAME_LF: result = runNameLF(buf, beg, end, sb); break;
-        case DOTS:    result = runDots(  buf, beg, end, sb); break;
-        case DOTS_LF: result = runDotsLF(buf, beg, end, sb); break;
+      case NAME:    result = runName(  buf, beg, end, sb); break;
+      case NAME_LF: result = runNameLF(buf, beg, end, sb); break;
+      case DOTS:    result = runDots(  buf, beg, end, sb); break;
+      case DOTS_LF: result = runDotsLF(buf, beg, end, sb); break;
 
-        default:
-          // should never happen
-          throw new IllegalStateException("state == " + state);
+      default:
+        // should never happen
+        throw new IllegalStateException("state == " + state);
       }
 
       state = result[0];

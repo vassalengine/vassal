@@ -74,15 +74,14 @@ public class Immobilized extends Decorator implements EditablePiece {
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isShiftDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
-  };
+  }
 
   public class UseAlt implements EventFilter {
     @Override
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isAltDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
-  };
-
+  }
 
   protected class MoveIfSelected implements EventFilter {
     @Override
@@ -144,17 +143,17 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     if (movementOptions.length() > 0) {
       switch (movementOptions.charAt(0)) {
-        case NEVER_MOVE:
-          neverMove = true;
-          moveIfSelected = false;
-          break;
-        case MOVE_SELECTED:
-          neverMove = false;
-          moveIfSelected = true;
-          break;
-        default :
-          neverMove = false;
-          moveIfSelected = false;
+      case NEVER_MOVE:
+        neverMove = true;
+        moveIfSelected = false;
+        break;
+      case MOVE_SELECTED:
+        neverMove = false;
+        moveIfSelected = true;
+        break;
+      default :
+        neverMove = false;
+        moveIfSelected = false;
       }
     }
     if (neverSelect) {
@@ -251,7 +250,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       return moveFilter;
     }
     else if (Properties.NON_MOVABLE.equals(key)) {
-        return neverMove;
+      return neverMove;
     }
     else if (Properties.BAND_SELECT_EVENT_FILTER.equals(key)) {
       return bandselectFilter;
@@ -428,37 +427,37 @@ public class Immobilized extends Decorator implements EditablePiece {
     public String getType() {
       String s = ID;
       switch (selectionOption.getSelectedIndex()) {
-        case 1:
-          s += SHIFT_SELECT;
-          break;
-        case 2:
-          s += ALT_SELECT;
-          break;
-        case 3:
-          s += NEVER_SELECT;
+      case 1:
+        s += SHIFT_SELECT;
+        break;
+      case 2:
+        s += ALT_SELECT;
+        break;
+      case 3:
+        s += NEVER_SELECT;
       }
       if (ignoreGridBox.isSelected()) {
         s += IGNORE_GRID;
       }
       switch (bandSelectOption.getSelectedIndex()) {
-        case 1:
-          s += ALT_BAND_SELECT;
-          break;
-        case 2:
-          s += NEVER_BAND_SELECT;
-          break;
+      case 1:
+        s += ALT_BAND_SELECT;
+        break;
+      case 2:
+        s += NEVER_BAND_SELECT;
+        break;
       }
       s += ';';
       switch (movementOption.getSelectedIndex()) {
-        case 0:
-          s += MOVE_NORMAL;
-          break;
-        case 1:
-          s += MOVE_SELECTED;
-          break;
-        case 2:
-          s += NEVER_MOVE;
-          break;
+      case 0:
+        s += MOVE_NORMAL;
+        break;
+      case 1:
+        s += MOVE_SELECTED;
+        break;
+      case 2:
+        s += NEVER_MOVE;
+        break;
       }
       return s;
     }

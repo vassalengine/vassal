@@ -109,9 +109,9 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] {
-        GamePieceLayoutsContainer.class,
-        ColorManager.class,
-        FontManager.class};
+      GamePieceLayoutsContainer.class,
+      ColorManager.class,
+      FontManager.class};
   }
 
   public static String getConfigureTypeName() {

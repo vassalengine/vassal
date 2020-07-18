@@ -60,9 +60,8 @@ public class JavaNameConfigurer extends Configurer {
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
       nameField = buildTextField();
-      nameField.setMaximumSize
-        (new java.awt.Dimension(nameField.getMaximumSize().width,
-                                nameField.getPreferredSize().height));
+      nameField.setMaximumSize(
+        new java.awt.Dimension(nameField.getMaximumSize().width, nameField.getPreferredSize().height));
       nameField.setText(getValueString());
       p.add(nameField);
       nameField.addKeyListener(new java.awt.event.KeyAdapter() {

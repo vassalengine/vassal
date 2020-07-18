@@ -26,9 +26,10 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItem extends Item {
@@ -63,7 +64,7 @@ public class SymbolItem extends Item {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Symbol Set:  ",
       "Width:  ",
       "Height:  ",
@@ -74,7 +75,7 @@ public class SymbolItem extends Item {
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[]{
         SetConfig.class,
         Integer.class,
@@ -87,7 +88,7 @@ public class SymbolItem extends Item {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       SET,
       WIDTH,
       HEIGHT,
@@ -192,7 +193,7 @@ public class SymbolItem extends Item {
       Graphics2D g2d = (Graphics2D) g;
       AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
-        g2d.transform(newXForm);
+      g2d.transform(newXForm);
     }
 
     if (isAntialias()) {

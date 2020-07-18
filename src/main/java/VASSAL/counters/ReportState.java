@@ -40,6 +40,8 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -54,7 +56,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -154,7 +155,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
     //     command was executed.
 
     if (isVisible || wasVisible) {
-      final NamedKeyStroke[] allKeys = ArrayUtils.append(keys, cycleDownKeys);
+      final NamedKeyStroke[] allKeys = ArrayUtils.addAll(keys, cycleDownKeys);
 
       for (int i = 0; i < allKeys.length; ++i) {
         if (stroke != null && stroke.equals(allKeys[i].getKeyStroke())) {
@@ -344,13 +345,18 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(keys.getControls());
       cycle = new JCheckBox("Cycle through different messages?");
       box.add(cycle);
-      format = new PlayerIdFormattedStringConfigurer(null, "Report format:  ", new String[]{COMMAND_NAME,
-                                                                                         OLD_UNIT_NAME,
-                                                                                         NEW_UNIT_NAME,
-                                                                                         MAP_NAME,
-                                                                                         OLD_MAP_NAME,
-                                                                                         LOCATION_NAME,
-                                                                                         OLD_LOCATION_NAME});
+      format = new PlayerIdFormattedStringConfigurer(
+        null,
+        "Report format:  ",
+        new String[]{
+          COMMAND_NAME,
+          OLD_UNIT_NAME,
+          NEW_UNIT_NAME,
+          MAP_NAME,
+          OLD_MAP_NAME,
+          LOCATION_NAME,
+          OLD_LOCATION_NAME});
+
       format.setValue(piece.reportFormat);
       box.add(format.getControls());
       cycleFormat = new StringArrayConfigurer(null, "Message formats", piece.cycleReportFormat);

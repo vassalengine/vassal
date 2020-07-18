@@ -22,6 +22,7 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.MessageBoard;
 
+// TODO: throw this away or make it a JUnit test
 public class ClientTest extends P2PClient implements Runnable, PropertyChangeListener {
   private static Random rng = new Random();
   private int changeRoom;
@@ -122,4 +123,5 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       new ClientTest(pool, msgSvr, welcomer, wait, nRooms, new FileWriter("Log" + i));
     }
   }
-*/}
+*/
+}

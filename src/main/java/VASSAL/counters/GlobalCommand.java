@@ -208,43 +208,44 @@ public class GlobalCommand {
     this.selectFromDeck = selectFromDeck;
   }
 
-@Override
-public int hashCode() {
-  final int prime = 31;
-  int result = 1;
-  result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
-  result = prime * result
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
+    result = prime * result
       + ((reportFormat == null) ? 0 : reportFormat.hashCode());
-  result = prime * result + (reportSingle ? 1231 : 1237);
-  result = prime * result + selectFromDeck;
-  return result;
-}
+    result = prime * result + (reportSingle ? 1231 : 1237);
+    result = prime * result + selectFromDeck;
+    return result;
+  }
 
-@Override
-public boolean equals(Object obj) {
-  if (this == obj)
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    GlobalCommand other = (GlobalCommand) obj;
+    if (keyStroke == null) {
+      if (other.keyStroke != null)
+        return false;
+    }
+    else if (!keyStroke.equals(other.keyStroke))
+      return false;
+    if (reportFormat == null) {
+      if (other.reportFormat != null)
+        return false;
+    }
+    else if (!reportFormat.equals(other.reportFormat))
+      return false;
+    if (reportSingle != other.reportSingle)
+      return false;
+    if (selectFromDeck != other.selectFromDeck)
+      return false;
     return true;
-  if (obj == null)
-    return false;
-  if (getClass() != obj.getClass())
-    return false;
-  GlobalCommand other = (GlobalCommand) obj;
-  if (keyStroke == null) {
-    if (other.keyStroke != null)
-      return false;
-  } else if (!keyStroke.equals(other.keyStroke))
-    return false;
-  if (reportFormat == null) {
-    if (other.reportFormat != null)
-      return false;
-  } else if (!reportFormat.equals(other.reportFormat))
-    return false;
-  if (reportSingle != other.reportSingle)
-    return false;
-  if (selectFromDeck != other.selectFromDeck)
-    return false;
-  return true;
-}
-
+  }
 
 }

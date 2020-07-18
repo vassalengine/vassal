@@ -37,8 +37,8 @@ public class MainRoomChecker {
       Command c = filter.apply(GameModule.getGameModule().decode(input));
       output = GameModule.getGameModule().encode(c);
       if (!warnedMain && !input.equals(output)) {
-        JOptionPane.showMessageDialog
-          (GameModule.getGameModule().getChatter(), Resources.getString("Chat.chatting_only", mainRoom)); //$NON-NLS-1$
+        JOptionPane.showMessageDialog(
+          GameModule.getGameModule().getChatter(), Resources.getString("Chat.chatting_only", mainRoom)); //$NON-NLS-1$
         warnedMain = true;
       }
     }

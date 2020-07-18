@@ -114,7 +114,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -122,6 +121,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
 public class ModuleManagerWindow extends JFrame {
@@ -195,9 +195,6 @@ public class ModuleManagerWindow extends JFrame {
         }
         catch (IOException ex) {
           WriteErrorDialog.error(ex, gp.getFile());
-        }
-        finally {
-          IOUtils.closeQuietly(gp);
         }
 
         try {
@@ -571,7 +568,7 @@ public class ModuleManagerWindow extends JFrame {
     tree.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
+        if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
           final TreePath path =
             tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
 
@@ -1817,8 +1814,8 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
-       return belongsToModule() ? Color.black : Color.gray;
-     }
+      return belongsToModule() ? Color.black : Color.gray;
+    }
 
     @Override
     public String getVersion() {

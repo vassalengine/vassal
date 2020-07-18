@@ -260,9 +260,9 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
-      .append((actionOption.getSelectedIndex()==0) ? HIDE : DISABLE)
-      .append(propertyMatch.getValueString())
-      .append(watchKeys.getValueString());
+        .append((actionOption.getSelectedIndex()==0) ? HIDE : DISABLE)
+        .append(propertyMatch.getValueString())
+        .append(watchKeys.getValueString());
       return ID + se.getValue();
     }
   }

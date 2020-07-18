@@ -290,7 +290,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       );
 
       if (result == JOptionPane.YES_OPTION) {
-         beginOutput();
+        beginOutput();
       }
       else if (result == 2) { // Turn Preference Off
         g.getPrefs().setValue(prefName, Boolean.FALSE);

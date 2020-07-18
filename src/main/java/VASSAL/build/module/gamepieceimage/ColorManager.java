@@ -52,37 +52,37 @@ public class ColorManager extends AbstractConfigurable {
   public static final String SELECT_COLOR = "Select...";
 
   protected static Color[] standardColors = new Color[] {
-      Color.WHITE,
-      Color.GRAY,
-      Color.BLACK,
-      null,
-      Color.RED,
-      Color.GREEN,
-      Color.BLUE,
-      Color.ORANGE,
-      Color.PINK,
-      Color.CYAN,
-      Color.MAGENTA,
-      Color.YELLOW,
-      Color.LIGHT_GRAY,
-      Color.DARK_GRAY,
+    Color.WHITE,
+    Color.GRAY,
+    Color.BLACK,
+    null,
+    Color.RED,
+    Color.GREEN,
+    Color.BLUE,
+    Color.ORANGE,
+    Color.PINK,
+    Color.CYAN,
+    Color.MAGENTA,
+    Color.YELLOW,
+    Color.LIGHT_GRAY,
+    Color.DARK_GRAY,
   };
 
   protected static String[] standardColorNames = new String[] {
-      "WHITE",
-      "GRAY",
-      "BLACK",
-      "CLEAR",
-      "RED",
-      "GREEN",
-      "BLUE",
-      "ORANGE",
-      "PINK",
-      "CYAN",
-      "MAGENTA",
-      "YELLOW",
-      "LIGHT GRAY",
-      "DARK GRAY"
+    "WHITE",
+    "GRAY",
+    "BLACK",
+    "CLEAR",
+    "RED",
+    "GREEN",
+    "BLUE",
+    "ORANGE",
+    "PINK",
+    "CYAN",
+    "MAGENTA",
+    "YELLOW",
+    "LIGHT GRAY",
+    "DARK GRAY"
   };
 
   protected static String getStandardColorName(Color c) {
@@ -234,7 +234,7 @@ public class ColorManager extends AbstractConfigurable {
     if (gcolor != null) {
       Color color = gcolor.getColor();
       //if (color != null) {
-        return color;
+      return color;
       //}
     }
     return DEFAULT_COLOR;

@@ -45,7 +45,7 @@ public class IPCMessageDispatcherTest {
         exactly(msg.length+1).of(out).flush();
 
         oneOf(out).writeObject(fin);
-        exactly(2).of(out).close();
+        exactly(1).of(out).close();
       }
     });
 

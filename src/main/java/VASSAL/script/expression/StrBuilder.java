@@ -93,7 +93,7 @@ public class StrBuilder extends JDialog {
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {
-         cancel();
+        cancel();
       }
     });
 

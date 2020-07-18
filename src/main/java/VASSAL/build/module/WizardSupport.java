@@ -159,11 +159,9 @@ public class WizardSupport {
       // prompt for username and password if wizard is off
       // but no username is set
       // FIXME: this belongs outside of the wizard, not here
-      final String name = (String) g.getPrefs().getValue(GameModule.REAL_NAME);
-      if (name == null || name.equals("newbie")) {
+      if (!isRealName()) {
         new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
       }
-
       return;
     }
 
@@ -241,9 +239,9 @@ public class WizardSupport {
     }
   }
 
+
   public InitialWelcomeSteps createInitialWelcomeSteps() {
-    Object realName = GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
-    if (realName == null || realName.equals(Resources.getString("Prefs.newbie"))) {
+    if (!isRealName()) {
       return new InitialWelcomeSteps(new String[]{InitialWelcomeSteps.NAME_STEP, ACTION_KEY},
           new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -252,6 +250,20 @@ public class WizardSupport {
     }
   }
 
+
+  /**
+   * Returns true if user has supplied a real name for current GameModule.
+   * 
+   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
+   * 
+   * @return <code>true</code> if user supplied a real name
+   */
+  private boolean isRealName() {
+    final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
+  
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
@@ -436,11 +448,9 @@ public class WizardSupport {
             else {
               final Prefs p = GameModule.getGameModule().getPrefs();
 
-              p.getOption(GameModule.REAL_NAME)
-               .setValue(nameConfig.getValueString());
+              p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
 
-              p.getOption(GameModule.SECRET_NAME)
-               .setValue(pwd.getValueString());
+              p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
               try {
                 p.save();

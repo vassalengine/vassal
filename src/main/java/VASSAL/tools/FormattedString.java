@@ -1,13 +1,20 @@
-/**
- * FormattedString.java
+/*
  *
- * A String that can include options of the form $optionName$. Option values
- * are maintained in a property list and getText returns the string will all
- * options replaced by their value
+ * Copyright (c) 2020 by Vassal developers
  *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
  *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
-
 package VASSAL.tools;
 
 import java.util.HashMap;
@@ -23,6 +30,15 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 
+/**
+ * FormattedString.java
+ *
+ * A String that can include options of the form $optionName$. Option values
+ * are maintained in a property list and getText returns the string will all
+ * options replaced by their value
+ *
+ *
+ */
 public class FormattedString {
 
   // The actual string for display purposes
@@ -193,31 +209,31 @@ public class FormattedString {
     this.defaultProperties = defaultProperties;
   }
 
-@Override
-public int hashCode() {
-  final int prime = 31;
-  int result = 1;
-  result = prime * result
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
       + ((formatString == null) ? 0 : formatString.hashCode());
-  return result;
-}
+    return result;
+  }
 
-@Override
-public boolean equals(Object obj) {
-  if (this == obj)
-    return true;
-  if (obj == null)
-    return false;
-  if (getClass() != obj.getClass())
-    return false;
-  FormattedString other = (FormattedString) obj;
-  if (formatString == null) {
-    if (other.formatString != null)
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
       return false;
-  } else if (!formatString.equals(other.formatString))
-    return false;
-  return true;
-}
-
+    if (getClass() != obj.getClass())
+      return false;
+    FormattedString other = (FormattedString) obj;
+    if (formatString == null) {
+      if (other.formatString != null)
+        return false;
+    }
+    else if (!formatString.equals(other.formatString))
+      return false;
+    return true;
+  }
 
 }

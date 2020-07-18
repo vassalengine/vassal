@@ -116,24 +116,24 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   private static class TileOp extends AbstractTileOpImpl {
-     private final ImageOp sop;
-     private final int dx0, dy0, dw, dh;
-     private final double scale;
-     @SuppressWarnings("unused")
-     private final RenderingHints hints;
-     private final int hash;
+    private final ImageOp sop;
+    private final int dx0, dy0, dw, dh;
+    private final double scale;
+    @SuppressWarnings("unused")
+    private final RenderingHints hints;
+    private final int hash;
 
-     private static final GeneralFilter.Filter downFilter =
-       new GeneralFilter.Lanczos3Filter();
-     private static final GeneralFilter.Filter upFilter =
-       new GeneralFilter.MitchellFilter();
+    private static final GeneralFilter.Filter downFilter =
+      new GeneralFilter.Lanczos3Filter();
+    private static final GeneralFilter.Filter upFilter =
+      new GeneralFilter.MitchellFilter();
 
-     public TileOp(ScaleOpBitmapImpl rop, int tileX, int tileY) {
-       if (rop == null) throw new IllegalArgumentException();
+    public TileOp(ScaleOpBitmapImpl rop, int tileX, int tileY) {
+      if (rop == null) throw new IllegalArgumentException();
 
-       if (tileX < 0 || tileX >= rop.getNumXTiles() ||
-           tileY < 0 || tileY >= rop.getNumYTiles())
-         throw new IndexOutOfBoundsException();
+      if (tileX < 0 || tileX >= rop.getNumXTiles() ||
+        tileY < 0 || tileY >= rop.getNumYTiles())
+        throw new IndexOutOfBoundsException();
 
       sop = rop.sop;
 
@@ -141,9 +141,9 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       hints = rop.getHints();
 
       final Rectangle sr =
-         new Rectangle(0, 0,
-                       (int)(sop.getWidth()*scale),
-                       (int)(sop.getHeight()*scale));
+        new Rectangle(0, 0,
+          (int)(sop.getWidth()*scale),
+          (int)(sop.getHeight()*scale));
 
       dx0 = tileX*rop.getTileWidth();
       dy0 = tileY*rop.getTileHeight();
@@ -174,8 +174,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final Rectangle sr =
         new Rectangle(0, 0,
-                      (int)(sop.getWidth()*scale),
-                      (int)(sop.getHeight()*scale));
+          (int)(sop.getWidth()*scale),
+          (int)(sop.getHeight()*scale));
 
       final WritableRaster dstR = src.getColorModel()
                                      .createCompatibleWritableRaster(dw, dh)
@@ -201,11 +201,11 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final TileOp op = (TileOp) o;
       return dx0 == op.dx0 &&
-             dy0 == op.dy0 &&
-             dw == op.dw &&
-             dh == op.dh &&
-             scale == op.scale &&
-             sop.equals(op.sop);
+        dy0 == op.dy0 &&
+        dw == op.dw &&
+        dh == op.dh &&
+        scale == op.scale &&
+        sop.equals(op.sop);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class BeanShellExpression extends Expression {
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
-       return s.substring(1, s.length()-1);
+      return s.substring(1, s.length()-1);
     }
     return expr;
   }
@@ -143,7 +143,7 @@ public class BeanShellExpression extends Expression {
     }
 
     if (!Character.isJavaIdentifierStart(s.charAt(0))) {
-     return false;
+      return false;
     }
 
     for (int i = 1; i < s.length(); ++i) {

@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -52,9 +53,12 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    tree =
-     new VASSAL.configure.ConfigureTree(GameModule.getGameModule(), null) {
+    tree = new ConfigureTree(GameModule.getGameModule(), null) {
       private static final long serialVersionUID = 1L;
+
+      @Override
+      public void mousePressed(MouseEvent e) {
+      }
 
       @Override
       public void mouseReleased(MouseEvent e) {

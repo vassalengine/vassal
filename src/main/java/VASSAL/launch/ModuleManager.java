@@ -19,7 +19,6 @@ package VASSAL.launch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 
@@ -202,30 +202,25 @@ public class ModuleManager {
     lr.key = key;
 
     // pass launch parameters on to the ModuleManager via the socket
-    Socket clientSocket = null;
-    ObjectOutputStream out = null;
-    InputStream in = null;
-    try {
-      clientSocket = new Socket((String) null, port);
+    try (Socket clientSocket = new Socket((String) null, port);
+         ObjectOutputStream out = new ObjectOutputStream(
+           new BufferedOutputStream(clientSocket.getOutputStream()))) {
 
-      out = new ObjectOutputStream(
-              new BufferedOutputStream(clientSocket.getOutputStream()));
       out.writeObject(lr);
       out.flush();
 
-      in = clientSocket.getInputStream();
-      IOUtils.copy(in, System.err);
+      try (InputStream in = clientSocket.getInputStream()) {
+        IOUtils.copy(in, System.err);
+      }
+    }
+    catch (UnknownHostException e) {
+      logger.error("Unable to open socket for loopback device", e);
+      System.exit(1);
     }
     catch (IOException e) {
 // FIXME: should be a dialog...
-      System.err.println("VASSAL: Problem with socket on port " + port);
-      e.printStackTrace();
+      logger.error("VASSAL: Problem with socket on port {}", port, e);
       System.exit(1);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly((Closeable) out);
-      IOUtils.closeQuietly(clientSocket);
     }
   }
 
@@ -332,7 +327,7 @@ public class ModuleManager {
 
     long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
     if (nextVersionCheck < System.currentTimeMillis()) {
-        new UpdateCheckRequest().execute();
+      new UpdateCheckRequest().execute();
     }
 
     // set the time for the next version check
@@ -382,25 +377,28 @@ public class ModuleManager {
     @Override
     public void run() {
       try {
-        ObjectInputStream in = null;
-        PrintStream out = null;
         Socket clientSocket = null;
+
+        // TODO while can only complete by throwing, do not use exceptions for ordinary control flow
         while (true) {
           try {
             clientSocket = serverSocket.accept();
-            in = new ObjectInputStream(
-                  new BufferedInputStream(clientSocket.getInputStream()));
+            final String message;
 
-            final String message = execute(in.readObject());
-            in.close();
+            try (ObjectInputStream in = new ObjectInputStream(
+              new BufferedInputStream(clientSocket.getInputStream()))) {
+
+              message = execute(in.readObject());
+            }
             clientSocket.close();
 
             if (message == null || clientSocket.isClosed()) continue;
 
-            out = new PrintStream(
-                    new BufferedOutputStream(clientSocket.getOutputStream()));
-            out.println(message);
-            out.close();
+            try (PrintStream out = new PrintStream(
+              new BufferedOutputStream(clientSocket.getOutputStream()))) {
+
+              out.println(message);
+            }
           }
           catch (IOException e) {
             ErrorDialog.showDetails(
@@ -413,14 +411,26 @@ public class ModuleManager {
             ErrorDialog.bug(e);
           }
           finally {
-            IOUtils.closeQuietly((Closeable) in);
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(clientSocket);
+            if (clientSocket != null) {
+              try {
+                clientSocket.close();
+              }
+              catch (IOException e) {
+                logger.error("Error while closing client socket", e);
+              }
+            }
           }
         }
       }
       finally {
-        IOUtils.closeQuietly(serverSocket);
+        if (serverSocket != null) {
+          try {
+            serverSocket.close();
+          }
+          catch (IOException e) {
+            logger.error("Error while closing server socket", e);
+          }
+        }
       }
     }
   }

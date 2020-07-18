@@ -111,24 +111,24 @@ public class Scroller extends AbstractBuildable implements KeyListener {
     if (Boolean.TRUE.equals(
           GameModule.getGameModule().getPrefs().getValue(USE_ARROWS))) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:    dx =  0; dy = -1; break;
-        case KeyEvent.VK_DOWN:  dx =  0; dy =  1; break;
-        case KeyEvent.VK_RIGHT: dx =  1; dy =  0; break;
-        case KeyEvent.VK_LEFT:  dx = -1; dy =  0; break;
-        default: return;
+      case KeyEvent.VK_UP:    dx =  0; dy = -1; break;
+      case KeyEvent.VK_DOWN:  dx =  0; dy =  1; break;
+      case KeyEvent.VK_RIGHT: dx =  1; dy =  0; break;
+      case KeyEvent.VK_LEFT:  dx = -1; dy =  0; break;
+      default: return;
       }
     }
     else {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_NUMPAD1: dx = -1; dy =  1; noEcho = '1'; break;
-        case KeyEvent.VK_NUMPAD2: dx =  0; dy =  1; noEcho = '2'; break;
-        case KeyEvent.VK_NUMPAD3: dx =  1; dy =  1; noEcho = '3'; break;
-        case KeyEvent.VK_NUMPAD4: dx = -1; dy =  0; noEcho = '4'; break;
-        case KeyEvent.VK_NUMPAD6: dx =  1; dy =  0; noEcho = '6'; break;
-        case KeyEvent.VK_NUMPAD7: dx = -1; dy = -1; noEcho = '7'; break;
-        case KeyEvent.VK_NUMPAD8: dx =  0; dy = -1; noEcho = '8'; break;
-        case KeyEvent.VK_NUMPAD9: dx =  1; dy = -1; noEcho = '9'; break;
-        default: return;
+      case KeyEvent.VK_NUMPAD1: dx = -1; dy =  1; noEcho = '1'; break;
+      case KeyEvent.VK_NUMPAD2: dx =  0; dy =  1; noEcho = '2'; break;
+      case KeyEvent.VK_NUMPAD3: dx =  1; dy =  1; noEcho = '3'; break;
+      case KeyEvent.VK_NUMPAD4: dx = -1; dy =  0; noEcho = '4'; break;
+      case KeyEvent.VK_NUMPAD6: dx =  1; dy =  0; noEcho = '6'; break;
+      case KeyEvent.VK_NUMPAD7: dx = -1; dy = -1; noEcho = '7'; break;
+      case KeyEvent.VK_NUMPAD8: dx =  0; dy = -1; noEcho = '8'; break;
+      case KeyEvent.VK_NUMPAD9: dx =  1; dy = -1; noEcho = '9'; break;
+      default: return;
       }
     }
 

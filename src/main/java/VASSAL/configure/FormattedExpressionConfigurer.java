@@ -63,10 +63,10 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   }
 
   public FormattedExpressionConfigurer(String key, String name, String s, Constraints p) {
-   this(key, name, s);
-   if (p instanceof GamePiece) {
-     storePiece((GamePiece) p);
-   }
+    this(key, name, s);
+    if (p instanceof GamePiece) {
+      storePiece((GamePiece) p);
+    }
   }
 
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {

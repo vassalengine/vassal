@@ -31,10 +31,11 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -73,7 +74,7 @@ public class ImageItem extends Item {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Image:  ",
       "Image is:  "
     );
@@ -82,7 +83,7 @@ public class ImageItem extends Item {
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[]{
         Image.class,
         TextSource.class
@@ -93,7 +94,7 @@ public class ImageItem extends Item {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       IMAGE,
       SOURCE
     );
@@ -142,15 +143,15 @@ public class ImageItem extends Item {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ROTATION.equals(name)) {
-       return falseCond;
-     }
+      return falseCond;
+    }
     else if (IMAGE.equals(name)) {
       return fixedCond;
     }
-     else {
-       return super.getAttributeVisibility(name);
-     }
-   }
+    else {
+      return super.getAttributeVisibility(name);
+    }
+  }
 
   private VisibilityCondition falseCond = new VisibilityCondition() {
     @Override

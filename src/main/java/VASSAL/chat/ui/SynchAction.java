@@ -64,18 +64,13 @@ public class SynchAction extends AbstractAction {
 
     final long now = System.currentTimeMillis();
 
-    if (p != null
+    setEnabled(
+      p != null
       && GameModule.getGameModule() != null
       && !p.equals(client.getUserInfo())
       && client.getRoom() != null
       && client.getRoom().equals(targetRoom)
-      && (!targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON))
-      {
-      setEnabled(true);
-    }
-    else {
-      setEnabled(false);
-    }
+      && (!targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON));
   }
 
   public static void clearSynchRoom() {

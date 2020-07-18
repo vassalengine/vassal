@@ -44,6 +44,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -54,7 +56,6 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -73,7 +74,7 @@ public class PrivateMap extends Map {
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       new String[]{
         SIDE,
         VISIBLE,
@@ -85,7 +86,7 @@ public class PrivateMap extends Map {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       new String[]{
         "Belongs to side",                //$NON-NLS-1$
         "Visible to all players?",        //$NON-NLS-1$
@@ -97,7 +98,7 @@ public class PrivateMap extends Map {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       new Class<?>[]{
         String[].class,
         Boolean.class,

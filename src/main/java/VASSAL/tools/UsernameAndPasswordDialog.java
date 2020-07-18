@@ -82,10 +82,8 @@ public class UsernameAndPasswordDialog extends JDialog {
       public void actionPerformed(ActionEvent e) {
         final Prefs p = GameModule.getGameModule().getPrefs();
 
-        p.getOption(GameModule.REAL_NAME)
-         .setValue(nameConfig.getValueString());
-        p.getOption(GameModule.SECRET_NAME)
-         .setValue(pwd.getValueString());
+        p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
+        p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
         try {
           p.write();

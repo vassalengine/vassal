@@ -407,7 +407,7 @@ public abstract class AbstractMetaData {
       String value = accumulator.toString().trim();
 
       if (VERSION_ELEMENT.equals(qName)) {
-         setVersion(value);
+        setVersion(value);
       }
       else if (VASSAL_VERSION_ELEMENT.equals(qName)) {
         setVassalVersion(value);
