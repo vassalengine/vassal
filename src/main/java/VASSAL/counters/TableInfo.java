@@ -21,6 +21,7 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.EnumSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
@@ -36,6 +37,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
@@ -87,8 +89,8 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

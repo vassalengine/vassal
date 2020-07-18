@@ -72,6 +72,7 @@ import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
@@ -318,7 +319,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale),
         dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int)(borderWidth * os_scale),
         comp,
-        graphicsZoom * os_scale
+        graphicsZoom * os_scale,
+        DrawFlags.NONE
       );
 
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);

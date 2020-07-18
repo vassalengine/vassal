@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.imageop.GamePieceOp;
 
 /**
@@ -49,7 +50,7 @@ public class PieceImage {
       ((BufferedImage) im).setRGB(0, 0, bbox.width, bbox.height, new int[bbox.width * bbox.height], 0, bbox.width);
 
       Graphics2D g = (Graphics2D) im.getGraphics();
-      piece.draw(g, -bbox.x, -bbox.y, obs, 1.0);
+      piece.draw(g, -bbox.x, -bbox.y, obs, 1.0, DrawFlags.NONE);
       g.dispose();
     }
     return im;

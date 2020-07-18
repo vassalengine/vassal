@@ -26,6 +26,7 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
@@ -288,12 +290,12 @@ public class Stack implements GamePiece, StateMergeable {
    * @see #getDefaultMetrics
    */
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     if (obs instanceof Map.View) {
-      ((Map.View) obs).getMap().getStackMetrics().draw(this, g, x, y, obs, zoom);
+      ((Map.View) obs).getMap().getStackMetrics().draw(this, g, x, y, obs, zoom, flags);
     }
     else {
-      getDefaultMetrics().draw(this, g, x, y, obs, zoom);
+      getDefaultMetrics().draw(this, g, x, y, obs, zoom, flags);
     }
   }
 

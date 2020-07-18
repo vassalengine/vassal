@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -97,8 +98,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
     if (getMap() != null) {
       pusher.register(getMap());
     }

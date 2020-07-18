@@ -26,6 +26,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.EnumSet;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,6 +43,7 @@ import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
@@ -208,8 +210,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    getInner().draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    getInner().draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

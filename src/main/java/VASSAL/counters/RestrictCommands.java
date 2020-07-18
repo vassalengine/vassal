@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -38,6 +39,7 @@ import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -74,8 +76,8 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

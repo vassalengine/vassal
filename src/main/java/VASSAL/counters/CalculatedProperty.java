@@ -23,6 +23,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -72,8 +73,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -963,7 +964,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   @Override
-  public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     int count = Math.min(getPieceCount(), maxStack);
     GamePiece top = (nextDraw != null && nextDraw.size() > 0) ?
       nextDraw.get(0) : topPiece();
@@ -981,17 +982,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           g.drawRect(r.x + (int) (zoom * 2 * i), r.y - (int) (zoom * 2 * i), r.width, r.height);
         }
         else if (faceDown) {
-          // If this is an obscurable ("Mask trait") piece, and deck is set to "face down" we use the special obscured method  
-          Obscurable o = (Obscurable)Decorator.getDecorator(Decorator.getOutermost(top), Obscurable.class);
-          if (o != null) {
-            o.drawObscuredToMe(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
-          } 
-          else {
-            top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
-          }
+          // If this is an obscurable ("Mask trait") piece, and deck is set to "face down" we use the special obscured flag
+          EnumSet<DrawFlags> newFlags = EnumSet.copyOf(flags);
+          newFlags.add(DrawFlags.OBSCURE);
+          top.draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom, newFlags);
         }
         else {
-          getPieceAt(count - i - 1).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom);
+          getPieceAt(count - i - 1).draw(g, x + (int) (zoom * 2 * i), y - (int) (zoom * 2 * i), obs, zoom, flags);
         }
       }
     }

@@ -95,6 +95,7 @@ import VASSAL.configure.StringEnum;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
@@ -770,7 +771,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         drawDummyImage(g, x, y);
       }
       else {
-        myPiece.draw(g, x, y, obs, zoom);
+        myPiece.draw(g, x, y, obs, zoom, DrawFlags.NONE);
       }
     }
 

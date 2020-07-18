@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -33,6 +34,7 @@ import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -261,8 +263,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

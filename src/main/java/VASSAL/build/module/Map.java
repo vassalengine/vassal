@@ -146,6 +146,7 @@ import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.DragBuffer;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceFinder;
@@ -1599,11 +1600,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       if (gamePiece.getClass() == Stack.class) {
         getStackMetrics().draw(
-          (Stack) gamePiece, pt, g, this, dzoom, visibleRect
+          (Stack) gamePiece, pt, g, this, dzoom, visibleRect, DrawFlags.NONE
         );
       }
       else {
-        gamePiece.draw(g, pt.x, pt.y, c, dzoom);
+        gamePiece.draw(g, pt.x, pt.y, c, dzoom, DrawFlags.NONE);
         if (Boolean.TRUE.equals(gamePiece.getProperty(Properties.SELECTED))) {
           highlighter.draw(gamePiece, g, pt.x, pt.y, c, dzoom);
         }
@@ -1633,7 +1634,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     GamePiece[] stack = pieces.getPieces();
     for (GamePiece gamePiece : stack) {
       Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
-      gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
+      gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom(), DrawFlags.NONE);
       if (Boolean.TRUE.equals(gamePiece.getProperty(Properties.SELECTED))) {
         highlighter.draw(gamePiece, g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
       }

@@ -90,6 +90,7 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
@@ -344,7 +345,8 @@ public class Inventory extends AbstractConfigurable
                   (int)(-r.x * os_scale),
                   (int)(-r.y * os_scale),
                   c,
-                  pieceZoom * os_scale
+                  pieceZoom * os_scale,
+                  DrawFlags.NONE
                 );
 
                 g2d.setTransform(orig_t);

@@ -30,6 +30,7 @@ import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -50,6 +51,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
@@ -332,49 +334,50 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if (obscuredToMe()) {
-      drawObscuredToMe(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    if (obscuredToMe() || flags.contains(DrawFlags.OBSCURE)) {
+      drawObscuredToMe(g, x, y, obs, zoom, flags);
     }
     else if (obscuredToOthers()) {
-      drawObscuredToOthers(g, x, y, obs, zoom);
+      drawObscuredToOthers(g, x, y, obs, zoom, flags);
     }
     else {
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
     }
   }
 
-  public void drawObscuredToMe(Graphics g, int x, int y, Component obs, double zoom) {
-    obscuredToMeView.draw(g, x, y, obs, zoom);
+  public void drawObscuredToMe(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    obscuredToMeView.draw(g, x, y, obs, zoom, flags);
   }
 
-  public void drawObscuredToOthers(Graphics g, int x, int y, Component obs, double zoom) {
+  public void drawObscuredToOthers(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     switch (displayStyle) {
     case BACKGROUND:
-      obscuredToMeView.draw(g, x, y, obs, zoom);
-      piece.draw(g, x, y, obs, zoom * .5);
+      obscuredToMeView.draw(g, x, y, obs, zoom, flags);
+      piece.draw(g, x, y, obs, zoom * .5, flags);
       break;
     case INSET:
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
       Rectangle bounds = piece.getShape().getBounds();
       Rectangle obsBounds = obscuredToMeView.getShape().getBounds();
       obscuredToMeView.draw(g, x - (int) (zoom * bounds.width / 2
           - .5 * zoom * obsBounds.width / 2),
         y - (int) (zoom * bounds.height / 2
           - .5 * zoom * obsBounds.height / 2),
-        obs, zoom * 0.5);
+        obs, zoom * 0.5,
+        flags);
       break;
     case PEEK:
       if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
-        piece.draw(g, x, y, obs, zoom);
+        piece.draw(g, x, y, obs, zoom, flags);
       }
       else {
-        obscuredToMeView.draw(g, x, y, obs, zoom);
+        obscuredToMeView.draw(g, x, y, obs, zoom, flags);
       }
       break;
     case IMAGE:
-      piece.draw(g, x, y, obs, zoom);
-      obscuredToOthersView.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
+      obscuredToOthersView.draw(g, x, y, obs, zoom, flags);
     }
   }
 

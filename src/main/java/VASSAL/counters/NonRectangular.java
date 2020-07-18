@@ -32,6 +32,7 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -43,6 +44,7 @@ import javax.swing.border.TitledBorder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 
@@ -92,8 +94,8 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

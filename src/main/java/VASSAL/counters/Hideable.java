@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
@@ -189,7 +191,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     if (invisibleToMe()) {
       return;
     }
@@ -207,11 +209,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
       g2d.setComposite(
         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency)
       );
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
       g2d.setComposite(oldComposite);
     }
     else {
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
     }
   }
 

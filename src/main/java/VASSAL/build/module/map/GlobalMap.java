@@ -57,6 +57,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
@@ -530,7 +531,7 @@ public class GlobalMap implements AutoConfigurable,
 
       for (GamePiece gp : map.getPieces()) {
         Point p = mapToDrawing(gp.getPosition(), os_scale);
-        gp.draw(g, p.x, p.y, this, dscale);
+        gp.draw(g, p.x, p.y, this, dscale, DrawFlags.NONE);
       }
 
       mouseOverViewer.draw(g, map);

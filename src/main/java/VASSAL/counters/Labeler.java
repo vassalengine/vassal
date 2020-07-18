@@ -33,6 +33,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -58,6 +59,7 @@ import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
@@ -307,9 +309,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     updateCachedImage();
-    piece.draw(g, x, y, obs, zoom);
+    piece.draw(g, x, y, obs, zoom, flags);
 
 // FIXME: We should be drawing the text at the right size, not scaling it!
     final Point p = getLabelPosition();

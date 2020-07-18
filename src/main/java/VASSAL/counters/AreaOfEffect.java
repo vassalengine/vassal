@@ -35,6 +35,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.EnumSet;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -183,7 +184,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     if ((alwaysActive || active) && mapShaderName == null) {
       // The transparency is only drawn on a Map.View component. Only the
       // GamePiece is drawn within other windows (Counter Palette, etc.).
@@ -211,7 +212,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
 
     // Draw the GamePiece
-    piece.draw(g, x, y, obs, zoom);
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   protected Area getArea() {

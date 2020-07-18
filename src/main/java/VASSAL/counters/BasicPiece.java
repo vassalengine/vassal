@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -392,7 +393,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     if (imageBounds == null) {
       imageBounds = boundingBox();
     }

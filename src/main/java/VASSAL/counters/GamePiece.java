@@ -22,6 +22,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.EnumSet;
+import java.util.Set;
 
 import javax.swing.KeyStroke;
 
@@ -36,6 +38,13 @@ import VASSAL.command.Command;
  * Basic class for representing a physical component of the game
  */
 public interface GamePiece extends PropertySource {
+  
+  public enum DrawFlags { 
+    OBSCURE;
+        
+    public static final EnumSet<DrawFlags> NONE          = EnumSet.noneOf(DrawFlags.class);    
+    public static final EnumSet<DrawFlags> FORCE_OBSCURE = EnumSet.of(OBSCURE);
+  }
 
   /** Each GamePiece belongs to a single {@link Map} */
   public void setMap(Map map);
@@ -50,7 +59,7 @@ public interface GamePiece extends PropertySource {
    * @param obs the Component on which this piece is being drawn
    * @param zoom the scaling factor.
    */
-  public void draw(Graphics g, int x, int y, Component obs, double zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags);
 
   /**
    * @return the location of this piece on its owning {@link Map}

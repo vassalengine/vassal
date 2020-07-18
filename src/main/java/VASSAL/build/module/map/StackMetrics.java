@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.KeyStroke;
@@ -46,6 +47,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
@@ -267,7 +269,7 @@ public class StackMetrics extends AbstractConfigurable {
    * drawn in front of other GamePieces, even those above them in
    * the stack.
    */
-  public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
     Point[] positions = new Point[stack.getPieceCount()];
     getContents(stack, positions, null, null, x, y);
@@ -281,10 +283,10 @@ public class StackMetrics extends AbstractConfigurable {
       int nextX = x + (int) (zoom * (positions[index].x - x));
       int nextY = y + (int) (zoom * (positions[index].y - y));
       if (stack.isExpanded() || !e.hasMoreElements()) {
-        next.draw(g, nextX, nextY, obs, zoom);
+        next.draw(g, nextX, nextY, obs, zoom, flags);
       }
       else {
-        drawUnexpanded(next, g, nextX, nextY, obs, zoom);
+        drawUnexpanded(next, g, nextX, nextY, obs, zoom, flags);
       }
     }
 
@@ -294,7 +296,7 @@ public class StackMetrics extends AbstractConfigurable {
            int index = stack.indexOf(gamePiece);
            int nextX = x + (int) (zoom * (positions[index].x - x));
            int nextY = y + (int) (zoom * (positions[index].y - y));
-           gamePiece.draw(g, nextX, nextY, obs, zoom);
+           gamePiece.draw(g, nextX, nextY, obs, zoom, flags);
            highlighter.draw(gamePiece, g, nextX, nextY, obs, zoom);
          });
   }
@@ -308,7 +310,7 @@ public class StackMetrics extends AbstractConfigurable {
    * @param zoom
    * @param visibleRect the visible rectangle in component coordinates
    */
-  public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect) {
+  public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect, EnumSet<DrawFlags> flags) {
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
@@ -329,10 +331,10 @@ public class StackMetrics extends AbstractConfigurable {
       Point pt = map.mapToDrawing(positions[index], os_scale);
       if (bounds == null || isVisible(region, bounds[index])) {
         if (stack.isExpanded() || !e.hasMoreElements()) {
-          next.draw(g, pt.x, pt.y, view, zoom);
+          next.draw(g, pt.x, pt.y, view, zoom, DrawFlags.NONE);
         }
         else {
-          drawUnexpanded(next, g, pt.x, pt.y, view, zoom);
+          drawUnexpanded(next, g, pt.x, pt.y, view, zoom, flags);
         }
       }
     }
@@ -343,7 +345,7 @@ public class StackMetrics extends AbstractConfigurable {
            int index = stack.indexOf(gamePiece);
            if (bounds == null || isVisible(region, bounds[index])) {
              Point pt = map.mapToDrawing(positions[index], os_scale);
-             gamePiece.draw(g, pt.x, pt.y, view, zoom);
+             gamePiece.draw(g, pt.x, pt.y, view, zoom, DrawFlags.NONE);
              highlighter.draw(gamePiece, g, pt.x, pt.y, view, zoom);
            }
          });
@@ -363,9 +365,9 @@ public class StackMetrics extends AbstractConfigurable {
    * Default implementation is a white square with a black border
    */
   protected void drawUnexpanded(GamePiece p, Graphics g,
-                                int x, int y, Component obs, double zoom) {
+                                int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     if (blankColor == null) {
-      p.draw(g, x, y, obs, zoom);
+      p.draw(g, x, y, obs, zoom, flags);
     }
     else {
       Graphics2D g2d = (Graphics2D) g;

@@ -29,6 +29,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.EnumSet;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -43,6 +44,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -99,8 +101,8 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
   }
 
   @Override

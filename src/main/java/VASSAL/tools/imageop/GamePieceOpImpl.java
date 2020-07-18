@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.counters.Properties;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.opcache.Op;
@@ -92,7 +93,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
       Math.max(b.height, 1)
     );
     final Graphics2D g = im.createGraphics();
-    piece.draw(g, -b.x, -b.y, null, 1.0);
+    piece.draw(g, -b.x, -b.y, null, 1.0, DrawFlags.NONE);
     g.dispose();
     return im;
   }

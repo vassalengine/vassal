@@ -65,6 +65,7 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -229,7 +230,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       );
     }
     else {
-      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale);
+      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, os_scale, DrawFlags.NONE);
 
       // NB: The piece, not the expanded piece, receives events, so we check
       // the piece, not the expanded piece, for its selection status.

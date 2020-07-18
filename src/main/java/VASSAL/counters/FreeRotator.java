@@ -35,6 +35,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -57,6 +58,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
@@ -280,9 +282,10 @@ public class FreeRotator extends Decorator
                    final int x,
                    final int y,
                    final Component obs,
-                   final double zoom) {
+                   final double zoom,
+                   final EnumSet<DrawFlags> flags) {
     if (getAngle() == 0.0) {
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
     }
     else {
       final double angle = getAngle();
@@ -333,7 +336,7 @@ public class FreeRotator extends Decorator
                          RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
-    piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom() * os_scale);
+    piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom() * os_scale, DrawFlags.NONE);
     g2d.dispose();
   }
 

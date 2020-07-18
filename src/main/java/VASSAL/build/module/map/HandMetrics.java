@@ -22,11 +22,13 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.EnumSet;
 
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.counters.GamePiece.DrawFlags;
 
 /**
  * Handles the drawing of cards in a {@link VASSAL.build.module.PlayerHand}.
@@ -38,15 +40,15 @@ public class HandMetrics extends StackMetrics {
   }
 
   @Override
-  public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
+  public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
     stack.setExpanded(true);
-    super.draw(stack, g, x, y, obs, zoom);
+    super.draw(stack, g, x, y, obs, zoom, flags);
   }
 
   @Override
-  public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect) {
+  public void draw(Stack stack, Point location, Graphics g, Map map, double zoom, Rectangle visibleRect, EnumSet<DrawFlags> flags) {
     stack.setExpanded(true);
-    super.draw(stack, location, g, map, zoom, visibleRect);
+    super.draw(stack, location, g, map, zoom, visibleRect, flags);
   }
 
   @Override

@@ -35,6 +35,7 @@ import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.Box;
@@ -57,6 +58,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.counters.GamePiece.DrawFlags;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
@@ -404,8 +406,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g, x, y, obs, zoom);
+  public void draw(Graphics g, int x, int y, Component obs, double zoom, EnumSet<DrawFlags> flags) {
+    piece.draw(g, x, y, obs, zoom, flags);
 
     checkPropertyLevel();
 
@@ -422,7 +424,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     if (drawUnderneathWhenSelected &&
       Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
-      piece.draw(g, x, y, obs, zoom);
+      piece.draw(g, x, y, obs, zoom, flags);
     }
   }
 
