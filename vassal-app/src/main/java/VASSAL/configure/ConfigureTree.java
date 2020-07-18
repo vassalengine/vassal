@@ -44,6 +44,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -66,6 +67,7 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
@@ -131,6 +133,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   // Search parameters
   protected String searchString;
   protected boolean matchCase;
+  protected boolean matchNames;
   protected boolean matchTypes;
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
@@ -196,7 +199,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     //FIXME: remember these search parameters from session to session
     searchString="";
     matchCase = false;
-    matchTypes = false;
+    matchTypes = true;
+    matchNames = true;
   }
 
   public JFrame getFrame() {
@@ -234,6 +238,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       editorWindow.treeStateChanged(changed);
     }
   }
+  
+  
+  private Chatter chatter;
+  
+  private void chat (String text) {
+    if (chatter == null) {
+      chatter = GameModule.getGameModule().getChatter();
+    }
+    if (chatter != null) {
+      chatter.show("- " + text);
+    }
+  }
+  
 
   protected Configurable getTarget(int x, int y) {
     TreePath path = getPathForLocation(x, y);
@@ -306,42 +323,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   
-  
-  public final DefaultMutableTreeNode findNode(String searchString) {
-    List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
-    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
-
-    DefaultMutableTreeNode foundNode = null;
-    int bookmark = -1;
-
-    if (currentNode != null) {
-      for (int index = 0; index < searchNodes.size(); index++) {
-        if (searchNodes.get(index) == currentNode) {
-          bookmark = index;
-          break;
-        }
-      }
-    }
-
-    for (int index = bookmark + 1; index < searchNodes.size(); index++) {    
-      if (searchNodes.get(index).toString().toLowerCase().contains(searchString.toLowerCase())) {
-        foundNode = searchNodes.get(index);
-        break;
-      }
-    }
-
-    if (foundNode == null) {
-      for (int index = 0; index <= bookmark; index++) {    
-        if (searchNodes.get(index).toString().toLowerCase().contains(searchString.toLowerCase())) {
-          foundNode = searchNodes.get(index);
-          break;
-        }
-      }
-    }
-    return foundNode;
-  }   
-  
-  
+  // Enumerates our configure tree in preparation for searching it
   private final List<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
     List<DefaultMutableTreeNode> searchNodes = new ArrayList<DefaultMutableTreeNode>();
 
@@ -353,7 +335,79 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   
+  // Checks a single string against our search parameters
+  public final boolean checkString(String target, String searchString) {
+    if (matchCase) {
+      return target.contains(searchString);
+    } 
+    else {
+      return target.toLowerCase().contains(searchString.toLowerCase());
+    }         
+  }
   
+  
+  // Checks a node of the tree against our search parameters
+  public final boolean checkNode(DefaultMutableTreeNode node, String searchString) {
+    Configurable c = null;
+    c = (Configurable) node.getUserObject();
+
+    if (matchNames) {
+      String objectName = c.getConfigureName();
+      if (objectName != null && checkString(objectName, searchString)) {
+        return true;
+      }
+    }
+    
+    if (matchTypes) {
+      String className = getConfigureName(c.getClass());
+      if (className != null && checkString(className, searchString)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  
+  // Search through the tree, starting at the currently selected location (and wrapping around if needed)
+  // Compare nodes until we find our search string (or have searched everything we can search)
+  public final DefaultMutableTreeNode findNode(String searchString) {
+    List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
+    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
+
+    DefaultMutableTreeNode foundNode = null;
+    int bookmark = -1;    
+
+    if (currentNode != null) {
+      for (int index = 0; index < searchNodes.size(); index++) {
+        if (searchNodes.get(index) == currentNode) {
+          bookmark = index;
+          break;
+        }
+      }
+    }
+
+    for (int index = bookmark + 1; index < searchNodes.size(); index++) {  
+      if (checkNode(searchNodes.get(index), searchString)) {
+        foundNode = searchNodes.get(index);    
+        break;
+      }
+    }
+
+    if (foundNode == null) {
+      for (int index = 0; index <= bookmark; index++) {    
+        if (checkNode(searchNodes.get(index), searchString)) {
+          foundNode = searchNodes.get(index);    
+          break;
+        }
+      }
+    }
+    
+    return foundNode;
+  }   
+  
+    
+  // Search action - runs search dialog box, then searches
   protected Action buildSearchAction(final Configurable target) {
     final Action a = new AbstractAction(searchCmd) {
       private static final long serialVersionUID = 1L;
@@ -376,6 +430,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         box = Box.createHorizontalBox();
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), matchCase);
         box.add(sensitive);
+        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), matchTypes);
+        box.add(names);        
         final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), matchTypes);
         box.add(types);        
         d.add(box);
@@ -387,18 +443,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           public void actionPerformed(ActionEvent e) {
             searchString = search.getText();
             matchCase    = sensitive.isSelected();
+            matchNames   = names.isSelected();
             matchTypes   = types.isSelected();
             
-            if (!searchString.isEmpty() ) {              
-              Object base  = getLastSelectedPathComponent();
-              Object caret = base;              
-              
+            if (!matchNames && !matchTypes) {              
+              matchNames = true;
+              names.setSelected(true);
+              chat (Resources.getString("Editor.search_all_off"));                            
+            }
+            
+            if (!searchString.isEmpty()) {              
               DefaultMutableTreeNode node = findNode(searchString);                
               if (node != null) {
                 TreePath path = new TreePath(node.getPath());
                 setSelectionPath(path);
                 scrollPathToVisible(path);
-              }                
+              } 
+              else {
+                chat (Resources.getString("Editor.search_none_found") + searchString);
+              }
             }            
           }
         });
@@ -415,6 +478,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         box.add(find);
         box.add(cancel);
         d.add(box);
+        
+        d.getRootPane().setDefaultButton(find); // Enter key activates search
+        
+        // Esc Key cancels
+        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
+        d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, w);
+        
         d.pack();
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);                
