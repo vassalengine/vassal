@@ -83,6 +83,7 @@ import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
+import VASSAL.counters.Obscurable;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceIterator;
@@ -1113,16 +1114,15 @@ public class PieceMover extends AbstractBuildable
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
           
-          String owner = "";
-          if (piece.getParent() instanceof Deck) {
-            owner = (String)piece.getProperty(Properties.OBSCURED_BY);
-            piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
+          // If this is an obscurable ("Mask trait") piece, and dragged from top of deck, and deck is set to "face down" we use the special obscured method  
+          Obscurable o = (Obscurable)Decorator.getDecorator(Decorator.getOutermost(piece), Obscurable.class);
+          if ((o != null) && (piece.getParent() instanceof Deck) && ((Deck) piece.getParent()).isFaceDown()) {
+            o.drawObscuredToMe(g, x, y, map == null ? target : map.getView(), zoom);
+          } 
+          else {
+            piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
           }
-          piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
-          if (piece.getParent() instanceof Deck) {
-            piece.setProperty(Properties.OBSCURED_BY, owner);
-          }
-
+          
           final Highlighter highlighter = map == null ?
             BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
