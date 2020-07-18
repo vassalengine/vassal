@@ -657,11 +657,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
 
         // Our show-overlap setting controls whether we're allowed to show all pieces overlapping this spot, or only pieces at the exact location of the first piece we find.
-        if (!showingOverlap) {
-        if (foundPieceAt == null) {
-          foundPieceAt = p.getPosition();
-        }
-        }
+        if (!showingOverlap && foundPieceAt == null) {
+            foundPieceAt = p.getPosition();
+          }
 
         pieces.add(insertPos++, p);
       }
@@ -912,7 +910,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
-          BasicPiece.CURRENT_ZONE});
+        BasicPiece.CURRENT_ZONE});
     }
   }
 
@@ -923,7 +921,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         BasicPiece.LOCATION_NAME,
         BasicPiece.CURRENT_MAP,
         BasicPiece.CURRENT_BOARD,
-          BasicPiece.CURRENT_ZONE, SUM});
+        BasicPiece.CURRENT_ZONE, SUM});
     }
   }
 
@@ -1060,13 +1058,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }    
     else if (UNROTATE_PIECES.equals(name)) {
-        if (value instanceof Boolean) {
-          unrotatePieces = (Boolean) value;
-        }
-        else if (value instanceof String) {
-          unrotatePieces = "true".equals(value);
-        }
+      if (value instanceof Boolean) {
+        unrotatePieces = (Boolean) value;
       }
+      else if (value instanceof String) {
+        unrotatePieces = "true".equals(value);
+      }
+    }
     else if (DISPLAY.equals(name)) {
       displayWhat = (String) value;
     }
@@ -1167,7 +1165,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return String.valueOf(showOverlap);
     }
     else if (UNROTATE_PIECES.equals(name)) {
-        return String.valueOf(unrotatePieces);
+      return String.valueOf(unrotatePieces);
     }
     else if (DISPLAY.equals(name)) {
       return displayWhat;
