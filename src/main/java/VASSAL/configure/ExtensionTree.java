@@ -182,12 +182,12 @@ public class ExtensionTree extends ConfigureTree {
           }
           // FIXME: review error message
           catch (Exception ex) {
-            JOptionPane.showMessageDialog
-                (getTopLevelAncestor(),
-                 "Error adding " + getConfigureName(child) +
-                 " to " + getConfigureName(target) + "\n" + ex.getMessage(),
-                 "Illegal configuration",
-                 JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+              getTopLevelAncestor(),
+              "Error adding " + getConfigureName(child) +
+                " to " + getConfigureName(target) + "\n" + ex.getMessage(),
+              "Illegal configuration",
+              JOptionPane.ERROR_MESSAGE);
           }
         }
       }

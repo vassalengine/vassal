@@ -241,6 +241,7 @@ public class Inventory extends AbstractConfigurable
     tree = new JTree();
     tree.setRootVisible(false);
     tree.setShowsRootHandles(true);
+    tree.setRowHeight(0);
     tree.setCellRenderer(initTreeCellRenderer());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     // If wanted center on a selected counter
@@ -338,7 +339,13 @@ public class Inventory extends AbstractConfigurable
                 final AffineTransform orig_t = g2d.getTransform();
                 g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
-                piece.draw(g, -r.x, -r.y, c, pieceZoom * os_scale);
+                piece.draw(
+                  g,
+                  (int)(-r.x * os_scale),
+                  (int)(-r.y * os_scale),
+                  c,
+                  pieceZoom * os_scale
+                );
 
                 g2d.setTransform(orig_t);
               }
@@ -348,7 +355,6 @@ public class Inventory extends AbstractConfigurable
         }
         return this;
       }
-
     };
   }
 
@@ -487,7 +493,7 @@ public class Inventory extends AbstractConfigurable
 
         int count = 1;
         if (nonLeafFormat.length() > 0)
-        count = getTotalValue(p);
+          count = getTotalValue(p);
 
         final Counter c = new Counter(p, groups, count, pieceFormat, sortFormat);
         // Store
@@ -693,7 +699,7 @@ public class Inventory extends AbstractConfigurable
       }
     }
     else if (SORT_PIECES.equals(key)) {
-        sortPieces = getBooleanValue(o);
+      sortPieces = getBooleanValue(o);
     }
     else if (SORT_FORMAT.equals(key)) {
       sortFormat = (String) o;
@@ -793,7 +799,7 @@ public class Inventory extends AbstractConfigurable
       return cutAboveLeaves + ""; //$NON-NLS-1$
     }
     else if (SORT_PIECES.equals(key)) {
-        return sortPieces + ""; //$NON-NLS-1$
+      return sortPieces + ""; //$NON-NLS-1$
     }
     else if (SORT_FORMAT.equals(key)) {
       return sortFormat;
@@ -826,7 +832,7 @@ public class Inventory extends AbstractConfigurable
     launch.setEnabled(enabledForPlayersSide());
     // Only change button visibilty if it has not already been hidden by a ToolBarMenu
     if (launch.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
-       launch.setVisible(launch.isEnabled());
+      launch.setVisible(launch.isEnabled());
     }
   }
 
@@ -1329,8 +1335,8 @@ public class Inventory extends AbstractConfigurable
     }
 
     public void cutLeaves() {
-     ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
-     for (CounterNode child : children) {
+      ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
+      for (CounterNode child : children) {
         if (child.isLeaf())
           toBeRemoved.add(child);
         else
@@ -1372,23 +1378,21 @@ public class Inventory extends AbstractConfigurable
     protected class CompareCounterNodes {
       /**
        * Sanity check for arguments.
-       * @param arg0
-       * @param arg1
        * @return true if arguments looks processable, false else
        */
       protected boolean argsOK(Object arg0, Object arg1) {
-        return (arg0 != null &&
-                arg1 != null &&
-                arg0 instanceof CounterNode &&
-                arg1 instanceof CounterNode);
-        }
+        return
+          arg0 instanceof CounterNode &&
+          arg1 instanceof CounterNode;
+      }
 
       protected int compareStrangeArgs(Object arg0, Object arg1) {
-        if (arg1.equals(arg1))
-          return 0;
-
         if (arg0 == null)
           return 1;
+
+        if (arg0.equals(arg1))
+          return 0;
+
         if (arg1 == null)
           return -1;
         if (arg0 instanceof CounterNode && !(arg1 instanceof CounterNode))
@@ -1469,8 +1473,8 @@ public class Inventory extends AbstractConfigurable
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
 
-         int l = getInt(left.toSortKey());
-         int r = getInt(right.toSortKey());
+        int l = getInt(left.toSortKey());
+        int r = getInt(right.toSortKey());
 
         if (l < r)
           return -1;

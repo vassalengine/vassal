@@ -49,6 +49,7 @@ import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This component listens for mouse clicks on a map and draws the selection
@@ -113,24 +114,26 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
       if (!e.isPopupTrigger() && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
-        bandSelect = BandSelectType.SPECIAL; //BR// Don't "eat" band-selects if unit found is non-movable
+        // Don't "eat" band-selects if unit found is non-movable
+        bandSelect = BandSelectType.SPECIAL;
       }
     }
+
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
       if (!kbuf.contains(p)) {
-        if (!e.isShiftDown() && !e.isControlDown()) {
+        if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) {
           kbuf.clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
         // while not selected, then select all of the pieces in the stack
         // RFE 1659481 - Control clicking only deselects
-        if (!e.isControlDown()) {
+        if (!SwingUtils.isControlDown(e)) {
           if (movingStacksPickupUnits ||
               p.getParent() == null ||
               p.getParent().isExpanded() ||
-              e.getButton() == 3 ||
+              SwingUtils.isRightMouseButton(e) ||
               Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
           {
             kbuf.add(p);
@@ -144,7 +147,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
       else {
         // RFE 1659481 Ctrl-click deselects clicked units
-        if (e.isControlDown() && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+        if (SwingUtils.isControlDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           Stack s = p.getParent();
           if (s == null) {
             kbuf.remove(p);
@@ -165,11 +168,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     
     if (bandSelect != BandSelectType.NONE) {
       bandSelectPiece = null;
-      if (!e.isShiftDown() && !e.isControlDown()) { // No deselect if shift key down
+      if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) { // No deselect if shift key down
         kbuf.clear();
         
         //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
-        if ((bandSelect == BandSelectType.SPECIAL) && (p != null) && !ignoreEvent) {
+        if (bandSelect == BandSelectType.SPECIAL && p != null && !ignoreEvent) {
           kbuf.add(p);
           bandSelectPiece = p; 
         }
@@ -185,24 +188,26 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   @Override
-  public void mouseReleased(MouseEvent evt) {
+  public void mouseReleased(MouseEvent e) {
     if (selection == null) {
       return;
     }
 
     PieceVisitorDispatcher d = createDragSelector(
-      !evt.isControlDown(), evt.isAltDown(), map.componentToMap(selection)
+      !SwingUtils.isControlDown(e), e.isAltDown(), map.componentToMap(selection)
     );
     
-    //BR// If it was a legit band-select drag (not just a click), our special case only applies if piece is allowed to be band-selected    
+    // If it was a legit band-select drag (not just a click), our special case
+    // only applies if piece is allowed to be band-selected
     if (bandSelectPiece != null) {
       final EventFilter bandFilter = (EventFilter) bandSelectPiece.getProperty(Properties.BAND_SELECT_EVENT_FILTER);
-      final boolean pieceAllowedToBeBandSelected = (bandFilter != null) && !(evt.isAltDown() && (bandFilter instanceof Immobilized.UseAlt));
+      final boolean pieceAllowedToBeBandSelected = bandFilter != null && !e.isAltDown() && bandFilter instanceof Immobilized.UseAlt;
 
       if (pieceAllowedToBeBandSelected) {
-        final Point finish = map.mapToComponent(evt.getPoint());
-        
-        //BR// Open to suggestions about a better way to distinguish "click" from "lasso" (not that Vassal doesn't already suck immensely at click-vs-drag threshhold). FWIW, this "works".
+        final Point finish = map.mapToComponent(e.getPoint());
+        // Open to suggestions about a better way to distinguish "click" from
+        // "lasso" (not that Vassal doesn't already suck immensely at
+        // click-vs-drag threshhold). FWIW, this "works".
         final boolean isLasso = finish.distance(anchor) >= 10;
         if (isLasso) { 
           bandSelectPiece = null;
@@ -212,9 +217,10 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
-    if ((bandSelectPiece == null) && !evt.isShiftDown() && !evt.isControlDown()) {
+    if (bandSelectPiece == null && !e.isShiftDown() && !SwingUtils.isControlDown(e)) {
       KeyBuffer.getBuffer().clear();
     }
+
     map.apply(d);
     repaintSelectionRect();
     selection = null;
@@ -371,7 +377,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (selection == null) {
+    if (selection == null || !SwingUtils.isLeftMouseButton(e)) {
       return;
     }
 

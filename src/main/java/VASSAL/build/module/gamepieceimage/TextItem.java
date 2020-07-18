@@ -29,13 +29,14 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class TextItem extends Item {
@@ -91,7 +92,7 @@ public class TextItem extends Item {
   @Override
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
-      super.getAttributeDescriptions(), 2,
+      2, super.getAttributeDescriptions(),
       "Font style:  ",
       "Text is:  ",
       "Text:  "
@@ -101,7 +102,7 @@ public class TextItem extends Item {
   @Override
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
-      super.getAttributeTypes(), 2,
+      2, super.getAttributeTypes(),
       new Class<?>[] {
         FontStyleConfig.class,
         TextSource.class,
@@ -113,7 +114,7 @@ public class TextItem extends Item {
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
-      super.getAttributeNames(), 2,
+      2, super.getAttributeNames(),
       new String[] {
         FONT,
         SOURCE,
@@ -216,19 +217,19 @@ public class TextItem extends Item {
     String compass = GamePieceLayout.getCompassPoint(getLocation());
     int hAlign = AL_CENTER;
     switch (compass.charAt(compass.length()-1)) {
-      case 'W':
-        hAlign = AL_LEFT;
-        break;
-        case 'E':
-        hAlign = AL_RIGHT;
+    case 'W':
+      hAlign = AL_LEFT;
+      break;
+    case 'E':
+      hAlign = AL_RIGHT;
     }
     int vAlign = AL_CENTER;
     switch (compass.charAt(0)) {
-      case 'N':
-        vAlign = AL_TOP;
-        break;
-        case 'S':
-        vAlign = AL_BOTTOM;
+    case 'N':
+      vAlign = AL_TOP;
+      break;
+    case 'S':
+      vAlign = AL_BOTTOM;
     }
 
     Point origin = layout.getPosition(this);
@@ -237,7 +238,9 @@ public class TextItem extends Item {
       s = text;
     }
     else {
+      // TODO condition is always "true"
       if (defn != null) {
+        // TODO condition is always true
         if (ti != null) {
           s = ti.getValue();
         }
@@ -352,20 +355,20 @@ public class TextItem extends Item {
     int x0 = x;
     int y0 = y;
     switch (hAlign) {
-      case AL_CENTER:
-        x0 = x - width / 2;
-        break;
-      case AL_RIGHT:
-        x0 = x - width;
-        break;
+    case AL_CENTER:
+      x0 = x - width / 2;
+      break;
+    case AL_RIGHT:
+      x0 = x - width;
+      break;
     }
     switch (vAlign) {
-      case AL_CENTER:
-        y0 = y - height / 2;
-        break;
-      case AL_BOTTOM:
-        y0 = y - height;
-        break;
+    case AL_CENTER:
+      y0 = y - height / 2;
+      break;
+    case AL_BOTTOM:
+      y0 = y - height;
+      break;
     }
 
     if (bgColor != null) {

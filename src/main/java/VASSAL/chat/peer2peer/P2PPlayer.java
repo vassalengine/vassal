@@ -38,7 +38,7 @@ public class P2PPlayer extends SimplePlayer {
     this.info = info;
     if (info.getChatName() != null) {
       try {
-          props = new PropertiesEncoder(info.getChatName()).getProperties();
+        props = new PropertiesEncoder(info.getChatName()).getProperties();
         setStats();
       }
       // FIXME: review error message

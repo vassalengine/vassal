@@ -219,7 +219,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     }
 
     private static boolean eq(Object o1, Object o2) {
-        return o1 == null ? o2 == null : o1.equals(o2);
+      return o1 == null ? o2 == null : o1.equals(o2);
     }
   }
 

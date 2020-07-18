@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +60,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * An optional extension to a GameModule
@@ -122,30 +122,24 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(archive.getInputStream(fileName));
-    }
-// FIXME: should this be a FileNotFoundException?
-    catch (IOException e) {
-    }
-
-    if (in == null) {
-      build(null);
-    }
-    else {
+    try (BufferedInputStream in = new BufferedInputStream(archive.getInputStream(fileName))) {
       try {
         final Document doc = Builder.createDocument(in);
-        build(doc.getDocumentElement());
-        in.close();
+        if (doc != null) {
+          build(doc.getDocumentElement());
+        }
       }
-      // FIXME: review error message
       catch (IOException e) {
+        // FIXME: review error message
+        logger.error("Error while creating document from file {}", fileName, e);
         throw new ExtensionsLoader.LoadExtensionException(e);
       }
-      finally {
-        IOUtils.closeQuietly(in);
-      }
+    }
+    catch (FileNotFoundException e) {
+      logger.error("File {} not found in archive", fileName, e);
+    }
+    catch (IOException e) {
+      logger.error("Error while reading file {} from archive", fileName, e);
     }
 
     GameModule.getGameModule().add(this);
@@ -174,7 +168,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       checker.add((PieceSlot) b);
     }
     else if (b instanceof ExtensionElement) {
-     checkGpIds(((ExtensionElement) b).getExtension(), checker);
+      checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
       for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
@@ -552,7 +546,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         if (ext.getName().equals(name)) {
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) > 0) {
-             GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
+            GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;
         }

@@ -121,8 +121,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public Command decode(String command) {
     Command comm = null;
     if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder
-          (command.substring(COMMAND_PREFIX.length()), '\t');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(
+        command.substring(COMMAND_PREFIX.length()), '\t');
       String name = st.nextToken();
       String owner = st.nextToken();
       boolean hidden = "true".equals(st.nextToken()); //$NON-NLS-1$
@@ -312,21 +312,21 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         column = t.getColumnModel().getColumn(i);
         int width;
         switch (i) {
-          case COL_HANDLE:
-            width = 60;
-            break;
-          case COL_DTM:
-            width = 100;
-            break;
-          case COL_NAME:
-            width = 280;
-            break;
-          case COL_REVEALED:
-            width = 60;
-            break;
-          default:
-            width = 100;
-            break;
+        case COL_HANDLE:
+          width = 60;
+          break;
+        case COL_DTM:
+          width = 100;
+          break;
+        case COL_NAME:
+          width = 280;
+          break;
+        case COL_REVEALED:
+          width = 60;
+          break;
+        default:
+          width = 100;
+          break;
         }
         column.setPreferredWidth(width);
       }
@@ -354,16 +354,16 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       public Object getValueAt(int row, int col) {
         SecretNote note = notes.get(row);
         switch (col) {
-          case COL_HANDLE:
-            return note.getHandle();
-          case COL_DTM:
-            return note.getDate() == null ? "" : LOCAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
-          case COL_NAME:
-            return note.getName();
-          case COL_REVEALED:
-            return !note.isHidden();
-          default:
-            return null;
+        case COL_HANDLE:
+          return note.getHandle();
+        case COL_DTM:
+          return note.getDate() == null ? "" : LOCAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
+        case COL_NAME:
+          return note.getName();
+        case COL_REVEALED:
+          return !note.isHidden();
+        default:
+          return null;
         }
       }
 

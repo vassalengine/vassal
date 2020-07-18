@@ -441,7 +441,7 @@ public class ADC2Module extends Importer {
       if (!(obj instanceof Piece))
         return false;
       if (getUniqueClassName().equals(((Piece) obj).getUniqueClassName()) &&
-          pieceClass == ((Piece) obj).pieceClass)
+        pieceClass == ((Piece) obj).pieceClass)
         return true;
       else
         return false;
@@ -513,14 +513,14 @@ public class ADC2Module extends Importer {
     }
 
     private Decorator getReplaceWithPrevious() throws IOException {
-    return pieceClass.getReplaceWithPreviousDecorator();
-  }
+      return pieceClass.getReplaceWithPreviousDecorator();
+    }
 
-  private Decorator getReplaceWithOther() throws IOException {
-    return pieceClass.getReplaceWithOtherDecorator();
-  }
+    private Decorator getReplaceWithOther() throws IOException {
+      return pieceClass.getReplaceWithOtherDecorator();
+    }
 
-  private Marker getPieceNameMarker() {
+    private Marker getPieceNameMarker() {
       if (pieceNameMarker == null) {
         if (name != null && name.length() > 0) {
           usePieceNames = true;
@@ -531,9 +531,9 @@ public class ADC2Module extends Importer {
         pieceNameMarker.mySetState(se.getValue());
       }
       return pieceNameMarker;
-  }
+    }
 
-  private void appendDecorator(Decorator p) {
+    private void appendDecorator(Decorator p) {
       if (p != null) {
         p.setInner(gamePiece);
         gamePiece = p;
@@ -615,7 +615,7 @@ public class ADC2Module extends Importer {
       return p;
     }
 
-     //TODO:  add more math functions to MouseOverStackViewer including min(), max(), and mean().
+    //TODO:  add more math functions to MouseOverStackViewer including min(), max(), and mean().
     //     and antialiased characters in MouseOverStackViewer
     protected PropertySheet getPiecePropertySheet() {
       if (piecePS == null) {
@@ -993,8 +993,8 @@ public class ADC2Module extends Importer {
   public class PieceClass {
 
     public PieceClass backReplace;
-  public static final String CLASS_PROPERTIES = "Class Properties";
-  protected static final int NO_HIDDEN_SYMBOL = 30001;
+    public static final String CLASS_PROPERTIES = "Class Properties";
+    protected static final int NO_HIDDEN_SYMBOL = 30001;
     protected static final int PLAYER_DEFAULT_HIDDEN_SYMBOL = 30000;
     private final int[] values = new int[8];
     private final ValueType[] types = new ValueType[8];
@@ -1006,8 +1006,8 @@ public class ADC2Module extends Importer {
     private PieceClass flipClass;
     private Piece defaultPiece;
     private String uniqueName;
-  private boolean flipClassAdded = false;
-  private Piece flipDefinition;
+    private boolean flipClassAdded = false;
+    private Piece flipDefinition;
 
     public PieceClass(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
       this.name = name;
@@ -1021,7 +1021,7 @@ public class ADC2Module extends Importer {
       final PieceClass flipClass = getBackFlipClass();
       if (flipClass == null)
         return null;
-      // don't bother if there are only two counters that flip back and forth
+        // don't bother if there are only two counters that flip back and forth
       else if (getFlipClass() == flipClass)
         return null;
 
@@ -1034,58 +1034,58 @@ public class ADC2Module extends Importer {
       flipClass.writeFlipDefinition(gameModule);
 
       return new Replace(Replace.ID + "Flip Back;B;" + se.getValue(), null);
-  }
+    }
 
-  // TODO: find a different way to do this so that we don't have to generate unique class names.
-  private String getFlipClassTreeConfigurePath() {
-    SequenceEncoder se2 = new SequenceEncoder(PieceWindow.class.getName(), ':');
-    se2.append(FLIP_DEFINITIONS);
-    final SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
-    se2 = new SequenceEncoder(ListWidget.class.getName(), ':');
-    se.append(se2.getValue());
-    se2 = new SequenceEncoder(PieceSlot.class.getName(), ':');
-    se2.append(getUniqueName());
-    se.append(se2.getValue());
-    return se.getValue();
-  }
+    // TODO: find a different way to do this so that we don't have to generate unique class names.
+    private String getFlipClassTreeConfigurePath() {
+      SequenceEncoder se2 = new SequenceEncoder(PieceWindow.class.getName(), ':');
+      se2.append(FLIP_DEFINITIONS);
+      final SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
+      se2 = new SequenceEncoder(ListWidget.class.getName(), ':');
+      se.append(se2.getValue());
+      se2 = new SequenceEncoder(PieceSlot.class.getName(), ':');
+      se2.append(getUniqueName());
+      se.append(se2.getValue());
+      return se.getValue();
+    }
 
     public Decorator getReplaceWithOtherDecorator() throws IOException {
       GameModule gameModule = GameModule.getGameModule();
 
-        final PieceClass flipClass = getFlipClass();
-        if (flipClass == null)
-          return null;
+      final PieceClass flipClass = getFlipClass();
+      if (flipClass == null)
+        return null;
 
-        SequenceEncoder se;
+      SequenceEncoder se;
       String path = flipClass.getFlipClassTreeConfigurePath();
 
-        se = new SequenceEncoder(path, ';');
-        se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
+      se = new SequenceEncoder(path, ';');
+      se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
 
-        flipClass.writeFlipDefinition(gameModule);
+      flipClass.writeFlipDefinition(gameModule);
 
-        return new Replace(Replace.ID + "Flip;F;" + se.getValue(), null);
-  }
+      return new Replace(Replace.ID + "Flip;F;" + se.getValue(), null);
+    }
 
-  private void writeFlipDefinition(GameModule gameModule) throws IOException {
-    if (!flipClassAdded) {
-      flipClassAdded = true;
+    private void writeFlipDefinition(GameModule gameModule) throws IOException {
+      if (!flipClassAdded) {
+        flipClassAdded = true;
 
         ListWidget list = flipDefs.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
         getFlipDefinition().writeToArchive(list);
+      }
     }
-  }
 
-  public PieceClass getBackFlipClass() {
-    if (backReplace == this) { // this will probably never happen
-      return null;
+    public PieceClass getBackFlipClass() {
+      if (backReplace == this) { // this will probably never happen
+        return null;
+      }
+      else {
+        return backReplace;
+      }
     }
-    else {
-      return backReplace;
-    }
-  }
 
-  public DynamicProperty getDynamicPropertyDecorator() {
+    public DynamicProperty getDynamicPropertyDecorator() {
       SequenceEncoder type = new SequenceEncoder(';');
       type.append("Layer");
       SequenceEncoder constraints = new SequenceEncoder(',');
@@ -1472,7 +1472,7 @@ public class ADC2Module extends Importer {
     SymbolSet set = cardDecks.get(deck);
     if (set == null) {
       File f = action.getCaseInsensitiveFile(new File(deckName + "-c" + (deck+1) + ".set"), file, true,
-          new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
+        new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
       if (f == null)
         throw new FileNotFoundException("Unable to locate deck symbol set.");
       set = new SymbolSet();
@@ -1496,11 +1496,11 @@ public class ADC2Module extends Importer {
 
   public static final Color FLAG_BACKGROUND = new Color(1.0f, 1.0f, 0.8f, 0.8f);
   public static final Color FLAG_FOREGROUND = new Color(0.5f, 0.0f, 0.5f, 1.0f);
-//  public static final Color FLAG_BACKGROUND = Color.BLACK;
+  //  public static final Color FLAG_BACKGROUND = Color.BLACK;
 //  public static final Color FLAG_FOREGROUND = Color.WHITE;
   private int nFlipDefs = 0;
-private PieceWindow flipDefs;
-private PieceWindow pieceWin;
+  private PieceWindow flipDefs;
+  private PieceWindow pieceWin;
 
   public static class StateFlag {
     public static final StateFlag MOVE = new StateFlag("M", FLAG_BACKGROUND, FLAG_FOREGROUND, 0);
@@ -1746,7 +1746,7 @@ private PieceWindow pieceWin;
     infoPageName = readWindowsFileName(in);
     if (infoPageName.length() > 0) {
       File ipx = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "ipx")), file, true,
-          new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
+        new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
       if (ipx != null) {
 
         try (InputStream fin = new FileInputStream(ipx);
@@ -1900,7 +1900,7 @@ private PieceWindow pieceWin;
     in.readUnsignedByte(); // unknown byte
 
     nFlipDefs = ADC2Utils.readBase250Word(in);
-  for (int i = 0; i < nFlipDefs; ++i) {
+    for (int i = 0; i < nFlipDefs; ++i) {
       int from = ADC2Utils.readBase250Word(in);
       int to = ADC2Utils.readBase250Word(in);
       if (from >= 0 && from < pieceClasses.size() && to >= 0 && to < pieceClasses.size()) {
@@ -2099,7 +2099,7 @@ private PieceWindow pieceWin;
           } // else fall through
         default:
           types[j] = ValueType.NOT_USED;
-        break;
+          break;
         }
       }
 
@@ -2268,7 +2268,7 @@ private PieceWindow pieceWin;
     configureStatusFlagButtons();
     configureMapLayers();
     pieceWin = gameModule.getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
-  configureFlipDefinitions(gameModule);
+    configureFlipDefinitions(gameModule);
     writeClassesToArchive(gameModule);
     writeForcePoolsToArchive(gameModule);
     writeDecksToArchive(gameModule);
@@ -2286,29 +2286,29 @@ private PieceWindow pieceWin;
       insertComponent(new LOS_Thread(), gameModule);
   }
 
-private void configureFlipDefinitions(GameModule gameModule) {
-  if (nFlipDefs > 0) {
-    flipDefs = new PieceWindow();
-    insertComponent(flipDefs, gameModule);
-    flipDefs.setAttribute(PieceWindow.NAME, FLIP_DEFINITIONS);
-    flipDefs.setAttribute(PieceWindow.HIDDEN, Boolean.TRUE);
-    flipDefs.setAttribute(PieceWindow.BUTTON_TEXT, "");
-    flipDefs.setAttribute(PieceWindow.TOOLTIP, "");
+  private void configureFlipDefinitions(GameModule gameModule) {
+    if (nFlipDefs > 0) {
+      flipDefs = new PieceWindow();
+      insertComponent(flipDefs, gameModule);
+      flipDefs.setAttribute(PieceWindow.NAME, FLIP_DEFINITIONS);
+      flipDefs.setAttribute(PieceWindow.HIDDEN, Boolean.TRUE);
+      flipDefs.setAttribute(PieceWindow.BUTTON_TEXT, "");
+      flipDefs.setAttribute(PieceWindow.TOOLTIP, "");
 
       ListWidget list = new ListWidget();
       insertComponent(list, flipDefs);
+    }
   }
-}
 
-private void configureMainMap(GameModule gameModule) throws IOException {
-  final Map mainMap = getMainMap();
-  mainMap.setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
+  private void configureMainMap(GameModule gameModule) throws IOException {
+    final Map mainMap = getMainMap();
+    mainMap.setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
 //  if (usePieceNames) {
 //    mainMap.setAttribute(Map.MOVE_WITHIN_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
 //    mainMap.setAttribute(Map.MOVE_TO_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
 //    mainMap.setAttribute(Map.CREATE_FORMAT, "$" + Map.PIECE_NAME + "$/" + PC_NAME + " created in $" + Map.LOCATION + "$");
 //  }
-}
+  }
 
   private void configureStatusFlagButtons() throws IOException {
     String imageName;
@@ -2813,7 +2813,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
   // add option to show only top piece just like decks.
   protected void writeSetupStacksToArchive(GameModule gameModule)
-                                                          throws IOException {
+    throws IOException {
     final Map mainMap = getMainMap();
 
     final Point offset = getMap().getCenterOffset();

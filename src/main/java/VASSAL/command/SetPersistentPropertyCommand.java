@@ -30,7 +30,7 @@ public class SetPersistentPropertyCommand extends Command {
     if (target != null) {
       // Not all GamePieces will have persistent Properties
       if (target instanceof PersistentPropertyContainer) {
-         ((Decorator) target).setPersistentProperty(getKey(), getNewValue());
+        ((Decorator) target).setPersistentProperty(getKey(), getNewValue());
       }
     }
   }
@@ -41,7 +41,7 @@ public class SetPersistentPropertyCommand extends Command {
 
   @Override
   public String getDetails() {
-     return "id="+id+",key="+key+",old="+oldValue+",new="+newValue;
+    return "id="+id+",key="+key+",old="+oldValue+",new="+newValue;
   }
   
   public Object getKey() {

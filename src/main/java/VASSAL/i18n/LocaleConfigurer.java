@@ -70,7 +70,7 @@ public class LocaleConfigurer extends Configurer {
   }
 
   public Locale getValueLocale() {
-      return stringToLocale((String) value);
+    return stringToLocale((String) value);
   }
 
   public void setValue(Locale l) {
@@ -139,7 +139,7 @@ public class LocaleConfigurer extends Configurer {
     setValue(language + "," + country);
   }
 
-   protected String[] getLanguageList() {
+  protected String[] getLanguageList() {
     if (languageList == null) {
       String[] langs = Locale.getISOLanguages();
       ArrayList<String> sortedLangs = new ArrayList<>();

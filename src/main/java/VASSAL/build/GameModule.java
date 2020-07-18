@@ -40,6 +40,8 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -91,7 +93,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
@@ -104,7 +105,6 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -185,6 +185,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
+  
+  private static String oldDragThreshold; //
 
   /**
    * @return the top-level frame of the controls window
@@ -215,14 +217,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     });
 
-    addKeyStrokeSource
-        (new KeyStrokeSource
-            (frame.getRootPane(),
-             JComponent.WHEN_IN_FOCUSED_WINDOW));
+    addKeyStrokeSource(
+      new KeyStrokeSource(frame.getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW));
 
-    validator = new CompoundValidityChecker
-        (new MandatoryComponent(this, Documentation.class),
-         new MandatoryComponent(this, GlobalOptions.class));
+    validator = new CompoundValidityChecker(
+      new MandatoryComponent(this, Documentation.class),
+      new MandatoryComponent(this, GlobalOptions.class));
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
@@ -475,7 +475,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void addCommandEncoder(CommandEncoder ce) {
-    commandEncoders = ArrayUtils.append(commandEncoders, ce);
+    commandEncoders = ArrayUtils.add(commandEncoders, ce);
   }
 
   /**
@@ -487,7 +487,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void removeCommandEncoder(CommandEncoder ce) {
-    commandEncoders = ArrayUtils.remove(commandEncoders, ce);
+    commandEncoders = ArrayUtils.removeElement(commandEncoders, ce);
   }
 
   /**
@@ -724,15 +724,22 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       try {
         p = getPrefs();
         p.write();
-        p.close();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, p.getFile());
       }
       finally {
-        IOUtils.closeQuietly(p);
+        if (p != null) {
+          try {
+            p.close();
+          }
+          catch (IOException e) {
+            log.error("Error while closing module preferences", e);
+          }
+        }
       }
 
+      // TODO remove this code if it is not needed anymore
       // write and close global prefs
       // Bug 10179 - Global prefs are now written out each time a preference is changed
       // try {
@@ -871,7 +878,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         throw e;
       }
     }
-
+    
     /*
      *  If we are editing, check for duplicate, illegal or missing GamePiece Id's
      *  and update if necessary.
@@ -879,6 +886,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
     }
+    
+    //Save our old drag threshold
+    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
 
     /*
      * Tell any Plugin components that the build is complete so that they
@@ -893,6 +904,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Unload the module
    */
   public static void unload() {
+    
+    // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
+    if (oldDragThreshold != null) {
+      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);      
+    }
+    else {
+      System.clearProperty("awt.dnd.drag.threshold");            
+    }
+    
     if (theModule != null) {
       if (theModule.shutDown()) {
         theModule = null;

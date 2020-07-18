@@ -143,11 +143,11 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   private String restorePercent(String input) {
     for (int i = input.indexOf("/#/"); //$NON-NLS-1$
-    i >= 0; i = input.indexOf("/#/")) { //$NON-NLS-1$
+         i >= 0; i = input.indexOf("/#/")) { //$NON-NLS-1$
       input = input.substring(0, i) + "%" + input.substring(i + 3); //$NON-NLS-1$
     }
     for (int i = input.indexOf("/##/"); //$NON-NLS-1$
-    i >= 0; i = input.indexOf("/##/")) { //$NON-NLS-1$
+         i >= 0; i = input.indexOf("/##/")) { //$NON-NLS-1$
       input = input.substring(0, i) + "#" + input.substring(i + 4); //$NON-NLS-1$
     }
     return input;

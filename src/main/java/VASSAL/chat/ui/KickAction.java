@@ -50,8 +50,8 @@ public class KickAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
-        client.doKick(kickee);
-        GameModule.getGameModule().warn(Resources.getString("Chat.kick_sent", kickee.getName())); //$NON-NLS-1$
+      client.doKick(kickee);
+      GameModule.getGameModule().warn(Resources.getString("Chat.kick_sent", kickee.getName())); //$NON-NLS-1$
     }
   }
 

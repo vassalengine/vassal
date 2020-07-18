@@ -74,7 +74,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     this (new Properties());
   }
 
- public DirectPeerPool(Properties param) {
+  public DirectPeerPool(Properties param) {
     params = new Properties();
     params.putAll(param);
     serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));

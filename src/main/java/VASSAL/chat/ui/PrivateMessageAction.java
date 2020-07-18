@@ -35,20 +35,20 @@ import VASSAL.i18n.Resources;
  * When invoked, will open a private message window to another player
  */
 public class PrivateMessageAction extends AbstractAction {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private Player p;
-    private PrivateChatManager mgr;
+  private Player p;
+  private PrivateChatManager mgr;
 
-    public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
-  super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
-  this.p = p;
-  this.mgr = mgr;
-  setEnabled(p != null
-       && client != null
-       && mgr != null
-       && !p.equals(client.getUserInfo()));
-    }
+  public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
+    super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
+    this.p = p;
+    this.mgr = mgr;
+    setEnabled(p != null
+      && client != null
+      && mgr != null
+      && !p.equals(client.getUserInfo()));
+  }
 
   @Override
   public void actionPerformed(ActionEvent evt) {
@@ -61,12 +61,12 @@ public class PrivateMessageAction extends AbstractAction {
     }
   }
 
-    public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
-      return new PlayerActionFactory() {
-        @Override
-        public Action getAction(SimplePlayer p, JTree tree) {
-          return new PrivateMessageAction(p, client, chatMgr);
-        }
-      };
-    }
+  public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
+    return new PlayerActionFactory() {
+      @Override
+      public Action getAction(SimplePlayer p, JTree tree) {
+        return new PrivateMessageAction(p, client, chatMgr);
+      }
+    };
+  }
 }

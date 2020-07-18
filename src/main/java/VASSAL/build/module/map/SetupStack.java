@@ -1000,8 +1000,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     @Override
     public void dragEnter(DropTargetDragEvent arg0) {
-      return;
-
     }
 
     @Override
@@ -1036,8 +1034,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     @Override
     public void dropActionChanged(DropTargetDragEvent arg0) {
-      return;
-
     }
 
     @Override
@@ -1049,49 +1045,38 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       myStack.pos.y = pos.y;
       myStack.stackConfigurer.updateDisplay();
       repaint();
-      return;
-
     }
 
     @Override
     public void dragExit(DropTargetEvent arg0) {
-      return;
-
     }
 
     @Override
     public void dragEnter(DragSourceDragEvent arg0) {
-      return;
-
     }
 
     @Override
     public void dragOver(DragSourceDragEvent arg0) {
-      return;
-
     }
 
     @Override
     public void dropActionChanged(DragSourceDragEvent arg0) {
-      return;
-
     }
 
     @Override
     public void dragDropEnd(DragSourceDropEvent arg0) {
       removeDragCursor();
-      return;
-
     }
 
     @Override
     public void dragExit(DragSourceEvent arg0) {
-      return;
-
     }
 
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
+      if (!SwingUtils.isDragTrigger(dge)) {
+        return;
+      }
 
       Point mousePosition = dge.getDragOrigin();
       Point piecePosition = new Point(myStack.pos);

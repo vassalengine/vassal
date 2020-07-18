@@ -658,7 +658,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     final DragGestureListener dgl = new DragGestureListener() {
       @Override
       public void dragGestureRecognized(DragGestureEvent dge) {
-        if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
+        if (dragGestureListener != null &&
+            mouseListenerStack.isEmpty() &&
+            SwingUtils.isDragTrigger(dge)) {
           dragGestureListener.dragGestureRecognized(dge);
         }
       }
@@ -1181,10 +1183,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Because MouseEvents are received in component coordinates, it is inconvenient for MouseListeners on the map to have
-   * to translate to map coordinates. MouseListeners added with this method will receive mouse events with points
-   * already translated into map coordinates.
-   * addLocalMouseListenerFirst inserts the new listener at the start of the chain.
+   * Because MouseEvents are received in component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to map
+   * coordinates. MouseListeners added with this method will receive mouse
+   * events with points already translated into map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the
+   * chain.
    */
   public void addLocalMouseListener(MouseListener l) {
     multicaster = AWTEventMulticaster.add(multicaster, l);
@@ -1221,6 +1225,19 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseExited(MouseEvent e) {
   }
+  
+  
+  public MouseEvent translateEvent(MouseEvent e) {
+    // don't write over Java's mouse event
+    final MouseEvent mapEvent = new MouseEvent(
+      e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(),
+      e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(),
+      e.getClickCount(), e.isPopupTrigger(), e.getButton()
+    );
+    final Point p = componentToMap(mapEvent.getPoint());
+    mapEvent.translatePoint(p.x - mapEvent.getX(), p.y - mapEvent.getY());
+    return mapEvent;
+  }
 
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
@@ -1233,14 +1250,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseClicked(MouseEvent e) {
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMap(e.getPoint());
-      e.translatePoint(p.x - e.getX(), p.y - e.getY());
-      mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(e);
+      mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(translateEvent(e));
     }
     else if (multicaster != null) {
-      final Point p = componentToMap(e.getPoint());
-      e.translatePoint(p.x - e.getX(), p.y - e.getY());
-      multicaster.mouseClicked(e);
+      multicaster.mouseClicked(translateEvent(e));
     }
   }
 
@@ -1284,14 +1297,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     activeMap = this;
 
     if (!mouseListenerStack.isEmpty()) {
-      final Point p = componentToMap(e.getPoint());
-      e.translatePoint(p.x - e.getX(), p.y - e.getY());
-      mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(e);
+      mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(translateEvent(e));
     }
     else if (multicaster != null) {
-      final Point p = componentToMap(e.getPoint());
-      e.translatePoint(p.x - e.getX(), p.y - e.getY());
-      multicaster.mousePressed(e);
+      multicaster.mousePressed(translateEvent(e));
     }
   }
 
@@ -1306,18 +1315,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseReleased(MouseEvent e) {
+    // don't write over Java's mouse event
     Point p = e.getPoint();
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
-        p = componentToMap(e.getPoint());
-        e.translatePoint(p.x - e.getX(), p.y - e.getY());
-        mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(e);
+        mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(translateEvent(e));
       }
       else if (multicaster != null) {
-        p = componentToMap(e.getPoint());
-        e.translatePoint(p.x - e.getX(), p.y - e.getY());
-        multicaster.mouseReleased(e);
+        multicaster.mouseReleased(translateEvent(e));
       }
       // Request Focus so that keyboard input will be recognized
       theMap.requestFocus();
@@ -1356,7 +1362,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * This listener will be notified when a drag event is initiated, assuming that no MouseListeners are on the stack.
+   * This listener will be notified when a drag event is initiated, assuming
+   * that no MouseListeners are on the stack.
    *
    * @see #pushMouseListener
    * @param dragGestureListener
@@ -1402,7 +1409,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         dtde.getLocation().x,
         dtde.getLocation().y,
         1,
-        false
+        false,
+        MouseEvent.NOBUTTON
       );
       theMap.dispatchEvent(evt);
       dtde.dropComplete(true);
@@ -1426,7 +1434,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (e.getButton() != 3) {
+    if (!SwingUtils.isRightMouseButton(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }
     else {
@@ -2390,8 +2398,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MESSAGE, ReportState.COMMAND_NAME, ReportState.OLD_UNIT_NAME,
-          ReportState.NEW_UNIT_NAME, ReportState.MAP_NAME, ReportState.LOCATION_NAME });
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[] {
+        MESSAGE,
+        ReportState.COMMAND_NAME,
+        ReportState.OLD_UNIT_NAME,
+        ReportState.NEW_UNIT_NAME,
+        ReportState.MAP_NAME,
+        ReportState.LOCATION_NAME });
     }
   }
 
@@ -2450,8 +2463,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     Class<?>[] c = { GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
-        CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-        MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
+      CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
     return c;
   }
 

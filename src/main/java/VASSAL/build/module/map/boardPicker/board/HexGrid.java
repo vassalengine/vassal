@@ -931,7 +931,7 @@ public class HexGrid extends AbstractConfigurable
     gridEditor.setVisible(true);
     // Local variables may have been updated by GridEditor so refresh
     // configurers. Setting the Dy configurer will auto-recalculate dx
-   double origDx = dx;
+    double origDx = dx;
     AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
     cfg.getConfigurer(DY).setValue(String.valueOf(dy));
     dx = origDx;

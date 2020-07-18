@@ -379,7 +379,8 @@ public class MenuScroller {
   public void setTopFixedCount(int topFixedCount) {
     if (firstIndex <= topFixedCount) {
       firstIndex = topFixedCount;
-    } else {
+    }
+    else {
       firstIndex += (topFixedCount - this.topFixedCount);
     }
     this.topFixedCount = topFixedCount;
@@ -414,9 +415,9 @@ public class MenuScroller {
   public void keepVisible(JMenuItem item) {
     if (item == null) {
       keepVisibleIndex = -1;
-    } else {
-      int index = menu.getComponentIndex(item);
-      keepVisibleIndex = index;
+    }
+    else {
+      keepVisibleIndex = menu.getComponentIndex(item);
     }
   }
 

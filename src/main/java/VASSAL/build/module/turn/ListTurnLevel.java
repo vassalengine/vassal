@@ -32,6 +32,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
@@ -40,7 +42,6 @@ import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -273,7 +274,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
       "List of Items",
       "Allow players to hide items in this list?",
@@ -284,7 +285,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeTypes(),
       String[].class,
       Boolean.class,
@@ -295,7 +296,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeNames(),
       LIST,
       CONFIG_LIST,

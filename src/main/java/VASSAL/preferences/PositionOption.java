@@ -158,7 +158,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-     final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( );
+    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( );
 
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
@@ -167,8 +167,8 @@ public class PositionOption extends VASSAL.configure.Configurer
     theFrame.setLocation(bounds.getLocation());
 
     // Reduce size to fit on desktop
-    int width = theFrame.getSize().width > desktopBounds.width ? desktopBounds.width : theFrame.getSize().width;
-    int height = theFrame.getSize().height > desktopBounds.height ? desktopBounds.height : theFrame.getSize().height;
+    int width = Math.min(theFrame.getSize().width, desktopBounds.width);
+    int height = Math.min(theFrame.getSize().height, desktopBounds.height);
     if (width != theFrame.getSize().width || height != theFrame.getSize().height) {
       theFrame.setSize(width, height);
     }

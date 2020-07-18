@@ -140,9 +140,9 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return propertySource == null ? null : propertySource.getLocalizedProperty(key);
   }
 
-   @Override
-   public GlobalProperty getMutableProperty(String name) {
-   GlobalProperty property = null;
+  @Override
+  public GlobalProperty getMutableProperty(String name) {
+    GlobalProperty property = null;
     for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
       if (prop.getConfigureName().equals(name)) {
         property = prop;

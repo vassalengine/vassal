@@ -75,7 +75,7 @@ public interface ServerStatus {
 
     public int numPlayers(){
       Room[] roomsArray = getRooms();
-    int n=0;
+      int n=0;
       for (Room room : roomsArray) {
         n += ((SimpleRoom) room).numPlayers();
       }

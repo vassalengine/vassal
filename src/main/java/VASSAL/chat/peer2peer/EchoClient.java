@@ -23,6 +23,7 @@ import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.command.Command;
 
+// TODO: throw this away or make it a JUnit test
 public class EchoClient implements Runnable, PropertyChangeListener {
   public static final String NAME = "EchoBot"; //$NON-NLS-1$
   private static Random rng = new Random();
@@ -163,4 +164,5 @@ public class EchoClient implements Runnable, PropertyChangeListener {
       }
     }
   }
-*/}
+*/
+}

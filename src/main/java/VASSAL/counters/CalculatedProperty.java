@@ -124,7 +124,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public HelpFile getHelpFile() {
-      return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
+    return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
   }
 
   @Override
@@ -231,8 +231,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append(nameConfig.getValueString())
-      .append(expressionConfig.getValueString());
+      se.append(nameConfig.getValueString()).append(expressionConfig.getValueString());
       return ID + se.getValue();
     }
   }

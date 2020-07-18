@@ -22,10 +22,11 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class CounterTurnLevel extends TurnLevel {
@@ -38,6 +39,13 @@ public class CounterTurnLevel extends TurnLevel {
   protected int incr = 1;
   protected boolean loop = false;
   protected int loopLimit = -1;
+
+  private final VisibilityCondition loopCond = new VisibilityCondition() {
+    @Override
+    public boolean shouldBeVisible() {
+      return loop;
+    }
+  };
 
   public CounterTurnLevel() {
     super();
@@ -163,7 +171,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
       "Start Value:  ",
       "Increment By:  ",
@@ -174,7 +182,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeTypes(),
       Integer.class,
       Integer.class,
@@ -185,7 +193,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   @Override
   public String[] getAttributeNames() {
-    return ArrayUtils.append(
+    return ArrayUtils.addAll(
       super.getAttributeNames(),
       START,
       INCR,
@@ -266,10 +274,4 @@ public class CounterTurnLevel extends TurnLevel {
     }
   }
 
-  private VisibilityCondition loopCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return loop;
-    }
-  };
- }
+}

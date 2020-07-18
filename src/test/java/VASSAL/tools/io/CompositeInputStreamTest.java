@@ -23,23 +23,14 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.lib.legacy.ClassImposteriser;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import static org.junit.Assert.*;
 
-public class CompositeInputStreamTest {
-  protected final Mockery context = new Mockery() {
-    {
-      setImposteriser(ClassImposteriser.INSTANCE);
-    }
-  };
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+public class CompositeInputStreamTest {
   protected InputStream[] prepareStreams() {
     final ByteArrayInputStream[] ch = new ByteArrayInputStream[10];
     for (int i = 0; i < ch.length; ++i) {
@@ -94,16 +85,12 @@ public class CompositeInputStreamTest {
   @Test
   public void testClose() throws IOException {
     final InputStream[] ch = new InputStream[10];
-    final InputStream child = context.mock(InputStream.class);
+    final InputStream child = mock(InputStream.class);
     Arrays.fill(ch, child);
-
-    context.checking(new Expectations() {
-      {
-        exactly(ch.length).of(child).close();
-      }
-    });
 
     final InputStream in = new CompositeInputStream(ch);
     in.close();
+
+    verify(child, times(ch.length)).close();
   }
 }

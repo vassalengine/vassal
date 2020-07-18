@@ -45,7 +45,10 @@ import java.util.regex.Pattern;
 public class VassalVersionTokenizer implements VersionTokenizer {
   protected String v;
 
-  protected enum State { VNUM, DELIM1, TAG, DELIM2, BUILD, EOS, END };
+  protected enum State {
+    VNUM, DELIM1, TAG, DELIM2, BUILD, EOS, END
+  }
+
   protected State state = State.VNUM;
 
   // This is the mapping for tags to versions. Only tags which cannot
@@ -149,28 +152,26 @@ public class VassalVersionTokenizer implements VersionTokenizer {
         state = State.BUILD;
         break;
 
-      case BUILD:
-        {
-          // there may be stuff beyond the build number, but we don't care
-          final int hi = v.indexOf('-');
-          final String b = v.substring(0, hi == -1 ? v.length() : hi);
+      case BUILD: {
+        // there may be stuff beyond the build number, but we don't care
+        final int hi = v.indexOf('-');
+        final String b = v.substring(0, hi == -1 ? v.length() : hi);
 
-          try {
-            n = Integer.parseInt(b);
-          }
-          catch (NumberFormatException e) {
-            throw new VersionFormatException(e);
-          }
-
-          if (n < 0) {
-            throw new VersionFormatException();
-          }
-
-          v = "";
-          state = State.EOS;
-          return n;
+        try {
+          n = Integer.parseInt(b);
+        }
+        catch (NumberFormatException e) {
+          throw new VersionFormatException(e);
         }
 
+        if (n < 0) {
+          throw new VersionFormatException();
+        }
+
+        v = "";
+        state = State.EOS;
+        return n;
+      }
       case EOS: // mark the end of the string
         state = State.END;
         return -1;

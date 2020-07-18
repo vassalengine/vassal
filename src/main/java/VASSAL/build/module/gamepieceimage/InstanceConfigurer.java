@@ -310,7 +310,7 @@ public class InstanceConfigurer extends Configurer {
 
       @Override
       public Class<String> getColumnClass(int col) {
-           return String.class;
+        return String.class;
       }
 
       @Override
@@ -320,7 +320,7 @@ public class InstanceConfigurer extends Configurer {
 
       @Override
       public void setValueAt(Object value, int row, int col) {
-
+        // TODO delete commented code or reactivate
 //        fireTableCellUpdated(row, col);
 //        visualizer.rebuild();
       }

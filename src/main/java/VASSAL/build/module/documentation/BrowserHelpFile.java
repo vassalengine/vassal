@@ -24,8 +24,10 @@ import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -99,61 +101,64 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   /**
-   * The entry in the module Zip file containing the HTML directory
-   * @return
+   * @return The entry in the module Zip file containing the HTML directory
    */
   protected String getContentsResource() {
     return name == null ? null : name.replace(' ', '_');
   }
 
   protected void extractContents() {
-    ZipInputStream in = null;
-    try {
-      try {
-        in = new ZipInputStream(new BufferedInputStream(
-              GameModule.getGameModule().getDataArchive()
-                .getInputStream("help/" + getContentsResource()))); //$NON-NLS-1$
-      }
-      catch (IOException e) {
-        // The help file was created with empty contents.
-        // Assume an absolute URL as the starting page.
-        url = new URL(startingPage);
-        return;
-      }
+    try (ZipInputStream in =
+           new ZipInputStream(new BufferedInputStream(
+             GameModule.getGameModule().getDataArchive().getInputStream(
+               "help/" + getContentsResource())))) { //$NON-NLS-1$
 
-      final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
-      File output = tmp.getParentFile();
-      tmp.delete();
-      output = new File(output, "VASSAL"); //$NON-NLS-1$
-      output = new File(output, "help"); //$NON-NLS-1$
-      output = new File(output, getContentsResource());
-      if (output.exists()) recursiveDelete(output);
-
-      output.mkdirs();
-      ZipEntry entry;
-
-      while ((entry = in.getNextEntry()) != null) {
-        if (entry.isDirectory()) {
-          new File(output, entry.getName()).mkdirs();
-        }
-        else {
-// FIXME: no way to distinguish between read and write errors here
-          try (FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
-            IOUtils.copy(in, fos);
-          }
-        }
-      }
-
-      in.close();
-      url = new File(output, startingPage).toURI().toURL();
+      internalExtractContents(in);
     }
-    // FIXME: review error message
+    catch (FileNotFoundException e) {
+      logger.error("File not found in data archive: {}", "help/" + getContentsResource(), e);
+      setFallbackUrl();
+    }
     catch (IOException e) {
-      logger.error("", e);
+      logger.error("Error while reading file {} from data archive", "help/" + getContentsResource(), e);
+      setFallbackUrl();
     }
-    finally {
-      IOUtils.closeQuietly(in);
+  }
+
+  private void setFallbackUrl() {
+    try {
+      url = new URL(startingPage);
     }
+    catch (MalformedURLException e) {
+      logger.error("Malformed URL: {}", startingPage, e);
+    }
+  }
+
+  private void internalExtractContents(ZipInputStream in) throws IOException {
+    final File tmp; //$NON-NLS-1$ //$NON-NLS-2$
+    tmp = File.createTempFile("VASSAL", "help");
+    File output = tmp.getParentFile();
+    tmp.delete();
+    output = new File(output, "VASSAL"); //$NON-NLS-1$
+    output = new File(output, "help"); //$NON-NLS-1$
+    output = new File(output, getContentsResource());
+    if (output.exists()) recursiveDelete(output);
+
+    output.mkdirs();
+    ZipEntry entry;
+
+    while ((entry = in.getNextEntry()) != null) {
+      if (entry.isDirectory()) {
+        new File(output, entry.getName()).mkdirs();
+      }
+      else {
+// FIXME: no way to distinguish between read and write errors here
+        try (FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
+          IOUtils.copy(in, fos);
+        }
+      }
+    }
+    url = new File(output, startingPage).toURI().toURL();
   }
 
   protected void recursiveDelete(File output) {

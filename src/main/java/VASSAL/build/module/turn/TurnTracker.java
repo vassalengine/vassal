@@ -615,8 +615,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     turnFormat.clearProperties();
     for (int i = 0; i < levels.size(); i++) {
-        turnFormat.setProperty(LEVEL+(i+1), levels.get(i));
-      }
+      turnFormat.setProperty(LEVEL+(i+1), levels.get(i));
+    }
     return turnFormat.getText(GameModule.getGameModule());
   }
 
@@ -743,7 +743,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     if (command.startsWith(COMMAND_PREFIX+getId())) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
       sd.nextToken(""); //$NON-NLS-1$
-     comm = new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
+      comm = new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
     }
     return comm;
   }
@@ -854,11 +854,11 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected class TurnWidget extends JPanel implements MouseListener {
 
-  private static final long serialVersionUID = 1L;
-  private IconButton nextButton;
-  private IconButton prevButton;
+    private static final long serialVersionUID = 1L;
+    private IconButton nextButton;
+    private IconButton prevButton;
 
-  protected final int BUTTON_SIZE = 22;
+    protected final int BUTTON_SIZE = 22;
 
     protected JLabel turnLabel = new JLabel();
 
@@ -957,7 +957,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
     public void setPrevStroke(NamedKeyStroke key) {
       final String tooltip = Resources.getString("TurnTracker.prev_turn") +  //$NON-NLS-1$
-      (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //$NON-NLS-1$ //$NON-NLS-2$
+        (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //$NON-NLS-1$ //$NON-NLS-2$
       prevButton.setToolTipText(tooltip);
     }
 
