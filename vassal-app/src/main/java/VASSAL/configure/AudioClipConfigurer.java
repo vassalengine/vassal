@@ -48,7 +48,7 @@ public class AudioClipConfigurer extends FileConfigurer {
       resourceDirPref = new DirectoryConfigurer("audioDir", null);
       GameModule.getGameModule().getPrefs().addOption(null,resourceDirPref);
     }
-    FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getFrame(),resourceDirPref);
+    FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getPlayerWindow(),resourceDirPref);
     fc.setFileFilter(new AudioFileFilter());
     return fc;
   }

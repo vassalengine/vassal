@@ -248,7 +248,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     final int CANCEL = options.length - 1;
 
     final int option = JOptionPane.showOptionDialog(
-      GameModule.getGameModule().getFrame(),
+      GameModule.getGameModule().getPlayerWindow(),
       Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()),
       Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$
       JOptionPane.YES_NO_OPTION,
@@ -487,7 +487,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
     final GameModule g = GameModule.getGameModule();
     String newSide = (String) JOptionPane.showInputDialog(
-      g.getFrame(),
+      g.getPlayerWindow(),
       Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,

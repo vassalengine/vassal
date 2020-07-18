@@ -154,13 +154,13 @@ public class WizardSupport {
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
 
     if (! Boolean.TRUE.equals(showWizard)) {
-      g.getFrame().setVisible(true);
+      g.getPlayerWindow().setVisible(true);
 
       // prompt for username and password if wizard is off
       // but no username is set
       // FIXME: this belongs outside of the wizard, not here
       if (!isRealName()) {
-        new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
+        new UsernameAndPasswordDialog(g.getPlayerWindow()).setVisible(true);
       }
       return;
     }
@@ -187,7 +187,7 @@ public class WizardSupport {
       if (PLAY_ONLINE_ACTION.equals(action)) {
         final ChatServerControls controls =
           ((BasicModule) g).getServerControls();
-        g.getFrame().setVisible(true);
+        g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
         new SwingWorker<Void,Void>() {
@@ -200,11 +200,11 @@ public class WizardSupport {
       }
       else {
         g.getGameState().setup(true);
-        g.getFrame().setVisible(true);
+        g.getPlayerWindow().setVisible(true);
       }
     }
     else {
-      g.getFrame().setVisible(true);
+      g.getPlayerWindow().setVisible(true);
     }
   }
 

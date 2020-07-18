@@ -370,7 +370,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           }
         }
         else {
-          parent = GameModule.getGameModule().getFrame();
+          parent = GameModule.getGameModule().getPlayerWindow();
         }
 
         frame = new PropertySheetDialog(parent);
@@ -561,7 +561,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
 
         // move window
-        Point p = GameModule.getGameModule().getFrame().getLocation();
+        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
           Point p2 = getMap().mapToComponent(getPosition());

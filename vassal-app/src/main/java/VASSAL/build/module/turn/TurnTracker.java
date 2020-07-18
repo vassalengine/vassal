@@ -824,7 +824,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected TurnWidget widget;
 
     protected TurnWindow() {
-      super(GameModule.getGameModule().getFrame());
+      super(GameModule.getGameModule().getPlayerWindow());
       setTitle(getConfigureName());
       pack();
       setLocation(100, 100);
@@ -1069,7 +1069,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected JDialog me;
 
     protected SetDialog() {
-      super(GameModule.getGameModule().getFrame());
+      super(GameModule.getGameModule().getPlayerWindow());
       initComponents();
       setLocation(100, 100);
       me = this;

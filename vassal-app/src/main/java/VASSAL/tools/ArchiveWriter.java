@@ -240,7 +240,7 @@ public class ArchiveWriter extends DataArchive {
 
   public void saveAs(boolean notifyModuleManager) throws IOException {
     final FileChooser fc = FileChooser.createFileChooser(
-      GameModule.getGameModule().getFrame(),
+      GameModule.getGameModule().getPlayerWindow(),
       (DirectoryConfigurer) Prefs.getGlobalPrefs()
                                  .getOption(Prefs.MODULES_DIR_KEY));
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;

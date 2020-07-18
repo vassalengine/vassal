@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -196,7 +195,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     });
 
-    mod.getControlPanel().add(this, BorderLayout.CENTER);
+    mod.getPlayerWindow().addChatter(this);
 
     chatFont.fireUpdate();
     mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$

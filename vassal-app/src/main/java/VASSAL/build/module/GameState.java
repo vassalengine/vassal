@@ -294,7 +294,7 @@ public class GameState implements CommandEncoder {
 
     if (!gameStarting && gameStarted && isModified()) {
       switch (JOptionPane.showConfirmDialog(
-        g.getFrame(),
+        g.getPlayerWindow(),
         Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
         Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
         JOptionPane.YES_NO_CANCEL_OPTION)) {
@@ -493,7 +493,7 @@ public class GameState implements CommandEncoder {
       if (md instanceof SaveMetaData) {
         if (Info.hasOldFormat(md.getVassalVersion())) {
           return Dialogs.showConfirmDialog(
-            GameModule.getGameModule().getFrame(),
+            GameModule.getGameModule().getPlayerWindow(),
             Resources.getString("Warning.save_will_be_updated_title"),
             Resources.getString("Warning.save_will_be_updated_heading"),
             Resources.getString(
@@ -786,7 +786,7 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
-    final JFrame frame = GameModule.getGameModule().getFrame();
+    final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     new SwingWorker<Command,Void>() {

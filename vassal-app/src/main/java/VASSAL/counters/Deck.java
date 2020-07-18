@@ -1344,7 +1344,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
-         JOptionPane.showConfirmDialog(gameModule.getFrame(),
+         JOptionPane.showConfirmDialog(gameModule.getPlayerWindow(),
           Resources.getString("Deck.overwrite", outputFile.getName()), Resources.getString("Deck.file_exists"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           JOptionPane.YES_NO_OPTION)) {
       outputFile = null;

@@ -198,7 +198,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           final String playerName = player.getName() + "(" + playerLogin + ")"; //$NON-NLS-1$ //$NON-NLS-2$
           final String roomName = roomMgr.getRoomByJID(JabberClient.this, room).getName();
           final int i = Dialogs.showConfirmDialog(GameModule
-            .getGameModule().getFrame(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+            .getGameModule().getPlayerWindow(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
             Resources.getString("Chat.invite_heading"), Resources.getString( //$NON-NLS-1$
                 "Chat.invitation", playerName, roomName), //$NON-NLS-1$
             JOptionPane.QUESTION_MESSAGE, null,
