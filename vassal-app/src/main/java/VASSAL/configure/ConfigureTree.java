@@ -131,6 +131,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   // Search parameters
   protected String searchString;
   protected boolean matchCase;
+  protected boolean matchTypes;
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
@@ -195,6 +196,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     //FIXME: remember these search parameters from session to session
     searchString="";
     matchCase = false;
+    matchTypes = false;
   }
 
   public JFrame getFrame() {
@@ -305,6 +307,53 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   
   
   
+  public final DefaultMutableTreeNode findNode(String searchString) {
+    List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
+    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
+
+    DefaultMutableTreeNode foundNode = null;
+    int bookmark = -1;
+
+    if (currentNode != null) {
+      for (int index = 0; index < searchNodes.size(); index++) {
+        if (searchNodes.get(index) == currentNode) {
+          bookmark = index;
+          break;
+        }
+      }
+    }
+
+    for (int index = bookmark + 1; index < searchNodes.size(); index++) {    
+      if (searchNodes.get(index).toString().toLowerCase().contains(searchString.toLowerCase())) {
+        foundNode = searchNodes.get(index);
+        break;
+      }
+    }
+
+    if (foundNode == null) {
+      for (int index = 0; index <= bookmark; index++) {    
+        if (searchNodes.get(index).toString().toLowerCase().contains(searchString.toLowerCase())) {
+          foundNode = searchNodes.get(index);
+          break;
+        }
+      }
+    }
+    return foundNode;
+  }   
+  
+  
+  private final List<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
+    List<DefaultMutableTreeNode> searchNodes = new ArrayList<DefaultMutableTreeNode>();
+
+    Enumeration<?> e = root.preorderEnumeration();
+    while(e.hasMoreElements()) {
+      searchNodes.add((DefaultMutableTreeNode)e.nextElement());
+    }
+    return searchNodes;
+  }
+  
+  
+  
   protected Action buildSearchAction(final Configurable target) {
     final Action a = new AbstractAction(searchCmd) {
       private static final long serialVersionUID = 1L;
@@ -327,6 +376,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         box = Box.createHorizontalBox();
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), matchCase);
         box.add(sensitive);
+        final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), matchTypes);
+        box.add(types);        
         d.add(box);
         
         box = Box.createHorizontalBox();     
@@ -336,7 +387,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           public void actionPerformed(ActionEvent e) {
             searchString = search.getText();
             matchCase    = sensitive.isSelected();
-            d.dispose();
+            matchTypes   = types.isSelected();
+            
+            if (!searchString.isEmpty() ) {              
+              Object base  = getLastSelectedPathComponent();
+              Object caret = base;              
+              
+              DefaultMutableTreeNode node = findNode(searchString);                
+              if (node != null) {
+                TreePath path = new TreePath(node.getPath());
+                setSelectionPath(path);
+                scrollPathToVisible(path);
+              }                
+            }            
           }
         });
         
