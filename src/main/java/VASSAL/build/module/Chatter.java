@@ -386,11 +386,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     return Utilities.drawTabbedText(s, x, y, g2d, ex, p0);
   }
 
-  @Deprecated private int drawColoredText(Graphics g, int x, int y, TabExpander ex, Document doc,
-                              int p0, int p1, Element elem) throws BadLocationException {
-    return (int) drawColoredText(g, (float) x, (float) y, ex, doc, p0, p1, elem);
-  }
-
   private class WrappedView extends WrappedPlainView {
     private WrappedView(Element el, boolean wrap) {
       super(el, wrap);
@@ -401,13 +396,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                                      int p0, int p1) throws BadLocationException {
       final Element root = getElement();
       return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
-    }
-
-    @Override
-    @Deprecated protected int drawUnselectedText(Graphics g, int x, int y,
-                                     int p0, int p1) throws BadLocationException {
-      final Graphics2D g2d = (Graphics2D) g;
-      return (int) drawUnselectedText(g2d, (float) x, (float) y, p0, p1);
     }
   }
 
@@ -421,13 +409,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                                      int p0, int p1) throws BadLocationException {
       Element root = getElement();
       return drawColoredText(g, x, y, this, getDocument(), p0, p1, root.getElement(root.getElementIndex(p0)));
-    }
-
-    @Override
-    @Deprecated protected int drawUnselectedText(Graphics g, int x, int y,
-                                     int p0, int p1) throws BadLocationException {
-      final Graphics2D g2d = (Graphics2D) g;
-      return (int) drawUnselectedText(g2d, (float) x, (float) y, p0, p1);
     }
   }
 
