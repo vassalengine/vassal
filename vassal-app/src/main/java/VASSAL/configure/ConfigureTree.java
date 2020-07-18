@@ -42,12 +42,14 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -98,6 +100,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected EditorWindow editorWindow;
   protected Configurable selected;
   protected int selectedRow;
+  protected String searchCmd;
   protected String moveCmd;
   protected String deleteCmd;
   protected String pasteCmd;
@@ -111,6 +114,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected KeyStroke pasteKey;
   protected KeyStroke deleteKey;
   protected KeyStroke moveKey;
+  protected KeyStroke searchKey;
   protected KeyStroke helpKey;
   protected KeyStroke propertiesKey;
   protected KeyStroke translateKey;
@@ -119,9 +123,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action pasteAction;
   protected Action deleteAction;
   protected Action moveAction;
+  protected Action searchAction;
   protected Action propertiesAction;
   protected Action translateAction;
   protected Action helpAction;
+  
+  // Search parameters
+  protected String searchString;
+  protected boolean matchCase;
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
@@ -141,6 +150,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addMouseListener(this);
     addMouseMotionListener(this);
     addTreeSelectionListener(this);
+    searchCmd = Resources.getString("Editor.search"); //$NON-NLS-1$
     moveCmd = Resources.getString("Editor.move"); //$NON-NLS-1$
     deleteCmd = Resources.getString("Editor.delete"); //$NON-NLS-1$
     pasteCmd = Resources.getString("Editor.paste"); //$NON-NLS-1$
@@ -155,6 +165,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
     deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
     moveKey = KeyStroke.getKeyStroke(KeyEvent.VK_M, mask);
+    searchKey = KeyStroke.getKeyStroke(KeyEvent.VK_F, mask);
     propertiesKey = KeyStroke.getKeyStroke(KeyEvent.VK_P, mask);
     translateKey = KeyStroke.getKeyStroke(KeyEvent.VK_T, mask);
     helpKey = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
@@ -163,6 +174,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     cutAction = new KeyAction(cutCmd, cutKey);
     deleteAction = new KeyAction(deleteCmd, deleteKey);
     moveAction = new KeyAction(moveCmd, moveKey);
+    searchAction = new KeyAction(searchCmd, searchKey);
     propertiesAction = new KeyAction(propertiesCmd, propertiesKey);
     translateAction = new KeyAction(translateCmd, translateKey);
     helpAction = new KeyAction(helpCmd, helpKey);
@@ -179,6 +191,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     getActionMap().put(pasteCmd, pasteAction);
     getActionMap().put(deleteCmd, deleteAction);
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    
+    //FIXME: remember these search parameters from session to session
+    searchString="";
+    matchCase = false;
   }
 
   public JFrame getFrame() {
@@ -269,7 +285,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addActionGroup(popup, l);
     l.add(buildHelpAction(target));
     addActionGroup(popup, l);
-    l.add(buildDeleteAction(target));
+    l.add(buildSearchAction(target));
+    addActionGroup(popup, l);
+    l.add(buildDeleteAction(target));    
     l.add(buildCutAction(target));
     l.add(buildCopyAction(target));
     l.add(buildPasteAction(target));
@@ -284,6 +302,65 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addAction(popup, buildImportAction(target));
     return popup;
   }
+  
+  
+  
+  protected Action buildSearchAction(final Configurable target) {
+    final Action a = new AbstractAction(searchCmd) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        
+        final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
+        d.setTitle(searchCmd);
+        d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+        Box box = Box.createHorizontalBox();
+        box.add(new JLabel("String to find: "));
+        box.add(Box.createHorizontalStrut(10));
+        
+        final JTextField search = new JTextField(searchString, 32);
+        box.add(search);
+        
+        d.add(box);
+
+        box = Box.createHorizontalBox();
+        final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), matchCase);
+        box.add(sensitive);
+        d.add(box);
+        
+        box = Box.createHorizontalBox();     
+        JButton find = new JButton(Resources.getString("Editor.search_next"));
+        find.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            searchString = search.getText();
+            matchCase    = sensitive.isSelected();
+            d.dispose();
+          }
+        });
+        
+        
+        JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+        cancel.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            d.dispose();
+          }
+        });
+        
+        box.add(find);
+        box.add(cancel);
+        d.add(box);
+        d.pack();
+        d.setLocationRelativeTo(d.getParent());
+        d.setVisible(true);                
+      }
+    };
+    a.setEnabled(true);
+    return a;
+  }
+  
 
   protected Action buildMoveAction(final Configurable target) {
     Action a = null;
@@ -1008,6 +1085,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     mm.addAction("Editor.copy", copyAction);
     mm.addAction("Editor.paste", pasteAction);
     mm.addAction("Editor.move", moveAction);
+    mm.addAction("Editor.search", searchAction);
     mm.addAction("Editor.ModuleEditor.properties", propertiesAction);
     mm.addAction("Editor.ModuleEditor.translate", translateAction);
 
@@ -1039,6 +1117,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       else if (moveCmd.equals(action)) {
         a = buildMoveAction(target);
+      }
+      else if (searchCmd.equals(action)) {
+        a = buildSearchAction(target);
       }
       else if (propertiesCmd.equals(action)) {
         a = buildEditAction(target);
@@ -1075,6 +1156,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     copyAction.setEnabled(selected != null);
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
     moveAction.setEnabled(selected != null);
+    searchAction.setEnabled(true);
     propertiesAction.setEnabled(selected != null &&
                                 selected.getConfigurer() != null);
     translateAction.setEnabled(selected != null);
