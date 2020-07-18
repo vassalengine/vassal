@@ -131,10 +131,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action helpAction;
   
   // Search parameters
-  protected String searchString;
-  protected boolean matchCase;
-  protected boolean matchNames;
-  protected boolean matchTypes;
+  protected String searchString;     // Current search string
+  protected boolean matchCase;       // True if case-sensitive
+  protected boolean matchNames;      // True if match configurable names
+  protected boolean matchTypes;      // True if match class names
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
@@ -404,7 +404,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     
     return foundNode;
-  }   
+  }  
+  
+  
+  // Finds out how many total nodes match the search string
+  public final int getNumMatches(String searchString) {    
+    List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
+    int hits = 0;
+
+    for (int index = 0; index < searchNodes.size(); index++) {
+      if (checkNode(searchNodes.get(index), searchString)) {
+        hits++;
+      }
+    }
+    
+    return hits;    
+  }
   
     
   // Search action - runs search dialog box, then searches
@@ -441,6 +456,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         find.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
+            boolean anyChanges = (!searchString.equals(search.getText())) || 
+                                 (matchCase != sensitive.isSelected()) ||
+                                 (matchNames != names.isSelected()) ||
+                                 (matchTypes != types.isSelected());
+            
             searchString = search.getText();
             matchCase    = sensitive.isSelected();
             matchNames   = names.isSelected();
@@ -452,7 +472,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               chat (Resources.getString("Editor.search_all_off"));                            
             }
             
-            if (!searchString.isEmpty()) {              
+            if (!searchString.isEmpty()) {
+              if (anyChanges) {
+                int matches = getNumMatches(searchString);
+                chat (String.valueOf(matches) + " " + Resources.getString("Editor.search_count") + searchString);
+              }
+              
               DefaultMutableTreeNode node = findNode(searchString);                
               if (node != null) {
                 TreePath path = new TreePath(node.getPath());
