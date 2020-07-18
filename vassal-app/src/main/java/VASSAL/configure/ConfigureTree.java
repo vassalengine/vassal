@@ -430,7 +430,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         box = Box.createHorizontalBox();
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), matchCase);
         box.add(sensitive);
-        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), matchTypes);
+        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), matchNames);
         box.add(names);        
         final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), matchTypes);
         box.add(types);        
