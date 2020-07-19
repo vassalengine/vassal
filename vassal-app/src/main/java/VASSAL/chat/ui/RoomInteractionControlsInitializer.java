@@ -107,7 +107,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
         if (e.isPopupTrigger()) {
           maybePopup(e);
         }
-        else if (e.getClickCount() == 2 && SwingUtils.isLeftMouseButton(e)) {
+        else if (e.getClickCount() == 2 && SwingUtils.isVanillaLeftButtonDown(e)) {
           JTree tree = (JTree) e.getSource();
           TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {

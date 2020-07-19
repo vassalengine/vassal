@@ -873,7 +873,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Mouse clicked, see if it is on a Region Point
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (SwingUtils.isLeftMouseButton(e)) {
+      if (SwingUtils.isVanillaLeftButtonDown(e)) {
         final Point p = e.getPoint();
         lastClick = p;
 
@@ -1095,12 +1095,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else if (SwingUtils.isLeftMouseButton(e)) {
+      else if (SwingUtils.isVanillaLeftButtonDown(e)) {
         final Point p = e.getPoint();
         lastClick = p;
         lastClickedRegion = grid.getRegion(p);
 
-        if (!e.isShiftDown() && !SwingUtils.isControlDown(e) &&
+        if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e) &&
             (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
           unSelectAll();
         }
@@ -1110,7 +1110,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           selectionRect = new Rectangle(anchor.x, anchor.y, 0, 0);
         }
         else {
-          if (SwingUtils.isControlDown(e)) {
+          if (SwingUtils.isSelectionToggle(e)) {
             unselect(lastClickedRegion);
           }
           else {
@@ -1125,10 +1125,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else if (selectionRect != null && SwingUtils.isLeftMouseButton(e)) {
+      else if (selectionRect != null && SwingUtils.isVanillaLeftButtonDown(e)) {
         for (Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
-            if (SwingUtils.isControlDown(e)) {
+            if (SwingUtils.isSelectionToggle(e)) {
               unselect(r);
             }
             else {
@@ -1148,7 +1148,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Scroll map if necessary
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isLeftMouseButton(e)) {
+      if (SwingUtils.isVanillaLeftButtonDown(e)) {
         scrollAtEdge(e.getPoint(), 15);
       }
 

@@ -567,7 +567,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (!SwingUtils.isLeftMouseButton(e)) {
+    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
       return;
     }
 
@@ -584,13 +584,13 @@ public class LOS_Thread extends AbstractConfigurable implements
       lastLocation = anchorLocation;
       lastRange = "";
       checkList.clear();
-      ctrlWhenClick = SwingUtils.isControlDown(e);
+      ctrlWhenClick = SwingUtils.isSelectionToggle(e);
     }
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (!SwingUtils.isLeftMouseButton(e)) {
+    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
       return;
     }
 
@@ -695,7 +695,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (!SwingUtils.isLeftMouseButton(e)) {
+    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
       return;
     }
 

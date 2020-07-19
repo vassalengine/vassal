@@ -113,7 +113,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
-      if (!e.isPopupTrigger() && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
+      if (SwingUtils.isVanillaLeftButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
         // Don't "eat" band-selects if unit found is non-movable
         bandSelect = BandSelectType.SPECIAL;
       }
@@ -123,7 +123,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
       if (!kbuf.contains(p)) {
-        if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) {
+        if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
           kbuf.clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
@@ -131,7 +131,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         if (movingStacksPickupUnits ||
             p.getParent() == null ||
             p.getParent().isExpanded() ||
-            SwingUtils.isRightMouseButton(e) ||
+            SwingUtils.isSelectionToggle(e) ||
             Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
         {
           kbuf.add(p);
@@ -144,7 +144,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
       else {
         // RFE 1659481 Ctrl-click deselects clicked units
-        if (SwingUtils.isControlDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+        if (SwingUtils.isSelectionToggle(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           Stack s = p.getParent();
           if (s == null) {
             kbuf.remove(p);
@@ -168,7 +168,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     
     if (bandSelect != BandSelectType.NONE) {
       bandSelectPiece = null;
-      if (!e.isShiftDown() && !SwingUtils.isControlDown(e)) { // No deselect if shift key down
+      if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) { // No deselect if shift key down
         kbuf.clear();
         
         //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
@@ -194,7 +194,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
 
     PieceVisitorDispatcher d = createDragSelector(
-      !SwingUtils.isControlDown(e), e.isAltDown(), map.componentToMap(selection)
+      !SwingUtils.isSelectionToggle(e), e.isAltDown(), map.componentToMap(selection)
     );
     
     // If it was a legit band-select drag (not just a click), our special case
@@ -217,7 +217,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
-    if (bandSelectPiece == null && !e.isShiftDown() && !SwingUtils.isControlDown(e)) {
+    if (bandSelectPiece == null && !e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
       KeyBuffer.getBuffer().clear();
     }
 
@@ -377,7 +377,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (selection == null || !SwingUtils.isLeftMouseButton(e)) {
+    if (selection == null || !SwingUtils.isVanillaLeftButtonDown(e)) {
       return;
     }
 
