@@ -421,26 +421,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     
     return foundNode;
-  }  
-  
+  }    
   
   /** 
    * @return how many total nodes match the search string
    */  
-  public final int getNumMatches(String searchString) {    
+  public final int getNumMatches(String searchString) { 
     List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
-    int hits = 0;
-
-    for (int index = 0; index < searchNodes.size(); index++) {
-      if (checkNode(searchNodes.get(index), searchString)) {
-        hits++;
-      }
-    }
-    
-    return hits;    
+    return (int) searchNodes.stream().filter(node -> checkNode(node, searchString)).count();
   }
-  
-  
+      
   /**
    * @return Search action - runs search dialog box, then searches
    */
