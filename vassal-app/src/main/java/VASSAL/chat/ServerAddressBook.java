@@ -251,7 +251,7 @@ public class ServerAddressBook {
         @Override
         public void mouseClicked(MouseEvent e) {
           if (editButton.isEnabled() && e.getClickCount() == 2
-                                     && SwingUtils.isLeftMouseButton(e)) {
+                                     && SwingUtils.isVanillaLeftButtonDown(e)) {
             int index = myList.locationToIndex(e.getPoint());
             editServer(index);
           }

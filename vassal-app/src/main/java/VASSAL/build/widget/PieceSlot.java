@@ -298,7 +298,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (e.isPopupTrigger()) {
       doPopup(e);
     }
-    else if (SwingUtils.isLeftMouseButton(e)) {
+    else if (SwingUtils.isVanillaLeftButtonDown(e)) {
       KeyBuffer.getBuffer().clear();
       Map.clearActiveMap();
       if (getPiece() != null) {
@@ -320,7 +320,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       }
       doClear = true;
     }
-    else if (SwingUtils.isLeftMouseButton(e)) {
+    else if (SwingUtils.isVanillaLeftButtonDown(e)) {
       doClear = true;
     }
 

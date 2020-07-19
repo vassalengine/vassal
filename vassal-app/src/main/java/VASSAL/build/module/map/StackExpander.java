@@ -57,7 +57,7 @@ public class StackExpander extends MouseAdapter implements Buildable {
   @Override
   public void mouseReleased(MouseEvent e) {
     if (!e.isConsumed() && e.getClickCount() == 2
-                        && SwingUtils.isLeftMouseButton(e)) {
+                        && SwingUtils.isVanillaLeftButtonDown(e)) {
       final GamePiece p = map.findPiece(e.getPoint(), PieceFinder.STACK_ONLY);
       if (p != null) {
         KeyBuffer.getBuffer().clear();
