@@ -141,6 +141,39 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   /** @deprecated use GlobalOptions.getPlayerId() */
   @Deprecated public void setHandle(String s) {
   }
+  
+  
+  /**
+   * A plain text representation of a KeyStroke.  Doesn't differ much
+   * from {@link KeyEvent#getKeyText}
+   * 
+   * In the Chatter for module overridability (Many of Java's default names are ugly/terrible)
+   */
+  public static String getKeyString(KeyStroke k) {
+    if (k == null) {
+      return null;
+    }
+        
+    String s;
+    s = KeyEvent.getKeyText(k.getKeyCode());    
+    s = s.replace(' ', '_');        
+
+    final int mods = SwingUtils.getKeyVassalToSystem(k).getModifiers();
+    if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
+      s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
+      s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    if ((mods & KeyEvent.META_DOWN_MASK) > 0) {  // This is "Command" key on Mac
+      s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
+      s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    return s.toUpperCase();
+  }
+  
 
   /** @deprecated use GlobalOptions.getPlayerId() */
   @Deprecated public String getHandle() {

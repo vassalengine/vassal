@@ -20,11 +20,11 @@ package VASSAL.tools.swing;
 import java.awt.Toolkit;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Map;
 
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -89,14 +89,14 @@ public class SwingUtils {
     boolean isSelectionToggle(MouseEvent e);
     
     /*
-     * @return whether key that activates primary shortcut keys is down (e.g. Ctrl on most platforms, Command on Mac) 
+     * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
-    boolean isShortcutKeyDown(MouseEvent e);
-        
+    KeyStroke getKeySystemToVassal (KeyStroke k);
+    
     /*
-     * @returns key that activates primary shortcut keys for our platform (e.g. Ctrl on most platforms, Command on Mac)
+     * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
      */
-    int getShortcutKey();
+    KeyStroke getKeyVassalToSystem (KeyStroke k);
   }
 
   
@@ -132,14 +132,14 @@ public class SwingUtils {
     }
     
     @Override
-    public boolean isShortcutKeyDown(MouseEvent e) {
-      return e.isControlDown(); 
+    public KeyStroke getKeySystemToVassal (KeyStroke k) {
+      return k;
     }
     
     @Override
-    public int getShortcutKey() {
-      return InputEvent.CTRL_DOWN_MASK;
-    }           
+    public KeyStroke getKeyVassalToSystem (KeyStroke k) {
+      return k;
+    }
   }
 
   
@@ -222,17 +222,40 @@ public class SwingUtils {
     public boolean isSelectionToggle(MouseEvent e) {
       return macLegacy ? e.isControlDown() : e.isMetaDown();       
     }
-    
+        
     @Override
-    public boolean isShortcutKeyDown(MouseEvent e) {
-      return macLegacy ? e.isControlDown() : e.isMetaDown(); 
+    public KeyStroke getKeySystemToVassal (KeyStroke k) {
+      if (macLegacy) {
+        return k;
+      }
+      int modifiers = k.getModifiers();
+      if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+        modifiers &= ~InputEvent.META_DOWN_MASK;
+        modifiers |= InputEvent.CTRL_DOWN_MASK;
+        return KeyStroke.getKeyStroke(k.getKeyCode(), modifiers);
+      } 
+      else {
+        return k; 
+      }      
     }
     
     @Override
-    public int getShortcutKey() {
-      return macLegacy ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
-    }       
+    public KeyStroke getKeyVassalToSystem (KeyStroke k) {
+      if (macLegacy) {
+        return k;
+      }
+      int modifiers = k.getModifiers();
+      if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+        modifiers &= ~InputEvent.CTRL_DOWN_MASK;
+        modifiers |= InputEvent.META_DOWN_MASK;
+        return KeyStroke.getKeyStroke(k.getKeyCode(), modifiers);
+      } 
+      else {
+        return k; 
+      }      
+    }
   }
+  
 
   private static final InputClassifier INPUT_CLASSIFIER =
     SystemUtils.IS_OS_MAC_OSX ?
@@ -288,18 +311,32 @@ public class SwingUtils {
   
   
   /**
-   * @return whether the event has the primary shortcut key for this platform down (normally Ctrl for most platforms, normally Command on Mac)
-   */  
-  public static boolean isShortcutKeyDown(MouseEvent e) {
-    return INPUT_CLASSIFIER.isShortcutKeyDown(e);
+   * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
+   * 
+   * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
+   * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
+   * designers on Mac implement a Command+C shortcut we want that to appear as Ctrl+C for the same module
+   * running on other platforms. But we also support a "legacy" preference to allow Mac users used to 
+   * Vassal 3.2.17 and prior mappings to continue with them.
+   */
+  public static KeyStroke getKeySystemToVassal(KeyStroke k) {
+    return INPUT_CLASSIFIER.getKeySystemToVassal(k);
   }
   
+
   /**
-   * @return return the primary shortcut key for this platform (normally Ctrl for most platforms, normally Command aka "Meta" for Mac)
-   */  
-  public static int getShortcutKey() {
-    return INPUT_CLASSIFIER.getShortcutKey();
+   * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
+   * 
+   * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
+   * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
+   * designers on Mac implement a Command+C shortcut we want that to appear as Ctrl+C for the same module
+   * running on other platforms. But we also support a "legacy" preference to allow Mac users used to 
+   * Vassal 3.2.17 and prior mappings to continue with them.
+   */
+  public static KeyStroke getKeyVassalToSystem(KeyStroke k) {
+    return INPUT_CLASSIFIER.getKeyVassalToSystem(k);
   }
+
   
 
   /**

@@ -27,7 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.Chatter;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Configurer for {@link KeyStroke} values
@@ -99,7 +101,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     case KeyEvent.VK_ALT:
       break;
     default:
-      setValue(KeyStroke.getKeyStrokeForEvent(e));
+      setValue(SwingUtils.getKeySystemToVassal(KeyStroke.getKeyStrokeForEvent(e)));
     }
   }
 
@@ -113,28 +115,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
    * from {@link KeyEvent#getKeyText}
    */
   public static String getString(KeyStroke k) {
-    if (k == null) {
-      return null;
-    }
-
-    String s = KeyEvent.getKeyText(k.getKeyCode());
-    s = s.replace(' ', '_');
-
-    final int mods = k.getModifiers();
-
-    if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.META_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    return s.toUpperCase();
+    return Chatter.getKeyString(k);    
   }
 
   /**
