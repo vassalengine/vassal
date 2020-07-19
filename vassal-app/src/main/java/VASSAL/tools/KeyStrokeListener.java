@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * Utility class for associating an Action with a keystroke from multiple
  * different component sources
@@ -51,7 +53,7 @@ public class KeyStrokeListener {
     }
     if (key != null) {
       for (KeyStrokeSource s : sources) {
-        s.getComponent().unregisterKeyboardAction(key);
+        s.getComponent().unregisterKeyboardAction(SwingUtils.getKeyVassalToSystem(key));
       }
     }
     key = newKey;
@@ -75,7 +77,7 @@ public class KeyStrokeListener {
       sources.add(src);
     }
     if (key != null) {
-      src.getComponent().registerKeyboardAction(l, key, src.getMode());
+      src.getComponent().registerKeyboardAction(l, SwingUtils.getKeyVassalToSystem(key), src.getMode());
     }
   }
 }

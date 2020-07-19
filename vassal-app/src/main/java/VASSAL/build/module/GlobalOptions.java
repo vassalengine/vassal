@@ -208,7 +208,7 @@ public class GlobalOptions extends AbstractConfigurable {
         MAC_LEGACY,
         Resources.getString("GlobalOptions.mac_legacy"),
         Boolean.FALSE);
-    macLegacyConf.addPropertyChangeListener( (evt) -> setMacLegacy(macLegacyConf.getValueBoolean()));
+    macLegacyConf.addPropertyChangeListener( (evt) -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
     prefs.addOption(macLegacyConf);
     
     validator = new SingleChildInstance(gm, getClass());
@@ -231,12 +231,12 @@ public class GlobalOptions extends AbstractConfigurable {
   }
   
   
-  public boolean isMacLegacy() {
+  public boolean isPrefMacLegacy() {
     return macLegacy;
   }
   
   
-  public void setMacLegacy(boolean b) {
+  public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     SwingUtils.setMacLegacy(b);
   }
