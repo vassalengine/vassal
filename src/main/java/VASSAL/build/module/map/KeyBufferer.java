@@ -128,20 +128,17 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
         // while not selected, then select all of the pieces in the stack
-        // RFE 1659481 - Control clicking only deselects
-        if (!SwingUtils.isControlDown(e)) {
-          if (movingStacksPickupUnits ||
-              p.getParent() == null ||
-              p.getParent().isExpanded() ||
-              SwingUtils.isRightMouseButton(e) ||
-              Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
-          {
-            kbuf.add(p);
-          }
-          else {
-            Stack s = p.getParent();
-            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
-          }
+        if (movingStacksPickupUnits ||
+            p.getParent() == null ||
+            p.getParent().isExpanded() ||
+            SwingUtils.isRightMouseButton(e) ||
+            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
+        {
+          kbuf.add(p);
+        }
+        else {
+          Stack s = p.getParent();
+          s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
         }
         // End RFE 1629255
       }
