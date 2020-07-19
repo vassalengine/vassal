@@ -101,34 +101,42 @@ public class SwingUtils {
 
   
   private static class DefaultInputClassifier implements InputClassifier {
+    @Override
     public boolean isLeftMouseButton(MouseEvent e) {
       return SwingUtilities.isLeftMouseButton(e);
     }
 
+    @Override
     public boolean isRightMouseButton(MouseEvent e) {
       return SwingUtilities.isRightMouseButton(e);
     }
 
+    @Override
     public boolean isControlDown(MouseEvent e) {
       return e.isControlDown();
     }
     
+    @Override
     public boolean isContextMouseButtonDown(MouseEvent e) {
       return SwingUtilities.isRightMouseButton(e);  
     }
         
+    @Override
     public boolean isVanillaLeftButtonDown(MouseEvent e) {
       return SwingUtilities.isLeftMouseButton(e);
     }
     
+    @Override
     public boolean isSelectionToggle(MouseEvent e) {
       return e.isControlDown();
     }
     
+    @Override
     public boolean isShortcutKeyDown(MouseEvent e) {
       return e.isControlDown(); 
     }
     
+    @Override
     public int getShortcutKey() {
       return InputEvent.CTRL_DOWN_MASK;
     }           
@@ -140,16 +148,19 @@ public class SwingUtils {
                                        MouseEvent.CTRL_DOWN_MASK;
 
     @Deprecated
+    @Override
     public boolean isLeftMouseButton(MouseEvent e) {
       return isVanillaLeftButtonDown(e);
     }
 
     @Deprecated
+    @Override
     public boolean isRightMouseButton(MouseEvent e) {
       return isContextMouseButtonDown(e);
     }
 
     @Deprecated
+    @Override
     public boolean isControlDown(MouseEvent e) {
       // The Command key on a Mac corresponds to Control everywhere else,
       // but it obviously can't be called "Command" in Java; here it's
@@ -157,7 +168,7 @@ public class SwingUtils {
       return e.isMetaDown();
     }
         
-    
+    @Override
     public boolean isContextMouseButtonDown(MouseEvent e) {
       // A "right click" on a Mac can be either a real right button, or
       // Ctrl + the left button (or Command + left button in legacy)
@@ -184,6 +195,7 @@ public class SwingUtils {
       }                 
     }
     
+    @Override
     public boolean isVanillaLeftButtonDown(MouseEvent e) {
       // The left button on a Mac is the left button, except when it's the
       // right button because Ctrl is depressed.
@@ -206,15 +218,17 @@ public class SwingUtils {
       }      
     }
     
-    
+    @Override
     public boolean isSelectionToggle(MouseEvent e) {
       return macLegacy ? e.isControlDown() : e.isMetaDown();       
     }
     
+    @Override
     public boolean isShortcutKeyDown(MouseEvent e) {
       return macLegacy ? e.isControlDown() : e.isMetaDown(); 
     }
     
+    @Override
     public int getShortcutKey() {
       return macLegacy ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
     }       
