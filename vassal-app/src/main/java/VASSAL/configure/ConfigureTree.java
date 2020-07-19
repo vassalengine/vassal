@@ -323,9 +323,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   
-  // Enumerates our configure tree in preparation for searching it
-  private final List<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
-    List<DefaultMutableTreeNode> searchNodes = new ArrayList<DefaultMutableTreeNode>();
+  /**
+   * Enumerates our configure tree in preparation for searching it
+   * @param root - root of our module's tree.
+   * @returns a list of search nodes
+   */
+  private List<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
+    List<DefaultMutableTreeNode> searchNodes = new ArrayList<>();
 
     Enumeration<?> e = root.preorderEnumeration();
     while(e.hasMoreElements()) {
@@ -335,7 +339,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   
-  // Checks a single string against our search parameters
+  /**
+   * Checks a single string against our search parameters
+   * @param target - string to check
+   * @param searchString - our search string
+   * @return true if this is a match based on our "matchCase" checkbox
+   */
   public final boolean checkString(String target, String searchString) {
     if (matchCase) {
       return target.contains(searchString);
@@ -346,7 +355,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   
-  // Checks a node of the tree against our search parameters
+
+  /**
+   * @param node - any node of our module tree
+   * @param searchString - our search string
+   * @return true if the node matches our searchString based on search configuration ("match" checkboxes)
+   */
   public final boolean checkNode(DefaultMutableTreeNode node, String searchString) {
     Configurable c = null;
     c = (Configurable) node.getUserObject();
@@ -368,9 +382,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return false;
   }
   
-  
-  // Search through the tree, starting at the currently selected location (and wrapping around if needed)
-  // Compare nodes until we find our search string (or have searched everything we can search)
+
+  /**
+   * Search through the tree, starting at the currently selected location (and wrapping around if needed)
+   * Compare nodes until we find our search string (or have searched everything we can search)
+   * @return the node we found, or null if none
+   */
   public final DefaultMutableTreeNode findNode(String searchString) {
     List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
     DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
@@ -407,7 +424,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }  
   
   
-  // Finds out how many total nodes match the search string
+  /** 
+   * @return how many total nodes match the search string
+   */  
   public final int getNumMatches(String searchString) {    
     List<DefaultMutableTreeNode> searchNodes = getSearchNodes((DefaultMutableTreeNode)getModel().getRoot());
     int hits = 0;
@@ -421,8 +440,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return hits;    
   }
   
-    
-  // Search action - runs search dialog box, then searches
+  
+  /**
+   * @return Search action - runs search dialog box, then searches
+   */
   protected Action buildSearchAction(final Configurable target) {
     final Action a = new AbstractAction(searchCmd) {
       private static final long serialVersionUID = 1L;
@@ -475,7 +496,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (!searchString.isEmpty()) {
               if (anyChanges) {
                 int matches = getNumMatches(searchString);
-                chat (String.valueOf(matches) + " " + Resources.getString("Editor.search_count") + searchString);
+                chat (matches + " " + Resources.getString("Editor.search_count") + searchString);
               }
               
               DefaultMutableTreeNode node = findNode(searchString);                
@@ -493,12 +514,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         
         
         JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-        cancel.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            d.dispose();
-          }
-        });
+        cancel.addActionListener(e1 -> d.dispose());
         
         box.add(find);
         box.add(cancel);
