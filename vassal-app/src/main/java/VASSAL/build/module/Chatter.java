@@ -50,6 +50,8 @@ import javax.swing.text.Utilities;
 import javax.swing.text.View;
 import javax.swing.text.WrappedPlainView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -138,12 +140,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     conversation.append("\n" + s); //$NON-NLS-1$
   }
   
-  
   /**
    * A plain text representation of a KeyStroke.  Doesn't differ much
    * from {@link KeyEvent#getKeyText}
    * 
-   * In the Chatter for module overridability (Many of Java's default names are ugly/terrible)
+   * In the Chatter for module custom class overridability (Many of Java's default names are ugly/terrible)
    */
   public static String getKeyString(KeyStroke k) {
     if (k == null) {
@@ -151,9 +152,39 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
         
     String s;
-    s = KeyEvent.getKeyText(k.getKeyCode());    
+    int code = k.getKeyCode();
+    switch (code) {
+    // The addition of underscores screws up these names
+    case KeyEvent.VK_ADD:
+      s = Resources.getString("Keys.numplus"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    case KeyEvent.VK_SUBTRACT:
+      s = Resources.getString("Keys.numminus"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    // More compact name, also commonly printed keys  
+    case KeyEvent.VK_PAGE_UP:
+      s = Resources.getString("Keys.pgup"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    case KeyEvent.VK_PAGE_DOWN:
+      s = Resources.getString("Keys.pgdn"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    // Non-Americans were (rightly) commenting about this
+    case KeyEvent.VK_OPEN_BRACKET:
+      s = Resources.getString("Keys.bropen"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    case KeyEvent.VK_CLOSE_BRACKET:
+      s = Resources.getString("Keys.brclose"); //$NON-NLS-1$ //$NON-NLS-2$
+      break;
+    default:
+      s = "";
+      break;
+    }
+    if (s.isEmpty() || s.contains("Keys.")) { //$NON-NLS-1$
+      s = KeyEvent.getKeyText(code); 
+    }
+    s = StringUtils.capitalize(s);
     s = s.replace(' ', '_');        
-
+    
     final int mods = SwingUtils.getKeyVassalToSystem(k).getModifiers();
     if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
@@ -167,7 +198,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    return s.toUpperCase();
+    return s;
   }
 
   /**
