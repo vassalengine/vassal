@@ -4,6 +4,7 @@
 * 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
     commons-lang3 3.10
 * 13155: Correct Dutch translations
+* 13153: Consistently ask to start logging when loading a game
 * 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects,
     and band-select gets Does-Not-Stack filter
 * 13146: Custom classes that are children fail to be culled in
