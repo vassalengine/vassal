@@ -339,6 +339,18 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       adjustSplitter();
+
+      if (gameStarting) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            Logger logger = GameModule.getGameModule().getLogger();
+            if (logger instanceof BasicLogger) {
+              ((BasicLogger)logger).queryNewLogFile(true);
+            }
+          }
+        });
+      }
     }
   }
 
@@ -827,10 +839,6 @@ public class GameState implements CommandEncoder {
           }
 
           GameModule.getGameModule().warn(msg);
-          Logger logger = GameModule.getGameModule().getLogger();
-          if (logger instanceof BasicLogger) {
-            ((BasicLogger)logger).queryNewLogFile(true);
-          }
         }
         finally {
           frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
