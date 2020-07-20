@@ -209,7 +209,11 @@ public class GlobalOptions extends AbstractConfigurable {
         Resources.getString("GlobalOptions.mac_legacy"),
         Boolean.FALSE);
     macLegacyConf.addPropertyChangeListener( (evt) -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
-    prefs.addOption(macLegacyConf);
+    
+    if (SystemUtils.IS_OS_MAC_OSX) { 
+      // Only need to *display* this preference if we're running on a Mac.
+      prefs.addOption(macLegacyConf);
+    }
     
     validator = new SingleChildInstance(gm, getClass());
   }
@@ -238,7 +242,10 @@ public class GlobalOptions extends AbstractConfigurable {
   
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
+    // Tell SwingUtils we've changed our mind about Macs
     SwingUtils.setMacLegacy(b);
+    // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
+    GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
  
 
