@@ -123,12 +123,16 @@ public class WizardSupport {
   }
 
   /**
-   * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline
+   * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline.
+   *
+   * Only adds setups that are not menus.
    *
    * @param setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
-    setups.add(setup);
+    if (!setup.isMenu()) {
+      setups.add(setup);
+    }
   }
 
   public void removePredefinedSetup(PredefinedSetup setup) {
@@ -215,18 +219,14 @@ public class WizardSupport {
   }
 
   public WizardPanelProvider createPlayOfflinePanels() {
-    ArrayList<PredefinedSetup> l = new ArrayList<>();
-    for (PredefinedSetup ps : setups) {
-      if (!ps.isMenu())
-        l.add(ps);
-    }
-    if (l.isEmpty()) {
+    if (setups.isEmpty()) {
       return GameSetupPanels.newInstance();
     }
-    else {
-      return new PlayOfflinePanels(
-          Resources.getString("WizardSupport.WizardSupport.PlayOffline"), Resources.getString("WizardSupport.WizardSupport.SelectSetup"), l); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+
+    return new PlayOfflinePanels(
+      Resources.getString("WizardSupport.WizardSupport.PlayOffline"), //$NON-NLS-1$
+      Resources.getString("WizardSupport.WizardSupport.SelectSetup"), //$NON-NLS-2$
+      setups);
   }
 
   /**
