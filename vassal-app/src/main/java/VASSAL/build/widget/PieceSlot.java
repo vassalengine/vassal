@@ -346,7 +346,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();
@@ -354,7 +354,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyTyped(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();
@@ -362,7 +362,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyReleased(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();

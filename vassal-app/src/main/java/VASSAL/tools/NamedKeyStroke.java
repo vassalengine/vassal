@@ -22,6 +22,8 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * A NamedKeyStroke is a KeyStroke with a name given by the module developer.
  * An actual KeyStroke is allocated from a pool of KeyStrokes at run-time and
@@ -135,7 +137,7 @@ public class NamedKeyStroke {
   }
 
   public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
-    return new NamedKeyStroke(KeyStroke.getKeyStrokeForEvent(e));
+    return new NamedKeyStroke(SwingUtils.getKeyStrokeForEvent(e));
   }
 
 }

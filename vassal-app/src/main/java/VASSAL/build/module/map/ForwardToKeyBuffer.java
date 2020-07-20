@@ -28,6 +28,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.counters.KeyBuffer;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This KeyListener forwards key event from a {@link Map} to the
@@ -87,10 +88,10 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
       lastConsumedEvent = null;
     }
     final int c = e.getKeyCode();
-    // Don't pass SHIFT or CONTROL only to counters
-    if (!e.isConsumed() && c != KeyEvent.VK_SHIFT && c != KeyEvent.VK_CONTROL) {
+    // Don't pass modifier keys alone to counters
+    if (!e.isConsumed() && c != KeyEvent.VK_SHIFT && c != KeyEvent.VK_CONTROL && c != KeyEvent.VK_ALT && c != KeyEvent.VK_META) {
       Command comm = KeyBuffer.getBuffer().keyCommand
-          (KeyStroke.getKeyStrokeForEvent(e));
+          (SwingUtils.getKeyStrokeForEvent(e));
       if (comm != null && !comm.isNull()) {
         GameModule.getGameModule().sendAndLog(comm);
         e.consume();

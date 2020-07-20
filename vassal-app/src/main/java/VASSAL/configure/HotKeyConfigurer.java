@@ -101,7 +101,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     case KeyEvent.VK_ALT:
       break;
     default:
-      setValue(SwingUtils.getKeySystemToVassal(KeyStroke.getKeyStrokeForEvent(e)));
+      setValue(SwingUtils.getKeySystemToVassal(SwingUtils.getKeyStrokeForEvent(e)));
     }
   }
 

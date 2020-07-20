@@ -80,6 +80,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -733,7 +734,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public void keyPressed(KeyEvent e) {
     if (hotkey != null && Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(USE_KEYBOARD))) {
-      if (hotkey.equals(KeyStroke.getKeyStrokeForEvent(e))) {
+      if (hotkey.equals(SwingUtils.getKeyStrokeForEvent(e))) {
         showDetails();
       }
       else {

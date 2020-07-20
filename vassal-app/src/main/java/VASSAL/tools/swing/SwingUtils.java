@@ -20,6 +20,7 @@ package VASSAL.tools.swing;
 import java.awt.Toolkit;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Map;
@@ -96,7 +97,7 @@ public class SwingUtils {
     /*
      * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
      */
-    KeyStroke getKeyVassalToSystem (KeyStroke k);
+    KeyStroke getKeyVassalToSystem (KeyStroke k);    
   }
 
   
@@ -131,15 +132,44 @@ public class SwingUtils {
       return e.isControlDown();
     }
     
+    //@Override
+    //public KeyStroke getKeySystemToVassal (KeyStroke k) {
+    //  return k;
+    //}
+    
+    //@Override
+    //public KeyStroke getKeyVassalToSystem (KeyStroke k) {
+    //  return k;
+    //}
+    
+    
     @Override
     public KeyStroke getKeySystemToVassal (KeyStroke k) {
-      return k;
+      int modifiers = k.getModifiers();
+      if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+        modifiers &= ~(InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK);
+        modifiers |= InputEvent.CTRL_DOWN_MASK;
+        KeyStroke k2 = KeyStroke.getKeyStroke(k.getKeyCode(), modifiers); 
+        return k2; 
+      } 
+      else {
+        return k; 
+      }      
     }
     
     @Override
     public KeyStroke getKeyVassalToSystem (KeyStroke k) {
-      return k;
-    }
+      int modifiers = k.getModifiers();
+      if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+        modifiers &= ~(InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK);
+        modifiers |= InputEvent.ALT_DOWN_MASK;
+        KeyStroke k2 = KeyStroke.getKeyStroke(k.getKeyCode(), modifiers); 
+        return k2; 
+      } 
+      else {
+        return k; 
+      }      
+    }    
   }
 
   
@@ -336,8 +366,23 @@ public class SwingUtils {
   public static KeyStroke getKeyVassalToSystem(KeyStroke k) {
     return INPUT_CLASSIFIER.getKeyVassalToSystem(k);
   }
-
   
+  
+  
+  /**
+   * @returns translation of KeyEvent (local system) to Vassal (to handle Mac platform support)
+   * 
+   * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
+   * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
+   * designers on Mac implement a Command+C shortcut we want that to appear as Ctrl+C for the same module
+   * running on other platforms. But we also support a "legacy" preference to allow Mac users used to 
+   * Vassal 3.2.17 and prior mappings to continue with them.
+   */
+  public static KeyStroke getKeyStrokeForEvent (KeyEvent e) {
+    return getKeySystemToVassal(KeyStroke.getKeyStrokeForEvent(e));
+  }
+
+
 
   /**
    * @return whether the drag is non-mouse or effectively from the left button
