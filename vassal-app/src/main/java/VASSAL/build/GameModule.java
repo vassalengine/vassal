@@ -403,6 +403,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
+  
+  
+  /**
+   * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners 
+   */
+  public void refreshKeyStrokeListeners() {
+    for (KeyStrokeListener kl : keyStrokeListeners) {
+      kl.setKeyStroke(kl.getKeyStroke());
+    }
+  }
+  
 
   @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
