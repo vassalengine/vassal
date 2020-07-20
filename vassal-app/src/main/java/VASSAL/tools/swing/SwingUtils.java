@@ -239,7 +239,7 @@ public class SwingUtils {
         // We must also remove the deprecated META_MASK, or Java will end up restoring the META_DOWN_MASK.
         modifiers &= ~(InputEvent.META_DOWN_MASK | InputEvent.META_MASK);
         modifiers |= InputEvent.CTRL_DOWN_MASK;
-        return KeyStroke.getKeyStroke(k.getKeyCode(), modifiers);
+        return KeyStroke.getKeyStroke(k.getKeyCode(), modifiers, k.isOnKeyRelease());
       }
       else if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
         // Don't let Vassal recognize the Mac "Control" key as a "Ctrl" keystroke for keyboard commands. Because that would be bad-app-behavior, naughty naughty.
