@@ -284,4 +284,11 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     launchAction.setEnabled(!gameStarting);
   }
 
+  @Override
+  public String toString() {
+    return "PredefinedSetup{" +
+      "name='" + name + '\'' +
+      ", menu='" + isMenu + '\'' +
+      '}';
+  }
 }
