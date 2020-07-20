@@ -53,6 +53,7 @@ public class KeyStrokeListener {
     }
     if (key != null) {
       for (KeyStrokeSource s : sources) {
+        //BR// We are registering/unregistering events directly with components, so we perform our special Mac keyboard translations.
         s.getComponent().unregisterKeyboardAction(SwingUtils.getKeyVassalToSystem(key));
       }
     }
@@ -67,7 +68,8 @@ public class KeyStrokeListener {
   }
 
   public void keyPressed(KeyStroke stroke) {
-    if (stroke != null && stroke.equals(key)) {
+    //BR// We are receiving events directly from components, so we perform our special Mac keyboard translations.
+    if (stroke != null && stroke.equals(SwingUtils.getKeyVassalToSystem(key))) {
       l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
     }
   }
@@ -77,6 +79,7 @@ public class KeyStrokeListener {
       sources.add(src);
     }
     if (key != null) {
+      //BR// We are registering with components directly, so we perform our special Mac keyboard translations.
       src.getComponent().registerKeyboardAction(l, SwingUtils.getKeyVassalToSystem(key), src.getMode());
     }
   }
