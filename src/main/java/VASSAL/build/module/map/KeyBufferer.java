@@ -151,6 +151,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           }
           else if (!s.isExpanded()) {
             s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
+          } 
+          else {
+            kbuf.remove(p);  
           }
         }
         // End RFE 1659481
