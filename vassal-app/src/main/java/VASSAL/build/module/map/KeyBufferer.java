@@ -51,7 +51,7 @@ import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This component listens for mouse clicks on a map and draws the selection 
- * rectangle.
+ * rectangle. ...
  *
  * If the user clicks on a {@link GamePiece}, that piece is added to the
  * {@link KeyBuffer}. {@link #draw(Graphics, Map)} is responsible for
