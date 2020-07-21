@@ -33,8 +33,8 @@ for i in mac,x64 windows,x64 windows,x32 ; do
       unzip -d "$extract_dir" "$real_filename"
       # top-level directory in windows archives is the full version number;
       # flatten that to get a predictable path
-      f=($extract_dir/*)
-      mv $extract_dir/*/* $extract_dir
+      f=("$extract_dir"/*)
+      mv "$extract_dir"/*/* "$extract_dir"
       rmdir "${f[@]}"
     else
       tar -C "$extract_dir" --strip-components=1 -xvf "$real_filename"
