@@ -70,6 +70,15 @@ JDOC:=$(JAVAPATH)/javadoc
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
+# fixes javadoc 11 bug that generates invalid search urls
+JDOCVER:=$(shell javadoc --version 2>/dev/null | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
+ifeq ($(JDOCVER),11)
+  JDOCOPS:=--no-module-directories 
+else ifeq ($(JDOCVER),12)
+  JDOCOPS:=--no-module-directories 
+endif
+
+
 NSIS:=makensis
 #DMG:=dmg
 DMG:=../libdmg-hfsplus/dmg/dmg
@@ -253,7 +262,7 @@ upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
+	$(JDOC) $(JDOCOPS) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
