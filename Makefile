@@ -9,7 +9,7 @@
 #
 # Also you might possibly need mingw32 for use with launch4j, depending on
 # the architecture of your machine.
-# 
+#
 # If your Linux distribution does not package nsis, you can build it. Get
 # both the (Windows) binary and source for NSIS and build with scons:
 #
@@ -36,10 +36,10 @@
 
 SHELL:=/bin/bash
 
-SRCDIR:=src/main/java
-TESTDIR:=src/test/java
-LIBDIR:=target/lib
-CLASSDIR:=target/classes
+SRCDIR:=vassal-app/src/main/java
+TESTDIR:=vassal-app/src/test/java
+LIBDIR:=release-prepare/target/lib
+CLASSDIR:=vassal-app/target/classes
 TMPDIR:=tmp
 JDOCDIR:=javadoc
 DOCDIR:=doc
@@ -49,6 +49,7 @@ JDKDIR:=jdks
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
 VNUM:=3.3.1
+JARNAME:=vassal-app-3.3.2-SNAPSHOT
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
@@ -75,9 +76,9 @@ JLINK:=$(JAVAPATH)/jlink
 # fixes javadoc 11 bug that generates invalid search urls
 JDOCVER:=$(shell javadoc --version 2>/dev/null | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
 ifeq ($(JDOCVER),11)
-  JDOCOPS:=--no-module-directories 
+  JDOCOPS:=--no-module-directories
 else ifeq ($(JDOCVER),12)
-  JDOCOPS:=--no-module-directories 
+  JDOCOPS:=--no-module-directories
 endif
 
 
@@ -99,6 +100,7 @@ $(TMPDIR):
 
 $(LIBDIR)/Vengine.jar:
 	$(MVN) package
+	mv $(LIBDIR)/$(JARNAME).jar $(LIBDIR)/Vengine.jar
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
@@ -147,7 +149,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.ap
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
-	
+
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
 	$(DMG) $< $@
 
