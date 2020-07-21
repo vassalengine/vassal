@@ -1,0 +1,281 @@
+bsh.JavaCharStream.getColumn()
+bsh.JavaCharStream.getLine()
+bsh.NameSpace.setTypedVariable(java.lang.String, java.lang.Class, java.lang.Object, boolean)
+VASSAL.build.AbstractBuildable.getAllDescendantComponents(java.lang.Class)
+VASSAL.build.AbstractBuildable.getBuildComponents()
+VASSAL.build.AbstractBuildable.getComponents(java.lang.Class)
+VASSAL.build.GameModule.compareVersions(java.lang.String, java.lang.String)
+VASSAL.build.GameModule.fireKeyStroke(javax.swing.KeyStroke)
+VASSAL.build.GameModule.getFileDialog()
+VASSAL.build.GameModule.getGlobalPrefs()
+VASSAL.build.GameModule.setGlobalPrefs(VASSAL.preferences.Prefs)
+VASSAL.build.module.Chatter.getHandle()
+VASSAL.build.module.Chatter.setHandle(java.lang.String)
+VASSAL.build.module.DiceButton.getReportPrefix()
+VASSAL.build.module.DiceButton.getReportSuffix()
+VASSAL.build.module.dice.DieServer.getReportSuffix()
+VASSAL.build.module.documentation.AboutScreen.AboutScreen(java.awt.Image)
+VASSAL.build.module.documentation.HelpFile.toURL(java.io.File)
+VASSAL.build.module.EventLog.decodeEvents(java.lang.String)
+VASSAL.build.module.EventLog.encodeEvents(java.util.Enumeration)
+VASSAL.build.module.gamepieceimage.ImageItem.image
+VASSAL.build.module.gamepieceimage.InstanceConfigurer.getValueArrayList()
+VASSAL.build.module.GameState.getGameComponentsEnum()
+VASSAL.build.module.GameState.getPieces()
+VASSAL.build.module.GlobalOptions.isAveragedScaling()
+VASSAL.build.module.map.BoardPicker$SetBoards.BoardPicker$SetBoards(VASSAL.build.module.map.BoardPicker, java.util.Vector)
+VASSAL.build.module.map.boardPicker.Board$Cleanup
+VASSAL.build.module.map.boardPicker.Board$Cleanup.addBoard(VASSAL.build.module.map.boardPicker.Board)
+VASSAL.build.module.map.boardPicker.Board$Cleanup.Board$Cleanup()
+VASSAL.build.module.map.boardPicker.Board$Cleanup.gameStarted
+VASSAL.build.module.map.boardPicker.Board$Cleanup.getInstance()
+VASSAL.build.module.map.boardPicker.Board$Cleanup.getRestoreCommand()
+VASSAL.build.module.map.boardPicker.Board$Cleanup.init()
+VASSAL.build.module.map.boardPicker.Board$Cleanup.instance
+VASSAL.build.module.map.boardPicker.Board$Cleanup.setup(boolean)
+VASSAL.build.module.map.boardPicker.Board$Cleanup.toClean
+VASSAL.build.module.map.boardPicker.Board.boardImage
+VASSAL.build.module.map.boardPicker.Board.boardName
+VASSAL.build.module.map.boardPicker.Board.cleanUp()
+VASSAL.build.module.map.boardPicker.Board.fixBounds()
+VASSAL.build.module.map.boardPicker.Board.fixImage()
+VASSAL.build.module.map.boardPicker.Board.fixImage(java.awt.Component)
+VASSAL.build.module.map.boardPicker.Board.getScaledImage(double, java.awt.Component)
+VASSAL.build.module.map.BoardPicker.getCurrentBoards()
+VASSAL.build.module.map.BoardPicker.pack()
+VASSAL.build.module.map.BoardPicker.pickBoards()
+VASSAL.build.module.map.BoardPicker.setBoards(java.util.Enumeration)
+VASSAL.build.module.map.BoardPicker.status
+VASSAL.build.module.Map.componentCoordinates(java.awt.Point)
+VASSAL.build.module.Map.componentRectangle(java.awt.Rectangle)
+VASSAL.build.module.map.CounterDetailViewer.drawGraphics(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)
+VASSAL.build.module.map.CounterDetailViewer.drawLabel(java.awt.Graphics, java.awt.Point, java.lang.String)
+VASSAL.build.module.map.CounterDetailViewer.drawText(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)
+VASSAL.build.module.Map.getAllBoards()
+VASSAL.build.module.Map.getAllMaps()
+VASSAL.build.module.map.GlobalMap.componentCoordinates(java.awt.Point)
+VASSAL.build.module.map.GlobalMap.mapCoordinates(java.awt.Point)
+VASSAL.build.module.map.ImageSaver.writeImage(java.io.OutputStream[])
+VASSAL.build.module.Map.mapCoordinates(java.awt.Point)
+VASSAL.build.module.Map.mapRectangle(java.awt.Rectangle)
+VASSAL.build.module.map.MapShader.shadePattern
+VASSAL.build.module.map.PieceMover.applyKeyAfterMove(java.util.List, VASSAL.command.Command, javax.swing.KeyStroke)
+VASSAL.build.module.map.PieceMover.selectMovablePieces(java.awt.Point)
+VASSAL.build.module.map.PieceMover.setOldLocation(VASSAL.counters.GamePiece)
+VASSAL.build.module.Map.reposition(VASSAL.counters.GamePiece, int)
+VASSAL.build.module.map.SelectionHighlighter.image
+VASSAL.build.module.Map.setBoards(java.util.Enumeration)
+VASSAL.build.module.map.Zoomer.maxZoom
+VASSAL.build.module.map.Zoomer.zoom
+VASSAL.build.module.map.Zoomer.zoomFactor
+VASSAL.build.module.map.Zoomer.zoomLevel
+VASSAL.build.module.map.Zoomer.zoomStart
+VASSAL.build.module.ObscurableOptions$SetAllowed.ObscurableOptions$SetAllowed(java.util.Vector)
+VASSAL.build.module.PrivateMap.setBoards(java.util.Enumeration)
+VASSAL.build.module.properties.EnumeratedPropertyPrompt.EnumeratedPropertyPrompt(VASSAL.build.module.properties.PropertyPrompt$DialogParent, java.lang.String, java.lang.String[])
+VASSAL.build.module.SpecialDiceButton.getReportSuffix()
+VASSAL.build.module.turn.TurnTracker.replace(java.lang.StringBuffer, java.lang.String, java.lang.String)
+VASSAL.build.widget.PieceSlot$MyConfigurer.setBaseWindow(VASSAL.build.module.documentation.HelpWindow)
+VASSAL.chat.PrivateChatter.getHandle()
+VASSAL.chat.ServerAddressBook$PeerClientEntry
+VASSAL.chat.ServerAddressBook$PeerClientEntry.addAdditionalControls(javax.swing.JComponent, boolean)
+VASSAL.chat.ServerAddressBook$PeerClientEntry.getAdditionalProperties(java.util.Properties)
+VASSAL.chat.ServerAddressBook$PeerClientEntry.getIconName()
+VASSAL.chat.ServerAddressBook$PeerClientEntry.isDescriptionEditable()
+VASSAL.chat.ServerAddressBook$PeerClientEntry.isRemovable()
+VASSAL.chat.ServerAddressBook$PeerClientEntry.listenPort
+VASSAL.chat.ServerAddressBook$PeerClientEntry.ServerAddressBook$PeerClientEntry(VASSAL.chat.ServerAddressBook)
+VASSAL.chat.ServerAddressBook$PeerClientEntry.ServerAddressBook$PeerClientEntry(VASSAL.chat.ServerAddressBook, java.util.Properties)
+VASSAL.chat.ServerAddressBook$PeerClientEntry.serverIp
+VASSAL.chat.ServerAddressBook$PeerClientEntry.serverName
+VASSAL.chat.ServerAddressBook$PeerClientEntry.serverPort
+VASSAL.chat.ServerAddressBook$PeerClientEntry.setAdditionalProperties(java.util.Properties)
+VASSAL.chat.ServerAddressBook$PeerClientEntry.this$0
+VASSAL.chat.ServerAddressBook$PeerClientEntry.toString()
+VASSAL.chat.SimpleRoom.getPlayers()
+VASSAL.command.ChangePiece.ChangePiece(java.lang.String, java.lang.String)
+VASSAL.command.Command.hasNullSubcommands()
+VASSAL.command.ConditionalCommand$Eq.ConditionalCommand$Eq(java.lang.String, java.util.Vector)
+VASSAL.command.ConditionalCommand$Eq.getValues()
+VASSAL.configure.ConfigureTree.buildAddActions(VASSAL.build.Configurable)
+VASSAL.counters.BasicPiece.cloneKey
+VASSAL.counters.BasicPiece.deleteKey
+VASSAL.counters.BasicPiece.image
+VASSAL.counters.Deck.Deck()
+VASSAL.counters.Deck.Deck(java.lang.String)
+VASSAL.counters.Deck.Deck(java.lang.String, VASSAL.build.module.properties.PropertySource)
+VASSAL.counters.Deck.getEmptyKey()
+VASSAL.counters.Deck.setContents(java.util.Iterator)
+VASSAL.counters.Deck.setEmptyKey(javax.swing.KeyStroke)
+VASSAL.counters.Decorator.setOldProperties()
+VASSAL.counters.DragBuffer.init(VASSAL.counters.DragBuffer)
+VASSAL.counters.DragBuffer.sort(VASSAL.tools.Sort$Comparator)
+VASSAL.counters.Embellishment0$Ed.oldgetType()
+VASSAL.counters.Embellishment0.getCurrentImage()
+VASSAL.counters.Embellishment0.oldGetType()
+VASSAL.counters.Embellishment.getCurrentImage()
+VASSAL.counters.Embellishment.oldGetType()
+VASSAL.counters.Footprint.getPointList()
+VASSAL.counters.FreeRotator.getRotatedBounds()
+VASSAL.counters.FreeRotator.getRotatedImage(double, java.awt.Component)
+VASSAL.counters.FreeRotator.images
+VASSAL.counters.FreeRotator.unrotated
+VASSAL.counters.Hideable.setAllHidden(boolean)
+VASSAL.counters.KeyBuffer.getPieces()
+VASSAL.counters.MultiImagePicker.getImageNames()
+VASSAL.counters.Obscurable.isMaskableBy(java.lang.String)
+VASSAL.counters.Obscurable.setAllHidden(boolean)
+VASSAL.counters.PieceDefiner.setBaseWindow(VASSAL.build.module.documentation.HelpWindow)
+VASSAL.counters.PieceImage
+VASSAL.counters.PieceImage.getImage(java.awt.Component)
+VASSAL.counters.PieceImage.im
+VASSAL.counters.PieceImage.isChanged()
+VASSAL.counters.PieceImage.lastState
+VASSAL.counters.PieceImage.piece
+VASSAL.counters.PieceImage.PieceImage(VASSAL.counters.GamePiece)
+VASSAL.counters.PieceIterator.PieceIterator(java.util.Enumeration)
+VASSAL.counters.PieceIterator.PieceIterator(java.util.Enumeration, VASSAL.counters.PieceFilter)
+VASSAL.counters.PieceIterator.visible(java.util.Enumeration)
+VASSAL.counters.Stack.getPieces()
+VASSAL.counters.Stack.getPiecesInReverseOrder()
+VASSAL.counters.Stack.getPiecesInVisibleOrder()
+VASSAL.i18n.Resources.getEditorString(java.lang.String)
+VASSAL.i18n.Resources.getString(java.util.ResourceBundle, java.lang.String)
+VASSAL.i18n.Resources.getVassalString(java.lang.String)
+VASSAL.Info.getDocsDir()
+VASSAL.Info.getMinorVersion()
+VASSAL.Info.is2dEnabled()
+VASSAL.Info.isDndEnabled()
+VASSAL.Info.isMacOsX()
+VASSAL.Info.isMacOSX()
+VASSAL.Info.isWindows()
+VASSAL.launch.Command
+VASSAL.launch.Command.execute()
+VASSAL.tools.ArchiveWriter.ArchiveWriter(java.util.zip.ZipFile)
+VASSAL.tools.ArchiveWriter.isImageAdded(java.lang.String)
+VASSAL.tools.ArchiveWriter.write()
+VASSAL.tools.ArchiveWriter.write(boolean)
+VASSAL.tools.BackgroundTask
+VASSAL.tools.BackgroundTask.BackgroundTask()
+VASSAL.tools.BackgroundTask.doFirst()
+VASSAL.tools.BackgroundTask.doLater()
+VASSAL.tools.BackgroundTask.start()
+VASSAL.tools.DataArchive.addImageSource(java.lang.String, VASSAL.tools.ImageSource)
+VASSAL.tools.DataArchive.clearScaledImageCache()
+VASSAL.tools.DataArchive.clearTransformedImageCache()
+VASSAL.tools.DataArchive.findImage(java.io.File, java.lang.String)
+VASSAL.tools.DataArchive.findImage(java.io.File, java.lang.String, java.lang.String)
+VASSAL.tools.DataArchive.getArchiveURL()
+VASSAL.tools.DataArchive.getBytes(java.io.InputStream)
+VASSAL.tools.DataArchive.getCachedImage(java.lang.String)
+VASSAL.tools.DataArchive.getFileStream(java.io.File, java.lang.String)
+VASSAL.tools.DataArchive.getFileStream(java.io.File, java.lang.String, java.lang.String)
+VASSAL.tools.DataArchive.getFileStream(java.lang.String)
+VASSAL.tools.DataArchive.getImageBounds(java.awt.Image)
+VASSAL.tools.DataArchive.getImageInputStream(java.lang.String)
+VASSAL.tools.DataArchive.getImage(java.io.InputStream)
+VASSAL.tools.DataArchive.getImage(java.lang.String)
+VASSAL.tools.DataArchive.getImageSize(java.lang.String)
+VASSAL.tools.DataArchive.getImageURL(java.lang.String)
+VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double)
+VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double, boolean, boolean)
+VASSAL.tools.DataArchive.getTransformedImage(java.awt.Image, double, double)
+VASSAL.tools.DataArchive.getTransformedImage(java.awt.Image, double, double, boolean)
+VASSAL.tools.DataArchive.imageNames
+VASSAL.tools.DataArchive.imageSources
+VASSAL.tools.DataArchive.improvedScaling(java.awt.Image, int, int)
+VASSAL.tools.DataArchive.isNameCacheStale()
+VASSAL.tools.DataArchive.listImageNames(java.util.Collection)
+VASSAL.tools.DataArchive.removeImageSource(java.lang.String)
+VASSAL.tools.DataArchive.setOfImageNames()
+VASSAL.tools.DataArchive.soundsDir
+VASSAL.tools.DataArchive.SOUNDS_DIR
+VASSAL.tools.DataArchive.unCacheImage(java.awt.Image)
+VASSAL.tools.DataArchive.unCacheImage(java.lang.String)
+VASSAL.tools.EnumeratedIterator
+VASSAL.tools.EnumeratedIterator.EnumeratedIterator(java.util.Iterator)
+VASSAL.tools.EnumeratedIterator.hasMoreElements()
+VASSAL.tools.EnumeratedIterator.i
+VASSAL.tools.EnumeratedIterator.nextElement()
+VASSAL.tools.FutureUtils
+VASSAL.tools.FutureUtils.FutureUtils()
+VASSAL.tools.FutureUtils.wait(java.util.concurrent.Future)
+VASSAL.tools.HashCode
+VASSAL.tools.HashCode.hash(boolean)
+VASSAL.tools.HashCode.hash(boolean[])
+VASSAL.tools.HashCode.hash(byte)
+VASSAL.tools.HashCode.hash(byte[])
+VASSAL.tools.HashCode.hash(char)
+VASSAL.tools.HashCode.hash(char[])
+VASSAL.tools.HashCode.HashCode()
+VASSAL.tools.HashCode.hash(double)
+VASSAL.tools.HashCode.hash(double[])
+VASSAL.tools.HashCode.hash(float)
+VASSAL.tools.HashCode.hash(float[])
+VASSAL.tools.HashCode.hash(int)
+VASSAL.tools.HashCode.hash(int[])
+VASSAL.tools.HashCode.hash(java.lang.Object)
+VASSAL.tools.HashCode.hash(java.lang.Object[])
+VASSAL.tools.HashCode.hash(long)
+VASSAL.tools.HashCode.hash(long[])
+VASSAL.tools.HashCode.hash(short)
+VASSAL.tools.HashCode.hash(short[])
+VASSAL.tools.JarArchive.getFileStream(java.lang.String)
+VASSAL.tools.logging.LogEntry
+VASSAL.tools.logging.LogEntry.BUG
+VASSAL.tools.logging.LogEntry.DEBUG
+VASSAL.tools.logging.LogEntry.ERROR
+VASSAL.tools.logging.LogEntry.LogEntry(int, int, java.lang.Throwable, java.lang.String, boolean)
+VASSAL.tools.logging.LogEntry.LogEntry(long, int, int, java.lang.Throwable, java.lang.String, boolean)
+VASSAL.tools.logging.LogEntry.message
+VASSAL.tools.logging.LogEntry.MESSAGE
+VASSAL.tools.logging.LogEntry.pid
+VASSAL.tools.logging.LogEntry.serialVersionUID
+VASSAL.tools.logging.LogEntry.SYSTEM
+VASSAL.tools.logging.LogEntry.timestamp
+VASSAL.tools.logging.LogEntry.toString()
+VASSAL.tools.logging.LogEntry.trace
+VASSAL.tools.logging.LogEntry.type
+VASSAL.tools.logging.LogEntry.wait
+VASSAL.tools.logging.LogEntry.WARNING
+VASSAL.tools.logging.Logger
+VASSAL.tools.logging.Logger.addLogListener(VASSAL.tools.logging.LogListener)
+VASSAL.tools.logging.Logger.BUG
+VASSAL.tools.logging.Logger.DEBUG
+VASSAL.tools.logging.Logger.enqueue(VASSAL.tools.logging.LogEntry)
+VASSAL.tools.logging.Logger.ERROR
+VASSAL.tools.logging.Logger.getLogListeners()
+VASSAL.tools.logging.Logger.logAndWait(java.lang.String)
+VASSAL.tools.logging.Logger.logAndWait(java.lang.String, int)
+VASSAL.tools.logging.Logger.logAndWait(java.lang.Throwable)
+VASSAL.tools.logging.Logger.logAndWait(java.lang.Throwable, int)
+VASSAL.tools.logging.Logger.logAndWait(java.lang.Throwable, java.lang.String)
+VASSAL.tools.logging.Logger.logAndWait(java.lang.Throwable, java.lang.String, int)
+VASSAL.tools.logging.Logger.Logger()
+VASSAL.tools.logging.Logger.log(java.lang.String)
+VASSAL.tools.logging.Logger.log(java.lang.String, int)
+VASSAL.tools.logging.Logger.log(java.lang.Throwable)
+VASSAL.tools.logging.Logger.log(java.lang.Throwable, int)
+VASSAL.tools.logging.Logger.log(java.lang.Throwable, java.lang.String)
+VASSAL.tools.logging.Logger.log(java.lang.Throwable, java.lang.String, int)
+VASSAL.tools.logging.Logger.MESSAGE
+VASSAL.tools.logging.Logger.pid
+VASSAL.tools.logging.Logger.removeLogListener(VASSAL.tools.logging.LogListener)
+VASSAL.tools.logging.Logger.static {}
+VASSAL.tools.logging.Logger.SYSTEM
+VASSAL.tools.logging.Logger.WARNING
+VASSAL.tools.logging.LogListener
+VASSAL.tools.logging.LogListener.handle(VASSAL.tools.logging.LogEntry)
+VASSAL.tools.PlayerIdFormattedString
+VASSAL.tools.PlayerIdFormattedString.PlayerIdFormattedString()
+VASSAL.tools.PlayerIdFormattedString.PlayerIdFormattedString(java.lang.String)
+VASSAL.tools.Sort
+VASSAL.tools.Sort$Alpha
+VASSAL.tools.Sort$Alpha.compare(java.lang.Object, java.lang.Object)
+VASSAL.tools.Sort$Alpha.Sort$Alpha()
+VASSAL.tools.Sort$Comparator
+VASSAL.tools.Sort$Comparator.compare(java.lang.Object, java.lang.Object)
+VASSAL.tools.Sort.quicksort(java.util.Vector, int, int, VASSAL.tools.Sort$Comparator)
+VASSAL.tools.Sort.quicksort(java.util.Vector, VASSAL.tools.Sort$Comparator)
+VASSAL.tools.Sort.Sort()
+VASSAL.tools.Sort.swap(java.util.Vector, int, int)
