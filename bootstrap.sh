@@ -51,7 +51,7 @@ mkdir -p "$DMGDIR"
 pushd "$DMGDIR"
 
 if [ ! -d libdmg-hfsplus ]; then
-  git clone https://github.com/uckelman/libdmg-hfsplus.git
+  git clone https://github.com/vassalengine/libdmg-hfsplus.git
 fi
 
 pushd libdmg-hfsplus
