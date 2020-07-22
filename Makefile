@@ -49,7 +49,7 @@ JDKDIR:=jdks
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
 VNUM:=3.3.2
-JARNAME:=vassal-app-3.3.2-SNAPSHOT
+JARNAME:=vassal-app-3.3.3-SNAPSHOT
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
