@@ -43,7 +43,7 @@ public abstract class AbstractSwingUtilsTestIsMouseButton {
     when(mouseEvent.getModifiersEx()).thenReturn(mouseEventParams[2]);
 
     // run
-    final boolean result = SwingUtils.isLeftMouseButton(mouseEvent);
+    final boolean result = SwingUtils.isVanillaLeftButtonDown(mouseEvent);
 
     // assert
     assertThat(result, is(expectedResult[0]));
@@ -58,7 +58,7 @@ public abstract class AbstractSwingUtilsTestIsMouseButton {
     when(mouseEvent.getModifiersEx()).thenReturn(mouseEventParams[2]);
 
     // run
-    final boolean result = SwingUtils.isRightMouseButton(mouseEvent);
+    final boolean result = SwingUtils.isContextMouseButtonDown(mouseEvent);
 
     // assert
     assertThat(result, is(expectedResult[1]));
