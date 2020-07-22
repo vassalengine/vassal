@@ -658,8 +658,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Our show-overlap setting controls whether we're allowed to show all pieces overlapping this spot, or only pieces at the exact location of the first piece we find.
         if (!showingOverlap && foundPieceAt == null) {
-            foundPieceAt = p.getPosition();
-          }
+          foundPieceAt = p.getPosition();
+        }
 
         pieces.add(insertPos++, p);
       }
