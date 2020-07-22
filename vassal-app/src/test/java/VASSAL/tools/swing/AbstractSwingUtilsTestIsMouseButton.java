@@ -43,7 +43,7 @@ public abstract class AbstractSwingUtilsTestIsMouseButton {
     when(mouseEvent.getModifiersEx()).thenReturn(mouseEventParams[2]);
 
     // run
-    final boolean result = SwingUtils.isVanillaLeftButtonDown(mouseEvent);
+    final boolean result = SwingUtils.isMainMouseButtonDown(mouseEvent);
 
     // assert
     assertThat(result, is(expectedResult[0]));

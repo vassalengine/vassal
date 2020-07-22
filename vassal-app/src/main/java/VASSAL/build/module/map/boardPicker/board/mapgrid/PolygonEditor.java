@@ -202,7 +202,7 @@ public class PolygonEditor extends JPanel {
   private class ModifyPolygon extends MouseInputAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         moveSelectedPoint(e);
         scrollAtEdge(e.getPoint(), 15);
         repaint();
@@ -218,7 +218,7 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         moveSelectedPoint(e);
         repaint();
       }
@@ -301,7 +301,7 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mousePressed(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         selected = -1;
         double minDist = Float.MAX_VALUE;
 
@@ -349,7 +349,7 @@ public class PolygonEditor extends JPanel {
   private class DefineRectangle extends MouseInputAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         polygon = new Polygon();
         polygon.addPoint(e.getX(), e.getY());
         polygon.addPoint(e.getX(), e.getY());
@@ -361,7 +361,7 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         polygon.xpoints[1] = e.getX();
         polygon.xpoints[2] = e.getX();
         polygon.ypoints[2] = e.getY();
@@ -372,7 +372,7 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         removeMouseListener(this);
         removeMouseMotionListener(this);
         setupForEdit();

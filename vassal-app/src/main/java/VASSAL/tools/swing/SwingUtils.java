@@ -67,7 +67,7 @@ public class SwingUtils {
     /**
      * @return whether this the key/mouse combo for clicking on things to select them. (Left click, except on Macs when left click has a modifier that makes it pretend to be right click)
      */
-    boolean isVanillaLeftButtonDown(MouseEvent e);
+    boolean isMainMouseButtonDown(MouseEvent e);
     
     /**
      * @return whether this is key/mouse combo that toggles items in and out of selections on our platform (e.g. Ctrl+LeftClick on non-Mac, and usually Command+LeftClick on Mac)
@@ -96,7 +96,7 @@ public class SwingUtils {
     }
         
     @Override
-    public boolean isVanillaLeftButtonDown(MouseEvent e) {
+    public boolean isMainMouseButtonDown(MouseEvent e) {
       return SwingUtilities.isLeftMouseButton(e);
     }
     
@@ -159,7 +159,7 @@ public class SwingUtils {
      * (Control+Click for proper Mac interface, Command+Click for legacy Vassal interface) is present.
      */
     @Override
-    public boolean isVanillaLeftButtonDown(MouseEvent e) {
+    public boolean isMainMouseButtonDown(MouseEvent e) {
       switch (e.getID()) {
       case MouseEvent.MOUSE_PRESSED:
       case MouseEvent.MOUSE_RELEASED:
@@ -257,11 +257,11 @@ public class SwingUtils {
   /**
    * @return whether the event is effectively for the left button. 
    * 
-   * @Deprecated in favor of {@link #isVanillaLeftButtonDown(MouseEvent)}
+   * @Deprecated in favor of {@link #isMainMouseButtonDown(MouseEvent)}
    */
   @Deprecated      
   public static boolean isLeftMouseButton(MouseEvent e) {
-    return INPUT_CLASSIFIER.isVanillaLeftButtonDown(e);
+    return INPUT_CLASSIFIER.isMainMouseButtonDown(e);
   }
 
   /**
@@ -294,8 +294,8 @@ public class SwingUtils {
   /**
    * @return whether the event has the key/mouse combo for selecting things down (normally just plain left mouse button, but on Mac only if not pretending to be right button)
    */
-  public static boolean isVanillaLeftButtonDown(MouseEvent e) {
-    return INPUT_CLASSIFIER.isVanillaLeftButtonDown(e);
+  public static boolean isMainMouseButtonDown(MouseEvent e) {
+    return INPUT_CLASSIFIER.isMainMouseButtonDown(e);
   }
   
   /**
@@ -351,6 +351,6 @@ public class SwingUtils {
     // NB: Will any non-mouse drags happen? Not sure, but as we never checked
     // for them before, this won't change behavior by excluding them.
     final InputEvent te = e.getTriggerEvent();
-    return !(te instanceof MouseEvent) || isVanillaLeftButtonDown((MouseEvent) te);
+    return !(te instanceof MouseEvent) || isMainMouseButtonDown((MouseEvent) te);
   }
 }

@@ -902,7 +902,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (e.isPopupTrigger()) {
       maybePopup(e);
     }
-    else if (e.getClickCount() == 2 && SwingUtils.isVanillaLeftButtonDown(e)) {
+    else if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
       Configurable target = getTarget(e.getX(), e.getY());
       if (target == null) {
         return;

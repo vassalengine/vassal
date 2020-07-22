@@ -567,7 +567,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
+    if (!SwingUtils.isMainMouseButtonDown(e)) {
       return;
     }
 
@@ -590,7 +590,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
+    if (!SwingUtils.isMainMouseButtonDown(e)) {
       return;
     }
 
@@ -695,7 +695,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (!SwingUtils.isVanillaLeftButtonDown(e)) {
+    if (!SwingUtils.isMainMouseButtonDown(e)) {
       return;
     }
 

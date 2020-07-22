@@ -134,7 +134,7 @@ public class ImagePicker extends JPanel
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (e.getClickCount() > 1 && SwingUtils.isVanillaLeftButtonDown(e)) {
+    if (e.getClickCount() > 1 && SwingUtils.isMainMouseButtonDown(e)) {
       pickImage();
     }
   }

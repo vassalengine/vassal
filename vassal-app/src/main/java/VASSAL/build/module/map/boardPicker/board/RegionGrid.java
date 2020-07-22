@@ -851,7 +851,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Mouse clicked, see if it is on a Region Point
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         lastClick = e.getPoint();
 
         if (lastClickedRegion != null) {
@@ -1066,7 +1066,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      else if (SwingUtils.isMainMouseButtonDown(e)) {
         final Point p = e.getPoint();
         lastClick = p;
         lastClickedRegion = grid.getRegion(p);
@@ -1096,7 +1096,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
-      else if (selectionRect != null && SwingUtils.isVanillaLeftButtonDown(e)) {
+      else if (selectionRect != null && SwingUtils.isMainMouseButtonDown(e)) {
         for (Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
             if (SwingUtils.isSelectionToggle(e)) {
@@ -1119,7 +1119,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Scroll map if necessary
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isVanillaLeftButtonDown(e)) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
         scrollAtEdge(e.getPoint(), 15);
       }
 

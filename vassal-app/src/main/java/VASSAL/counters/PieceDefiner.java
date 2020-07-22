@@ -384,7 +384,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       @Override
 // FIXME: mouseClicked()?
       public void mouseReleased(MouseEvent e) {
-        if (e.getClickCount() == 2 && SwingUtils.isVanillaLeftButtonDown(e)) {
+        if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
           int index = inUseList.locationToIndex(e.getPoint());
           if (index >= 0) {
             edit(index);

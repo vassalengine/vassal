@@ -111,7 +111,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
       filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
-      if (SwingUtils.isVanillaLeftButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
+      if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
         // Don't "eat" band-selects if unit found is non-movable
         bandSelect = BandSelectType.SPECIAL;
       }
@@ -371,7 +371,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (selection == null || !SwingUtils.isVanillaLeftButtonDown(e)) {
+    if (selection == null || !SwingUtils.isMainMouseButtonDown(e)) {
       return;
     }
 

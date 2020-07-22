@@ -569,7 +569,7 @@ public class ModuleManagerWindow extends JFrame {
     tree.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2 && SwingUtils.isVanillaLeftButtonDown(e)) {
+        if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
           final TreePath path =
             tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
 

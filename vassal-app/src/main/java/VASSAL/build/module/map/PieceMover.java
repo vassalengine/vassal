@@ -721,7 +721,7 @@ public class PieceMover extends AbstractBuildable
            !SwingUtils.isSelectionToggle(e) &&
            e.getClickCount() < 2 &&
            (e.getButton() == MouseEvent.NOBUTTON ||
-            SwingUtils.isVanillaLeftButtonDown(e));
+            SwingUtils.isMainMouseButtonDown(e));
   }
 
   /**
