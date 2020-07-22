@@ -185,7 +185,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     s = StringUtils.capitalize(s);
     s = s.replace(' ', '_');        
     
-    final int mods = SwingUtils.getKeyVassalToSystem(k).getModifiers();
+    final int mods = SwingUtils.genericToSystem(k).getModifiers();
     if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
       s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }

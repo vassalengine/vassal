@@ -77,12 +77,12 @@ public class SwingUtils {
     /**
      * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
-    KeyStroke getKeySystemToVassal (KeyStroke k);
+    KeyStroke systemToGeneric (KeyStroke k);
     
     /**
      * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
      */
-    KeyStroke getKeyVassalToSystem (KeyStroke k);    
+    KeyStroke genericToSystem (KeyStroke k);    
   }
 
   
@@ -106,12 +106,12 @@ public class SwingUtils {
     }
     
     @Override
-    public KeyStroke getKeySystemToVassal (KeyStroke k) {
+    public KeyStroke systemToGeneric (KeyStroke k) {
       return k;
     }
     
     @Override
-    public KeyStroke getKeyVassalToSystem (KeyStroke k) {
+    public KeyStroke genericToSystem (KeyStroke k) {
       return k;
     }
   }
@@ -200,7 +200,7 @@ public class SwingUtils {
      */
     @Override
     @SuppressWarnings("deprecation")
-    public KeyStroke getKeySystemToVassal (KeyStroke k) {
+    public KeyStroke systemToGeneric (KeyStroke k) {
       if (macLegacy) {
         return k;
       }
@@ -234,7 +234,7 @@ public class SwingUtils {
      */
     @Override
     @SuppressWarnings("deprecation")
-    public KeyStroke getKeyVassalToSystem (KeyStroke k) {
+    public KeyStroke genericToSystem (KeyStroke k) {
       if (macLegacy) {
         return k;
       }
@@ -314,8 +314,8 @@ public class SwingUtils {
    * running on other platforms. But we also support a "legacy" preference to allow Mac users used to 
    * Vassal 3.2.17 and prior mappings to continue with them.
    */
-  public static KeyStroke getKeySystemToVassal(KeyStroke k) {
-    return INPUT_CLASSIFIER.getKeySystemToVassal(k);
+  public static KeyStroke systemToGeneric(KeyStroke k) {
+    return INPUT_CLASSIFIER.systemToGeneric(k);
   }  
 
   /**
@@ -327,8 +327,8 @@ public class SwingUtils {
    * running on other platforms. But we also support a "legacy" preference to allow Mac users used to 
    * Vassal 3.2.17 and prior mappings to continue with them.
    */
-  public static KeyStroke getKeyVassalToSystem(KeyStroke k) {
-    return INPUT_CLASSIFIER.getKeyVassalToSystem(k);
+  public static KeyStroke genericToSystem(KeyStroke k) {
+    return INPUT_CLASSIFIER.genericToSystem(k);
   }    
   
   /**
@@ -341,7 +341,7 @@ public class SwingUtils {
    * Vassal 3.2.17 and prior mappings to continue with them.
    */
   public static KeyStroke getKeyStrokeForEvent (KeyEvent e) {
-    return getKeySystemToVassal(KeyStroke.getKeyStrokeForEvent(e));
+    return systemToGeneric(KeyStroke.getKeyStrokeForEvent(e));
   }
 
   /**
