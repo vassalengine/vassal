@@ -18,18 +18,6 @@
         </license>
     </licenses>
 
-    <!--
-    developers section needs to be present for mavencentral
-    <developers>
-        <developer>
-            <name>Name</name>
-            <email>name@address.com</email>
-            <organization>organization</organization>
-            <organizationUrl>http://www.organization.com</organizationUrl>
-        </developer>
-    </developers>
-    -->
-
     <modules>
         <module>vassal-app</module>
         <module>release-prepare</module>
@@ -40,9 +28,20 @@
         <developerConnection>scm:git:ssh://github.com:vassalengine/vassal.git</developerConnection>
         <url>https://github.com/vassalengine/vassal/tree/master</url>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+            <url>file://${main.basedir}/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo-snapshots</id>
+            <url>file://${main.basedir}/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.basedir>${project.basedir}</main.basedir>
     </properties>
 
     <build>
@@ -81,6 +80,14 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
                 <plugin>

@@ -15,6 +15,7 @@
 	<name>${project.artifactId}</name>
 
 	<properties>
+		<main.basedir>${project.basedir}${file.separator}..</main.basedir>
 		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
 		<version.java.build>11</version.java.build>
 		<version.java.target>11</version.java.target>
@@ -267,6 +268,45 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+					<subpackages>VASSAL</subpackages>
+					<bottom>
+						<![CDATA[
+						    <script>
+						    if (typeof useModuleDirectories !== 'undefined') {
+                                useModuleDirectories = false;
+                            }
+                            </script>
+                        ]]>
+					</bottom>
+					<additionalJOption>--allow-script-in-comments</additionalJOption>
+					<doclint>none</doclint>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>

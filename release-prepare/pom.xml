@@ -13,7 +13,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <vassal.jarlocation>${project.build.directory}/lib</vassal.jarlocation>
+        <main.basedir>${project.basedir}${file.separator}..</main.basedir>
+        <vassal.jarlocation>${project.build.directory}${file.separator}lib</vassal.jarlocation>
     </properties>
 
     <dependencies>
