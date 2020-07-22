@@ -59,65 +59,37 @@ public class SwingUtils {
   public static final Map<?,?> FONT_HINTS = (Map<?,?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
   private interface InputClassifier {
-    /*
-     * @return whether the event is effectively for the left button
-     */
-    boolean isLeftMouseButton(MouseEvent e);
-
-    /*
-     * @return whether the event is effectively for the right button
-     */
-    boolean isRightMouseButton(MouseEvent e);
-
-    /*
-     * @return whether the event effectively has Control down
-     */
-    boolean isControlDown(MouseEvent e);    
-
-    /*
-     * @return whether this is key/mouse combo that brings up context menus on our platform (whether or not it brings them up right this moment)
+    /**
+     * @return whether this is key/mouse combo that brings up context menus on our platform (Usually a right-click, but sometimes also a special left click on e.g. Macs)
      */
     boolean isContextMouseButtonDown(MouseEvent e);
         
-    /*
-     * @return whether this the key/mouse combo for clicking on things to select them. (normally just plain old Left Mouse Button - but on Mac only when not pretending to be right button)
+    /**
+     * @return whether this the key/mouse combo for clicking on things to select them. (Left click, except on Macs when left click has a modifier that makes it pretend to be right click)
      */
     boolean isVanillaLeftButtonDown(MouseEvent e);
     
-    /*
-     * @return whether this is key/mouse combo that toggles items in and out of selections on our platform (e.g. Ctrl+LeftClick on non-Mac)
+    /**
+     * @return whether this is key/mouse combo that toggles items in and out of selections on our platform (e.g. Ctrl+LeftClick on non-Mac, and usually Command+LeftClick on Mac)
      */
     boolean isSelectionToggle(MouseEvent e);
     
-    /*
+    /**
      * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
     KeyStroke getKeySystemToVassal (KeyStroke k);
     
-    /*
+    /**
      * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
      */
     KeyStroke getKeyVassalToSystem (KeyStroke k);    
   }
 
   
-  // Pass through -- presently handles all systems except Macs
+  /**
+   * Pass through -- presently handles all systems except Macs
+   */
   private static class DefaultInputClassifier implements InputClassifier {
-    @Override
-    public boolean isLeftMouseButton(MouseEvent e) {
-      return SwingUtilities.isLeftMouseButton(e);
-    }
-
-    @Override
-    public boolean isRightMouseButton(MouseEvent e) {
-      return SwingUtilities.isRightMouseButton(e);
-    }
-
-    @Override
-    public boolean isControlDown(MouseEvent e) {
-      return e.isControlDown();
-    }
-    
     @Override
     public boolean isContextMouseButtonDown(MouseEvent e) {
       return SwingUtilities.isRightMouseButton(e);  
@@ -144,36 +116,20 @@ public class SwingUtils {
     }
   }
 
-  // All the special Mac-platform-specific mouse and keyboard code lives here
+  /**
+   * All the special Mac-platform-specific mouse and keyboard code lives here
+   */
   private static class MacInputClassifier implements InputClassifier {
     private static final int B1_MASK = MouseEvent.BUTTON1_DOWN_MASK |
                                        MouseEvent.CTRL_DOWN_MASK;
-
-    @Deprecated
-    @Override
-    public boolean isLeftMouseButton(MouseEvent e) {
-      return isVanillaLeftButtonDown(e);
-    }
-
-    @Deprecated
-    @Override
-    public boolean isRightMouseButton(MouseEvent e) {
-      return isContextMouseButtonDown(e);
-    }
-
-    @Deprecated
-    @Override
-    public boolean isControlDown(MouseEvent e) {
-      // The Command key on a Mac corresponds to Control everywhere else,
-      // but it obviously can't be called "Command" in Java; here it's
-      // called "Meta".
-      return e.isMetaDown();
-    }
         
+    /**
+     * @return whether this event includes the mouse/key combo that brings up Context Menus on this platform. Does NOT necessarily mean that it's supposed to
+     * bring one up right now. On most platforms this simply returns true if Right Mouse Button is down, but on Macs either Control+LeftClick (proper interface) 
+     * or Command+LeftClick (legacy Vassal interface) will also "pretend to be right button".  
+     */
     @Override
     public boolean isContextMouseButtonDown(MouseEvent e) {
-      // A "right click" on a Mac can be either a real right button, or
-      // Ctrl + the left button (or Command + left button in legacy)
       switch (e.getID()) {
       case MouseEvent.MOUSE_PRESSED:
       case MouseEvent.MOUSE_RELEASED:
@@ -196,11 +152,14 @@ public class SwingUtils {
                (e.getModifiersEx() & (macLegacy ? MouseEvent.META_DOWN_MASK : MouseEvent.CTRL_DOWN_MASK)) != 0);
       }                 
     }
-    
+
+    /**
+     * @return whether this event should be treated as a regular Left Mouse Down button. On most platforms will always
+     * return true if Left Mouse Button is down. But on Macs will return false if the special key modifier to "pretend to be the right mouse button"
+     * (Control+Click for proper Mac interface, Command+Click for legacy Vassal interface) is present.
+     */
     @Override
     public boolean isVanillaLeftButtonDown(MouseEvent e) {
-      // The left button on a Mac is the left button, except when it's the
-      // right button because Ctrl is depressed.
       switch (e.getID()) {
       case MouseEvent.MOUSE_PRESSED:
       case MouseEvent.MOUSE_RELEASED:
@@ -220,13 +179,25 @@ public class SwingUtils {
       }      
     }
     
+    /**
+     * @return whether this event includes the mouse/key combo to toggle items in and out of a selection.
+     * This is "Ctrl+LeftClick" on most platforms. But on Mac it is Command+Click in preferred interface,
+     * and Control+Click in legacy Vassal interface.
+     */
     @Override
     public boolean isSelectionToggle(MouseEvent e) {
-      // On Macs the "meta" key (Command key) is used to toggle items in and out of selections.
-      // Unless the legacy preference is set, in which case we let Control continue to have that function.
       return macLegacy ? e.isControlDown() : e.isMetaDown();       
     }
         
+    /**
+     * Translates a keystroke we've received from the system (our local platform) into a generic "platform-independent" one
+     * suitable for storing in a module. On Mac this means we translate "Command" into "Control", unless the legacy preference
+     * is set.
+     * 
+     * @return "Platform-independent" keystroke appropriate for storing in a module. Common key shortcuts will be remembered as "Ctrl".
+     * 
+     * Here we make "Meta" (Command) keystrokes from a Mac look like "Ctrl" keystrokes to Vassal
+     */
     @Override
     @SuppressWarnings("deprecation")
     public KeyStroke getKeySystemToVassal (KeyStroke k) {
@@ -251,6 +222,16 @@ public class SwingUtils {
       }      
     }
     
+    /**
+     * Translates a platform-independent keystroke from our module into the appropriate one for the
+     * Mac platform depending on our preference. Normally the "Ctrl" keystrokes from other platforms
+     * are translated as "Command" keystrokes on Mac, unless the legacy preference is set.
+     * 
+     * @return Keystroke appropriate for our local platform's preferred interface.
+     * 
+     * Here we turn any "Ctrl" keystrokes stored in Vassal into "Meta" (Command) keystrokes for use in communicating with a Mac
+     * We must also remove the deprecated CTRL_MASK, or Java will end up restoring the CTRL_DOWN_MASK
+     */
     @Override
     @SuppressWarnings("deprecation")
     public KeyStroke getKeyVassalToSystem (KeyStroke k) {
@@ -259,8 +240,6 @@ public class SwingUtils {
       }
       int modifiers = k.getModifiers();
       if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-        // Here we turn any "Ctrl" keystrokes stored in Vassal into "Meta" (Command) keystrokes for use in communicating with a Mac
-        // We must also remove the deprecated CTRL_MASK, or Java will end up restoring the CTRL_DOWN_MASK
         modifiers &= ~(InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK);
         modifiers |= InputEvent.META_DOWN_MASK;
         return KeyStroke.getKeyStroke(k.getKeyCode(), modifiers, k.isOnKeyRelease());
@@ -276,27 +255,33 @@ public class SwingUtils {
       new MacInputClassifier() : new DefaultInputClassifier();
 
   /**
-   * @return whether the event is effectively for the left button. Deprecated in favor of isVanillaLeftButtonDown()
+   * @return whether the event is effectively for the left button. 
+   * 
+   * @Deprecated in favor of {@link #isVanillaLeftButtonDown(MouseEvent)}
    */
   @Deprecated      
   public static boolean isLeftMouseButton(MouseEvent e) {
-    return INPUT_CLASSIFIER.isLeftMouseButton(e);
+    return INPUT_CLASSIFIER.isVanillaLeftButtonDown(e);
   }
 
   /**
-   * @return whether the event is effectively for the right button. Deprecated in favor of isContextMouseButtonDown()
+   * @return whether the event is effectively for the right button. 
+   * 
+   * @Deprecated in favor of {@link #isContextMouseButton(MouseEvent)}
    */
   @Deprecated
   public static boolean isRightMouseButton(MouseEvent e) {
-    return INPUT_CLASSIFIER.isRightMouseButton(e);
+    return INPUT_CLASSIFIER.isContextMouseButtonDown(e);
   }
 
   /**
-   * @return whether the event effectively has Control down. Deprecated. The situation where this was needed with mouse events is now handled by isSelectionToggle.
+   * @return whether the event effectively has Control down. 
+   * 
+   * @Deprecated. The situation where this was needed with mouse events is now handled by {@link #isSelectionToggle(MouseEvent)}.
    */
   @Deprecated
   public static boolean isControlDown(MouseEvent e) {
-    return INPUT_CLASSIFIER.isControlDown(e);
+    return INPUT_CLASSIFIER.isSelectionToggle(e);
   }
   
   /**
@@ -321,7 +306,7 @@ public class SwingUtils {
   } 
   
   /**
-   * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
+   * @returns translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)
    * 
    * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
    * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
@@ -334,7 +319,7 @@ public class SwingUtils {
   }  
 
   /**
-   * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
+   * @returns translation of keystroke from platform-independent Vassal to local system (to handle Mac platform support)
    * 
    * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
    * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
