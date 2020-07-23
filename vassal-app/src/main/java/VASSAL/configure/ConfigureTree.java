@@ -1294,6 +1294,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       searchStringBox.add(new JLabel("String to find: "));
       searchStringBox.add(Box.createHorizontalStrut(10));
       final JTextField search = new JTextField(searchParameters.getSearchString(), 32);
+      search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
       searchStringBox.add(search);
       d.add(searchStringBox);
 
@@ -1356,6 +1357,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
       int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
       d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, w);
+      
+      search.requestFocus(); // Start w/ focus in search string field
 
       d.pack();
       d.setLocationRelativeTo(d.getParent());
