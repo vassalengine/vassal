@@ -23,7 +23,6 @@ package VASSAL.tools.version;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @see Version
  * @see VersionTokenizer
  */
 public class VersionFormatException extends Exception {
@@ -31,16 +30,6 @@ public class VersionFormatException extends Exception {
 
   /** {@inheritDoc} */
   public VersionFormatException() { }
-
-  /** {@inheritDoc} */
-  public VersionFormatException(String message) {
-    super(message);
-  }
-
-  /** {@inheritDoc} */
-  public VersionFormatException(String message, Throwable cause) {
-    super(message, cause);
-  }
 
   /** {@inheritDoc} */
   public VersionFormatException(Throwable cause) {

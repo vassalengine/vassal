@@ -27,12 +27,10 @@ import VASSAL.Info;
  * @author Joel Uckelman
  */
 public abstract class AbstractUpdateCheckRequest
-                                      extends SwingWorker<VassalVersion,Void> {
+                                      extends SwingWorker<Boolean, Void> {
   @Override
-  protected VassalVersion doInBackground() throws IOException {
-    final VassalVersion running = new VassalVersion(Info.getVersion());
-    final VassalVersion update = VersionUtils.update(running);
-    return update.equals(running) ? null : update;
+  protected Boolean doInBackground() throws IOException {
+    return VersionUtils.isUpdateable(Info.getVersion());
   }
 
   @Override

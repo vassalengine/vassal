@@ -1,9 +1,13 @@
 package VASSAL.tools.version;
 
+import static java.lang.Integer.signum;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
@@ -19,53 +23,49 @@ public class VersionUtils {
   private static final String bugCheck = "check-version-bug.php?version=";
 
 
-  private static VassalVersion release = null;
-  private static VassalVersion beta = null;
+  private static String release = null;
+  private static String beta = null;
 
-  public static VassalVersion getRelease() throws IOException {
+  private static String getRelease() throws IOException {
     if (release == null) release = getVersion(baseURL + currentRelease);
     return release;
   }
 
-  public static VassalVersion getBeta() throws IOException {
+  private static String getBeta() throws IOException {
     if (beta == null) beta = getVersion(baseURL + currentBeta);
     return beta;
   }
 
-  private static VassalVersion getVersion(String url) throws IOException {
+  private static String getVersion(String url) throws IOException {
     try (InputStream in = new URL(url).openStream()) {
-      final VassalVersion version =
-        new VassalVersion(IOUtils.toString(in, StandardCharsets.UTF_8).trim());
-      return version;
+      return IOUtils.toString(in, StandardCharsets.UTF_8).trim();
     }
   }
 
-  // TODO delete commented code or reactivate it
-/*
-  public static boolean isReportable(String version)
-      throws IOException, NumberFormatException {
-
-    try (InputStream in = new URL(baseURL + bugCheck + version).openStream()) {
-      final int result = Integer.parseInt(IOUtils.toString(in));
-
-      switch (result) {
-      case 0: return false;
-      case 1: return true;
-      default:
-        throw new NumberFormatException("bad return value: " + result);
-      }
-    }
-  }
-*/
-
-  public static boolean isCurrent(VassalVersion version) throws IOException {
+  public static boolean isCurrent(String version) throws IOException {
     // a version is current if it would update to itself
     return version.equals(update(version));
   }
 
-  public static VassalVersion update(VassalVersion version) throws IOException {
-    VassalVersion current = VersionUtils.getRelease();
-    switch (sgn(version.compareTo(current))) {
+  /**
+   * Compares VASSAL version strings. This method is guaranteed to
+   * correctly compare the current version string with any other
+   * version string. It is <em>not</em> guaranteed to correctly
+   * compare two arbitrary version strings.
+   *
+   * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
+   * zero if {@code v0 == v1} or if the ordering cannot be determined from
+   * the parseable parts of the two <code>String</code>s.
+   */
+  public static int compareVersions(String v0, String v1) {
+    final ComparableVersion comparableVersion0 = new ComparableVersion(v0);
+    final ComparableVersion comparableVersion1 = new ComparableVersion(v1);
+    return comparableVersion0.compareTo(comparableVersion1);
+  }
+
+  private static String update(String version) throws IOException {
+    String current = VersionUtils.getRelease();
+    switch (signum(compareVersions(version, current))) {
     case -1: // version is older than the current release
       return current;
     case  0: // version is the current release
@@ -73,7 +73,7 @@ public class VersionUtils {
     case  1:
       // version is newer than the current release
       current = VersionUtils.getBeta();
-      switch (sgn(version.compareTo(current))) {
+      switch (signum(compareVersions(version, current))) {
       case -1:  // version is older than the current beta
         return current;
       case  0:  // version is the current beta
@@ -85,12 +85,12 @@ public class VersionUtils {
     throw new IllegalStateException();
   }
 
-  private static int sgn(int i) {
-    return Integer.compare(i, 0);
+  public static Boolean isUpdateable(String runningVersion) throws IOException {
+    final String update = update(runningVersion);
+    return !update.equals(runningVersion);
   }
 
   public static void main(String[] args) throws IOException {
-    final VassalVersion v = new VassalVersion(Info.getVersion());
-    System.out.println(v + " is current? " + isCurrent(v));
+    System.out.println(Info.getVersion() + " is current? " + isCurrent(Info.getVersion()));
   }
 }

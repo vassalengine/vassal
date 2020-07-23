@@ -30,6 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * Class for storing release-related information
@@ -194,26 +195,12 @@ public final class Info {
    * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
    * the parseable parts of the two <code>String</code>s.
+   *
+   * @deprecated use {@link VersionUtils#compareVersions(String, String)}
    */
+  @Deprecated
   public static int compareVersions(String v0, String v1) {
-    final VersionTokenizer tok0 = new VassalVersionTokenizer(v0);
-    final VersionTokenizer tok1 = new VassalVersionTokenizer(v1);
-
-    try {
-      // find the first token where v0 and v1 differ
-      while (tok0.hasNext() && tok1.hasNext()) {
-        final int n0 = tok0.next();
-        final int n1 = tok1.next();
-
-        if (n0 != n1) return n0 - n1;
-      }
-    }
-    catch (VersionFormatException e) {
-      return 0;
-    }
-
-    // otherwise, the shorter one is earlier; or they're the same
-    return tok0.hasNext() ? 1 : (tok1.hasNext() ? -1 : 0);
+    return VersionUtils.compareVersions(v0, v1);
   }
 
   /**
