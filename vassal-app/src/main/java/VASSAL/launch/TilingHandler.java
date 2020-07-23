@@ -119,8 +119,8 @@ public class TilingHandler {
     DataArchive archive,
     FileStore tcache,
     List<String> multi,
-    List<Pair<String,IOException>> failed) throws IOException
-  {
+    List<Pair<String,IOException>> failed) throws IOException {
+
     // build a list of all multi-tile images and count tiles
     final Set<String> images = archive.getImageNameSet();
 

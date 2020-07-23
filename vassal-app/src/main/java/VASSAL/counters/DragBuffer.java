@@ -34,7 +34,7 @@ import javax.swing.JFrame;
 import VASSAL.build.module.Map;
 
 public class DragBuffer {
-  private final static DragBuffer theBuffer = new DragBuffer();
+  private static final DragBuffer THE_BUFFER = new DragBuffer();
 
   private final List<GamePiece> pieces = new ArrayList<>();
   private MouseEvent lastRelease;
@@ -45,7 +45,7 @@ public class DragBuffer {
   private DragBuffer() { }
 
   public static DragBuffer getBuffer() {
-    return theBuffer;
+    return THE_BUFFER;
   }
 
   public void add(GamePiece p) {

@@ -24,6 +24,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -36,9 +37,6 @@ import javax.swing.SwingUtilities;
 
 /**
  * @author Brent Easton
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class TableConfigurer extends Configurer implements ActionListener  {
 
@@ -154,17 +152,14 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     String action = e.getActionCommand();
 
     if (action.equals(ADD_ACTION)) {
-      for (int i = 0; i < getColumnCount(); i++) {
-        columns[i].addRow();
-      }
+      Arrays
+        .stream(columns)
+        .forEach(Column::addRow);
       updateContents();
     }
-    else if (action.equals(DEL_ACTION)) {
-
-    }
-    else if (action.equals(INS_ACTION)) {
-
-    }
+    // other possible actions to check:
+    // DEL_ACTION
+    // INS_ACTION
   }
 
   protected static class Column {

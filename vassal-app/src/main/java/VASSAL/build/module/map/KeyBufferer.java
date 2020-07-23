@@ -39,12 +39,10 @@ import VASSAL.build.module.Map;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
-import VASSAL.counters.Decorator;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.KeyBuffer;
-import VASSAL.counters.NonRectangular;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
@@ -74,7 +72,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   private enum BandSelectType {
     NONE,
     NORMAL,
-    SPECIAL;
+    SPECIAL
   }
 
   @Override
@@ -132,8 +130,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
             p.getParent() == null ||
             p.getParent().isExpanded() ||
             SwingUtils.isRightMouseButton(e) ||
-            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED)))
-        {
+            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           kbuf.add(p);
         }
         else {
@@ -172,7 +169,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         kbuf.clear();
         
         //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
-        if (bandSelect == BandSelectType.SPECIAL && p != null && !ignoreEvent) {
+        if (bandSelect == BandSelectType.SPECIAL) {
           kbuf.add(p);
           bandSelectPiece = p; 
         }
@@ -235,8 +232,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected PieceVisitorDispatcher createDragSelector(
     boolean selecting,
     boolean altDown,
-    Rectangle mapsel)
-  {
+    Rectangle mapsel) {
+
     return new PieceVisitorDispatcher(
       new KBDeckVisitor(selecting, altDown, mapsel)
     );
@@ -263,7 +260,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (s.topPiece() != null) {
         final KeyBuffer kbuf = KeyBuffer.getBuffer();
         if (s instanceof Deck) {
-          s.asList().forEach(gamePiece -> kbuf.remove(gamePiece)); // Clear any deck *members* out of the KeyBuffer.
+          s.asList().forEach(kbuf::remove); // Clear any deck *members* out of the KeyBuffer.
           return null;
         }
         if (s.isExpanded()) {
@@ -281,10 +278,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           }
         }
         else if (mapsel.contains(s.getPosition())) {
-          s.asList().forEach(selecting ?
-            gamePiece -> kbuf.add(gamePiece) :
-            gamePiece -> kbuf.remove(gamePiece)
-          );
+          s.asList().forEach(selecting ? kbuf::add : kbuf::remove);
         }
       }
       return null;

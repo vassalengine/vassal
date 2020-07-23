@@ -118,8 +118,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public static final String COMMAND_PREFIX = "SETUP_STACK\t";
   protected Point pos = new Point();
   public static final String OWNING_BOARD = "owningBoard";
-  public final static String X_POSITION = "x";
-  public final static String Y_POSITION = "y";
+  public static final String X_POSITION = "x";
+  public static final String Y_POSITION = "y";
   protected Map map;
   protected String owningBoardName;
   protected String id;

@@ -395,15 +395,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
    * @since 3.1.0
    */
   protected static class LevelConfigurer extends Configurer {
-    private Zoomer z;
+    private final Zoomer z;
 
-    private JPanel panel;
-    private LevelModel model;
+    private final JPanel panel;
+    private final LevelModel model;
     private final JList<String> levelList;
-    private JButton addButton;
-    private JButton removeButton;
-    private JButton initialButton;
-    private JTextField levelField;
+    private final JButton addButton;
+    private final JButton removeButton;
+    private final JButton initialButton;
+    private final JTextField levelField;
 
     public LevelConfigurer(final Zoomer z, String key, String name) {
       super(key, name);
@@ -417,10 +417,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // Add button
       addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) { addLevel(); }
-      });
+      addButton.addActionListener(e -> addLevel());
 
       addButton.setEnabled(false);
       addBox.add(addButton);
@@ -433,28 +430,31 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void changedUpdate(DocumentEvent e) { }
-        @Override
-        public void insertUpdate(DocumentEvent e) { validate(); }
-        @Override
-        public void removeUpdate(DocumentEvent e) { validate(); }
 
-        private static final String pattern =
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          validate();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          validate();
+        }
+
+        private static final String PATTERN =
           "^(\\d*[1-9]\\d*(/\\d*[1-9]\\d*|\\.\\d*)?|0*\\.\\d*[1-9]\\d*)$"; //$NON-NLS-1$
 
         private void validate() {
           // valid entries match the pattern and aren't already in the list
           final String text = levelField.getText();
-          addButton.setEnabled(text.matches(pattern) &&
+          addButton.setEnabled(text.matches(PATTERN) &&
             !z.state.getLevels().contains(parseLevel(text)));
         }
       });
 
       // rely on addButton to do the validation
-      levelField.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (addButton.isEnabled()) addLevel();
-        }
+      levelField.addActionListener(e -> {
+        if (addButton.isEnabled()) addLevel();
       });
 
       addBox.add(levelField);

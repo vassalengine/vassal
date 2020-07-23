@@ -90,12 +90,17 @@ public final class GeneralFilter {
   }
 
   /** The abstract base class for filters. */
-  public static abstract class Filter {
+  public abstract static class Filter {
     public abstract float getSamplingRadius();
     public abstract float apply(float t);
   }
 
-  /** A Hermite filter. */
+  /**
+   * A Hermite filter.
+   *
+   * @deprecated class is not used anywhere and will be removed
+   */
+  @Deprecated
   public static final class HermiteFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -111,7 +116,12 @@ public final class GeneralFilter {
     }
   }
 
-  /** A box filter. */
+  /**
+   * A box filter.
+   *
+   * @deprecated class is not used anywhere and will be removed
+   */
+  @Deprecated
   public static final class BoxFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -125,7 +135,12 @@ public final class GeneralFilter {
     }
   }
 
-  /** A triangle, or bilinear, filter. */
+  /**
+   * A triangle, or bilinear, filter.
+   *
+   * @deprecated class is not used anywhere and will be removed
+   */
+  @Deprecated
   public static final class TriangleFilter {
     public float apply(float t) {
       if (t < 0.0f) t = -t;
@@ -188,7 +203,12 @@ public final class GeneralFilter {
     }
   }
 
-  /** A Bell filter. */
+  /**
+   * A Bell filter.
+   *
+   * @deprecated class is not used anywhere and will be removed
+   */
+  @Deprecated
   public static final class BellFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -208,7 +228,12 @@ public final class GeneralFilter {
     }
   }
 
-  /** A B-spline filter. */
+  /**
+   * A B-spline filter.
+   *
+   * @deprecated class is not used anywhere and will be removed
+   */
+  @Deprecated
   public static final class BSplineFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -238,7 +263,7 @@ public final class GeneralFilter {
    * Filters the entire source image.
    *
    * This is a convenience function which calls
-   * {@link zoom(WritableRaster, Rectangle, BufferedImage, Filter)},
+   * {@link #zoom(WritableRaster, Rectangle, BufferedImage, Filter)},
    * setting the destination rectangle as the bounds of the destination
    * tile.
    *
@@ -278,8 +303,8 @@ public final class GeneralFilter {
     WritableRaster dstR,
     Rectangle dst_fr,
     BufferedImage srcI,
-    final Filter filter)
-  {
+    final Filter filter) {
+
     final int[] dst_data = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final int src_type;
@@ -360,8 +385,8 @@ public final class GeneralFilter {
     int dstHeight,  // height of full destination
     float xscale,
     float yscale,
-    final Filter filter)
-  {
+    final Filter filter) {
+
     final int[] work = new int[sh];
 
     final float fwidth = filter.getSamplingRadius();
@@ -470,8 +495,8 @@ public final class GeneralFilter {
     final int d0,         // dst initial
     final int s0,         // src initial
     final int sl,         // src length along this axis
-    final Filter filter)
-  {
+    final Filter filter) {
+
     // Calculate filter contributions for each destination strip
     final CList[] contrib = new CList[dl];
     for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
@@ -513,8 +538,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work)
-  {
+    final int[] work) {
+
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -575,8 +600,8 @@ public final class GeneralFilter {
     final int stride,
     final CList xcontrib,
     final int[] src,
-    final int[] work)
-  {
+    final int[] work) {
+
     final CList c = xcontrib;
     final int max = c.n;
 
@@ -633,8 +658,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw)
-  {
+    final int dw) {
+
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_a = 0.0f;  // alpha sample
@@ -690,9 +715,9 @@ public final class GeneralFilter {
 
         dst[dx + i*dw] =
           a << 24 |
-          (r > a ? a : r) << 16 |
-          (g > a ? a : g) <<  8 |
-          (b > a ? a : b);
+          (Math.min(r, a)) << 16 |
+          (Math.min(g, a)) <<  8 |
+          (Math.min(b, a));
       }
     }
   }
@@ -703,8 +728,8 @@ public final class GeneralFilter {
     final int[] work,
     final int[] dst,
     final int dx,
-    final int dw)
-  {
+    final int dw) {
+
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_r = 0.0f;  // red sample

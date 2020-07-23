@@ -274,8 +274,8 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
-         e.hasMoreElements();)
-    {
+         e.hasMoreElements();) {
+
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       int nextX = x + (int) (zoom * (positions[index].x - x));
@@ -322,8 +322,8 @@ public class StackMetrics extends AbstractConfigurable {
 
     for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
-         e.hasMoreElements();)
-    {
+         e.hasMoreElements();) {
+
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       Point pt = map.mapToDrawing(positions[index], os_scale);
