@@ -42,6 +42,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${project.basedir}</main.basedir>
+
+        <!-- this is a default that will be overridden on the command line with -DgitVersion= -->
+        <gitVersion>${project.version}</gitVersion>
     </properties>
 
     <build>
@@ -89,11 +92,6 @@
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

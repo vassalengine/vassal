@@ -48,17 +48,23 @@ JDKDIR:=jdks
 
 JDOCLINK:=file:///usr/share/javadoc/java/api
 
-VNUM:=3.3.2
-JARNAME:=vassal-app-3.3.3-SNAPSHOT
+VNUM:=3.3.3
+MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+
+JARNAME:=vassal-app-$(MAVEN_VERSION)
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
-GITDESC:=$(shell git describe --tags)
 
-ifeq ($(GITBRANCH), master)
-VERSION:=$(GITDESC)
+ifeq ($(shell git describe --tags), $(VNUM))
+  # we are at a release tag
+  VERSION:=$(MAVEN_VERSION)
+else ifeq ($(GITBRANCH), master)
+  # we are somewhere else on master
+  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
-VERSION:=$(GITDESC)-$(GITBRANCH)
+  # we are on some branch
+  VERSION:=$(MAVEN_VERSION)-$(GITBRANCH)-$(GITCOMMIT)
 endif
 
 YEAR:=$(shell date +%Y)
@@ -98,7 +104,8 @@ $(TMPDIR):
 	mkdir -p $@
 
 $(LIBDIR)/Vengine.jar:
-	$(MVN) package
+	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
+	$(MVN) deploy -DgitVersion=$(VERSION)
 	mv $(LIBDIR)/$(JARNAME).jar $(LIBDIR)/Vengine.jar
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
@@ -237,6 +244,9 @@ release: clean jar release-other release-linux release-windows release-macosx
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
+post-release:
+	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
+
 upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
@@ -249,4 +259,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release javadoc clean-javadoc jar
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc clean-javadoc jar
