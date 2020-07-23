@@ -53,7 +53,6 @@ JARNAME:=vassal-app-3.3.3-SNAPSHOT
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
-BUILDNUM:=$(shell git rev-list --count $(shell git describe --tags --abbrev=0)..)
 GITDESC:=$(shell git describe --tags)
 
 ifeq ($(GITBRANCH), master)
