@@ -715,9 +715,9 @@ public final class GeneralFilter {
 
         dst[dx + i*dw] =
           a << 24 |
-          (Math.min(r, a)) << 16 |
-          (Math.min(g, a)) <<  8 |
-          (Math.min(b, a));
+            (r > a ? a : r) << 16 |
+            (g > a ? a : g) <<  8 |
+            (b > a ? a : b);
       }
     }
   }
