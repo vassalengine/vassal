@@ -169,7 +169,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         kbuf.clear();
         
         //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
-        if (bandSelect == BandSelectType.SPECIAL) {
+        if (bandSelect == BandSelectType.SPECIAL && p != null && !ignoreEvent) {
           kbuf.add(p);
           bandSelectPiece = p; 
         }
