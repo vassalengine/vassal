@@ -31,7 +31,6 @@ select a set of counters to be operated on
   <a href="GlobalKeyCommand.htm">Counter</a> Global Key Commands) or to test if some condition is true before
 taking action (<a href="TriggerAction.htm">Trigger Action</a>, <a href="RestrictCommands.htm">Restrict Commands</a>).<br>
 <br>
-
 Just as there are two type of <a href="Expression.htm">Expressions</a>, there are two types of Property Match Expressions.
 <a href="#beanshell">BeanShell Expressions</a>
 are identified by being surrounded by curly braces {}. They are very powerful and can
@@ -45,7 +44,6 @@ a special format that must be used to match properties in the target pieces agai
 piece that is generating the command. Any Property name enclosed in $ signs (e.g. $nation$) will be evaluated 
 against the calling piece and replaced before the property Match is performed against other pieces.<br>
 <br>
-
 <a name="beanshell"></a><b>BeanShell Property Match Expressions</b><br>
 BeanShell Property Match Expressions use the same syntax as <a href="Expression.htm#beanshell">BeanShell Expressions</a>.
 They use the full syntax and capabilities of the BeanShell language and can be arbitrarily complex.<br> 
@@ -55,7 +53,6 @@ They use the full syntax and capabilities of the BeanShell language and can be a
     {Nation == (If (unitType=="Infantry", unitNation, formationNation))}
 </pre>
 <br>
-
 <a name="old"><b>Old-style Property Match Expressions</b><br>
 <img src="images/PropertyMatchExpression2.png"><br>
 Old-style Property Match Expressions are not surrounded by the curly braces and have a much restricted
@@ -67,7 +64,6 @@ syntax compared to their BeanShell equivalent.
 	<li>Parentheses () may NOT be used to create more complex expressions.</li>
 	<li>Operators and functions may NOT be used to create more complex expressions.</li>
 </ul>
-
 </table>
 <a href="Properties.htm">Properties</a> 
       </td>

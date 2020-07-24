@@ -24,26 +24,22 @@ Key Command</b></small><br>
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">This trait adds an action that applies a
+            <td valign="top">This subcomponent adds an action that applies a
 key command to to pieces contained within the Deck, similar to the <a
  href="Map.htm#GlobalKeyCommand">Global Key Command</a> component of a
-Map Window.<br>
+Map Window or of a Game Piece.<br>
             <br>
             <span style="font-weight: bold;">Menu Command:&nbsp; </span>Name
-of the right-click menu item<br>
-            <span style="font-weight: bold;">Keyboard command:</span>&nbsp;
-Keyboard shortcut of the menu item that initiates the command<br>
+of the Deck's right-click context menu item<br>
             <span style="font-weight: bold;">Global Command:</span>&nbsp;
-The key command that will be applied to the pieces<br>
+The <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will be applied to the pieces in the Deck.<br>
             <span style="font-weight: bold;">Matching Properties:</span>&nbsp;
-The key command will only be applied to pieces with the specified <a
- href="Properties.htm">Properties</a>. If you do not enter a property expression, then
- all counters in the Deck will be selected.<br>
-            <span style="font-weight: bold;">Affects:</span> The Global command can apply to all piece
-			selected, or to a set number only. Use a setting of 1 to select the top piece.<br>
+The key command will only be applied to pieces which match the specified <a href="Expression.htm">Expression</a>.
+         If you do not enter a property expression, then all counters in the Deck will be selected.<br>
+            <span style="font-weight: bold;">Affects:</span> The Deck Global Key Command can apply to all pieces
+			which match the expression, or to a set number only. Use a setting of 1 to select the top piece.<br>
             <span style="font-weight: bold;">Report Format: &nbsp;</span>A <a href="MessageFormat.htm">Message Format</a> 
-			that is echoed to the chat
-text window whenever the Global Key Command is activated. <br>
+			that is echoed to the chat log window whenever the Deck Global Key Command is activated. <br>
             </td>
             <td valign="top"><img alt="" src="images/DeckGlobalKeyCommand.png"
  >&nbsp;<br>

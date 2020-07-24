@@ -37,9 +37,9 @@ value of the property at the start of a new game.<br>
 then changes to the value of the property will be restricted to integer
 values.<br>
       <span style="font-weight: bold;">Minimum Value:</span>&nbsp;
-Numeric values will be restricted to no less than this number.<br>
+Numeric values will be restricted to no less than this number whenever an "Increment numeric value" or "Prompt user" operation is performed. Note that "Set Value Directly" operations will <i>not</i> honor this constraint.<br>
       <span style="font-weight: bold;">Maximum Value:</span>&nbsp;
-Numeric values will be restricted to no more than this number.<br>
+Numeric values will be restricted to no more than this number whenever an "Increment numeric value" or "Prompt user" operation is performed. Note that "Set Value Directly" operations will <i>not</i> honor this constraint.<br>
       <span style="font-weight: bold;">Wrap Around</span>&nbsp;
 If true, then when incrementing this numeric property, values will wrap
 around from the maximum to the minimum.<br>
@@ -49,17 +49,17 @@ Piece.&nbsp; Hit the <span style="font-style: italic;">New</span>
 button to add a new command and the <span style="font-style: italic;">Remove</span>
 button to remove one.&nbsp; For each command:<br>
 <br>
-&nbsp;&nbsp;<b>Menu Command:</b>&nbsp;Right-click menu text for the command.<br>
-&nbsp;&nbsp;<b>Key Command:</b>&nbsp;Keyboard shortcut for the command.<br>
+&nbsp;&nbsp;<b>Menu Command:</b>&nbsp;Right-click context menu item that will initiate this operation (can be left blank if only the Key Command portion is to be used).<br>
+&nbsp;&nbsp;<b>Key Command:</b>&nbsp;<a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will initiate this operation.<br>
 &nbsp;&nbsp;<b>Type:</b>&nbsp;Select the way in which this command will change the property:
 <ul>
-	<li><i>Set value directly:</i>&nbsp;Set the property directly to the value of the <a href="Expression.htm">Expression</a> entered in the <b>New Value</b> field.</li>
+	<li><i>Set value directly:</i>&nbsp;Set the property directly to the value of the <a href="Expression.htm">Expression</a> entered in the <b>New Value</b> field. <b>Note:</b> When setting the value of a <i>numeric</i> property directly with this option, the Minimum/Maximum constraints are <i>not</i> honored.</li>
 	<li><i>Increment numeric value:</i>&nbsp;Increment the value of the property by the  value of the <a href="Expression.htm">Expression</a> entered in the <b>Increment by</b> field.</li>
 	<li><i>Prompt user:</i>&nbsp;Pop up a dialog and ask the user for a new value for the property. They will be prompted for a new value using the text prompt entered in the <b>Prompt</b> field.</li>
 	<li><i>Prompt user to select from list:</i>&nbsp;Similar to <i>Prompt User</i> but displays a list of items to select from in a drop-down menu. The items in the list can be generated dynamically by  <a href="Expression.htm">Expressions</a>. </b></li>
 </ul>
 <br>
-<b>SEE ALSO:</b><a href="PropertyMarker.htm">Marker</a>,<a href="SetGlobalProperty.htm">Set Global Property</a>  
+<b>SEE ALSO:</b>&nbsp;<a href="PropertyMarker.htm">Marker</a>,&nbsp;<a href="SetGlobalProperty.htm">Set Global Property</a>  
       <hr size="2" width="100%"> </td>
     </tr>
     <tr>
