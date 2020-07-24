@@ -18,18 +18,6 @@
         </license>
     </licenses>
 
-    <!--
-    developers section needs to be present for mavencentral
-    <developers>
-        <developer>
-            <name>Name</name>
-            <email>name@address.com</email>
-            <organization>organization</organization>
-            <organizationUrl>http://www.organization.com</organizationUrl>
-        </developer>
-    </developers>
-    -->
-
     <modules>
         <module>vassal-app</module>
         <module>release-prepare</module>
@@ -40,9 +28,23 @@
         <developerConnection>scm:git:ssh://github.com:vassalengine/vassal.git</developerConnection>
         <url>https://github.com/vassalengine/vassal/tree/master</url>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+            <url>file://${main.basedir}/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo-snapshots</id>
+            <url>file://${main.basedir}/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.basedir>${project.basedir}</main.basedir>
+
+        <!-- this is a default that will be overridden on the command line with -DgitVersion= -->
+        <gitVersion>${project.version}</gitVersion>
     </properties>
 
     <build>
@@ -84,9 +86,12 @@
                     <version>3.2.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.2.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

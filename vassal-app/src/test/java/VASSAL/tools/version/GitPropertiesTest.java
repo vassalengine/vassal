@@ -20,19 +20,7 @@ public class GitPropertiesTest {
     final String version = properties.getVersion();
 
     // assert
-    assertThat(version, is(equalTo("3.3.1-test-86-g0123456789ab-a-test-branch")));
-  }
-
-  @Test
-  public void shouldSuppressMasterBranch() {
-    // prepare
-    GitProperties properties = new GitProperties("git-branch-master.properties");
-
-    // run
-    final String version = properties.getVersion();
-
-    // assert
-    assertThat(version, is(equalTo("3.3.1-test-86-g0123456789ab")));
+    assertThat(version, is(equalTo("3.4.5-beta2")));
   }
 
   @Test
@@ -44,7 +32,7 @@ public class GitPropertiesTest {
     final String version = properties.getVersion();
 
     // assert
-    assertThat(version, is(equalTo("3.3.0-0-g_development")));
+    assertThat(version, is(equalTo("3.x development version")));
   }
 
 }
