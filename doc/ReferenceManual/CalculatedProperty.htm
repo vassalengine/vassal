@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <title>Mask</title>
+  <title>Calculated Property</title>
   <meta http-equiv="content-type"
  content="text/html; charset=ISO-8859-1">
 </head>
@@ -31,14 +31,24 @@ Piece</a></small> <small>&gt; <b>Calculated Property</b></small><br>
       	<img src="images/CalculatedProperty.png" alt=""> <br>
       </div>
 
-A Calculated Property defines a Property that has a value that is calculated by a formula each time it is needed.<br>
+<br>
+A Calculated Property defines a Property which has a value that is calculated by a formula each time it is needed.<br>
 <br>
 <b>Property Name:</b>&nbsp;The name of the property that is used to access the formula value.<br>
 <b>Expression:</b>&nbsp;A <a href="Expression.htm#beanshell">BeanShell Expression</a> that defines the formula that 
 calculates the property value. Immediately to the right of the expression field, a green tick or a red cross appears
 as you are typing that tells you if your <a href="Expression.htm#beanshell">BeanShell Expression</a> is valid or not.
-<b>Select</b>&nbsp;Use the Select button to access the <a href="Expression.htm#builder">Expression Builder</a> to
-add expression components such as property names, operators and functions.
+<br>
+<b>Insert:</b>&nbsp;Use the Insert button to access the <a href="Expression.htm#builder">Expression Builder</a> to
+add expression components such as property names, operators and functions. You can also type the formula in directly.
+<br><br>
+Note: unlike many fields in VASSAL, Calculated Properties <i>exclusively</i> support <a href="Expression.htm#beanshell">BeanShell Expressions</a>. Thus
+"old style VASSAL" comparisons e.g. with single = sign, and the ~= operator, are not supported here.
+<br><br>
+VASSAL will recalculate the value of the Expression <i>each and every</i> time its value is asked for: whether it is referenced 
+in another Calculated Property, an Expression or field in another type of trait, or is displayed in a message or a text field. This ensures the value will be kept accurately updated,
+though module designers should be aware that long complicated chains of Calculated Properties can lead to "lag" and slower 
+performance. 
       </div>
       </div>
       </td>

@@ -25,15 +25,21 @@ Grid</b></small><br>
         <tbody>
           <tr>
             <td valign="top">An irregular grid is used for area-based
-games.&nbsp; It allows you to define a set of named regions at
-arbitrary locations.&nbsp; When moving pieces on a board with an
-Irregular Grid, they will snap to the nearest region location.<br>
+games.&nbsp; It allows you to define a set of named Regions at
+arbitrary locations.&nbsp;<br>
             <br>
+              <b>Snap to defined point:</b>&nbsp;If checked, pieces placed anywhere within the grid will
+              automatically snap to the nearest legal location. If unchecked, pieces may be placed anywhere. If 
+              it is useful for most pieces to snap to legal locations, but for certain types of markers to be allowed
+              anywhere, this can be accomplished by checking this box but adding a <a href="NonStacking.htm">Does Not Stack</a> trait 
+              to the pieces which should ignore the grid and selecting the trait's "Ignore map grid when moving" option. <br>
+              <br>             
+            
             <b>Draw region names:</b> If checked, the names of the
 regions will be drawn on the map.<br>
             <br>
             <b>Font size:</b>&nbsp; The font size used to draw the
-names.<br>
+Region names.<br>
             <br>
             <b>Define Regions:</b> Hit this button to bring up a window
 for defining the regions.&nbsp; Right-click anywhere on the board to
@@ -44,6 +50,8 @@ its name or remove it.<br>
             </td>
             <td valign="top"><img src="images/IrregularGrid.png" alt=""
  > <br>
+           <br>
+           <img src="images/DefineRegions.png">
 &nbsp; <br>
             </td>
           </tr>

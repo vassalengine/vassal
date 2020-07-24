@@ -31,7 +31,7 @@ multiple Boards laid out next to one another.&nbsp; <br>
 If a board image is specified (a GIF, JPEG, or PNG image file that must be
 created beforehand with some external tool), then the size of the image
 determines the size of the board. If the board image is set to null (by
-hitting the "Select" button and then canceling the file dialog), then
+clicking the "Select" button and then canceling the file dialog), then
 no
 image is used for the board, and the size and color may be specified
 directly.<br>
@@ -39,7 +39,7 @@ directly.<br>
             <br>
             <br>
             </td>
-            <td valign="top"><img src="images/Board.png" alt=""> <br>
+            <td valign="top"><img src="images/Board.png" alt=""> <br><br>
             <img src="images/Board2.png" alt=""	>
             <br>
             </td>
@@ -49,19 +49,23 @@ directly.<br>
       <br>
       <br>
       <hr size="2" width="100%">
-      <h2>Sub-Components</h2>
+      <h2>Sub-Components: Grids</h2>
+If a Board contains no grid, then pieces may be placed anywhere on the
+board.&nbsp; Pieces dropped on top of one another will stack.&nbsp; If
+the board contains a <a href="HexGrid.htm">Hex</a> or <a href="RectangularGrid.htm">Rectangular</a> grid, they
+can be configured either to allow pieces anywhere or to have pieces snap to the nearest legal
+location on the board as defined by the grid.&nbsp; The grid may be
+drawn over the board's image or drawing may be suppressed (for example if the
+image already has a grid drawn on it). <a href="IrregularGrid.htm">Irregular</a> grids may be used to define locations 
+on maps where the positions are arbitrary; on such grids the option to have pieces snap to
+the nearest legal location is selectable. Maps can also be configured to use different grids in different zones through
+the use of a <a href="ZonedGrid.htm">Multi-zoned Grid</a>.<br>
+      <br>
       <h3><a href="HexGrid.htm">Hex Grid</a></h3>
       <h3><a href="RectangularGrid.htm">Rectangular Grid</a></h3>
       <h3><a href="IrregularGrid.htm">Irregular Grid</a></h3>
       <h3><a href="ZonedGrid.htm">Multi-zoned Grid<br>
       </a></h3>
-      <br>
-If a Board contains no grid, then pieces may be placed anywhere on the
-board.&nbsp; Pieces dropped on top of one another will stack.&nbsp; If
-it does contain a grid, then a piece will snap to the nearest legal
-location on the board as defined by the grid.&nbsp; The grid may be
-drawn over the board's image or drawing may be suppressed (if the
-image already has a grid drawn on it).<br>
       <br>
       </td>
     </tr>
