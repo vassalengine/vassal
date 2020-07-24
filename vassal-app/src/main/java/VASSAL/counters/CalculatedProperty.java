@@ -39,6 +39,7 @@ import VASSAL.script.expression.BeanShellExpression;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
@@ -138,6 +139,17 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   protected String getExpression() {
     return expression.getExpression();
   }
+  
+  
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  public ArrayList<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(getExpression());
+    return l; 
+  }  
+ 
 
   /**
    * Return the value of this trait's property.

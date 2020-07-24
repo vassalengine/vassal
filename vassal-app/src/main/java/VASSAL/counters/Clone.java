@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -149,6 +150,16 @@ public class Clone extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     return Resources.getString("Editor.Clone.trait_description");
+  }
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(key);
+    return l;
   }
 
   @Override

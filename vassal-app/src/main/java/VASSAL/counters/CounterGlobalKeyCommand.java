@@ -25,6 +25,7 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -165,6 +166,29 @@ public class CounterGlobalKeyCommand extends Decorator
   public Shape getShape() {
     return piece.getShape();
   }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(key);
+    l.add(globalKey);
+    return l;
+  }
+  
+  
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  public ArrayList<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(propertiesFilter.getExpression());
+    return l; 
+  }  
+  
 
   @Override
   public PieceEditor getEditor() {

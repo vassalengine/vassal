@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -126,6 +127,18 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public String getDescription() {
     return description.length() == 0 ? "Action Button" : "Action Button - " + description;
   }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(stroke);
+    return l;
+  }
+
 
   @Override
   public void mySetType(String type) {

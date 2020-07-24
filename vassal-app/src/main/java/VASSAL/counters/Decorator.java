@@ -46,6 +46,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -542,6 +543,22 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return null;
   }
+  
+  
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  public ArrayList<String> getExpressionList() {
+    return null; 
+  }  
+    
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+    return null;
+  }
+  
 
   /** @return the configurer for this trait - the dialog which allows the editing the piece's type information. Default
    * configurer is a {@link SimplePieceEditor}, but many traits will want to provide custom versions. */
