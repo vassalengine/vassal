@@ -360,11 +360,7 @@ public class LaunchRequest implements Serializable {
         if (data instanceof ModuleMetaData) {
           lr.module = file;
         }
-        else if (data instanceof ExtensionMetaData) {
-        }
-        else if (data instanceof SaveMetaData) {
-        }
-        else {
+        else if (!(data instanceof ExtensionMetaData) && !(data instanceof SaveMetaData)) {
           die("LaunchRequest.unknown_file_type", file.toString());
         }
       }
@@ -385,9 +381,7 @@ public class LaunchRequest implements Serializable {
           if (lr.extension != null) die("");
           lr.extension = file;
         }
-        else if (data instanceof SaveMetaData) {
-        }
-        else {
+        else if (!(data instanceof SaveMetaData)) {
           die("LaunchRequest.unknown_file_type", file.toString());
         }
       }

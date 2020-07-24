@@ -624,13 +624,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return null;
   }
   public static class Editor extends Configurer {
-    private JButton button;
-    private PolygonEditor editor;
+    private final JButton button;
+    private final PolygonEditor editor;
     private Board board;
-    private JDialog frame;
+    private final JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
     protected Polygon savePoly;
-    final protected JLabel warning = new JLabel("Zone has not been defined");
+    protected final JLabel warning = new JLabel("Zone has not been defined");
 
     public Editor(final Zone zone) {
       super(PATH, null);

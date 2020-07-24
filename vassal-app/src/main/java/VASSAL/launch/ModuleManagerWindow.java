@@ -275,15 +275,16 @@ public class ModuleManagerWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent evt) {
-        if (
-          Dialogs.showConfirmDialog(
-            ModuleManagerWindow.this,
-            Resources.getString("ModuleManager.clear_tilecache_title"),
-            Resources.getString("ModuleManager.clear_tilecache_heading"),
-            Resources.getString("ModuleManager.clear_tilecache_message"),
-            JOptionPane.WARNING_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)
-        {
+        final int dialogResult = Dialogs.showConfirmDialog(
+          ModuleManagerWindow.this,
+          Resources.getString("ModuleManager.clear_tilecache_title"),
+          Resources.getString("ModuleManager.clear_tilecache_heading"),
+          Resources.getString("ModuleManager.clear_tilecache_message"),
+          JOptionPane.WARNING_MESSAGE,
+          JOptionPane.OK_CANCEL_OPTION);
+
+        if (dialogResult == JOptionPane.OK_OPTION) {
+
           final File tdir = new File(Info.getConfDir(), "tiles");
           if (tdir.exists()) {
             try {
