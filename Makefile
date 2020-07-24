@@ -36,17 +36,12 @@
 
 SHELL:=/bin/bash
 
-SRCDIR:=vassal-app/src/main/java
-TESTDIR:=vassal-app/src/test/java
 LIBDIR:=release-prepare/target/lib
-CLASSDIR:=vassal-app/target/classes
 TMPDIR:=tmp
-JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 JDKDIR:=jdks
-
-JDOCLINK:=file:///usr/share/javadoc/java/api
+JDOCDIR:=jdoc
 
 VNUM:=3.3.3
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
@@ -69,27 +64,15 @@ endif
 
 YEAR:=$(shell date +%Y)
 
-CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
-JAVAPATH:=/usr/bin
-
 MVN:=./mvnw
 
-JDOC:=$(JAVAPATH)/javadoc
+JAVAPATH:=/usr/bin
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
-# fixes javadoc 11 bug that generates invalid search urls
-JDOCVER:=$(shell javadoc --version 2>/dev/null | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
-ifeq ($(JDOCVER),11)
-  JDOCOPS:=--no-module-directories
-else ifeq ($(JDOCVER),12)
-  JDOCOPS:=--no-module-directories
-endif
-
-
-NSIS:=makensis
 DMG:=dmg/libdmg-hfsplus/build/dmg/dmg
 
+NSIS:=makensis
 LAUNCH4J:=~/java/launch4j/launch4j
 
 compile:
@@ -100,7 +83,7 @@ jar: $(LIBDIR)/Vengine.jar
 test:
 	$(MVN) test
 
-$(TMPDIR):
+$(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
 $(LIBDIR)/Vengine.jar:
@@ -112,14 +95,14 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
 	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
-#dist/windows/VASSAL.ico:
+#$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
 #	rsvg -w 48 -h 48 -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-48.png
 #	rsvg -w 256 -h 256 -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-256.png
 #	Then put the 16x16, 24x24, 32x32, 48x48, and 256x256 into the GIMP as layers
 #	and save as an ICO file.
 
-#dist/macosx/VASSAL.icns:
+#$(DISTDIR)/macosx/VASSAL.icns:
 #	for i in 48 128 256 512 ; do \
 #		rsvg -w $$i -h $$i -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-$$i.png ; \
 #	done
@@ -131,12 +114,12 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac_x64
 	mkdir -p $@/Contents/{MacOS,Resources}
-	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
+	cp $(DISTDIR)/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
-	cp dist/macosx/VASSAL.sh $@/Contents/MacOS
+	cp $(DISTDIR)/macosx/VASSAL.sh $@/Contents/MacOS
 	$(JLINK) --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
-	cp dist/macosx/VASSAL.icns $@/Contents/Resources
+	cp $(DISTDIR)/macosx/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
@@ -144,9 +127,9 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app
 	ln -s /Applications $@/Applications
-	cp dist/macosx/.DS_Store $@
+	cp $(DISTDIR)/macosx/.DS_Store $@
 	mkdir -p $@/.background
-	cp dist/macosx/background.png $@/.background
+	cp $(DISTDIR)/macosx/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
@@ -168,7 +151,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
 	cp -a $(LIBDIR) $@/lib
-	cp dist/VASSAL.sh dist/windows/VASSAL.bat $@
+	cp $(DISTDIR)/VASSAL.sh $(DISTDIR)/windows/VASSAL.bat $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.{bat,sh}
@@ -185,7 +168,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README $@
 	cp -a $(LIBDIR) $@/lib
-	cp dist/linux/VASSAL.sh $@
+	cp $(DISTDIR)/linux/VASSAL.sh $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.sh
@@ -197,8 +180,8 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL.exe: $(TMPDIR) dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico
-	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
+$(TMPDIR)/VASSAL.exe: $(TMPDIR) $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico
+	cp $(DISTDIR)/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
@@ -229,7 +212,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $
 .SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION)
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION)
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer$*.nsi
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) $(DISTDIR)/windows/nsis/installer$*.nsi
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
@@ -250,8 +233,10 @@ post-release:
 upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
-javadoc:
-	$(JDOC) $(JDOCOPS) -d $(JDOCDIR) -link $(JDOCLINK) -classpath $(CLASSPATH) -sourcepath $(SRCDIR) -subpackages VASSAL
+vassal-app/target/$(JARNAME)-javadoc.jar: jar
+
+javadoc: $(JDOCDIR) vassal-app/target/$(JARNAME)-javadoc.jar
+	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
