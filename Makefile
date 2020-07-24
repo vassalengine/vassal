@@ -106,7 +106,7 @@ $(TMPDIR):
 $(LIBDIR)/Vengine.jar:
 	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
 	$(MVN) deploy -DgitVersion=$(VERSION)
-	mv $(LIBDIR)/$(JARNAME).jar $(LIBDIR)/Vengine.jar
+	mv $(LIBDIR)/$(JARNAME).jar $@
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
