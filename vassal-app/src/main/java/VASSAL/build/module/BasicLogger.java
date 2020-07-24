@@ -143,26 +143,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
     stepIconConfig.setValue(STEP_ICON);
     GlobalOptions.getInstance().addOption(stepIconConfig);
-    stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue());
-      }
-    });
+    stepIconConfig.addPropertyChangeListener(evt -> stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue()));
     stepIconConfig.fireUpdate();
     
     final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(stepKeyConfig);
-    stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
-        if (stepKeyListener.getKeyStroke() != null) {
-          stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
-        } 
-        else {
-          stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip3"));  //$NON-NLS-1$
-        }
+    stepKeyConfig.addPropertyChangeListener(evt -> {
+      stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
+      if (stepKeyListener.getKeyStroke() != null) {
+        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
+      } 
+      else {
+        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip3"));  //$NON-NLS-1$
       }
     });
     stepKeyConfig.fireUpdate();
@@ -170,26 +162,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
     undoIconConfig.setValue(UNDO_ICON);
     GlobalOptions.getInstance().addOption(undoIconConfig);
-    undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue());
-      }
-    });
+    undoIconConfig.addPropertyChangeListener(evt -> undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue())); 
     undoIconConfig.fireUpdate();
 
     final NamedHotKeyConfigurer undoKeyConfig = new NamedHotKeyConfigurer("undoHotKey", Resources.getString("BasicLogger.undo_hotkey"), undoKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(undoKeyConfig);
-    undoKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        undoKeyListener.setKeyStroke(undoKeyConfig.getValueNamedKeyStroke());
-        if (undoKeyListener.getKeyStroke() != null) {
-          undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_tooltip2", NamedHotKeyConfigurer.getString(undoKeyListener.getKeyStroke()))); //$NON-NLS-1$
-        } 
-        else {
-          undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_last_move")); //$NON-NLS-1$
-        }        
+    undoKeyConfig.addPropertyChangeListener(evt -> {
+      undoKeyListener.setKeyStroke(undoKeyConfig.getValueNamedKeyStroke());
+      if (undoKeyListener.getKeyStroke() != null) {
+        undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_tooltip2", NamedHotKeyConfigurer.getString(undoKeyListener.getKeyStroke()))); //$NON-NLS-1$
+      } 
+      else {
+        undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_last_move")); //$NON-NLS-1$
       }
     });
     undoKeyConfig.fireUpdate();
