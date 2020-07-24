@@ -26,7 +26,7 @@ Piece</b></small><br>
         <tbody>
           <tr>
             <td valign="top">The simplest game piece consists of an
-image and a name.&nbsp; Select the image by double-clicking on the box
+image and a name.&nbsp; Add a new image for the piece by double-clicking on the box
 to the left, or select an image that has already been added from the
 drop-down menu.<br>
             <br>
@@ -59,11 +59,11 @@ returns the name of the current <a href="Board.htm">Board</a></li>
         <li><span style="font-style: italic;">CurrentZone</span>
 returns the name of the current <a href="ZonedGrid.htm">Zone</a></li>
         <li><span style="font-style: italic;">CurrentX</span>
-returns the current map X co-ordinate</li>
+returns the current map X coordinate</li>
         <li><span style="font-style: italic;">CurrentY</span>
-returns the current map Y co-ordinate</li>
+returns the current map Y coordinate</li>
         <li><span style="font-style: italic;">DeckName</span>
-returns the name of the <a href="Deck.htm">Deck</a> if the piece is currently stacked in one</li>
+returns the name of the <a href="Deck.htm">Deck</a> if the piece is currently stacked in one.</li>
         <li><span style="font-style: italic;">DeckPosition</span>
 returns the position of a piece within a <a href="Deck.htm">Deck</a> (top = 1) if the piece is currently stacked in one, or 0 otherwise.</li>
 
@@ -72,15 +72,15 @@ returns the position of a piece within a <a href="Deck.htm">Deck</a> (top = 1) i
 selected with the mouse
         </li>
         <li><span style="font-style: italic;">PieceId</span> returns a string that uniquely defines
-the source of the piece. All pieces sourced from the same GamePiece Palette slot will have the same
+the source of the piece. All pieces sourced from the same <a href="PieceWindow.htm">Game Piece Palette</a> slot will have the same
 PieceId string.        
         </li>
       </ul>
       
       <br>
        The following <a
- href="Properties.htm">Properties</a> are defined after a piece is moved
- manually by drag-and-drop movement:<br>
+ href="Properties.htm">Properties</a> are defined after a piece is moved, either
+ manually by drag-and-drop movement or by a <a href="SendToLocation.htm">Send To Location</a> trait:<br>
       <ul>
         <li><span style="font-style: italic;">OldLocationName</span>
 returns the name of the previous location, as determined by the local
@@ -94,9 +94,9 @@ returns the name of the previous <a href="Board.htm">Board</a></li>
         <li><span style="font-style: italic;">OldZone</span>
 returns the name of the previous <a href="ZonedGrid.htm">Zone</a></li>
         <li><span style="font-style: italic;">OldX</span>
-returns the previous map X co-ordinate</li>
+returns the previous map X coordinate</li>
         <li><span style="font-style: italic;">OldY</span>
-returns the previous map Y co-ordinate</li>
+returns the previous map Y coordinate</li>
         </li>
       </ul>
       
