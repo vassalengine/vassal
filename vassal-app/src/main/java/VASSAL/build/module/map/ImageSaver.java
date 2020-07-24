@@ -502,61 +502,6 @@ public class ImageSaver extends AbstractConfigurable {
     }
   }
 
-  /**
-   * Write a PNG-encoded snapshot of the map to the given OutputStreams,
-   * dividing the map into vertical sections, one per stream
-   *
-   * @deprecated
-   */
-  @Deprecated
-  public void writeImage(OutputStream[] out) throws IOException {
-    Dimension buffer = map.getEdgeBuffer();
-    int totalWidth =
-      (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
-    int totalHeight =
-      (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
-    for (int i = 0; i < out.length; ++i) {
-      int height = totalHeight / out.length;
-      if (i == out.length - 1) {
-        height = totalHeight - height * (out.length - 1);
-      }
-
-      Image output = map.getView().createImage(totalWidth, height);
-      Graphics2D gg = (Graphics2D) output.getGraphics();
-
-      map.paintRegion(gg, new Rectangle(
-        -(int) (map.getZoom() * buffer.width),
-        -(int) (map.getZoom() * buffer.height) + height * i,
-        totalWidth, totalHeight), null);
-      gg.dispose();
-      try {
-        MediaTracker t = new MediaTracker(map.getView());
-        t.addImage(output, 0);
-        t.waitForID(0);
-      }
-      catch (Exception e) {
-        logger.error("", e);
-      }
-
-      try {
-        if (output instanceof RenderedImage) {
-          ImageIO.write((RenderedImage) output, "png", out[i]);
-        }
-        else {
-          throw new IOException("Bad image type");
-        }
-      }
-      finally {
-        try {
-          out[i].close();
-        }
-        catch (IOException e) {
-          logger.error("", e);
-        }
-      }
-    }
-  }
-
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "ImageCapture");

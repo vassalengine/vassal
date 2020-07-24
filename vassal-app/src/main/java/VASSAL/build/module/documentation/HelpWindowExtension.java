@@ -20,6 +20,8 @@ package VASSAL.build.module.documentation;
 /**
  * Interface for specifying the owning Window of an online Help dialog
  */
+@Deprecated
 public interface HelpWindowExtension {
+  @Deprecated
   public void setBaseWindow(HelpWindow w);
 }

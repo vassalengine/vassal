@@ -218,11 +218,6 @@ public class GlobalOptions extends AbstractConfigurable {
     useClassicMoveFixedDistance = b;
   }
 
-  @Deprecated
-  public boolean isAveragedScaling() {
-    return true;
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
   }

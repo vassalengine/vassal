@@ -290,21 +290,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return null;
   }
 
-  /**
-   *
-   * A valid verson format is "w.x.y[bz]", where
-   * 'w','x','y', and 'z' are integers.
-   * @return a negative number if <code>v2</code> is a later version
-   * the <code>v1</code>, a positive number if an earlier version,
-   * or zero if the versions are the same.
-   *
-   * @deprecated use {@link Info#compareVersions}
-   */
-  @Deprecated
-  public static int compareVersions(String v1, String v2) {
-    return Info.compareVersions(v1, v2);
-  }
-
   @Override
   public void addTo(Buildable b) {
   }
@@ -577,10 +562,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     preferences.getEditor().initDialog(getFrame());
   }
 
-  @Deprecated
-  public void setGlobalPrefs(Prefs p) {
-  }
-
   /**
    * Uses the registered  {@link CommandEncoder}s
    * to decode a String into a {@link Command}.
@@ -635,25 +616,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
 
     return fileChooser;
-  }
-
-  /**
-   * @deprecated Use {@link #getFileChooser} instead.
-   */
-  @Deprecated
-  public FileDialog getFileDialog() {
-    if (fileDialog == null) {
-      fileDialog = new FileDialog(getFrame());
-      File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
-      if (f != null) {
-        fileDialog.setDirectory(f.getPath());
-      }
-      fileDialog.setModal(true);
-    }
-    else {
-      fileDialog.setDirectory(fileDialog.getDirectory());
-    }
-    return fileDialog;
   }
 
   /**

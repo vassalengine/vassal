@@ -91,12 +91,6 @@ import VASSAL.tools.NamedKeyStroke;
 public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected Map map;
 
-  @Deprecated protected double zoom = 1.0;
-  @Deprecated protected int zoomLevel = 0;
-  @Deprecated protected int zoomStart = 1;
-  @Deprecated protected double[] zoomFactor;
-  @Deprecated protected int maxZoom = 4;
-
   protected LaunchButton zoomInButton;
   protected LaunchButton zoomPickButton;
   protected LaunchButton zoomOutButton;

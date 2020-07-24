@@ -261,30 +261,6 @@ public class GlobalMap implements AutoConfigurable,
     return true;
   }
 
-  /**
-   * Transform a point from Map coordinates to coordinates in the overview
-   * window
-   *
-   * @param p
-   * @return
-   */
-  @Deprecated
-  public Point componentCoordinates(Point p) {
-    return mapToComponent(p);
-  }
-
-  /**
-   * Transform a point from coordinates in the overview window to Map
-   * coordinates
-   *
-   * @param p
-   * @return
-   */
-  @Deprecated
-  public Point mapCoordinates(Point p) {
-    return componentToMap(p);
-  }
-
   public Point componentToMap(Point p) {
     return new Point(
       (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,

@@ -146,17 +146,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   /**
-   * The text reported after the results of the roll;
-   *
-   * @deprecated
-   */
-  @Deprecated
-  protected String getReportSuffix() {
-    return " ***  <" //$NON-NLS-1$
-        + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
-  }
-
-  /**
    * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
    */

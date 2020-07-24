@@ -91,8 +91,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
-  @Deprecated
-  protected JTextField status;
   protected JLabel statusLabel;
   protected Map map;
   protected JPanel slotPanel;
@@ -362,12 +360,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     }
   }
 
-  /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
-  @Deprecated
-  public void setBoards(Enumeration<Board> bdEnum) {
-    setBoards(Collections.list(bdEnum));
-  }
-
   protected void selectBoards(Component c) {
     reset();
     final JDialog d = new JDialog((Frame) null, true);
@@ -418,16 +410,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   public List<String> getSelectedBoardNames() {
     return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
-  }
-
-  /**
-   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
-   *         savefile
-   * @deprecated Use {@link #getSelectedBoards()} instead.
-   */
-  @Deprecated
-  public Enumeration<Board> getCurrentBoards() {
-    return Collections.enumeration(getSelectedBoards());
   }
 
   /**
@@ -568,14 +550,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     else if (clearButton == e.getSource()) {
       reset();
     }
-  }
-
-  /**
-   * @deprecated Use {@link #getBoardsFromControls()}.
-   */
-  @Deprecated
-  public Vector<Board> pickBoards() {
-    return new Vector<>(getBoardsFromControls());
   }
 
   /**
@@ -774,13 +748,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       boards = bds;
     }
 
-    /** @deprecated Use {@link #SetBoards(BoardPicker,List<Board>)}. */
-    @Deprecated
-    public SetBoards(BoardPicker target, Vector<Board> boards) {
-      this.target = target;
-      this.boards = boards;
-    }
-
     @Override
     protected void executeCommand() {
       target.currentBoards = boards;
@@ -923,10 +890,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (controls != null) {
       controls.repaint();
     }
-  }
-
-  @Deprecated
-  public void pack() {
   }
 
   @Override  // PG-2011-09-24

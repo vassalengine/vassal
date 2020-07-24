@@ -715,16 +715,6 @@ public class PieceMover extends AbstractBuildable
     map.repaint();
   }
 
-  /** @deprecated Use {@link #selectMovablePieces(MouseEvent)}. */
-  @Deprecated
-  protected void selectMovablePieces(Point point) {
-    final GamePiece p = map.findPiece(point, dragTargetSelector);
-    dragBegin = point;
-    selectionProcessor.accept(p);
-    // show/hide selection boxes
-    map.repaint();
-  }
-
   protected boolean canHandleEvent(MouseEvent e) {
     return !e.isConsumed() &&
            !e.isShiftDown() &&
