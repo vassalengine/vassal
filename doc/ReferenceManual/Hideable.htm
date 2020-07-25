@@ -27,24 +27,23 @@ Piece</a></small> <small>&gt; <b>Invisible</b></small><br>
           <tr>
             <td valign="top">This trait gives a Game Piece the
 capability
-to be made invisible.&nbsp; Specify the key which the user will type to
+to be made invisible.&nbsp; Specify the key which the user will press to
 make
-the piece invisible and the name for the command that will appear in
+the piece invisible (or a <a href="NamedKeyCommand.htm">Named Key Command</a>) and the name for the command that will appear in
 the
-popup menu.&nbsp; The same command turns invisible piece visible
+right-click context menu.&nbsp; The same command turns invisible piece visible
 again.&nbsp;
 To the player who turned it invisible, the piece will appear
 transparent
 against a background of the specified color. &nbsp;To other players it
 will
-not appear at all. &nbsp; This trait actually only hides those traits
-that
-are before it in the list of traits, so it should generally be the last
-trait
-of a Game Piece.<br>
-            <br>
-            <p><b>Keyboard command:&nbsp;</b>The Keyboard Command to turn the piece invisible.<br/>
-            <p><b>Menu Text:&nbsp;</b>The associated meu text.<br/>
+not appear at all. &nbsp; 
+        <br><br>
+<b>NOTE:</b>&nbsp; <i>This trait actually only hides those traits
+which appear <b>before</b> it in the list of traits, so it should generally be the last
+trait of a Game Piece.</i><br>
+            <p><b>Key Command:&nbsp;</b>The keystroke to turn the piece invisible, or a <a href="NamedKeyCommand.htm">Named Key Command</a>.<br/>
+            <p><b>Menu Text:&nbsp;</b>Text of the associated item on the piece's right-click context menu, or leave blank if no menu item is desired.<br/>
             <p><b>Background Color:&nbsp;</b>The background color that the owner sees the piece drawn against when invisible.<br/>
             <p><b>Transparency(%):&nbsp;</b>The level of transparency that the owner sees the piece when invisible.<br/>
             <p><b>Can be hidden by:&nbsp;</b>Defines who may hide this piece (and see it once hidden).  <i>Any Player</i> means that any player may hide this piece, including observers.  <i>Any Side</i> means that any player who has been assigned a <a href="GameModule.htm#Definition_of_Player_Sides">side</a> in a game (not an observer) can hide this piece.  If the player resigns and another player takes the side, then the new player for that side will be the owner. <i>Any of the Specified Sides</i> allows you to enter a list of sides.  Only players assigned to one of the named sides can hide the piece, but the players of all the listed sides will be able to see and modify the piece.  This is useful for referee players or games with multi-player teams.<br>
