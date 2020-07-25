@@ -23,7 +23,9 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
-import VASSAL.chat.jabber.JabberClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -36,10 +38,13 @@ import VASSAL.tools.ThrowableUtils;
  *
  */
 public class DynamicClient extends HybridClient {
+
   public static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
   public static final String JABBER_URL = "http://www.vassalengine.org/util/getJabberServerImpl"; //$NON-NLS-1$
+
+  private static final Logger log = LoggerFactory.getLogger(DynamicClient.class);
+
   private boolean connecting;
-  private Properties overrides;
 
   public DynamicClient() {
     this(LEGACY_URL);
@@ -52,29 +57,6 @@ public class DynamicClient extends HybridClient {
     final Properties p = ServerAddressBook.getInstance().getCurrentServerProperties();
     return ChatServerFactory.build(p);
   }
-
-/*
-  private Properties getServerConfig() throws IOException {
-    HttpRequestWrapper r = new HttpRequestWrapper(serverConfigURL);
-    Properties p = new Properties();
-    p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName()); //$NON-NLS-1$ //$NON-NLS-2$
-    p.put("vassalVersion", VASSAL.Info.getVersion()); //$NON-NLS-1$
-    List<String> l = r.doGet(p);
-    if (l.isEmpty()) {
-      throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
-    }
-    p = new Properties();
-    final StringBuilder buff = new StringBuilder();
-    for (String s : l) {
-      buff.append(s).append('\n');
-    }
-    p.load(new ByteArrayInputStream(buff.toString().getBytes()));
-    if (overrides != null) {
-      p.putAll(overrides);
-    }
-    return p;
-  }
-*/
 
   @Override
   public void setConnected(final boolean connect) {
@@ -94,6 +76,7 @@ public class DynamicClient extends HybridClient {
               DynamicClient.super.setConnected(connect);
             }
             catch (InterruptedException e) {
+              log.error("Error while connecting: interrupted", e);
             }
             catch (ExecutionException ex) {
               Throwable e = ex.getCause();
@@ -113,15 +96,16 @@ public class DynamicClient extends HybridClient {
           setDelegate(buildDelegate());
         }
         catch (IOException ex) {
-          ;
+          log.error("Error while connecting", ex);
         }
       }
     }
   }
 
+  /**
+   * @deprecated method does nothing and will be removed
+   */
+  @Deprecated
   public void setOverrides(Properties override) {
-    this.overrides = override;
-    if (JabberClientFactory.JABBER_SERVER_TYPE.equals(overrides.getProperty(JabberClientFactory.TYPE_KEY))) {
-    }
   }
 }

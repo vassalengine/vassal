@@ -44,7 +44,7 @@ public abstract class Importer {
   protected ImportAction action;
   protected File file;
 
-  static protected void insertComponent(Buildable child, Buildable parent) {
+  protected static void insertComponent(Buildable child, Buildable parent) {
     child.build(null);
     if (child instanceof PieceSlot)
       ((PieceSlot) child).updateGpId(GameModule.getGameModule());
@@ -64,7 +64,7 @@ public abstract class Importer {
     final List<LayeredPieceCollection> l =
       map.getComponentsOf(LayeredPieceCollection.class);
 
-    LayeredPieceCollection collection = null;
+    LayeredPieceCollection collection;
     if (l.size() == 0) {
       collection = new LayeredPieceCollection();
       insertComponent(collection, map);
@@ -207,7 +207,7 @@ public abstract class Importer {
     if (s.equals(".") || s.equals(".."))
       return s;
     final int pathIdx = s.lastIndexOf(File.separatorChar);
-    return s.substring(pathIdx + 1, s.length());
+    return s.substring(pathIdx + 1);
   }
 
   /**

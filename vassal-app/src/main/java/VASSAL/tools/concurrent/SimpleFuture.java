@@ -99,8 +99,8 @@ public class SimpleFuture<V> implements SettableFuture<V> {
   public V get(long timeout, TimeUnit unit) throws CancellationException,
                                                    ExecutionException,
                                                    InterruptedException,
-                                                   TimeoutException
-  {
+                                                   TimeoutException {
+
     if (!done.await(timeout, unit)) throw new TimeoutException();
     if (exception != null) throw new ExecutionException(exception);
     if (cancelled) throw new CancellationException();

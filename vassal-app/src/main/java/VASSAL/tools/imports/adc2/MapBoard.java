@@ -1048,7 +1048,7 @@ public class MapBoard extends Importer {
 
     // using floats because we really want to aim for the centre pixel, not necessarily
     // the space between pixels--only important for aliasing effects.
-    private ArrayList<ArrayList<Point2D.Float>> points = new ArrayList<>();
+    private final List<List<Point2D.Float>> points = new ArrayList<>();
 
     // line width
     private final int size;
@@ -1104,7 +1104,7 @@ public class MapBoard extends Importer {
       // find out if this line is attached to any other line in the list.
       // if not create a line.
       for (int i = 0; i < points.size(); ++i) {
-        ArrayList<Point2D.Float> lineA = points.get(i);
+        List<Point2D.Float> lineA = points.get(i);
         if (a.equals(lineA.get(0))) { // a at the start of lineA
           // repeated segment?
           if (b.equals(lineA.get(1)))
@@ -1114,7 +1114,7 @@ public class MapBoard extends Importer {
           for (int j = 0; j < points.size(); ++j) {
             if (i == j)
               continue;
-            ArrayList<Point2D.Float> lineB = points.get(j);
+            List<Point2D.Float> lineB = points.get(j);
             if (b.equals(lineB.get(0))) { // point A at start of lineA and point B at start of lineB
               if (lineA.size() < lineB.size()) { // insert A before B
                 for (Point2D.Float aFloat : lineA) lineB.add(0, aFloat);
@@ -1144,7 +1144,7 @@ public class MapBoard extends Importer {
           for (int j = 0; j < points.size(); ++j) {
             if (i == j) // skip closed loops
               continue;
-            ArrayList<Point2D.Float> lineB = points.get(j);
+            List<Point2D.Float> lineB = points.get(j);
             if (b.equals(lineB.get(0))) {
               // point A at end of line A and point B at start of lineB
               lineA.addAll(lineB);
@@ -1179,7 +1179,7 @@ public class MapBoard extends Importer {
       }
 
       // point A is open (not attached)
-      for (ArrayList<Point2D.Float> line : points) {
+      for (List<Point2D.Float> line : points) {
         if (b.equals(line.get(0))) { // B at the start of the line
           // repeated segment?
           if (a.equals(line.get(1)))
@@ -1218,7 +1218,7 @@ public class MapBoard extends Importer {
       g.setStroke(stroke);
       g.setColor(getColor());
       GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-      for (ArrayList<Point2D.Float> line : points) {
+      for (List<Point2D.Float> line : points) {
         gp.moveTo(line.get(0).x, line.get(0).y);
         for (Point2D.Float p : line) {
           if (!p.equals(line.get(0)))
@@ -1250,7 +1250,7 @@ public class MapBoard extends Importer {
     DOTTED(new float[] { 4.0f, 4.0f }),
     SOLID(null);
 
-    private float[] dash;
+    private final float[] dash;
 
     LineStyle(float[] dash) {
       this.dash = dash;
@@ -2126,7 +2126,7 @@ public class MapBoard extends Importer {
 
   // Archive of fonts used for placenames. makes reuse possible and is
   // probably faster as most of the place names use only one of a very few fonts.
-  private final static HashMap<Integer, Font> defaultFonts = new HashMap<>();
+  private static final java.util.Map<Integer, Font> defaultFonts = new HashMap<>();
 
   // which level to import
   private static final int zoomLevel = 2;
@@ -2247,7 +2247,7 @@ public class MapBoard extends Importer {
   // The VASSAL BoardPicker object which is the tree parent of Board.
   private BoardPicker boardPicker;
 
-  private byte[] drawingPriorities = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  private final byte[] drawingPriorities = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
   // initialize the drawing elements which must all be ArrayList<>'s.
   public MapBoard() {

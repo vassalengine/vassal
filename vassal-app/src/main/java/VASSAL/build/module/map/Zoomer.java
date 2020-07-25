@@ -527,10 +527,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       levelList.setSelectedIndex(0);
 
-      levelList.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) { updateButtons(); }
-      });
+      levelList.addListSelectionListener(e -> updateButtons());
 
       final JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       pane.setLeftComponent(leftBox);

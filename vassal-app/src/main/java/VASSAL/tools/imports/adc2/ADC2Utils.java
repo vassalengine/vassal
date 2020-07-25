@@ -33,6 +33,8 @@ import VASSAL.tools.imports.FileFormatException;
 
 public class ADC2Utils {
 
+  private static final long serialVersionUID = 1L;
+
   public static class NoMoreBlocksException extends EOFException {
     private static final long serialVersionUID = 1L;
 
@@ -141,8 +143,6 @@ public class ADC2Utils {
   // can never be instantiated
   private ADC2Utils() {}
 
-  private static final long serialVersionUID = 1L;
-
   /**
    * Read a base-250 2-byte big-endian word from a <code>DataInputStream</code>.
    * This is the default (and only) encoding for words imported modules.
@@ -159,7 +159,7 @@ public class ADC2Utils {
     return readBase250Word(in) * 62500 + readBase250Word(in);
   }
 
-  final static int BLOCK_SEPARATOR = -2;
+  static final int BLOCK_SEPARATOR = -2;
 
   /**
    * Read a block separator byte from an import module file and throw an exception if it

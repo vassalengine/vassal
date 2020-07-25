@@ -143,8 +143,8 @@ public class OpCache {
     @Override
     public V get(long timeout, TimeUnit unit) throws InterruptedException,
                                                      ExecutionException,
-                                                     TimeoutException
-    {
+                                                     TimeoutException {
+
       if (done.await(timeout, unit)) {
         if (failed) throw new ExecutionException(new OpFailedException());
         return value;
@@ -256,8 +256,8 @@ public class OpCache {
    */
   public <V> V get(Key<V> key, OpObserver<V> obs) throws CancellationException,
                                                          InterruptedException,
-                                                         ExecutionException
-  {
+                                                         ExecutionException {
+
     Future<V> fut = getFuture(key, obs);
 
     // We block on the op when there is no observer, and
@@ -299,8 +299,8 @@ public class OpCache {
    */
   @SuppressWarnings("unchecked")
   public <V> Future<V> getFuture(Key<V> key, OpObserver<V> obs)
-                                                    throws ExecutionException
-  {
+                                                    throws ExecutionException {
+
     // The code in this method was inspired by the article at
     // http://www.javaspecialists.eu/archive/Issue125.html.
 
@@ -370,7 +370,6 @@ public class OpCache {
 
   private final Ex threadPool =
     new Ex(2, 2, 60, TimeUnit.SECONDS, requestQueue);
-/////
 
   /**
    * Gets a value from the cache, if it is already calculated.

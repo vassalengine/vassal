@@ -162,8 +162,6 @@ public class SVGRenderer {
     px = new AffineTransform(px);
     px.scale(scale, scale);
 
-    final Rectangle2D rect = new Rectangle2D.Float(0, 0, defaultW, defaultH);
-
     r.addTranscodingHint(Rasterizer.KEY_WIDTH, (float) aoi.getWidth());
     r.addTranscodingHint(Rasterizer.KEY_HEIGHT, (float) aoi.getHeight());
     r.addTranscodingHint(Rasterizer.KEY_AOI, aoi);
@@ -201,7 +199,7 @@ public class SVGRenderer {
   }
 
   private static class Rasterizer extends SVGAbstractTranscoder {
-    private DocumentLoader docLoader;
+    private final DocumentLoader docLoader;
     private BufferedImage image;
     private AffineTransform xform;
 
@@ -227,7 +225,7 @@ public class SVGRenderer {
       
         // interpose this <g> element between <svg> and its children
         final Element svg = document.getDocumentElement();
-        Node n = null;
+        Node n;
         while ((n = svg.getFirstChild()) != null) {
           g.appendChild(n);
         }
@@ -255,8 +253,7 @@ public class SVGRenderer {
       final Shape raoi = new Rectangle2D.Float(0, 0, width, height);
       // Warning: the renderer's AOI must be in user space
       try {
-        renderer.repaint(curTxf.createInverse().
-                         createTransformedShape(raoi));
+        renderer.repaint(curTxf.createInverse().createTransformedShape(raoi));
       }
       catch (NoninvertibleTransformException e) {
         throw new TranscoderException(e);

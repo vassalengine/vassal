@@ -64,8 +64,8 @@ public class FallbackImageTypeConverter implements ImageTypeConverter {
   FallbackImageTypeConverter(
     TemporaryFileFactory tfactory,
     ImageTypeConverter memory_converter,
-    ImageTypeConverter file_converter)
-  {
+    ImageTypeConverter file_converter) {
+
     this.tfactory = tfactory;
     this.memory_converter = memory_converter;
     this.file_converter = file_converter;

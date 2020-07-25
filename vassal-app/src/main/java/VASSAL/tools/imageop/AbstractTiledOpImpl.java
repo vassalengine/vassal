@@ -48,9 +48,9 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
   protected ImageOp[] tiles;
 
   /**
-   * Sets the <code>tileSize</code> which is used by {@link getTileSize},
-   * {@link getTileHeight}, {@link getTileWidth}, {@link getNumXTiles},
-   * {@link getNumYTiles}, and all other tile methods.
+   * Sets the <code>tileSize</code> which is used by {@link #getTileSize},
+   * {@link #getTileHeight}, {@link #getTileWidth}, {@link #getNumXTiles},
+   * {@link #getNumYTiles}, and all other tile methods.
    */
   protected void fixTileSize() {
     if (size == null) fixSize();
@@ -124,8 +124,8 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    */
   @Override
   public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException
-  {
+    throws CancellationException, InterruptedException, ExecutionException {
+
     if (tileX < 0 || tileX >= numXTiles ||
         tileY < 0 || tileY >= numYTiles)
       throw new IndexOutOfBoundsException();
@@ -141,8 +141,8 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    */
   @Override
   public Future<BufferedImage> getFutureTile(
-    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
-  {
+    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException {
+
     if (tileX < 0 || tileX >= numXTiles ||
         tileY < 0 || tileY >= numYTiles)
       throw new IndexOutOfBoundsException();
