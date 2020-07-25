@@ -184,10 +184,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     g2d.setComposite(getComposite());
     g2d.setColor(getColor());
-
-    final boolean usingScaledImage =
-      scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
-    g2d.setPaint(usingScaledImage ? getTexture(zoom) : getTexture());
+    g2d.setPaint(getTexture(zoom));
 
     g2d.fill(area);
 
@@ -409,7 +406,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected TexturePaint getTexture(double zoom) {
-    if (zoom == 1.0) {
+    final boolean usingScaledImage =
+      scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
+
+    if (!usingScaledImage || zoom == 1.0) {
       return getTexture();
     }
     else {
