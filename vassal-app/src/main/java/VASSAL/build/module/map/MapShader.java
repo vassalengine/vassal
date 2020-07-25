@@ -414,9 +414,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else {
       TexturePaint texture = textures.get(zoom);
       if (texture == null) {
-        final BufferedImage spat = getShadePattern(zoom);
-        if (spat != null) {
-          texture = new TexturePaint(spat, getPatternRect(zoom));
+        final BufferedImage pat = getShadePattern(zoom);
+        if (pat != null) {
+          texture = new TexturePaint(pat, getPatternRect(zoom));
           textures.put(zoom, texture);
         }
       }
@@ -425,9 +425,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected void buildTexture() {
-    final BufferedImage spat = getShadePattern(1.0);
-    if (spat != null) {
-      texture = new TexturePaint(spat, getPatternRect(1.0));
+    final BufferedImage pat = getShadePattern(1.0);
+    if (pat != null) {
+      texture = new TexturePaint(pat, getPatternRect(1.0));
     }
   }
 
