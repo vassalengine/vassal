@@ -23,28 +23,33 @@
       <table cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">Settings that apply to the module
-as a whole. &nbsp;If an option has a "Use Preferences Setting" choice, selecting it will add an entry Preferences window to allow players to choose their own setting at game time.<br>
+            <td valign="top">The Global Options component allows you to define your own custom preferences
+            for a module. It also contains other settings that apply to the module
+as a whole, as well as providing a location to configure button images and hotkeys for some of the basic
+Toolbar buttons. &nbsp;If an option has a "Use Preferences Setting" choice, selecting it will add an entry to
+the Preferences window to allow players to choose their own setting at game time.<br>
             <br>
-            <b>Allow non-owners to unmask pieces</b>: By default,
+            <b>Allow non-owners to unmask pieces:</b>&nbsp; By default,
 only the player who originally masked a piece (see the Mask trait for
-Game Pieces) is allowed to unmask it. This option allows other player
-to unmask a masked piece<br>
+Game Pieces) is allowed to unmask it. This option allows other players
+to unmask a masked piece.<br>
             <br>
-            <b>Center on opponent's moves:</b> &nbsp;This option will
+            <b>Center on opponent's moves:</b>&nbsp; This option will
 center a map window in an opponent's move when reading a logfile or
-receiving a move on the server.<br>
+receiving a move on the server. <i>It is recommended that in most cases
+this be set to "Use Preferences" so that players can turn this behavior
+on and off themselves.</i><br>
             <br>
             <b>Auto-report moves:</b> &nbsp;This option will
 automatically report a text description (e.g. "3rd Cav moves A10
--&gt;B11") to the chat area of the control window whenever a player
-moves a piece in a Map Window.<br>
+-&gt;B11") to the chat log of the control window whenever a player
+moves a piece in a Map Window. <br>
             <br>
             <span style="font-weight: bold;">Player Id format:&nbsp; </span>A
             <a href="MessageFormat.htm">Message Format</a> that is used
 to identify
 players when typing chat text.&nbsp; It is available for use as a
-short-cut other message formats such as move auto-reporting.<br>
+short-cut in other message formats such as move auto-reporting as well.<br>
             <br>
             <span style="font-weight: bold;">Icons and hotkeys: </span>You
 can specify your own button icons and keyboard shortcuts for the
@@ -60,7 +65,8 @@ controls.<br>
       </table>
       <hr size="2" width="100%">
       <h2>Sub-Components</h2>
-      You may add your own arbitrary preference settings to the global options.  The different sub-components support different constraints on the values of the preference setting.  The values of these preference setting are exposed as <a href="Properties.htm">Properties</a>
+      You may add your own arbitrary preference settings to the global options. To add your own preferences, right click on the [Global Options] component
+      in the Editor and select one of the "Add" options. The different sub-components support different constraints on the values of the preference setting.  The values of these preference setting are exposed as <a href="Properties.htm">Properties</a>
 <br><br><em>You must save and re-load the module before these sub-components will show up in the Preferences window</em>
       <h3><a name="String"></a>String Preference</h3>
 A simple string value.
