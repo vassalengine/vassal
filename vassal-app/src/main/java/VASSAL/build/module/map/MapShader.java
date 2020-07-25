@@ -397,12 +397,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   /**
    * Get/Build the textured paint used to fill in the Shade
+   * @deprecated Use {@link #getTexture(double)} instead.
    */
+  @Deprecated
   protected TexturePaint getTexture() {
-    if (texture == null) {
-      buildTexture();
-    }
-    return texture;
+    return getTexture(1.0);
   }
 
   protected TexturePaint getTexture(double zoom) {
@@ -410,7 +409,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
 
     if (!usingScaledImage || zoom == 1.0) {
-      return getTexture();
+      if (texture == null) {
+        buildTexture();
+      }
     }
     else {
       TexturePaint texture = textures.get(zoom);
@@ -421,8 +422,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
           textures.put(zoom, texture);
         }
       }
-      return texture;
     }
+    return texture;
   }
 
   protected void buildTexture() {
