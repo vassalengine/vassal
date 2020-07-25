@@ -181,7 +181,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     final Composite oldComposite = g2d.getComposite();
     final Color oldColor = g2d.getColor();
     final Paint oldPaint = g2d.getPaint();
-    final Stroke oldStroke = g2d.getStroke();
 
     g2d.setComposite(getComposite());
     g2d.setColor(getColor());
@@ -192,16 +191,19 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     g2d.fill(area);
 
     if (border) {
+      final Stroke oldStroke = g2d.getStroke();
+
       g2d.setComposite(getBorderComposite());
       g2d.setStroke(getStroke(zoom));
       g2d.setColor(getBorderColor());
       g2d.draw(area);
+
+      g2d.setStroke(oldStroke);
     }
 
     g2d.setComposite(oldComposite);
     g2d.setColor(oldColor);
     g2d.setPaint(oldPaint);
-    g2d.setStroke(oldStroke);
   }
 
   /**
