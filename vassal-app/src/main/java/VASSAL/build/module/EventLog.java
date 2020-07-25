@@ -135,20 +135,6 @@ public class EventLog extends AbstractBuildable
     };
   }
 
-  /** Use {@link #decodedEvents()} instead. */
-  @Deprecated
-  public static Enumeration<Event> decodeEvents(String s) {
-    ArrayList<Event> l = new ArrayList<>();
-    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
-    while (se.hasMoreTokens()) {
-      SequenceEncoder.Decoder sub =
-        new SequenceEncoder.Decoder(se.nextToken(), ',');
-      l.add(new Event(Long.parseLong(sub.nextToken()),
-                      sub.nextToken(), sub.nextToken()));
-    }
-    return Collections.enumeration(l);
-  }
-
   /**
    * Encodes a sequence of <code>Event</code>s into a <code>String</code>.
    *
@@ -162,21 +148,6 @@ public class EventLog extends AbstractBuildable
       sub.append(e.getTime())
          .append(e.getUser())
          .append(e.getAction());
-      se.append(sub.getValue());
-    }
-    return se.getValue();
-  }
-
-  /** Use {@link #encodedEvents(Iterable<Event>)} instead. */
-  @Deprecated
-  public static String encodeEvents(Enumeration<?> e) {
-    final SequenceEncoder se = new SequenceEncoder('|');
-    while (e.hasMoreElements()) {
-      final Event evt = (Event) e.nextElement();
-      final SequenceEncoder sub = new SequenceEncoder(',');
-      sub.append(evt.getTime())
-         .append(evt.getUser())
-         .append(evt.getAction());
       se.append(sub.getValue());
     }
     return se.getValue();

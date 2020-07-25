@@ -798,10 +798,7 @@ public class ADC2Module extends Importer {
     private final SymbolSet.SymbolData hiddenSymbol;
     private final int hiddenPieceOptions;
     private final int order;
-    private TreeSet<Player> allies = new TreeSet<>(new Comparator<>() {
-      @Override
-      public int compare(Player p1, Player p2) { return p1.order - p2.order; }
-    });
+    private final TreeSet<Player> allies = new TreeSet<>((p1, p2) -> p1.order - p2.order);
 
     public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
       this.name = name;
@@ -866,7 +863,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private HashMap<Integer,SymbolSet> cardDecks = new HashMap<>();
+  private final HashMap<Integer,SymbolSet> cardDecks = new HashMap<>();
 
   public class CardClass extends PieceClass {
     private final int setIndex;
@@ -1450,14 +1447,12 @@ public class ADC2Module extends Importer {
   public static final String COMMON_PROPERTIES = "Common Properties";
   private String name;
   private MapBoard map = null;
-  @SuppressWarnings("unused")
-  private int gameTurn = -1;
   private final ArrayList<PieceClass> pieceClasses = new ArrayList<>();
   private final ArrayList<Piece> pieces = new ArrayList<>();
   private final ArrayList<Player> players = new ArrayList<>();
   private final HashMap<Integer, ArrayList<Piece>> stacks = new HashMap<>();
   private final HashMap<Integer, ArrayList<Piece>> forcePoolHashMap = new HashMap<>();
-  private ForcePoolList forcePools = new ForcePoolList();
+  private final ForcePoolList forcePools = new ForcePoolList();
   private final String[] classValues = new String[8];
   private final String[] pieceValues = new String[8];
   private FacingDirection[] allowedFacings;
@@ -1515,7 +1510,8 @@ public class ADC2Module extends Importer {
     private final Color foreground;
     private final int tab;
     private String imageName;
-    private final ArrayList<StatusDots> statusDots = new ArrayList<>();
+    // TODO contents of statusDots are updated but never used
+    private final List<StatusDots> statusDots = new ArrayList<>();
 
     public StateFlag(String flag, Color background, Color foreground, int tab) {
       this.name = flag;
@@ -2216,7 +2212,7 @@ public class ADC2Module extends Importer {
 
   protected void readGameTurnBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Game Turn");
-    gameTurn = ADC2Utils.readBase250Word(in);
+    int gameTurn = ADC2Utils.readBase250Word(in);
   }
 
   protected void writePrototypesToArchive(GameModule gameModule) {

@@ -205,20 +205,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
+      return () -> visible;
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return snapTo;
-        }
-      };
+      return () -> snapTo;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -378,8 +368,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   @Override
   public int range(Point p1, Point p2) {
     if (rangeOption.equals(RANGE_METRIC)) {
-      return max(abs((int) floor((p2.x - p1.x) / dx + 0.5))
-                      , abs((int) floor((p2.y - p1.y) / dy + 0.5)));
+      return max(
+        abs((int) floor((p2.x - p1.x) / dx + 0.5)),
+        abs((int) floor((p2.y - p1.y) / dy + 0.5)));
     }
     else {
       return abs((int) floor((p2.x - p1.x) / dx + 0.5))
@@ -438,46 +429,43 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
     Point snap = null;
 
-    if (cornersLegal && edgesLegal) {
-      ;
-    }
-    else if (cornersLegal) {
-      if (ny % 2 == 0) {  // on a cell center
-        nx = 2 * (int) round(offsetX/dx);
-      }
-      else { // on a corner
-        nx = 1 + 2 * (int) round(offsetX/dx - 0.5);
-      }
-    }
-    else if (edgesLegal) {
-      if (ny % 2 == 0) {
-        if (nx % 2 == 0) { // Cell center
+    if (!cornersLegal || !edgesLegal) {
+      if (cornersLegal) {
+        if (ny % 2 == 0) {  // on a cell center
           nx = 2 * (int) round(offsetX/dx);
         }
-        else { // Vertical edge
-          ;
+        else { // on a corner
+          nx = 1 + 2 * (int) round(offsetX/dx - 0.5);
         }
       }
-      else { // Horizontal edge
-        nx = 2 * (int) round(offsetX/dx);
+      else if (edgesLegal) {
+        if (ny % 2 == 0) {
+          if (nx % 2 == 0) { // Cell center
+            nx = 2 * (int) round(offsetX/dx);
+          }
+          // else Vertical edge - do nothing
+        }
+        else { // Horizontal edge
+          nx = 2 * (int) round(offsetX/dx);
+        }
       }
-    }
-    else {
-      nx = 2*(int)round(offsetX/dx);
-      ny = 2*(int)round(offsetY/dy);
-      if (snapScale > 0) {
-        int deltaX = offsetX - (int)round(nx*dx/2);
-        deltaX = (int)round(deltaX/(0.5*dx/snapScale));
-        deltaX = max(deltaX,1-snapScale);
-        deltaX = min(deltaX,snapScale-1);
-        deltaX = (int)round(deltaX*0.5*dx/snapScale);
-        int deltaY = offsetY - (int)round(ny*dy/2);
-        deltaY = (int)round(deltaY/(0.5*dy/snapScale));
-        deltaY = max(deltaY,1-snapScale);
-        deltaY = min(deltaY,snapScale-1);
-        deltaY = (int)round(deltaY*0.5*dy/snapScale);
-        snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
-        snap.translate(origin.x, origin.y);
+      else {
+        nx = 2*(int)round(offsetX/dx);
+        ny = 2*(int)round(offsetY/dy);
+        if (snapScale > 0) {
+          int deltaX = offsetX - (int)round(nx*dx/2);
+          deltaX = (int)round(deltaX/(0.5*dx/snapScale));
+          deltaX = max(deltaX,1-snapScale);
+          deltaX = min(deltaX,snapScale-1);
+          deltaX = (int)round(deltaX*0.5*dx/snapScale);
+          int deltaY = offsetY - (int)round(ny*dy/2);
+          deltaY = (int)round(deltaY/(0.5*dy/snapScale));
+          deltaY = max(deltaY,1-snapScale);
+          deltaY = min(deltaY,snapScale-1);
+          deltaY = (int)round(deltaY*0.5*dy/snapScale);
+          snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
+          snap.translate(origin.x, origin.y);
+        }
       }
     }
     if (snap == null) {
@@ -503,7 +491,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public boolean isVisible() {
-    return visible == true || (gridNumbering != null && gridNumbering.isVisible());
+    return visible || (gridNumbering != null && gridNumbering.isVisible());
   }
 
   @Override

@@ -43,8 +43,8 @@ public class ProblemDialog {
   public static Future<?> show(
     int messageType,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return show(messageType, getFrame(), null, messageKey, args);
   }
 
@@ -52,8 +52,8 @@ public class ProblemDialog {
     int messageType,
     Component parent,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return show(messageType, parent, null, messageKey, args);
   }
 
@@ -61,8 +61,8 @@ public class ProblemDialog {
     int messageType,
     Throwable thrown,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return show(messageType, getFrame(), thrown, messageKey, args);
   }
 
@@ -71,8 +71,8 @@ public class ProblemDialog {
     Component parent,
     Throwable thrown,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return show(
       messageType, parent, thrown,
       Resources.getString(messageKey + "_title"),
@@ -87,8 +87,8 @@ public class ProblemDialog {
     final Throwable thrown,
     final String title,
     final String heading,
-    final String message)
-  {
+    final String message) {
+
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
@@ -109,8 +109,8 @@ public class ProblemDialog {
     int messageType,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDisableable(
       messageType, getFrame(), null, key, messageKey, args
     );
@@ -121,8 +121,8 @@ public class ProblemDialog {
     Component parent,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDisableable(messageType, parent, null, key, messageKey, args);
   }
 
@@ -131,8 +131,8 @@ public class ProblemDialog {
     Throwable thrown,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDisableable(
       messageType, getFrame(), thrown, key, messageKey, args
     );
@@ -144,8 +144,8 @@ public class ProblemDialog {
     Throwable thrown,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDisableable(
       messageType, parent, thrown, key,
       Resources.getString(messageKey + "_title"),
@@ -161,8 +161,8 @@ public class ProblemDialog {
     final Object key,
     final String title,
     final String heading,
-    final String message)
-  {
+    final String message) {
+
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
@@ -187,8 +187,8 @@ public class ProblemDialog {
     final Object key,
     final String title,
     final String heading,
-    final String message)
-  {
+    final String message) {
+
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
@@ -211,8 +211,8 @@ public class ProblemDialog {
     int messageType,
     String details,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetails(
       messageType, getFrame(), null, details, messageKey, args
     );
@@ -223,8 +223,8 @@ public class ProblemDialog {
     Component parent,
     String details,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetails(messageType, parent, null, details, messageKey, args);
   }
 
@@ -233,8 +233,8 @@ public class ProblemDialog {
     Throwable thrown,
     String details,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetails(
       messageType, getFrame(), thrown, details, messageKey, args
     );
@@ -246,8 +246,8 @@ public class ProblemDialog {
     Throwable thrown,
     String details,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetails(
       messageType, parent, thrown, details,
       Resources.getString(messageKey + "_title"),
@@ -263,8 +263,8 @@ public class ProblemDialog {
     final String details,
     final String title,
     final String heading,
-    final String message)
-  {
+    final String message) {
+
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
@@ -291,8 +291,8 @@ public class ProblemDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetailsDisableable(
       messageType, getFrame(), null, details, key, messageKey, args
     );
@@ -304,8 +304,8 @@ public class ProblemDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetailsDisableable(
       messageType, parent, null, details, key, messageKey, args
     );
@@ -317,8 +317,8 @@ public class ProblemDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetailsDisableable(
       messageType, getFrame(), thrown, details, key, messageKey, args
     );
@@ -331,8 +331,8 @@ public class ProblemDialog {
     String details,
     Object key,
     String messageKey,
-    Object... args)
-  {
+    Object... args) {
+
     return showDetailsDisableable(
       messageType, parent, thrown, details, key,
       Resources.getString(messageKey + "_title"),
@@ -349,8 +349,8 @@ public class ProblemDialog {
     final Object key,
     final String title,
     final String heading,
-    final String message)
-  {
+    final String message) {
+
     if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {

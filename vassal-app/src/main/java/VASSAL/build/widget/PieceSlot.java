@@ -580,6 +580,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       definer.setPiece(slot.getPiece());
     }
 
+    // TODO deprecate HelpWindowExtension interface, then confirm it's not in use anymore and delete
     @Override
     @Deprecated
     public void setBaseWindow(HelpWindow w) {

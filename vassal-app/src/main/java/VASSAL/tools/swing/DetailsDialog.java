@@ -49,8 +49,8 @@ public class DetailsDialog {
     final String showText,
     final String hideText,
     final int messageType,
-    final Object key)
-  {
+    final Object key) {
+
     // set a slightly larger, bold font for the header
     final JLabel headerLabel = new JLabel(header);
     final Font f = headerLabel.getFont();

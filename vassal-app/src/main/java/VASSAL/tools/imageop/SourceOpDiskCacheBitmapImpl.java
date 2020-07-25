@@ -71,8 +71,8 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
     int tileX,
     int tileY,
     double scale,
-    ImageTileSource tileSrc)
-  {
+    ImageTileSource tileSrc) {
+
     if (name == null) throw new IllegalArgumentException();
     if (name.length() == 0) throw new IllegalArgumentException();
     if (tileX < 0) throw new IllegalArgumentException();

@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.version.AbstractUpdateCheckRequest;
-import VASSAL.tools.version.VassalVersion;
 
 /**
  * @since 3.1.0
@@ -41,8 +40,8 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
   @Override
   protected void done() {
     try {
-      final VassalVersion update = get();
-      if (update != null) {
+      final Boolean update = get();
+      if (update) {
         // running version is obsolete
         if (JOptionPane.showConfirmDialog(
             ModuleManagerWindow.getInstance(),

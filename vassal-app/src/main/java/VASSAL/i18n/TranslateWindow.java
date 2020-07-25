@@ -492,8 +492,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       if (renderer == null) {
         Class<?> c = getColumnClass(column);
-        if( c.equals(Object.class) )
-        {
+        if( c.equals(Object.class) ) {
           Object o = getValueAt(row,column);
           if( o != null )
             c = getValueAt(row,column).getClass();
@@ -509,8 +508,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellEditor editor = tableColumn.getCellEditor();
       if (editor == null) {
         Class<?> c = getColumnClass(column);
-        if( c.equals(Object.class) )
-        {
+        if( c.equals(Object.class) ) {
           Object o = getValueAt(row,column);
           if( o != null )
             c = getValueAt(row,column).getClass();
@@ -544,7 +542,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     private static final long serialVersionUID = 1L;
 
     protected EventListenerList listenerList = new EventListenerList();
-    transient protected ChangeEvent changeEvent = null;
+    protected transient ChangeEvent changeEvent = null;
 
     protected JComponent editorComponent = null;
     protected JComponent container = null;    // Can be tree or table

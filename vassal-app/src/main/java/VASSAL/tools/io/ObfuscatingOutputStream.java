@@ -60,8 +60,8 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
 
     out.write(HEADER.getBytes(StandardCharsets.UTF_8));
 
-    pair[0] = hex[(key & 0xF0) >>> 4];
-    pair[1] = hex[key & 0x0F];
+    pair[0] = HEX[(key & 0xF0) >>> 4];
+    pair[1] = HEX[key & 0x0F];
     out.write(pair);
   }
 
@@ -71,7 +71,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
     for (int i = 0; i < len; ++i) write(bytes[off+i]);
   }
 
-  private final static byte[] hex = {
+  private static final byte[] HEX = {
     '0', '1', '2', '3', '4', '5', '6', '7',
     '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
   };
@@ -81,8 +81,8 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   public void write(int b) throws IOException {
     b ^= key;
 
-    pair[0] = hex[(b & 0xF0) >>> 4];
-    pair[1] = hex[b & 0x0F];
+    pair[0] = HEX[(b & 0xF0) >>> 4];
+    pair[1] = HEX[b & 0x0F];
     out.write(pair);
   }
 

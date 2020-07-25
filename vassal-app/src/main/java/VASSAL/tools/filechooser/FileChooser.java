@@ -42,11 +42,11 @@ import VASSAL.configure.DirectoryConfigurer;
 public abstract class FileChooser {
   protected Component parent;
   protected DirectoryConfigurer prefs;
-  public final static int APPROVE_OPTION = JFileChooser.APPROVE_OPTION;
-  public final static int CANCEL_OPTION = JFileChooser.CANCEL_OPTION;
-  public final static int ERROR_OPTION = JFileChooser.ERROR_OPTION;
-  public final static int FILES_ONLY = JFileChooser.FILES_ONLY;
-  public final static int DIRECTORIES_ONLY = JFileChooser.DIRECTORIES_ONLY;
+  public static final int APPROVE_OPTION = JFileChooser.APPROVE_OPTION;
+  public static final int CANCEL_OPTION = JFileChooser.CANCEL_OPTION;
+  public static final int ERROR_OPTION = JFileChooser.ERROR_OPTION;
+  public static final int FILES_ONLY = JFileChooser.FILES_ONLY;
+  public static final int DIRECTORIES_ONLY = JFileChooser.DIRECTORIES_ONLY;
 
   protected FileChooser(Component parent, DirectoryConfigurer pref) {
     this.parent = parent;
@@ -121,12 +121,10 @@ public abstract class FileChooser {
     File file = getSelectedFile();
     if (file != null) {
       String name = file.getPath();
-      if (name != null) {
-        int index = name.lastIndexOf('.');
-        if (index > 0) {
-          name = name.substring(0, index) + ".vsav";
-          setSelectedFile(new File(name));
-        }
+      int index = name.lastIndexOf('.');
+      if (index > 0) {
+        name = name.substring(0, index) + ".vsav";
+        setSelectedFile(new File(name));
       }
     }
   }
@@ -154,7 +152,7 @@ public abstract class FileChooser {
   }
 
   private static class SwingFileChooser extends FileChooser {
-    private JFileChooser fc = new JFileChooser();
+    private final JFileChooser fc = new JFileChooser();
 
     public SwingFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
       super(parent, prefs);
@@ -261,7 +259,7 @@ public abstract class FileChooser {
     private File cur;
     private String title;
     private FileFilter filter;
-    private int mode = FILES_ONLY;
+    private int mode;
 
     public NativeFileChooser(Component parent,
                              DirectoryConfigurer prefs, int mode) {

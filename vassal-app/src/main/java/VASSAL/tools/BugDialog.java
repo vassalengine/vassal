@@ -57,7 +57,6 @@ import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
-import VASSAL.tools.version.VassalVersion;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -466,8 +465,7 @@ public class BugDialog extends JDialog {
       timer.start();
 
       // Make the request to the server and wait for the latch.
-      final VassalVersion running = new VassalVersion(Info.getVersion());
-      final Boolean cur = VersionUtils.isCurrent(running);
+      final Boolean cur = VersionUtils.isCurrent(Info.getVersion());
       latch.await();
       return cur;
     }

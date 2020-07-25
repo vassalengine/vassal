@@ -5,15 +5,16 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.3.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>release-prepare</artifactId>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.3.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <vassal.jarlocation>${project.build.directory}/lib</vassal.jarlocation>
+        <main.basedir>${project.basedir}${file.separator}..</main.basedir>
+        <vassal.jarlocation>${project.build.directory}${file.separator}lib</vassal.jarlocation>
     </properties>
 
     <dependencies>

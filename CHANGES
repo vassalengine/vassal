@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13205: NPE when trying to display file write failure dialog
 * 13196: Ctrl+Click toggles rather than only deselects
 * 13171: SetGlobalProperty makes menuCommands the wrong type of array
 * 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
@@ -11,6 +12,7 @@
 * 13146: Custom classes that are children fail to be culled in
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
 * 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making         double-click difficult; also added preference for drag threshold adjustment
+* 13124: Removed unused deprecated code
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel

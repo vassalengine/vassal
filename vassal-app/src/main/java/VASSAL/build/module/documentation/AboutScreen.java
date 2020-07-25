@@ -67,12 +67,6 @@ public class AboutScreen extends AbstractConfigurable {
     this.op = op;
   }
 
-  @Deprecated
-  public AboutScreen(Image i) {
-    this();
-    this.op = Op.load(ImageUtils.toBufferedImage(i));
-  }
-
   public void launch() {
     if (op == null) return;
 

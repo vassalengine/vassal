@@ -104,33 +104,32 @@ public class SymbolItem extends Item {
   }
   @Override
   public void setAttribute(String key, Object o) {
-
-    if (SET.equals(key)) {
-
-    }
-    else if (WIDTH.equals(key)) {
+    switch (key) {
+    case WIDTH:
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
       width = (Integer) o;
       if (width < 1) width = 1;
-    }
-    else if (HEIGHT.equals(key)) {
+      break;
+    case HEIGHT:
       if (o instanceof String) {
         o = Integer.valueOf((String) o);
       }
       height = (Integer) o;
       if (height < 1) height = 1;
-    }
-    else if (LINE_WIDTH.equals(key)) {
+      break;
+    case LINE_WIDTH:
       if (o instanceof String) {
         o = Double.valueOf((String) o);
       }
       lineWidth = (Double) o;
       if (lineWidth < 0) lineWidth = 0;
-    }
-    else
+      break;
+    default:
       super.setAttribute(key, o);
+      break;
+    }
 
     if (layout != null) {
       layout.refresh();

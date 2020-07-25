@@ -66,7 +66,7 @@ public class ConditionalCommand extends Command {
    * The class representing a condition that must be satisfied if the
    * Command is to be executed
    */
-  public static abstract class Condition {
+  public abstract static class Condition {
     public abstract boolean isSatisfied();
   }
 

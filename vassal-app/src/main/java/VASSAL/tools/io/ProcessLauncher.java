@@ -78,8 +78,8 @@ public class ProcessLauncher {
     File workDir,
     OutputStream stdout,
     OutputStream stderr,
-    String... args) throws IOException
-  {
+    String... args) throws IOException {
+
     final InputOutputStreamPump outP = new InputOutputStreamPump(null, stdout);
     final InputOutputStreamPump errP = new InputOutputStreamPump(null, stderr);
 
@@ -90,8 +90,8 @@ public class ProcessLauncher {
    * Launches a process.
    *
    * @param workDir the process' working directory
-   * @param stdout the stream where the process' STDOUT is redirected
-   * @param stderr the stream where the process' STDERR is redirected
+   * @param stdoutPump the stream where the process' STDOUT is redirected
+   * @param stderrPump the stream where the process' STDERR is redirected
    * @param args the command-line arguments
    *
    * @throws IOException if the process fails to launch
@@ -100,8 +100,8 @@ public class ProcessLauncher {
     File workDir,
     InputStreamPump stdoutPump,
     InputStreamPump stderrPump,
-    String... args) throws IOException
-  {
+    String... args) throws IOException {
+
     logger.info("launching " + StringUtils.join(args, ' '));
 
     final ProcessBuilder pb = new ProcessBuilder(args);

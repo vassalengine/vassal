@@ -31,9 +31,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,7 +45,6 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
@@ -56,7 +53,6 @@ import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
@@ -92,9 +88,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected MapGrid grid = null;
   protected Map map;
   protected double magnification = 1.0;
-
-  @Deprecated protected String boardName = "Board 1";
-  @Deprecated protected Image boardImage;
 
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
@@ -518,18 +511,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  @Deprecated
-  public synchronized Image getScaledImage(double zoom, Component obs) {
-    try {
-      final ImageOp sop = Op.scale(boardImageOp, zoom);
-      return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
-    }
-    catch (CancellationException | ExecutionException | InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    return null;
-  }
-
   public void setReversed(boolean val) {
     if (reversible) {
       if (reversed != val) {
@@ -620,12 +601,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Deprecated
   public void fixImage(Component map) { }
 
- /**
-  * @deprecated Images are now fixed automagically using {@link ImageOp}s.
-  */
-  @Deprecated
-  public void fixImage() { }
-
   public String locationName(Point p) {
     return grid == null ? null : grid.locationName(localCoordinates(p));
   }
@@ -675,12 +650,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * @deprecated Bounds are now fixed automagically by {@link ImageOp}s.
-   */
-  @Deprecated
-  protected void fixBounds() { }
-
-  /**
    * Translate the location of the board by the given number of pixels
    *
    * @see #bounds()
@@ -701,74 +670,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Board.htm");
-  }
-
-  /**
-   * Removes board images from the {@link VASSAL.tools.DataArchive} cache
-   * @deprecated Board images are removed automatically now, when under
-   * memory pressure.
-   */
-  @Deprecated
-  public void cleanUp() {
-    if (imageFile != null) {
-      GameModule.getGameModule().getDataArchive().unCacheImage("images/" + imageFile);
-    }
-    if (boardImage != null) {
-      GameModule.getGameModule().getDataArchive().unCacheImage(boardImage);
-      boardImage = null;
-    }
-  }
-
-  /**
-   * Cleans up {@link Board}s (by invoking {@link Board#cleanUp}) when a
-   * game is closed
-   * @deprecated Only used to cleanup <code>Board</code> images, which
-   * is now handled automatically by the cache.
-   */
-  @Deprecated
-  public static class Cleanup implements GameComponent {
-    private static Cleanup instance;
-    private Set<Board> toClean = new HashSet<>();
-    private boolean gameStarted = false;
-
-    public static void init() {
-      if (instance == null) {
-        instance = new Cleanup();
-      }
-    }
-
-    private Cleanup() {
-      GameModule.getGameModule().getGameState().addGameComponent(this);
-    }
-
-    public static Cleanup getInstance() {
-      return instance;
-    }
-
-    /**
-     * Mark this board as needing to be cleaned up when the game is closed
-     *
-     * @param b
-     */
-    public void addBoard(Board b) {
-      toClean.add(b);
-    }
-
-    @Override
-    public Command getRestoreCommand() {
-      return null;
-    }
-
-    @Override
-    public void setup(boolean gameStarting) {
-      if (gameStarted && !gameStarting) {
-        for (Board board : toClean) {
-          board.cleanUp();
-        }
-        toClean.clear();
-      }
-      gameStarted = gameStarting;
-    }
   }
 
   public double getMagnification() {

@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
@@ -139,15 +140,6 @@ public abstract class DieServer {
     return " *** " + d + " = ";
   }
 
-  /**
-   * The text reported after the results of the roll;
-   * @deprecated
-   */
-  @Deprecated
-  protected String getReportSuffix() {
-    return " ***  <" + GameModule.getGameModule().getChatter().getHandle() + ">";
-  }
-
   /*
    * Called by the Inbuilt server - Basically the same as the code
    * in the original DiceButton
@@ -177,7 +169,8 @@ public abstract class DieServer {
         if (reportTotal)
           val += total;
 
-        val += getReportSuffix();
+        final String reportSuffix = " ***  <" + GlobalOptions.getInstance().getPlayerId() + ">";
+        val += reportSuffix;
         GameModule.getGameModule().getChatter().send(val);
       }
     }

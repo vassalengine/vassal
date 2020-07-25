@@ -42,6 +42,9 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
@@ -57,6 +60,8 @@ import VASSAL.tools.imports.Importer;
 public class SymbolSet extends Importer{
 
   private static final int OLD_SYMBOL_SET_FORMAT = 0xFD;
+
+  private static final Logger log = LoggerFactory.getLogger(SymbolSet.class);
 
   /**
    * Shape of the terrain elements.
@@ -259,13 +264,13 @@ public class SymbolSet extends Importer{
   // Permute negative of red band (doesn't matter which colour) to alpha band.
   // masks are originally black where alpha should be 1.0 and white where
   // alpha should be 0.0.
-  private final static float[][] THREE_BAND_MATRIX = {
+  private static final float[][] THREE_BAND_MATRIX = {
       { 0.0f, 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f, 0.0f },
       { -1.0f, 0.0f, 0.0f, 255.0f }};
 
-  private final static float[][] ONE_BAND_MATRIX = {
+  private static final float[][] ONE_BAND_MATRIX = {
       { 0.0f, 0.0f },
       { 0.0f, 0.0f },
       { 0.0f, 0.0f },
@@ -498,22 +503,10 @@ public class SymbolSet extends Importer{
       /* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid
 
       int mapStyle = in.readByte(); // 0=grid; all other values=hex
-      switch (mapStyle) {
-      case 1:
-        symbolShape = Shape.HEX;
-        break;
-      default:
-        symbolShape = Shape.SQUARE;
-      }
+      symbolShape = mapStyle == 1 ? Shape.HEX : Shape.SQUARE;
 
       int symSetVersion = in.readByte(); // 1=version 1
-      switch (symSetVersion) {
-      case 0:
-        ignoreMask = false;
-        break;
-      default:
-        ignoreMask = true;
-      }
+      ignoreMask = symSetVersion != 0;
       if (isCardSet)
         ignoreMask = true;
 
@@ -609,7 +602,9 @@ public class SymbolSet extends Importer{
             pieces[i] = gamePieceData[idx-1];
           }
         }
-        catch (EOFException e) {}
+        catch (EOFException e) {
+          log.debug("End of file reached", e);
+        }
         catch (ArrayIndexOutOfBoundsException e) {
           throw new FileFormatException("SDX file has out-of-bounds index \"" + line + "\".");
         }

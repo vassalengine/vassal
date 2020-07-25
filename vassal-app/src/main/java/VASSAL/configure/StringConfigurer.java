@@ -77,10 +77,14 @@ public class StringConfigurer extends Configurer {
       p.add(nameField);
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
-        public void insertUpdate(DocumentEvent e) { update(); }
+        public void insertUpdate(DocumentEvent e) {
+          update();
+        }
 
         @Override
-        public void removeUpdate(DocumentEvent e) { update(); }
+        public void removeUpdate(DocumentEvent e) {
+          update();
+        }
 
         @Override
         public void changedUpdate(DocumentEvent e) {}

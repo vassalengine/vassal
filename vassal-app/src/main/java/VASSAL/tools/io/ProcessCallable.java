@@ -48,16 +48,16 @@ class ProcessCallable implements Callable<Integer> {
    * Creates a <code>ProcessCallable</code>.
    *
    * @param proc the process
-   * @param stdout the stream where the process' STDOUT is redirected
-   * @param stderr the stream where the process' STDERR is redirected
+   * @param stdoutPump the stream where the process' STDOUT is redirected
+   * @param stderrPump the stream where the process' STDERR is redirected
    * @param exec the executor which runs the stream pumps
    */
   public ProcessCallable(
     Process proc,
     InputStreamPump stdoutPump,
     InputStreamPump stderrPump,
-    ExecutorService exec)
-  {
+    ExecutorService exec) {
+
     if (proc == null) throw new IllegalArgumentException("proc == null");
 
     if (stdoutPump == null) {

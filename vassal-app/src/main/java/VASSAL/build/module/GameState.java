@@ -210,16 +210,6 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * @return an enumeration of all {@link GameComponent} objects
-   * that have been added to this GameState
-   * @deprecated Use {@link #getGameComponents()} instead.
-   */
-  @Deprecated
-  public Enumeration<GameComponent> getGameComponentsEnum() {
-    return Collections.enumeration(gameComponents);
-  }
-
-  /**
    * @return a Collection of all {@link GameComponent} objects
    * that have been added to this GameState
    */

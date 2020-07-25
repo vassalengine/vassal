@@ -110,7 +110,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   protected Config regionConfigurer;
 
   protected GridNumbering gridNumbering;
-  RegionGrid me = this;
 
   public void addRegion(Region a) {
     regionList.put(a.getOrigin(), a);
@@ -178,12 +177,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     final Configurer c = super.getConfigurer();
     if (!buttonExists) {
       final JButton b = new JButton(Resources.getString("Editor.IrregularGrid.define_regions")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          configureRegions();
-        }
-      });
+      b.addActionListener(e -> configureRegions());
       ((Container) c.getControls()).add(b);
     }
     return c;
@@ -232,12 +226,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT_SIZE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
+      return () -> visible;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -411,8 +400,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       Rectangle bounds,
       Rectangle visibleRect,
       double scale,
-      boolean reversed)
-  {
+      boolean reversed) {
+
     if (visible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
     }
@@ -423,19 +412,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       Rectangle bounds,
       Rectangle visibleRect,
       double scale,
-      boolean reversed)
-  {
-    for (Region r : regionList.values()) {
-      r.draw(g, bounds, visibleRect, scale, reversed);
-    }
-
-    return;
+      boolean reversed) {
+    regionList.values().forEach(
+      r -> r.draw(g, bounds, visibleRect, scale, reversed));
   }
 
   public void unSelectAll() {
-    for (Region r : regionList.values()) {
-      unSelect(r);
-    }
+    regionList.values().forEach(this::unSelect);
   }
 
   public void unSelect(Region r) {
@@ -501,22 +484,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       final JButton okButton =
         new JButton(Resources.getString(Resources.OK));
-      okButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          close();
-        }
-      });
+      okButton.addActionListener(e -> close());
       buttonPanel.add(okButton);
 
       final JButton canButton =
         new JButton(Resources.getString(Resources.CANCEL));
-      canButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          doCancel();
-        }
-      });
+      canButton.addActionListener(e -> doCancel());
       buttonPanel.add(canButton);
 
       final JLabel mess = new JLabel(Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
@@ -636,7 +609,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       protected Config config;
 
       protected DragSource ds = DragSource.getDefaultDragSource();
+
+      /**
+       * @deprecated field is not used anywhere and will be removed, modules should introduce their own field
+       */
+      @Deprecated
       protected boolean isDragging = false;
+
       protected JLabel dragCursor;
       protected JLayeredPane drawWin;
       protected Point dragStart;
@@ -761,7 +740,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       @Override
       public void dragDropEnd(DragSourceDropEvent arg0) {
         removeDragCursor();
-        return;
       }
 
       @Override
@@ -874,21 +852,18 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     @Override
     public void mouseClicked(MouseEvent e) {
       if (SwingUtils.isLeftMouseButton(e)) {
-        final Point p = e.getPoint();
-        lastClick = p;
+        lastClick = e.getPoint();
 
         if (lastClickedRegion != null) {
           if (e.getClickCount() >= 2) { // Double click show properties
             if (lastClickedRegion.getConfigurer() != null) {
               final Action a =
                 new EditPropertiesAction(lastClickedRegion, null, this);
-              if (a != null) {
-                a.actionPerformed(
-                    new ActionEvent(
-                        e.getSource(),
-                        ActionEvent.ACTION_PERFORMED,
-                        "Edit")); //$NON-NLS-1$
-              }
+              a.actionPerformed(
+                  new ActionEvent(
+                      e.getSource(),
+                      ActionEvent.ACTION_PERFORMED,
+                      "Edit")); //$NON-NLS-1$
             }
           }
         }
@@ -962,13 +937,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         setDirty(true);
         final Action a =
           new EditPropertiesAction(lastClickedRegion, null, this);
-        if (a != null) {
-          a.actionPerformed(
-              new ActionEvent(
-                  e.getSource(),
-                  ActionEvent.ACTION_PERFORMED,
-              "Edit")); //$NON-NLS-1$
-        }
+        a.actionPerformed(
+            new ActionEvent(
+                e.getSource(),
+                ActionEvent.ACTION_PERFORMED,
+            "Edit")); //$NON-NLS-1$
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
@@ -985,13 +958,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         if (lastClickedRegion != null) {
           final Action a =
             new EditRegionAction(lastClickedRegion, null, this);
-          if (a != null) {
-            a.actionPerformed(
-                new ActionEvent(
-                    e.getSource(),
-                    ActionEvent.ACTION_PERFORMED,
-                    "Edit")); //$NON-NLS-1$
-          }
+          a.actionPerformed(
+              new ActionEvent(
+                  e.getSource(),
+                  ActionEvent.ACTION_PERFORMED,
+                  "Edit")); //$NON-NLS-1$
         }
       }
     }

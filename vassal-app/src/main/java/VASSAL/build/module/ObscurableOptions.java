@@ -246,12 +246,6 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       this.allowed = allowed;
     }
 
-    /** @deprecated Use {@link #SetAllowed(List<String>)} instead. */
-    @Deprecated
-    public SetAllowed(Vector<String> allowed) {
-      this.allowed = allowed;
-    }
-
     public List<String> getAllowedIds() {
       return allowed;
     }

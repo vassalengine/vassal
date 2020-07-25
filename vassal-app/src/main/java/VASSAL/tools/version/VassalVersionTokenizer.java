@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @see Version
  * @see VersionFormatException
  */
 public class VassalVersionTokenizer implements VersionTokenizer {

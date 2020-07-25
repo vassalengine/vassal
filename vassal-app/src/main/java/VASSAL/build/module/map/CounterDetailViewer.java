@@ -244,16 +244,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  @Deprecated // Required for backward compatibility
-  protected void drawGraphics(Graphics g, Point pt, JComponent comp,
-                              PieceIterator pi) {
-    ArrayList<GamePiece> a = new ArrayList<>();
-    while (pi.hasMoreElements()) {
-      a.add(pi.nextPiece());
-    }
-    drawGraphics(g, pt, comp, a);
-  }
-
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
     fixBounds(pieces);
 
@@ -367,16 +357,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return textVisible && counterReportFormat.getFormat().length() > 0;
   }
 
-  @Deprecated // Required for backward compatibility
-  protected void drawText(Graphics g, Point pt,
-                          JComponent comp, PieceIterator pi) {
-    ArrayList<GamePiece> a = new ArrayList<>();
-    while (pi.hasMoreElements()) {
-      a.add(pi.nextPiece());
-    }
-    drawText(g, pt, comp, a);
-  }
-
   protected void drawText(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
     /*
      * Label with the location If the counter viewer is being displayed, then
@@ -418,11 +398,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (report.length() > 0) {
       drawLabel(g, new Point(x, y), report, Labeler.RIGHT, Labeler.BOTTOM);
     }
-  }
-
-  @Deprecated // Required for backward compatibility
-  protected void drawLabel(Graphics g, Point pt, String label) {
-    drawLabel(g, pt, label, Labeler.RIGHT, Labeler.BOTTOM);
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {

@@ -58,21 +58,15 @@ public class TileSlicerImpl implements TileSlicer {
     int th,
     ExecutorService exec,
     Callback<Void> progress
-  ) throws IOException
-  {
+  ) throws IOException {
+
     final int sw = src.getWidth();
     final int sh = src.getHeight();
 
     final List<Future<Void>> futures = new ArrayList<>();
 
     // slice unscaled 1:1 tiles
-    final TaskMaker unscaled = new TaskMaker() {
-      @Override
-      public TileTask make(BufferedImage src, File f,
-                           int tx, int ty, int tw, int th, int sw, int sh) {
-        return new TileTask(src, f, tx, ty, tw, th, sw, sh);
-      }
-    };
+    final TaskMaker unscaled = TileTask::new;
 
     queueTileTasks(
       src, iname, tpath, 1, tw, th, sw, sh, unscaled, exec, futures
@@ -121,8 +115,8 @@ public class TileSlicerImpl implements TileSlicer {
     }
   }
 
-  protected static interface TaskMaker {
-    public TileTask make(BufferedImage src, File f,
+  protected interface TaskMaker {
+    TileTask make(BufferedImage src, File f,
                          int tx, int ty, int tw, int th, int dw, int dh);
   }
 
@@ -138,8 +132,8 @@ public class TileSlicerImpl implements TileSlicer {
     TaskMaker tm,
     ExecutorService exec,
     List<Future<Void>> futures
-  )
-  {
+  ) {
+
     final int tcols = (int) Math.ceil((double) dw / tw);
     final int trows = (int) Math.ceil((double) dh / th);
 

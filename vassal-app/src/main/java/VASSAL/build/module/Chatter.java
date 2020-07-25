@@ -137,15 +137,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     conversation.append("\n" + s); //$NON-NLS-1$
   }
 
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated public void setHandle(String s) {
-  }
-
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated public String getHandle() {
-    return GlobalOptions.getInstance().getPlayerId();
-  }
-
   /**
    * Set the Font used by the text area
    */

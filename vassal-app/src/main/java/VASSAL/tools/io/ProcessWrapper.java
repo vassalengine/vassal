@@ -46,8 +46,8 @@ public class ProcessWrapper {
     Future<Integer> future,
     InputStream stdout,
     InputStream stderr,
-    OutputStream stdin)
-  {
+    OutputStream stdin) {
+
     this.future = future;
     this.stdout = stdout;
     this.stderr = stderr;
