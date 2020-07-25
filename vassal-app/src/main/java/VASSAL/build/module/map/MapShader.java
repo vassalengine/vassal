@@ -276,7 +276,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     if (srcOp == null) {
       buildShadePattern();
     }
-    return (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
+
+    final BufferedImage src = (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
+    // Linux xrender apparently requires translucency and its own copy
+    return ImageUtils.toType(src, ImageUtils.getCompatibleTranslucentImageType());
   }
 
   /*
