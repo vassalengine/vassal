@@ -172,7 +172,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double zoom = map.getZoom() * os_scale;
-    buildStroke(zoom);
 
     if (zoom != 1.0) {
       area = new Area(AffineTransform.getScaleInstance(zoom, zoom)
