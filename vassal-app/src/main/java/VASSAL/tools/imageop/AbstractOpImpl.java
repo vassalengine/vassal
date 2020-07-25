@@ -33,7 +33,7 @@ import VASSAL.tools.opcache.OpCache;
 /**
  * An abstract representation of an operation which may be applied to an
  * {@link Image}. <code>ImageOp</code> is the base class for all such
- * operations. The results of all operations are memorized (using a
+ * operations. The results of all operations are memoized (using a
  * memory-sensitive cache), so retrieving results is both fast and
  * memory-efficient.
  *

@@ -162,8 +162,6 @@ public class SVGRenderer {
     px = new AffineTransform(px);
     px.scale(scale, scale);
 
-    new Rectangle2D.Float(0, 0, defaultW, defaultH);
-
     r.addTranscodingHint(Rasterizer.KEY_WIDTH, (float) aoi.getWidth());
     r.addTranscodingHint(Rasterizer.KEY_HEIGHT, (float) aoi.getHeight());
     r.addTranscodingHint(Rasterizer.KEY_AOI, aoi);
