@@ -21,21 +21,24 @@ Image Definitions</a> &gt; </small><small><b>Game Piece Layouts</b></small><br>
       <td valign="top">
       <hr size="2" width="100%">
       <h2>Game Piece Layouts</h2>
-      <div style="text-align: left;">This component contains all the
-layouts used to define a <a href="GamePieceImage.htm">Game Piece Image</a>.&nbsp;
-Right-click and select "Add Game Piece Layout" to add a
-new layout.<br>
-      <br>
-      <p>A Game Piece Layout defines the general look and layout of the
-items used in drawing an image. Specific color and text information is
-defined for individual counter images in an Image Definition.<br>
-      </p>
+      <div style="text-align: left;">
       <table style="width: 100%; text-align: left;" border="0"
  cellpadding="2" cellspacing="2">
         <tbody>
           <tr>
             <td style="vertical-align: top;">
-            <p>An Image is built up by drawing in order: </p>
+
+        This component contains all the
+layouts used to define a <a href="GamePieceImage.htm">Game Piece Image</a>.&nbsp;
+Right-click on the [Game Piece Layouts] component and select "Add Game Piece Layout" to add a
+new layout.<br>
+      <p>A Game Piece Layout defines the general look and layout of the
+items used in drawing an image. Specific color and text information is
+defined later for individual counter images in the Game Piece Image properties.<br>
+      </p>
+
+
+            <p>An image is built up by drawing in order: </p>
             <ol>
               <li class="level1"><span class="li">A rectangle of the
 background color.</span></li>
@@ -45,11 +48,14 @@ the
 order displayed in the Item panel.</span></li>
             </ol>
             <strong>Name:</strong> The name of the Image Layout.<br>
+            <br>
             <strong>Counter Width:</strong> The width of all counters
 created
 using this layout.<br>
+            <br>
             <strong>Counter Height:</strong> The height of all counters
 created using this layout.<br>
+            <br>
             <strong>Border Style: </strong> The border style for all
 counters created using this layout. Border styles currently available
 are:
@@ -68,8 +74,10 @@ background color.</span></li>
             <strong>Reduce Images to 256 Colors:</strong> This option results in smaller module files and will not degrade image quality unless the counters use high-resolution photographic images<br>
             <p> </p>
             </td>
-            <td style="vertical-align: top; text-align: left;"><img src="images/imagelayout.png" class="media" alt=""
- style="border: 0px solid ; " align="middle">
+            <td style="vertical-align: top; text-align: left;">
+            <img src="images/imagelayout.png" class="media" alt=""
+ style="border: 0px solid ; " align="middle"><br><br>
+            <img src="images/GamePieceImageDefinitionsWhere.png">
             </td>
           </tr>
         </tbody>
@@ -147,10 +155,10 @@ a rectangle, rounded rectangle or oval.</span></li>
 selected Item.</span></li>
               <li class="level1"><span class="li">Up - Move the
 selected Item
-up the list (i.e. draw earlier).</span></li>
+up the list (i.e. draw earlier, and thus "towards the back").</span></li>
               <li class="level1"><span class="li">Down - Move the
 selected
-Item down the list (i.e. draw later).</span></li>
+Item down the list (i.e. draw later and thus "towards the front").</span></li>
             </ul>
             <p> </p>
             <p> </p>
@@ -169,22 +177,23 @@ Item down the list (i.e. draw later).</span></li>
           <tr>
             <td style="vertical-align: top;">
             <p>A Symbol Item is a generic symbol to be drawn by the
-program.&nbsp;&nbsp; The particular symbol is chosen in the Game Piece
-Image.<br>
+program.&nbsp;&nbsp; An Infantry symbol will be shown as a placeholder
+        but the particular symbol is chosen later when configuring
+        an individual <a href="GamePieceImage.htm">Game Piece
+Image</a>.<br>
             </p>
             <p><strong><br>
-Name:</strong> The name of the Item. Items <strong>MUST</strong>
+Name:</strong>&nbsp; The name of the Item. Items <strong>MUST</strong>
 be uniquely named within an Image Layout.<br>
-            <strong>Location:</strong> Select the location of the item
+            <strong>Location:</strong>&nbsp; Select the location of the item
 on the
 counter.<br>
-            <strong>Symbol Set:</strong> Select the Symbol Set to use.
-Only
-Symbol set available currently is NATO Unit Symbols.<br>
-            <strong>Width:</strong> The width of the body of the symbol
+            <strong>Symbol Set:</strong>&nbsp; Select the Symbol Set to use.
+The only Symbol Set currently available is NATO Unit Symbols.<br>
+            <strong>Width:</strong>&nbsp; The width of the body of the symbol
 in
 pixels.<br>
-            <strong>Height:</strong> The height of the body of the
+            <strong>Height:</strong>&nbsp; The height of the body of the
 symbol
 (not including the Size specifier) in pixels.<br>
             <strong>Line Width:</strong> The width of the line (in
@@ -213,20 +222,20 @@ at a particular location.&nbsp; The value of the text can be specified
 in the individual images or in the layout, in which case all images
 using this layout share the same value.<br>
             </p>
-            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+            <p> <strong>Name:</strong>&nbsp; The name of the Item. Items <strong>MUST</strong>
 be uniquely named within an Image Layout.<br>
-            <strong>Location:</strong> Select the location of the item
+            <strong>Location:</strong>&nbsp; Select the location of the item
 on the
 counter.&nbsp; The location also determines the text justification,
 i.e. selecting Top Left ensures that the upper left corner of the text
 is in the upper left corner of the image.&nbsp; Once the justification
 is set by the Location, you can still use the X/Y offset in the
 advanced options to place the text in a different location.<br>
-            <strong>Font Style:</strong> Select the name of the Font
+            <strong>Font Style:</strong>&nbsp; Select the name of the Font
 Style to
 be used for this Text Item.<br>
-            <strong></strong><strong>Text is:</strong> Select whether
-the text is specified in the layout or in the images. </p>
+            <strong></strong><strong>Text is:</strong>&nbsp; Select whether
+the text is specified in this layout (i.e. right here) or in the individual Game Piece Images to be created from this layout. </p>
             <span class="li"></span>
             <p> </p>
             </td>
@@ -249,21 +258,21 @@ at a particular location.&nbsp; The value of the text can be specified
 in the individual images or in the layout, in which case all images
 using this layout share the same value.<br>
             </p>
-            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+            <p> <strong>Name:</strong>&nbsp; The name of the Item. Items <strong>MUST</strong>
 be uniquely named within an Image Layout.<br>
-            <strong>Location:</strong> Select the location of the item
+            <strong>Location:</strong>&nbsp; Select the location of the item
 on the
 counter.&nbsp; The location also determines the text justification,
 i.e. selecting Top Left ensures that the upper left corner of the text
 is in the upper left corner of the image.&nbsp; Once the justification
 is set by the Location, you can still use the X/Y offset in the
 advanced options to place the text in a different location.<br>
-<strong>Use HTML</strong> If selected, then the contents will be interpreted as HTML.<br>
-            <strong>Font Style:</strong> Select the name of the Font
+<strong>Use HTML:</strong>&nbsp; If selected, then the contents will be interpreted as HTML.<br>
+            <strong>Font Style:</strong>&nbsp; Select the name of the Font
 Style to
 be used for this Text Item.<br>
-            <strong></strong><strong>Text is:</strong> Select whether
-the text is specified in the layout or in the images. </p>
+            <strong></strong><strong>Text is:</strong>&nbsp; Select whether
+the text is specified right here in the layout or later in the individual Game Piece Image properties. </p>
             <span class="li"></span>
             <p> </p>
             </td>
@@ -284,19 +293,19 @@ the text is specified in the layout or in the images. </p>
             </p>
             <p><br>
             </p>
-            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+            <p> <strong>Name:</strong>&nbsp; The name of the Item. Items <strong>MUST</strong>
 be uniquely named within an Image Layout.<br>
-            <strong>Location:</strong> Select the location of the item
+            <strong>Location:</strong>&nbsp; Select the location of the item
 on the
 counter.<br>
-            <strong>Image is:</strong> Specify whether the image is
-specified in this layout or in the images that use this layout.&nbsp;
+            <strong>Image is:</strong>&nbsp; Specify whether the image is
+specified right here in this layout or later on in the Game Piece Image properties that use this layout.&nbsp;
 Use
 the File
 Open Dialog box to locate a copy of the image you wish to use on your
 PC. When you save the module, VASSAL will attempt to copy this image
 into the <em>images</em> folder within the module zip file. You can
-also manually copy images into your images folder.<br>
+also manually copy images into your images folder. <br>
             </p>
             <p> </p>
             <p><br>
@@ -319,18 +328,18 @@ also manually copy images into your images folder.<br>
             <td style="vertical-align: top;">
             <p>A Shape Item is a simple geometric shape.<br>
             </p>
-            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+            <p> <strong>Name:</strong>&nbsp; The name of the Item. Items <strong>MUST</strong>
 be uniquely named within an Image Layout.<br>
-            <strong>Location:</strong> Select the location of the item
+            <strong>Location:</strong>&nbsp; Select the location of the item
 on the
 counter.<br>
-            <strong>Width: </strong>Select the width of the shape.
+            <strong>Width: </strong>&nbsp; Select the width of the shape.
             <br>
-            <strong>Height:</strong> Select the height of the shape.
+            <strong>Height:</strong>&nbsp; Select the height of the shape.
             <br>
-            <strong>Shape:</strong> Select the type of shape.
+            <strong>Shape:</strong>&nbsp; Select the type of shape.
             <br>
-            <strong>Bevel:</strong> For Rounded Rectangle shapes,
+            <strong>Bevel:</strong>&nbsp; For Rounded Rectangle shapes,
 larger bevel values mean rounder corners.<br>
             </p>
             <p> </p>
@@ -346,7 +355,9 @@ larger bevel values mean rounder corners.<br>
       <h2>Sub-Components</h2>
       <h3><a href="GamePieceImage.htm">Game Piece Image<br>
       </a></h3>
-An image using this layout.<br>
+An image created using this layout. You can create as many individual Game Piece Images as you'd like using
+each Game Piece Layout. To add a Game Piece Image, right click on the [Game Piece Layout] component
+where you created the desired layout and select "Add Game Piece Image". <br>
       </td>
     </tr>
   </tbody>

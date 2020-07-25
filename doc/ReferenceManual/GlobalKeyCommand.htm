@@ -34,12 +34,18 @@ prompt action by other Pieces. As such, they are very powerful, but they
         issued Vassal must generally check it against every piece on the board.<br>
             <br>
             <span style="font-weight: bold;">Description:&nbsp; </span>A description of this trait, which appears in the Piece Definer list in the Editor.<br>
+            <br>
             <span style="font-weight: bold;">Command name:&nbsp; </span>Name
 of the right-click context menu item<br>
+        <br>
             <span style="font-weight: bold;">Key Command:</span>&nbsp;
 <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that initiates the action. For example a keyboard shortcut which, when typed with this Piece selected will cause the Global Key Command to be issued. This is <i>not</i>, however, the command that will be issued to the other pieces.<br>
+        <br>
             <span style="font-weight: bold;">Global Key Command:</span>&nbsp;
-The <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will be applied to other Pieces (and potentially this Piece as well).<br>
+The <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will be applied to other Pieces (and potentially this Piece as well). As with all
+        Key Commands, this can either be an actual keyboard shortcut like Ctrl+F, or a "Named Key Command" such as FireForwardPhasers. Other pieces which
+        have that same shortcut or Named Key Command filled in as the Key Command for one or more of their Traits will have those Traits activated.<br>
+        <br>
             <span style="font-weight: bold;">Matching Properties:</span>&nbsp;
 The Global Key Command will only be applied to Pieces which match the specified <a href="PropertyMatchExpression.htm">Property Match Expression</a>.
 Note that the properties named in the expression are evaluated against the properties <i>of the target pieces</i>. For example if you provided the
@@ -49,23 +55,29 @@ to compare a property in the target pieces against the value of <i>a property in
 All $...$ property references will be evaluated against this piece before testing against other pieces. For example if the
 expression provided is { CurrentZone == $CurrentZone$ } then the CurrentZone of each potential target piece will be checked 
 against $CurrentZone$ which will read the CurrentZone of the <i>issuing</i> piece. (see also example below)<br>
+        <br>
 			<span style="font-weight: bold;">Within a Deck, apply to:</span>&nbsp;
 Select how the Global Key Command will be applied to pieces in a Deck. Options are <i>All pieces</i>, <i>No pieces</i>,
 or <i>Fixed number of pieces</i>. If <i>Fixed number of pieces</i> is selected, a field appears to allow entry of the
 number of Pieces in the Deck to affect, starting at the top of the Deck. Thus, selecting 1 for the fixed number would
         cause only the top card or piece in a Deck to be affected.<br>
+        <br>
             <span style="font-weight: bold;">Restrict Range:</span>&nbsp; If
 selected, the command will only apply to pieces located within a
 specified distance of this piece.<a href="Properties.htm"></a><br>
+        <br>
             <span style="font-weight: bold;">Range: &nbsp;</span> Only
 others pieces within this distance, inclusive, of this piece will have
 the command applied to them.&nbsp; If the pieces are on a board with a <a
  href="HexGrid.htm">Hex Grid</a> or <a href="RectangularGrid.htm">Rectangular
 Grid</a>, then the distance is in units of the grid.&nbsp; Otherwise,
 the distance is measured in screen pixels.<br>
+        <br>
             <span style="font-weight: bold;">Fixed Range:</span>&nbsp; If selected, then the range is specified as a fixed number.  If unselected, then the range will be given by the value of the named <a href="Properties.htm">property</a>.<br>
+            <br>
             <span style="font-weight: bold;">Range Property:</span>&nbsp;
 The name of a Property that contains the range to use when Fixed Range is not selected.<br>
+        <br>
             <span style="font-weight: bold;"></span><span
  style="font-weight: bold;">Suppress individual
 reports:</span>&nbsp; If selected, then any reports (whether auto-reporting or <a href="ReportChanges.htm">Report Action</a> traits) by the
