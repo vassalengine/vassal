@@ -257,23 +257,31 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Get/Build the repeating rectangle used to generate the shade texture
    * pattern.
+   * @deprecated
    */
+  @Deprecated
   protected BufferedImage getShadePattern() {
-    if (srcOp == null) buildShadePattern();
-    return srcOp.getImage();
+    return getShadePattern(1.0);
   }
 
   protected BufferedImage getShadePattern(double zoom) {
-    if (srcOp == null) buildShadePattern();
-    return Op.scale(srcOp,zoom).getImage();
+    if (srcOp == null) {
+      buildShadePattern();
+    }
+    return (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
   }
 
+  @Deprecated
   protected Rectangle getPatternRect() {
     return patternRect;
   }
 
   protected Rectangle getPatternRect(double zoom) {
-    return new Rectangle((int)Math.round(zoom*patternRect.width),(int)Math.round(zoom*patternRect.height));
+    return zoom == 1.0 ? patternRect :
+      new Rectangle(
+        (int)Math.round(zoom*patternRect.width),
+        (int)Math.round(zoom*patternRect.height)
+      );
   }
 
   protected void buildShadePattern() {
