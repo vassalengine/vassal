@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 /**
  * The abstract base class for {@link ImageOp}s which are
  * a single tile. This class provides simpler implementations of the
- * tile-related methods than does {@link AbstractTiledOp}, as objects
+ * tile-related methods than does {@link AbstractTiledOpImpl}, as objects
  * instantiating this class' subclasses are all single tiles.
  *
  * @since 3.1.0
@@ -95,8 +95,8 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    */
   @Override
   public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException
-  {
+    throws CancellationException, InterruptedException, ExecutionException {
+
     // we are but a single humble tile
     if (tileX != 0 || tileY != 0)
       throw new IndexOutOfBoundsException();
@@ -113,8 +113,8 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    */
   @Override
   public Future<BufferedImage> getFutureTile(
-    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
-  {
+    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException {
+
     // we are but a single humble tile
     if (tileX != 0 || tileY != 0)
       throw new IndexOutOfBoundsException();

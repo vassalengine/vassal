@@ -31,7 +31,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -220,12 +219,8 @@ public class ImageUtils {
                           d.height);
   }
 
-  private static final TemporaryFileFactory tfac = new TemporaryFileFactory() {
-    @Override
-    public File create() throws IOException {
-      return File.createTempFile("img", null, Info.getTempDir());
-    }
-  };
+  private static final TemporaryFileFactory tfac =
+    () -> File.createTempFile("img", null, Info.getTempDir());
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
@@ -311,8 +306,10 @@ public class ImageUtils {
   }
 
   private static GraphicsConfiguration getGraphicsConfiguration() {
-    return GraphicsEnvironment.getLocalGraphicsEnvironment().
-             getDefaultScreenDevice().getDefaultConfiguration();
+    return GraphicsEnvironment
+      .getLocalGraphicsEnvironment()
+      .getDefaultScreenDevice()
+      .getDefaultConfiguration();
   }
 
   protected static final BufferedImage compatOpaqueImage;
@@ -384,8 +381,8 @@ public class ImageUtils {
          src.getTransparency() == compatOpaqueImage.getTransparency())
         ||
         (src.getColorModel().equals(compatTransImage.getColorModel()) &&
-         src.getTransparency() == compatTransImage.getTransparency()))
-    {
+         src.getTransparency() == compatTransImage.getTransparency())) {
+
       return src;
     }
 

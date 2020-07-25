@@ -19,6 +19,7 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -32,7 +33,7 @@ import VASSAL.tools.opcache.OpCache;
 /**
  * An abstract representation of an operation which may be applied to an
  * {@link Image}. <code>ImageOp</code> is the base class for all such
- * operations. The results of all operations are memoized (using a
+ * operations. The results of all operations are memorized (using a
  * memory-sensitive cache), so retrieving results is both fast and
  * memory-efficient.
  *
@@ -52,8 +53,8 @@ import VASSAL.tools.opcache.OpCache;
  */
 public abstract class AbstractOpImpl
   extends VASSAL.tools.opcache.AbstractOpImpl<BufferedImage>
-  implements ImageOp
-{
+  implements ImageOp {
+
   /** The cached size of this operation's resulting <code>Image</code>. */
   protected Dimension size;
 
@@ -92,8 +93,8 @@ public abstract class AbstractOpImpl
   /** {@inheritDoc} */
   @Override
   public BufferedImage getImage(ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException
-  {
+    throws CancellationException, InterruptedException, ExecutionException {
+
     return get(obs);
   }
 
@@ -118,8 +119,8 @@ public abstract class AbstractOpImpl
   }
 
   /**
-   * Sets the <code>size</code> which is used by {@link getSize},
-   * {@link getHeight}, and {@link getWidth}.
+   * Sets the <code>size</code> which is used by {@link #getSize},
+   * {@link #getHeight}, and {@link #getWidth}.
    */
   protected abstract void fixSize();
 
@@ -167,8 +168,8 @@ public abstract class AbstractOpImpl
   /** {@inheritDoc} */
   @Override
   public BufferedImage getTile(Point p, ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException
-  {
+    throws CancellationException, InterruptedException, ExecutionException {
+
     return getTile(p.x, p.y, obs);
   }
 
@@ -181,8 +182,8 @@ public abstract class AbstractOpImpl
   /** {@inheritDoc} */
   @Override
   public Future<BufferedImage> getFutureTile(Point p, ImageOpObserver obs)
-    throws ExecutionException
-  {
+    throws ExecutionException {
+
     return getFutureTile(p.x, p.y, obs);
   }
 

@@ -180,8 +180,8 @@ public class ComponentSplitter {
     Component base,
     Component newComponent,
     int hideablePosition,
-    boolean resize)
-  {
+    boolean resize) {
+
     int index = -1;
     Container parent = base.getParent();
     if (base.getParent() != null) {

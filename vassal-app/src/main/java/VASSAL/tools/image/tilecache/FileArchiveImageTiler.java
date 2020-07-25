@@ -61,13 +61,13 @@ public class FileArchiveImageTiler {
     Callback<String> imageListener,
     Callback<Void> tileListener,
     Callback<Void> doneListener
-  ) throws IOException
-  {
+  ) throws IOException {
+
     for (String ipath : ipaths) {
       logger.info("Tiling {}", ipath);
       imageListener.receive(ipath);
 
-      BufferedImage src = null;
+      BufferedImage src;
       try (InputStream in = fa.getInputStream(ipath)) {
         src = loader.load(
           ipath, in, BufferedImage.TYPE_INT_RGB,
