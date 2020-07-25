@@ -30,7 +30,6 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
@@ -529,15 +528,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public MapShader() {
-
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        toggleShading();
-      }
-    };
-    launch = new LaunchButton("Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
-    launch.setEnabled(false);
+    launch = new LaunchButton(
+      "Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
+    );
+    launch.setEnabled(false)
     setLaunchButtonVisibility();
     setConfigureName("Shading");
     reset();
@@ -632,6 +626,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
+  protected void rebuildPatternAndTexture() {
+    textures.clear();
+    buildShadePattern();
+    buildTexture();
+  }
+
   @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
@@ -676,8 +676,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (PATTERN.equals(key)) {
       pattern = (String) value;
-      buildShadePattern();
-      buildTexture();
+      rebuildPatternAndTexture();
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -687,8 +686,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       // and leave pattern and texture unchanged
       if (value != null) {
         color = (Color) value;
-        buildShadePattern();
-        buildTexture();
+        rebuildPatternAndTexture();
       }
     }
     else if (IMAGE.equals(key)) {
@@ -696,9 +694,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         value = ((File) value).getName();
       }
       imageName = (String) value;
-      buildShadePattern();
-      textures.clear();
-      buildTexture();
+      rebuildPatternAndTexture();
     }
     else if (SCALE_IMAGE.equals(key)) {
       if (value instanceof String) {
