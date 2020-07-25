@@ -184,9 +184,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     g2d.setComposite(getComposite());
     g2d.setColor(getColor());
-    g2d.setPaint(
-      scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
-      getTexture(zoom) : getTexture());
+
+    final boolean usingScaledImage =
+      scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
+    g2d.setPaint(usingScaledImage ? getTexture(zoom) : getTexture());
 
     g2d.fill(area);
 
