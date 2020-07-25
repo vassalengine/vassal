@@ -35,6 +35,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -228,11 +229,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected Area getShadeShape(Map map) {
     final Area myShape = type.equals(FG_TYPE) ?
       new Area() : new Area(getBoardClip());
-
-    for (GamePiece p : map.getPieces()) {
-      checkPiece(myShape, p);
-    }
-
+    Arrays.stream(map.getPieces()).forEach(p -> checkPiece(myShape, p));
     return myShape;
   }
 
@@ -395,7 +392,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     TexturePaint texture = textures.get(zoom);
     if (texture == null) {
-      texture = new TexturePaint(getShadePattern(zoom),getPatternRect(zoom));
+      texture = new TexturePaint(getShadePattern(zoom), getPatternRect(zoom));
       textures.put(zoom,texture);
     }
     return texture;
