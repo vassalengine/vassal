@@ -148,6 +148,16 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
 
+  public MapShader() {
+    launch = new LaunchButton(
+      "Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
+    );
+    launch.setEnabled(false);
+    setLaunchButtonVisibility();
+    setConfigureName("Shading");
+    reset();
+  }
+
   @Override
   public void draw(Graphics g, Map map) {
     if (!shadingVisible) {
@@ -164,6 +174,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     final double zoom = map.getZoom() * os_scale;
     buildStroke(zoom);
 
+    if (zoom != 1.0) {
+      area = new Area(AffineTransform.getScaleInstance(zoom, zoom)
+                                     .createTransformedShape(area));
+    }
+
     final Composite oldComposite = g2d.getComposite();
     final Color oldColor = g2d.getColor();
     final Paint oldPaint = g2d.getPaint();
@@ -174,11 +189,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     g2d.setPaint(
       scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
       getTexture(zoom) : getTexture());
-
-    if (zoom != 1.0) {
-      area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                                     .createTransformedShape(area));
-    }
 
     g2d.fill(area);
 
@@ -525,16 +535,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALL_BOARDS, EXC_BOARDS, INC_BOARDS};
     }
-  }
-
-  public MapShader() {
-    launch = new LaunchButton(
-      "Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
-    );
-    launch.setEnabled(false)
-    setLaunchButtonVisibility();
-    setConfigureName("Shading");
-    reset();
   }
 
   public void reset() {
