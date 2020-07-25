@@ -27,18 +27,19 @@
         <tbody>
           <tr>
             <td valign="top">This trait adds an action that
-invokes&nbsp;hotkey, i.e., a keyboard shortcut for a toolbar button in
-the main controls windows or a Map Window.<br>
+invokes&nbsp;a Hotkey, i.e., a keyboard shortcut or Named Key Command for a Toolbar button in
+the main control windows or a Map Window. Essentially it allows a Piece to activate a function
+from the Toolbar.<br>
             <br>
-            <span style="font-weight: bold;">Menu Text:</span> &nbsp;Right-click menu text<br>
-            <span style="font-weight: bold;">Keyboard command:</span>&nbsp;
-Keyboard shortcut of the menu item that initiates the command<br>
+            <span style="font-weight: bold;">Menu Text:</span> &nbsp;Right-click context menu text<br>
+            <span style="font-weight: bold;">Key Command:</span>&nbsp;
+<a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> to initiate the action<br>
             <span style="font-weight: bold;">Global Hotkey:</span>&nbsp;
-The hotkey that will be applied to the controls window.<br>
-            <span style="font-weight: bold;"></span><br>
-            <span style="font-weight: bold;"></span><span style="font-weight: bold;">EXAMPLE:</span>&nbsp;
-A Dice Button component has been added to the toolbar, using the hotkey
-F2. &nbsp;A GamePiece is given a Global Hotkey trait with Menu text <span style="font-style: italic;">Roll Dice,</span> Keyboard Command <span style="font-style: italic;">CTRL-R</span> and Global Hotkey <span style="font-style: italic;">F2</span>. &nbsp;Now, selecting the piece and typing <span style="font-style: italic;">CTRL-R</span> or selecting <span style="font-style: italic;">Roll Dice</span> from the right-click menu will roll the dice button just as if the player had pressed the button in the toolbar or typed <span style="font-style: italic;">F2</span> from the keyboard.<br>
+The Hotkey that will be applied to the controls window -- in other words the Hotkey assigned to the Toolbar button you wish to activate.<br>
+            <br>
+            <b>EXAMPLE:</b>&nbsp;
+A Dice Button component has been added to the Toolbar and assigned the Hotkey
+F2. &nbsp;A Game Piece is given a Global Hotkey trait with Menu text <i>Roll Dice,</i> Keyboard Command <i>CTRL+R</i> and Global Hotkey <i>F2</i>. &nbsp;Now, selecting the piece and typing <i>CTRL+R</i> or selecting <i>Roll Dice</i> from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed <i>F2</i> from the keyboard.<br>
             </td>
             <td valign="top"><img  alt="" src="images/GlobalHotkey.png">&nbsp;<br>
             </td>

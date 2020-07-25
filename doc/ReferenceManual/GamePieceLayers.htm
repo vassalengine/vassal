@@ -12,44 +12,40 @@
       <td valign="top">
       <h1>VASSAL Reference Manual</h1>
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
-&gt; <a href="Map.htm">Map</a> &gt; <b>Game Piece Layers</b></small><br>
-      <br>
+&gt; <a href="Map.htm">Map</a> &gt; <b>Game Piece Layers</b></small>
       </td>
     </tr>
     <tr>
       <td valign="top">
-      <hr size="2" width="100%"><br>
+      <hr size="2" width="100%">
       <h2>Game Piece Layers<br>
       </h2>
-      <br>
       <table style="text-align: left; width: 100%;" border="0"
  cellpadding="2" cellspacing="2">
         <tbody>
           <tr>
-            <td style="vertical-align: top;">This component allows you
+            <td style="vertical-align: top;">When added to a <a href="Map.htm">Map</a>, this component allows you
 to specify that certain Game Pieces will always be drawn on top of
-others.&nbsp;&nbsp; <span style="font-weight: bold;">Property name</span>
-is
-the name of the property that determines the order.&nbsp; Typically
+others.&nbsp;&nbsp; <br><br>
+        <b>Property name for layer:&nbsp;</b>
+The name of the Property of each Piece that determines the order.&nbsp; Typically
 this will be specified with a <a href="PropertyMarker.htm">Marker</a>
 trait with the specified property name.&nbsp;&nbsp; <span
  style="font-weight: bold;">Layer Order</span> lists the expected
 values
 for that property, in the order that they will be drawn on the
-map.&nbsp; Pieces assigned to different layers will never combine into
+map (pieces draw last will naturally appear on top of those drawn before).&nbsp; Pieces assigned to different layers will never combine into
 a
-stack.&nbsp; Pieces with no value specified for the given property are
+Stack.&nbsp; Pieces with no value specified for the given property are
 placed in the topmost layer.<br>
             <br>
             <span style="font-weight: bold;">Example:</span>&nbsp; A
-Map has a Game Piece Layer specified with property name <span
- style="font-style: italic;">Layer</span> and Layer Order <span
- style="font-style: italic;">Terrain, Land, Air</span>.&nbsp; Then any
+Map has a Game Piece Layer specified with property name <i>Layer</i> and Layer Order <i>Terrain, Land, Air</i>.&nbsp; Then any
 piece with a <a href="PlaceMarker.htm">Marker</a> trait with property
 name "Layer" and value "Terrain" will be in the bottom-most
 layer.&nbsp;
-The middle layer will contain pieces with the value "Land" and the top
-layer will contain pieces with the value "Air".&nbsp; Pieces with no
+The middle layer will contain Pieces with the value "Land" and the top
+layer will contain Pieces with the value "Air".&nbsp; Pieces with no
 value for the "Layer" property will be in their own layer above all
 three.<br>
             </td>
@@ -62,26 +58,25 @@ three.<br>
       <h2> </h2>
       <hr size="2" width="100%">
       <h2>Sub-Components</h2>
-      <h3>Game Piece Layer Control<br>
+      <h3>Game Piece Layer Control
       </h3>
-      <br>
       <table style="width: 100%; text-align: left;" border="0"
  cellpadding="2" cellspacing="2">
         <tbody>
           <tr>
-            <td style="vertical-align: top;">This adds a button to the
+            <td style="vertical-align: top;">This adds a button or buttons to the
 Map Window toolbar that allows you to activate/deactivate the Game
 Piece Layers for that map, and to change their relative order.&nbsp;
-Game Piece belonging to Layers that have been deactivated are be hidden
+Game Pieces belonging to Layers that have been deactivated are be hidden
 from view until the Layer is activated again.&nbsp; Each player can
 activate/deactivate Layers independently, and layer activation is not
 saved when the game is saved.<br>
             <br>
-Specify the button's text, icon, and keyboard shortcut.&nbsp; Specify
+Specify the button's text, icon, and hotkey.&nbsp; Specify
 the names of the layers that this button will effect, and the action of
 the button.&nbsp; <span style="font-style: italic;">Rotate Layer Order
 Up/Down</span> will change the relative order of the Layers on the map,
-moving each layer up/down by one in the order.&nbsp; I will activate or
+moving each layer up/down by one in the order.&nbsp; <i>Make Layer Active</i> and <i>Make Layer Inactive</i> will activate or
 deactivate the specified Layers.&nbsp; <span
  style="font-style: italic;">Switch Layer between Active and Inactive</span>
 will toggle the specified layers between active and inactive.&nbsp; <span
