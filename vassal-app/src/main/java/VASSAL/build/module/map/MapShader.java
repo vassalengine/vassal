@@ -381,7 +381,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     if (stroke == null) {
       buildStroke(zoom);
     }
-
     return stroke;
   }
 
@@ -408,29 +407,29 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     final boolean usingScaledImage =
       scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
 
-    if (!usingScaledImage || zoom == 1.0) {
-      if (texture == null) {
-        buildTexture();
-      }
+    if (!usingScaledImage) {
+      zoom = 1.0;
     }
-    else {
-      TexturePaint texture = textures.get(zoom);
-      if (texture == null) {
-        final BufferedImage pat = getShadePattern(zoom);
-        if (pat != null) {
-          texture = new TexturePaint(pat, getPatternRect(zoom));
-          textures.put(zoom, texture);
-        }
-      }
-    }
+
+    texture = textures.computeIfAbsent(zoom, this::makeTexture);
     return texture;
   }
 
+  /**
+   * @deprecated Use {@link #buildTexture(double)} instead.
+   */
+  @Deprecated
   protected void buildTexture() {
-    final BufferedImage pat = getShadePattern(1.0);
-    if (pat != null) {
-      texture = new TexturePaint(pat, getPatternRect(1.0));
-    }
+    buildTexture(1.0);
+  }
+
+  protected void buildTexture(double zoom) {
+    texture = makeTexture(zoom);
+  }
+
+  protected TexturePaint makeTexture(double zoom) {
+    final BufferedImage pat = getShadePattern(zoom);
+    return pat != null ? new TexturePaint(pat, getPatternRect(zoom)) : null;
   }
 
   public Color getColor() {
@@ -641,7 +640,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected void buildPatternAndTexture() {
     textures.clear();
     buildShadePattern();
-    buildTexture();
+    buildTexture(1.0);
   }
 
   @Override
