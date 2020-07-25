@@ -267,7 +267,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Get/Build the repeating rectangle used to generate the shade texture
    * pattern.
-   * @deprecated
+   * @deprecated Use {@link #getShadePattern(double)} instead.
    */
   @Deprecated
   protected BufferedImage getShadePattern() {
@@ -281,6 +281,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
   }
 
+  /*
+   * @deprecated Use {@link #getPatternRect(double)} instead.
+   */
   @Deprecated
   protected Rectangle getPatternRect() {
     return patternRect;
@@ -289,8 +292,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected Rectangle getPatternRect(double zoom) {
     return zoom == 1.0 ? patternRect :
       new Rectangle(
-        (int)Math.round(zoom*patternRect.width),
-        (int)Math.round(zoom*patternRect.height)
+        (int)Math.round(zoom * patternRect.width),
+        (int)Math.round(zoom * patternRect.height)
       );
   }
 
@@ -408,17 +411,23 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     if (zoom == 1.0) {
       return getTexture();
     }
-    TexturePaint texture = textures.get(zoom);
-    if (texture == null) {
-      texture = new TexturePaint(getShadePattern(zoom), getPatternRect(zoom));
-      textures.put(zoom,texture);
+    else {
+      TexturePaint texture = textures.get(zoom);
+      if (texture == null) {
+        final BufferedImage spat = getShadePattern(zoom);
+        if (spat != null) {
+          texture = new TexturePaint(spat, getPatternRect(zoom));
+          textures.put(zoom, texture);
+        }
+      }
+      return texture;
     }
-    return texture;
   }
 
   protected void buildTexture() {
-    if (getShadePattern() != null) {
-      texture = new TexturePaint(getShadePattern(), getPatternRect());
+    final BufferedImage spat = getShadePattern(1.0);
+    if (spat != null) {
+      texture = new TexturePaint(spat, getPatternRect(1.0));
     }
   }
 
@@ -627,7 +636,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
-  protected void rebuildPatternAndTexture() {
+  protected void buildPatternAndTexture() {
     textures.clear();
     buildShadePattern();
     buildTexture();
@@ -677,7 +686,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (PATTERN.equals(key)) {
       pattern = (String) value;
-      rebuildPatternAndTexture();
+      buildPatternAndTexture();
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -687,7 +696,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       // and leave pattern and texture unchanged
       if (value != null) {
         color = (Color) value;
-        rebuildPatternAndTexture();
+        buildPatternAndTexture();
       }
     }
     else if (IMAGE.equals(key)) {
@@ -695,7 +704,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         value = ((File) value).getName();
       }
       imageName = (String) value;
-      rebuildPatternAndTexture();
+      buildPatternAndTexture();
     }
     else if (SCALE_IMAGE.equals(key)) {
       if (value instanceof String) {
