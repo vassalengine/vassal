@@ -154,6 +154,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return;
     }
 
+    Area area = getShadeShape(map);
+    if (area.isEmpty()) {
+      return;
+    }
+
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double zoom = map.getZoom() * os_scale;
@@ -169,12 +174,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     g2d.setPaint(
       scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
       getTexture(zoom) : getTexture());
-    Area area = getShadeShape(map);
+
     if (zoom != 1.0) {
       area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
                                      .createTransformedShape(area));
     }
+
     g2d.fill(area);
+
     if (border) {
       g2d.setComposite(getBorderComposite());
       g2d.setStroke(getStroke(zoom));
