@@ -43,6 +43,24 @@
                             </attributes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>output-designerguide</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>src/main/designerguide</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/designerguide</outputDirectory>
+                            <backend>pdf</backend>
+                            <attributes>
+                                <pagenums/>
+                                <toc/>
+                                <idprefix/>
+                                <idseparator>-</idseparator>
+                            </attributes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
