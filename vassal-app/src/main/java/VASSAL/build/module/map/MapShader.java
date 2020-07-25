@@ -577,7 +577,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * Build a clipping region excluding boards that do not needed to be Shaded.
    */
   protected void buildBoardClip() {
-
     if (boardClip == null) {
       boardClip = new Area();
       for (Board b : map.getBoards()) {
@@ -807,57 +806,27 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else {
       return launch.getAttributeValueString(key);
     }
-
   }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (List.of(ICON, HOT_KEY, BUTTON_TEXT, STARTS_ON, TOOLTIP).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isAlwaysOn();
-        }
-      };
+      return () -> !isAlwaysOn();
     }
     else if (BOARD_LIST.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !boardSelection.equals(ALL_BOARDS);
-        }
-      };
+      return () -> !boardSelection.equals(ALL_BOARDS);
     }
     else if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> !pattern.equals(TYPE_IMAGE);
     }
     else if (IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (SCALE_IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }};
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (List.of(BORDER_COLOR, BORDER_WIDTH, BORDER_OPACITY).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return border;
-        }
-      };
+      return () -> border;
     }
     else {
       return super.getAttributeVisibility(name);
