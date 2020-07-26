@@ -91,7 +91,7 @@ $(LIBDIR)/Vengine.jar:
 	$(MVN) deploy -DgitVersion=$(VERSION)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 
-$(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
+$(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
 	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
@@ -180,7 +180,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL.exe: $(TMPDIR) $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico
+$(TMPDIR)/VASSAL.exe: $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico | $(TMPDIR)
 	cp $(DISTDIR)/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
@@ -235,7 +235,7 @@ upload:
 
 vassal-app/target/$(JARNAME)-javadoc.jar: jar
 
-javadoc: $(JDOCDIR) vassal-app/target/$(JARNAME)-javadoc.jar
+javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
 	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
 
 clean-javadoc:
