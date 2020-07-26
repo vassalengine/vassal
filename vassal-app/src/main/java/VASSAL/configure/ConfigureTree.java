@@ -1211,10 +1211,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
       
-      this.searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
-      this.matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
-      this.matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
-      this.matchTypes   = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);                   
+      searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
+      matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
+      matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
+      matchTypes   = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);                   
     }
 
     /**
@@ -1264,10 +1264,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     public void setFrom(final SearchParameters searchParameters) {
-      this.searchString = searchParameters.getSearchString();
-      this.matchCase = searchParameters.isMatchCase();
-      this.matchNames = searchParameters.isMatchNames();
-      this.matchTypes = searchParameters.isMatchTypes();
+      searchString = searchParameters.getSearchString();
+      matchCase = searchParameters.isMatchCase();
+      matchNames = searchParameters.isMatchNames();
+      matchTypes = searchParameters.isMatchTypes();
       writePrefs();
     }
     
