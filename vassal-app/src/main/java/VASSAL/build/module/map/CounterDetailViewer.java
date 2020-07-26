@@ -593,6 +593,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected Point foundPieceAt;
     protected boolean showingOverlap;
 
+    @Deprecated
+    public Visitor(Filter filter, Map map, Point pt) {
+      this(filter, map, pt, false);
+    }
+
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
       super(map,pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
