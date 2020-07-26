@@ -452,37 +452,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  @Deprecated
-  public String oldGetType() {
-    final SequenceEncoder se = new SequenceEncoder(';');
-    final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
-
-    se2.append(resetCommand)
-       .append(resetKey)
-       .append(String.valueOf(resetLevel));
-
-    se.append(se2.getValue())
-      .append(drawUnderneathWhenSelected ?
-              "_" + activateCommand : activateCommand)
-      .append(upKey)
-      .append(upCommand)
-      .append(downKey)
-      .append(downCommand)
-      .append(xOff)
-      .append(yOff);
-
-    for (int i = 0; i < nValues; ++i) {
-      if (commonName[i] != null) {
-        SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
-        se.append(sub.append(commonName[i]).getValue());
-      }
-      else {
-        se.append(imageName[i]);
-      }
-    }
-    return ID + se.getValue();
-  }
-
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -664,20 +633,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       val = loopLevels ? nValues : 1;
     }
     value = value > 0 ? val : -val;
-  }
-
-  /** @deprecated Use {@link ImageOp#getImage()} instead. */
-  @Deprecated
-  protected Image getCurrentImage() throws java.io.IOException {
-    // nonpositive value means that layer is inactive
-    // null or empty imageName[value-1] means that this layer has no image
-    if (value <= 0 ||
-        imageName[value-1] == null ||
-        imageName[value-1].length() == 0 ||
-        imagePainter[value-1] == null ||
-        imagePainter[value-1].getSource() == null) return null;
-
-    return imagePainter[value-1].getSource().getImage();
   }
 
   @Override

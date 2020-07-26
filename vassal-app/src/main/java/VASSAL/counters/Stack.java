@@ -117,18 +117,6 @@ public class Stack implements GamePiece, StateMergeable {
     return new VisibleOrderIterator();
   }
 
-  /**
-   * Returns pieces in the order in which they are visible to the player --
-   * topmost first In other words, selected pieces first, then unselected pieces
-   * from the top to the bottom.
-   * @deprecated
-   */
-  @Deprecated
-  public Enumeration<GamePiece> getPiecesInVisibleOrder() {
-    return new EnumeratedIterator<>(new VisibleOrderIterator());
-//    return new VisibleOrderEnum();
-  }
-
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
     p.setParent(null);

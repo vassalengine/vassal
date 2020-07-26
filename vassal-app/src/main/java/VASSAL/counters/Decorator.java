@@ -487,14 +487,6 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * Use {@link #setOldProperties(GamePiece) 
-   */
-  @Deprecated
-  public Command setOldProperties() {
-    return setOldProperties(this);
-  }
-
-  /**
    *
    * Utility method to allow Decorator Editors to repack themselves. c must be one of the
    * components that make up the Decorator's controls.

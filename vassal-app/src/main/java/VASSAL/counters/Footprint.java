@@ -127,12 +127,6 @@ public class Footprint extends MovementMarkable {
     setInner(p);
   }
 
-  /** @deprecated Use {@link #pointList} directly. */
-  @Deprecated
-  protected Enumeration<Point> getPointList() {
-    return Collections.enumeration(pointList);
-  }
-
   @Override
   public void mySetState(String newState) {
     pointList.clear();

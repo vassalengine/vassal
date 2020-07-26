@@ -113,7 +113,7 @@ public class ArchiveWriter extends DataArchive {
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
     if (name.toLowerCase().endsWith(".svg")) {
-      List<String> exrefs = null;
+      List<String> exrefs;
       try {
         exrefs = SVGImageUtils.getExternalReferences(path);
       }
@@ -153,16 +153,6 @@ public class ArchiveWriter extends DataArchive {
 
   public void addSound(String path, String fileName) {
     addFile(path, soundDir + fileName);
-  }
-
-  @Deprecated
-  public boolean isImageAdded(String name) {
-    try {
-      return archive.contains(imageDir + name);
-    }
-    catch (IOException e) {
-      return false;
-    }
   }
 
   public void removeImage(String name) {
@@ -246,7 +236,7 @@ public class ArchiveWriter extends DataArchive {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
     final String filename = fc.getSelectedFile().getPath();
 
-    if (filename != archive.getName()) {
+    if (!filename.equals(archive.getName())) {
       // Copy the current state to the new archive.
       final FileArchive tmp = archive;
 
@@ -267,17 +257,6 @@ public class ArchiveWriter extends DataArchive {
     else {
       write(archive, notifyModuleManager);
     }
-  }
-
-  /**
-   * If the ArchiveWriter was initialized with non-null file name, then
-   * write the contents of the archive to the named archive. If it was
-   * initialized with a null name, prompt the user to select a new file
-   * into which to write archive.
-   */
-  @Deprecated
-  public void write() throws IOException {
-    write(false);
   }
 
   @Deprecated

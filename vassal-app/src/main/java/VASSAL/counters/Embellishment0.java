@@ -366,37 +366,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  @Deprecated
-  public String oldGetType() {
-    final SequenceEncoder se = new SequenceEncoder(';');
-    final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
-
-    se2.append(resetCommand)
-       .append(resetKey)
-       .append(String.valueOf(resetLevel));
-
-    se.append(se2.getValue())
-      .append(drawUnderneathWhenSelected ?
-        "_" + activateCommand : activateCommand)
-      .append(upKey)
-      .append(upCommand)
-      .append(downKey)
-      .append(downCommand)
-      .append(xOff)
-      .append(yOff);
-
-    for (int i = 0; i < nValues; ++i) {
-      if (commonName[i] != null) {
-        SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
-        se.append(sub.append(commonName[i]).getValue());
-      }
-      else {
-        se.append(imageName[i]);
-      }
-    }
-    return ID + se.getValue();
-  }
-
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -580,20 +549,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
     }
     return (char) 0;
-  }
-
-  /** @deprecated Use {@link ImageOp.getImage} instead. */
-  @Deprecated
-  protected Image getCurrentImage() throws java.io.IOException {
-    // nonpositive value means that layer is inactive
-    // null or empty imageName[value-1] means that this layer has no image
-    if (value <= 0 ||
-      imageName[value-1] == null ||
-      imageName[value-1].length() == 0 ||
-      imagePainter[value-1] == null ||
-      imagePainter[value-1].getSource() == null) return null;
-
-    return imagePainter[value-1].getSource().getImage();
   }
 
   @Override
@@ -1159,70 +1114,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
       return ID + se.getValue();
 
-    }
-
-    @Deprecated
-    public String oldgetType() {
-      final SequenceEncoder imageList = new SequenceEncoder(';');
-      int i = 0;
-      for (String imageName : images.getImageNameList()) {
-        String commonName = names.get(i);
-        if (names.get(i) != null && commonName != null && commonName.length() > 0) {
-          SequenceEncoder sub = new SequenceEncoder(imageName, ',');
-          if (PREFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder(commonName, '+').append("").getValue();
-          }
-          else if (SUFFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder("", '+').append(commonName).getValue();
-          }
-          else {
-            commonName = new SequenceEncoder(commonName, '+').getValue();
-          }
-          imageList.append(sub.append(commonName).getValue());
-        }
-        else {
-          imageList.append(imageName);
-        }
-        i++;
-      }
-
-      try {
-        Integer.parseInt(xOffInput.getText());
-      }
-      catch (NumberFormatException xNAN) {
-        // TODO use IntConfigurer
-        xOffInput.setText("0");
-      }
-      try {
-        Integer.parseInt(yOffInput.getText());
-      }
-      catch (NumberFormatException yNAN) {
-        yOffInput.setText("0");
-      }
-      String command = activateCommand.getText();
-      if (drawUnderneath.isSelected()) {
-        command = "_" + command;
-      }
-
-      final SequenceEncoder se2 =
-        new SequenceEncoder(activateKeyInput.getText(), ';');
-      se2.append(resetCommand.getText())
-         .append((KeyStroke) resetKey.getValue())
-         .append(resetLevel.getText());
-
-      final SequenceEncoder se = new SequenceEncoder(null, ';');
-      se.append(se2.getValue())
-        .append(command)
-        .append(upKeyInput.getText())
-        .append(upCommand.getText())
-        .append(downKeyInput.getText())
-        .append(downCommand.getText())
-        .append(xOffInput.getText())
-        .append(yOffInput.getText());
-
-      String type = ID + se.getValue() + ';'
-        + (imageList.getValue() == null ? "" : imageList.getValue());
-      return type;
     }
 
     @Override

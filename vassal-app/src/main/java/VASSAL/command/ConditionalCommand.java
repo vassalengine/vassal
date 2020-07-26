@@ -83,24 +83,12 @@ public class ConditionalCommand extends Command {
       this.allowed = allowed;
     }
 
-    @Deprecated
-    public Eq(String property, Vector<String> allowed) {
-      this.property = property;
-      this.allowed = allowed;
-    }
-
     public String getProperty() {
       return property;
     }
 
     public List<String> getValueList() {
       return Collections.unmodifiableList(allowed);
-    }
-
-    /** @deprecated Use {@link #getValueList()} instead. */
-    @Deprecated
-    public Enumeration<String> getValues() {
-      return Collections.enumeration(allowed);
     }
 
     @Override

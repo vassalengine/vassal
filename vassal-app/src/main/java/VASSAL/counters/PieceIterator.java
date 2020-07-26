@@ -105,8 +105,4 @@ public class PieceIterator {
     });
   }
 
-  @Deprecated
-  public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
-    return PieceIterator.visible(e.asIterator());
-  }
 }

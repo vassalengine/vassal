@@ -167,30 +167,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   private final GameModule gameModule;
 
-  /**
-   * @deprecated use {@link #Deck(GameModule)}
-   */
-  @Deprecated
-  public Deck() {
-    this(GameModule.getGameModule());
-  }
-
-  /**
-   * @deprecated use {@link #Deck(GameModule, String)}
-   */
-  @Deprecated
-  public Deck(String type) {
-    this(GameModule.getGameModule(), type);
-  }
-
-  /**
-   * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
-   */
-  @Deprecated
-  public Deck(String type, PropertySource source) {
-    this(GameModule.getGameModule(), type, source);
-  }
-
   public Deck(GameModule gameModule) {
     this(gameModule, ID);
   }
@@ -675,16 +651,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated public KeyStroke getEmptyKey() {
-    return emptyKey.getKeyStroke();
-  }
-
   public NamedKeyStroke getNamedEmptyKey() {
     return emptyKey;
-  }
-
-  @Deprecated public void setEmptyKey(KeyStroke k) {
-    emptyKey = new NamedKeyStroke(k);
   }
 
   public void setEmptyKey(NamedKeyStroke k) {
@@ -836,21 +804,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
     for (GamePiece child : c) {
-      insertChild(child, pieceCount);
-    }
-    return track.getChangeCommand();
-  }
-
-  /**
-   * Set the contents of this Deck to an Iterator of GamePieces
-   * @deprecated Use {@link #setContents(Collection)} instead.
-   */
-  @Deprecated
-  protected Command setContents(Iterator<GamePiece> it) {
-    ChangeTracker track = new ChangeTracker(this);
-    removeAll();
-    while (it.hasNext()) {
-      GamePiece child = it.next();
       insertChild(child, pieceCount);
     }
     return track.getChangeCommand();

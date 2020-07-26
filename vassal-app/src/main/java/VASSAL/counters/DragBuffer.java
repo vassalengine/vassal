@@ -217,8 +217,4 @@ public class DragBuffer {
     sort((Comparator<GamePiece>) comp);
   }
 
-  /** @deprecated */
-  @Deprecated
-  public static void init(DragBuffer db) {
-  }
 }

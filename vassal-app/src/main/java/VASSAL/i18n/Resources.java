@@ -278,55 +278,6 @@ public class Resources {
     return vassalBundle;
   }
 
-  /**
-   * Localize a VASSAL user interface string
-   *
-   * @param id
-   *          String id
-   * @return Localized result
-   */
-  @Deprecated
-  public static String getVassalString(String id) {
-    return getInstance().getVassalBundle().getString(id);
-  }
-
-  /**
-   * Localize a VASSAL Module Editor String
-   *
-   * @param id
-   *          String Id
-   * @return Localized Result
-   */
-  @Deprecated
-  public static String getEditorString(String id) {
-    return getInstance().getEditorBundle().getString(id);
-  }
-
-  /**
-   * Localize a string using the supplied resource bundle
-   *
-   * @param bundle
-   *          Resource bundle
-   * @param id
-   *          String Id
-   * @return Localized result
-   */
-  @Deprecated
-  public static String getString(ResourceBundle bundle, String id) {
-    String s = null;
-    try {
-      s = bundle.getString(id);
-    }
-    catch (Exception ex) {
-      System.err.println("No Translation: " + id);
-    }
-    // 2. Worst case, return the key
-    if (s == null) {
-      s = id;
-    }
-    return s;
-  }
-
   public static String getString(String id, Object... params) {
     return getInstance().getBundleForKey(id).getString(id, params);
   }

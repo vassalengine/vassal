@@ -119,13 +119,6 @@ public abstract class Command {
   }
 
   /**
-   * @deprecated Use {@link #isAtomic()}
-   */
-  @Deprecated protected boolean hasNullSubcommands() {
-    return isAtomic();
-  }
-
-  /**
    * Return true if this command has no sub-commands attached to it
    * (other than null commands).
    *

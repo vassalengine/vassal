@@ -107,11 +107,7 @@ public class FreeRotator extends Decorator
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  @Deprecated
-  protected java.util.Map<Double, Image> images = new HashMap<>();
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
-  @Deprecated
-  protected PieceImage unrotated;
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
 
@@ -221,12 +217,6 @@ public class FreeRotator extends Decorator
       }
       angleIndex = newIndex;
     }
-  }
-
-  /** @deprecated Use {@link boundingBox()} instead. */
-  @Deprecated
-  public Rectangle getRotatedBounds() {
-    return boundingBox();
   }
 
   @Override
@@ -655,24 +645,6 @@ public class FreeRotator extends Decorator
     if (hasPieceMoved()) {
       endInteractiveRotate();
     }
-  }
-
-  /**
-   * Return a full-scale cached image of this piece, rotated to the appropriate
-   * angle.
-   *
-   * @param angle
-   * @param obs
-   * @return
-   * @deprecated Use a {@link GamePieceOp} if you need this Image.
-   */
-  @Deprecated
-  public Image getRotatedImage(double angle, Component obs) {
-    if (gpOp == null) return null;
-
-    if (gpOp.isChanged()) gpOp = Op.piece(piece);
-
-    return Op.rotateScale(gpOp, angle, 1.0).getImage();
   }
 
   @Override

@@ -19,7 +19,6 @@ package VASSAL.chat;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ import java.util.List;
  */
 public class SimpleRoom implements Room {
   private String name;
-  private List<Player> players = new ArrayList<>();
+  private final List<Player> players = new ArrayList<>();
 
   public SimpleRoom() {
   }
@@ -105,17 +104,11 @@ public class SimpleRoom implements Room {
 
   public boolean equals(Object o) {
     if (o instanceof SimpleRoom) {
-      return name == null ? false : name.equals(((SimpleRoom) o).name);
+      return name != null && name.equals(((SimpleRoom) o).name);
     }
     else {
       return false;
     }
-  }
-
-  /** @deprecated Use {@link #getPlayerList()} instead. */
-  @Deprecated
-  public Iterator<Player> getPlayers() {
-    return players.iterator();
   }
 
   @Override

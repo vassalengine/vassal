@@ -295,7 +295,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addActionGroup(popup, l);
     l.add(buildSearchAction(target));
     addActionGroup(popup, l);
-    l.add(buildDeleteAction(target));    
+    l.add(buildDeleteAction(target));
     l.add(buildCutAction(target));
     l.add(buildCopyAction(target));
     l.add(buildPasteAction(target));
@@ -310,8 +310,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addAction(popup, buildImportAction(target));
     return popup;
   }
-  
-  
+
+
   /**
    * Enumerates our configure tree in preparation for searching it
    * @param root - root of our module's tree.
@@ -326,8 +326,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return searchNodes;
   }
-  
-  
+
+
   /**
    * @return Search action - runs search dialog box, then searches
    */
@@ -336,7 +336,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     a.setEnabled(true);
     return a;
   }
-  
+
 
   protected Action buildMoveAction(final Configurable target) {
     Action a = null;
@@ -598,14 +598,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
     return l;
-  }
-
-  /**
-   * @deprecated Use {@link #buildAddActionsFor(Configurable)} instead.
-   */
-  @Deprecated
-  protected Enumeration<Action> buildAddActions(final Configurable target) {
-    return Collections.enumeration(buildAddActionsFor(target));
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
@@ -1188,7 +1180,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public static final String SEARCH_STRING = "searchString";
     public static final String MATCH_CASE    = "matchCase";
     public static final String MATCH_NAMES   = "matchNames";
-    public static final String MATCH_TYPES   = "matchTypes";        
+    public static final String MATCH_TYPES   = "matchTypes";
 
     /** Current search string */
     private String searchString;
@@ -1201,26 +1193,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     /** True if match class names */
     private boolean matchTypes;
-    
+
     /** Attach to our module preferences, if relevant */
-    private static Prefs prefs;    
-    
+    private static Prefs prefs;
+
     /**
      * Constructs a new search parameters object, using the preferences.
      */
     public SearchParameters () {
-      // Attach to our module preferences if constructed this way. This also marks that we will write them when modified 
-      prefs = GameModule.getGameModule().getPrefs(); 
-      
+      // Attach to our module preferences if constructed this way. This also marks that we will write them when modified
+      prefs = GameModule.getGameModule().getPrefs();
+
       prefs.addOption(null, new StringConfigurer(SearchParameters.SEARCH_STRING, null, ""));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_CASE,   null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
-      
+
       searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
-      matchTypes   = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);                   
+      matchTypes   = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
     }
 
     /**
@@ -1232,7 +1224,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       this.matchNames   = matchNames;
       this.matchTypes   = matchTypes;
     }
-    
+
     public String getSearchString() {
       return searchString;
     }
@@ -1276,12 +1268,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchTypes = searchParameters.isMatchTypes();
       writePrefs();
     }
-    
+
     public void writePrefs() {
       if (prefs != null) {
         prefs.setValue(SEARCH_STRING, searchString);
         prefs.setValue(MATCH_CASE, matchCase);
-        prefs.setValue(MATCH_NAMES, matchNames);      
+        prefs.setValue(MATCH_NAMES, matchNames);
         prefs.setValue(MATCH_TYPES, matchTypes);
       }
     }
@@ -1405,7 +1397,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
       int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
       d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, w);
-      
+
       search.requestFocus(); // Start w/ focus in search string field
 
       d.pack();

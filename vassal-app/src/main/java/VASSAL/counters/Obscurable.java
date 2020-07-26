@@ -479,15 +479,6 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   /**
    * Return true if this piece can be masked/unmasked by the current player
-   * @param id ignored
-   * @deprecated
-   */
-  @Deprecated public boolean isMaskableBy(String id) {
-    return isMaskable();
-  }
-
-  /**
-   * Return true if this piece can be masked/unmasked by the current player
    */
   public boolean isMaskable() {
     // Check if piece is owned by us. Returns true if we own the piece, or if it
