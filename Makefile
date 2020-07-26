@@ -40,11 +40,12 @@ LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
 DOCDIR:=doc
 DISTDIR:=dist
-JDKDIR:=jdks
+JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 VNUM:=3.3.3
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+#MAVEN_VERSION:=$(VNUM)-alpha1
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -70,7 +71,7 @@ JAVAPATH:=/usr/bin
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
-DMG:=dmg/libdmg-hfsplus/build/dmg/dmg
+DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 
 NSIS:=makensis
 LAUNCH4J:=~/java/launch4j/launch4j
@@ -91,7 +92,7 @@ $(LIBDIR)/Vengine.jar:
 	$(MVN) deploy -DgitVersion=$(VERSION)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 
-$(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar $(TMPDIR)
+$(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
 	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
@@ -180,7 +181,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL.exe: $(TMPDIR) $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico
+$(TMPDIR)/VASSAL.exe: $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico | $(TMPDIR)
 	cp $(DISTDIR)/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
@@ -235,7 +236,7 @@ upload:
 
 vassal-app/target/$(JARNAME)-javadoc.jar: jar
 
-javadoc: $(JDOCDIR) vassal-app/target/$(JARNAME)-javadoc.jar
+javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
 	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
 
 clean-javadoc:

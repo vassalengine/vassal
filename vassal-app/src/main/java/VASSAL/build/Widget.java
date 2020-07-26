@@ -42,6 +42,17 @@ public abstract class Widget extends AbstractConfigurable {
 
   protected Widget() {
   }
+  
+  
+  public boolean hasScale() {
+    return false;
+  }
+  
+  
+  public double getScale() {
+    return 1.0;    
+  }
+  
 
   /**
    * For memory efficiency reasons, a Widget is initialized lazily.
