@@ -103,9 +103,17 @@
   <br>
   <a name="StackingOptions">
   <h3>Stacking Options</h3>
-  </a> This component controls how stacking is handled in this Map Window. &nbsp;It may not be removed<br>
-  <img src="images/StackingOptions.png" alt=""><br>
-  <br>
+  </a> 
+  This component controls how stacking is handled in this Map Window. &nbsp;It may not be removed.<br>
+
+    <table style="width: 100%; text-align: left;" border="0" cellpadding="2" cellspacing="2">
+    <tbody>
+    <tr>
+
+  <td style="vertical-align: top;"><img src="images/StackingOptions.png" alt=""><br>
+      </td>
+
+      <td style="vertical-align: top;">      
   <b>Disable stacking:</b>&nbsp; If checked, then pieces will never form stacks in this window<br>
   <b>Horizontal Separation when expanded:</b>&nbsp; The distance in pixels from the left edge (right edge if negative) of a
   piece in a stack to the edge of the piece above it when the stack is expanded.<br>
@@ -118,6 +126,10 @@
   <b>Color of pieces when not expanded:</b>&nbsp; If set, then pieces below the top piece in a compact stack will be drawn as
   plain squares of this color and a black border. &nbsp;If not set (click the "Select" button and cancel the
   color-selection dialog to "unset" this) then pieces will be drawn normally.<br>
+      </td>
+      </tr>
+      </tbody>
+      </table>
   <br>
   <br>
   <a name="OverviewWindow">
@@ -126,10 +138,13 @@
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
+
+
     <td valign="top">Adds a separate "Mini Map" subwindow that will be displayed whenever the Map Window is displayed.&nbsp; A
     Toolbar button to turn this subwindow on and off will be placed on the Map Window's toolbar - it can be configured with
     any combination button text, a button icon, and tooltip text. A hotkey or <a href="NamedKeyCommand.htm">Named Key Command</a> can
     also be supplied to open the mini map subwindow.
+    <br>
     <br>
     The subwindow will contain a view of the entire playing area at a smaller scale than displayed in the parent map
     window.&nbsp; The area of the map currently visible in the map window is highlighted in the overview map with a
@@ -155,35 +170,38 @@
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">Adds a button to the toolbar of the Map Window.&nbsp; Pushing the button will allow the player to
+
+    <td valign="top"><img src="images/LOS_Thread.png" alt=""><br>
+    &nbsp; <br>
+    </td>
+
+
+    <td valign="top">Adds a button to the Toolbar of the Map Window.&nbsp; Clicking the button will allow the player to
     drag the mouse between any two points in the window, drawing a line between those two points. <br>
     <br>
-    <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut for the button.<br>
+    <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for the Toolbar button.<br>
     <br>
-    <b>Button text:</b> The label on the button in the Map Window toolbar<br>
+    <b>Button text:</b>&nbsp; The label on the Button in the Map Window's Toolbar<br>
     <br>
-    <b>Draw Range:</b> If checked, draws the range between the two points, in hexes or squares, as appropriate for the
+    <b>Draw Range:</b>&nbsp; If checked, draws the range between the two points, in hexes or squares, as appropriate for the
     board in use.<br>
     <br>
-    <b>Pixels per range unit:</b> If drawing the range on a board without a grid, this determines how many pixels on the
+    <b>Pixels per range unit:</b>&nbsp; If drawing the range on a board without a grid, this determines how many pixels on the
     screen equal a single unit of range.<br>
     <br>
     <b>Round fractions:&nbsp;</b>For distances that are a fraction of a range unit, specify whether to round fractions
     up, down, or to the nearest whole number.<br>
     <br>
-    <b>Hide Pieces while drawing:</b> If checked, then all game pieces in the map will be hidden (or transparent) while
+    <b>Hide Pieces while drawing:</b>&nbsp; If checked, then all game pieces in the map will be hidden (or transparent) while
     the thread is being drawn.<br>
     <br>
-    <b>Opacity of hidden pieces:</b>Set the transparency of game pieces while the thread is being drawn. 0 is completely
-    invisible, 100 is completely opaque.<br>
+    <b>Opacity of hidden pieces:</b>&nbsp; Set the transparency of game pieces while the thread is being drawn. 0 is completely
+    transparent, 100 is completely opaque.<br>
     <br>
-    <b>Thread color:</b> Specifies the color the thread on the screen. &nbsp;If set to null (by hitting the "Select"
+    <b>Thread color:</b>&nbsp; Specifies the color the thread on the screen. &nbsp;If set to null (by clicking the "Select"
     button and then the "Cancel" button in the color-choosing dialog), then a Preferences option will determine the
     color of the thread at game time.<br>
     <br>
-    </td>
-    <td valign="top"><img src="images/LOS_Thread.png" alt=""><br>
-    &nbsp; <br>
     </td>
     </tr>
 
@@ -191,19 +209,44 @@
   </table>
 
   <h3><a href="ToolbarMenu.htm">Toolbar Menu</a></h3>
-  Groups buttons in the toolbar into a single drop-down menu.<br>
+    <table border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+    <tr>
+
+    <td valign="top">
+      Groups buttons in the toolbar into a single drop-down menu. See <a href="ToolbarMenu.htm">full article</a> for details.<br>
+    </td>
+    <td valign="top"><img src="images/ToolbarMenu.png" alt=""><br>
+    &nbsp; <br>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+
   <a name="HidePieces">
-  <h3>Hide Pieces Button</h3>
+  <h3>Hide Pieces Button</h3>  
   </a>
+  <br>
+  Adds a button to the Toolbar of the Map Window.&nbsp; Clicking the button will temporarily hide all
+    pieces on the map, until the button is clicked again.<br>
+    <br>
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">Adds a button to the toolbar of the Map Window.&nbsp; Pushing the button will temporarily hide all
-    pieces on the map, until the button is pressed again.<br>
-    <br>
-    <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut for the button</td>
     <td valign="top"><img src="images/HidePieces.png" alt="" title=""><br>
     &nbsp; <br>
+    </td>
+    <td valign="top">
+    <b>Button text: &nbsp;</b>Specifies the button text for the Toolbar button</b><br>
+    <br>
+    <b>Tooltip text: &nbsp;</b>Specifies optional tooltip text for the Toolbar button</b><br>
+    <br>
+    <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut for the Toolbar button</b><br>
+    <br>
+    <b>Icon when pieces are showing: </b>&nbsp; Configures an icon which is shown when pieces on the map are currently visible.</b><br>
+    <br>
+    <b>Icon when pieces are hidden: </b>&nbsp; Configures an icon which is shown when pieces on the map have currently been hidden by this button.</b><br>
+    <br>
     </td>
     </tr>
 
@@ -212,13 +255,37 @@
   <a name="Zoom">
   <h3>Zoom capability</h3>
   </a>
+  <br>
+  Adds the ability to zoom in and out of the Map. Toolbar buttons for "Zoom in", "Zoom out", and "Select Zoom Level" are added to the Map Window's toolbar.
+  <br>
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">Adds "Zoom in" and "Zoom out" buttons to the toolbar of the Map Window.&nbsp; Keyboard shortcuts
-    can also be specified by filling in the "Hotkey" boxes.&nbsp; The "Zoom factor"specifies the magnification factor
-    for each zoom level, and the "Number of zoom levels" specifies the maximum number of levels that may be zoomed
-    out.&nbsp; The "Starting zoom level" is the default zoom level when a game is loaded.<br>
+    <td valign="top">
+    <b>Preset Zoom Levels:</b>&nbsp; Configures a series of fractional scale factors for display of the Map Window. In the list on the right hand side,
+    all of the currently configured scale factors are listed. The one with an asterisk (*) indicates the scale factor at which the Map Window will begin
+    when the module is started. The other scale factors represent the settings along a range which clicking the "Zoom in" and "Zoom out" buttons will move the zoom level.<br>
+    &nbsp;&nbsp;<b>Add:</b>&nbsp; To add a new scale factor, type it into the blank and then click the "Add" button. The new scale factor will appear in the list to the right.<br>
+    &nbsp;&nbsp;<b>Remove:</b>&nbsp; To remove an unwanted scale factor from the list, select it in the list at right and then click the "Remove" button.<br>
+    &nbsp;&nbsp;<b>Set Initial:</b>&nbsp; To select the scale factor at which the Map Window will begin when the module is started, select it from the list at right and click the "Set Initial" button. An asterisk (*) will appear next to the new at-start scale factor.<br>
+    <br>
+    <b>Zoom In:</b>&nbsp; Configures a Toolbar button and/or hotkey that cause the Map Window scale factor to jump to the next higher magnification level.<br>
+    &nbsp;&nbsp;<b>Tooltip Text:</b>&nbsp; Configures optional tooltip text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Text:</b>&nbsp; Configures button text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Icon:</b>&nbsp; Configures an icon for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Hotkey:</b>&nbsp; Designates a keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for zooming in.<br>
+    <br>
+    <b>Zoom Select:</b>&nbsp; Configures a Toolbar button and/or hotkey that will allow the player to pick a specific scale factor, including by typing in an arbitrary scale factor manually.<br>
+    &nbsp;&nbsp;<b>Tooltip Text:</b>&nbsp; Configures optional tooltip text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Text:</b>&nbsp; Configures button text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Icon:</b>&nbsp; Configures an icon for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Hotkey:</b>&nbsp; Designates a keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for selecting the zoom level.<br>
+    <br>
+    <b>Zoom Out:</b>&nbsp; Configures a Toolbar button and/or hotkey that cause the Map Window scale factor to jump to the next smaller magnification level.<br>
+    &nbsp;&nbsp;<b>Tooltip Text:</b>&nbsp; Configures optional tooltip text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Text:</b>&nbsp; Configures button text for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Button Icon:</b>&nbsp; Configures an icon for the Toolbar button.<br>
+    &nbsp;&nbsp;<b>Hotkey:</b>&nbsp; Designates a keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for zooming out.<br>
     <br>
     </td>
     <td valign="top"><img src="images/Zoomer.png" alt="" title=""><br>
