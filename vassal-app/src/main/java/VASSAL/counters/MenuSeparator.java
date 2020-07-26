@@ -1,25 +1,3 @@
-package VASSAL.counters;
-
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.AddPiece;
-import VASSAL.command.Command;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-
 /*
  *
  * This library is free software; you can redistribute it and/or
@@ -35,6 +13,25 @@ import VASSAL.tools.SequenceEncoder;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
+package VASSAL.counters;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece
