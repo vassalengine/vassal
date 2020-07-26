@@ -40,7 +40,7 @@ LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
 DOCDIR:=doc
 DISTDIR:=dist
-JDKDIR:=jdks
+JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 VNUM:=3.3.3
@@ -70,7 +70,7 @@ JAVAPATH:=/usr/bin
 JDEPS:=$(JAVAPATH)/jdeps
 JLINK:=$(JAVAPATH)/jlink
 
-DMG:=dmg/libdmg-hfsplus/build/dmg/dmg
+DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 
 NSIS:=makensis
 LAUNCH4J:=~/java/launch4j/launch4j
