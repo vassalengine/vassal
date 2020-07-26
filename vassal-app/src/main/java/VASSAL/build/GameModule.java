@@ -154,7 +154,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected PlayerWindow frame = new PlayerWindow();
 
   /**
-   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
+   * @deprecated use {@link #getPlayerWindow()} and {@link PlayerWindow#getControlPanel()} instead.
    */
   @Deprecated
   protected JPanel controlPanel = frame.getControlPanel();
