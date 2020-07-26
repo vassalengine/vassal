@@ -197,6 +197,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
     searchParameters = new SearchParameters();
+
+    TreePath path = new TreePath(((DefaultMutableTreeNode)(getModel().getRoot())).getPath());
+    setSelectionPath(path);
+    scrollPathToVisible(path);
   }
 
   public JFrame getFrame() {
