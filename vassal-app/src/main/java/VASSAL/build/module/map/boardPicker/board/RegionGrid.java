@@ -937,11 +937,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         setDirty(true);
         final Action a =
           new EditPropertiesAction(lastClickedRegion, null, this);
-          a.actionPerformed(
-              new ActionEvent(
-                  e.getSource(),
-                  ActionEvent.ACTION_PERFORMED,
-              "Edit")); //$NON-NLS-1$
+        a.actionPerformed(
+          new ActionEvent(
+          e.getSource(),
+          ActionEvent.ACTION_PERFORMED,
+          "Edit")); //$NON-NLS-1$
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
@@ -958,14 +958,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         if (lastClickedRegion != null) {
           final Action a =
             new EditRegionAction(lastClickedRegion, null, this);
-            a.actionPerformed(
-                new ActionEvent(
-                    e.getSource(),
-                    ActionEvent.ACTION_PERFORMED,
-                    "Edit")); //$NON-NLS-1$
-          }
+          a.actionPerformed(
+            new ActionEvent(
+            e.getSource(),
+            ActionEvent.ACTION_PERFORMED,
+            "Edit")); //$NON-NLS-1$
         }
       }
+    }
 
     /*
      * Version of EditProperties Action that repaints it's owning frame
