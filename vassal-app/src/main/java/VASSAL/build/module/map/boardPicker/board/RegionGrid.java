@@ -859,14 +859,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
             if (lastClickedRegion.getConfigurer() != null) {
               final Action a =
                 new EditPropertiesAction(lastClickedRegion, null, this);
-                a.actionPerformed(
-                    new ActionEvent(
-                        e.getSource(),
-                        ActionEvent.ACTION_PERFORMED,
-                        "Edit")); //$NON-NLS-1$
-              }
+              a.actionPerformed(
+                new ActionEvent(
+                e.getSource(),
+                ActionEvent.ACTION_PERFORMED,
+                "Edit")); //$NON-NLS-1$
             }
           }
+        }
         view.repaint(); // Clean up selection
       }
     }
