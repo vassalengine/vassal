@@ -82,8 +82,7 @@ public class ListWidget extends Widget
   // True if we're part of main (docked) Piece Palette
   protected boolean isMainPiecePalette() {
     Widget w = this;
-    while (w.getParent() != null) {
-      w = w.getParent();
+    while ((w = w.getParent()) != null) {
       if (w instanceof PieceWindow) {
         return ((PieceWindow)w).shouldDockIntoMainWindow();
       }
