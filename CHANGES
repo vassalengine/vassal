@@ -2,6 +2,7 @@
 
 * 13205: NPE when trying to display file write failure dialog
 * 13196: Ctrl+Click toggles rather than only deselects
+* 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
 * 13172: Undo button can now be assigned a hotkey by module designer
 * 13171: SetGlobalProperty makes menuCommands the wrong type of array
 * 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
