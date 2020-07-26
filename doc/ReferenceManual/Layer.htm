@@ -23,7 +23,11 @@ Piece</a></small> <small>&gt; <b>Layer</b></small><br>
       <hr size="2" width="100%">
       <h2>Layer
       </h2>
-      
+A Layer is the standard trait for adding images, sub-images, and image-swapping functionality to game pieces in VASSAL.&nbsp;
+A Layer consists of a number of "levels", each of which has an image and a name.&nbsp; A Layer may be "active" or "inactive", and only active layers
+are drawn--a Layer can be activated with a key command, and players can change the current level during play. &nbsp;The image from the current level will be drawn whenever the Layer is active.&nbsp; The
+Layer is drawn on top the Traits that appear before it in the Piece's list of traits.<br>
+<br>      
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
@@ -37,13 +41,8 @@ Piece</a></small> <small>&gt; <b>Layer</b></small><br>
               </tbody>
             </table>
             <br>
-A Layer is the standard trait for adding images and functionality to game pieces in VASSAL.&nbsp;
-A Layer consists of a number of 'levels,' each of which has an image and a name.&nbsp; A Layer may be "active" or "inactive", and only active layers
-are drawn: activated with a key command, and players can change the current level during play. &nbsp;The image from the current level will be drawn whenever the Layer is active.&nbsp; The
-Layer is drawn on top the Traits that appear before it in the Piece's list of traits.<br>
-            <br>
             <b>Name:</b>&nbsp; The name of this Layer, used for reference during editing and as the prefix for the name of any <a href="Properties.htm">Properties</a> defined by this Layer. <br>
-            <b></span>Always Active: &nbsp;</b>If checked, then this layer is always active. &nbsp;I.e., the image corresponding to the current
+            <b>Always Active: &nbsp;</b>If checked, then this layer is always active. &nbsp;I.e., the image corresponding to the current
 level will always be displayed. &nbsp;If unchecked, then the layer must
 be activated (by the specified key command) in order to display the current level.<br>
             <b>Underneath when highlighted:</b> &nbsp;If checked, then this layer will be drawn underneath the rest of
@@ -67,27 +66,28 @@ activate the Layer and increase or decrease the current level.<br>
 to display nothing for that level. &nbsp;Using transparency in the images can be very useful.<br>
             <b>Level Name:</b>&nbsp; Each level can be given an individual name, which is used to change the name of the piece for reporting purposes
 during play. &nbsp;The level's name either replaces the piece's normal
-name, or else modifies the piece's normal name as a prefix or suffix.<br>
+name, or else modifies the piece's normal name as a prefix or suffix. NOTE: each individual level has its own replace/prefix/suffix setting, which must be configured separately.<br>
             <br>
-Note: <br>
+<b>NOTES:</b> 
             
             <ul>
-              <li>Leaving the menu-command field blank means no entry
-appears in the right-click menu, but you can still use a keyboard
-shortcut.</li>
-              <li>Keyboard shortcuts can be the same as those used by
-other traits.&nbsp; Typing the key will perform all corresponding
-actions.</li>
+              <li>Leaving a "Menu Command" field blank means no entry
+appears in the right-click context menu, but you can still use a keyboard
+shortcut or a <a href="NamedKeyCommand.htm">Named Key Command</a>.</li>
+
+              <li>Key commands can be the same as those used by
+other traits.&nbsp; Pressing the key will perform all corresponding actions.</li>
             </ul>
-            <span style="font-weight: bold;">EXAMPLES:</span><br>
+            <b>EXAMPLES:</b><br>
             <ul>
-              <li><span style="font-style: italic;"></span>For a basic two-sided counter, add
-a Layer, and select an image that represents the reverse side.&nbsp;
-Change
-"Activate" to "Flip" and set the key to "F".&nbsp;<span style="font-style: italic;"></span></li>
-              <li><span style="font-style: italic;"></span>To represent fatigue in an Army counter, give it a Layer named "Fatigue." &nbsp;Select "Always Active", choose four images that represent the levels, and change
-"Increase"
-to "Increase Fatigue" and "Decrease" to "Decrease Fatigue". &nbsp;&nbsp;A
+              <li>For a basic two-sided counter, add a Layer, and select an image that represents the reverse side.&nbsp;
+Change "Activate" to "Flip" and set the key to "Ctrl+F".&nbsp;</li>
+              <li>An alternative approach to the same two-sided counter: rather than give the counter an image in the Basic Piece trait, remove that and instead
+                have two images (one for each side of the counter) here in the Layer trait. Check the "Always Active" and "Loop Through Levels" box. Change
+                "Increase" to "Flip" and its key command to "Ctrl+F".
+              </li>
+              <li>To represent fatigue in an Army counter, give it a Layer named "Fatigue." &nbsp;Select "Always Active", choose four images that represent the levels, and change
+"Increase" to "Increase Fatigue" and "Decrease" to "Decrease Fatigue". &nbsp;&nbsp;A
 Reset command named "Rest" using CTRL-R could
 be used to bring the Army counter back to full strength. &nbsp;Name the
 levels " (fatigue 1)", etc., and check "is suffix" to append the
@@ -95,29 +95,29 @@ current fatigue level to the piece's name.</li>
             </ul>
             <hr>A Layer defines a
 number of <a href="Properties.htm">Properties</a>.&nbsp; In the name
-of the properties, <span style="font-style: italic;">&lt;layer_name&gt;</span>
+of the properties, <i>&lt;layer_name&gt;</i>
 is the name of the overall Layer as specified in the top field of the
 properties.<br>
             
             <ul>
-              <li><span style="font-style: italic;">&lt;layer_name&gt;_Image
-                </span>returns the name of the currently-active level's
-image file<span style="font-style: italic;"></span><span style="font-style: italic;"></span></li>
-              <li><span style="font-style: italic;">&lt;layer_name&gt;_Name
-                </span>returns
+              <li><i>&lt;layer_name&gt;_Image
+                </i>returns the name of the currently-active level's
+image file<i></i><i></i></li>
+              <li><i>&lt;layer_name&gt;_Name
+                </i>returns
 the name of the currently-active level<a href="Map.htm"></a></li>
-              <li><span style="font-style: italic;">&lt;layer_name&gt;_Level
-                </span>returns
-the number of the current level<span style="text-decoration: underline;"></span><a href="Map.htm"></a></li>
-              <li><span style="font-style: italic;">&lt;layer_name&gt;_Active
-                </span>returns <span style="font-style: italic;">true</span>
-if the Layer is active, <span style="font-style: italic;">false</span>
+              <li><i>&lt;layer_name&gt;_Level
+                </i>returns
+the number of the current level<span style="text-decoration: underline;"></i><a href="Map.htm"></a></li>
+              <li><i>&lt;layer_name&gt;_Active
+                </i>returns <i>true</i>
+if the Layer is active, <i>false</i>
 otherwise</li>
             
             </ul>
-            <b>EXAMPLE:</b>&nbsp; A Layer named <span style="font-style: italic;">Manpower</span> that is active and showing
-level 4 defined with image <span style="font-style: italic;">Man04.gif</span>
-and name <span style="font-style: italic;">(strength 4)</span> would
+            <b>EXAMPLE:</b>&nbsp; A Layer named <i>Manpower</i> that is active and showing
+level 4 defined with image <i>Man04.gif</i>
+and name <i>(strength 4)</i> would
 have the following properties:<br>
             
             <ul>
@@ -125,8 +125,8 @@ have the following properties:<br>
               <li style="font-style: italic;">Manpower_Name = (strength
 4)</li>
               <li style="font-style: italic;">Manpower_Level = 4</li>
-              <li><span style="font-style: italic;">Manpower_Active =
-true</span></li>
+              <li><i>Manpower_Active =
+true</i></li>
             
             </ul>
 These properties could be used in a <a href="GlobalKeyCommand.htm">Global
