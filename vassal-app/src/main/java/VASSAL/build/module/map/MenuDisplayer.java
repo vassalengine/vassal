@@ -43,6 +43,7 @@ import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.KeyCommandSubMenu;
+import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
 
@@ -93,6 +94,25 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   @Override
   public void build(Element e) {
   }
+  
+  
+  // For those who wish to override text behavior of both menus and submenus 
+  protected static String getMenuText (KeyCommand keyCommand) {
+    return keyCommand.getLocalizedMenuText();  
+  }  
+  
+  // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others". 
+  // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
+  protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
+    
+    JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
+    item.addActionListener(keyCommand);
+    item.setFont(POPUP_MENU_FONT);
+    item.setEnabled(keyCommand.isEnabled());
+    
+    return item;
+  }
+  
 
   public static JPopupMenu createPopup(GamePiece target) {
     return createPopup(target, false);
@@ -122,7 +142,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         KeyStroke stroke = keyCommand.getKeyStroke();
         JMenuItem item = null;
         if (keyCommand instanceof KeyCommandSubMenu) {
-          JMenu subMenu = new JMenu(keyCommand.getLocalizedMenuText());
+          JMenu subMenu = new JMenu(getMenuText(keyCommand));
           subMenu.setFont(POPUP_MENU_FONT);
           subMenus.put((KeyCommandSubMenu) keyCommand, subMenu);
           item = subMenu;
@@ -130,7 +150,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           strokes.add(KeyStroke.getKeyStroke('\0'));
         }
         else {
-          if (strokes.contains(stroke)) {
+          if (strokes.contains(stroke) && !keyCommand.isMenuSeparator()) {
             JMenuItem command = commands.get(strokes.indexOf(stroke));
             Action action = command.getAction();
             if (action != null) {
@@ -138,26 +158,20 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
                 (String) command.getAction().getValue(Action.NAME);
               if (commandName == null ||
                       commandName.length() < keyCommand.getName().length()) {
-                item = new JMenuItem(keyCommand.getLocalizedMenuText());
-                item.addActionListener(keyCommand);
-                item.setFont(POPUP_MENU_FONT);
-                item.setEnabled(keyCommand.isEnabled());
+                item = makeMenuItem(keyCommand);
                 commands.set(strokes.indexOf(stroke), item);
               }
             }
           }
           else {
-            strokes.add(stroke != null ? stroke : KeyStroke.getKeyStroke('\0'));
-            item = new JMenuItem(keyCommand.getLocalizedMenuText());
-            item.addActionListener(keyCommand);
-            item.setFont(POPUP_MENU_FONT);
-            item.setEnabled(keyCommand.isEnabled());
+            strokes.add(((stroke != null) && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
+            item = makeMenuItem(keyCommand);
             commands.add(item);
           }
         }
         if (keyCommand.getName() != null &&
-                keyCommand.getName().length() > 0 &&
-                item != null) {
+            keyCommand.getName().length() > 0 &&
+            item != null) {
           ArrayList<JMenuItem> l = commandNames.computeIfAbsent(keyCommand.getName(), k -> new ArrayList<>());
           l.add(item);
         }
@@ -193,7 +207,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // }
 
       for (JMenuItem item : commands) {
-        popup.add(item);
+        if ((item.getText() != null) && MenuSeparator.SEPARATOR_NAME.equals(item.getText())) {
+          popup.addSeparator();
+        } 
+        else {
+          popup.add(item);
+        }
       }
     }
     return popup;
