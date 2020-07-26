@@ -21,13 +21,13 @@ Piece</a></small> <small>&gt; <b>Layer</b></small><br>
     <tr>
       <td valign="top">
       <hr size="2" width="100%">
-      <h2>Layer<br>
+      <h2>Layer
       </h2>
       
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">&nbsp;<br>
+            <td valign="top">
             <table style="width: 100%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
               <tbody>
                 <tr>
@@ -37,57 +37,35 @@ Piece</a></small> <small>&gt; <b>Layer</b></small><br>
               </tbody>
             </table>
             <br>
-A Layer is the basic method for adding functionality to game pieces in
-VASSAL.&nbsp;
-A Layer consists of a number of 'levels,' each of which has an image
-and
-a name.&nbsp; The Layer can be activated with a keyboard command, and
-players can change the current level during play. &nbsp;The image from
-the
-current level will be drawn whenever the Layer is activated.&nbsp; The
-Layer
-is drawn on top the traits that appear before it in the list of traits<br>
+A Layer is the standard trait for adding images and functionality to game pieces in VASSAL.&nbsp;
+A Layer consists of a number of 'levels,' each of which has an image and a name.&nbsp; A Layer may be "active" or "inactive", and only active layers
+are drawn: activated with a key command, and players can change the current level during play. &nbsp;The image from the current level will be drawn whenever the Layer is active.&nbsp; The
+Layer is drawn on top the Traits that appear before it in the Piece's list of traits.<br>
             <br>
-            <span style="font-weight: bold;"><span style="font-weight: bold;">Name:</span></span> The name of this Layer, used for reference during editing and as the prefix 
-            for the name of any <a href="Properties.htm">Properties</a> defined by this Layer. <br>
-            <span style="font-weight: bold;"><span style="font-weight: bold;"></span>Always Active: &nbsp;</span>If
-checked, then this layer is always active. &nbsp;I.e., the current
-layer will always be displayed. &nbsp;If unchecked, then the layer must
-be activated (by the specified keyboard command) in order to display
-the current layer.<br>
-            <span style="font-weight: bold;">Underneath when highlighted<span style="font-weight: bold;">:</span></span>
-&nbsp;If checked, then this layer will be drawn underneath the rest of
-the piece when the counter has been highlighted (by clicking on it).<br>
-            <span style="font-weight: bold;">Loop through levels:</span>
-&nbsp;If checked, then increasing the level past the last one
-will loop through to the first level and vice versa. &nbsp;Otherwise,
-increasing the level has no effect if the current level is the last
-level.<br>
-            <span style="font-weight: bold;">Offset:</span> &nbsp;
-The images of a level are drawn with their center offset from the center
-of the underlying piece by a number of pixels specified by the "offset" boxes,
+            <b>Name:</b>&nbsp; The name of this Layer, used for reference during editing and as the prefix for the name of any <a href="Properties.htm">Properties</a> defined by this Layer. <br>
+            <b></span>Always Active: &nbsp;</b>If checked, then this layer is always active. &nbsp;I.e., the image corresponding to the current
+level will always be displayed. &nbsp;If unchecked, then the layer must
+be activated (by the specified key command) in order to display the current level.<br>
+            <b>Underneath when highlighted:</b> &nbsp;If checked, then this layer will be drawn underneath the rest of
+the piece when the counter has been selected (e.g. by clicking on it).<br>
+            <b>Loop through levels:</b>&nbsp; If checked, then increasing the level past the last one
+will loop back to the first level and vice versa. &nbsp;Otherwise, increasing the level has no effect if the current level is the last level.<br>
+            <b>Offset:</b> &nbsp;The image for the current level is drawn with this offset from the center of the underlying piece by a number of pixels specified by the "offset" boxes,
 with positive numbers giving an offset down and to the right. &nbsp;For example, 
 if a layer image is 40x40 pixels and you want it to be drawn so that the lower-left 
 corner is at the center of the GamePiece, set the offset to 20,-20. <br>
-            <span style="font-weight: bold;">Levels follow expression Value:</span> &nbsp;If selected, then you can enter an <a href="Expression.htm">Expression</a>
-that is evaluated to determine the active level, rather than responding directly
-to keyboard events. &nbsp;A typical use will use the name of a <a href="DynamicProperty.htm">Dynamic Property</a>. &nbsp;
-You can also specify the numeric value of the property that should correspond to the first level of this Layer.<br>
-            <span style="font-weight: bold;">Activate/Increase/Decrease:</span>
-&nbsp;Specify the keyboard commands and right-click menu text that will
+            <b>Levels follow expression value:</b> &nbsp;If selected, then you can enter an <a href="Expression.htm">Expression</a>
+that is evaluated to determine the active level, rather than having the trait respond directly
+to key commands. &nbsp;A typical case will reference the name of a <a href="DynamicProperty.htm">Dynamic Property</a>. &nbsp;
+You can also specify the numeric value of the Property that should correspond to the first level of this Layer.<br>
+            <b>Activate/Increase/Decrease:</b> &nbsp;Specify the key commands (or <a href="NamedKeyCommand.htm">Named Key Commands</a>) and right-click context menu text that will
 activate the Layer and increase or decrease the current level.<br>
-            <span style="font-weight: bold;">Reset to level:</span>
-&nbsp;Specifies a keyboard command that resets the Layer to a 
-level specified by an <a href="Expression.htm">Expression</a>. &nbsp;This does not automatically activate the Layer.<br>
-            <span style="font-weight: bold;">Randomize:</span> &nbsp;Specifies a keyboard command that sets the Layer to a random level.<br>
-            <span style="font-weight: bold;">Level Images:</span>
-&nbsp;Specify the image to be shown for each layer by double-clicking
-or selecting from the drop-down menu. &nbsp;An image can be left blank
-to display nothing for that level. &nbsp;Using transparency in the
-images can be very useful.<br>
-            <span style="font-weight: bold;">Level Name:</span>
-&nbsp;Each level can be given an individual name,
-which is used to change the name of the piece for reporting purposes
+            <b>Reset to level:</b>&nbsp; Specifies a key command that resets the Layer to a level specified by an <a href="Expression.htm">Expression</a>. &nbsp;Note: this does <i>not</i> automatically <i>activate</i> the Layer.<br>
+            <b>Randomize:</b> &nbsp;Specifies a key command that sets the Layer to a random level.<br>
+            <b>Level Images:</b>
+&nbsp;Specify the image to be shown for each level of the layer by double-clicking the image field to add a new image, or selecting an existing image from the drop-down menu. &nbsp;An image can be left blank
+to display nothing for that level. &nbsp;Using transparency in the images can be very useful.<br>
+            <b>Level Name:</b>&nbsp; Each level can be given an individual name, which is used to change the name of the piece for reporting purposes
 during play. &nbsp;The level's name either replaces the piece's normal
 name, or else modifies the piece's normal name as a prefix or suffix.<br>
             <br>
