@@ -374,6 +374,6 @@ public class ProblemDialog {
 
   private static Frame getFrame() {
     return GameModule.getGameModule() == null
-      ? null : GameModule.getGameModule().getFrame();
+      ? null : GameModule.getGameModule().getPlayerWindow();
   }
 }

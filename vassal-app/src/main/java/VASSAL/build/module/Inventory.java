@@ -223,7 +223,7 @@ public class Inventory extends AbstractConfigurable
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(getComponent());
     GameModule.getGameModule().getGameState().addGameComponent(this);
-    frame = new JDialog(GameModule.getGameModule().getFrame());
+    frame = new JDialog(GameModule.getGameModule().getPlayerWindow());
     frame.setTitle(getConfigureName());
     String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));

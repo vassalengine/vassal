@@ -85,7 +85,7 @@ public class ErrorDialog {
       logger.error("", thrown);
 
       final Frame frame = GameModule.getGameModule() == null
-        ? null : GameModule.getGameModule().getFrame();
+        ? null : GameModule.getGameModule().getPlayerWindow();
 
       SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
     }

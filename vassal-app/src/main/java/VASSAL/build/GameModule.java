@@ -152,6 +152,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   };
 
   protected PlayerWindow frame = new PlayerWindow();
+
+  /**
+   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
+   */
+  @Deprecated
   protected JPanel controlPanel = frame.getControlPanel();
 
   protected GameState theState;
@@ -190,8 +195,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    * @return the top-level frame of the controls window
+   *
+   * @deprecated use {@link #getPlayerWindow()}
    */
+  @Deprecated
   public JFrame getFrame() {
+    return frame;
+  }
+
+  public PlayerWindow getPlayerWindow() {
     return frame;
   }
 
@@ -546,6 +558,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
+   */
+  @Deprecated
   public JComponent getControlPanel() {
     return controlPanel;
   }
@@ -559,7 +575,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   public void setPrefs(Prefs p) {
     preferences = p;
-    preferences.getEditor().initDialog(getFrame());
+    preferences.getEditor().initDialog(getPlayerWindow());
   }
 
   /**
@@ -607,7 +623,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public FileChooser getFileChooser() {
     if (fileChooser == null) {
-      fileChooser = FileChooser.createFileChooser(getFrame(),
+      fileChooser = FileChooser.createFileChooser(getPlayerWindow(),
         getGameState().getSavedGameDirectoryPreference());
     }
     else {

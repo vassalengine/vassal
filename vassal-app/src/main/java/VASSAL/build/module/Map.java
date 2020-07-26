@@ -166,6 +166,7 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -677,13 +678,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
-
-      mainWindowDock = ComponentSplitter.split(
-        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
-        layeredPane,
-        ComponentSplitter.SplitPane.HIDE_BOTTOM,
-        true
-      );
+      mainWindowDock = g.getPlayerWindow().splitControlPanel(layeredPane, SplitPane.HIDE_BOTTOM, true);
       mainWindowDock.setResizeWeight(0.0);
 
       g.addKeyStrokeSource(
@@ -1919,7 +1914,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   protected Window createParentFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-      JDialog d = new JDialog(GameModule.getGameModule().getFrame());
+      JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow());
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       d.setTitle(getDefaultWindowTitle());
       return d;

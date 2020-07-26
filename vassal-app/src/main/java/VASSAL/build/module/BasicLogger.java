@@ -213,7 +213,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     else {
       if (endLogAction.isEnabled()) {
         if (JOptionPane.showConfirmDialog(
-            GameModule.getGameModule().getFrame(),
+            GameModule.getGameModule().getPlayerWindow(),
             Resources.getString("BasicLogger.save_log"),    //$NON-NLS-1$
             Resources.getString("BasicLogger.unsaved_log"), //$NON-NLS-1$
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -287,7 +287,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       };
 
       int result = JOptionPane.showOptionDialog(
-        g.getFrame(),
+        g.getPlayerWindow(),
         Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
         "",  //$NON-NLS-1$
         JOptionPane.YES_NO_CANCEL_OPTION,
@@ -367,7 +367,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         if (Info.hasOldFormat(md.getVassalVersion())) {
 
           final int result = Dialogs.showConfirmDialog(
-            g.getFrame(),
+            g.getPlayerWindow(),
             Resources.getString("Warning.log_will_be_updated_title"),
             Resources.getString("Warning.log_will_be_updated_heading"),
             Resources.getString(
