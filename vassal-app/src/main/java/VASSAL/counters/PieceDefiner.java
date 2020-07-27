@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -177,7 +176,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       piece = ((Decorator) piece).piece;
     }
 
-    inUseModel.insertElementAt(Objects.requireNonNullElseGet(piece, BasicPiece::new), 0);
+    inUseModel.insertElementAt(piece == null ? new BasicPiece() : piece, 0);
     inUseList.setSelectedIndex(0);
     refresh();
   }
