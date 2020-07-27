@@ -22,12 +22,15 @@
       <table cellpadding="2" cellspacing="2" border="0" width="100%">
         <tbody>
           <tr>
-            <td valign="top">This trait allows you to specify an
-arbitrary shape for a GamePiece.<br>
+            <td valign="top">This trait allows you to specify an arbitrary shape for a Game Piece, so that the piece will only be selected
+            when its image is clicked on precisely, rather than being selected whenever the player clicks anywhere inside its "bounding box".<br>
             <br>
 The shape of a piece is used to determine where the player must click
 to drag a piece or bring up its popup menu.&nbsp; It also is used to
-highlight the outline of the piece when it has been selected.<br>
+highlight the outline of the piece when it has been selected. Ordinarily
+a <i>bounding box</i> around the maximum rectangular limits of the image
+        provides the shape for both the piece's selection boundaries and
+        its highlight outline. <br>
             <br>
 By using transparency in your image, you can make your piece
 be drawn with any shape.&nbsp; However, without the Non-Rectangular
@@ -36,6 +39,15 @@ portions of the image, which can lead to confusion.&nbsp; The
 Non-Rectangular trait allows you to specify the shape of the
 piece to be identical to the non-transparent portion of an image.&nbsp;
 Simply select the appropriate image from the drop-down list.<br>
+        <br>
+For the most common case, a piece with a simple image that has some transparent portions, and that transparency is contained in the
+image file as "a transparent color", simply provide the same image again to the Non-Rectangular trait, and this will remove the
+        transparent portions of the piece from the selectable part of the piece.
+        <br>
+        <br>
+In the example shown at right, the file <i>test.png</i> has some orange regions representing the visible parts of a piece, and transparent
+areas in which nothing will be drawn. At the left, the <i>mask</i> is shown -- the black portions representing areas which can be clicked on
+        to select the piece, and the white areas representing transparent regions, clicking on which will not select the piece. This helps verify that the mask is being read properly.
             </td>
             <td valign="top"><img src="images/NonRectangular.png" alt=""
  > <br>
