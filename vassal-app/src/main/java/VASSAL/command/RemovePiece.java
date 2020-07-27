@@ -74,7 +74,7 @@ public class RemovePiece extends Command {
       final String stateWithPiece = parent.getState();
       parent.remove(target);
       undo = undo.append(
-        new ChangePiece(parent.getId(),parent.getState(), stateWithPiece));
+        new ChangePiece(parent.getId(), parent.getState(), stateWithPiece));
       target.setParent(null);
     }
 

@@ -321,7 +321,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     List<DefaultMutableTreeNode> searchNodes = new ArrayList<>();
 
     Enumeration<?> e = root.preorderEnumeration();
-    while(e.hasMoreElements()) {
+    while (e.hasMoreElements()) {
       searchNodes.add((DefaultMutableTreeNode)e.nextElement());
     }
     return searchNodes;
@@ -663,7 +663,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action showHelp;
     HelpFile helpFile = target.getHelpFile();
     if (helpFile == null) {
-      showHelp = new ShowHelpAction(null,null);
+      showHelp = new ShowHelpAction(null, null);
       showHelp.setEnabled(false);
     }
     else {

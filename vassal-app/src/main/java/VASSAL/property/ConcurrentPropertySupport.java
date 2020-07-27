@@ -72,7 +72,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
       new ArrayList<>(listeners);
   }
 
-  protected final ConcurrentMap<Property<?>,List<PropertyListener<?>>>
+  protected final ConcurrentMap<Property<?>, List<PropertyListener<?>>>
     plisteners = new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */

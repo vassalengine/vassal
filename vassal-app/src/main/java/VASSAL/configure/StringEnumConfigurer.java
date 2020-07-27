@@ -57,7 +57,7 @@ public class StringEnumConfigurer extends Configurer {
       panel = Box.createHorizontalBox();
       panel.add(new JLabel(name));
       box = new JComboBox<>(validValues);
-      box.setMaximumSize(new Dimension(box.getMaximumSize().width,box.getPreferredSize().height));
+      box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
       if (isValidValue(getValue())) {
         box.setSelectedItem(getValue());
       }
