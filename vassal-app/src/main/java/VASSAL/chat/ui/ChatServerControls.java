@@ -61,6 +61,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 
+import VASSAL.tools.swing.SplitPane;
 import net.miginfocom.swing.MigLayout;
 
 public class ChatServerControls extends AbstractBuildable {
@@ -229,10 +230,9 @@ public class ChatServerControls extends AbstractBuildable {
   public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
-        splitter = ComponentSplitter.split(
-          GameModule.getGameModule().getControlPanel(),
+        splitter = GameModule.getGameModule().getPlayerWindow().splitControlPanel(
           controlPanel,
-          ComponentSplitter.SplitPane.HIDE_RIGHT,
+          SplitPane.HIDE_RIGHT,
           false
         );
         splitter.revalidate();

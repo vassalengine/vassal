@@ -41,7 +41,7 @@ public class ValidationReportDialog extends JDialog {
   private CallBack callback;
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
-    super(GameModule.getGameModule().getFrame(), false);
+    super(GameModule.getGameModule().getPlayerWindow(), false);
     setTitle("Problems found in module");
     this.callback = cb;
     Box reportBox = Box.createVerticalBox();

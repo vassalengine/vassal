@@ -86,7 +86,7 @@ public class Player extends Launcher {
       Localization.getInstance().translate();
       final GameModule m = GameModule.getGameModule();
       if (lr.game != null) {
-        m.getFrame().setVisible(true);
+        m.getPlayerWindow().setVisible(true);
         m.getGameState().loadGameInBackground(lr.game);
       }
       else {

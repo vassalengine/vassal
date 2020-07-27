@@ -239,7 +239,7 @@ public abstract class Launcher {
           SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-              module.getFrame().toFront();
+              module.getPlayerWindow().toFront();
               shutdown = module.shutDown();
             }
           });

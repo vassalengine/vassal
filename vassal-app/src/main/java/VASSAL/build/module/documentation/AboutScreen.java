@@ -92,7 +92,7 @@ public class AboutScreen extends AbstractConfigurable {
     sb.append("</center></html>");
 
     final AboutWindow w =
-      new AboutWindow(g.getFrame(), op.getImage(), sb.toString());
+      new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
     w.setVisible(true);
     w.toFront();
   }

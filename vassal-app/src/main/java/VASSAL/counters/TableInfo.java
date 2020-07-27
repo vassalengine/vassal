@@ -173,7 +173,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         JScrollPane scroll = new ScrollPane(table);
         scroll.getViewport().setPreferredSize(table.getPreferredSize());
         frame.add(scroll);
-        Point p = GameModule.getGameModule().getFrame().getLocation();
+        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
           Point p2 = getMap().mapToComponent(getPosition());

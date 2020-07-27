@@ -465,7 +465,7 @@ public class ServerAddressBook {
 
   private void removeServer(int index) {
     final AddressBookEntry e = addressBook.get(index);
-    int i = JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), Resources
+    int i = JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources
         .getString("ServerAddressBook.remove_server", e.getDescription())); //$NON-NLS-1$
     if (i == 0) {
       addressBook.remove(index);

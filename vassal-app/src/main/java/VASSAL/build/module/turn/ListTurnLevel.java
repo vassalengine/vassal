@@ -399,7 +399,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     public ConfigDialog() {
-      super(GameModule.getGameModule().getFrame(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
+      super(GameModule.getGameModule().getPlayerWindow(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
       if (configFirst) {

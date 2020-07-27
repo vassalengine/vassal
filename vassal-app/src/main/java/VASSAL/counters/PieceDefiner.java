@@ -130,6 +130,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       availableModel.addElement(new Footprint());
       availableModel.addElement(new AreaOfEffect());
       availableModel.addElement(new SubMenu());
+      availableModel.addElement(new MenuSeparator());
       availableModel.addElement(new RestrictCommands());
       availableModel.addElement(new Restricted());
       availableModel.addElement(new Marker());

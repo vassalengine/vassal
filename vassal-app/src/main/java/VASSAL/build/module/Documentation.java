@@ -48,7 +48,7 @@ public class Documentation extends AbstractConfigurable {
 
   public JMenu getHelpMenu() {
     final JMenuBar mb = MenuManager.getInstance().getMenuBarFor(
-      GameModule.getGameModule().getFrame());
+      GameModule.getGameModule().getPlayerWindow());
 
     return mb.getMenu(mb.getMenuCount()-1);
   }

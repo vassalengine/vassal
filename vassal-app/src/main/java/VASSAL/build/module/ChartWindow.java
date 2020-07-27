@@ -92,7 +92,7 @@ public class ChartWindow extends Widget {
     rebuild();
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(launch);
-    frame = new JDialog(GameModule.getGameModule().getFrame());
+    frame = new JDialog(GameModule.getGameModule().getPlayerWindow());
     GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(frame.getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW));
     while (root.getComponentCount() > 0) {
       frame.add(root.getComponent(0));

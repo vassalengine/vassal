@@ -133,7 +133,7 @@ public class NotesWindow extends AbstractConfigurable
     private static final long serialVersionUID = 1L;
 
     protected NotesDialog() {
-      super(GameModule.getGameModule().getFrame());
+      super(GameModule.getGameModule().getPlayerWindow());
       initComponents();
       setLocationRelativeTo(getOwner());
     }
