@@ -159,12 +159,6 @@ public class HelpFile extends AbstractConfigurable {
     return contents;
   }
 
-  /** @deprecated Use {@link URLUtils.toURL(File)} instead. */
-  @Deprecated
-  public static URL toURL(File f) throws MalformedURLException {
-    return URLUtils.toURL(f);
-  }
-
   @Override
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();

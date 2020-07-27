@@ -55,6 +55,7 @@ import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
+import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
 import VASSAL.counters.Obscurable;
@@ -261,6 +262,12 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       public Decorator createDecorator(String type, GamePiece inner) {
         return new SubMenu(type, inner);
       }
+    });
+    decoratorFactories.put(MenuSeparator.ID, new DecoratorFactory() {
+      @Override
+      public Decorator createDecorator(String type, GamePiece inner) {
+        return new MenuSeparator(type, inner);
+      }      
     });
     decoratorFactories.put(Translate.ID, new DecoratorFactory() {
       @Override

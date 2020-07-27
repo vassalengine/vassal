@@ -96,11 +96,11 @@ public class GlobalOptions extends AbstractConfigurable {
   
   private int dragThreshold = 10;
 
-  private Map<String,Object> properties = new HashMap<>();
-  private static Map<String,Configurer> optionConfigurers = new LinkedHashMap<>();
-  private static Properties optionInitialValues = new Properties();
+  private final Map<String,Object> properties = new HashMap<>();
+  private static final Map<String,Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
+  private static final Properties OPTION_INITIAL_VALUES = new Properties();
 
-  private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
+  private final FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   private static GlobalOptions instance = new GlobalOptions();
   private boolean useSingleWindow;
@@ -150,13 +150,13 @@ public class GlobalOptions extends AbstractConfigurable {
         Boolean.FALSE
       );
 
-      if (Boolean.TRUE.equals(bug10295Conf.getValue()) &&
-            !(PieceMover.AbstractDragHandler.getTheDragHandler()
-              instanceof PieceMover.DragHandlerNoImage))
-      {
-        PieceMover.AbstractDragHandler.setTheDragHandler(
-          new PieceMover.DragHandlerNoImage()
-        );
+      final boolean dragHandlerNoImageNecessary =
+        Boolean.TRUE.equals(bug10295Conf.getValue()) &&
+        !(PieceMover.AbstractDragHandler.getTheDragHandler()
+          instanceof PieceMover.DragHandlerNoImage);
+
+      if (dragHandlerNoImageNecessary) {
+        PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
       }
 
       bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
@@ -216,11 +216,6 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
-  }
-
-  @Deprecated
-  public boolean isAveragedScaling() {
-    return true;
   }
 
   public static String getConfigureTypeName() {
@@ -298,8 +293,8 @@ public class GlobalOptions extends AbstractConfigurable {
    * with the given type.
    */
   public void addOption(Configurer option) {
-    optionConfigurers.put(option.getKey(), option);
-    Object initValue = optionInitialValues.get(option.getKey());
+    OPTION_CONFIGURERS.put(option.getKey(), option);
+    Object initValue = OPTION_INITIAL_VALUES.get(option.getKey());
 
     if (initValue instanceof String) {
       option.setValue((String)initValue);
@@ -326,9 +321,9 @@ public class GlobalOptions extends AbstractConfigurable {
         if ("option".equals(element.getTagName())) { //$NON-NLS-1$
           final String optionName = element.getAttribute("name"); //$NON-NLS-1$
           final String value = Builder.getText(element);
-          optionInitialValues.put(optionName, value);
+          OPTION_INITIAL_VALUES.put(optionName, value);
           // Update the Configurer value if it is already registered
-          final Configurer config = optionConfigurers.get(optionName);
+          final Configurer config = OPTION_CONFIGURERS.get(optionName);
           if (config != null) {
             config.setValue(value);
           }
@@ -350,7 +345,7 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public Element getBuildElement(Document doc) {
     final Element e = super.getBuildElement(doc);
-    for (Configurer c : optionConfigurers.values()) {
+    for (Configurer c : OPTION_CONFIGURERS.values()) {
       final Element option = doc.createElement("option"); //$NON-NLS-1$
       option.setAttribute("name", c.getKey()); //$NON-NLS-1$
       option.appendChild(doc.createTextNode(c.getValueString()));
@@ -363,7 +358,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public Configurer getConfigurer() {
     if (config == null) {
       final Configurer defaultConfig = super.getConfigurer();
-      for (Configurer c : optionConfigurers.values()) {
+      for (Configurer c : OPTION_CONFIGURERS.values()) {
         ((Container) defaultConfig.getControls()).add(c.getControls());
       }
     }
@@ -393,7 +388,7 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (DRAG_THRESHOLD.equals(key)) {
       return Integer.toString(dragThreshold);  
     }
-    else if (!optionConfigurers.containsKey(key)) {
+    else if (!OPTION_CONFIGURERS.containsKey(key)) {
       Object val = properties.get(key);
       return val != null ? val.toString() : null;
     }
@@ -455,8 +450,8 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (PLAYER_ID_FORMAT.equals(key)) {
       playerIdFormat.setFormat((String) value);
     }
-    else if (optionConfigurers.containsKey(key)) {
-      optionConfigurers.get(key).setValue(value);
+    else if (OPTION_CONFIGURERS.containsKey(key)) {
+      OPTION_CONFIGURERS.get(key).setValue(value);
     }
     else {
       properties.put(key, value);

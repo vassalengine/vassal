@@ -166,6 +166,7 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -677,13 +678,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
-
-      mainWindowDock = ComponentSplitter.split(
-        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
-        layeredPane,
-        ComponentSplitter.SplitPane.HIDE_BOTTOM,
-        true
-      );
+      mainWindowDock = g.getPlayerWindow().splitControlPanel(layeredPane, SplitPane.HIDE_BOTTOM, true);
       mainWindowDock.setResizeWeight(0.0);
 
       g.addKeyStrokeSource(
@@ -763,16 +758,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       boards.add(b);
     }
     setBoardBoundaries();
-  }
-
-  /**
-   * Set the boards for this map. Each map may contain more than one
-   * {@link Board}.
-   * @deprecated Use {@link #setBoards(Collection<Board>)} instead.
-   */
-  @Deprecated
-  public synchronized void setBoards(Enumeration<Board> boardList) {
-    setBoards(Collections.list(boardList));
   }
 
   @Override
@@ -955,11 +940,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return componentToMap(p);
   }
 
-  @Deprecated
-  public Rectangle mapRectangle(Rectangle r) {
-    return componentToMap(r);
-  }
-
   /**
    * Translate a point from map coordinates to component coordinates
    *
@@ -968,11 +948,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Deprecated
   public Point componentCoordinates(Point p) {
     return mapToComponent(p);
-  }
-
-  @Deprecated
-  public Rectangle componentRectangle(Rectangle r) {
-    return mapToComponent(r);
   }
 
   protected int scale(int c, double zoom) {
@@ -1939,7 +1914,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   protected Window createParentFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-      JDialog d = new JDialog(GameModule.getGameModule().getFrame());
+      JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow());
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       d.setTitle(getDefaultWindowTitle());
       return d;
@@ -2174,14 +2149,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       p.setMap(this);
       theMap.repaint();
     }
-  }
-
-  /**
-   * Reorder the argument GamePiece to the new index. When painting the map, pieces are drawn in order of index
-   *
-   * @deprecated use {@link PieceCollection#moveToFront}
-   */
-  @Deprecated public void reposition(GamePiece s, int pos) {
   }
 
   /**

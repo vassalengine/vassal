@@ -136,6 +136,8 @@ public abstract class EditorWindow extends JFrame {
     editMenu.add(mm.addKey("Editor.paste"));
     editMenu.add(mm.addKey("Editor.move"));
     editMenu.addSeparator();
+    editMenu.add(mm.addKey("Editor.search"));
+    editMenu.addSeparator();
     editMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
 

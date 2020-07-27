@@ -102,7 +102,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected JButton applyButton;
 
   // Commit type definitions
-  final static String[] COMMIT_VALUES = {"Every Keystroke", "Apply Button or Enter Key", "Close Window or Enter Key"};
+  static final String[] COMMIT_VALUES = {"Every Keystroke", "Apply Button or Enter Key", "Close Window or Enter Key"};
   static final int COMMIT_IMMEDIATELY = 0;
   static final int COMMIT_ON_APPLY = 1;
   static final int COMMIT_ON_CLOSE = 2;
@@ -237,9 +237,15 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     String blue = backgroundColor == null ? "" : Integer.toString(backgroundColor.getBlue());
     String commit = Integer.toString(commitStyle);
 
-    se.append(m_definition).append(menuName).append("").append(commit).
-        append(red).append(green).append(blue).append(launchKeyStroke);
-
+    se
+      .append(m_definition)
+      .append(menuName)
+      .append("")
+      .append(commit)
+      .append(red)
+      .append(green)
+      .append(blue)
+      .append(launchKeyStroke);
 
     return ID + se.getValue();
   }
@@ -370,7 +376,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           }
         }
         else {
-          parent = GameModule.getGameModule().getFrame();
+          parent = GameModule.getGameModule().getPlayerWindow();
         }
 
         frame = new PropertySheetDialog(parent);
@@ -403,40 +409,42 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         DocumentListener changeListener = new DocumentListener() {
           @Override
           public void insertUpdate(DocumentEvent e) {
-            update(e);
+            update();
           }
 
           @Override
           public void removeUpdate(DocumentEvent e) {
-            update(e);
+            update();
           }
 
           @Override
           public void changedUpdate(DocumentEvent e) {
-            update(e);
+            update();
           }
 
-          public void update(DocumentEvent e) {
-            if (!isUpdating) {
-              switch (commitStyle) {
-              case COMMIT_IMMEDIATELY:
-                // queue commit operation because it could do something
-                // unsafe in a an event update
-                SwingUtilities.invokeLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    updateStateFromFields();
-                  }
-                });
-                break;
-              case COMMIT_ON_APPLY:
-                applyButton.setEnabled(true);
-                break;
-              case COMMIT_ON_CLOSE:
-                break;
-              default:
-                throw new IllegalStateException();
-              }
+          public void update() {
+            if (isUpdating) {
+              return;
+            }
+
+            switch (commitStyle) {
+            case COMMIT_IMMEDIATELY:
+              // queue commit operation because it could do something
+              // unsafe in a an event update
+              SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                  updateStateFromFields();
+                }
+              });
+              break;
+            case COMMIT_ON_APPLY:
+              applyButton.setEnabled(true);
+              break;
+            case COMMIT_ON_CLOSE:
+              break;
+            default:
+              throw new IllegalStateException();
             }
           }
         };
@@ -447,7 +455,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         c.insets = new Insets(1, 3, 1, 3);
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.BOTH;
         SequenceEncoder.Decoder defDecoder =
           new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
         SequenceEncoder.Decoder stateDecoder =
@@ -506,7 +513,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           }
           c.gridwidth = type == TEXT_AREA || type == LABEL_ONLY ? 2 : 1;
 
-          if (name != null && !name.equals("")) {
+          if (!name.equals("")) {
             c.gridx = 0;
             c.weighty = 0.0;
             c.weightx = c.gridwidth == 2 ? 1.0 : 0.0;
@@ -534,12 +541,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           JButton closeButton = new JButton("Close");
           closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
 
-          closeButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-              updateStateFromFields();
-              frame.setVisible(false);
-            }
+          closeButton.addActionListener(e -> {
+            updateStateFromFields();
+            frame.setVisible(false);
           });
 
           c.gridwidth = 1;
@@ -561,7 +565,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
 
         // move window
-        Point p = GameModule.getGameModule().getFrame().getLocation();
+        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
           Point p2 = getMap().mapToComponent(getPosition());
@@ -894,11 +898,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
-    for (String prop : properties.keySet()) {
-      l.add(prop);
-    }
-    return l;
+    return List.copyOf(properties.keySet());
   }
 
   private static class Ed implements PieceEditor {
@@ -995,11 +995,15 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
 
       String definitionString = defEncoder.getValue();
-      typeEncoder.append(definitionString == null ? "" : definitionString).
-          append(menuNameCtrl.getText()).
-          append("").
-          append(Integer.toString(commitCtrl.getSelectedIndex())).
-          append(red).append(green).append(blue).append(keyStrokeConfig.getValueString());
+      typeEncoder
+        .append(definitionString == null ? "" : definitionString)
+        .append(menuNameCtrl.getText())
+        .append("")
+        .append(Integer.toString(commitCtrl.getSelectedIndex()))
+        .append(red)
+        .append(green)
+        .append(blue)
+        .append(keyStrokeConfig.getValueString());
 
       return ID + typeEncoder.getValue();
     }
@@ -1008,9 +1012,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     @Override
     public String getState() {
       final StringBuilder buf = new StringBuilder();
-      for (int i = 0; i < propertyTable.getRowCount(); ++i) {
-        buf.append(STATE_DELIMITOR);
-      }
+      buf.append(
+        String.valueOf(STATE_DELIMITOR).repeat(Math.max(0, propertyTable.getRowCount())));
 
       return buf.toString();
     }
@@ -1218,8 +1221,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int numTicks = 0;
     private int maxTicks = 0;
     protected int panelType;
-    private List<ActionListener> actionListeners =
-      new ArrayList<>();
+    private List<ActionListener> actionListeners = new ArrayList<>();
 
     public int getNumTicks() {
       return numTicks;

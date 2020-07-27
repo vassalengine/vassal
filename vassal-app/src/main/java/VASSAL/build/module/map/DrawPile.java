@@ -165,8 +165,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return (DrawPile) idMgr.findInstance(id);
   }
 
-  public final static String WIDTH = "width";
-  public final static String HEIGHT = "height";
+  public static final String WIDTH = "width";
+  public static final String HEIGHT = "height";
   public static final String ALLOW_MULTIPLE = "allowMultiple";
   public static final String ALLOW_SELECT = "allowSelect";
   public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty";

@@ -81,7 +81,7 @@ public class HexGrid extends AbstractConfigurable
   protected Color color = Color.black;
   protected boolean sideways = false;
   protected boolean snapTo = true;
-  protected Map<Integer,Area> shapeCache = new HashMap<>();
+  protected Map<Integer, Area> shapeCache = new HashMap<>();
   protected HexGridEditor gridEditor;
 
   public static final String X0 = "x0"; //$NON-NLS-1$
@@ -205,7 +205,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
-  protected boolean alternate = false;// true if hex B1 is above A1
+  protected boolean alternate = false; // true if hex B1 is above A1
 
   public HexGrid(double height, double width, boolean alt) {
     dy = height;
@@ -541,8 +541,8 @@ public class HexGrid extends AbstractConfigurable
     int x = sideX(p.x, p.y);
     int y = sideY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x,p.y);
-      int hexY = hexY(p.x,p.y);
+      int hexX = hexX(p.x, p.y);
+      int hexY = hexY(p.x, p.y);
       if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
         x = hexX;
         y = hexY;
@@ -562,8 +562,8 @@ public class HexGrid extends AbstractConfigurable
     int x = vertexX(p.x, p.y);
     int y = vertexY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x,p.y);
-      int hexY = hexY(p.x,p.y);
+      int hexX = hexX(p.x, p.y);
+      int hexY = hexY(p.x, p.y);
       if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
         x = hexX;
         y = hexY;
@@ -638,7 +638,7 @@ public class HexGrid extends AbstractConfigurable
     float x = (sideways ? centerY : centerX);
     float y = (sideways ? centerX : centerY);
 
-    float x1,y1, x2,y2, x3,y3, x4, y4, x5, y5, x6, y6;
+    float x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6;
 
     float deltaX = (float) (this.dx);
     float deltaY = (float) (this.dy);
@@ -718,8 +718,8 @@ public class HexGrid extends AbstractConfigurable
     if (snapScale > 0) {
       int delta = x - loc;
       delta = (int)round(delta/(0.5*dx/snapScale));
-      delta = max(delta,1-snapScale);
-      delta = min(delta,snapScale-1);
+      delta = max(delta, 1-snapScale);
+      delta = min(delta, snapScale-1);
       delta = (int)round(delta*0.5*dx/snapScale);
       loc += delta;
     }
@@ -738,8 +738,8 @@ public class HexGrid extends AbstractConfigurable
     if (snapScale > 0) {
       int delta = y - loc;
       delta = (int)round(delta/(0.5*dy/snapScale));
-      delta = max(delta,1-snapScale);
-      delta = min(delta,snapScale-1);
+      delta = max(delta, 1-snapScale);
+      delta = min(delta, snapScale-1);
       delta = (int)round(delta*0.5*dy/snapScale);
       loc += delta;
     }
@@ -803,7 +803,7 @@ public class HexGrid extends AbstractConfigurable
 
     g2d.setColor(color);
 
-    float x1,y1, x2,y2, x3,y3, x4, y4;
+    float x1, y1, x2, y2, x3, y3, x4, y4;
 
     float deltaX = (float) (this.dx * zoom);
     float deltaY = (float) (this.dy * zoom);

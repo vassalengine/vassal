@@ -130,45 +130,53 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     button = mod.getToolBar().add(stepAction);
     button.setToolTipText(Resources.getString("BasicLogger.step_forward_tooltip"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
+    
+    final NamedKeyStrokeListener undoKeyListener = new NamedKeyStrokeListener(undoAction, null);
+    mod.addKeyStrokeListener(undoKeyListener);
 
     final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
-
+    
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));
     mod.addKeyStrokeListener(newLogKeyListener);
 
     final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
     stepIconConfig.setValue(STEP_ICON);
     GlobalOptions.getInstance().addOption(stepIconConfig);
-    stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue());
+    stepIconConfig.addPropertyChangeListener(evt -> stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue()));
+    stepIconConfig.fireUpdate();
+    
+    final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
+    GlobalOptions.getInstance().addOption(stepKeyConfig);
+    stepKeyConfig.addPropertyChangeListener(evt -> {
+      stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
+      if (stepKeyListener.getKeyStroke() != null) {
+        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
+      } 
+      else {
+        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip3"));  //$NON-NLS-1$
       }
     });
-    stepIconConfig.fireUpdate();
+    stepKeyConfig.fireUpdate();
 
     final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
     undoIconConfig.setValue(UNDO_ICON);
     GlobalOptions.getInstance().addOption(undoIconConfig);
-    undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue());
-      }
-    });
+    undoIconConfig.addPropertyChangeListener(evt -> undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue())); 
     undoIconConfig.fireUpdate();
 
-    final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
-    GlobalOptions.getInstance().addOption(stepKeyConfig);
-    stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
-        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
+    final NamedHotKeyConfigurer undoKeyConfig = new NamedHotKeyConfigurer("undoHotKey", Resources.getString("BasicLogger.undo_hotkey"), undoKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
+    GlobalOptions.getInstance().addOption(undoKeyConfig);
+    undoKeyConfig.addPropertyChangeListener(evt -> {
+      undoKeyListener.setKeyStroke(undoKeyConfig.getValueNamedKeyStroke());
+      if (undoKeyListener.getKeyStroke() != null) {
+        undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_tooltip2", NamedHotKeyConfigurer.getString(undoKeyListener.getKeyStroke()))); //$NON-NLS-1$
+      } 
+      else {
+        undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_last_move")); //$NON-NLS-1$
       }
     });
-    stepKeyConfig.fireUpdate();
+    undoKeyConfig.fireUpdate();
 
     BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
@@ -205,7 +213,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     else {
       if (endLogAction.isEnabled()) {
         if (JOptionPane.showConfirmDialog(
-            GameModule.getGameModule().getFrame(),
+            GameModule.getGameModule().getPlayerWindow(),
             Resources.getString("BasicLogger.save_log"),    //$NON-NLS-1$
             Resources.getString("BasicLogger.unsaved_log"), //$NON-NLS-1$
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -279,7 +287,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       };
 
       int result = JOptionPane.showOptionDialog(
-        g.getFrame(),
+        g.getPlayerWindow(),
         Resources.getString("BasicLogger.start_new_log_file", prompt), //$NON-NLS-1$
         "",  //$NON-NLS-1$
         JOptionPane.YES_NO_CANCEL_OPTION,
@@ -359,7 +367,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         if (Info.hasOldFormat(md.getVassalVersion())) {
 
           final int result = Dialogs.showConfirmDialog(
-            g.getFrame(),
+            g.getPlayerWindow(),
             Resources.getString("Warning.log_will_be_updated_title"),
             Resources.getString("Warning.log_will_be_updated_heading"),
             Resources.getString(

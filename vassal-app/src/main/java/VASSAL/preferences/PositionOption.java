@@ -55,7 +55,7 @@ public class PositionOption extends VASSAL.configure.Configurer
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     if (initialPos.x >= d.width-30
       || initialPos.y >= d.height-30) {
-      initialPos.move(0,0);
+      initialPos.move(0, 0);
     }
     else {
       initialPos.translate(30, 30);
@@ -63,7 +63,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   public PositionOption(String key, Window f) {
-    this(key,f,new Rectangle(initialPos,new Dimension(0,0)));
+    this(key, f, new Rectangle(initialPos, new Dimension(0, 0)));
   }
 
   @Override
@@ -74,7 +74,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   @Override
   public void setValue(Object o) {
     if (o instanceof Rectangle) {
-      bounds = new Rectangle((Rectangle)o);
+      bounds = new Rectangle((Rectangle) o);
       if (theFrame != null) {
         setFrameBounds();
       }
@@ -162,7 +162,7 @@ public class PositionOption extends VASSAL.configure.Configurer
 
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
-      theFrame.setSize(new Dimension(Math.abs(bounds.width),Math.abs(bounds.height)));
+      theFrame.setSize(new Dimension(Math.abs(bounds.width), Math.abs(bounds.height)));
     }
     theFrame.setLocation(bounds.getLocation());
 

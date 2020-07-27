@@ -30,6 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * Class for storing release-related information
@@ -116,25 +117,6 @@ public final class Info {
     return gitProperties.getVersion();
   }
 
-  /**
-   * @return The major/minor portion of the release version. If the version is a
-   * beta-release number, a 'beta' is appended. For example, the minor
-   * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
-   *
-   * @deprecated If you need the minor version number, get it from
-   * a {@link VersionTokenizer}.
-   */
-  @Deprecated
-  public static String getMinorVersion() {
-    final VersionTokenizer tok = new VassalVersionTokenizer(gitProperties.getVersion());
-    try {
-      return tok.next() + "." + tok.next();
-    }
-    catch (VersionFormatException e) {
-      return null;
-    }
-  }
-
   private static final int instanceID;
 
   /**
@@ -165,18 +147,6 @@ public final class Info {
     return SystemUtils.IS_OS_MAC_OSX;
   }
 
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead. */
-  @Deprecated
-  public static boolean isMacOsX() {
-    return SystemUtils.IS_OS_MAC_OSX;
-  }
-
-  /** @deprecated Use {@link SystemUtils#IS_OS_WINDOWS} instead */
-  @Deprecated
-  public static boolean isWindows() {
-    return SystemUtils.IS_OS_WINDOWS;
-  }
-
   public static boolean isModuleTooNew(String version) {
     return compareVersions(version, EXPIRY_VERSION) >= 0;
   }
@@ -194,26 +164,12 @@ public final class Info {
    * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
    * the parseable parts of the two <code>String</code>s.
+   *
+   * @deprecated use {@link VersionUtils#compareVersions(String, String)}
    */
+  @Deprecated
   public static int compareVersions(String v0, String v1) {
-    final VersionTokenizer tok0 = new VassalVersionTokenizer(v0);
-    final VersionTokenizer tok1 = new VassalVersionTokenizer(v1);
-
-    try {
-      // find the first token where v0 and v1 differ
-      while (tok0.hasNext() && tok1.hasNext()) {
-        final int n0 = tok0.next();
-        final int n1 = tok1.next();
-
-        if (n0 != n1) return n0 - n1;
-      }
-    }
-    catch (VersionFormatException e) {
-      return 0;
-    }
-
-    // otherwise, the shorter one is earlier; or they're the same
-    return tok0.hasNext() ? 1 : (tok1.hasNext() ? -1 : 0);
+    return VersionUtils.compareVersions(v0, v1);
   }
 
   /**
@@ -223,17 +179,6 @@ public final class Info {
    */
   public static File getBaseDir() {
     return new File(System.getProperty("user.dir"));
-  }
-
-  /**
-   * Returns the directory where the VASSAL documentation is installed.
-   *
-   * @return a {@link File} representing the directory
-   * @deprecated Use {@link #getDocDir()} instead.
-   */
-  @Deprecated
-  public static File getDocsDir() {
-    return getDocDir();
   }
 
   public static File getBinDir() {

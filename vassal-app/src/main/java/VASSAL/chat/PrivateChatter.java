@@ -35,12 +35,6 @@ public class PrivateChatter extends Chatter {
     this.client = client;
   }
 
-  /** @deprecated */
-  @Override
-  @Deprecated public String getHandle() {
-    return GameModule.getGameModule().getChatter().getHandle();
-  }
-
   @Override
   public void send(String msg) {
     if (msg != null

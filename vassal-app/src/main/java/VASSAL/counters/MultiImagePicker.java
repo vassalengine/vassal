@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -170,9 +171,8 @@ public class MultiImagePicker extends JPanel {
     while (names.length > multiPanel.getComponentCount()) {
       addEntry();
     }
-    for (int i = 0; i < names.length; ++i) {
-      ((ImagePicker) multiPanel.getComponent(i)).
-        setImageName(names[i]);
-    }
+    IntStream
+      .range(0, names.length)
+      .forEach(i -> ((ImagePicker) multiPanel.getComponent(i)).setImageName(names[i]));
   }
 }

@@ -175,7 +175,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public Component getComponent() {
-    return getMap() != null ? getMap().getView().getTopLevelAncestor() : GameModule.getGameModule().getFrame();
+    return getMap() != null ? getMap().getView().getTopLevelAncestor() : GameModule.getGameModule().getPlayerWindow();
   }
 
   @Override

@@ -253,7 +253,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     boolean confirm = true;
     if (archive instanceof ArchiveWriter && !buildString().equals(lastSave)) {
       switch (JOptionPane.showConfirmDialog(
-        GameModule.getGameModule().getFrame(),
+        GameModule.getGameModule().getPlayerWindow(),
         Resources.getString("ModuleExtension.save_extension"), //$NON-NLS-1$
         "", JOptionPane.YES_NO_CANCEL_OPTION)) { //$NON-NLS-1$
       case JOptionPane.YES_OPTION:
@@ -455,7 +455,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         @Override
         public void actionPerformed(ActionEvent e) {
           String s = (String)JOptionPane.showInputDialog(
-              GameModule.getGameModule().getFrame(),
+              GameModule.getGameModule().getPlayerWindow(),
               "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
               "",
               JOptionPane.WARNING_MESSAGE,

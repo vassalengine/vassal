@@ -55,20 +55,17 @@ import VASSAL.tools.swing.Dialogs;
  * Date: Mar 12, 2003
  */
 public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
+
   protected static final String ADDRESS_PREF = "PeerAddressBook"; //$NON-NLS-1$
+
   private AcceptPeerThread acceptThread;
-  private JButton inviteButton;
+  private final JButton inviteButton;
   private JDialog frame;
-  private int listenPort;
   private static StringArrayConfigurer addressConfig;
-  private JButton invitePeerButton;
-  private JButton addButton;
-  private JButton editButton;
-  private JButton removeButton;
   private JList<Entry> addressList;
   private DefaultListModel<Entry> addressBook;
-  private Properties params;
-  private boolean serverMode;
+  private final Properties params;
+  private final boolean serverMode;
 
   public DirectPeerPool() {
     this (new Properties());
@@ -79,19 +76,14 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     params.putAll(param);
     serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
     inviteButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
-    inviteButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        frame.setVisible(true);
-      }
-    });
+    inviteButton.addActionListener(e -> frame.setVisible(true));
     inviteButton.setEnabled(false);
     inviteButton.setVisible(P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY)));
   }
 
   @Override
   public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
-    listenPort = 5050;
+    int listenPort = 5050;
     String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
     if (port != null && port.length() > 0) {
       try {
@@ -152,7 +144,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
     Frame owner = null;
     if (GameModule.getGameModule() != null) {
-      owner = GameModule.getGameModule().getFrame();
+      owner = GameModule.getGameModule().getPlayerWindow();
     }
     frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -163,48 +155,29 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final JScrollPane scroll = new JScrollPane(addressList);
     frame.add(scroll, "span 4, grow, push, w 300, h 400, wrap"); //$NON-NLS-1$
 
-    invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
+    JButton invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     invitePeerButton.setToolTipText(Resources.getString("Peer2Peer.invite_button_tooltip")); //$NON-NLS-1$))
-    invitePeerButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        invite(ppm);
-      }});
+    invitePeerButton.addActionListener(e -> invite(ppm));
     frame.add(invitePeerButton, "growx, push"); //$NON-NLS-1$
 
-    addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
+    JButton addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
     addButton.setToolTipText(Resources.getString("Peer2Peer.add_button_tooltip")); //$NON-NLS-1$))
-    addButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        addEntry();
-      }});
+    addButton.addActionListener(e -> addEntry());
     frame.add(addButton, "growx, push"); //$NON-NLS-1$
 
-    editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
+    JButton editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
     editButton.setToolTipText(Resources.getString("Peer2Peer.edit_button_tooltip")); //$NON-NLS-1$))
-    editButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        editEntry();
-      }});
+    editButton.addActionListener(e -> editEntry());
     frame.add(editButton, "growx, push"); //$NON-NLS-1$
 
-    removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
+    JButton removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
     removeButton.setToolTipText(Resources.getString("Peer2Peer.remove_button_tooltip")); //$NON-NLS-1$))
-    removeButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        removeEntries();
-      }});
+    removeButton.addActionListener(arg0 -> removeEntries());
     frame.add(removeButton, "growx, push, wrap"); //$NON-NLS-1$
 
 
     frame.pack();
     frame.setLocationRelativeTo(owner);
-
-    return;
-
   }
 
   protected void invite(final PendingPeerManager ppm) {
@@ -311,7 +284,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
    * A class representing the address of another player's computer.
    *
    */
-  private class Entry implements Comparable<Entry>{
+  private static class Entry implements Comparable<Entry> {
     String description;
     String address;
     String port;
@@ -401,7 +374,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
   }
 
-  private class WTextArea extends JTextArea {
+  private static class WTextArea extends JTextArea {
     private static final long serialVersionUID = 1L;
     public WTextArea(String s) {
       super(s);

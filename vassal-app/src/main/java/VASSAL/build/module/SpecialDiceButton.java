@@ -116,7 +116,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private static final int[] EMPTY = new int[0];
 
   public SpecialDiceButton() {
-    dialog = new JDialog(GameModule.getGameModule().getFrame());
+    dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
     dialog.setLayout(new MigLayout("ins 0"));
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
@@ -143,17 +143,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   protected String getReportPrefix() {
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  /**
-   * The text reported after the results of the roll;
-   *
-   * @deprecated
-   */
-  @Deprecated
-  protected String getReportSuffix() {
-    return " ***  <" //$NON-NLS-1$
-        + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }
 
   /**

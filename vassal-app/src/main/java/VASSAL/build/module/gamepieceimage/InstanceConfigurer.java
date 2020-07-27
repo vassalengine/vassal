@@ -78,13 +78,6 @@ public class InstanceConfigurer extends Configurer {
     return (List<ItemInstance>) getValue();
   }
 
-  /** @deprecated Use {@link #getValueList()} instead. */
-  @SuppressWarnings("unchecked")
-  @Deprecated
-  public ArrayList<ItemInstance> getValueArrayList() {
-    return (ArrayList<ItemInstance>) getValue();
-  }
-
   @Override
   public void setValue(String s) {
     setValue(StringToProperties(s, defn));

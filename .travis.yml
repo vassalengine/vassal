@@ -1,6 +1,9 @@
 language: java
 jdk: openjdk11
 
+install: true
+script: ./mvnw clean test -B
+
 cache:
   directories:
     - $HOME/.m2

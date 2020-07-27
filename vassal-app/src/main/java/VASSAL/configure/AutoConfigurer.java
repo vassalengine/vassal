@@ -52,7 +52,7 @@ public class AutoConfigurer extends Configurer
   protected JPanel p;
   protected AutoConfigurable target;
   protected List<Configurer> configurers = new ArrayList<>();
-  protected Map<String,VisibilityCondition> conditions;
+  protected Map<String, VisibilityCondition> conditions;
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());
@@ -91,7 +91,7 @@ public class AutoConfigurer extends Configurer
         p.add(box);
         configurers.add(config);
       }
-      setVisibility(name[i],c.getAttributeVisibility(name[i]));
+      setVisibility(name[i], c.getAttributeVisibility(name[i]));
     }
   }
 
@@ -134,7 +134,7 @@ public class AutoConfigurer extends Configurer
       config = new StringArrayConfigurer(key, prompt);
     }
     else if (Icon.class.isAssignableFrom(type)) {
-      config = new IconConfigurer(key,prompt,null);
+      config = new IconConfigurer(key, prompt, null);
     }
     else if (PropertyExpression.class.isAssignableFrom(type)) {
       config = new PropertyExpressionConfigurer(key, prompt);

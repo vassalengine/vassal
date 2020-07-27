@@ -49,8 +49,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
   }
 
   public ScaleOpTiledBitmapImpl(ImageOp sop, double scale,
-                                RenderingHints hints)
-  {
+                                RenderingHints hints) {
     super(sop, scale, hints);
   }
 
@@ -169,7 +168,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
     @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
-      return Arrays.<VASSAL.tools.opcache.Op<?>>asList(sop);
+      return Arrays.asList(sop);
     }
 
     @Override

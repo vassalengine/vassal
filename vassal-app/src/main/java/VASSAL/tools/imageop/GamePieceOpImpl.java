@@ -61,12 +61,12 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
 
   @Override
   public BufferedImage get(OpObserver<BufferedImage> obs)
-    throws CancellationException, InterruptedException, ExecutionException
-  {
-    // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
+    throws CancellationException, InterruptedException, ExecutionException {
+
+    // GamePieceOpImpl CANNOT be called asynchronously because it cannot
     // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
-    return super.get(obs);
+    return super.get(null);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
     // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
-    return super.getFuture(obs);
+    return super.getFuture(null);
   }
 
   @Override

@@ -20,6 +20,8 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
@@ -55,6 +58,8 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -67,6 +72,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
+  public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -85,7 +91,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         launch();
       }
     };
-    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
+
+    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, BUTTON_KEYSTROKE, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
     retireButton.setVisible(false);
 
@@ -94,8 +101,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public void removeFrom(Buildable parent) {
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
-    GameModule.getGameModule().removeCommandEncoder(this);
+    final GameModule gm = GameModule.getGameModule();
+    gm.getGameState().removeGameComponent(this);
+    gm.removeCommandEncoder(this);
   }
 
   @Override
@@ -174,6 +182,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     att = retireButton.getAttributeValueString(TOOL_TIP);
     if (att != null)
       el.setAttribute(TOOL_TIP, att);
+    att = retireButton.getAttributeValueString(BUTTON_KEYSTROKE);
+    if (att != null) {
+      el.setAttribute(BUTTON_KEYSTROKE, att);
+    }
     for (String s : sides) {
       Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode(s));
@@ -222,11 +234,13 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public void addTo(Buildable b) {
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    GameModule.getGameModule().getGameState().addGameSetupStep(this);
-    GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getToolBar().add(retireButton);
+    final GameModule gm = GameModule.getGameModule();
+    gm.getGameState().addGameComponent(this);
+    gm.getGameState().addGameSetupStep(this);
+    gm.addCommandEncoder(this);
+    gm.getToolBar().add(retireButton);
   }
+
 
   protected void launch() {
     final String mySide = getMySide();
@@ -234,58 +248,27 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return;
     }
 
-    final String[] options = allSidesAllocated() ?
-      new String[]{
-        Resources.getString(Resources.YES),
-        Resources.getString(Resources.NO)
-      } :
-      new String[]{
-        Resources.getString("PlayerRoster.become_observer"), //$NON-NLS-1$
-        Resources.getString("PlayerRoster.join_another_side"), //$NON-NLS-1$
-        Resources.getString(Resources.CANCEL)
-      };
+    final String oldSide = getMySide();
 
-    final int CANCEL = options.length - 1;
-
-    final int option = JOptionPane.showOptionDialog(
-      GameModule.getGameModule().getFrame(),
-      Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()),
-      Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$
-      JOptionPane.YES_NO_OPTION,
-      JOptionPane.QUESTION_MESSAGE,
-      null,
-      options,
-      Resources.getString("PlayerRoster.become_observer") //$NON-NLS-1$
-    );
-
-    if (option != CANCEL) {
-      final String oldSide = getMySide();
-
-      String newSide;
-      if (option == 0) {
-        newSide = OBSERVER;
-      }
-      else {
-        newSide = promptForSide();
-        if (newSide == null) {
-          return;
-        }
-      }
-
-      remove(GameModule.getUserId());
-
-      final PlayerInfo me = new PlayerInfo(
-        GameModule.getUserId(),
-        GlobalOptions.getInstance().getPlayerId(),
-        newSide
-      );
-      final Add a = new Add(this, me.playerId, me.playerName, me.side);
-      a.execute();
-      GameModule.getGameModule().getServer().sendToOthers(a);
-
-      newSide = getMySide();
-      fireSideChange(oldSide, newSide);
+    String newSide;
+    newSide = promptForSide();
+    if (newSide == null) {
+      return;
     }
+
+    remove(GameModule.getUserId());
+
+    final PlayerInfo me = new PlayerInfo(
+      GameModule.getUserId(),
+      GlobalOptions.getInstance().getPlayerId(),
+      newSide
+    );
+    final Add a = new Add(this, me.playerId, me.playerName, me.side);
+    a.execute();
+    GameModule.getGameModule().getServer().sendToOthers(a);
+
+    newSide = getMySide();
+    fireSideChange(oldSide, newSide);
   }
 
   protected void fireSideChange(String oldSide, String newSide) {
@@ -483,17 +466,39 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     }
 
     availableSides.removeAll(alreadyTaken);
+
+    // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
+    // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
+    // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
+    // If we have no "next" side available to offer, we stay with the observer side as our default offering.
+    boolean found = false;       // If we find a usable side
+    String mySide = getMySide(); // Get our own side, so we can find the "next" one
+    int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+    int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
+    for (int tries = 0; i != myidx && tries < sides.size(); i = (i+1) % sides.size(), tries++) { // Wrap-around search of sides
+      String s = sides.get(i);
+      if (!alreadyTaken.contains(s) &&
+          !Resources.getString("PlayerRoster.solitaire").equals(s) &&
+          !Resources.getString("PlayerRoster.solo").equals(s) &&
+          !Resources.getString("PlayerRoster.referee").equals(s)) {
+        found = true; // Found an available slot that's not our current one and not a "solo" slot.
+        break;
+      }
+    }
+
+    String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
+
     availableSides.add(0, translatedObserver);
 
     final GameModule g = GameModule.getGameModule();
     String newSide = (String) JOptionPane.showInputDialog(
-      g.getFrame(),
-      Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
+      g.getPlayerWindow(),
+      Resources.getString("PlayerRoster.switch_sides"), //$NON-NLS-1$
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,
       null,
       availableSides.toArray(new String[0]),
-      translatedObserver
+      nextChoice // Offer calculated most likely "next side" as the default
     );
 
     // OBSERVER must always be stored internally in English.
@@ -501,14 +506,6 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       newSide = OBSERVER;
     }
     return newSide;
-/*
-    if (newSide != null) {
-      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
-      final Add a = new Add(this, me.playerId, me.playerName, me.side);
-      a.execute();
-      g.getServer().sendToOthers(a);
-    }
-*/
   }
 
   public static class PlayerInfo {
@@ -577,6 +574,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     private IconConfigurer iconConfig;
     private StringConfigurer textConfig;
     private StringConfigurer tooltipConfig;
+    private NamedHotKeyConfigurer keyConfig;
     private JPanel controls;
 
     private Con() {
@@ -592,6 +590,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(sidesConfig.getControls());
+
       textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
@@ -600,6 +599,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(textConfig.getControls());
+
       tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
       tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
@@ -608,6 +608,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(tooltipConfig.getControls());
+
       iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -617,6 +618,16 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(iconConfig.getControls());
+
+      keyConfig = (NamedHotKeyConfigurer)retireButton.getHotkeyConfigurer();
+      keyConfig.setName(Resources.getString("Editor.PlayerRoster.retire_button_keystroke"));
+      keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+          retireButton.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString());
+        }
+      });
+      controls.add(keyConfig.getControls());
     }
 
     @Override
@@ -651,7 +662,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new String[] {
       BUTTON_TEXT,
       TOOL_TIP,
-      SIDES
+      SIDES,
+      BUTTON_KEYSTROKE,
     };
   }
 
@@ -660,7 +672,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new Class<?>[] {
       String.class,
       String.class,
-      String.class
+      String.class,
+      NamedKeyStroke.class,
     };
   }
 
@@ -728,7 +741,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return new String[] {
       Resources.getString("Editor.button_text_label"),
       Resources.getString("Editor.tooltip_text_label"),
-      Resources.getString("Editor.PlayerRoster.sides_label")
+      Resources.getString("Editor.PlayerRoster.sides_label"),
+      Resources.getString("Editor.hotkey_label")
     };
   }
 }

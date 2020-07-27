@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -323,17 +322,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     consoleHook(s, style, html_allowed);             
   }
 
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated
-  public void setHandle(String s) {
-  }
-
-  /** @deprecated use GlobalOptions.getPlayerId() */
-  @Deprecated
-  public String getHandle() {
-    return GlobalOptions.getInstance().getPlayerId();
-  }
-
   /**
    * Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
    * @param s Style name
@@ -440,7 +428,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     });
 
-    mod.getControlPanel().add(this, BorderLayout.CENTER);
+    mod.getPlayerWindow().addChatter(this);
 
     chatFont.fireUpdate();
     mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$

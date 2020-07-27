@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @see Version
  * @see VersionFormatException
  */
 public interface VersionTokenizer {
@@ -48,7 +47,7 @@ public interface VersionTokenizer {
    * @throws VersionFormatException if the string deviates from
    * the current version formatting rules at the next token.
    * @throws NoSuchElementException if this method is called when
-   * {@link hasNext()} would return <code>false</code>.
+   * {@link #hasNext()} would return <code>false</code>.
    */
   public int next() throws VersionFormatException;
 }

@@ -170,7 +170,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   private DrawPile promptForDrawPile() {
-    final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
+    final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 

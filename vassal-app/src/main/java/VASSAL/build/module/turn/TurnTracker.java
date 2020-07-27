@@ -804,16 +804,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
 
-  /** @deprecated Use {@link #replace(StringBuilder,String,String)} instead. */
-  @Deprecated
-  public void replace(StringBuffer s, String from, String to) {
-    int i = s.indexOf(from);
-    while (i >= 0) {
-      s = s.replace(i, i+2, to);
-      i = s.indexOf(from);
-    }
-  }
-
   @Override
   public Command getRestoreCommand() {
     return new SetTurn(getState(), this);
@@ -824,7 +814,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected TurnWidget widget;
 
     protected TurnWindow() {
-      super(GameModule.getGameModule().getFrame());
+      super(GameModule.getGameModule().getPlayerWindow());
       setTitle(getConfigureName());
       pack();
       setLocation(100, 100);
@@ -1069,7 +1059,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected JDialog me;
 
     protected SetDialog() {
-      super(GameModule.getGameModule().getFrame());
+      super(GameModule.getGameModule().getPlayerWindow());
       initComponents();
       setLocation(100, 100);
       me = this;

@@ -5,16 +5,17 @@
 	<parent>
 		<groupId>org.vassalengine</groupId>
 		<artifactId>vassal-parent</artifactId>
-		<version>3.3.2-SNAPSHOT</version>
+		<version>3.3.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vassal-app</artifactId>
-	<version>3.3.2-SNAPSHOT</version>
+	<version>3.3.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
 
 	<properties>
+		<main.basedir>${project.basedir}${file.separator}..</main.basedir>
 		<project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
 		<version.java.build>11</version.java.build>
 		<version.java.target>11</version.java.target>
@@ -31,7 +32,7 @@
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
-			<version>4.2</version>
+			<version>5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javazoom</groupId>
@@ -123,6 +124,11 @@
 			<artifactId>wizard</artifactId>
 			<version>0.998.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>3.6.3</version>
+		</dependency>
 
 		<!-- Test Dependencies -->
 		<dependency>
@@ -146,7 +152,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>3.3.12</version>
+			<version>3.4.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -175,6 +181,10 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources-filtered</directory>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<plugins>
@@ -269,23 +279,43 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
+				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>get-the-git-infos</id>
+						<id>attach-sources</id>
+						<phase>package</phase>
 						<goals>
-							<goal>revision</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<gitDescribe>
-						<tags>true</tags>
-						<abbrev>0</abbrev>
-					</gitDescribe>
+					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+					<subpackages>VASSAL</subpackages>
+					<bottom>
+						<![CDATA[
+						    <script>
+						    if (typeof useModuleDirectories !== 'undefined') {
+                                useModuleDirectories = false;
+                            }
+                            </script>
+                        ]]>
+					</bottom>
+					<additionalJOption>--allow-script-in-comments</additionalJOption>
+					<doclint>none</doclint>
 				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

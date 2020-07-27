@@ -241,69 +241,81 @@ public class Symbol {
       int y_center = bounds.y + bounds.height / 2;
       int y_bottom = bounds.y + bounds.height;
 
-      if (name.equals(NONE)) {
-
+      if (name.equals(NONE) || name.equals(MARINES)) {
+        return;
       }
 
-      else if (name.equals(AIRBORNE)) {
+      switch (name) {
+      case AIRBORNE: {
         int x1 = x_center - bounds.width / 4;
         int y1 = y_top + bounds.height * 4 / 5 + 1;
-        g2.draw(new Arc2D.Double(x1, y1, bounds.width/4, bounds.height/4, 0,
-            180, Arc2D.OPEN));
-        g2.draw(new Arc2D.Double(x_center, y1, bounds.width/4, bounds.height/4, 0,
-            180, Arc2D.OPEN));
+        g2.draw(new Arc2D.Double(x1, y1, bounds.width / 4, bounds.height / 4, 0,
+          180, Arc2D.OPEN));
+        g2.draw(new Arc2D.Double(x_center, y1, bounds.width / 4, bounds.height / 4, 0,
+          180, Arc2D.OPEN));
 
+        break;
       }
 
-      else if (name.equals(AIR_DEFENCE)) {
-        g2.draw(new Arc2D.Double(x_left, y_top+ bounds.height / 4, bounds.width, bounds.height*1.5, 0,
-            180, Arc2D.OPEN));
+      case AIR_DEFENCE:
+        g2.draw(new Arc2D.Double(x_left, y_top + bounds.height / 4, bounds.width, bounds.height * 1.5, 0,
+          180, Arc2D.OPEN));
+        break;
 
-      }
-      else if (name.equals(AIR_FORCE)) {
+      case AIR_FORCE: {
         int xoff1 = (int) (bounds.width * 0.15);
         int xoff2 = (int) (bounds.width * 0.2);
         int yoff = (int) (bounds.height * 0.35);
-        g.drawLine(x_center-xoff2, y_top+yoff, x_center+xoff2, y_bottom-yoff);
-        g.drawLine(x_center+xoff2, y_top+yoff, x_center-xoff2, y_bottom-yoff);
-        g2.draw(new Arc2D.Double(x_center-xoff2-xoff1, y_top+yoff, xoff1*2, bounds.height-(2*yoff), 90, 180, Arc2D.OPEN));
-        g2.draw(new Arc2D.Double(x_center+xoff2-xoff1, y_top+yoff, xoff1*2, bounds.height-(2*yoff), 270, 180, Arc2D.OPEN));
+        g.drawLine(x_center - xoff2, y_top + yoff, x_center + xoff2, y_bottom - yoff);
+        g.drawLine(x_center + xoff2, y_top + yoff, x_center - xoff2, y_bottom - yoff);
+        g2.draw(new Arc2D.Double(x_center - xoff2 - xoff1, y_top + yoff, xoff1 * 2, bounds.height - (2 * yoff), 90, 180,
+          Arc2D.OPEN));
+        g2.draw(
+          new Arc2D.Double(x_center + xoff2 - xoff1, y_top + yoff, xoff1 * 2, bounds.height - (2 * yoff), 270, 180,
+            Arc2D.OPEN));
+        break;
       }
 
-      else if (name.equals(ANTI_TANK)) {
+      case ANTI_TANK:
         g.drawLine(x_left, y_bottom, x_center, y_top);
         g.drawLine(x_center, y_top, x_right, y_bottom);
-      }
+        break;
 
-      else if (name.equals(ARMORED)) {
+      case ARMORED: {
         int yoff = (int) (bounds.height * .25);
         int xoff1 = (int) (bounds.width * .15);
         int xoff2 = (int) (bounds.width * .20);
-        g.drawLine(x_left+xoff1+xoff2, y_top+yoff, x_right-xoff1-xoff2, y_top+yoff);
-        g.drawLine(x_left+xoff1+xoff2, y_bottom-yoff, x_right-xoff1-xoff2, y_bottom-yoff);
-        g2.draw(new Arc2D.Double(x_left+xoff1, y_top+yoff, xoff2*2, bounds.height-(yoff*2), 90, 180, Arc2D.OPEN));
-        g2.draw(new Arc2D.Double(x_right-xoff1-(2*xoff2), y_top+yoff, xoff2*2, bounds.height-(yoff*2), 270, 180, Arc2D.OPEN));
+        g.drawLine(x_left + xoff1 + xoff2, y_top + yoff, x_right - xoff1 - xoff2, y_top + yoff);
+        g.drawLine(x_left + xoff1 + xoff2, y_bottom - yoff, x_right - xoff1 - xoff2, y_bottom - yoff);
+        g2.draw(
+          new Arc2D.Double(x_left + xoff1, y_top + yoff, xoff2 * 2, bounds.height - (yoff * 2), 90, 180, Arc2D.OPEN));
+        g2.draw(
+          new Arc2D.Double(x_right - xoff1 - (2 * xoff2), y_top + yoff, xoff2 * 2, bounds.height - (yoff * 2), 270, 180,
+            Arc2D.OPEN));
+        break;
       }
 
-      else if (name.equals(ARMY_AVIATION)) {
+      case ARMY_AVIATION: {
         int xoff = (int) (bounds.height * 0.25);
         int yoff = (int) (bounds.height * 0.33);
         GeneralPath p = new GeneralPath();
-        p.moveTo(x_left+xoff, y_top+yoff);
-        p.lineTo(x_right-yoff, y_bottom-yoff);
-        p.lineTo(x_right-yoff, y_top+yoff);
-        p.lineTo(x_left+xoff, y_bottom-yoff);
+        p.moveTo(x_left + xoff, y_top + yoff);
+        p.lineTo(x_right - yoff, y_bottom - yoff);
+        p.lineTo(x_right - yoff, y_top + yoff);
+        p.lineTo(x_left + xoff, y_bottom - yoff);
         p.closePath();
         g2.draw(p);
+        break;
       }
-      else if (name.equals(ARTILLERY)) {
+
+      case ARTILLERY: {
         int radius = bounds.height / 5;
         int yoff = (drawLow ? (int) (bounds.height * .2) : 0);
         g.fillOval(x_center - radius, y_center - radius + yoff, radius * 2, radius * 2);
+        break;
       }
 
-      else if (name.equals(COMMANDO)) {
-
+      case COMMANDO: {
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
         int x1 = (int) (bounds.width / 2.5);
@@ -311,20 +323,22 @@ public class Symbol {
 
         GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
-        p.lineTo(x_left+x1, y_top);
-        p.lineTo(x_left+x1, y_top + y1);
+        p.lineTo(x_left + x1, y_top);
+        p.lineTo(x_left + x1, y_top + y1);
         p.lineTo(x_left, y_top);
         p.moveTo(x_right, y_top);
-        p.lineTo(x_right-x1, y_top);
-        p.lineTo(x_right-x1, y_top + y1);
+        p.lineTo(x_right - x1, y_top);
+        p.lineTo(x_right - x1, y_top + y1);
         p.lineTo(x_right, y_top);
         g2.fill(p);
 
+        break;
       }
 
-      else if (name.equals(ENGINEERS)) {
+      case ENGINEERS: {
         BasicStroke oldStroke = (BasicStroke) g2.getStroke();
-        BasicStroke estroke = new BasicStroke(oldStroke.getLineWidth() * 1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        BasicStroke estroke =
+          new BasicStroke(oldStroke.getLineWidth() * 1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g2.setStroke(estroke);
         int yh = (int) (bounds.height * 0.2);
         int y1 = drawLow ? y_bottom - yh - 1 : y_top + (bounds.height - yh) / 2;
@@ -340,14 +354,13 @@ public class Symbol {
         p.moveTo(x_center, y2);
         p.lineTo(x_center, y1);
         g2.draw(p);
+        break;
       }
+      case GLIDER:
 
-      else if (name.equals(GLIDER)) {
-
-        g.drawLine(x_left+(x_center-x_left)/3, y_center, x_right-(x_center-x_left)/3,y_center);
-      }
-
-      else if (name.equals(GUERILLA)) {
+        g.drawLine(x_left + (x_center - x_left) / 3, y_center, x_right - (x_center - x_left) / 3, y_center);
+        break;
+      case GUERILLA: {
 
         GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
@@ -357,41 +370,40 @@ public class Symbol {
         p.lineTo(x_left, y_top);
         g2.fill(p);
 
+        break;
       }
-
-      else if (name.equals(INFANTRY)) {
+      case INFANTRY:
 
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
 
-      }
-
-      else if (name.equals(MARINES)) {
-
-      }
-
-      else if (name.equals(MOUNTAIN)) {
+        break;
+      case MOUNTAIN: {
         int x_off = bounds.width / 6;
         GeneralPath p = new GeneralPath();
         p.moveTo(x_center, y_center);
-        p.lineTo(x_center+x_off, y_bottom);
-        p.lineTo(x_center-x_off, y_bottom);
+        p.lineTo(x_center + x_off, y_bottom);
+        p.lineTo(x_center - x_off, y_bottom);
         p.closePath();
         g2.fill(p);
+        break;
       }
-
-      else if (name.equals(NAVY)) {
+      case NAVY: {
         int yoff1 = (int) (bounds.height * 0.20);
         int yoff2 = (int) (bounds.height * 0.15);
         int xoff1 = (int) (bounds.width * 0.15);
         int xoff2 = (int) (bounds.width * 0.30);
-        g.drawLine(x_center, y_top+yoff1, x_center, y_bottom-yoff1);
-        g.drawLine(x_center-xoff1, y_top+yoff1+yoff2, x_center+xoff1, y_top+yoff1+yoff2);
-        g2.draw(new Arc2D.Double(x_center-xoff2, y_top+yoff1, xoff2*2, bounds.height-(2*yoff1), 225, 90, Arc2D.OPEN));
+        g.drawLine(x_center, y_top + yoff1, x_center, y_bottom - yoff1);
+        g.drawLine(x_center - xoff1, y_top + yoff1 + yoff2, x_center + xoff1, y_top + yoff1 + yoff2);
+        g2.draw(new Arc2D.Double(x_center - xoff2, y_top + yoff1, xoff2 * 2, bounds.height - (2 * yoff1), 225, 90,
+          Arc2D.OPEN));
+        break;
       }
-
-      else if (name.equals(RECON)) {
+      case RECON:
         g.drawLine(bounds.x, bounds.y + bounds.height, bounds.x + bounds.width, bounds.y);
+        break;
+      default:
+        // do nothing
       }
 
     }

@@ -149,13 +149,11 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * When the user completes a drag-drop operation, the pieces being
-   * dragged will either be combined with an existing piece on the map
-   * or else placed on the map without stack. This method returns a
-   * {@link PieceFinder} instance that determines which {@link GamePiece}
-   * (if any) to combine the being-dragged pieces with.
+   * When the user completes a drag-drop operation, the pieces being dragged will either be combined
+   * with an existing piece on the map or else placed on the map without stack.
    *
-   * @return
+   * @return a {@link PieceFinder} instance that determines which {@link GamePiece} (if any) to
+   *     combine the being-dragged pieces with.
    */
   protected PieceFinder createDropTargetSelector() {
     return new PieceFinder.Movable() {
@@ -528,7 +526,7 @@ public class PieceMover extends AbstractBuildable
     final BoundsTracker tracker = new BoundsTracker();
     // Map of Point->List<GamePiece> of pieces to merge with at a given
     // location. There is potentially one piece for each Game Piece Layer.
-    final HashMap<Point,List<GamePiece>> mergeTargets =
+    final HashMap<Point, List<GamePiece>> mergeTargets =
       new HashMap<>();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
@@ -617,9 +615,7 @@ public class PieceMover extends AbstractBuildable
 
           if (newList.size() != draggedPieces.size()) {
             draggedPieces.clear();
-            for (GamePiece piece : newList) {
-              draggedPieces.add(piece);
-            }
+            draggedPieces.addAll(newList);
           }
         }
 
@@ -646,9 +642,7 @@ public class PieceMover extends AbstractBuildable
       }
 
       // Record each individual piece moved
-      for (GamePiece piece : draggedPieces) {
-        allDraggedPieces.add(piece);
-      }
+      allDraggedPieces.addAll(draggedPieces);
 
       tracker.addPiece(dragging);
     }
@@ -717,16 +711,6 @@ public class PieceMover extends AbstractBuildable
     else {
       DragBuffer.getBuffer().clear();
     }
-    // show/hide selection boxes
-    map.repaint();
-  }
-
-  /** @deprecated Use {@link #selectMovablePieces(MouseEvent)}. */
-  @Deprecated
-  protected void selectMovablePieces(Point point) {
-    final GamePiece p = map.findPiece(point, dragTargetSelector);
-    dragBegin = point;
-    selectionProcessor.accept(p);
     // show/hide selection boxes
     map.repaint();
   }
@@ -836,25 +820,25 @@ public class PieceMover extends AbstractBuildable
    *
    * @author Pieter Geerkens
    */
-  abstract static public class AbstractDragHandler
+  public abstract static class AbstractDragHandler
     implements DragGestureListener,       DragSourceListener,
                DragSourceMotionListener,  DropTargetListener   {
-    static private AbstractDragHandler theDragHandler = 
+    private static AbstractDragHandler theDragHandler =
         DragSource.isDragImageSupported() ? (SystemUtils.IS_OS_MAC_OSX ?
         new DragHandlerMacOSX() : new DragHandler()) :
         new DragHandlerNoImage();
 
     /** returns the singleton DragHandler instance */
-    static public AbstractDragHandler getTheDragHandler() {
+    public static AbstractDragHandler getTheDragHandler() {
       return theDragHandler;
     }
 
-    static public void setTheDragHandler(AbstractDragHandler myHandler) {
+    public static void setTheDragHandler(AbstractDragHandler myHandler) {
       theDragHandler = myHandler;
     }
 
-    final static int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
-    final static int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
+    static final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
+    static final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
 
 
     protected JLabel dragCursor; // An image label. Lives on current DropTarget's
@@ -879,17 +863,17 @@ public class PieceMover extends AbstractBuildable
     // Seems there can be only one DropTargetListener a drop target. After we
     // process a drop target
     // event, we manually pass the event on to this listener.
-    java.util.Map<Component,DropTargetListener> dropTargetListeners =
+    java.util.Map<Component, DropTargetListener> dropTargetListeners =
       new HashMap<>();
 
-    abstract protected int getOffsetMult();
+    protected abstract int getOffsetMult();
 
     /**
      * Creates a new DropTarget and hooks us into the beginning of a
      * DropTargetListener chain. DropTarget events are not multicast;
      * there can be only one "true" listener.
      */
-    static public DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
+    public static DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
       if (dropTargetListener != null) {
         DragHandler.getTheDragHandler()
                    .dropTargetListeners.put(theComponent, dropTargetListener);
@@ -898,7 +882,7 @@ public class PieceMover extends AbstractBuildable
                             DragHandler.getTheDragHandler());
     }
 
-    static public void removeDropTarget(Component theComponent) {
+    public static void removeDropTarget(Component theComponent) {
       DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
 
@@ -979,8 +963,8 @@ public class PieceMover extends AbstractBuildable
      * @return
      */
     BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
-      Component target, boolean setSize)
-    {
+      Component target, boolean setSize) {
+
       // FIXME: Should be an ImageOp.
       dragCursorZoom = zoom;
 
@@ -1048,7 +1032,7 @@ public class PieceMover extends AbstractBuildable
         calcDrawOffset();
       }
 
-      relativePositions.add(new Point(0,0));
+      relativePositions.add(new Point(0, 0));
       int stackCount = 0;
       while (dragContents.hasMoreElements()) {
         final GamePiece nextPiece = dragContents.nextPiece();
@@ -1068,7 +1052,7 @@ public class PieceMover extends AbstractBuildable
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
-          r.translate(sm.unexSepX*stackCount,-sm.unexSepY*stackCount);
+          r.translate(sm.unexSepX*stackCount, -sm.unexSepY*stackCount);
         }
 
         boundingBox.add(r);
@@ -1099,7 +1083,7 @@ public class PieceMover extends AbstractBuildable
                         map == null ? target : map.getView(), zoom);
         }
         else {
-          final Point offset = new Point(0,0);
+          final Point offset = new Point(0, 0);
           if (pos.equals(lastPos)) {
             stackCount++;
             final StackMetrics sm = getStackMetrics(piece);
@@ -1310,7 +1294,7 @@ public class PieceMover extends AbstractBuildable
 
     /** Moves cursor after mouse */
     @Override
-    abstract public void dragMouseMoved(DragSourceDragEvent e);
+    public abstract void dragMouseMoved(DragSourceDragEvent e);
 
     ///////////////////////////////////////////////////////////////////////////
     // DROP TARGET INTERFACE
@@ -1363,16 +1347,16 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
- /**
-  * Implements a psudo-cursor that follows the mouse cursor when user
-  * drags gamepieces. Supports map zoom by resizing cursor when it enters
-  * a drop target of type Map.View.
-  *
-  * @author Jim Urbas
-  * @version 0.4.2
-  *
-  */
-  static public class DragHandlerNoImage extends AbstractDragHandler {
+  /**
+   * Implements a psudo-cursor that follows the mouse cursor when user
+   * drags gamepieces. Supports map zoom by resizing cursor when it enters
+   * a drop target of type Map.View.
+   *
+   * @author Jim Urbas
+   * @version 0.4.2
+   *
+   */
+  public static class DragHandlerNoImage extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       final Point mousePosition = dragGestureRecognizedPrep(dge);
@@ -1430,11 +1414,12 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
-  /** Implementation of AbstractDragHandler when DragImage is supported by JRE
+  /**
+   * Implementation of AbstractDragHandler when DragImage is supported by JRE
    *
-   * @Author Pieter Geerkens
+   * @author Pieter Geerkens
    */
-  static public class DragHandler extends AbstractDragHandler {
+  public static class DragHandler extends AbstractDragHandler {
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
       if (dragGestureRecognizedPrep(dge) == null) return;
@@ -1450,7 +1435,7 @@ public class PieceMover extends AbstractBuildable
     public void dragMouseMoved(DragSourceDragEvent e) {}
   }
 
-  static public class DragHandlerMacOSX extends DragHandler {
+  public static class DragHandlerMacOSX extends DragHandler {
     @Override
     protected int getOffsetMult() {
       return 1;

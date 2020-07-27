@@ -3,10 +3,10 @@
 #
 # Configuration
 #
-DMGDIR=dmg
+DMGDIR=dist/dmg
 
 JDKVER=14
-JDKDIR=jdks
+JDKDIR=dist/jdks
 
 #
 # Donwload and unpack JDKs

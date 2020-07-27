@@ -332,4 +332,12 @@ public class BasicModule extends GameModule {
   public String getI18nPrefix() {
     return "";
   }
+
+  @Override
+  public String toString() {
+    return "BasicModule{" +
+      "name='" + name + '\'' +
+      ", moduleVersion='" + moduleVersion + '\'' +
+      '}';
+  }
 }

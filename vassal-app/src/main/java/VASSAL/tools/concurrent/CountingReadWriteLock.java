@@ -38,18 +38,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CountingReadWriteLock implements ReadWriteLock {
   /** {@inheritDoc} */
   @Override
-  public Lock readLock()  { return r; }
+  public Lock readLock()  {
+    return r;
+  }
 
   /** {@inheritDoc} */
   @Override
-  public Lock writeLock() { return w; }
+  public Lock writeLock() {
+    return w;
+  }
 
   protected final ReadLock r  = new ReadLock();
   protected final WriteLock w = new WriteLock();
 
   protected final Sync sync = new Sync();
 
-  protected static abstract class BaseLock implements Lock {
+  protected abstract static class BaseLock implements Lock {
     @Override
     public void lockInterruptibly() {
       throw new UnsupportedOperationException();
@@ -63,12 +67,19 @@ public class CountingReadWriteLock implements ReadWriteLock {
 
   protected class ReadLock extends BaseLock {
     @Override
-    public void lock()    { sync.acquireShared(0); }
-    @Override
-    public void unlock()  { sync.releaseShared(0); }
+    public void lock()    {
+      sync.acquireShared(0);
+    }
 
     @Override
-    public boolean tryLock() { return sync.tryAcquireShared(0) >= 0; }
+    public void unlock()  {
+      sync.releaseShared(0);
+    }
+
+    @Override
+    public boolean tryLock() {
+      return sync.tryAcquireShared(0) >= 0;
+    }
 
     @Override
     public boolean tryLock(long time, TimeUnit unit)
@@ -79,12 +90,19 @@ public class CountingReadWriteLock implements ReadWriteLock {
 
   protected class WriteLock extends BaseLock {
     @Override
-    public void lock()   { sync.acquire(0); }
-    @Override
-    public void unlock() { sync.release(0); }
+    public void lock()   {
+      sync.acquire(0);
+    }
 
     @Override
-    public boolean tryLock() { return sync.tryAcquire(0); }
+    public void unlock() {
+      sync.release(0);
+    }
+
+    @Override
+    public boolean tryLock() {
+      return sync.tryAcquire(0);
+    }
 
     @Override
     public boolean tryLock(long time, TimeUnit unit)

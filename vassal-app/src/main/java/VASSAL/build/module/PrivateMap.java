@@ -174,7 +174,7 @@ public class PrivateMap extends Map {
   @Override
   protected Window createParentFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-      final JDialog d = new JDialog(GameModule.getGameModule().getFrame()) {
+      final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow()) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -256,17 +256,6 @@ public class PrivateMap extends Map {
       edgeBuffer = surrogate.getEdgeBuffer();
     }
     super.setBoards(c);
-  }
-
-  /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
-  @Override
-  @Deprecated
-  public void setBoards(Enumeration<Board> boardList) {
-    if (surrogate != null) {
-      boardList = surrogate.getAllBoards();
-      edgeBuffer = surrogate.getEdgeBuffer();
-    }
-    super.setBoards(boardList);
   }
 
   public static String getConfigureTypeName() {

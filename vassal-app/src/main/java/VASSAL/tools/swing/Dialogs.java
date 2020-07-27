@@ -45,8 +45,8 @@ public class Dialogs {
     String title,
     String heading,
     String message,
-    int messageType)
-  {
+    int messageType) {
+
     showMessageDialog(parent, title, heading, message, messageType, null, null);
   }
 
@@ -57,8 +57,8 @@ public class Dialogs {
     String message,
     int messageType,
     Object key,
-    String disableMsg)
-  {
+    String disableMsg) {
+
     showMessageDialog(parent, title, heading, message,
                       messageType, null, key, disableMsg);
   }
@@ -71,8 +71,8 @@ public class Dialogs {
     int messageType,
     Icon icon,
     Object key,
-    String disableMsg)
-  {
+    String disableMsg) {
+
     showDialog(parent, title, buildContents(heading, message), messageType,
                icon, JOptionPane.DEFAULT_OPTION, null, null, key, disableMsg);
   }
@@ -83,8 +83,8 @@ public class Dialogs {
     String heading,
     String message,
     int messageType,
-    int optionType)
-  {
+    int optionType) {
+
     return showConfirmDialog(parent, title, heading, message,
                              messageType, null, optionType, null, null);
   }
@@ -97,8 +97,8 @@ public class Dialogs {
     int messageType,
     int optionType,
     Object key,
-    String disableMsg)
-  {
+    String disableMsg) {
+
     return showConfirmDialog(parent, title, heading, message, messageType,
                              null, optionType, key, disableMsg);
   }
@@ -112,12 +112,12 @@ public class Dialogs {
       Icon icon,
       int optionType,
       Object key,
-      String disableMsg)
-  {
+      String disableMsg) {
+
     final Object o = showDialog(parent, title, buildContents(heading, message),
       messageType, icon, optionType, null, null, key, disableMsg);
 
-    if (o == null || !(o instanceof Integer))
+    if (!(o instanceof Integer))
       return JOptionPane.CLOSED_OPTION;
     else
       return (Integer) o;
@@ -133,8 +133,8 @@ public class Dialogs {
       Object[] options,
       Object initialValue,
       Object key,
-      String disableMsg)
-  {
+      String disableMsg) {
+
     // set up the "don't show again" check box, if applicable
     final JCheckBox disableCheck;
 
