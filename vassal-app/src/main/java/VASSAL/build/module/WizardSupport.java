@@ -156,20 +156,6 @@ public class WizardSupport {
   public void showWelcomeWizard() {
 
     final GameModule g = GameModule.getGameModule();
-    final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
-
-    if (! Boolean.TRUE.equals(showWizard)) {
-      g.getPlayerWindow().setVisible(true);
-
-      // prompt for username and password if wizard is off
-      // but no username is set
-      // FIXME: this belongs outside of the wizard, not here
-      if (!isRealName()) {
-        new UsernameAndPasswordDialog(g.getPlayerWindow()).setVisible(true);
-      }
-      return;
-    }
-
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
     final HashMap<String, Wizard> props = new HashMap<>();
@@ -195,7 +181,7 @@ public class WizardSupport {
         g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
-        new SwingWorker<Void,Void>() {
+        new SwingWorker<Void, Void>() {
           @Override
           protected Void doInBackground() {
             controls.getClient().setConnected(true);
