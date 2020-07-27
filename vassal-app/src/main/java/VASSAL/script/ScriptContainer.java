@@ -73,7 +73,7 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   @Override

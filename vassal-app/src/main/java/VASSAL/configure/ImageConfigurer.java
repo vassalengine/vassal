@@ -43,7 +43,7 @@ public class ImageConfigurer extends FileConfigurer {
 
     if (resourceDirPref == null) {
       resourceDirPref = new DirectoryConfigurer("imageDir", null);
-      gm.getPrefs().addOption(null,resourceDirPref);
+      gm.getPrefs().addOption(null, resourceDirPref);
     }
 
     final FileChooser fc =
