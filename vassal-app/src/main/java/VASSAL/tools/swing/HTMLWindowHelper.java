@@ -32,7 +32,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import VASSAL.build.widget.HtmlChart;
-import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 
