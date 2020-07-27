@@ -25,32 +25,26 @@ Piece</a></small> <small>&gt; <b>Mark When Moved</b></small><br>
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
-            <td valign="top">Pieces that have the 'Mark When Moved'
-trait will automatically display a specifiable image every time they
-are
-moved.&nbsp; Specify the image and the position at which to draw the
-image.
-&nbsp;The board command.moved status of an individual piece can be
-toggled
-with a key.<br>
+            <td valign="top">Pieces which have the <i>Mark When Moved</i> trait will automatically display a specifiable image after they have been moved.&nbsp; Specify the image and the position relative to the center of the piece at which to draw the image.
+&nbsp;A <i>Moved</i> property will be exposed on the piece, and will be set to <i>true</i> whenever the piece is moved. This <i>Moved</i> property can
+        be toggled back to <i>false</i> with the configured key command and/or menu item.<br>
 <br>
-<b>Command:&nbsp;</b>Right-click menu text.<br>
-<b>Keyboard command:&nbsp;</b>Keyboard shortcut to initiate this trait.<br>
-<b>Marker Image:&nbsp;</b>use the <i>Select</i> button to load a new image or the <i>Default</i> button to return to the default image.<br>
-<b>Horizontal Offset:&nbsp;</b>Specify how many pixels to the right of the centre of the piece to display the moved marker.<br>
-<b>Vertical Offset:&nbsp;</b>Specify how many pixels down from the centre of the piece to display the moved marker.<br>
+<b>Command:&nbsp;</b> Right-click context menu item that will clear the piece's move history (setting <i>Moved</i> property back to <i>false</i> and clearing any <a href="MovementTrail.htm">Move Trails</a>). If this
+        item is left blank, no context menu entry will appear but the move history can still be cleared with the Key Command, below.<br>
+<b>Keyboard command:&nbsp;</b> Key Command, or <a href="NamedKeyCommand.htm">Named Key Command</a> to clear the piece's move history (setting <i>Moved</i> property back to <i>false</i> and clearing any <a href="MovementTrail.htm">Move Trails</a>).<br>
+<b>Marker Image:&nbsp;</b> Use the <i>Select</i> button to load a new image or the <i>Default</i> button to return to the default image.<br>
+<b>Horizontal Offset:&nbsp;</b> Specify how many pixels to the right of the centre of the piece to display the moved marker.<br>
+<b>Vertical Offset:&nbsp;</b> Specify how many pixels down from the centre of the piece to display the moved marker.<br>
             <br>
-            <b>NOTE: </b>In order to enable this feature, you must
-also go
-to the Global Options of the module and enable the "Mark pieces that
-move"
-setting.&nbsp; Enabling this feature will automatically add a button to
-each
-Map Window that clears the moved status of all pieces on the map.<br>
-            <br>
-This trait sets the <a href="Properties.htm">Property</a>&nbsp; <span
- style="font-style: italic;">Moved=</span><span
- style="font-style: italic;">true</span> when the piece has been moved.<br>
+            <b>NOTES: </b>
+            <ul>
+              <li><b>In order to enable this feature</b>, you must also go to the Global Options of the module and enable the "Mark pieces that
+move" setting.</li> 
+              <li>A Toolbar button can also be configured in the properties of each Map Window that clears the moved status of all pieces on the map.</li>
+              <li>For pieces containing this trait, the <a href="Properties.htm">Property</a>&nbsp; <i>Moved=true</i> is set when the piece has been moved.</li>
+              <li>When the trait is activated with the menu item or Key Command, then <i>Moved=false</i> is set.</li>
+              <li>Clearing the piece's move history with this trait (e.g. using the menu item or Key Command) will also clear the <a href="MovementTrail.htm">Move Trails</a> for the piece, if any.
+            </ul>
             </td>
             <td valign="top"><img src="images/MarkMoved.png" alt=""> <br>
             </td>
@@ -65,3 +59,4 @@ This trait sets the <a href="Properties.htm">Property</a>&nbsp; <span
 </table>
 </body>
 </html>
+
