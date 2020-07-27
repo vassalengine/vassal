@@ -75,7 +75,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
-import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;

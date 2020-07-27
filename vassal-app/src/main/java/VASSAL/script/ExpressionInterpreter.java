@@ -36,7 +36,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.WarningDialog;
-import VASSAL.tools.io.IOUtils;
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;

@@ -19,7 +19,6 @@ package VASSAL.tools;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import javax.swing.KeyStroke;
 

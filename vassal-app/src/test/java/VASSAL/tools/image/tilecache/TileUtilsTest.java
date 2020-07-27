@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
-import VASSAL.tools.image.ImageIOException;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
