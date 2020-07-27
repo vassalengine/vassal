@@ -28,30 +28,27 @@
 menu command that places a different piece (the "marker") on top of this
 one.&nbsp; You can select any existing piece for the marker or define a
 new one from scratch. <br>
+            <br>
+            <b>NOTE:</b>&nbsp; This trait should not be confused with the <a href="PropertyMarker.htm">Marker</a> trait which allows a piece to be assigned a <a href="Properties.htm">Property</a> with a static constant value.
+            <br>
 			<br>
-			<span style="font-weight: bold;">Description:</span>&nbsp;A brief description of this trait that will appear in the Piece Definer window.<br>
-			<span style="font-weight: bold;">Command:</span>&nbsp;The right-click menu text for this trait.<br>
-            <span style="font-weight: bold;">Keyboard Command:</span>&nbsp;The keyboard shortcut to initiate this trait.<br>
-            <span style="font-weight: bold;">Define Marker:</span>&nbsp;Use the <i>Define Marker</i> button to open a Piece Definer to create a new definition of the marker from scratch.<br>
-            <span style="font-weight: bold;">Select:</span>&nbsp;Use the <i>Select</i> button to use the definition from an existing piece in the module. This acts as a pointer to an existing definition, if the original piece is changed, the piece created by the <i>Place Marker</i> trait will also change.<br>
-            <span style="font-weight: bold;">Horizontal offset:</span>&nbsp;
-The marker will be placed this many pixels to the right of the original
-piece.  Any value other than zero will prevent the marker from stacking with the original piece.<br>
-            <span style="font-weight: bold;">Vertical offset:</span>&nbsp;
-The marker will be placed this many pixels above the original piece.  Any value other than zero will prevent the marker from stacking with the original piece.<br>
-            <span style="font-weight: bold;">Match Rotation:</span>&nbsp;
-If selected, and both the original piece and the marker have the <a
- href="Rotate.htm">Can Rotate</a> trait, then the rotation angle of the
-marker will be adjusted to match that of the original piece.<br>
-            <span style="font-weight: bold;">Place marker:</span>&nbsp;Choose whether the marker should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.<br>
-            <span style="font-weight: bold;">Keystroke to apply after placement:</span>Optional keystroke to be applied automatically to the marker immediately after being placed.
+			<b>Description:</b>&nbsp; A brief description of this trait that will appear in the <a href="GamePiece.htm">Piece Definer</a> window.<br>
+			<b>Command:</b>&nbsp; The right-click context menu entry for this trait, if desired. If left blank, this trait will not produce a context menu item but may still be activated by the Key Command, below.<br>
+            <b>Keyboard Command:</b>&nbsp; A keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> to initiate this trait.<br>
+            <b>Define Marker:</b>&nbsp; Use the <i>Define Marker</i> button to open a <a href="GamePiece.htm">Piece Definer</a> to create a new definition of the marker from scratch.<br>
+            <b>Select:</b>&nbsp; Use the <i>Select</i> button to use the definition from an existing piece in the module. This acts as a pointer to an existing definition: if the original piece is changed, the piece created by the <i>Place Marker</i> trait will also change.<br>
+            <b>Horizontal offset:</b>&nbsp; The new piece will be placed this many pixels to the right of the original piece. Any value other than zero will prevent the new piece from stacking with the original piece.<br>
+            <b>Vertical offset:</b>&nbsp; The new piece will be placed this many pixels above the original piece. Any value other than zero will prevent the new piece from stacking with the original piece.<br>
+            <b>Match Rotation:</b>&nbsp; If selected, and both the original piece and the new piece have the <a href="Rotate.htm">Can Rotate</a> trait, then the rotation angle of the new piece will be adjusted to match that of the original piece.<br>
+            <b>Place marker:</b>&nbsp;Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.<br>
+            <b>Keystroke to apply after placement:</b>Optional key command or <a href="NamedKeyCommand.htm">Named Key Command</a> to be applied automatically to the new piece immediately after being placed.
             <br>
             <br>
             <b> EXAMPLE:</b>&nbsp; If a game uses a fortification
 counter to indicate fortified status of an army counter, this trait
 could be given to the army counter to place a fortification marker on
-the army with a keyboard command, as an alternative to dragging the
-fortification counter from the Game Piece Palette.<br>
+the army with the right-click context menu or a keyboard shortcut, as an alternative to dragging the
+a fortification counter from the Game Piece Palette.<br>
             <br>                       
             <b> SEE ALSO:</b>&nbsp;  <a href="Replace.htm">Replace with Other</a> trait.
             <br>
