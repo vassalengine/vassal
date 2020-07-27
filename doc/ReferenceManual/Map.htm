@@ -298,60 +298,64 @@
   <a name="StackViewer">
   <h3>Mouse-over Stack Viewer</h3>
   </a><br>
-  <br>
-
+  Adds a tool that displays the contents of a stack when the player leaves the mouse
+    resting over it, after a specified delay. <br>
+    <br>
   <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
     <tbody>
     <tr>
-    <td style="vertical-align: top;">Adds a tool that displays the contents of a stack when the player leaves his mouse
-    resting over it, after a specified delay. <br>
-    <br>
-    <b>Recommended Delay before display:</span>&nbsp; When the mouse has been stationary
-    for this many milliseconds, the viewer will appear.&nbsp; This can be overridden in the preferences.<br>
-    <b>Keyboard shortcut to display:</span>&nbsp; Players may display the viewer without
-    waiting by typing this keyboard shortcut.&nbsp; This can be disabled in the preferences.<br>
-    <b>Background color:</span>&nbsp; Pieces/text are drawn against a background of this
-    color.<br>
-    <b>Border/text color:</span>&nbsp; Color of any text drawn and the border around the
-    overall viewer.<br>
-    <b>Display when at least this many pieces will be included:</span>&nbsp; If set to 0,
-    then the viewer will display even if the location is empty.&nbsp; Otherwise, it will display only if 1 or 2 pieces
-    have been included via the settings below.<br>
-    <b>Always display when zoom level is less than:</span>&nbsp; Regardless of the above
-    "at least this many" setting, the viewer will also display when the map's magnification factor is less than this
-    number.<br>
-    <b>Draw pieces:</span>&nbsp; If selected, then the included pieces will be draw in the
-    viewer.<br>
-    <b>Draw pieces using zoom factor:</span>&nbsp; The magnification factor to use to draw
-    the pieces in the viewer.<br>
-    <b>Width of gap between pieces:</span>&nbsp; Empty space in pixels to place between
-    each drawn piece.<br>
-    <b>Display text:</span>&nbsp; If selected, then the viewer will draw some summary text
-    and some individualized text for each piece.<br>
-    <b>Font size:&nbsp;</span>
-    Size of the text to draw.<br>
-    <b>Summary text above pieces:</span>&nbsp; A <a href="MessageFormat.htm">Message
-    Format</a> specifying the text to display above the drawn pieces in the viewer.&nbsp; In addition to standard <a
-      href="Properties.htm">Properties</a>, you can include a property with the name <i>
-    sum(propertyName)</span>
-    where <i>propertyName</span> is a property defined on a Game Piece.&nbsp; The numeric
-    values of this property for all included pieces will be substituted.<br>
-    <b>Text below each piece:</span>&nbsp; A <a href="MessageFormat.htm">Message Format
-    </a> specifying the text to display below each included piece.<br>
-    <b>Text for empty location</span>:&nbsp; A <a href="MessageFormat.htm">Message Format
-    </a> specifying the text to display when no pieces have been selected.<br>
-    <b>Include individual pieces:</span>&nbsp; Specifies how pieces are to be selected for
-    inclusion in the viewer.&nbsp; You may restrict the pieces according to the <a href="GamePieceLayers.htm">Game Piece
-    Layer</a> that they belong.&nbsp; Alternatively, you may specify the value of a <a href="Properties.htm">Property
-    </a>.<br>
-    <b>Include non-stacking pieces:</span>&nbsp; If selected, then non-stacking pieces are
-    eligible for inclusion in the viewer.<br>
-    <b>Show pieces in unrotated state:</span>&nbsp; If selected, then pieces that can
-    rotate are drawn in the mouse-over as they look when not rotated.<br>
-    <b>Include top piece in Deck:&nbsp;</span> If selected, then the top piece of a <a
-      href="Deck.htm">Deck</a> is eligible for inclusion.</td>
     <td style="vertical-align: top;"><img src="images/CounterDetailViewer.png" title="" alt=""><br>
     </td>
+    <td style="vertical-align: top;">
+    <b>Recommended Delay before display:</b>&nbsp; When the mouse has been stationary
+    for this many milliseconds, the viewer will appear.&nbsp; This can be overridden in the preferences.<br>
+    <b>Keyboard shortcut to display:</b>&nbsp; Players may display the viewer without
+    waiting by pressing this shortcut key.&nbsp; This can be disabled in the preferences.<br>
+    <b>Background color:</b>&nbsp; Pieces/text are drawn against a background of this
+    color.<br>
+    <b>Border/text color:</b>&nbsp; Color of any text drawn and the border around the
+    overall viewer.<br>
+    <b>Display when at least this many pieces will be included:</b>&nbsp; If set to 0,
+    then the viewer will display even if the location is empty.&nbsp; Otherwise, it will display only if 1 or 2 pieces
+    have been included via the settings below.<br>
+    <b>Always display when zoom level is less than:</b>&nbsp; Regardless of the above
+    "at least this many" setting, the viewer will also display when the map's magnification factor is less than this
+    number.<br>
+    <b>Draw pieces:</b>&nbsp; If selected, then the included pieces will be draw in the
+    viewer.<br>
+    <b>Draw pieces using zoom factor:</b>&nbsp; The magnification factor to use to draw
+    the pieces in the viewer.<br>
+    <b>Width of gap between pieces:</b>&nbsp; Empty space in pixels to place between
+    each drawn piece.<br>
+    <b>Display text:</b>&nbsp; If selected, then the viewer will draw some summary text
+    and some individualized text for each piece.<br>
+    <b>Font size:&nbsp;</b>
+    Fort size for the text drawn by the stack viewer.<br>
+    <b>Summary text above pieces:</b>&nbsp; A <a href="MessageFormat.htm">Message
+    Format</a> specifying the text to display above the drawn pieces in the viewer.&nbsp; In addition to standard <a
+      href="Properties.htm">Properties</a>, you can include a property with the name <i>
+    sum(propertyName)</i>
+    where <i>propertyName</i> is a property defined on a Game Piece.&nbsp; The numeric
+    values of this property for all included pieces will be substituted.<br>
+    <b>Text below each piece:</b>&nbsp; A <a href="MessageFormat.htm">Message Format
+    </a> specifying the text to display below each included piece.<br>
+    <b>Text for empty location</b>:&nbsp; A <a href="MessageFormat.htm">Message Format
+    </a> specifying the text to display when no pieces have been selected. <br>
+    <b>Include individual pieces:</b>&nbsp; Specifies how pieces are to be selected for
+    inclusion in the viewer.&nbsp; You may restrict the pieces according to the <a href="GamePieceLayers.htm">Game Piece
+    Layer</a> that they belong.&nbsp; Alternatively, you may specify an <a href="Expression.htm">Expression</a> to
+    match desired values of one or more <a href="Properties.htm">Properties</a> in order for a piece to be included.<br>
+    <b>Include non-stacking pieces:</b>&nbsp; If selected, then pieces with a <a href="NonStacking.htm">Does not stack</a> trait are
+    eligible for inclusion in the viewer. Otherwise they are excluded regardless of any other filters.<br>
+    <b>Show pieces in unrotated state:</b>&nbsp; If selected, then pieces that can
+    rotate are drawn in the viewer as they look when not rotated.<br>
+    <b>Include top piece in Deck:&nbsp;</b> If selected, then the top piece of a <a
+      href="Deck.htm">Deck</a> is eligible for inclusion.
+      <b>Show all pieces overlapping the first piece found:&nbsp;</b> If selected, then 
+    all Game Pieces that overlap the mouse cursor location are eligible to be displayed; 
+    otherwise only pieces at the <i>exact</i> X,Y position of the <i>top</i> piece found are displayed.
+      </td>
+    
     </tr>
     </tbody>
   </table>
@@ -363,9 +367,9 @@
     <tbody>
     <tr>
     <td style="vertical-align: top;">Draws a colored border around the last piece to have been moved, added, or deleted
-    in a logfile or by an opponent during live play. <b>Color</span> is the color of the
+    in a logfile or by an opponent during live play. <b>Color</b> is the color of the
     border and
-    <b>Thickness</span> is the border thickness. The highlight is cleared by clicking on
+    <b>Thickness</b> is the border thickness. The highlight is cleared by clicking on
     the map.</td>
     <td style="vertical-align: top;"><img src="images/LastMoveHighlighter.png" title="" alt=""><br>
     </td>
@@ -377,8 +381,27 @@
   </a>
   <h3><a href="GamePieceLayers.htm">Game Piece Layers<br>
   </a></h3>
-  Allows you to restrict Game Pieces to different layers on the map.&nbsp; Pieces in higher Layers are always drawn on
-  top of lower Layers, and pieces never combine into stacks with pieces on other Layers.<br>
+
+  
+
+  <table border="0" cellpadding="2" cellspacing="2" width="60%">
+    <tbody>
+    <tr>
+    <td valign="top">
+    <img src="images/GamePieceLayers.png" alt=""><br>
+    </td>
+    <td valign="top">
+    Allows you designate certain "layers" of Game Pieces to be drawn before others.&nbsp; Pieces in higher layers are always drawn on
+    top of lower layers, and pieces never combine into stacks with pieces from other layers.<br>
+    <br>
+    See full <a href="GamePieceLayers.htm">Game Piece Layers</a> article for details.
+    </td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  
   <br>
   <a name="ImageCapture">
   <h3>Image Capture Tool</h3>
@@ -386,25 +409,29 @@
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">Adds a "Camera" button to the toolbar of the Map Window. &nbsp;Pushing the button will dump the
-    contents of the Map Window to a image file. &nbsp;This allows you to take a screen shot even if the map window is
+    <td valign="top">Adds a "Camera" button to the Toolbar of the Map Window. &nbsp;Clicking the button will dump the
+    contents of the Map Window to an image file. &nbsp;This allows you to take a screen shot even if the Map Window is
     too large to fit entirely on the screen. <br>
     </td>
     <td valign="top"><img src="images/ImageCapture.png" alt=""><br>
     </td>
     </tr>
-
     </tbody>
   </table>
+
   <a name="TextCapture">
   <h3>Text Capture Tool</h3>
   </a>
-  <table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <table border="0" cellpadding="2" cellspacing="2" width="60%">
     <tbody>
     <tr>
-    <td valign="top">Adds a "Save Text" button to the Map Window toolbar.&nbsp; Hitting the button will write a plain
-    text summary of the contents of the map to a file, using the names assigned to the counters and the appropriate
-    numbering of the board's grid.<br>
+    <td valign="top"><img src="images/TextCaptureTool.png" alt=""><br>
+    </td>
+    <td valign="top">
+      Adds a "Save Text" Button to the Map Window's Toolbar.&nbsp; Clicking the button will write a plain
+    text summary of the contents of the map to a text file, using the names assigned to the pieces and the appropriate
+    numbering and/or naming of the board's grid.<br>
+
     <br>
     </td>
     </tr>
@@ -412,11 +439,37 @@
   </table>
 
   <h3><a href="Deck.htm">Deck</a></h3>
-  A deck of cards.<br>
-  <br>
+  <table border="0" cellpadding="2" cellspacing="2" width="75%">
+    <tbody>
+    <tr>
+    <td valign="top">
+    A deck of cards, a bag of chits, or a fixed supply of counters. <br><br>
+    Decks are versatile containers for collections of pieces -- especially
+    the kind that need to be shuffled, randomized, hidden, and drawn from. <br><br>
+    See <a href="Deck.htm">full article</a> for details.
+    </td>
+    <td valign="top">
+    <img src="images/DeckShort.png" alt=""><br>
+    </td>
+    </tr>
+    </tbody>
+  </table>
 
   <h3><a href="SetupStack.htm">At-Start Stack</a></h3>
-  A fixed draw pile of counters.<br>
+  <table border="0" cellpadding="2" cellspacing="2" width="50%">
+  <tbody>
+  <tr>
+  <td valign="top"><img src="images/AtStartStack.png" alt=""><br>
+  </td>
+  <td valign="top">
+  A group of one or more pieces which begin the game on the map. <br><br>
+  See <a href="SetupStack.htm">full article</a> for more details.<br>
+  </td>
+  </tr>
+  </tbody>
+  </table>
+
+  
   <br>
   <br>
   <a name="PieceRecenterer">
@@ -426,10 +479,10 @@
 
   </tbody>
 </table>
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
+<table border="0" cellpadding="2" cellspacing="2" width="75%">
   <tbody>
   <tr>
-  <td valign="top">Adds a button to the map window toolbar.&nbsp; Then button will shift the position of all pieces on
+  <td valign="top">Adds a button to the map window's Toolbar.&nbsp; Clicking the button will shift the position of all pieces on
   the map such that they are centered around the middle of the map as much as possible.&nbsp; This is useful for games
   where there are no absolute terrain features, such as some air and naval games.</td>
   <td valign="top"><img src="images/PieceRecenterer.png" alt="" title=""><br>
@@ -442,72 +495,78 @@
 </table>
 <a name="StartupGlobalKeyCommand">
 <h3>Startup Global Key Command</h3>
-<br>
 </a>
+<br>
+Can print a welcome message, or perform some other task that needs to be done whenever the module is started up.
+<br><br>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tbody>
   <tr>
+  <td valign="top"><img alt="" src="images/StartupGlobalKeyCommand.png">&nbsp;<br>
+  </td>
   <td valign="top">An extension of <a href="#GlobalKeyCommand">Global Key Command</a>
-  that fires automatically upon completion of module load, once all the Key Listeners are started up. All fields behave
+  that fires automatically upon completion of module load, once all the key listeners are started up. All fields behave
   identically to the corresponding ones in <a href="#GlobalKeyCommand">Global Key Command</a>, except that those
-  pertaining to the physical representation of a toolbar button are repressed as being inapplicable.
+  pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
   <p>
-  If multiple start-up commands need to be run, they should be combined in a 
+  If multiple start-up commands need to be run in a particular order, they should be combined in a 
   <a href="MultiActionButton.htm">MultiAction Button</a> and then launched from a single instance of
-  StartupGlobalKeyCommand, as the sequence in which multiple instances of StartupGlobalKeyCommand are fired is
-  undetermined.
-  </td><td valign="top"><img alt="" src="images/StartupGlobalKeyCommand.png">&nbsp;<br>
+  Startup Global Key Command, as the sequence in which multiple instances of StartupGlobalKeyCommand are fired is
+  undetermined.</p>
+  <p>
+  <b>NOTE:</b>&nbsp; Startup Global Key Commands fire <i>every</i> time the module starts up, whether it is to begin a new game or to load and continue
+  an existing one. Thus if you need the Startup GKC to initiate an activity that should only be done once at the very <i>beginning</i> of a game, then 
+  it would need to send a key command to a pre-designated piece, which could then check a Global Property (called, perhaps, "StartupDone") to determine 
+  whether the game had already been started -- if it hadn't, the piece could then perform those tasks and set "StartupDone" to true, which would prevent
+  the actions from being taken on a subsequent load of a saved game.
+  </p>
   </td>
   </tr>
   </tbody>
 </table>
 <a name="GlobalKeyCommand">
 <h3>Global Key Command</h3>
-<br>
 </a>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tbody>
   <tr>
-  <td valign="top">Adds a button to the map window toolbar.&nbsp; Hitting the button will select certain pieces from the
-  map window and apply the same keyboard command to all of them simultaneously.<br>
+  <td valign="top">Adds a button to the map window's Toolbar.&nbsp; Clicking the button will pick certain pieces from the
+  map window and apply the same key command to all of them.<br>
   <br>
-  <b>Description:</span>&nbsp; A description of the action used for the button's
+  <b>Description:</b>&nbsp; A description of the action, used for the button's
   mouse-over tooltip.<br>
-  <i><b><i><span
-    style="font-style: italic;"></span></span></span></span><b>Key Command:</span> The
-  keyboard command that will be applied to the selected pieces.<br>
-  <b>Matching properties:</span>&nbsp; The command will apply to all pieces on the map
-  that match the given <a href="Properties.htm">Property</a>
-  expression.<br>
-  <b>Within a Deck, apply to:</span>&nbsp; Select how this command applies to pieces that
-  are contained within a <a href="Deck.htm">Deck</a>. &nbsp;<i>No pieces</span> means
-  that pieces in a Deck ignore the command. &nbsp;<i>All pieces</span> means that the
-  command applies to the entire Deck. &nbsp;<i>Fixed number of pieces</span> allows you
-  to specify the number of&nbsp;pieces (drawn from the top) that the command will apply to.<br>
-  <b></span><b>Tooltip text:</span>&nbsp; Mouse-over hint
-  text for the toolbar button.<br>
-  <b></span><b></span><b>
-  Button text:</span>&nbsp; Text for the toolbar button.<br>
-  <b>Button icon:</span>&nbsp; Icon for the toolbar button.<br>
-  <i><b><i></span></span>
-  </span><b>Hotkey:&nbsp;</span>Keyboard shortcut for the toolbar button.<br>
-  <b>Suppress individual reports:</span>&nbsp; If selected, then any auto-reporting of the
-  action by individual pieces via the <a href="ReportChanges.htm">Report Action</a> trait will be suppressed.<br>
-  <b>Report Format:</span>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that
-  will be echoed to the chat area when the button is pressed.<br>
+  <b>Key Command:</b> The
+  key command or <a href="NamedKeyCommand.htm">Named Key Command</a> that will be applied to the selected pieces.<br>
+  <b>Matching properties:</b>&nbsp; The command will apply to all pieces on the map
+  that match the given <a href="Expression.htm">Expression</a>. The Expression can use comparisons to
+  match relevant <a href="Properties.htm">Properties</a> of the pieces on the map to determine which ones should receive the key command,
+  such as <i>{ LocationName != "Rome" }</i> or <i>{ ArmorValue < Hits + 5 }</i>. An empty expression
+  field matches every piece it finds.<br>  
+  <b>Apply to counters on this map only?:</b>&nbsp; If checked, then only pieces on this map will be eligible to receive the key command. Otherwise
+  all pieces in the game will be eligible provide they match the expression above.<br>
+  <b>Within a Deck, apply to:</b>&nbsp; Select how this command applies to pieces that
+  are currently stacked in a <a href="Deck.htm">Deck</a>. <br>
+  &nbsp;&nbsp;<i>No pieces</i> means that pieces in a Deck ignore the command. <br>
+  &nbsp;&nbsp;<i>All pieces</i> means that the command can apply to any piece in the entire Deck that matches the expression. <br>
+  &nbsp;&nbsp;<i>Fixed number of pieces</i> allows you to specify the number of&nbsp;pieces (drawn from the top) that the command will potentially apply to--the piece(s) in question must
+  still match the expression in order to be included.<br>
+  <b>Button text:</b>&nbsp; Text for the Toolbar button.<br>
+  <b>Tooltip text:</b>&nbsp; Mouse-over hint text for the Toolbar button.<br>
+  <b>Button icon:</b>&nbsp; Icon for the Toolbar button.<br>
+  <b>Hotkey:&nbsp;</b>Keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for the Toolbar button. This is the key
+  command that will <i>initiate</i> the Global Key Command, not the one that will be sent to the matching pieces -- the command to be sent
+  is the one defined in the "Key Command: " field up above. <br> 
+  <b>Suppress individual reports:</b>&nbsp; If selected, then any auto-reporting of the
+  action by individual pieces via <a href="ReportChanges.htm">Report Action</a> traits will be suppressed.<br>
+  <b>Report Format:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that
+  will be echoed to the chat area when the button is clicked or the hotkey pressed.<br>
   <br>
   <b>Example:</b> Suppose you have configured some pieces to contain a Layer indicating that a piece has fired,
-  activated by CTRL-F and with the name<i>Fired</span>.&nbsp; Give each piece the <a
-    href="PropertyMarker.htm">Marker</a> trait with property name <i>canFire</span> <span
-    style="font-family: monospace;"></span>and value <i>true</span><span
-    style="font-family: monospace;">.</span>&nbsp; Configure the Global Key Command to apply to pieces whose properties
-  match <i>canFire = true &amp;&amp; Fired_Active = true</span><span
-    style="font-family: mon;"><i><i></span></span></span>
-  <span style="font-family: monospace;"><i></span></span><span
-    style="font-family: monospace; font-style: italic;"></span><span 
-    style="font-family: monospace; font-style: italic;"></span>.&nbsp; Specify CTRL-F as the key command.&nbsp; Now
-  pushing the Global Key Command button will set all marked pieces on the map to not having fired.<br>
-  <br>
+  activated by Ctrl+F and with the name<i>Fired</i>.&nbsp; Give each piece the <a
+    href="PropertyMarker.htm">Marker</a> trait with property name <i>canFire</i> and value <i>true</i>.&nbsp; 
+    Configure the Global Key Command to apply to pieces whose properties
+  match <i>{ canFire == "true" &amp;&amp; Fired_Active == "true" }</i>. Specify CTRL-F as the key command.&nbsp; Now
+  clicking the Global Key Command's button will set all marked pieces on the map to not having fired.<br>  
   </td>
   <td valign="top"><img alt="" src="images/GlobalKeyCommand.png">&nbsp;<br>
   </td>
@@ -520,53 +579,80 @@
 <h3>Map Shading</h3>
 </a>
 <br>
+Applies a semi-transparent solid color or image tiling to the Map.&nbsp; In background mode, can be
+  used to overlay a repeating image over solid-color boards.&nbsp; In foreground mode, the area is determined by the
+  pieces on the map that name this Map Shading in an <a href="AreaOfEffect.htm">Area of Effect</a> trait.<br><br>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tbody>
   <tr>
-  <td valign="top">Applies a semi-transparent solid color or image tiling to the Map.&nbsp; In background mode, can be
-  used to overlay a repeating image over solid-color boards.&nbsp; In foreground mode, the area is determined by the
-  pieces on the map that name this Map Shading in an <a href="AreaOfEffect.htm">Area of Effect</a> trait.<br>
-  <br>
-  <b>Name:</span>&nbsp; A short name of this shading for reference by pieces with the <a
+  <td valign="top"><img alt="" src="images/MapShading.png">&nbsp;<br>
+  </td>
+  <td valign="top">
+  <b>Name:</b>&nbsp; A short name of this shading for reference by pieces with the <a
     href="AreaOfEffect.htm">Area of Effect</a> trait.<br>
-  <b>Shading Always On:</span> If true then the shading is always drawn.&nbsp; If false,
-  then visibility is controlled by a button in the Map Window toolbar.<br>
-  <b>Shading Starts turned on:</span>&nbsp; If true, then the shading will begin visible
-  when a game is loaded.<br>
-  <b></span><b>Button text:</span>&nbsp; Text for the
-  toolbar button.<br>
-  <b>Button icon:</span>&nbsp; Icon for the toolbar button.<br>
-  <i><b><i></span></span>
-  </span><b>Hotkey:&nbsp;</span>Keyboard shortcut for the toolbar button.<br>
-  <b>All boards in map get Shaded:</span>&nbsp; Allows you to select which <a
+    <br>
+  <b>Shading Always On:</b>&nbsp; If selected then the shading is always drawn.&nbsp; Otherwise,
+  visibility is controlled by a button on the Toolbar.<br>
+    <br>
+  <b>Shading Starts turned on:</b>&nbsp; If true, then the shading will begin visible
+  when the module is loaded.<br>
+    <br>
+  <b>Button text:</b>&nbsp; Text for the Toolbar button.<br>
+    <br>
+  <b>Tooltip text:</b>&nbsp; Optional rollover text for the Toolbar button.<br>
+    <br>
+  <b>Button icon:</b>&nbsp; Icon for the Toolbar button.<br>
+    <br>
+  <b>Hotkey:&nbsp;</b>Keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for the Toolbar button.<br>
+    <br>
+  <b>All boards in map get Shaded:</b>&nbsp; Allows you to select which <a
     href="Board.htm">Boards</a> in the map to apply the shading to.<br>
-  <b>Type:</span>&nbsp; If set to <i>Background</span> then
+    <br>
+  <b>Type:</b>&nbsp; If set to <i>Background</i> then
   the shaded area includes the entire board, minus the areas attached to any <a href="AreaOfEffect.htm">Area of Effect
-  </a> traits.&nbsp; If set to Foreground, then the shaded area includes only the areas attached to <a
-    href="AreaOfEffect.htm">Area of Effect</a> traits.<br>
-  <i><b><i></span></span>
-  </span><b>Draw Shade on top of Counters:&nbsp;</span>If true, then the shading will be
-  drawn over any counters on the map.&nbsp; Otherwise, it will be drawn underneath all counters.<br>
-  <b>Shade Pattern:&nbsp;</span>Choose between 100/75/50/25 % hatch patterns, or choose a
+  </a> traits.&nbsp; If set to Foreground, then the shaded area includes only the areas attached to 
+  <a href="AreaOfEffect.htm">Area of Effect</a> traits.<br>
+    <br>
+  <b>Draw Shade on top of Counters:&nbsp;</b>If selected, then the shading will be
+  drawn over any pieces on the map.&nbsp; Otherwise, it will be drawn underneath all pieces.<br>
+    <br>
+  <b>Shade Pattern:&nbsp;</b> Choose between 100/75/50/25 % hatch patterns, or choose a
   custom image.<br>
-  <b>Color:&nbsp;</span>The color of the shading (if not using a custom image).<br>
-  <b>Opacity:&nbsp;</span>The opacity of the shading.&nbsp; 0 is invisible, 100 is
+    <br>
+  <b>Color:&nbsp;</b> The color of the shading (if not using a custom image).<br>
+    <br>
+  <b>Opacity:&nbsp;</b> The opacity of the shading.&nbsp; 0 is completely transparent, 100 is
   completely opaque.<br>
-  <b>Border:&nbsp;</span>If selected, will draw a border around the shading area.&nbsp;
+    <br>
+  <b>Border:&nbsp;</b> If selected, will draw a border around the shading area.&nbsp;
   You can specify the thickness, color, and opacity of the border.<br>
   <br>
   </td>
-  <td valign="top"><img alt="" src="images/MapShading.png">&nbsp;<br>
-  </td>
   </tr>
-  <tr>
-  </tr>
-
   </tbody>
 </table>
 <br>
 <h3><a href="GlobalProperties.htm">Global Properties</a></h3>
-Allows you to define default values for <a href="Properties.htm">Properties</a><br>
+Maps can have their own Global Properties, which apply to and are accessible by pieces on that map.<br>
+  <table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+  <tr>
+  <td valign="top">    
+  <img src="images/ChangeGlobalProperty.png">    
+  </td>
+  <td valign="top">
+  <img src="images/MapGlobalProperties.png" alt=""><br><br>
+  To add a Global Property to your map, find the <i>[Global Properties]</i> subcomponent in the Editor, right-click it, 
+  and select <i>Add Global Property</i>. This will let you define the initial value and any numeric constraints. Then,
+  you can right-click on the <i>[Global Property]</i> entry to optionally <i>Add Change-property Toolbar Button</i>, the
+  configuration dialog for which is shown at left.
+  <br><br>
+  See the article on the <a href="GlobalProperties.htm">Global Property trait</a> of pieces for more details and examples.<br>
+  </td>
+  </tr>
+  </tbody>
+  </table>
+
 <br>
 <a name="SelectionHighlighter">
 <h3>Additional Selection Highlighters</h3>
@@ -579,26 +665,26 @@ Allows you to define default values for <a href="Properties.htm">Properties</a><
   properties of more than one highlighter, all will be drawn, in addition to the highlighting color/border specified in
   the Map's properties.<br>
   <br>
-  <b>Name:</span>&nbsp; A short name for reference in the editor.<br>
-  <b>Active if Properties Match:</span> The highlighter will be drawn for&nbsp;all pieces
-  on the map that match the given <a href="Properties.htm">Property</a>
-  expression.<br>
-  <b>Use Image:</span>&nbsp; Specify an optional image to be overlaid on top of the
+  To add an Additional Selection Highlighter to your map, locate the <i>[Additional Selection Highlighters]</i> subcomponent
+  of your map in the Editor. Right-click it and select <i>Add Highlighter</i>. You can then configure your Highlighter using
+  the dialog described below.
+  <br>
+  <br>
+  <b>Name:</b>&nbsp; A short name for reference in the editor.<br>
+  <b>Active if Properties Match:</b>&nbsp; The highlighter will be drawn for&nbsp;all pieces
+  on the map that match the given <a href="Expression.htm">Expression</a>. The
+  expression can refer to <a href="Properties.htm">Properties</a> of the pieces to determine which ones are an appropriate match.
+  <br>
+  <b>Use Image:</b>&nbsp; Specify an optional image to be overlaid on top of the
   selected piece. &nbsp;The center of the image will be offset from the center of the piece by the given number of
   pixels.<br>
-  <b></span><b>Border Color:</span>&nbsp; The color of the
+  <b>Border Color:</b>&nbsp; The color of the
   border to be drawn around selected pieces.<br>
-  <b>Border thickness:</span>&nbsp; The thickness of the border<br>
+  <b>Border thickness:</b>&nbsp; The thickness of the border<br>
   </td>
   <td valign="top"><br>
-  &nbsp;
-  <table style="text-align: left; width: 100%;" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-    <tr>
-    <td><img alt="" src="images/SelectionHighlighter.png"></td>
-    </tr>
-    </tbody>
-  </table>
+    <img alt="" src="images/SelectionHighlighterFind.png"><br><br>
+    <img alt="" src="images/SelectionHighlighter.png"></td>
   <br>
   </td>
   </tr>
