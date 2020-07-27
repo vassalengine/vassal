@@ -267,6 +267,16 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
 
     // It is possible for the map to close before the menu is displayed
     if (map.getView().isShowing()) {
+
+      // Inform the piece where player clicked, if it wants to know.  
+      final ChangeTracker ch = new ChangeTracker(p);
+      p.setProperty("ClickedX", e.getPoint().x);
+      p.setProperty("ClickedY", e.getPoint().y);
+      Command comm = ch.getChangeCommand();
+      if ((comm != null) && !comm.isNull()) {
+        GameModule.getGameModule().sendAndLog(comm);
+      }      
+
       popup.show(map.getView(), pt.x, pt.y);
     }
 
