@@ -538,11 +538,9 @@ public class WizardSupport {
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
           final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
           final String labelText =
-            value instanceof PredefinedSetup
-              ? ((PredefinedSetup) value).getConfigureName()
-              : value == null
-                ? ""
-                : value.toString();
+            value instanceof PredefinedSetup ?
+              ((PredefinedSetup) value).getConfigureName() :
+              value == null ? "" : value.toString();
           c.setText(labelText);
           return c;
         }
