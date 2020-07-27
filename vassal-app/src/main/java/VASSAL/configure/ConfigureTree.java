@@ -65,6 +65,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import net.miginfocom.swing.MigLayout;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -1331,27 +1333,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public void actionPerformed(ActionEvent e) {
       final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), true);
       d.setTitle(configureTree.getSearchCmd());
-      d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
-      final Box searchStringBox = Box.createHorizontalBox();
-      searchStringBox.add(new JLabel("String to find: "));
-      searchStringBox.add(Box.createHorizontalStrut(10));
+      final JLabel searchLabel = new JLabel("String to find: ");
       final JTextField search = new JTextField(searchParameters.getSearchString(), 32);
       search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
-      searchStringBox.add(search);
-      d.add(searchStringBox);
+      searchLabel.setLabelFor(search);
 
-      final Box searchSettingsBox = Box.createHorizontalBox();
       final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
-      searchSettingsBox.add(sensitive);
       final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
-      searchSettingsBox.add(names);
       final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
-      searchSettingsBox.add(types);
-      d.add(searchSettingsBox);
 
-      final Box searchButtonsBox = Box.createHorizontalBox();
-      JButton find = new JButton(Resources.getString("Editor.search_next"));
+      final JButton find = new JButton(Resources.getString("Editor.search_next"));
       find.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1389,12 +1381,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       });
 
-      JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(e1 -> d.dispose());
 
-      searchButtonsBox.add(find);
-      searchButtonsBox.add(cancel);
-      d.add(searchButtonsBox);
+      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]"));
+
+      // top row
+      d.add(searchLabel, "align right, gapx rel");
+      d.add(search, "pushx, growx, wrap");
+
+      // options row
+      d.add(sensitive, "align center, gapx unrel, span");
+      d.add(names, "gapx unrel");
+      d.add(types, "wrap");
+
+      // buttons row
+      d.add(find, "tag ok, split");
+      d.add(cancel, "tag cancel");
 
       d.getRootPane().setDefaultButton(find); // Enter key activates search
 
