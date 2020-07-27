@@ -457,7 +457,7 @@ public class GlobalMap implements AutoConfigurable,
         realSize.height = viewSize.height;
       }
 
-      super.setBounds(0,0,realSize.width,realSize.height);
+      super.setBounds(0, 0, realSize.width, realSize.height);
     }
 
     /**

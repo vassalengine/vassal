@@ -115,11 +115,11 @@ public class TilingHandler {
     }
   }
 
-  protected Pair<Integer,Integer> findImages(
+  protected Pair<Integer, Integer> findImages(
     DataArchive archive,
     FileStore tcache,
     List<String> multi,
-    List<Pair<String,IOException>> failed) throws IOException {
+    List<Pair<String, IOException>> failed) throws IOException {
 
     // build a list of all multi-tile images and count tiles
     final Set<String> images = archive.getImageNameSet();
@@ -225,7 +225,7 @@ public class TilingHandler {
 
       final Progressor progressor = new Progressor(0, tcount) {
         @Override
-        protected void run(Pair<Integer,Integer> prog) {
+        protected void run(Pair<Integer, Integer> prog) {
           pd.setProgress((100*prog.second)/max);
         }
       };
@@ -325,10 +325,10 @@ public class TilingHandler {
    */
   public void sliceTiles() throws CancellationException, IOException {
     final List<String> multi = new ArrayList<>();
-    final List<Pair<String,IOException>> failed =
+    final List<Pair<String, IOException>> failed =
       new ArrayList<>();
 
-    Pair<Integer,Integer> s;
+    Pair<Integer, Integer> s;
     try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);

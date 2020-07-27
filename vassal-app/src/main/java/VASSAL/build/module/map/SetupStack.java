@@ -183,7 +183,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         pos = getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location,e));
+        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
       }
     }
   }
@@ -231,12 +231,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         p.translate(r.x, r.y);
       }
       if (placeNonStackingSeparately()) {
-        for (int i=0;i<s.getPieceCount();++i) {
+        for (int i=0; i<s.getPieceCount(); ++i) {
           GamePiece piece = s.getPieceAt(i);
           if (Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
             s.remove(piece);
             piece.setParent(null);
-            map.placeAt(piece,p);
+            map.placeAt(piece, p);
             i--;
           }
         }

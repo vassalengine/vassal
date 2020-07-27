@@ -408,7 +408,7 @@ public class StackMetrics extends AbstractConfigurable {
       count = Math.min(count, boundingBoxes.length);
     }
     if (shapes != null) {
-      count = Math.min(count,shapes.length);
+      count = Math.min(count, shapes.length);
     }
     int dx = parent.isExpanded() ? exSepX : unexSepX;
     int dy = parent.isExpanded() ? exSepY : unexSepY;
@@ -429,10 +429,10 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
       else {
-        child.setProperty(Properties.USE_UNROTATED_SHAPE,Boolean.TRUE);
+        child.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
         nextSelBounds = child.getShape().getBounds();
-        child.setProperty(Properties.USE_UNROTATED_SHAPE,Boolean.FALSE);
-        nextPos = new Point(0,0);
+        child.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+        nextPos = new Point(0, 0);
         if (currentPos == null) {
           currentSelBounds = nextSelBounds;
           currentSelBounds.translate(x, y);
@@ -452,7 +452,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
         if (shapes != null) {
           Shape s = child.getShape();
-          s = AffineTransform.getTranslateInstance(nextPos.x,nextPos.y).createTransformedShape(s);
+          s = AffineTransform.getTranslateInstance(nextPos.x, nextPos.y).createTransformedShape(s);
           shapes[index] = s;
         }
         currentPos = nextPos;
@@ -463,7 +463,7 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   protected void nextPosition(Point currentPos, Rectangle currentBounds, Point nextPos, Rectangle nextBounds, int dx, int dy) {
-    int deltaX,deltaY;
+    int deltaX, deltaY;
     if (dx > 0) {
       deltaX = currentBounds.x + dx - nextBounds.x;
     }
@@ -488,10 +488,10 @@ public class StackMetrics extends AbstractConfigurable {
 
   public Point relativePosition(Stack parent, GamePiece c) {
     final int index =
-      Math.min(parent.indexOf(c),parent.getMaximumVisiblePieceCount()-1);
+      Math.min(parent.indexOf(c), parent.getMaximumVisiblePieceCount()-1);
 
     if (index < 0) {
-      return new Point(0,0);
+      return new Point(0, 0);
     }
 
     final Point[] pos = new Point[parent.getMaximumVisiblePieceCount()];
@@ -617,10 +617,10 @@ public class StackMetrics extends AbstractConfigurable {
    */
   public Command placeOrMerge(GamePiece fixed, GamePiece moving) {
     if (disabled) {
-      return fixed.getMap().placeAt(moving,fixed.getPosition());
+      return fixed.getMap().placeAt(moving, fixed.getPosition());
     }
     else {
-      return merge(fixed,moving);
+      return merge(fixed, moving);
     }
   }
 

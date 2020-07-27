@@ -320,7 +320,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (isTextUnderCounters()) {
         String text = counterReportFormat.getLocalizedText(piece);
         if (text.length() > 0) {
-          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale);
+          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
           int y = dbounds.y + dbounds.height + 10;
           drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
         }
@@ -574,7 +574,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
-      super(map,pt);
+      super(map, pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
       }
@@ -796,7 +796,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       EMPTY_HEX_REPORT_FORMAT,
       DISPLAY,
       LAYER_LIST,
-      PROPERTY_FILTER,SHOW_NOSTACK,
+      PROPERTY_FILTER,
+      SHOW_NOSTACK,
       SHOW_MOVE_SELECTED,
       SHOW_NON_MOVABLE,
       UNROTATE_PIECES,

@@ -835,7 +835,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomMenu.updateZoom();
 
     final Dimension d = map.getPreferredSize();
-    map.getView().setBounds(0,0,d.width,d.height);  // calls revalidate()
+    map.getView().setBounds(0, 0, d.width, d.height);  // calls revalidate()
 
     map.centerAt(center);
     map.repaint(true);

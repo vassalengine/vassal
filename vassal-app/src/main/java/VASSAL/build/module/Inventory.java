@@ -626,7 +626,7 @@ public class Inventory extends AbstractConfigurable
   public static class SortConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new StringEnumConfigurer(key,name,SORT_OPTIONS);
+      return new StringEnumConfigurer(key, name, SORT_OPTIONS);
     }
   }
 
@@ -1515,7 +1515,7 @@ public class Inventory extends AbstractConfigurable
     protected List<TreeModelListener> treeModelListeners =
       new ArrayList<>();
     // This contains shortcuts to the nodes of the tree
-    protected Map<String,CounterNode> inventory;
+    protected Map<String, CounterNode> inventory;
     // The start of the tree
     protected CounterNode root;
     // Text view of the tree
