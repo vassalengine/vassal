@@ -91,7 +91,6 @@ import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
-import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.image.ImageUtils;
 
 /**
