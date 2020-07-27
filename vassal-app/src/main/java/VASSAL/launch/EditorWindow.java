@@ -269,7 +269,7 @@ public abstract class EditorWindow extends JFrame {
 
     // the presence of the panel prevents a NullPointerException on packing
     final JPanel panel = new JPanel();
-    panel.setPreferredSize(new Dimension(250,400));
+    panel.setPreferredSize(new Dimension(250, 400));
 
     scrollPane = new JScrollPane(
       panel,

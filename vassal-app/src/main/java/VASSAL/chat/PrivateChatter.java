@@ -17,7 +17,6 @@
  */
 package VASSAL.chat;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.ServerConnection;
 

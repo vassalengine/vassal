@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.io.output.ClosedOutputStream;

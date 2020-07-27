@@ -29,7 +29,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;

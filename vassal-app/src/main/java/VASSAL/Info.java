@@ -27,9 +27,6 @@ import java.io.File;
 import VASSAL.tools.version.GitProperties;
 import org.apache.commons.lang3.SystemUtils;
 
-import VASSAL.tools.version.VassalVersionTokenizer;
-import VASSAL.tools.version.VersionFormatException;
-import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
 
 /**

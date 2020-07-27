@@ -18,19 +18,8 @@
 
 package VASSAL.tools.swing;
 
-import javax.swing.JComponent;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
 
-import VASSAL.Info;
 import VASSAL.tools.ComponentSplitter;
 
 /**
