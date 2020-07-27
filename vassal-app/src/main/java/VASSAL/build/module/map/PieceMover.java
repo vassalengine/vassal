@@ -1099,7 +1099,7 @@ public class PieceMover extends AbstractBuildable
           
           String owner = "";
           if (piece.getParent() instanceof Deck) {
-            owner = (String) piece.getProperty(Properties.OBSCURED_BY);
+            owner = (String)piece.getProperty(Properties.OBSCURED_BY);
             piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
           }
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);

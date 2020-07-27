@@ -965,8 +965,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         bounds.height *= os_scale;
         myGrid.draw(g, bounds, bounds, os_scale, false);
       }
-      int x = (int) (myStack.pos.x * os_scale);
-      int y = (int) (myStack.pos.y * os_scale);
+      int x = (int)(myStack.pos.x * os_scale);
+      int y = (int)(myStack.pos.y * os_scale);
       myStack.stackConfigurer.drawImage(g, x, y, this, os_scale);
 
       g2d.setTransform(orig_t);

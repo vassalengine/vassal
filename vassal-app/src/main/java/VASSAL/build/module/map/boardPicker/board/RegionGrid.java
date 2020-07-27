@@ -301,7 +301,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   @Override
   public int range(Point p1, Point p2) {
-    return (int) Math.round(p1.distance(p2));
+    return (int)Math.round(p1.distance(p2));
   }
 
   //

@@ -235,7 +235,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-    g2d.setFont(font.deriveFont((float) (fontSize * os_scale)));
+    g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
 
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
@@ -307,8 +307,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       piece.draw(
         g,
-        dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale),
-        dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int) (borderWidth * os_scale),
+        dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale),
+        dbounds.y - (int) (pieceBounds.y * graphicsZoom * os_scale) + (int)(borderWidth * os_scale),
         comp,
         graphicsZoom * os_scale
       );
@@ -330,10 +330,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       borderOffset += borderWidth;
     }
 
-    bounds.x = (int) (dbounds.x / os_scale);
-    bounds.y = (int) (dbounds.y / os_scale);
-    bounds.width = (int) (dbounds.width / os_scale);
-    bounds.height = (int) (dbounds.height / os_scale);
+    bounds.x = (int)(dbounds.x / os_scale);
+    bounds.y = (int)(dbounds.y / os_scale);
+    bounds.width = (int)(dbounds.width / os_scale);
+    bounds.height = (int)(dbounds.height / os_scale);
   }
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
@@ -370,8 +370,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     String report = "";
-    int x = (int) ((bounds.x - bounds.width) * os_scale);
-    int y = (int) ((bounds.y - 5) * os_scale);
+    int x = (int)((bounds.x - bounds.width) * os_scale);
+    int y = (int)((bounds.y - 5) * os_scale);
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
@@ -941,10 +941,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (HOTKEY.equals(name)) {
       if (value instanceof String) {
-        hotkey = HotKeyConfigurer.decode((String) value);
+        hotkey = HotKeyConfigurer.decode((String)value);
       }
       else {
-        hotkey = (KeyStroke) value;
+        hotkey = (KeyStroke)value;
       }
     }
     else if (DRAW_PIECES.equals(name)) {

@@ -127,7 +127,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public void addTo(Buildable parent) {
-    map = (Map) parent;
+    map = (Map)parent;
     map.getToolBar().add(launch);
   }
 

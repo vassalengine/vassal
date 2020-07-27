@@ -441,9 +441,9 @@ public class HexGrid extends AbstractConfigurable
     }
     else if (SNAP_SCALE.equals(key)) {
       if (val instanceof String) {
-        val = Integer.valueOf((String) val);
+        val = Integer.valueOf((String)val);
       }
-      snapScale = (Integer) val;
+      snapScale = (Integer)val;
     }
     shapeCache.clear();
   }
@@ -717,10 +717,10 @@ public class HexGrid extends AbstractConfigurable
     int loc = ((int) (dx * (int) floor((x - origin.x + dx / 2) / dx) + origin.x));
     if (snapScale > 0) {
       int delta = x - loc;
-      delta = (int) round(delta/(0.5*dx/snapScale));
+      delta = (int)round(delta/(0.5*dx/snapScale));
       delta = max(delta, 1-snapScale);
       delta = min(delta, snapScale-1);
-      delta = (int) round(delta*0.5*dx/snapScale);
+      delta = (int)round(delta*0.5*dx/snapScale);
       loc += delta;
     }
     return loc;
@@ -737,10 +737,10 @@ public class HexGrid extends AbstractConfigurable
           (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
     if (snapScale > 0) {
       int delta = y - loc;
-      delta = (int) round(delta/(0.5*dy/snapScale));
+      delta = (int)round(delta/(0.5*dy/snapScale));
       delta = max(delta, 1-snapScale);
       delta = min(delta, snapScale-1);
-      delta = (int) round(delta*0.5*dy/snapScale);
+      delta = (int)round(delta*0.5*dy/snapScale);
       loc += delta;
     }
     return loc;

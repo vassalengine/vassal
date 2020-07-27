@@ -341,8 +341,8 @@ public class Inventory extends AbstractConfigurable
 
                 piece.draw(
                   g,
-                  (int) (-r.x * os_scale),
-                  (int) (-r.y * os_scale),
+                  (int)(-r.x * os_scale),
+                  (int)(-r.y * os_scale),
                   c,
                   pieceZoom * os_scale
                 );

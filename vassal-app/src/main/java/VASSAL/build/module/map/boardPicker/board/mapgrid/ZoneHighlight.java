@@ -116,7 +116,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
         g2d.fill(s);
       }
       else {
-        final Stroke stroke = new BasicStroke((float) (width*scale),
+        final Stroke stroke = new BasicStroke((float)(width*scale),
                                               BasicStroke.CAP_ROUND,
                                               BasicStroke.JOIN_ROUND);
         g2d.setStroke(stroke);
