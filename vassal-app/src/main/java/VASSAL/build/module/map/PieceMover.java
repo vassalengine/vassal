@@ -526,7 +526,7 @@ public class PieceMover extends AbstractBuildable
     final BoundsTracker tracker = new BoundsTracker();
     // Map of Point->List<GamePiece> of pieces to merge with at a given
     // location. There is potentially one piece for each Game Piece Layer.
-    final HashMap<Point,List<GamePiece>> mergeTargets =
+    final HashMap<Point, List<GamePiece>> mergeTargets =
       new HashMap<>();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
@@ -863,7 +863,7 @@ public class PieceMover extends AbstractBuildable
     // Seems there can be only one DropTargetListener a drop target. After we
     // process a drop target
     // event, we manually pass the event on to this listener.
-    java.util.Map<Component,DropTargetListener> dropTargetListeners =
+    java.util.Map<Component, DropTargetListener> dropTargetListeners =
       new HashMap<>();
 
     protected abstract int getOffsetMult();
@@ -1032,7 +1032,7 @@ public class PieceMover extends AbstractBuildable
         calcDrawOffset();
       }
 
-      relativePositions.add(new Point(0,0));
+      relativePositions.add(new Point(0, 0));
       int stackCount = 0;
       while (dragContents.hasMoreElements()) {
         final GamePiece nextPiece = dragContents.nextPiece();
@@ -1052,7 +1052,7 @@ public class PieceMover extends AbstractBuildable
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
-          r.translate(sm.unexSepX*stackCount,-sm.unexSepY*stackCount);
+          r.translate(sm.unexSepX*stackCount, -sm.unexSepY*stackCount);
         }
 
         boundingBox.add(r);
@@ -1083,7 +1083,7 @@ public class PieceMover extends AbstractBuildable
                         map == null ? target : map.getView(), zoom);
         }
         else {
-          final Point offset = new Point(0,0);
+          final Point offset = new Point(0, 0);
           if (pos.equals(lastPos)) {
             stackCount++;
             final StackMetrics sm = getStackMetrics(piece);
@@ -1099,7 +1099,7 @@ public class PieceMover extends AbstractBuildable
           
           String owner = "";
           if (piece.getParent() instanceof Deck) {
-            owner = (String)piece.getProperty(Properties.OBSCURED_BY);
+            owner = (String) piece.getProperty(Properties.OBSCURED_BY);
             piece.setProperty(Properties.OBSCURED_BY, ((Deck) piece.getParent()).isFaceDown() ? Deck.NO_USER : null);
           }
           piece.draw(g, x, y, map == null ? target : map.getView(), zoom);

@@ -116,7 +116,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
         g2d.fill(s);
       }
       else {
-        final Stroke stroke = new BasicStroke((float)(width*scale),
+        final Stroke stroke = new BasicStroke((float) (width*scale),
                                               BasicStroke.CAP_ROUND,
                                               BasicStroke.JOIN_ROUND);
         g2d.setStroke(stroke);
@@ -153,7 +153,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
           g.drawLine(1, 0, 5, 4);
         }
         g.dispose();
-        paint = new TexturePaint(img, new Rectangle(0,0,6,6));
+        paint = new TexturePaint(img, new Rectangle(0, 0, 6, 6));
       }
     }
     return paint;
@@ -256,7 +256,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.htm","ZoneHighlighter");
+    return HelpFile.getReferenceManualPage("ZonedGrid.htm", "ZoneHighlighter");
   }
 
   @Override
@@ -375,9 +375,9 @@ public class ZoneHighlight extends AbstractConfigurable  {
     @Override
     public Component getControls() {
 
-      final JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
+      final JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, opacity);
 
-      final HashMap<Integer,JLabel> labelTable = new HashMap<>();
+      final HashMap<Integer, JLabel> labelTable = new HashMap<>();
       labelTable.put(0, new JLabel("Transparent"));
       labelTable.put(100, new JLabel("Opaque"));
 

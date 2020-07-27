@@ -101,7 +101,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
 
-  protected Map<Point,Region> regionList = new HashMap<>();
+  protected Map<Point, Region> regionList = new HashMap<>();
   protected GridContainer container;
   protected boolean visible = false;
   protected static boolean inConfig = false;
@@ -301,7 +301,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   @Override
   public int range(Point p1, Point p2) {
-    return (int)Math.round(p1.distance(p2));
+    return (int) Math.round(p1.distance(p2));
   }
 
   //
@@ -643,8 +643,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
         final Rectangle bounds =
-          new Rectangle(new Point(),myBoard.bounds().getSize());
-        grid.forceDraw(g,bounds,bounds,1.0,false);
+          new Rectangle(new Point(), myBoard.bounds().getSize());
+        grid.forceDraw(g, bounds, bounds, 1.0, false);
         final Rectangle selection = config.getSelectionRect();
         if (selection != null) {
           final Graphics2D g2d = (Graphics2D) g;
@@ -990,7 +990,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       public void actionPerformed(ActionEvent evt) {
         PropertiesWindow w = openWindows.get(target);
         if (w == null) {
-          w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
+          w = new PropertiesWindow(dialogOwner, false, target, helpWindow);
           w.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -1001,7 +1001,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
               owner.repaint();
             }
           });
-          openWindows.put(target,w);
+          openWindows.put(target, w);
           w.setVisible(true);
         }
         w.toFront();

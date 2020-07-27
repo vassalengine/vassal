@@ -63,7 +63,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
         GameModule.getGameModule().sendAndLog(recenter(map));
       }
     };
-    launch = new LaunchButton("Recenter",TOOLTIP,BUTTON_TEXT,HOTKEY,ICON,al);
+    launch = new LaunchButton("Recenter", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
@@ -74,13 +74,13 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   public Command recenter(Map map) {
     final Command c = new NullCommand();
     final GamePiece[] pieces = map.getPieces();
-    final Rectangle r = new Rectangle(0,0,-1,-1);
+    final Rectangle r = new Rectangle(0, 0, -1, -1);
 
     for (GamePiece p : pieces) {
       if (Boolean.TRUE.equals(dispatcher.accept(p))) {
         final Point pt = p.getPosition();
         final Rectangle pRect = p.getShape().getBounds();
-        pRect.translate(pt.x,pt.y);
+        pRect.translate(pt.x, pt.y);
         r.add(pRect);
       }
     }
@@ -92,7 +92,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
         if (Boolean.TRUE.equals(dispatcher.accept(p))) {
           final ChangeTracker tracker = new ChangeTracker(p);
           final Point pt = p.getPosition();
-          pt.translate(dx,dy);
+          pt.translate(dx, dy);
           p.setPosition(pt);
           c.append(tracker.getChangeCommand());
         }
@@ -127,7 +127,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public void addTo(Buildable parent) {
-    map = (Map)parent;
+    map = (Map) parent;
     map.getToolBar().add(launch);
   }
 
@@ -151,7 +151,8 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     return new String[]{
       BUTTON_TEXT,
       TOOLTIP,
-      ICON,HOTKEY
+      ICON,
+      HOTKEY
     };
   }
 
@@ -189,6 +190,6 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public void setAttribute(String key, Object value) {
-    launch.setAttribute(key,value);
+    launch.setAttribute(key, value);
   }
 }

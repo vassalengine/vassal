@@ -835,7 +835,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomMenu.updateZoom();
 
     final Dimension d = map.getPreferredSize();
-    map.getView().setBounds(0,0,d.width,d.height);  // calls revalidate()
+    map.getView().setBounds(0, 0, d.width, d.height);  // calls revalidate()
 
     map.centerAt(center);
     map.repaint(true);
@@ -1207,7 +1207,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // calculate convergeants
       int p0 = 1;
       int q0 = 0;
-      int p1 = (int)Math.floor(z);
+      int p1 = (int) Math.floor(z);
       int q1 = 1;
       int p2;
       int q2;
@@ -1216,12 +1216,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       double next_cf;
 
       while (Math.abs(r) >= 0.0001 &&
-             Math.abs((double)p1/q1 - z) > 0.0001) {
+             Math.abs((double) p1/q1 - z) > 0.0001) {
         r = 1.0/r;
         next_cf = Math.floor(r);
 
-        p2 = (int)(next_cf * p1 + p0);
-        q2 = (int)(next_cf * q1 + q0);
+        p2 = (int) (next_cf * p1 + p0);
+        q2 = (int) (next_cf * q1 + q0);
 
         // We limit the numerator and denominator to be 256 or less,
         // and also exclude absurd ratios like 170:171.
@@ -1237,7 +1237,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         r -= next_cf;
       }
 
-      z = (double)p1/q1;
+      z = (double) p1/q1;
 
       // hard upper and lower bounds for zoom ratio
       if (z > 256.0) {

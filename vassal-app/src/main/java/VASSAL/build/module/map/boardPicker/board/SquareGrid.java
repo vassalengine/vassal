@@ -65,7 +65,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean dotsVisible = false;
   protected Color color = Color.black;
   protected GridContainer container;
-  protected Map<Integer,Area> shapeCache = new HashMap<>();
+  protected Map<Integer, Area> shapeCache = new HashMap<>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
   protected boolean snapTo = true;
@@ -450,26 +450,26 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
         }
       }
       else {
-        nx = 2*(int)round(offsetX/dx);
-        ny = 2*(int)round(offsetY/dy);
+        nx = 2*(int) round(offsetX/dx);
+        ny = 2*(int) round(offsetY/dy);
         if (snapScale > 0) {
-          int deltaX = offsetX - (int)round(nx*dx/2);
-          deltaX = (int)round(deltaX/(0.5*dx/snapScale));
-          deltaX = max(deltaX,1-snapScale);
-          deltaX = min(deltaX,snapScale-1);
-          deltaX = (int)round(deltaX*0.5*dx/snapScale);
-          int deltaY = offsetY - (int)round(ny*dy/2);
-          deltaY = (int)round(deltaY/(0.5*dy/snapScale));
-          deltaY = max(deltaY,1-snapScale);
-          deltaY = min(deltaY,snapScale-1);
-          deltaY = (int)round(deltaY*0.5*dy/snapScale);
-          snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
+          int deltaX = offsetX - (int) round(nx*dx/2);
+          deltaX = (int) round(deltaX/(0.5*dx/snapScale));
+          deltaX = max(deltaX, 1-snapScale);
+          deltaX = min(deltaX, snapScale-1);
+          deltaX = (int) round(deltaX*0.5*dx/snapScale);
+          int deltaY = offsetY - (int) round(ny*dy/2);
+          deltaY = (int) round(deltaY/(0.5*dy/snapScale));
+          deltaY = max(deltaY, 1-snapScale);
+          deltaY = min(deltaY, snapScale-1);
+          deltaY = (int) round(deltaY*0.5*dy/snapScale);
+          snap = new Point((int) round(nx*dx/2 + deltaX), (int) round(ny*dy/2+deltaY));
           snap.translate(origin.x, origin.y);
         }
       }
     }
     if (snap == null) {
-      snap = new Point(origin.x + (int)round(nx * dx / 2), origin.y + (int) round(ny * dy / 2));
+      snap = new Point(origin.x + (int) round(nx * dx / 2), origin.y + (int) round(ny * dy / 2));
     }
     return snap;
   }
