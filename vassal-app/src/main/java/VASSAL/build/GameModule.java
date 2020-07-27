@@ -394,9 +394,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners 
    */
   public void refreshKeyStrokeListeners() {
-    for (KeyStrokeListener kl : keyStrokeListeners) {
-      kl.setKeyStroke(kl.getKeyStroke());
-    }
+    keyStrokeListeners.forEach(l -> l.setKeyStroke(l.getKeyStroke()));
   }
   
 
