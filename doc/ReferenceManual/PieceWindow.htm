@@ -52,6 +52,13 @@ text on the toolbar button that shows and hides the Game Piece Palette.<span
 Button Icon:&nbsp; </span>The icon image on the toolbar button.<br>
             <span style="font-weight: bold;">Hotkey:&nbsp; </span>A
 keyboard shortcut for the toolbar button.<br>
+            <span style="font-weight: bold;">Image scale for all child 
+            members:&nbsp; </span> A scale factor to be used to draw
+            the images for pieces displayed by this panel or its members. 
+            If an inner widget (e.g. a panel, a list, etc) contains its 
+            own scaling factor, that one overrides any factor provided 
+            in an outer member.<br>
+             
             <br>
 The Game Piece Palette is highly configurable, and can can contain any
 combination
@@ -71,7 +78,9 @@ by dragging them within the configuration tree.<br>
             <br>
             <br>
             </td>
-            <td valign="top"><img src="images/PieceWindow.png" alt=""> <br>
+            <td valign="top"><img src="images/PieceWindow.png" alt=""> <br> <br>
+            <img src="images/PaletteExample.png" alt=""> <br>                      
+            
             </td>
           </tr>
           <tr>
@@ -93,9 +102,19 @@ appropriately named images.<br>
 A pull-down menu in which each menu item corresponds to a subcomponent.
 &nbsp;The name of the menu item will be the name of the subcomponent.
       <h3>Scrollable List</h3>
-A scroll list in which each entry corresponds to a subcomponent.
-&nbsp;The
-name of the entry will be the name of the subcomponent.
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+      <tbody>
+      <tr>
+      <td valign="top">A scroll list in which each entry corresponds to a subcomponent.
+&nbsp;The name of the entry will be the name of the subcomponent. An image scale can be
+applied to the images drawn pieces in the list.
+            </td>
+            <td valign="top"><img src="images/ListWidget.png" alt=""> <br> <br>
+            <td valign="top"><img src="images/ListExample.png" alt=""> <br>
+            </td>
+      </tbody>
+      </table>
+
       <h3>Tabbed Pane</h3>
 A panel with tabs, each of which corresponds to a Chart, Panel, or
 other
@@ -115,9 +134,10 @@ a fixed number of columns that the panel will have. &nbsp;Otherwise,
 the
 subcomponents will appear in a single row, or a single column if the
 "Vertical
-layout box is checked.<br>
+layout box is checked. An image scale can be applied to the images
+drawn for pieces shown on the panel.<br>
             </td>
-            <td valign="top"><img src="images/PanelWidget.png" alt=""> <br>
+            <td valign="top"><img src="images/PanelWidget.png" alt=""> <br><br>
             <img src="images/PanelWidget2.png" alt="" > <br>
             </td>
           </tr>

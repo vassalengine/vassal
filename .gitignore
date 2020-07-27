@@ -1,5 +1,11 @@
 .*.swp
-javadoc/
+
+# packaging
+dist/dmg/
+dist/jdks/
+
+# generated files
+jdoc/
 tmp/
 
 # IntelliJ
@@ -15,3 +21,5 @@ out/
 
 # Maven
 target/
+releases/
+snapshots/
