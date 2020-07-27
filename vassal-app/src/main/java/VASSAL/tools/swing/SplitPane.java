@@ -39,7 +39,6 @@ public class SplitPane extends ComponentSplitter.SplitPane {
    * @param baseComponent
    * @param hideablePosition         one of {@link #HIDE_TOP}, {@link #HIDE_BOTTOM}, {@link #HIDE_LEFT} or {@link #HIDE_RIGHT}
    * @param resizeOnVisibilityChange
-   * @deprecated use {@link SplitPane}
    */
   public SplitPane(Component hideableComponent, Component baseComponent, int hideablePosition,
                    boolean resizeOnVisibilityChange) {

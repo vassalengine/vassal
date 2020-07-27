@@ -105,6 +105,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -261,7 +262,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     else if (VASSAL_VERSION_CREATED.equals(name)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
-      if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
+      if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         WarningDialog.show("GameModule.version_warning",
                            vassalVersionCreated, runningVersion);
       }
