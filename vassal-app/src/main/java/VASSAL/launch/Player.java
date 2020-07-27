@@ -44,6 +44,7 @@ import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * @author Joel Uckelman
@@ -155,7 +156,7 @@ public class Player extends Launcher {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
-        if (Info.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+        if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
           if ("VASL".equals(md.getName())) {
             ErrorDialog.show(
               "Error.VASL_too_old",

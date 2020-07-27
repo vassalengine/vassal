@@ -188,7 +188,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected ArrayList<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
+
+  /**
+   * @deprecated type will change to {@link SplitPane}
+   */
+  @Deprecated
   protected ComponentSplitter.SplitPane mainWindowDock;
+
   protected BoardPicker picker;
   protected JToolBar toolBar = new JToolBar();
   protected Zoomer zoom;
