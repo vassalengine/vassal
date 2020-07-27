@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2020 by Rodney Kinney, Brian Reynolds, VASSAL
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -36,6 +36,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
@@ -65,7 +66,7 @@ import VASSAL.tools.ScrollPane;
 public class Chatter extends JPanel implements CommandEncoder, Buildable {
   private static final long serialVersionUID = 1L;
 
-  protected JTextPane conversation;
+  protected JTextPane conversationPane;
   protected HTMLDocument doc;
   protected HTMLEditorKit kit;
   protected StyleSheet style;
@@ -89,6 +90,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected Color systemMsg, myChat, otherChat;
 
   protected boolean htmlCompatibility; // Disable HTML parsing unless opted in, to maintain backwards compatibility
+  protected JTextArea conversation;    // Backward compatibility for overridden classes. Needs something to suppress.
 
   public static String getAnonymousUserName() {
     return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
@@ -96,12 +98,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   public Chatter() {    
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    
+    conversation = new JTextArea(); // For backward override compatibility only.
 
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
-    conversation = new JTextPane();
-    conversation.setContentType("text/html");
-    doc = (HTMLDocument) conversation.getDocument();
-    kit = (HTMLEditorKit) conversation.getEditorKit();
+    conversationPane = new JTextPane();
+    conversationPane.setContentType("text/html");
+    doc = (HTMLDocument) conversationPane.getDocument();
+    kit = (HTMLEditorKit) conversationPane.getEditorKit();
 
     style = kit.getStyleSheet();
     myFont = new Font("SansSerif", Font.PLAIN, 12); // Will be overridden by the font from Chat preferences
@@ -118,8 +122,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     }
 
-    conversation.setEditable(false);
-    conversation.addComponentListener(new ComponentAdapter() {
+    conversationPane.setEditable(false);
+    conversationPane.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
@@ -140,15 +144,29 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     FontMetrics fm = getFontMetrics(myFont);
     int fontHeight = fm.getHeight();
 
-    conversation.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
+    conversationPane.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
 
-    scroll.setViewportView(conversation);
+    scroll.setViewportView(conversationPane);
     scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster
     add(scroll);
     add(input);
     
-    setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversation.getPreferredSize().height));
+    setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
+  
+  
+  /**
+   * Because our Chatters make themselves visible in their constructor, providing a way for an overriding class to 
+   * "turn this chatter off" is friendlier than What Went Before.
+   * 
+   * @param vis - whether this chatter should be visible
+   */
+  protected void setChatterVisible(boolean vis) {
+    conversationPane.setVisible(vis);
+    input.setVisible(vis);
+    scroll.setVisible(vis);
+  }
+  
 
   private String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
@@ -159,13 +177,24 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     return input;
   }
 
-  // To make the player colors easy to override in a custom class 
-  // (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
+  /**
+   * Styles a chat message based on the player who sent it. Presently just distinguishes a chat message "from me" from a chat message "from anyone else".
+   * 
+   * To make the player colors easy to override in a custom class
+   * (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
+   * @param s - chat message from a player
+   * @return - an entry in our CSS style sheet to use for this chat message
+   */
   protected String getChatStyle(String s) {   
     return s.startsWith(formatChat("").trim()) ? "mychat" : "other";
   }
     
-  // A hook for inserting a console class that accepts commands 
+  /**
+   * A hook for inserting a console class that accepts commands
+   * @param s            - chat message
+   * @param style        - current style name (contains information that might be useful)
+   * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
+   */
   public void consoleHook(String s, String style, boolean html_allowed) {
     
   }
@@ -290,7 +319,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     catch (IOException ex) {
       ErrorDialog.bug(ex);
     }
-    conversation.update(conversation.getGraphics()); // Force graphics to update
+    conversationPane.update(conversationPane.getGraphics()); // Force graphics to update
     consoleHook(s, style, html_allowed);             
   }
 
@@ -305,7 +334,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     return GlobalOptions.getInstance().getPlayerId();
   }
 
-  // Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
+  /**
+   * Adds or updates a CSS stylesheet entry. Styles in the color, font type, and font size.
+   * @param s Style name
+   * @param f Font to use
+   * @param c Color for text
+   * @param font_weight Bold? Italic?
+   * @param size Font size
+   */
   protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
     style.addRule(s + 
@@ -320,7 +356,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                   "}");
   }
 
-  // Build ourselves a CSS stylesheet from our preference font/color settings.
+  /**
+   * Build ourselves a CSS stylesheet from our preference font/color settings.
+   * @param f - Font to use for this stylesheet
+   */
   protected void makeStyleSheet(Font f) {
     if (style == null) {
       return;
@@ -365,8 +404,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         input.setFont(f);
       }
     }
-    if (conversation != null) {
-      conversation.setFont(f);
+    if (conversationPane != null) {
+      conversationPane.setFont(f);
     }
     makeStyleSheet(f); // When font changes, rebuild our stylesheet
   }
