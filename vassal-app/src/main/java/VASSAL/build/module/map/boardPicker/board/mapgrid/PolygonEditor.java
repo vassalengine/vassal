@@ -115,8 +115,8 @@ public class PolygonEditor extends JPanel {
         }
       }
     };
-    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0), WHEN_IN_FOCUSED_WINDOW);
-    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,0), WHEN_IN_FOCUSED_WINDOW);
+    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), WHEN_IN_FOCUSED_WINDOW);
+    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
     requestFocus();
     selected = 2;
     repaint();

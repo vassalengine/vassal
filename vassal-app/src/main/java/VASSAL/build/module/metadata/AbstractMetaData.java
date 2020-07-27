@@ -345,7 +345,7 @@ public abstract class AbstractMetaData {
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
 
-      for (Map.Entry<String,String> en : translations.entrySet()) {
+      for (Map.Entry<String, String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
         e.setAttribute(LANG_ATTR, en.getValue());
         e.appendChild(doc.createTextNode(en.getKey()));

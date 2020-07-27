@@ -311,7 +311,7 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
-      setLayout(new MigLayout("wrap 1","[center]"));
+      setLayout(new MigLayout("wrap 1", "[center]"));
 
       final JPanel buttonPanel = new JPanel(new MigLayout());
 

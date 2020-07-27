@@ -143,7 +143,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
-  protected java.util.Map<Double,TexturePaint> textures = new HashMap<>();
+  protected java.util.Map<Double, TexturePaint> textures = new HashMap<>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
@@ -247,7 +247,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
-      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece,ShadedPiece.class);
+      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
       if (shaded != null) {
         Area shape = shaded.getArea(this);
         if (shape != null) {
@@ -348,7 +348,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     @Override
     public Dimension getSize() {
-      return new Dimension(2,2);
+      return new Dimension(2, 2);
     }
 
     @Override
