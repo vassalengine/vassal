@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -493,10 +494,10 @@ public class WizardSupport {
    *
    */
   public static class PlayOfflinePanels extends WizardPanelProvider {
-    private List setups;
-    private String description;
+    private final List<PredefinedSetup> setups;
+    private final String description;
 
-    protected PlayOfflinePanels(String title, String singleDescription, List setups) {
+    protected PlayOfflinePanels(String title, String singleDescription, List<PredefinedSetup> setups) {
       super(title, SETUP_KEY, singleDescription);
       this.setups = setups;
       this.description = singleDescription;
@@ -504,8 +505,9 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
-      final JComboBox setupSelection = new JComboBox(setups.toArray());
-      ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
+      DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>(new Vector<>(setups));
+      comboBoxModel.insertElementAt(description, 0);
+      final JComboBox<Object> setupSelection = new JComboBox<>(comboBoxModel);
       setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
         @Override
@@ -533,18 +535,13 @@ public class WizardSupport {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-          JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-          if (value instanceof PredefinedSetup) {
-            PredefinedSetup pds = (PredefinedSetup) value;
-            c.setText((pds).getConfigureName());
-            if (pds.isMenu()) {
-              c.setSize(0, 0);
-            }
-          }
-          else {
-            c.setText(value == null ? "" : value.toString());
-          }
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+          final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+          final String labelText =
+            value instanceof PredefinedSetup ?
+              ((PredefinedSetup) value).getConfigureName() :
+              value == null ? "" : value.toString();
+          c.setText(labelText);
           return c;
         }
       });
