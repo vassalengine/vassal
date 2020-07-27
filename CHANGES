@@ -3,6 +3,8 @@
 * 13205: NPE when trying to display file write failure dialog
 * 13199: MapShader using image throws InternalError on Linux
 * 13196: Ctrl+Click toggles rather than only deselects
+* 13191: Add a "Search" command to the editor for searching the
+    nodes/names/descriptions of a module
 * 13184: CounterDetailViewer can now display overlapping counters
 * 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
 * 13172: Undo button can now be assigned a hotkey by module designer
