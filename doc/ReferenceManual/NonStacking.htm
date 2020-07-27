@@ -20,54 +20,53 @@ Piece</a></small> <small>&gt; <b>Does not stack</b></small><br>
     <tr>
       <td valign="top">
       <hr size="2" width="100%">
-      <h2>Does not Stack<br>
+      <h2>Does not stack<br>
       </h2>
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
         <tbody>
           <tr>
             <td valign="top">
-The 'Does not stack' trait's primary function is that it prevents a piece from forming stacks with other pieces on the board.<br>
+The 'Does not stack' trait's primary function is that it prevents a piece from forming stacks with other pieces on the board. Pieces with
+        this trait can be placed at any pixel location on a map, and they will simply overlap with and/or partially or completely obscure
+        or be obscured by any pieces they are placed on top of or beneath.<br>
 <br>
-The trait also controls how players interact with the piece when trying to manually select or move it. Note that any selection
-or movement limitations do not apply when the piece is moved automatically through the operation of one of its traits (e.g. a <a href="SendToLocation.htm">Send To Location</a> trait).<br>
+The trait <i>also</i> controls how players interact with the piece when clicking on it, dragging it, or dragging a band-select box
+        around a group of pieces. Note that any selection or movement limitations do not apply when the piece is 
+        moved automatically through the operation of one of its traits (e.g. a <a href="SendToLocation.htm">Send To Location</a> trait).<br>
 			<br>
-			<b>Select Piece:&nbsp</b>This option controls what happens when a player tries to select a piece. Options are:
+			<b>Select Piece:&nbsp</b>This option controls what happens when a player tries to select a piece, e.g. by clicking on it. Options are:
 			<ul>
 				<li><i>normally&nbsp;</i>The piece can be selected normally.</li>
 				<li><i>when shift-key down&nbsp;</i>A player must hold the Shift key down to select the piece.</li>
 				<li><i>when alt-key down&nbsp;</i>A player must hold the Alt key down to select the piece.</li>
 				<li><i>never&nbsp;</i>The piece can never be selected by a player.</li>
 			</ul>
-			<b>Band-Select Piece:&nbsp;</b>This option controls what happens when a player draws a band-select box, or "lasso" around
-			a group of pieces and this piece is within the boundaries of the band-select. This can be used to prevent e.g. a certain
-			class of terrain markers or immobile markers from being swept up in band-selects when only pieces are desired.
+			<b>Band-Select Piece:&nbsp;</b>This option controls what happens when a player draws a band-select box or "lasso" around
+			a group of pieces and this piece lies within the boundaries of the band-select. This can be used to prevent e.g. a certain
+			class of terrain markers or immobile markers from being swept up in band-selects when only pieces are desired, but still allowing
+            these markers to be clicked on directly and be selected.
 			<ul>
 			  <li><i>normally&nbsp;</i>The piece can be band-selected normally.</li>
 			  <li><i>when alt-key down&nbsp;</i>A player must hold the Alt key down when band-selecting in order for this piece to be
 			  added to the selection.
 			  <li><i>never&nbsp;</i>The piece is never selected by band-selects.</li> 
 			</ul>
-			<b>Move Piece:&nbsp</b>This option controls what happens when a player tries to move a selected piece by drag and drop. Options are:
+			<b>Move Piece:&nbsp</b>This option controls what happens when a player tries to move a selected piece by drag-and-drop. Options are:
 			<ul>
 				<li><i>normally&nbsp;</i>The piece can be moved normally.</li>
 				<li><i>only if selected&nbsp;</i>The piece can only by moved if it is selected.</li>
 				<li><i>never&nbsp;</i>The piece can never be moved manually by a player.</li>
 			</ul>
-			<b>Ignore grid when moving?&nbsp</b>Select this option to prevent the piece from snapping to the nearest grid location when it is moved<br/>
+			<b>Ignore grid when moving?&nbsp</b>Select this option to prevent the piece from snapping to the nearest grid location when it is moved. This overrides
+            any setting configured in a Hex Grid, Irregular Grid, or Rectangular Grid.<br/>
             <br>
-            <b>EXAMPLE:</b> Use non-stacking pieces to represent
-playing
-cards in games that mix cards and counters, so that the cards can be
-placed
-on a map without interfering with stacks of counters.&nbsp; <br>
+            <b>EXAMPLE:</b> Use non-stacking pieces to represent playing cards in games that mix cards and counters, so that the cards can be placed on a map without interfering with stacks of counters.&nbsp; <br>
             <br>
-            <b>EXAMPLE: &nbsp;</b>Pieces that represent map features,
-such
-as destroyed bridges or control markers, can use the "Move piece never"
-option
+            <b>EXAMPLE: &nbsp;</b>Pieces that represent map features, such as destroyed bridges or control markers, can use the "Move piece never" option
 so that players do not inadvertently move them around. They could also 
 be filtered out of band-selects, while still being allowed to be selected
-when clicked on directly.</td>
+when clicked on directly, so that players can still modify and/or delete them
+as the game progresses.</td>
             <td valign="top"><img src="images/NonStacking.png" alt=""/><br>
             </td>
           </tr>
