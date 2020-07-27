@@ -274,7 +274,7 @@ public class ImageSaver extends AbstractConfigurable {
     task.execute();
   }
 
-  private class SnapshotTask extends SwingWorker<Void,Void> {
+  private class SnapshotTask extends SwingWorker<Void, Void> {
     private int tiles;
     private int tilesDone = 0;
 

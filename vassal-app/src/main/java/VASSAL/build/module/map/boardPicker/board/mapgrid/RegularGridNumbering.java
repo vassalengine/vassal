@@ -309,7 +309,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public static class LocationFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION,ROW,COLUMN});
+      return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION, ROW, COLUMN});
     }
   }
 

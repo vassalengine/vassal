@@ -47,7 +47,7 @@ public class ExtensionsLoader implements CommandEncoder {
   public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<>();
-  protected HashMap<String,String> loadedIds = new HashMap<>();
+  protected HashMap<String, String> loadedIds = new HashMap<>();
 
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;
@@ -83,7 +83,7 @@ public class ExtensionsLoader implements CommandEncoder {
     }
     for (File ext : extMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
-        GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.deactivating_extension",ext.getName()));
+        GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.deactivating_extension", ext.getName()));
         extMgr.setActive(ext, false);
       }
     }

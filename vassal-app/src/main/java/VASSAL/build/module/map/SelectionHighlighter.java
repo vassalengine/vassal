@@ -122,7 +122,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         Resources.getString("Editor.SelectionHighlight.border_thickness"), //$NON-NLS-1$
         Resources.getString("Editor.SelectionHighlight.image"), //$NON-NLS-1$
         Resources.getString("Editor.SelectionHighlight.offset_x"), //$NON-NLS-1$
-        Resources.getString("Editor.SelectionHighlight.offset_y"),//$NON-NLS-1$
+        Resources.getString("Editor.SelectionHighlight.offset_y"), //$NON-NLS-1$
     };
   }
 
