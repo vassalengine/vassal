@@ -40,7 +40,7 @@ import VASSAL.i18n.Resources;
  */
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
-  private Map<String,PrototypeDefinition> definitions =
+  private Map<String, PrototypeDefinition> definitions =
     new HashMap<>();
 
   @Override
@@ -74,7 +74,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   @Override

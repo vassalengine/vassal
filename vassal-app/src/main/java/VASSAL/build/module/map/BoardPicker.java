@@ -258,7 +258,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       }
       names.add(b.getName());
       if (b.getName() == null) {
-        report.addWarning(Resources.getString("BoardPicker.no_name",ConfigureTree.getConfigureName(map)));
+        report.addWarning(Resources.getString("BoardPicker.no_name", ConfigureTree.getConfigureName(map)));
       }
       b.validate(b, report);
     }

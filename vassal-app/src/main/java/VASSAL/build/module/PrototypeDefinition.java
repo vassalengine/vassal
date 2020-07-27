@@ -57,7 +57,7 @@ public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
                                             ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
-  private java.util.Map<String,GamePiece> pieces =
+  private java.util.Map<String, GamePiece> pieces =
     new HashMap<>();
   private String pieceDefinition;
   private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
@@ -153,7 +153,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       try {
         final AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
         if (comm == null) {
-          ErrorDialog.dataError(new BadDataReport("Couldn't build piece ",def,null)); //$NON-NLS-1$
+          ErrorDialog.dataError(new BadDataReport("Couldn't build piece ", def, null)); //$NON-NLS-1$
         }
         else {
           piece = comm.getTarget();
@@ -161,7 +161,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         }
       }
       catch (RuntimeException e) {
-        ErrorDialog.dataError(new BadDataReport("Couldn't build piece",def,e));
+        ErrorDialog.dataError(new BadDataReport("Couldn't build piece", def, e));
       }
     }
     return piece;

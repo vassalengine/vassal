@@ -133,9 +133,9 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       ArrayList<KeyStroke> strokes = new ArrayList<>();
 
       // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      HashMap<KeyCommandSubMenu,JMenu> subMenus = new HashMap<>();
+      HashMap<KeyCommandSubMenu, JMenu> subMenus = new HashMap<>();
       // Maps name to a list of commands with that name
-      HashMap<String,ArrayList<JMenuItem>> commandNames = new HashMap<>();
+      HashMap<String, ArrayList<JMenuItem>> commandNames = new HashMap<>();
 
       for (KeyCommand keyCommand : c) {
         keyCommand.setGlobal(global);
@@ -178,7 +178,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
 
       // Move commands from main menu into submenus
-      for (java.util.Map.Entry<KeyCommandSubMenu,JMenu> e :
+      for (java.util.Map.Entry<KeyCommandSubMenu, JMenu> e :
                                                         subMenus.entrySet()) {
         final KeyCommandSubMenu menuCommand = e.getKey();
         final JMenu subMenu = e.getValue();
