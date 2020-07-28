@@ -42,6 +42,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerRoster;
@@ -275,6 +276,7 @@ public class BasicModule extends GameModule {
     addComponent(PrototypesContainer.class);
     addComponent(PieceWindow.class);
     addComponent(Chatter.class);
+    addComponent(KeyNamer.class);
     addComponent(Language.class);
   }
 
