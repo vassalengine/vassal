@@ -199,7 +199,7 @@ public class CounterGlobalKeyCommand extends Decorator
           reportDataError(this, Resources.getString("Error.non_number_error"), "range["+rangeProperty+"]="+rangeValue, e);
         }
       }
-      filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));
+      filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
     for (Map m : Map.getMapList()) {

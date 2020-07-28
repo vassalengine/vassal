@@ -180,7 +180,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
     int offset = 0;
     for (int ty = minTileY; ty <= maxTileY; ++ty) {
       for (int tx = minTileX; tx <= maxTileX; ++tx) {
-        tilesInRect[offset++] = new Point(tx,ty);
+        tilesInRect[offset++] = new Point(tx, ty);
       }
     }
 

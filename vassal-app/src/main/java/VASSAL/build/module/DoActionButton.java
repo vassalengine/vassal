@@ -104,7 +104,7 @@ public class DoActionButton extends AbstractConfigurable
   protected int indexStep = 1;
   protected int indexValue;
 
-  protected MutableProperty.Impl loopIndexProperty = new MutableProperty.Impl("",this);
+  protected MutableProperty.Impl loopIndexProperty = new MutableProperty.Impl("", this);
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {

@@ -50,7 +50,7 @@ import VASSAL.tools.FormattedString;
 
 public class DieManager extends AbstractConfigurable {
 
-  private Map<String,DieServer> servers;
+  private Map<String, DieServer> servers;
   private List<InternetDiceButton> dieButtons = new ArrayList<>();
   private String desc = "Die Manager";
   private boolean useMultiRoll;

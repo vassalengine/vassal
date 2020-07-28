@@ -181,7 +181,7 @@ public abstract class DieServer {
    */
   public void doInternetRoll(final RollSet mroll, final FormattedString format) {
     // FIXME: refactor so that doInBackground can return something useful
-    new SwingWorker<Void,Void>() {
+    new SwingWorker<Void, Void>() {
       @Override
       public Void doInBackground() throws Exception {
         doIRoll(mroll);

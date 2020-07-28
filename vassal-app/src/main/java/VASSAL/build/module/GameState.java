@@ -94,7 +94,7 @@ public class GameState implements CommandEncoder {
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(GameState.class);
 
-  protected Map<String,GamePiece> pieces = new HashMap<>();
+  protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame;
@@ -779,7 +779,7 @@ public class GameState implements CommandEncoder {
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-    new SwingWorker<Command,Void>() {
+    new SwingWorker<Command, Void>() {
       @Override
       public Command doInBackground() throws Exception {
         try (in) {
@@ -925,7 +925,7 @@ public class GameState implements CommandEncoder {
   public DirectoryConfigurer getSavedGameDirectoryPreference() {
     if (savedGameDirectoryPreference == null) {
       savedGameDirectoryPreference = new DirectoryConfigurer("savedGameDir", null);
-      GameModule.getGameModule().getPrefs().addOption(null,savedGameDirectoryPreference);
+      GameModule.getGameModule().getPrefs().addOption(null, savedGameDirectoryPreference);
     }
     return savedGameDirectoryPreference;
   }

@@ -111,7 +111,7 @@ public class ArrayUtils {
   /* @deprecated Use {@link org.apache.commons.lang3.ArrayUtils.addFirst()}. */
   @Deprecated
   @SuppressWarnings("unchecked")
-  public static <T,X extends T,Y extends T> T[] prepend(Class<T[]> type,
+  public static <T, X extends T, Y extends T> T[] prepend(Class<T[]> type,
                                                         X[] orig, Y e) {
     final T[] tmp =
       (T[]) Array.newInstance(type.getComponentType(), orig.length+1);
@@ -193,7 +193,7 @@ public class ArrayUtils {
 
   /* @deprecated Use {@link org.apache.commons.lang3.ArrayUtils.add()}. */
   @Deprecated
-  public static <T,X extends T,Y extends T> T[] append(Class<T[]> type,
+  public static <T, X extends T, Y extends T> T[] append(Class<T[]> type,
                                                        X[] orig, Y e) {
     final T[] tmp = Arrays.copyOf(orig, orig.length+1, type);
     tmp[orig.length] = e;
@@ -282,7 +282,7 @@ public class ArrayUtils {
   /* @deprecated Use {@link org.apache.commons.lang3.ArrayUtils.addAll()}. */
   @Deprecated
   @SuppressWarnings("unchecked")
-  public static <T,X extends T,Y extends T> T[] append(Class<T[]> type,
+  public static <T, X extends T, Y extends T> T[] append(Class<T[]> type,
                                                        X[] a, Y... b) {
     final T[] tmp = (T[]) Array.newInstance(type.getComponentType(),
                                             a.length + b.length);
@@ -381,7 +381,7 @@ public class ArrayUtils {
   /* @deprecated Use {@link org.apache.commons.lang3.ArrayUtils.insert()}. */
   @Deprecated
   @SuppressWarnings("unchecked")
-  public static <T,X extends T,Y extends T> T[] insert(Class<T[]> type,
+  public static <T, X extends T, Y extends T> T[] insert(Class<T[]> type,
                                                        X[] orig, int pos, Y e) {
     final T[] tmp =
       (T[]) Array.newInstance(type.getComponentType(), orig.length+1);
@@ -481,7 +481,7 @@ public class ArrayUtils {
   /* @deprecated Use {@link org.apache.commons.lang3.ArrayUtils.insert()}. */
   @Deprecated
   @SuppressWarnings("unchecked")
-  public static <T,X extends T,Y extends T> T[] insert(Class<T[]> type,
+  public static <T, X extends T, Y extends T> T[] insert(Class<T[]> type,
                                                        X[] a, int pos, Y... b) {
     final T[] tmp =
       (T[]) Array.newInstance(type.getComponentType(), a.length+b.length);
