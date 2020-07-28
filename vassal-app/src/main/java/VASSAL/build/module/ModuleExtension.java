@@ -60,6 +60,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * An optional extension to a GameModule
@@ -313,7 +314,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     else if (BASE_MODULE_VERSION.equals(key)) {
       String version = (String) value;
-      if (!universal && Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
+      if (!universal && VersionUtils.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
             Resources.getString("ModuleExtension.wrong_module_version",
                 getName(), version, GameModule.getGameModule().getGameVersion(),
@@ -323,7 +324,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     else if (VASSAL_VERSION_CREATED.equals(key)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
-      if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
+      if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
             getName(), value, runningVersion ));
       }
@@ -545,7 +546,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
            GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
         if (ext.getName().equals(name)) {
           containsExtension = true;
-          if (Info.compareVersions(ext.getVersion(), version) > 0) {
+          if (VersionUtils.compareVersions(ext.getVersion(), version) > 0) {
             GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;
