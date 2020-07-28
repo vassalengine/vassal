@@ -141,67 +141,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
   
   /**
-   * A plain text representation of a KeyStroke.  Doesn't differ much
-   * from {@link KeyEvent#getKeyText}
-   * 
-   * In the Chatter for module custom class overridability (Many of Java's default names are ugly/terrible)
-   */
-  public static String getKeyString(KeyStroke k) {
-    if (k == null) {
-      return null;
-    }
-        
-    String s;
-    int code = k.getKeyCode();
-    switch (code) {
-    // The addition of underscores screws up these names
-    case KeyEvent.VK_ADD:
-      s = Resources.getString("Keys.numplus"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    case KeyEvent.VK_SUBTRACT:
-      s = Resources.getString("Keys.numminus"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    // More compact name, also commonly printed keys  
-    case KeyEvent.VK_PAGE_UP:
-      s = Resources.getString("Keys.pgup"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    case KeyEvent.VK_PAGE_DOWN:
-      s = Resources.getString("Keys.pgdn"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    // Non-Americans were (rightly) commenting about this
-    case KeyEvent.VK_OPEN_BRACKET:
-      s = Resources.getString("Keys.bropen"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    case KeyEvent.VK_CLOSE_BRACKET:
-      s = Resources.getString("Keys.brclose"); //$NON-NLS-1$ //$NON-NLS-2$
-      break;
-    default:
-      s = "";
-      break;
-    }
-    if (s.isEmpty() || s.contains("Keys.")) { //$NON-NLS-1$
-      s = KeyEvent.getKeyText(code); 
-    }
-    s = StringUtils.capitalize(s);
-    s = s.replace(' ', '_');        
-    
-    final int mods = SwingUtils.genericToSystem(k).getModifiers();
-    if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.META_DOWN_MASK) > 0) {  // This is "Command" key on Mac
-      s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    return s;
-  }
-
-  /**
    * Set the Font used by the text area
    */
   @Override
