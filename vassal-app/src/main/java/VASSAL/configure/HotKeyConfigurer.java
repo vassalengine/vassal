@@ -157,16 +157,16 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
 
     final int mods = SwingUtils.genericToSystem(k).getModifiers();
     if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+      s = Resources.getString("Keys.shift") + "+" + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+      s = Resources.getString("Keys.ctrl") + "+" + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((mods & KeyEvent.META_DOWN_MASK) > 0) {  // This is "Command" key on Mac
-      s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+      s = Resources.getString("Keys.meta") + "+" + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
-      s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
+      s = Resources.getString("Keys.alt") + "+" + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     return s;
   }
