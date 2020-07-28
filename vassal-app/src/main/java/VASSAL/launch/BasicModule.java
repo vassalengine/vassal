@@ -143,7 +143,14 @@ public class BasicModule extends GameModule {
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
-      ensureComponent(Language.class);
+      ensureComponent(Language.class);      
+      ensureComponent(BasicCommandEncoder.class);
+      ensureComponent(Documentation.class);
+      ensureComponent(PlayerRoster.class);
+      ensureComponent(GlobalOptions.class);
+      ensureComponent(PrototypesContainer.class);
+      ensureComponent(Chatter.class);      
+      ensureComponent(KeyNamer.class);
     }
     else {
       buildDefaultComponents();
