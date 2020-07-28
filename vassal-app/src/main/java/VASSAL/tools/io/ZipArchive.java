@@ -452,7 +452,9 @@ public class ZipArchive implements FileArchive {
 
     // Replace old archive with temp archive.
     try {
-      FileUtils.forceDelete(archiveFile);
+      if (archiveFile.exists()) {
+        FileUtils.forceDelete(archiveFile);
+      }
       FileUtils.moveFile(tmpFile, archiveFile);
     }
     catch (IOException e) {
