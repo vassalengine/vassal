@@ -30,19 +30,25 @@ property during play.<br>
       <br>
       <span style="font-weight: bold;">Name:</span>&nbsp; The name
 of the property.<br>
+      <br>
       <span style="font-weight: bold;">Value:</span> The
 value of the property at the start of a new game.<br>
+        <br>
       <span style="font-weight: bold;"></span><span
  style="font-weight: bold;">Is Numeric?</span> If true,
 then changes to the value of the property will be restricted to integer
 values.<br>
+        <br>
       <span style="font-weight: bold;">Minimum Value:</span>&nbsp;
 Numeric values will be restricted to no less than this number whenever an "Increment numeric value" or "Prompt user" operation is performed. Note that "Set Value Directly" operations will <i>not</i> honor this constraint.<br>
+        <br>
       <span style="font-weight: bold;">Maximum Value:</span>&nbsp;
 Numeric values will be restricted to no more than this number whenever an "Increment numeric value" or "Prompt user" operation is performed. Note that "Set Value Directly" operations will <i>not</i> honor this constraint.<br>
+        <br>
       <span style="font-weight: bold;">Wrap Around</span>&nbsp;
 If true, then when incrementing this numeric property, values will wrap
 around from the maximum to the minimum.<br>
+        <br>
       <span style="font-weight: bold;">Key Commands</span>&nbsp; Adds
 any number of commands to the right-click drop-down menu for this Game
 Piece.&nbsp; Hit the <span style="font-style: italic;">New</span>
@@ -50,7 +56,9 @@ button to add a new command and the <span style="font-style: italic;">Remove</sp
 button to remove one.&nbsp; For each command:<br>
 <br>
 &nbsp;&nbsp;<b>Menu Command:</b>&nbsp;Right-click context menu item that will initiate this operation (can be left blank if only the Key Command portion is to be used).<br>
+        <br>
 &nbsp;&nbsp;<b>Key Command:</b>&nbsp;<a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will initiate this operation.<br>
+        <br>
 &nbsp;&nbsp;<b>Type:</b>&nbsp;Select the way in which this command will change the property:
 <ul>
 	<li><i>Set value directly:</i>&nbsp;Set the property directly to the value of the <a href="Expression.htm">Expression</a> entered in the <b>New Value</b> field. <b>Note:</b> When setting the value of a <i>numeric</i> property directly with this option, the Minimum/Maximum constraints are <i>not</i> honored.</li>

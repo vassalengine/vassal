@@ -346,7 +346,7 @@
     </a> specifying the text to display when no pieces have been selected. <br>
     <b>Include individual pieces:</b>&nbsp; Specifies how pieces are to be selected for
     inclusion in the viewer.&nbsp; You may restrict the pieces according to the <a href="GamePieceLayers.htm">Game Piece
-    Layer</a> that they belong.&nbsp; Alternatively, you may specify an <a href="Expression.htm">Expression</a> to
+    Layer</a> that they belong.&nbsp; Alternatively, you may specify an <a href="PropertyMatchExpression.htm">Property Match Expression</a> to
     match desired values of one or more <a href="Properties.htm">Properties</a> in order for a piece to be included.<br>
     <b>Include non-stacking pieces:</b>&nbsp; If selected, then pieces with a <a href="NonStacking.htm">Does not stack</a> trait are
     eligible for inclusion in the viewer. Otherwise they are excluded regardless of any other filters.<br>
@@ -541,7 +541,7 @@ Can print a welcome message, or perform some other task that needs to be done wh
   <b>Key Command:</b> The
   key command or <a href="NamedKeyCommand.htm">Named Key Command</a> that will be applied to the selected pieces.<br>
   <b>Matching properties:</b>&nbsp; The command will apply to all pieces on the map
-  that match the given <a href="Expression.htm">Expression</a>. The Expression can use comparisons to
+  that match the given <a href="PropertyMatchExpression.htm">Property Match Expression</a>. The Expression can use comparisons to
   match relevant <a href="Properties.htm">Properties</a> of the pieces on the map to determine which ones should receive the key command,
   such as <i>{ LocationName != "Rome" }</i> or <i>{ ArmorValue < Hits + 5 }</i>. An empty expression
   field matches every piece it finds.<br>  
@@ -675,7 +675,7 @@ Maps can have their own Global Properties, which apply to and are accessible by 
   <br>
   <b>Name:</b>&nbsp; A short name for reference in the editor.<br>
   <b>Active if Properties Match:</b>&nbsp; The highlighter will be drawn for&nbsp;all pieces
-  on the map that match the given <a href="Expression.htm">Expression</a>. The
+  on the map that match the given <a href="PropertyMatchExpression.htm">Property Match Expression</a>. The
   expression can refer to <a href="Properties.htm">Properties</a> of the pieces to determine which ones are an appropriate match.
   <br>
   <b>Use Image:</b>&nbsp; Specify an optional image to be overlaid on top of the
