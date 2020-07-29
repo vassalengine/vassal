@@ -297,7 +297,7 @@ public final class GameRefresher implements GameComponent {
 
   static class RefreshDialog extends JDialog {
     private static final long serialVersionUID = 1L;
-    final private GameRefresher refresher;
+    private final GameRefresher refresher;
     private JTextArea results;
     private JCheckBox nameCheck;
 

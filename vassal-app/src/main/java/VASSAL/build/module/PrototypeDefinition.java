@@ -57,10 +57,10 @@ public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
                                             ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
-  final private java.util.Map<String, GamePiece> pieces = new HashMap<>();
+  private final java.util.Map<String, GamePiece> pieces = new HashMap<>();
   private String pieceDefinition;
-  final private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
-  final private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  private static final UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
+  private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
   @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -192,10 +192,10 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   public static class Config extends Configurer {
-    final private Box box;
-    final private PieceDefiner pieceDefiner;
-    final private StringConfigurer name;
-    final private PrototypeDefinition def;
+    private final Box box;
+    private final PieceDefiner pieceDefiner;
+    private final StringConfigurer name;
+    private final PrototypeDefinition def;
 
     public Config(PrototypeDefinition def) {
       super(null, null, def);

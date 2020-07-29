@@ -41,7 +41,7 @@ import VASSAL.i18n.Resources;
  */
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
-  final private Map<String, PrototypeDefinition> definitions = new HashMap<>();
+  private final Map<String, PrototypeDefinition> definitions = new HashMap<>();
 
   /**
    * Return an unmodifiable Collection of the current Prototype Definitions
