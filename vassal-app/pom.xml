@@ -235,6 +235,7 @@
 				<configuration>
 					<enableAssertions>true</enableAssertions>
 					<testFailureIgnore>false</testFailureIgnore>
+          <trimStackTrace>false</trimStackTrace>
 					<excludes>
 						<exclude>**/AllTests.java</exclude>
 					</excludes>
