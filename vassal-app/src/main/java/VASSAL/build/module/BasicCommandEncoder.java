@@ -541,11 +541,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
   }
 
-  public static interface DecoratorFactory {
+  public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
 
-  public static interface BasicPieceFactory {
+  public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }
 }
