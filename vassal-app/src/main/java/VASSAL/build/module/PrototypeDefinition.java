@@ -57,11 +57,10 @@ public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
                                             ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
-  private java.util.Map<String, GamePiece> pieces =
-    new HashMap<>();
+  final private java.util.Map<String, GamePiece> pieces = new HashMap<>();
   private String pieceDefinition;
-  private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
-  private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  final private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
+  final private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
   @Override
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -139,8 +138,8 @@ public class PrototypeDefinition extends AbstractConfigurable
   /**
    * For the case when the piece definition is a Message Format, expand the definition using the given properties
    *
-   * @param props
-   * @return
+   * @param props PropertySource providing property values
+   * @return Created Piece
    */
   public GamePiece getPiece(PropertySource props) {
     String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
@@ -193,10 +192,10 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   public static class Config extends Configurer {
-    private Box box;
-    private PieceDefiner pieceDefiner;
-    private StringConfigurer name;
-    private PrototypeDefinition def;
+    final private Box box;
+    final private PieceDefiner pieceDefiner;
+    final private StringConfigurer name;
+    final private PrototypeDefinition def;
 
     public Config(PrototypeDefinition def) {
       super(null, null, def);

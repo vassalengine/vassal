@@ -168,6 +168,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     if (b instanceof PieceSlot) {
       checker.add((PieceSlot) b);
     }
+    else if (b instanceof PrototypeDefinition) {
+      checker.add((PrototypeDefinition) b);
+    }
     else if (b instanceof ExtensionElement) {
       checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
