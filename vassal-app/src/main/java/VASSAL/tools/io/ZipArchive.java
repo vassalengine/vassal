@@ -55,11 +55,17 @@ public class ZipArchive implements FileArchive {
   private FileSystem zipfs = null;
 
   private static FileSystemProvider getZipFSProvider() throws IOException {
-    return FileSystemProvider.installedProviders()
-                             .stream()
-                             .filter(p -> "jar".equals(p.getScheme()))
-                             .findFirst()
-                             .orElse(null);
+    final FileSystemProvider prov =
+      FileSystemProvider.installedProviders()
+                        .stream()
+                        .filter(p -> "jar".equals(p.getScheme()))
+                        .findFirst()
+                        .orElse(null);
+    if (prov == null) {
+      throw new IOException("failed to find ZIP FileSystemProvider");
+    }
+
+    return prov;
   }
 
   private static FileSystem getFileSystem(Path path, boolean truncate) throws IOException {
