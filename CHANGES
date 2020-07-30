@@ -6,6 +6,7 @@
 * 13191: Add a "Search" command to the editor for searching the
     nodes/names/descriptions of a module
 * 13184: CounterDetailViewer can now display overlapping counters
+* 13178: Game Refresher does not handle Place Markers or Prototypes correctly
 * 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
 * 13172: Undo button can now be assigned a hotkey by module designer
 * 13171: SetGlobalProperty makes menuCommands the wrong type of array
