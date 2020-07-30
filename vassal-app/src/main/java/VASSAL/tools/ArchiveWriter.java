@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2020 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -252,7 +251,6 @@ public class ArchiveWriter extends DataArchive {
 
       archive = new ZipArchive(tmp, filename);
       archiveName = filename;
-      archive.flush();
 
       tmp.revert();
       tmp.close();

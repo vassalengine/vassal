@@ -72,7 +72,7 @@ public class ZipArchive implements FileArchive {
     Map<String, Object> env;
 
     if (truncate) {
-      Files.delete(path);
+      Files.deleteIfExists(path);
       env = Map.of("create", "true");
     }
     else {
@@ -163,7 +163,9 @@ public class ZipArchive implements FileArchive {
     // copy each entry to the new archive
     for (String name : src.getFiles()) {
       try (InputStream in = src.getInputStream(name)) {
-        add(name, in);
+        final Path dp = zipfs.getPath(name);
+        ensureParentsExist(dp);
+        Files.copy(in, dp);
       }
     }
 
@@ -218,6 +220,13 @@ public class ZipArchive implements FileArchive {
       // the returned stream unlocks when there is no exception
       r.unlock();
       throw ex;
+    }
+  }
+
+  private void ensureParentsExist(Path p) throws IOException {
+    final Path parent = p.getParent();
+    if (parent != null) {
+      Files.createDirectories(parent);
     }
   }
 
@@ -329,6 +338,12 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private void deleteTempFiles() throws IOException {
+    for (Path p : entries.values()) {
+      deleteTempFile(p);
+    }
+  }
+
   /** {@inheritDoc} */
   @Override
   public boolean remove(String path) throws IOException {
@@ -349,9 +364,18 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private void deleteTempFiles() throws IOException {
-    for (Path p : entries.values()) {
-      deleteTempFile(p);
+  private void cleanup() throws IOException {
+    if (!closed) {
+      deleteTempFiles();
+      entries.clear();
+
+      if (zipfs != null) {
+        zipfs.close();
+        zipfs = null;
+      }
+
+      modified = false;
+      closed = true;
     }
   }
 
@@ -360,13 +384,9 @@ public class ZipArchive implements FileArchive {
   public void revert() throws IOException {
     w.lock();
     try {
-      if (!modified) {
-        return;
+      if (modified) {
+        cleanup();
       }
-
-      deleteTempFiles();
-      modified = false;
-      close();
     }
     finally {
       w.unlock();
@@ -384,21 +404,12 @@ public class ZipArchive implements FileArchive {
   public void close() throws IOException {
     w.lock();
     try {
-      if (closed) {
-        return;
+      if (!closed) {
+        if (modified) {
+          writeToDisk();
+        }
+        cleanup();
       }
-
-      if (modified) {
-        writeToDisk();
-      }
-
-      if (zipfs != null) {
-        zipfs.close();
-        zipfs = null;
-      }
-
-      closed = true;
-      entries.clear();
     }
     finally {
       w.unlock();
@@ -411,10 +422,7 @@ public class ZipArchive implements FileArchive {
     try (FileSystem tmpfs = getFileSystem(tmpFile, true)) {
       for (Map.Entry<String, Path> e : entries.entrySet()) {
         final Path dst = tmpfs.getPath(e.getKey());
-        final Path dst_parent = dst.getParent();
-        if (dst_parent != null) {
-          Files.createDirectories(dst_parent);
-        }
+        ensureParentsExist(dst);
         Files.copy(e.getValue(), dst);
       }
     }
@@ -435,10 +443,6 @@ public class ZipArchive implements FileArchive {
         String.format(fmt, archiveFile, e.getMessage(), tmpFile), e
       );
     }
-
-    // tidy up
-    deleteTempFiles();
-    modified = false;
   }
 
   /** {@inheritDoc} */
