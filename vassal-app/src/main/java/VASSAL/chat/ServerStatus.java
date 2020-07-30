@@ -38,7 +38,7 @@ public interface ServerStatus {
    */
   public ModuleSummary[] getHistory(String timeRange);
 
-  public static class ModuleSummary {
+  public class ModuleSummary {
     private String moduleName;
     private Map<String,Room> rooms = new HashMap<>();
 
