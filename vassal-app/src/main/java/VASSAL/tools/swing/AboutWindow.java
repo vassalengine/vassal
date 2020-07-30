@@ -66,7 +66,7 @@ public class AboutWindow extends JWindow {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent e) {
-        if (SwingUtils.isLeftMouseButton(e)) {
+        if (SwingUtils.isMainMouseButtonDown(e)) {
           setVisible(false);
           dispose();
         }

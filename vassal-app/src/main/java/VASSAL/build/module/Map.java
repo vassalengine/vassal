@@ -1415,7 +1415,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (!SwingUtils.isRightMouseButton(e)) {
+    if (!SwingUtils.isContextMouseButtonDown(e)) {
       scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }
     else {

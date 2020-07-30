@@ -23,6 +23,8 @@ import java.awt.event.KeyListener;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * Text component for specifying a hot key
  */
@@ -57,7 +59,7 @@ public class HotkeySpecifier extends JTextField implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    stroke = KeyStroke.getKeyStrokeForEvent(e);
+    stroke = SwingUtils.getKeyStrokeForEvent(e);
   }
 
   @Override

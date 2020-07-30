@@ -63,6 +63,7 @@ import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.swing.SwingUtils;
 
 public class GlobalOptions extends AbstractConfigurable {
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
@@ -79,6 +80,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
+  public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -95,6 +97,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String markMoved = NEVER;
   
   private int dragThreshold = 10;
+  
+  private boolean macLegacy;
 
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
@@ -181,7 +185,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Resources.getString("GlobalOptions.classic_mfd"),
         Boolean.FALSE
       );
-    classicMfd.addPropertyChangeListener( (evt) -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
+    classicMfd.addPropertyChangeListener( evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
     prefs.addOption(classicMfd);
 
     //BR// Drag Threshold
@@ -198,6 +202,18 @@ public class GlobalOptions extends AbstractConfigurable {
       }
     });
     prefs.addOption(dragThresholdConf);
+    
+    //BR// Mac Legacy (essentially swaps Control and Command functions to their "old, bad, pre-3.3.3" mappings)
+    final BooleanConfigurer macLegacyConf = new BooleanConfigurer(
+        MAC_LEGACY,
+        Resources.getString("GlobalOptions.mac_legacy"),
+        Boolean.FALSE);
+    macLegacyConf.addPropertyChangeListener( evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
+    
+    if (SystemUtils.IS_OS_MAC_OSX) { 
+      // Only need to *display* this preference if we're running on a Mac.
+      prefs.addOption(macLegacyConf);
+    }
     
     validator = new SingleChildInstance(gm, getClass());
   }
@@ -217,6 +233,21 @@ public class GlobalOptions extends AbstractConfigurable {
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
   }
+  
+  
+  public boolean isPrefMacLegacy() {
+    return macLegacy;
+  }
+  
+  
+  public void setPrefMacLegacy(boolean b) {
+    macLegacy = b;
+    // Tell SwingUtils we've changed our mind about Macs
+    SwingUtils.setMacLegacy(b);
+    // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
+    GameModule.getGameModule().refreshKeyStrokeListeners(); 
+  }
+ 
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$

@@ -49,6 +49,8 @@ import javax.swing.text.Utilities;
 import javax.swing.text.View;
 import javax.swing.text.WrappedPlainView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -136,7 +138,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public void show(String s) {
     conversation.append("\n" + s); //$NON-NLS-1$
   }
-
+  
   /**
    * Set the Font used by the text area
    */

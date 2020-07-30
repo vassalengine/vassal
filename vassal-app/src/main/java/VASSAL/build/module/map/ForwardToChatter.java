@@ -26,6 +26,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This KeyListener forwards key event from a {@link Map} to the
@@ -71,7 +72,7 @@ public class ForwardToChatter implements Buildable, KeyListener {
 
   private void process(KeyEvent e) {
     if (!e.isConsumed()) {
-      GameModule.getGameModule().getChatter().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+      GameModule.getGameModule().getChatter().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
   }
 }
