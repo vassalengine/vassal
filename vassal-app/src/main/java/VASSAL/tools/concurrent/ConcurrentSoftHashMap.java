@@ -24,6 +24,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -212,8 +213,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
     }
 
     public int hashCode() {
-      return (key   == null ? 0 :   key.hashCode()) ^
-             (value == null ? 0 : value.hashCode());
+      return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 
     public String toString() {
