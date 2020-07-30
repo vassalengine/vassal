@@ -233,7 +233,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       mySetState(myNewState);
     }
     if (piece instanceof StateMergeable) {
-      ((StateMergeable)piece).mergeState(innerNewState,innerOldState);
+      ((StateMergeable)piece).mergeState(innerNewState, innerOldState);
     }
     else {
       piece.setState(innerNewState);

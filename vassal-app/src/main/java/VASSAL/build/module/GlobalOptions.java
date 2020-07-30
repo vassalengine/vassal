@@ -96,8 +96,8 @@ public class GlobalOptions extends AbstractConfigurable {
   
   private int dragThreshold = 10;
 
-  private final Map<String,Object> properties = new HashMap<>();
-  private static final Map<String,Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
+  private final Map<String, Object> properties = new HashMap<>();
+  private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
   private static final Properties OPTION_INITIAL_VALUES = new Properties();
 
   private final FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$

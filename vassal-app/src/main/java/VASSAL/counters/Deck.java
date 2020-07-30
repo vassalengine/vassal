@@ -94,7 +94,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
   public static final String NO_USER = "nobody"; // Dummy user ID for turning
-  protected static StackMetrics deckStackMetrics = new StackMetrics(false,2,2,2,2);
+  protected static StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
 
   protected boolean drawOutline = true;
@@ -125,7 +125,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected FormattedString selectDisplayProperty = new FormattedString("$"+BasicPiece.BASIC_NAME+"$");
   protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
-    new MutableProperty.Impl("",this);
+    new MutableProperty.Impl("", this);
   protected List<MutableProperty.Impl> expressionProperties = new ArrayList<>();
 
   protected String deckName;
@@ -292,7 +292,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return;
     }
     //test all the expressions for this deck
-    for (int index = 0;index < countExpressions.length;index++) {
+    for (int index = 0; index < countExpressions.length; index++) {
       MutableProperty.Impl prop = expressionProperties.get(index);
       FormattedString formatted =
         new FormattedString(countExpressions[index].getExpression());
@@ -323,7 +323,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void insertPieceAt(GamePiece p, int index) {
     super.insertPieceAt(p, index);
-    updateCounts(p,true);
+    updateCounts(p, true);
     fireNumCardsProperty();
   }
 
@@ -480,7 +480,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public String[] getCountExpressions() {
     String[] fullstrings = new String[countExpressions.length];
-    for (int index = 0; index < countExpressions.length;index++) {
+    for (int index = 0; index < countExpressions.length; index++) {
       fullstrings[index] = countExpressions[index].getFullString();
     }
     return fullstrings;
@@ -569,7 +569,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setCountExpressions(String[] countExpressionsString) {
     CountExpression[] c = new CountExpression[countExpressionsString.length];
     int goodExpressionCount = 0;
-    for (int index = 0; index < countExpressionsString.length;index++) {
+    for (int index = 0; index < countExpressionsString.length; index++) {
       CountExpression n = new CountExpression(countExpressionsString[index]);
       if (n.getName() != null) {
         c[index] = n;
@@ -579,7 +579,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     this.countExpressions = Arrays.copyOf(c, goodExpressionCount);
     while (countExpressions.length > expressionProperties.size()) {
-      expressionProperties.add(new MutableProperty.Impl("",this));
+      expressionProperties.add(new MutableProperty.Impl("", this));
     }
     for (int i = 0; i < countExpressions.length; i++) {
       expressionProperties.get(i).setPropertyName(
@@ -611,7 +611,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       deckName = n;
     }
     countProperty.setPropertyName(deckName+"_numPieces");
-    for (int i=0;i<countExpressions.length;++i) {
+    for (int i=0; i<countExpressions.length; ++i) {
       expressionProperties.get(i).setPropertyName(
         deckName+"_"+countExpressions[i].getName());
     }
@@ -879,7 +879,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("No such map",mapId,null));
+        ErrorDialog.dataError(new BadDataReport("No such map", mapId, null));
       }
     }
 
@@ -1027,7 +1027,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
-    for (int i=0,n=getMaximumVisiblePieceCount();i<n;++i) {
+    for (int i=0, n=getMaximumVisiblePieceCount(); i<n; ++i) {
       r.y -= 2;
       r.height += 2;
       r.width += 2;
@@ -1505,7 +1505,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     private String name;
     private String expression;
     public CountExpression(String expressionString) {
-      String[] split = expressionString.split("\\s*:\\s*",2); //$NON-NLS-1$
+      String[] split = expressionString.split("\\s*:\\s*", 2); //$NON-NLS-1$
       if (split.length == 2) {
         name       = split[0];
         expression = split[1];

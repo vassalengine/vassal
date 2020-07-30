@@ -213,7 +213,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    */
   protected static class ButtonPusher {
     private Set<Map> maps = new HashSet<>();
-    private java.util.Map<Component,ComponentMouseListener>
+    private java.util.Map<Component, ComponentMouseListener>
       componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
@@ -327,7 +327,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtils.isLeftMouseButton(e)) {
           final Point point = e.getPoint();
-          point.translate(-xOffset,-yOffset);
+          point.translate(-xOffset, -yOffset);
           doClick(target, point);
           e.getComponent().repaint();
         }

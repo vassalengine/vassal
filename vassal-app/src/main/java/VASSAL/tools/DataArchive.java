@@ -73,7 +73,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected List<DataArchive> extensions = new ArrayList<>();
 
 // FIXME: these should go into a cache, like images have
-  private final Map<String,AudioClip> soundCache =
+  private final Map<String, AudioClip> soundCache =
     new HashMap<>();
 
   protected SortedSet<String> localImages = null;
