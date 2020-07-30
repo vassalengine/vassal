@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.Serializable;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -64,9 +63,9 @@ import VASSAL.tools.swing.SwingUtils;
 public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static final long serialVersionUID = 1L;
 
-  protected static DefaultListModel<GamePiece> availableModel;
-  protected DefaultListModel<GamePiece> inUseModel;
-  protected ListCellRenderer<GamePiece> r;
+  protected static DefaultListModel availableModel;
+  protected DefaultListModel inUseModel;
+  protected ListCellRenderer r;
   protected PieceSlot slot;
   private GamePiece piece;
   protected static TraitClipboard clipBoard;
@@ -78,8 +77,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   /** Creates new form test */
   public PieceDefiner() {
     initDefinitions();
-    inUseModel = new DefaultListModel<>();
-    r = new GamePieceRenderer();
+    inUseModel = new DefaultListModel();
+    r = new Renderer();
     slot = new PieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
@@ -101,7 +100,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected static void initDefinitions() {
     if (availableModel == null) {
-      availableModel = new DefaultListModel<>();
+      availableModel = new DefaultListModel();
       availableModel.addElement(new BasicPiece());
       availableModel.addElement(new Delete());
       availableModel.addElement(new Clone());
@@ -153,7 +152,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   public void setPiece(GamePiece piece) {
     inUseModel.clear();
     while (piece instanceof Decorator) {
-      final Class<? extends GamePiece> pieceClass = piece.getClass();
+      final Class<?> pieceClass = piece.getClass();
 
       inUseModel.insertElementAt(piece, 0);
       boolean contains = false;
@@ -176,7 +175,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       piece = ((Decorator) piece).piece;
     }
 
-    inUseModel.insertElementAt(piece == null ? new BasicPiece() : piece, 0);
+    if (piece == null) {
+      inUseModel.insertElementAt(new BasicPiece(), 0);
+    }
+    else {
+      inUseModel.insertElementAt(piece, 0);
+    }
+
     inUseList.setSelectedIndex(0);
     refresh();
   }
@@ -188,7 +193,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   private void refresh() {
     if (inUseModel.getSize() > 0) {
-      piece = inUseModel.lastElement();
+      piece = (GamePiece) inUseModel.lastElement();
     }
     else {
       piece = null;
@@ -219,35 +224,39 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     JPanel controls = new JPanel();
     controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
 
-    JPanel availablePanel = new JPanel();
-    JScrollPane availableScroll = new JScrollPane();
-    availableList = new JList<>();
+    availablePanel = new JPanel();
+    availableScroll = new JScrollPane();
+    availableList = new JList();
     helpButton = new JButton();
-    JButton importButton = new JButton();
-    JPanel addRemovePanel = new JPanel();
+    importButton = new JButton();
+    addRemovePanel = new JPanel();
     addButton = new JButton();
     removeButton = new JButton();
-    JPanel inUsePanel = new JPanel();
-    JScrollPane inUseScroll = new JScrollPane();
-    inUseList = new JList<>();
+    inUsePanel = new JPanel();
+    inUseScroll = new JScrollPane();
+    inUseList = new JList();
     propsButton = new JButton();
-    JPanel moveUpDownPanel = new JPanel();
+    moveUpDownPanel = new JPanel();
     moveUpButton = new JButton();
     moveDownButton = new JButton();
     copyButton = new JButton();
     pasteButton = new JButton();
+//        setLayout(new BoxLayout(this, 0));
 
-    availablePanel.setLayout(new BoxLayout(availablePanel, BoxLayout.Y_AXIS));
+    availablePanel.setLayout(new BoxLayout(availablePanel, 1));
 
 
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(r);
-    availableList.addListSelectionListener(evt -> {
-      GamePiece gamePiece = availableList.getSelectedValue();
-      helpButton.setEnabled(gamePiece instanceof EditablePiece
-                            && ((EditablePiece) gamePiece).getHelpFile() != null);
-      addButton.setEnabled(gamePiece instanceof Decorator);
+    availableList.addListSelectionListener(new ListSelectionListener() {
+      @Override
+      public void valueChanged(ListSelectionEvent evt) {
+        Object o = availableList.getSelectedValue();
+        helpButton.setEnabled(o instanceof EditablePiece
+                              && ((EditablePiece) o).getHelpFile() != null);
+        addButton.setEnabled(o instanceof Decorator);
+      }
     });
 
     availableScroll.setViewportView(availableList);
@@ -257,44 +266,53 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
 
     helpButton.setText("Help");
-    helpButton.addActionListener(evt -> showHelpForPiece());
+    helpButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        showHelpForPiece();
+      }
+    }
+    );
     availablePanel.add(helpButton);
 
     importButton.setText("Import");
-    importButton.addActionListener(evt -> {
-      String className = JOptionPane.showInputDialog(PieceDefiner.this, "Enter fully-qualified name of Java class to import");
-      importPiece(className);
+    importButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        String className = JOptionPane.showInputDialog(PieceDefiner.this, "Enter fully-qualified name of Java class to import");
+        importPiece(className);
+      }
     });
 
     availablePanel.add(importButton);
 
     controls.add(availablePanel);
 
-    addRemovePanel.setLayout(new BoxLayout(addRemovePanel, BoxLayout.Y_AXIS));
+    addRemovePanel.setLayout(new BoxLayout(addRemovePanel, 1));
 
     addButton.setText("Add ->");
     addButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent evt) {
-        GamePiece selected = availableList.getSelectedValue();
+        Object selected = availableList.getSelectedValue();
         if (selected instanceof Decorator) {
           if (inUseModel.getSize() > 0) {
             Decorator c = (Decorator) selected;
             addTrait(c);
             if (inUseModel.lastElement().getClass() == c.getClass()) {
-              final boolean addWasSuccessful = edit(inUseModel.size() - 1);
-              if (!addWasSuccessful) {
-                // Add was cancelled
+              if (edit(inUseModel.size() - 1)) {   // Add was successful
+              }
+              else {                               // Add was cancelled
                 if (!inUseModel.isEmpty())
                   removeTrait(inUseModel.size() - 1);
               }
             }
           }
         }
-        else if (selected != null && inUseModel.getSize() == 0) {
+        else if (selected instanceof GamePiece && inUseModel.getSize() == 0) {
           GamePiece p = null;
           try {
-            p = selected.getClass().getConstructor().newInstance();
+            p = (GamePiece) selected.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
             ReflectionUtils.handleNewInstanceFailure(t, selected.getClass());
@@ -303,9 +321,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           if (p != null) {
             setPiece(p);
             if (inUseModel.getSize() > 0) {
-              final boolean addWasSuccessful = edit(0);
-              if (!addWasSuccessful) {
-                // Add was cancelled
+              if (edit(0)) {  // Add was successful
+              }
+              else {          // Add was cancelled
                 removeTrait(0);
               }
             }
@@ -339,7 +357,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(addRemovePanel);
 
-    inUsePanel.setLayout(new BoxLayout(inUsePanel, BoxLayout.Y_AXIS));
+    inUsePanel.setLayout(new BoxLayout(inUsePanel, 1));
 
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -347,8 +365,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUseList.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent evt) {
-        final GamePiece gamePiece = inUseList.getSelectedValue();
-        propsButton.setEnabled(gamePiece instanceof EditablePiece);
+        final Object o = inUseList.getSelectedValue();
+        propsButton.setEnabled(o instanceof EditablePiece);
 
         final int index = inUseList.getSelectedIndex();
         final boolean copyAndRemove = inUseModel.size() > 0 &&
@@ -383,10 +401,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
 
     propsButton.setText("Properties");
-    propsButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
-      if (index >= 0) {
-        edit(index);
+    propsButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        int index = inUseList.getSelectedIndex();
+        if (index >= 0) {
+          edit(index);
+        }
       }
     });
     inUsePanel.add(propsButton);
@@ -398,39 +419,51 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveUpDownPanel.setLayout(new BoxLayout(moveUpDownPanel, BoxLayout.Y_AXIS));
 
     moveUpButton.setText("Move Up");
-    moveUpButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
-      if (index > 1 && index < inUseModel.size()) {
-        moveDecoratorUp(index);
+    moveUpButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        int index = inUseList.getSelectedIndex();
+        if (index > 1 && index < inUseModel.size()) {
+          moveDecoratorUp(index);
+        }
       }
-    });
+    }
+    );
     moveUpDownPanel.add(moveUpButton);
 
 
     moveDownButton.setText("Move Down");
-    moveDownButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
-      if (index > 0 && index < inUseModel.size() - 1) {
-        moveDecoratorDown(index);
+    moveDownButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        int index = inUseList.getSelectedIndex();
+        if (index > 0 && index < inUseModel.size() - 1) {
+          moveDecoratorDown(index);
+        }
       }
-    });
+    }
+    );
     moveUpDownPanel.add(moveDownButton);
 
     copyButton.setText("Copy");
-    copyButton.addActionListener(evt -> {
-      pasteButton.setEnabled(true);
-      int index = inUseList.getSelectedIndex();
-      clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
-    });
+    copyButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        pasteButton.setEnabled(true);
+        int index = inUseList.getSelectedIndex();
+        clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
+      }});
     moveUpDownPanel.add(copyButton);
 
     pasteButton.setText("Paste");
     pasteButton.setEnabled(clipBoard != null);
-    pasteButton.addActionListener(evt -> {
-      if (clipBoard != null) {
-        paste();
-      }
-    });
+    pasteButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+        if (clipBoard != null) {
+          paste();
+        }
+      }});
     moveUpDownPanel.add(pasteButton);
 
     controls.add(moveUpDownPanel);
@@ -444,14 +477,14 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (c instanceof PlaceMarker) {
       ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
     }
-    c.setInner(inUseModel.lastElement());
+    c.setInner((GamePiece) inUseModel.lastElement());
     inUseModel.addElement(c);
     c.mySetState(clipBoard.getState());
     refresh();
   }
 
   protected void moveDecoratorDown(int index) {
-    GamePiece selm1 = inUseModel.elementAt(index - 1);
+    GamePiece selm1 = (GamePiece) inUseModel.elementAt(index - 1);
     Decorator sel = (Decorator) inUseModel.elementAt(index);
     Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
     Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
@@ -462,14 +495,14 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
     inUseModel.setElementAt(selp1, index);
     inUseModel.setElementAt(sel, index + 1);
-    inUseModel.lastElement().setProperty(Properties.OUTER, null);
+    ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     inUseList.setSelectedIndex(index + 1);
     refresh();
     setChanged(true);
   }
 
   protected void moveDecoratorUp(int index) {
-    final GamePiece selm2 = inUseModel.elementAt(index - 2);
+    final GamePiece selm2 = (GamePiece) inUseModel.elementAt(index - 2);
     final Decorator sel = (Decorator) inUseModel.elementAt(index);
     final Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
     final Decorator selp1 = index < inUseModel.size() - 1 ?
@@ -481,7 +514,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
     inUseModel.setElementAt(selm1, index);
     inUseModel.setElementAt(sel, index - 1);
-    inUseModel.lastElement().setProperty(Properties.OUTER, null);
+    ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     inUseList.setSelectedIndex(index - 1);
     refresh();
     setChanged(true);
@@ -502,7 +535,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (o == null) return;
 
     if (o instanceof GamePiece) {
-      availableModel.addElement((GamePiece)o);
+      availableModel.addElement(o);
     }
     else {
       ErrorDialog.show("Error.not_a_gamepiece", className);
@@ -524,7 +557,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
     EditablePiece p = (EditablePiece) o;
     if (p.getEditor() != null) {
-      Ed ed;
+      Ed ed = null;
       Window w = SwingUtilities.getWindowAncestor(this);
       if (w instanceof Frame) {
         ed = new Ed((Frame) w, p);
@@ -579,20 +612,33 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       add(ed.getControls(), "spanx 3,grow,push,wrap");
 
       JButton b = new JButton("Ok");
-      b.addActionListener(evt -> dispose());
+      b.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+          dispose();
+        }
+      });
 
       add(b, "tag ok");
 
       b = new JButton("Cancel");
-      b.addActionListener(evt -> {
-        ed = null;
-        dispose();
+      b.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+          ed = null;
+          dispose();
+        }
       });
       add(b, "tag cancel");
 
       if (p.getHelpFile() != null) {
         b = new JButton("Help");
-        b.addActionListener(evt -> p.getHelpFile().showWindow(Ed.this));
+        b.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent evt) {
+            p.getHelpFile().showWindow(Ed.this);
+          }
+        });
         add(b, "tag help");
       }
 
@@ -608,7 +654,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected void removeTrait(int index) {
     inUseModel.removeElementAt(index);
     if (index < inUseModel.size()) {
-      ((Decorator) inUseModel.elementAt(index)).setInner(inUseModel.elementAt(index - 1));
+      ((Decorator) inUseModel.elementAt(index)).setInner((GamePiece) inUseModel.elementAt(index - 1));
     }
     refresh();
     setChanged(true);
@@ -628,7 +674,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       if (d instanceof PlaceMarker) {
         ((PlaceMarker) d).updateGpId(gpidSupport);
       }
-      d.setInner(inUseModel.lastElement());
+      d.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(d);
       setChanged(true);
     }
@@ -636,33 +682,38 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     refresh();
   }
 
-  protected JList<GamePiece> availableList;
+  private JPanel availablePanel;
+  private JScrollPane availableScroll;
+  protected JList availableList;
   private JButton helpButton;
+  private JButton importButton;
+  private JPanel addRemovePanel;
   private JButton addButton;
   private JButton removeButton;
-  private JList<GamePiece> inUseList;
+  private JPanel inUsePanel;
+  private JScrollPane inUseScroll;
+  private JList inUseList;
   private JButton propsButton;
+  private JPanel moveUpDownPanel;
   private JButton moveUpButton;
   private JButton moveDownButton;
   protected JButton copyButton;
   protected JButton pasteButton;
 
-  private static class GamePieceRenderer extends JLabel implements ListCellRenderer<GamePiece>, Serializable {
-
+  private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
 
-    private final DefaultListCellRenderer innerRenderer = new DefaultListCellRenderer();
-
     @Override
-    public Component getListCellRendererComponent(JList<? extends GamePiece> list, GamePiece value, int index,
-                                                  boolean isSelected, boolean cellHasFocus) {
-      innerRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+    public java.awt.Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean selected, boolean hasFocus) {
+
+      super.getListCellRendererComponent(list, value, index, selected, hasFocus);
       if (value instanceof EditablePiece) {
-        innerRenderer.setText(((EditablePiece) value).getDescription());
+        setText(((EditablePiece) value).getDescription());
       }
       else {
         String s = value.getClass().getName();
-        innerRenderer.setText(s.substring(s.lastIndexOf('.') + 1));
+        setText(s.substring(s.lastIndexOf('.') + 1));
       }
       return this;
     }
@@ -674,8 +725,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    *
    */
   private static class TraitClipboard {
-    private final String type;
-    private final String state;
+    private String type;
+    private String state;
     public TraitClipboard(Decorator copy) {
       type = copy.myGetType();
       state = copy.myGetState();
