@@ -2,6 +2,7 @@
 
 * 13205: NPE when trying to display file write failure dialog
 * 13199: MapShader using image throws InternalError on Linux
+* 13197: Hotkeys using Control should use Command on Macs
 * 13196: Ctrl+Click toggles rather than only deselects
 * 13191: Add a "Search" command to the editor for searching the
     nodes/names/descriptions of a module
