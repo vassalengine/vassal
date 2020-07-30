@@ -64,15 +64,12 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
       if (this == o) return true;
       if (o == null || o.getClass() != this.getClass()) return false;
       final SoftValue<?, ?> sv = (SoftValue<?, ?>) o;
-      // TODO get().equals() may produce a NPE if the object was cleared by the GC after the first call to get()
-      return key.equals(sv.key) &&
-             get() == null ? sv.get() == null : get().equals(sv.get());
+      return key.equals(sv.key) && Objects.equals(get(), sv.get());
     }
 
     @Override
     public int hashCode() {
-      // TODO get().hashCode() may produce a NPE if the object was cleared by the GC after the first call to get()
-      return get() == null ? 0 : get().hashCode();
+      return Objects.hashCode(get());
     }
   }
 
