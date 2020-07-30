@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import VASSAL.tools.version.VersionUtils;
 import net.miginfocom.swing.MigLayout;
 
 import org.jivesoftware.smack.XMPPException;
@@ -275,7 +276,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       final String thisVassal = Info.getVersion();
       final String targetVassal = getVassalVersion();
       if (MINIMUM_OPTION.equals(option)) {
-        if (Info.compareVersions(thisVassal, targetVassal) < 1) {
+        if (VersionUtils.compareVersions(thisVassal, targetVassal) < 1) {
           return Resources.getString("Chat.bad_min_vassal", thisVassal, targetVassal); //$NON-NLS-1$
         }
       }
@@ -291,7 +292,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       final String thisModule = GameModule.getGameModule().getGameVersion();
       final String targetModule = getModuleVersion();
       if (MINIMUM_OPTION.equals(option)) {
-        if (Info.compareVersions(thisModule, targetModule) < 1) {
+        if (VersionUtils.compareVersions(thisModule, targetModule) < 1) {
           return Resources.getString("Chat.bad_min_module", thisModule, targetModule); //$NON-NLS-1$
         }
       }

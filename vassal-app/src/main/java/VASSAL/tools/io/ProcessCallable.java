@@ -18,6 +18,9 @@
 
 package VASSAL.tools.io;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -135,8 +138,23 @@ class ProcessCallable implements Callable<Integer> {
   }
 
   protected void closeStreams() {
-    IOUtils.closeQuietly(proc.getOutputStream());
-    IOUtils.closeQuietly(proc.getErrorStream());
-    IOUtils.closeQuietly(proc.getInputStream());
+    List.of(
+      proc.getOutputStream(),
+      proc.getErrorStream(),
+      proc.getInputStream()
+    ).forEach(this::closeCloseable);
+  }
+
+  private void closeCloseable(Closeable closeable) {
+    if (closeable == null) {
+      return;
+    }
+
+    try {
+      closeable.close();
+    }
+    catch (IOException e) {
+      logger.error("Error while closing stream", e);
+    }
   }
 }
