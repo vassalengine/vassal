@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2007-2012 by Brent Easton
+ * Copyright (c) 2007-2020 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,11 +20,10 @@ package VASSAL.configure;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -68,8 +67,20 @@ import bsh.BeanShellExpressionValidator;
  */
 public class BeanShellExpressionConfigurer extends StringConfigurer {
 
+  /**
+   * enum describing any special processing that needs to be done for particular expression types
+   *
+   * NONE = No special handling
+   *  PME = Property Match Expression handling.
+   */
+  public enum Option {
+    NONE, PME
+  }
+
   protected static int maxScrollItems = 0;
-  protected static final int MAX_SCROLL_ITEMS = 40;
+
+  protected static final String[] SUM_MAP_HINTS = new String[]{"WARNING - This function needs to scan many pieces and is relatively slow. Use sparingly", "$property$ variables may be used in the Match Expression and will be evaluated on the source piece.", "See the Reference Manual for detailed usage."};
+  protected static final String[] STRING_HINTS = new String[]{"This function can only be used on a String or Function return value.", "Use GetProperty(\"propertyName\").function() to apply this function to a Property value."};
 
   protected JPanel expressionPanel;
   protected JPanel detailPanel;
@@ -81,17 +92,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected JLabel variables;
   protected JLabel methods;
   protected EditablePiece target;
-
-  public BeanShellExpressionConfigurer(String key, String name) {
-    this(key, name, "");
-  }
-
-  public BeanShellExpressionConfigurer(String key, String name, String val) {
-    this(key, name, val, null);
-  }
+  protected Option option;
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
+    this(key, name, val, piece, Option.NONE );
+  }
+
+  public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option) {
     super(key, name, val);
+    this.option = option;
     if (piece instanceof EditablePiece) {
       target = (EditablePiece) piece;
     }
@@ -102,11 +111,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
     down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
     extraDetails = new JButton("Insert");
-    extraDetails.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        doPopup();
-      }});
+    extraDetails.addActionListener(e -> doPopup());
   }
 
   protected void strip() {
@@ -114,6 +119,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     if (s.startsWith("{") && s.endsWith("}")) {
       setValue(s.substring(1, s.length()-1));
     }
+  }
+
+  public Option getOption() {
+    return option;
   }
 
   @Override
@@ -133,13 +142,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   public java.awt.Component getControls() {
     if (p == null) {
       expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]"));
-      //expressionPanel.setLayout(new BoxLayout(expressionPanel, BoxLayout.X_AXIS));
       expressionPanel.add(new JLabel(getName()));
       validator = new Validator();
       nameField = new JTextField(30);
-      //nameField.setMaximumSize
-      //  (new Dimension(nameField.getMaximumSize().width,
-      //                          nameField.getPreferredSize().height));
       nameField.setText(getValueString());
       expressionPanel.add(nameField, "growx");
       nameField.addKeyListener(new KeyAdapter() {
@@ -199,7 +204,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   /**
    * Build a popup menu
-   * @return
+   * @return Generated popup menu
    */
   protected JPopupMenu createPopup() {
     JPopupMenu popup = new JPopupMenu();
@@ -207,20 +212,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenu constantMenu = new JMenu("Constant");
     final JMenuItem integerItem = new JMenuItem("Number");
     integerItem.setToolTipText("A number");
-    integerItem.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildInteger();
-      }});
+    integerItem.addActionListener(e -> buildInteger());
     constantMenu.add(integerItem);
 
     final JMenuItem stringItem = new JMenuItem("String");
     stringItem.setToolTipText("A character string");
-    stringItem.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildString();
-      }});
+    stringItem.addActionListener(e -> buildString());
     constantMenu.add(stringItem);
     popup.add(constantMenu);
 
@@ -274,33 +271,78 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     addOperator(logicalMenu, ")", "Right parenthesis");
     popup.add(logicalMenu);
 
+    final JMenu mathMenu = new JMenu("Math");
+    addFunction(mathMenu, "Math.abs", "Absolute value of a number", new String[] { "Number"}, "(n)");
+    addFunction(mathMenu, "Math.min", "Minimum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
+    addFunction(mathMenu, "Math.max", "Maximum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
+
+    final JMenu stringMenu = new JMenu("String");
+    addFunction(stringMenu, ".length", "Return the length of a string", new String[] {}, "()");
+    addFunction(stringMenu, ".contains", "Return true if string contains the specified search string", new String[] { "Search String" }, "(string)", STRING_HINTS);
+    addFunction(stringMenu, ".startsWith", "Return true if string starts with the specified search string", new String[] { "Search String" }, "(string)", STRING_HINTS);
+    addFunction(stringMenu, ".endsWith", "Return true if string ends with the specified search string", new String[] { "String String" }, "(string)", STRING_HINTS);
+    addFunction(stringMenu, ".matches", "Return true if string matches the specified Regular Expression", new String[] { "Regular Expression" }, "(regExpr)", STRING_HINTS);
+    addFunction(stringMenu, ".indexOf", "Return the position of the specified search string", new String[] { "Search String" }, "(string)", STRING_HINTS);
+    addFunction(stringMenu, ".lastIndexOf", "Return the last position of the specified search string", new String[] { "Search String" }, "(string)", STRING_HINTS);
+    addFunction(stringMenu, ".substring", "Return substring starting at a given position, up to the end of the string", new String[] { "Starting position" }, "(start)", STRING_HINTS);
+    addFunction(stringMenu, ".substring", "Return substring between positions", new String[] { "Starting position", "End Position" }, "(start, end)", STRING_HINTS);
+    addFunction(stringMenu, ".replace", "Replace one substring with another", new String[] { "String to find", "String to replace" }, "(old, new)", STRING_HINTS);
+
+    final JMenu randomMenu = new JMenu("Random");
+    addFunction(randomMenu, "Random", "Return a random whole number between 1 and a number (inclusive)", new String[] { "Highest number" }, "(x)");
+    addFunction(randomMenu, "Random", "Return a random whole number between 2 numbers (inclusive)", new String[] { "Lowest number", "Highest number" }, "(x, y)");
+    addFunction(randomMenu, "IsRandom", "Return true randomly 50% of the time", new String[] {}, "()");
+    addFunction(randomMenu, "IsRandom", "Return true randomly a specified % of the time", new String[] { "Percent" }, "(p)");
+
+    final JMenu countMenu = new JMenu("Sum & Count");
+    addFunction(countMenu, "SumStack", "Sum the values of the named property in all pieces in the same stack", new String[] { "Property name" }, "(name)");
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_MAP_HINTS, new Option[] {Option.NONE, Option.PME});
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_MAP_HINTS, new Option[] {Option.PME});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_MAP_HINTS, new Option[] {Option.PME, Option.NONE});
+
     final JMenu functionMenu = new JMenu("Function");
-    addFunction(functionMenu, "Alert", "Display text in a Dialog box", new String[] {"Text to display"});
-    addFunction(functionMenu, "Compare", "Compare two Strings or other objects", new String[]{"Object 1", "Object 2"});
-    addFunction(functionMenu, "GetProperty", "Get a property by name", new String[]{"Property name"});
-    addFunction(functionMenu, "If", "Return a different result depending on a logical expression", new String[]{"Logical expression", "Result if true", "Result if false"});
-    addFunction(functionMenu, "SumStack", "Sum the values of the named property in all counters in the same stack", new String[]{"Property name"});
+    functionMenu.add(mathMenu);
+    functionMenu.add(randomMenu);
+    functionMenu.add(stringMenu);
+    functionMenu.add(countMenu);
+    addFunction(functionMenu, "?", "Return a different result depending on a logical expression", new String[] { "Logical expression", "Result if true", "Result if false" }, "(expr ? r1 : r2)");
+    addFunction(functionMenu, "Alert", "Display text in a Dialog box", new String[] { "Text to display" }, "(text)");
+    addFunction(functionMenu, "Compare", "Compare two Strings or other objects", new String[] { "Object 1", "Object 2" }, "(o1, o2)");
+    addFunction(functionMenu, "GetProperty", "Get a property by name", new String[] { "Property name" }, "(name)");
+
     popup.add(functionMenu);
 
     return popup;
   }
 
-  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms) {
-    final JMenuItem item = new JMenuItem(op);
+  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo) {
+    addFunction(menu, op, desc, parms, parmInfo, null);
+  }
+
+  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints) {
+    final Option[] options = new Option[parms.length];
+    Arrays.fill(options, Option.NONE);
+    addFunction (menu, op, desc, parms, parmInfo, hints, options);
+  }
+
+  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints, final Option[] options) {
+    final JMenuItem item = new JMenuItem(op + ((parmInfo != null && parmInfo.length() == 0) ? "" : " " + parmInfo));
     item.setToolTipText(desc);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildFunction(op, desc, parms);
-      }});
+    item.addActionListener(e -> buildFunction(op, desc, parms, hints, options));
     menu.add(item);
   }
 
-  protected void buildFunction(String op, String desc, String[] parmDesc) {
-    final StringConfigurer result = new StringConfigurer(null, "", "");
-    new FunctionBuilder(result, (JDialog) p.getTopLevelAncestor(), op, desc, parmDesc, target).setVisible(true);
-    if (result.getValue() != null && result.getValueString().length() > 0) {
-      insertName(result.getValueString());
+  protected void buildFunction(String op, String desc, String[] parmDesc, String[] hints, Option[] options) {
+    if (parmDesc.length == 0) {
+      insertName(op + "()");
+    }
+    else {
+      final StringConfigurer result = new StringConfigurer(null, "", "");
+      new FunctionBuilder(result, (JDialog) p.getTopLevelAncestor(), op, desc, parmDesc, target, hints, options).setVisible(true);
+      if (result.getValue() != null && result.getValueString().length() > 0) {
+        insertName(result.getValueString());
+      }
     }
   }
 
@@ -323,11 +365,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void addOperator(JMenu menu, final String op, String desc) {
     final JMenuItem item = new JMenuItem(op);
     item.setToolTipText(desc);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        insertName(op);
-      }});
+    item.addActionListener(e -> insertName(op));
     menu.add(item);
   }
   /**
@@ -346,11 +384,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
 
     final JMenuItem item = new JMenuItem(propName);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        insertPropertyName(propName);
-      }});
+    item.addActionListener(e -> insertPropertyName(propName));
     if (sort) {
       int pos = -1;
       for (int i = 0; i < menu.getItemCount() && pos < 0; i++) {
@@ -386,11 +420,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           pieceMenu.setText(piece.getDescription());
         }
         final JMenuItem item = new JMenuItem(propName);
-        item.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            insertPropertyName(((JMenuItem) e.getSource()).getText());
-          }});
+        item.addActionListener(e -> insertPropertyName(((JMenuItem) e.getSource()).getText()));
         pieceMenu.add(item);
       }
 
@@ -597,12 +627,11 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           BeanShellExpressionValidator v = new BeanShellExpressionValidator(getValueString());
           if (v.isValid()) {
             validator.setStatus(VALID);
-            setDetails(v.getError(), v.getVariables(), v.getMethods());
           }
           else {
             validator.setStatus(INVALID);
-            setDetails(v.getError(), v.getVariables(), v.getMethods());
           }
+          setDetails(v.getError(), v.getVariables(), v.getMethods());
         }
         validating = false;
         if (dirty) {

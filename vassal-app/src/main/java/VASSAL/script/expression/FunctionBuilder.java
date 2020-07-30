@@ -22,8 +22,7 @@
  */
 package VASSAL.script.expression;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import VASSAL.configure.Configurer;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class FunctionBuilder extends JDialog {
   protected List<BeanShellExpressionConfigurer> configs = new ArrayList<>();
   protected EditablePiece targetPiece;
 
-  public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece) {
+  public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options) {
     super(parent, "Function Builder - "+function, true);
     target = c;
     targetPiece = piece;
@@ -62,38 +61,29 @@ public class FunctionBuilder extends JDialog {
     JPanel p = new JPanel(new MigLayout("wrap 1,fillx"));
 
     p.add(new JLabel(desc), "align center");
-    for (String s : parmDesc) {
-      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, s + ":  ", "", targetPiece);
+    for (int i=0; i < parmDesc.length; i++) {
+      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i] + ":  ", "", targetPiece, options[i]);
       configs.add(config);
       p.add(config.getControls(), "align right,growx");
     }
 
+    if (hints != null) {
+      for (String hint : hints) {
+        p.add(new JLabel(hint));
+      }
+    }
+
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     JButton cancelButton = ButtonFactory.getCancelButton();
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString());
-      }
-    });
+    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center");
@@ -112,20 +102,38 @@ public class FunctionBuilder extends JDialog {
 
   /**
    * Ok button pressed. Set the expression back into the target configurer.
+   * Note special handling for ternary "?" function. Only Ternary function, so no need to implement a general solution.
    */
   public void save() {
-    String result = function + "(";
-    boolean first = true;
-    for (BeanShellExpressionConfigurer fec : configs) {
-      if (! first) {
-        result += ",";
-      }
-      result += fec.getValueString();
-      first = false;
+    StringBuilder result;
+
+    if (function.equals("?")) {
+      result = new StringBuilder("((" + configs.get(0).getValueString() + ") ? " + getExpr(configs.get(1)) + " : " + getExpr(configs.get(2)) + ")");
     }
-    result += ")";
-    target.setValue(result);
+    else {
+      result = new StringBuilder(function + "(");
+      boolean first = true;
+      for (BeanShellExpressionConfigurer fec : configs) {
+        if (!first) {
+          result.append(",");
+        }
+        result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()): fec.getValueString());
+        first = false;
+      }
+      result.append(")");
+    }
+    target.setValue(result.toString());
     dispose();
+  }
+
+  private String escape (String expr) {
+    return "\"{" + expr.replace("\"", "\\\"") + "}\"";
+  }
+
+  private String getExpr (Configurer c) {
+    final Expression e = Expression.createExpression("{"+c.getValueString()+"}");
+    final boolean isAtomic = (e instanceof IntExpression) || (e instanceof StringExpression);
+    return (isAtomic ? "" : "(") + c.getValueString() + (isAtomic ? "" : ")");
   }
 
   public void cancel() {

@@ -33,8 +33,8 @@ import java.util.List;
 public class BeanShellExpressionValidator {
   
   protected String expression;
-  protected List<String> variables = new ArrayList<String>();
-  protected List<String> methods = new ArrayList<String>();
+  protected List<String> variables = new ArrayList<>();
+  protected List<String> methods = new ArrayList<>();
   protected String error;
   protected boolean valid = false;
   
@@ -77,7 +77,7 @@ public class BeanShellExpressionValidator {
   
   /**
    * Return an Error Message if no valid
-   * @return
+   * @return Error message
    */
   public String getError() {
     return error;
@@ -133,7 +133,7 @@ public class BeanShellExpressionValidator {
     if (s.trim().startsWith("{") && s.trim().endsWith("}")) {
       final int start = s.indexOf("{");
       final int end = s.lastIndexOf("}");
-      StringBuffer buffer = new StringBuffer(s.length());
+      StringBuilder buffer = new StringBuilder(s.length());
       for (int i = 0; i < s.length(); i++) {
         if (i == start || i == end) {
           buffer.append(' ');
@@ -149,7 +149,7 @@ public class BeanShellExpressionValidator {
   
   /**
    * Process a Parser Node and extract any Variable and Method references.
-   * Assignemnts are not allowed in an expression, so flag as an error
+   * Assignments are not allowed in an expression, so flag as an error
    * @param node Parser Node
    */
   protected boolean processNode (SimpleNode node) {
@@ -169,7 +169,7 @@ public class BeanShellExpressionValidator {
       }
     }
     else if (node instanceof BSHAssignment) {
-      setError("Assignemts (=) not allowed in Expressions. See Help");
+      setError("Assignments (=) not allowed in Expressions. See Help");
       return false;
     }
     else {
