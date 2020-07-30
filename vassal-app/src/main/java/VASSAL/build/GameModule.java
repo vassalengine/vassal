@@ -936,6 +936,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
+
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      pc.getDefinitions().forEach(checker::add);
+    }
+
     checker.fixErrors();
   }
 
