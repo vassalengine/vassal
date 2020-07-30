@@ -477,7 +477,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           }
         }
         else {
-            result += getIntPropertyValue(piece, filter, (String) propertyName);
+          result += getIntPropertyValue(piece, filter, (String) propertyName);
         }
       }
     }
