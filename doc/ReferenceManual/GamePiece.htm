@@ -195,13 +195,13 @@
         <td style="line-height:150%; font-weight:bold;">
           Layer&nbsp;<i>(Rotatable)</i><br>
           Text&nbsp;Label&nbsp;<i>(Rotatable)</i></td>
-        <td>Drawing Layers that will rotate should be <i>above</i> the Can Rotate and/or Can Pivot.</td>
+        <td>Drawing Layers that will rotate should be <b><i>above</i></b> the Can Rotate and/or Can Pivot.</td>
       </tr>
       <tr bgcolor="#9999ff">
         <td style="line-height:150%; font-weight:bold;">
           Can&nbsp;Rotate<br>
           Can&nbsp;Pivot</td>
-        <td>Can Rotate belongs below any drawing trait that it should rotate, but <i>above</i> any Can Pivot trait.</td>
+        <td>Can Rotate belongs below any drawing trait that it should rotate, but <b><i>above</i></b> any Can Pivot trait.</td>
       </tr>
       <tr bgcolor="#c1c1ff">
         <td style="line-height:150%; font-weight:bold;">
@@ -210,19 +210,19 @@
           Mark&nbsp;When&nbsp;Moved<br>
           Text&nbsp;Label<br>
           Area&nbsp;of&nbsp;Effect<br>
-        <td>These drawing traits all belong <i>above</i> Non-Rectangular, and <i>above</i> Masking/Restricting Traits (see red box below). Optionally they could also move <i>above</i> Can Rotate if you want them to rotate/pivot; in this position they will <i>not</i> rotate or pivot. Traits
+        <td>These drawing traits all belong <b><i>above</i></b> Non-Rectangular, and <b><i>above</i></b> Masking/Restricting Traits (see red box below). Optionally they could also move <b><i>above</i></b> Can Rotate if you want them to rotate/pivot; in this position they will <b><i>not</i></b> rotate or pivot. Traits
         will draw in order from the Basic Piece on down, meaning the very last drawing trait in the list will be "drawn on top of" everything else, and so forth.</td>
       </tr>
       <tr bgcolor="#a86eff">
         <td style="line-height:150%; font-weight:bold;">
           Non-Rectangular</td>
-        <td>Non-Rectangular belongs <i>below</i> all drawable traits - otherwise their bounding box regions will be selectable even if transparent.</td>
+        <td>Non-Rectangular belongs <b><i>below</i></b> all drawable traits - otherwise their bounding box regions will be selectable even if transparent.</td>
       </tr>
       <tr bgcolor="#ffcccc">
         <td style="line-height:150%; font-weight:bold;">
           Delete<br>
           Replace&nbsp;With&nbsp;Other</td>
-        <td><br>These delete the piece & stop any further processing. Keep them <i>above</i> anything that needs doing first. <b>NOTE:</b> Be aware that any Trigger Action
+        <td><br>These delete the piece & stop any further processing. Keep them <b><i>above</i></b> anything that needs doing first. <b>NOTE:</b> Be aware that any Trigger Action
         on the same Key Command as a deleting trait will never get to execute -- you will need to use a forking/chaining Trigger Action sequence
         to be sure any Trigger Action traits you need to have run before a deleting trait are executed.<br>
         <br>
@@ -237,7 +237,7 @@
         Clone
         </td>
         <td>
-        Movement and Piece-Placement traits normally belong <i>above</i> any Masking/Restricting traits (i.e. Mask, Invisible, Restrict Access, Restrict Commands).
+        Movement and Piece-Placement traits normally belong <b><i>above</i></b> any Masking/Restricting traits (i.e. Mask, Invisible, Restrict Access, Restrict Commands).
         </td>
       </tr>
       <tr bgcolor="#ffff00">
@@ -248,7 +248,7 @@
         Global&nbsp;Key&nbsp;Command
         </td>
         <td>
-        "Communication" and Key Command initiating traits normally belong <i>above</i> Masking/Restricting traits (i.e. Mask, Invisible, Restrict Access, Restrict Commands).
+        "Communication" and Key Command initiating traits normally belong <b><i>above</i></b> Masking/Restricting traits (i.e. Mask, Invisible, Restrict Access, Restrict Commands).
         </td>
       </tr>
       <tr bgcolor="#ffc000">
@@ -259,7 +259,7 @@
         </td>
         <td>
         <br>
-        Trigger Action traits should normally be grouped <i>above</i> Report Action traits so that any changes to properties they trigger are resolved before the Report Action reports on them. (They should also normally appear <i>above</i> any Mask & Restrict Commands).<br>
+        Trigger Action traits should normally be grouped <b><i>above</i></b> Report Action traits so that any changes to properties they trigger are resolved before the Report Action reports on them. (They should also normally appear <b><i>above</i></b> any Mask & Restrict Commands).<br>
         <br>
         </td>
       </tr>
@@ -271,7 +271,7 @@
         </td>
         <td>
         <br>
-        Report Action traits should be grouped <i>below</i> Trigger Action traits (so that they report results after the Triggers process).<br>
+        Report Action traits should be grouped <b><i>below</i></b> Trigger Action traits (so that they report results after the Triggers process).<br>
         <br>
         </td>
       </tr>
@@ -284,7 +284,7 @@
         </td>
         <td>
         <br>
-        Property traits can have their values read faster (so that Vassal runs slightly faster) the <i>lower</i> they are in the trait list. However you'll normally want the "setter" actions of e.g. Dynamic Properties and Set Global Property to remain <i>above</i> any Mask, Invisible, Restrict Access, and Restrict Commands traits that could affect them.<br>
+        Property traits can have their values read faster (so that Vassal runs slightly faster) the <b><i>lower</i></b> they are in the trait list. However you'll normally want the "setter" actions of e.g. Dynamic Properties and Set Global Property to remain <b><i>above</i></b> any Mask, Invisible, Restrict Access, and Restrict Commands traits that could affect them.<br>
         <br>
         </td>
       </tr>
@@ -297,7 +297,7 @@
         </td>
         <td>
         <br>
-        Masking/Restricting traits belong <b><i>below</i></b> any traits that they need to be able to hide and protect. Mask belongs <b><i>above</i></b> Invisible.<br>
+        Masking/Restricting traits belong <b><i>below</i></b> any traits that they need to be able to hide, restrict, and protect. Mask belongs <b><i>above</i></b> Invisible.<br>
         <br>
         </td>
       </tr>
