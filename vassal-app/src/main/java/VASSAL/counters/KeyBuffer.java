@@ -108,7 +108,7 @@ public class KeyBuffer {
     }
     for (GamePiece p : targets) {
       bounds.addPiece(p);
-      p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p)); // save state prior to command
+      p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
       Command c2 = p.keyEvent(stroke);
       comm = comm.append(c2);
       bounds.addPiece(p);

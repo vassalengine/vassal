@@ -89,6 +89,7 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
+import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.image.ImageUtils;
@@ -674,8 +675,7 @@ public class PieceMover extends AbstractBuildable
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
-        piece.setProperty(Properties.SNAPSHOT,
-                          PieceCloner.getInstance().clonePiece(piece));
+        piece.setProperty(Properties.SNAPSHOT, ((PropertyExporter) piece).getProperties());
       }
       comm = comm.append(piece.keyEvent(key));
     }
