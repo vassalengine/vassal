@@ -401,6 +401,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
+  
+  
+  /**
+   * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners 
+   */
+  public void refreshKeyStrokeListeners() {
+    keyStrokeListeners.forEach(l -> l.setKeyStroke(l.getKeyStroke()));
+  }
+  
 
   @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
@@ -936,6 +945,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
+
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      pc.getDefinitions().forEach(checker::add);
+    }
+
     checker.fixErrors();
   }
 

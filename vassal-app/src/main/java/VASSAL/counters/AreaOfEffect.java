@@ -199,7 +199,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
           g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparencyLevel));
 
           if (zoom != 1.0) {
-            a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
+            a = new Area(AffineTransform.getScaleInstance(zoom, zoom).createTransformedShape(a));
           }
           g2d.fill(a);
 
@@ -314,7 +314,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   @Override
   public Area getArea(MapShader shader) {
     Area a = null;
-    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece,MapShader.ShadedPiece.class);
+    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece, MapShader.ShadedPiece.class);
     if (shaded != null) {
       a = shaded.getArea(shader);
     }

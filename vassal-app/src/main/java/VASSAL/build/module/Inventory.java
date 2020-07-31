@@ -978,17 +978,17 @@ public class Inventory extends AbstractConfigurable
 
     @Override
     public void keyPressed(KeyEvent e) {
-      keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+      keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-      keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+      keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-      keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+      keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
 
   }

@@ -1302,11 +1302,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     @Override
     public void mouseClicked(MouseEvent e) {
       if (panelType != TICKS_VALMAX &&
-          ((SwingUtils.isLeftMouseButton(e) && e.isShiftDown()) ||
-            SwingUtils.isRightMouseButton(e))) {
+          ((SwingUtils.isMainMouseButtonDown(e) && e.isShiftDown()) ||
+            SwingUtils.isContextMouseButtonDown(e))) {
         new EditTickLabelValueDialog(this);
       }
-      else if (SwingUtils.isLeftMouseButton(e)) {
+      else if (SwingUtils.isMainMouseButtonDown(e)) {
         int col = Math.min((e.getX() - leftMargin + 1) / dx, numCols - 1);
         int row = Math.min((e.getY() - topMargin + 1) / dx, numRows - 1);
         int num = row * numCols + col + 1;

@@ -54,7 +54,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);
-    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"),httpMessageServer); //$NON-NLS-1$
+    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"), httpMessageServer); //$NON-NLS-1$
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }
 

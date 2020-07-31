@@ -44,7 +44,7 @@ public interface PieceAccess {
    * @author rkinney
    *
    */
-  public static class GlobalAccess {
+  public class GlobalAccess {
     private static boolean allHidden=false;
     public static void hideAll() {
       allHidden = true;

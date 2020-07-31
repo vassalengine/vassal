@@ -58,8 +58,8 @@ public class ColorButton extends JButton {
   public ColorButton(Color c) {
     super();
     color = c;
-    setIcon(new SwatchIcon(30,15));
-    setMargin(new Insets(2,2,2,2));
+    setIcon(new SwatchIcon(30, 15));
+    setMargin(new Insets(2, 2, 2, 2));
   }
 
   /**

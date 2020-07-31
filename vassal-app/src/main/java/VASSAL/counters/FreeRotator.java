@@ -550,7 +550,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (SwingUtils.isLeftMouseButton(e)) {
+    if (SwingUtils.isMainMouseButtonDown(e)) {
       if (hasPieceMoved()) {
         endInteractiveRotate();
         return;
@@ -562,7 +562,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (SwingUtils.isLeftMouseButton(e)) {
+    if (SwingUtils.isMainMouseButtonDown(e)) {
       if (hasPieceMoved()) {
         endInteractiveRotate();
         return;
@@ -626,7 +626,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (SwingUtils.isLeftMouseButton(e)) {
+    if (SwingUtils.isMainMouseButtonDown(e)) {
       if (drawGhost) {
         final Point mousePos = getMap().componentToMap(e.getPoint());
         final double myAngle = getRelativeAngle(mousePos, pivot);

@@ -145,11 +145,11 @@ public final class Info {
   }
 
   public static boolean isModuleTooNew(String version) {
-    return compareVersions(version, EXPIRY_VERSION) >= 0;
+    return VersionUtils.compareVersions(version, EXPIRY_VERSION) >= 0;
   }
 
   public static boolean hasOldFormat(String version) {
-    return compareVersions(version, UPDATE_VERSION) < 0;
+    return VersionUtils.compareVersions(version, UPDATE_VERSION) < 0;
   }
 
   /**

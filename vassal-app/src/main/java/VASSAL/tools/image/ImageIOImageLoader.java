@@ -380,7 +380,7 @@ public class ImageIOImageLoader implements ImageLoader {
     return img;
   }
 
-  protected static interface Wrapper<T> {
+  protected interface Wrapper<T> {
     T run(String name, InputStream in) throws IOException;
   }
 
