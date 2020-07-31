@@ -23,7 +23,7 @@
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">This Trait adds an action that applies a key command to other pieces, similar to the <a
+    <td valign="top">This <a href="GamePiece.htm#Traits">Trait</a> adds an action that applies a key command to other pieces, similar to the <a
       href="Map.htm#GlobalKeyCommand">Global Key Command</a> component of a Map Window. Global Key Commands are the main
     avenue by which Pieces can prompt action by other Pieces. As such, they are very powerful, but they do come at the
     price of some performance lag, as each time one is issued Vassal must generally check it against every piece on the
@@ -31,32 +31,31 @@
     <br>
     <b>Description:&nbsp;</b>A description of this trait, which appears in the Piece Definer list in the Editor.<br>
     <br>
-    <b>Command name:&nbsp;</b>Name of the right-click context menu item<br>
+    <b>Command name:&nbsp;</b>Name of the right-click context menu item. If left blank, no context menu item will appear.<br>
     <br>
-    <b>Key Command:</b>&nbsp;
-    <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that initiates the action. For example a keyboard
-    shortcut which, when typed with this Piece selected will cause the Global Key Command to be issued. This is <i>not
-    </i>, however, the command that will be issued to the other pieces.<br>
+    <b>Key Command:</b>&nbsp; A Key Command or <a href="NamedKeyCommand.htm">Named Key Command</a> that initiates the action. For example a keyboard
+    shortcut which, when typed with this piece selected will cause the Global Key Command to be issued. This is <i>not</i>, however, the command that 
+    will be issued to the other pieces (see next field).<br>
     <br>
-    <b>Global Key Command:</b>&nbsp; The <a href="NamedKeyCommand.htm">Key Command or Named Key Command</a> that will be
-    applied to other Pieces (and potentially this Piece as well). As with all Key Commands, this can either be an actual
-    keyboard shortcut like Ctrl+F, or a "Named Key Command" such as FireForwardPhasers. Other pieces which have that
-    same shortcut or Named Key Command filled in as the Key Command for one or more of their Traits will have those
-    Traits activated.<br>
+    <b>Global Key Command:</b>&nbsp; The Key Command or <a href="NamedKeyCommand.htm">Named Key Command</a> that will be
+    applied to other Pieces (and potentially this piece as well). As with all Key Commands, this can either be an actual
+    keyboard shortcut like Ctrl+F, or a Named Key Command such as FireForwardPhasers. Other pieces which have that
+    same shortcut or Named Key Command filled in as the Key Command for one or more of their <a href="GamePiece.htm#Traits">Traits</a> will have those
+    traits activated.<br>
     <br>
-    <b>Matching Properties:</b>&nbsp; The Global Key Command will only be applied to Pieces which match the specified <a
+    <b>Matching Properties:</b>&nbsp; The Global Key Command will only be applied to Game Pieces which match the specified <a
       href="PropertyMatchExpression.htm">Property Match Expression</a>. Note that the properties named in the expression
-    are evaluated against the properties <i>of the target pieces</i>. For example if you provided the expression {
-    CurrentZone == "Europe" }, that would use the CurrentZone property of each potential target piece (checking if <i>it
-    </i> is "Europe") to determine whether or not to apply the Global Key Command. If you want to compare a property in
-    the target pieces against the value of <i>a property in this piece</i>, then use $property$. All $...$ property
-    references will be evaluated against this piece before testing against other pieces. Note that this will often mean
-    the expression needs to be put inside of quotation marks if the property in question is a string value. For example
+    are evaluated against the properties <i>of the target pieces</i>, not the properties of the piece issuing the Global Key Command. 
+    For example if you provided the expression <i>{ CurrentZone == "Europe" }</i>, that would use the CurrentZone property 
+    of each potential target piece (checking if <i>it</i> is "Europe") to determine whether or not to apply the Global Key Command. 
+    If you want to compare a property in the target pieces against the value of <i>a property in <b>this</b> piece</i>, 
+    then use $property$. All $...$ property references will be evaluated against this piece before testing against other pieces. 
+    Note that this will often mean the expression needs to be put inside of quotation marks if the property in question is a string value. For example
     if the expression provided is { CurrentZone == "$CurrentZone$" } then the CurrentZone of each potential target piece
-    will be checked against $CurrentZone$ which will read the CurrentZone of the <i>issuing</i> piece. (see also example
-    below)<br>
+    will be checked against $CurrentZone$ which will read the CurrentZone of the <i>issuing</i> piece (see also example
+    below).<br>
     <br>
-    <b>Within a Deck, apply to:</b>&nbsp; Select how the Global Key Command will be applied to pieces in a Deck. Options
+    <b>Within a Deck, apply to:</b>&nbsp; Select how the Global Key Command will be applied to pieces in a <a href="Deck.htm">Deck</a>. Options
     are <i>All pieces</i>, <i>No pieces</i>, or <i>Fixed number of pieces</i>. If 
     <i>Fixed number of pieces</i> is selected, a field appears to allow entry of the number of Pieces in the Deck to
     affect, starting at the top of the Deck. Thus, selecting 1 for the fixed number would cause only the top card or
@@ -66,9 +65,8 @@
     of this piece.<a href="Properties.htm"></a><br>
     <br>
     <b>Range: &nbsp;</b> Only others pieces within this distance, inclusive, of this piece will have the command applied
-    to them.&nbsp; If the pieces are on a board with a <a href="HexGrid.htm">Hex Grid</a> or <a
-      href="RectangularGrid.htm">Rectangular Grid</a>, then the distance is in units of the grid.&nbsp; Otherwise, the
-    distance is measured in screen pixels.<br>
+    to them. If the pieces are on a board with a <a href="HexGrid.htm">Hex Grid</a> or <a href="RectangularGrid.htm">Rectangular Grid</a>, 
+    then the distance is in units of the grid. Otherwise, the distance is measured in screen pixels.<br>
     <br>
     <b>Fixed Range:</b>&nbsp; If selected, then the range is specified as a fixed number. If unselected, then the range
     will be given by the value of the named <a href="Properties.htm">property</a>.
@@ -80,7 +78,7 @@
     <b></b><b>Suppress individual reports:</b>&nbsp; If selected, then any reports (whether auto-reporting or <a
       href="ReportChanges.htm">Report Action</a> traits) by the affected Pieces will be disabled throughout the
     processing of this Global Key Command. &nbsp; You may wish to use a <a href="ReportChanges.htm">Report Action</a>
-    Trait on this Piece to provide a summary message in their place.
+    trait on this piece to provide a summary message in their place.
     <br>
     <br>
     <b>EXAMPLE 1 (see upper right):</b>&nbsp; A leader counter and infantry counters both have 
