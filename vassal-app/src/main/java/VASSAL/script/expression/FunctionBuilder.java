@@ -28,11 +28,12 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
@@ -67,10 +68,13 @@ public class FunctionBuilder extends JDialog {
       p.add(config.getControls(), "align right,growx");
     }
 
-    if (hints != null) {
+    if (hints != null && hints.length > 0) {
+      final JPanel hintPanel = new JPanel(new MigLayout("ins 5"));
+      hintPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
       for (String hint : hints) {
-        p.add(new JLabel(hint));
+        hintPanel.add(new JLabel(hint), "wrap");
       }
+      p.add(hintPanel, "growx");
     }
 
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));

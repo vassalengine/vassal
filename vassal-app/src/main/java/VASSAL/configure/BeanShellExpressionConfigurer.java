@@ -79,7 +79,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
   protected static int maxScrollItems = 0;
 
-  protected static final String[] SUM_MAP_HINTS = new String[]{"WARNING - This function needs to scan many pieces and is relatively slow. Use sparingly", "$property$ variables may be used in the Match Expression and will be evaluated on the source piece.", "See the Reference Manual for detailed usage."};
+  protected static final String[] SUM_COUNT_HINTS = new String[]{"WARNING - This function needs to scan many pieces and is relatively slow. Use sparingly", "$property$ variables may be used in the Match Expression and will be evaluated on the source piece.", "See the Reference Manual for detailed usage."};
   protected static final String[] STRING_HINTS = new String[]{"This function can only be used on a String or Function return value.", "Use GetProperty(\"propertyName\").function() to apply this function to a Property value."};
 
   protected JPanel expressionPanel;
@@ -296,10 +296,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
     final JMenu countMenu = new JMenu("Sum & Count");
     addFunction(countMenu, "SumStack", "Sum the values of the named property in all pieces in the same stack", new String[] { "Property name" }, "(name)");
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_MAP_HINTS, new Option[] {Option.NONE, Option.PME});
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_MAP_HINTS, new Option[] {Option.PME});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_MAP_HINTS, new Option[] {Option.PME, Option.NONE});
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME});
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.PME});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE});
 
     final JMenu functionMenu = new JMenu("Function");
     functionMenu.add(mathMenu);
@@ -308,7 +308,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     functionMenu.add(countMenu);
     addFunction(functionMenu, "?", "Return a different result depending on a logical expression", new String[] { "Logical expression", "Result if true", "Result if false" }, "(expr ? r1 : r2)");
     addFunction(functionMenu, "Alert", "Display text in a Dialog box", new String[] { "Text to display" }, "(text)");
-    addFunction(functionMenu, "Compare", "Compare two Strings or other objects", new String[] { "Object 1", "Object 2" }, "(o1, o2)");
     addFunction(functionMenu, "GetProperty", "Get a property by name", new String[] { "Property name" }, "(name)");
 
     popup.add(functionMenu);

@@ -21,7 +21,6 @@ import java.util.Map;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.script.ExpressionInterpreter;
@@ -89,25 +88,22 @@ public class BeanShellExpression extends Expression {
     }
     
     // Non dynamic, just return a standard filter based on the existing expression.
-    return new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        String result = null;
-        try {
-          result = evaluate(piece);
-        }
-        catch (ExpressionException e) {
-          ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), "Expression="+getExpression()+", Error="+e.getError(), e));
-        }
-        return "true".equals(result);
+    return piece -> {
+      String result = null;
+      try {
+        result = evaluate(piece);
       }
+      catch (ExpressionException e) {
+        ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), "Expression="+getExpression()+", Error="+e.getError(), e));
+      }
+      return "true".equals(result);
     };
   }
 
   /**
    * Convert a Property name to it's BeanShell equivalent.
    *
-   * @param property name
+   * @param prop Property name
    * @return beanshell equivalent
    */
   public static String convertProperty (String prop) {

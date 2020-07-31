@@ -36,7 +36,7 @@ public class BeanShellExpressionValidator {
   protected List<String> variables = new ArrayList<>();
   protected List<String> methods = new ArrayList<>();
   protected String error;
-  protected boolean valid = false;
+  protected boolean valid;
   
   /**
    * Build a new Validator and validate the expression
@@ -158,7 +158,7 @@ public class BeanShellExpressionValidator {
     }
     
     if (node instanceof BSHAmbiguousName) {
-      final String name = ((BSHAmbiguousName) node).getText().trim();
+      final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
           methods.add(name);
