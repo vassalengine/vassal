@@ -2,7 +2,7 @@ package depreport;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class DepreportFlattener {
   private final OutputAggregator outputAggregator = new OutputAggregator();
 
   public DepreportFlattener(String depreportFile) throws IOException {
-    content = Files.readAllLines(Paths.get(depreportFile));
+    content = Files.readAllLines(Path.of(depreportFile));
     flattenContent();
   }
 
