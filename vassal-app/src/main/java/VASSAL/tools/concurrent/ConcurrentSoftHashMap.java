@@ -24,6 +24,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -63,15 +64,12 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
       if (this == o) return true;
       if (o == null || o.getClass() != this.getClass()) return false;
       final SoftValue<?, ?> sv = (SoftValue<?, ?>) o;
-      // TODO get().equals() may produce a NPE if the object was cleared by the GC after the first call to get()
-      return key.equals(sv.key) &&
-             get() == null ? sv.get() == null : get().equals(sv.get());
+      return key.equals(sv.key) && Objects.equals(get(), sv.get());
     }
 
     @Override
     public int hashCode() {
-      // TODO get().hashCode() may produce a NPE if the object was cleared by the GC after the first call to get()
-      return get() == null ? 0 : get().hashCode();
+      return Objects.hashCode(get());
     }
   }
 
@@ -212,8 +210,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
     }
 
     public int hashCode() {
-      return (key   == null ? 0 :   key.hashCode()) ^
-             (value == null ? 0 : value.hashCode());
+      return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 
     public String toString() {
