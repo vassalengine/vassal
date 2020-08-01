@@ -109,25 +109,35 @@ public class FunctionBuilder extends JDialog {
    * Note special handling for ternary "?" function. Only Ternary function, so no need to implement a general solution.
    */
   public void save() {
-    StringBuilder result;
+    String s;
 
     if (function.equals("?")) {
-      result = new StringBuilder("((" + configs.get(0).getValueString() + ") ? " + getExpr(configs.get(1)) + " : " + getExpr(configs.get(2)) + ")");
+      s = "((" + configs.get(0).getValueString() + ") ? " + getExpr(configs.get(1)) + " : " + getExpr(configs.get(2)) + ")";
+    }
+    else if (isStringFunction()) {
+      s = configs.get(0).getValueString() + getFunctionBody(true);
     }
     else {
-      result = new StringBuilder(function + "(");
-      boolean first = true;
-      for (BeanShellExpressionConfigurer fec : configs) {
-        if (!first) {
-          result.append(",");
-        }
-        result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()): fec.getValueString());
-        first = false;
-      }
-      result.append(")");
+      s = getFunctionBody(false);
     }
-    target.setValue(result.toString());
+    target.setValue(s);
     dispose();
+  }
+
+  private String getFunctionBody(boolean skipFirstArgument) {
+    StringBuilder result;
+    result = new StringBuilder(function + "(");
+    boolean first = true;
+    for (int i=skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
+      BeanShellExpressionConfigurer fec = configs.get(i);
+      if (!first) {
+        result.append(",");
+      }
+      result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()): fec.getValueString());
+      first = false;
+    }
+    result.append(")");
+    return result.toString();
   }
 
   private String escape (String expr) {
@@ -138,6 +148,10 @@ public class FunctionBuilder extends JDialog {
     final Expression e = Expression.createExpression("{"+c.getValueString()+"}");
     final boolean isAtomic = (e instanceof IntExpression) || (e instanceof StringExpression);
     return (isAtomic ? "" : "(") + c.getValueString() + (isAtomic ? "" : ")");
+  }
+
+  private boolean isStringFunction() {
+    return function.startsWith(".");
   }
 
   public void cancel() {
