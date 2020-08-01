@@ -23,13 +23,23 @@
   players move <a href="GamePiece.htm">Game Pieces</a> by dragging and dropping with the mouse. It is possible to have
   two or more Map Windows; the players may drag and drop pieces between the different windows. A Map Window should be
   configured with at least one Map Board (in the "Map Boards" component).<br>
+  <br>
+  To add additional Map Windows to your module, use the Editor to navigate to the <i>[Module]</i> entry at the very top of the
+  Editor's configuration window hierarchy. Right click on the <i>[Module]</i> entry and select <i>Add Map Window</i>. Your new
+  Map Window will be added to the very bottom of your Module's list of components. You can then open the <i>[Map Window]</i> entry,
+  where you should right click on the <i>[Map Boards]</i> subcomponent and add at least one <a href="Board.htm">Board</a>. You
+  can also add additional subcomponents by right-clicking the <i>[Map Window]</i> entry and selecting one of the appropriate <i>Add</i>
+  options. See <a href="#SubComponents">Sub-Components</a>, below.<br>
+  <br>
+  <b>SEE ALSO:</b>&nbsp; <a href="PlayerHand.htm">Player Hands</a> and <a href="PrivateWindow.htm">Private Windows</a> are specialized forms of Map Window and
+  share most of its properties and subcomponents. They are designed for holding pieces and cards that are private to one player or side.<br>
+  <br>
 
   <table style="width: 100%; text-align: left;" border="0" cellpadding="2" cellspacing="2">
     <tbody>
     <tr>
 
     <td style="vertical-align: top;">
-    <br>
     <b>Map Name:</b>&nbsp; The name of this map window.<br>
     <br>
     <b>Mark pieces that move:</b>&nbsp; If checked, then any pieces with the <a href="MarkMoved.htm">Mark When Moved</a>
@@ -57,7 +67,7 @@
     <br>
     <b>Include toolbar button to show/hide:</b>&nbsp; If checked, then this map window will not be automatically shown
     when a game begins. Instead, a button to show/hide this window will be added to the main module Toolbar. <b>NOTE:
-    </b>&nbsp; changing this option will not take effect until the module has been reloaded (exit from the Module Editor
+    </b> changing this option will not take effect until the module has been reloaded (exit from the Module Editor
     and restart it).<br>
     <br>
     <b>Button text:</b>&nbsp; The name of the show/hide Toolbar button<br>
@@ -66,23 +76,23 @@
     <br>
     <b>Button icon:</b>&nbsp; An icon for the show/hide Toolbar button<br>
     <br>
-    <b>Hotkey:</b>&nbsp; The hotkey (or <a href="NamedKeyCommand.htm">Named Key Command</a> for the show/hide Toolbar
+    <b>Hotkey:</b>&nbsp; The hotkey (or <a href="NamedKeyCommand.htm">Named Key Command</a>) for the show/hide Toolbar
     button<br>
     <br>
     <b>Auto-report format for movement within this map:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that
-    will be used to automatically report movement of pieces completely within this map window:&nbsp; <i>$pieceName$</i>
-    is the name of the piece being moved,&nbsp; <i>$location$</i> is the location to which the piece is being moved (in
+    will be used to automatically report movement of pieces completely within this map window:f <i>$pieceName$</i>
+    is the name of the piece being moved, <i>$location$</i> is the location to which the piece is being moved (in
     the format specified below), <i>$previousLocation$</i> is the location from which the piece is being moved. <b>NOTE:
-    </b>&nbsp; These reports are separate from, and in addition to, any reports the piece itself generates with <a
+    </b> These reports are separate from, and in addition to, any reports the piece itself generates with <a
       href="ReportChanges.htm">Report Action</a> traits in response to the Key Command applied by the bottom field. <br>
     <br>
     <b>Auto-report format for movement to this map:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will
-    be used to report movement of pieces to this map window from another map window:&nbsp; In addition to the properties
+    be used to report movement of pieces to this map window from another map window: In addition to the properties
     noted for the above item, <i>$previousMap$</i> is the name of the map from which the piece is being moved.<br>
     <br>
     <b>Auto-report format for units created in this map:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that
     will be used to report pieces that are dragged to this map window directly from a <a href="PieceWindow.htm">Game
-    Piece Palette</a>:&nbsp;&nbsp; The properties mentioned in the previous two items may be referenced as appropriate.
+    Piece Palette</a>: The properties mentioned in the previous two items may be referenced as appropriate.
     <br>
     <br>
     <b>Auto-report format for units modified on this map:</b>&nbsp; When a <a href="ReportChanges.htm">Report Action</a>
@@ -107,14 +117,56 @@
     </td>
     </tr>
   </table>
+  <br>
 
   <hr size="2" width="100%">
-  <h2>Sub-Components</h2>
-  <h3>Map Boards</h3>
+  <h2><a name="SubComponents">Sub-Components</a></h2>
+  Map are created with several default sub-components, but new ones can be added. To add sub-components to a map, navigate to the <i>[Map Window]</i> component
+  entry in the Editor, right click on the <i>[Map Window]</i> component, and select the appropriate <i>Add</i> option for the sub-component you would like to add.
+  Once you configure it, your new sub-component will appear at the bottom of the Map's list of sub-components.<br>
+  <br>
+
+  <table style="text-align: center; width: 100%; line-height:150%;" border="0" cellpadding="2" cellspacing="2">
+    <tr>
+  <td><a href="#SelectionHighlighter">Additional Selection Highlighters</a></td>
+  <td><a href="SetupStack.htm">At-Start Stack</a></td>
+  <td><a href="Deck.htm">Deck</a></td>
+  <td><a href="#HidePieces">Hide Pieces Button</a></td>
+    </tr>
+    <tr>
+  <td><a href="GamePieceLayers.htm">Game Piece Layers</a></td>
+  <td><a href="#GlobalKeyCommand">Global Key Command</a></td>
+  <td><a href="GlobalProperties.htm">Global Properties</a></td>
+  <td><a href="#ImageCapture">Image Capture Tool</a></td>
+    </tr>
+    <tr>
+  <td><a href="#LastMoveHighlighter">Last Move Highlighter</a></td>
+  <td><a href="#LOS">Line of Sight Thread</a></td>
+  <td><a href="#MapBoards">Map Boards</a></td>
+  <td><a href="#MapShading">Map Shading</a></td>
+    </tr>
+    <tr>
+  <td><a href="#StackViewer">Mouse-over Stack Viewer</a></td>
+  <td><a href="#OverviewWindow">Overview Window</a></td>
+  <td><a href="#PieceRecenterer">Recenter Pieces Button</a></td>
+  <td><a href="#StackingOptions">Stacking Options</a></td>
+    </tr>
+    <tr>
+  <td><a href="#StartupGlobalKeyCommand">Startup Global Key Command</a></td>
+  <td><a href="#TextCapture">Text Capture Tool</a></td>
+  <td><a href="ToolbarMenu.htm">Toolbar Menu</a></td>
+  <td><a href="#Zoom">Zoom Capability</a></td>
+    </tr>
+  </table>
+  <br>
+
+  <hr size="2" width="100%">
+
+  <h3><a name="MapBoards">Map Boards</a></h3>
   <table style="width: 100%; text-align: left;" border="0" cellpadding="2" cellspacing="2">
     <tbody>
     <tr>
-    <td style="vertical-align: top;">This component contains all the boards that may appear in this map window. &nbsp;It
+    <td style="vertical-align: top;">This component contains all the boards that may appear in this map window. It
     contains <a href="Board.htm">Board</a>
     components and defines the dialog that is used to select boards when a new game is started.<br>
     <br>
