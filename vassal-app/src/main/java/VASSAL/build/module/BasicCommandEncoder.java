@@ -104,6 +104,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(Deck.ID, type -> new Deck(GameModule.getGameModule(), type))
   );
 
+  private final BasicPieceFactory defaultBasicPieceFactory = type -> null;
+
   private final Map<String, DecoratorFactory> decoratorFactories = Map.ofEntries(
     Map.entry(Immobilized.ID, Immobilized::new),
     Map.entry(Embellishment.ID, (type, inner) -> {
@@ -149,7 +151,17 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(GlobalHotKey.ID, GlobalHotKey::new)
   );
 
+  private final DecoratorFactory defaultDecoratorFactory = (type, inner) -> {
+    System.err.println("Unknown type " + type);
+    return new Marker(Marker.ID, inner);
+  };
+
   public BasicCommandEncoder() {
+  }
+
+  private String typePrefix(String type) {
+    final String prefix = type.substring(0, type.indexOf(';')+1);
+    return prefix.isEmpty() ? type : prefix;
   }
 
   /**
@@ -165,20 +177,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @see Decorator
    */
   public Decorator createDecorator(String type, GamePiece inner) {
-    Decorator d = null;
-    String prefix = type.substring(0, type.indexOf(';')+1);
-    if (prefix.length() == 0) {
-      prefix = type;
-    }
-    DecoratorFactory f = decoratorFactories.get(prefix);
-    if (f != null) {
-      d = f.createDecorator(type, inner);
-    }
-    else {
-      System.err.println("Unknown type "+type); //$NON-NLS-1$
-      d = new Marker(Marker.ID, inner);
-    }
-    return d;
+    return decoratorFactories.getOrDefault(
+      typePrefix(type), defaultDecoratorFactory
+    ).createDecorator(type, inner);
   }
 
   /**
@@ -189,16 +190,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    *          value from its {@link GamePiece#getType} method
    */
   protected GamePiece createBasic(String type) {
-    GamePiece p = null;
-    String prefix = type.substring(0, type.indexOf(';')+1);
-    if (prefix.length() == 0) {
-      prefix = type;
-    }
-    BasicPieceFactory f = basicFactories.get(prefix);
-    if (f != null) {
-      p = f.createBasicPiece(type);
-    }
-    return p;
+    return basicFactories.getOrDefault(
+      typePrefix(type), defaultBasicPieceFactory
+    ).createBasicPiece(type);
   }
 
   /**
