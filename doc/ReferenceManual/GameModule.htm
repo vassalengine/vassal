@@ -26,9 +26,20 @@
     name of the game, a version number, and a description. These properties are each displayed separately their own
     columns when the module is listed in the Module Manager that appears when Vassal starts up. The version number is
     used to warn users who attempt to load save files created by a <i>later</i> version of a module into an <i>earlier
-    </i> one.
+    </i> one.<br>
+    <br>
+    All modifications to a module are done through the Configuration Window, which is a familiar
+    file/folder type browser in which each file/folder represents a module <a href="GameModule.htm">Component</a>.
+    The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of
+    the Components that are added by default. Right-click on the <i>[Module]</i> to get a context menu with options for 
+    the many types of components you can add to a Vassal module, including <a href="Map.htm">Maps</a>, <a href="ChartWindow.htm">Charts</a>,
+    and <a href="PieceWindows.htm">"Palette"</a> windows full of <a href="GamePiece.htm">game pieces</a>.<br>
+
     </td>
-    <td valign="top"><img src="images/GameModule.png" alt="" title=""><br>
+    <td valign="top">
+    <img src="images/GameModule.png" alt="" title=""><br>
+    <br>
+    <img src="images/BrandNewModule.png">
     </td>
     </tr>
     </tbody>
@@ -245,14 +256,14 @@
     <tbody>
     <tr>
     <td valign="top">
-    A window for saving text notes along with a game. &nbsp;A "Notes" button will be added to the
-    toolbar of the main controls window, enabled when a game is started. Pushing the button displays the window.
-    &nbsp;The "Public" tab contains notes that are visible to all players and to which all players may add.&nbsp; The
-    "Private" tab contains notes that are visible only to the player who entered them.&nbsp; The "Delayed" tab is for
-    writing messages to be revealed at a later time as a safeguard against cheating.&nbsp; To create a delayed message,
-    hit the "New" button and&nbsp; enter a name and message text.&nbsp; Once created, the text of a message cannot be
-    changed.&nbsp; At the appropriate time, the owning player may reveal the text of the message, at which point other
-    players may read the contents of the message.<br>
+    A window for saving text notes along with a game. &nbsp;A "Notes" button will be added to the toolbar of the main
+    controls window, enabled when a game is started. Pushing the button displays the window. &nbsp;The "Public" tab
+    contains notes that are visible to all players and to which all players may add.&nbsp; The "Private" tab contains
+    notes that are visible only to the player who entered them.&nbsp; The "Delayed" tab is for writing messages to be
+    revealed at a later time as a safeguard against cheating.&nbsp; To create a delayed message, hit the "New" button
+    and&nbsp; enter a name and message text.&nbsp; Once created, the text of a message cannot be changed.&nbsp; At the
+    appropriate time, the owning player may reveal the text of the message, at which point other players may read the
+    contents of the message.<br>
     <br>
     </td>
     <td valign="top">
@@ -264,22 +275,22 @@
   </table>
   <br>
   <br>
-  
+
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
     <td valign="top">
-  <a name="ChatLog"><h3>Chat Log</h3></a><br>
-
-  Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the toolbar. It exists
-  by default and cannot be removed in the Editor. The chat log not only allows players to "chat" with each other by typing messages into the
-  lower text line, it also displays a running "log" of game events -- messages produced by <a href="ReportAction.htm">Report Action</a> traits
-  and other <a href="MessageFormat.htm">Message Formats</a> in traits and various module components. Messages from your components can be
-  displayed in a variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a visually attractive
-  and easy-to-read report log.<br>
-  <br>
-  <a href="ChatLog.htm">See full article for details.</a>
-  </td>
+    <a name="ChatLog"><h3>Chat Log</h3></a><br>
+    Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the
+    toolbar. It exists by default and cannot be removed in the Editor. The chat log not only allows players to "chat"
+    with each other by typing messages into the lower text line, it also displays a running "log" of game events --
+    messages produced by <a href="ReportAction.htm">Report Action</a> traits and other <a href="MessageFormat.htm">
+    Message Formats</a> in traits and various module components. Messages from your components can be displayed in a
+    variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a
+    visually attractive and easy-to-read report log.<br>
+    <br>
+    <a href="ChatLog.htm">See full article for details.</a>
+    </td>
     <td valign="top">
     <img src="images/ChatLog.png">
 
