@@ -18,6 +18,7 @@
 package VASSAL.script;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
@@ -345,6 +346,35 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     return value == null ? "" : wrap(value.toString());
   }
 
+  public Object getZoneProperty(String propertyName, String zoneName) {
+    if (source instanceof GamePiece) {
+      final Map map = ((GamePiece) source).getMap();
+      if (map != null) {
+        final Zone zone = map.findZone(zoneName);
+        if (zone != null) {
+          return wrap((String) zone.getProperty(propertyName));
+        }
+      }
+    }
+    return wrap("");
+  }
+
+  public Object getZoneProperty(String propertyName, String zoneName, String mapName) {
+    final Map map = findVassalMap(mapName);
+    if (map != null) {
+      final Zone zone = map.findZone(zoneName);
+      if (zone != null) {
+        return wrap((String) zone.getProperty(propertyName));
+      }
+    }
+    return wrap("");
+  }
+
+  public Object getMapProperty(String propertyName, String mapName) {
+    final Map map = findVassalMap(mapName);
+    return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
+  }
+
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
@@ -569,7 +599,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     else {
       maps = new ArrayList<>();
       // Shortcut - See if the parent piece for our source piece is the map we want (most likely)
-      if (sourcePiece.getMap().getMapName().equals(mapName)) {
+      if (sourcePiece != null && sourcePiece.getMap().getMapName().equals(mapName)) {
         maps.add(sourcePiece.getMap());
       }
       // Otherwise, search all maps for the one we want
@@ -583,6 +613,15 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
     }
     return maps;
+  }
+
+  private Map findVassalMap(String mapName) {
+    for (Map map : Map.getMapList()) {
+      if (map.getMapName().equals(mapName)) {
+        return map;
+      }
+    }
+    return null;
   }
 
 }

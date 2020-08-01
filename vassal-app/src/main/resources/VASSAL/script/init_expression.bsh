@@ -142,6 +142,25 @@ GetProperty(String name) {
   return unwrap(_interp.getProperty(name));
 }
 
+
+GetZoneProperty(String propertyName, String zoneName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getZoneProperty(propertyName, zoneName));
+}
+
+GetZoneProperty(String propertyName, String zoneName, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getZoneProperty(propertyName, zoneName, mapName));
+}
+
+GetMapProperty(String propertyName, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getMapProperty(propertyName, mapName));
+}
+
 /** 
  * Callback to Vassal to get a localized property
  */

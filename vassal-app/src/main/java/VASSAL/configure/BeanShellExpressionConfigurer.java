@@ -276,6 +276,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     addFunction(mathMenu, "Math.min", "Minimum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
     addFunction(mathMenu, "Math.max", "Maximum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
 
+    final JMenu propMenu = new JMenu("Property");
+    addFunction(propMenu, "GetProperty", "Get the value of a property", new String[] { "Property name" }, "(prop)");
+    addFunction(propMenu, "GetMapProperty", "Get the value of a Map-level property", new String[] { "Property name", "Map name" }, "(prop, map)");
+    addFunction(propMenu, "GetZoneProperty", "Get the value of a Zone-level property on the current Map", new String[] { "Property name", "Zone name" }, "(prop, zone)");
+    addFunction(propMenu, "GetZoneProperty", "Get the value of a Zone-level property on any Map", new String[] { "Property name", "Zone name", "Map name" }, "(prop, zone, map)");
+
     final JMenu stringMenu = new JMenu("String");
     addFunction(stringMenu, ".length", "Return the length of a string", new String[] {}, "()");
     addFunction(stringMenu, ".contains", "Return true if string contains the specified search string", new String[] { "Search String" }, "(string)", STRING_HINTS);
@@ -303,12 +309,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
     final JMenu functionMenu = new JMenu("Function");
     functionMenu.add(mathMenu);
+    functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
     functionMenu.add(countMenu);
     addFunction(functionMenu, "?", "Return a different result depending on a logical expression", new String[] { "Logical expression", "Result if true", "Result if false" }, "(expr ? r1 : r2)");
     addFunction(functionMenu, "Alert", "Display text in a Dialog box", new String[] { "Text to display" }, "(text)");
-    addFunction(functionMenu, "GetProperty", "Get a property by name", new String[] { "Property name" }, "(name)");
 
     popup.add(functionMenu);
 
