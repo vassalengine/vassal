@@ -37,8 +37,6 @@ public class BeanShellExpressionValidator {
   protected List<String> methods = new ArrayList<>();
   protected String error;
   protected boolean valid;
-
-  protected final String SUPPORTED_STRING_METHODS = ".length,.contains,.startsWith,.endsWith,.matches,.indexOf,.lastIndexOf,.substring,.replace,";
   
   /**
    * Build a new Validator and validate the expression
@@ -163,29 +161,11 @@ public class BeanShellExpressionValidator {
       final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
-          // Check for x.y() where y is a String method. x will be a property name we need tp report
-          // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens
-          String[] tokens = name.split(" ");
-          // Only 1 Token, it's a straight method, we're not interested.
-          if (tokens.length == 1) {
-            if (! methods.contains(name)) {
-              methods.add(name);
-            }
-          }
-          else {
-            // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a variable
-            if (SUPPORTED_STRING_METHODS.contains(tokens[1]+",")) {
-              if (! variables.contains(tokens[0])) {
-                variables.add(tokens[0]);
-              }
-            }
-          }
+          methods.add(name);
         }
       }
       else if (! variables.contains(name)) {
-        if (! variables.contains(name)) {
-          variables.add(name);
-        }
+        variables.add(name);
       }
     }
     else if (node instanceof BSHAssignment) {

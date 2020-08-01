@@ -141,18 +141,10 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     // Build a method enclosing the expression. This saves the results
     // of the expression parsing, improving performance. Force return
     // value to a String as this is what Vassal is expecting.
-    // Pass the values of any property names used in the expression as arguments
     setNameSpace(expressionNameSpace);
     if (expression.length() > 0) {
       try {
-        final StringBuilder argList = new StringBuilder();
-        for (String variable : variables) {
-          if (argList.length() > 0) {
-            argList.append(',');
-          }
-          argList.append("String ").append(variable);
-        }
-        eval("String " + MAGIC2 + "("+argList.toString()+") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        eval("String " + MAGIC2 + "() { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -230,14 +222,9 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     setNameSpace(expressionNameSpace);
 
-    // Pass the value of any undeclared variable as arguments to the evaluation function.
-    // Use the value of the corresponding Vassal property.
-    // Allow for old-style $variable$ references
-    final StringBuilder argList = new StringBuilder();
+    // Bind each undeclared variable with the value of the
+    // corresponding Vassal property. Allow for old-style $variable$ references
     for (String var : variables) {
-      if (argList.length() > 0) {
-        argList.append(',');
-      }
       String name = var;
       if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
         name = name.substring(1, name.length() - 1);
@@ -245,39 +232,38 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
       String value = prop == null ? "" : prop.toString();
       if (value == null) {
-        argList.append("\"\"");
+        setVar(var, "");
       }
       else if ("true".equals(value)) {
-        argList.append("true");
+        setVar(var, true);
       }
       else if ("false".equals(value)) {
-        argList.append("false");
+        setVar(var, false);
       }
       else {
         try {
-          argList.append(Integer.parseInt(value));
+          setVar(var, Integer.valueOf(value).intValue());
         }
         catch (NumberFormatException e) {
           try {
-            argList.append(Float.parseFloat(value));
+            setVar(var, Float.valueOf(value).floatValue());
           }
           catch (NumberFormatException e1) {
-            argList.append("\"").append(value).append("\"");
+            setVar(var, value);
           }
         }
       }
     }
 
     // Re-evaluate the pre-parsed expression now that the undefined variables have
-    // been bound to their Vassal property values and passed in via the function
-    // argument list.
+    // been bound to their Vassal property values.
 
     setVar(THIS, this);
     setVar(SOURCE, source);
 
     String result;
     try {
-      eval(MAGIC1 + "=" + MAGIC2 + "("+argList.toString()+")");
+      eval(MAGIC1 + "=" + MAGIC2 + "()");
       result = get(MAGIC1).toString();
     }
     catch (EvalError e) {
