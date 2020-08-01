@@ -17,7 +17,9 @@
  */
 package VASSAL.configure;
 
-import java.awt.*;
+import VASSAL.script.expression.FunctionBuilder;
+import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -67,14 +69,26 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected EditablePiece target;
   protected Option option;
   protected String selectedText;
+  protected boolean displayOnly;
+  protected FunctionBuilder builder;
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     this(key, name, val, piece, Option.NONE );
   }
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option) {
+    this (key, name, val, piece, option, false);
+  }
+
+  public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option, FunctionBuilder builder) {
+    this (key, name, val, piece, option, false);
+    this.builder = builder;
+  }
+
+  public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option, boolean displayOnly) {
     super(key, name, val);
     this.option = option;
+    this.displayOnly = displayOnly;
     if (piece instanceof EditablePiece) {
       target = (EditablePiece) piece;
     }
@@ -135,10 +149,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           setValue(nameField.getText());
           validator.validate();
           noUpdate = false;
+          updateParentBuilder();
         }
       });
       expressionPanel.add(validator);
       expressionPanel.add(extraDetails, "wrap");
+
+      nameField.setEditable(! isDisplayOnly());
+      extraDetails.setVisible(! isDisplayOnly());
+
       validator.validate();
 
       detailPanel = new JPanel();
@@ -160,6 +179,19 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       p.add(detailPanel);
     }
     return p;
+  }
+
+  public void validate() {
+    validator.validate();
+  }
+
+  /**
+   * If we are the child of a FunctionBuilder, notify it we have changed.
+   */
+  protected void updateParentBuilder() {
+    if (builder != null) {
+      builder.update();
+    }
   }
 
   protected void doPopup() {
@@ -206,6 +238,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     validator.validate();
     noUpdate = false;
     nameField.repaint();
+    updateParentBuilder();
 
     // Send focus back to text field
     nameField.requestFocusInWindow();
@@ -249,6 +282,14 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     this.selectedText = selectedText;
   }
 
+  public boolean isDisplayOnly() {
+    return displayOnly;
+  }
+
+  public void setDisplayOnly(boolean displayOnly) {
+    this.displayOnly = displayOnly;
+  }
+
   /*
    * Class to check and reflect the validity of the current expression.
    */
@@ -289,6 +330,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         setIcon(none);
       }
       this.status = status;
+      repaint();
     }
 
     public int getStatus() {

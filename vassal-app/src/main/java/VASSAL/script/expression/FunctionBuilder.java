@@ -50,6 +50,7 @@ public class FunctionBuilder extends JDialog {
   protected String function;
   protected List<BeanShellExpressionConfigurer> configs = new ArrayList<>();
   protected EditablePiece targetPiece;
+  protected BeanShellExpressionConfigurer result;
 
   public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options, String selectedText) {
     super(parent, "Function Builder - "+function, true);
@@ -63,13 +64,16 @@ public class FunctionBuilder extends JDialog {
 
     p.add(new JLabel(desc), "align center");
     for (int i=0; i < parmDesc.length; i++) {
-      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i] + ":  ", "", targetPiece, options[i]);
+      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i] + ":  ", "", targetPiece, options[i], this);
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
       }
       configs.add(config);
       p.add(config.getControls(), "align right,growx");
     }
+
+    result = new BeanShellExpressionConfigurer(null, "Result: ", "", null, BeanShellExpressionConfigurer.Option.NONE, true);
+    p.add(result.getControls(), "align right,growx");
 
     if (hints != null && hints.length > 0) {
       final JPanel hintPanel = new JPanel(new MigLayout("ins 5"));
@@ -108,23 +112,30 @@ public class FunctionBuilder extends JDialog {
   }
 
   /**
+   * A child configurer has been updated, re-calculate the result, update the visualiser and re-validate it
+   */
+  public void update() {
+    result.setValue(buildResult());
+    result.validate();
+  }
+
+  /**
    * Ok button pressed. Set the expression back into the target configurer.
    * Note special handling for ternary "?" function. Only Ternary function, so no need to implement a general solution.
    */
   public void save() {
-    String s;
+    target.setValue(buildResult());
+    dispose();
+  }
 
+  protected String buildResult() {
     if (function.equals("?")) {
-      s = "((" + configs.get(0).getValueString() + ") ? " + getExpr(configs.get(1)) + " : " + getExpr(configs.get(2)) + ")";
+      return "((" + configs.get(0).getValueString() + ") ? " + getExpr(configs.get(1)) + " : " + getExpr(configs.get(2)) + ")";
     }
     else if (isStringFunction()) {
-      s = configs.get(0).getValueString() + getFunctionBody(true);
+      return configs.get(0).getValueString() + getFunctionBody(true);
     }
-    else {
-      s = getFunctionBody(false);
-    }
-    target.setValue(s);
-    dispose();
+    return getFunctionBody(false);
   }
 
   private String getFunctionBody(boolean skipFirstArgument) {
