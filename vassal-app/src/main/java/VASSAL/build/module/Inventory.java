@@ -90,11 +90,11 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
+import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -960,7 +960,7 @@ public class Inventory extends AbstractConfigurable
       Command comm = null;
       if (p != null) {
         // Save state first
-        p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         if (tracker == null) {
           tracker = new BoundsTracker();
           tracker.addPiece(p);
