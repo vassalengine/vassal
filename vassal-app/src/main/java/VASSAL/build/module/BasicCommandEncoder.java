@@ -90,6 +90,14 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   private static final Logger logger =
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
+  interface DecoratorFactory {
+    Decorator createDecorator(String type, GamePiece inner);
+  }
+
+  interface BasicPieceFactory {
+    GamePiece createBasicPiece(String type);
+  }
+
   private final Map<String, BasicPieceFactory> basicFactories = Map.ofEntries(
     Map.entry(Stack.TYPE, type -> new Stack()),
     Map.entry(BasicPiece.ID, BasicPiece::new),
@@ -346,13 +354,5 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     else {
       return null;
     }
-  }
-
-  interface DecoratorFactory {
-    Decorator createDecorator(String type, GamePiece inner);
-  }
-
-  interface BasicPieceFactory {
-    GamePiece createBasicPiece(String type);
   }
 }
