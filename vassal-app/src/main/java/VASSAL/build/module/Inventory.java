@@ -90,7 +90,6 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;

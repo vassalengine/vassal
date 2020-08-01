@@ -83,7 +83,6 @@ import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
-import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.PieceSorter;
