@@ -174,7 +174,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     }
     else {
       final StringConfigurer result = new StringConfigurer(null, "", "");
-      new FunctionBuilder(result, (JDialog) configurer.getTopLevelAncestor(), op, desc, parmDesc, target, hints, options).setVisible(true);
+      new FunctionBuilder(result, (JDialog) configurer.getTopLevelAncestor(), op, desc, parmDesc, target, hints, options, configurer.getSelectedText()).setVisible(true);
       if (result.getValue() != null && result.getValueString().length() > 0) {
         configurer.insertName(result.getValueString());
       }

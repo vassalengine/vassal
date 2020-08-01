@@ -51,7 +51,7 @@ public class FunctionBuilder extends JDialog {
   protected List<BeanShellExpressionConfigurer> configs = new ArrayList<>();
   protected EditablePiece targetPiece;
 
-  public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options) {
+  public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options, String selectedText) {
     super(parent, "Function Builder - "+function, true);
     target = c;
     targetPiece = piece;
@@ -64,6 +64,9 @@ public class FunctionBuilder extends JDialog {
     p.add(new JLabel(desc), "align center");
     for (int i=0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i] + ":  ", "", targetPiece, options[i]);
+      if (i == 0 && isStringFunction() && selectedText != null) {
+        config.setValue(selectedText);
+      }
       configs.add(config);
       p.add(config.getControls(), "align right,growx");
     }

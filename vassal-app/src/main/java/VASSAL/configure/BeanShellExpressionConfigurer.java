@@ -66,6 +66,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected JLabel methods;
   protected EditablePiece target;
   protected Option option;
+  protected String selectedText;
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     this(key, name, val, piece, Option.NONE );
@@ -84,7 +85,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
     down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
     extraDetails = new JButton("Insert");
-    extraDetails.addActionListener(e -> doPopup());
+    extraDetails.addActionListener(e -> {
+      setSelectedText(nameField.getSelectedText());
+      doPopup();
+    });
   }
 
   protected void strip() {
@@ -181,14 +185,14 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void insertName(String name) {
     String work = nameField.getText();
     int pos = nameField.getCaretPosition();
+    final int selectionStart = nameField.getSelectionStart();
+    final int selectionEnd = nameField.getSelectionEnd();
 
     // Cut out any selected text
-    if (nameField.getSelectedText() != null) {
-      int start = nameField.getSelectionStart();
-      int end = nameField.getSelectionEnd();
-      work = work.substring(0, start) + work.substring(end);
-      if (pos >= start && pos <= end) {
-        pos = start;
+    if (selectionStart != selectionEnd) {
+      work = work.substring(0, selectionStart) + work.substring(selectionEnd);
+      if (pos >= selectionStart && pos <= selectionEnd) {
+        pos = selectionStart;
       }
     }
 
@@ -236,6 +240,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void setDetails() {
     setDetails ("", null, null);
   }
+
+  public String getSelectedText() {
+    return selectedText;
+  }
+
+  public void setSelectedText(String selectedText) {
+    this.selectedText = selectedText;
+  }
+
   /*
    * Class to check and reflect the validity of the current expression.
    */
