@@ -34,10 +34,13 @@ public class BeanShellExpressionValidator {
   
   protected String expression;
   protected List<String> variables = new ArrayList<>();
+  protected List<String> stringVariables = new ArrayList<>();
   protected List<String> methods = new ArrayList<>();
   protected String error;
   protected boolean valid;
-  
+
+  protected final String SUPPORTED_STRING_METHODS = ".length,.contains,.startsWith,.endsWith,.matches,.indexOf,.lastIndexOf,.substring,.replace,";
+
   /**
    * Build a new Validator and validate the expression
    * @param expression Expression to validate
@@ -58,7 +61,15 @@ public class BeanShellExpressionValidator {
   protected void setValid(boolean b) {
     valid = b;
   }
-  
+
+  /**
+   * Return a list of Variable references in the expression that we know must be Strings
+   * @return List of variables
+   */
+  public List<String> getStringVariables() {
+    return stringVariables;
+  }
+
   /**
    * Return a list of Variable references in the expression
    * @return List of variables
@@ -161,7 +172,23 @@ public class BeanShellExpressionValidator {
       final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
-          methods.add(name);
+          // Check for x.y() where y is a String method. x will be a property name we need tp report
+          // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens
+          String[] tokens = name.split(" ");
+          // Only 1 Token, it's a straight method, we're not interested.
+          if (tokens.length == 1) {
+            if (! methods.contains(name)) {
+              methods.add(name);
+            }
+          }
+          else {
+            // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a String variable
+            if (SUPPORTED_STRING_METHODS.contains(tokens[1]+",")) {
+              if (! stringVariables.contains(tokens[0])) {
+                stringVariables.add(tokens[0]);
+              }
+            }
+          }
         }
       }
       else if (! variables.contains(name)) {

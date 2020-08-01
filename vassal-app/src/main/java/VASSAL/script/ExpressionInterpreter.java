@@ -85,6 +85,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   protected String expression;
   protected PropertySource source;
   protected List<String> variables;
+  protected List<String> stringVariables;
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
@@ -135,16 +136,29 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Get a list of any variables used in the expression. These are
     // property names that will need to be evaluated at expression
-    // evaluation time
-    variables = new BeanShellExpressionValidator(expression).getVariables();
+    // evaluation time.
+    // stringVariables is a list of the property names that call String functions so we
+    // know must be String type. These will be passed in to the evaluating expression as
+    // parameters to force their type to be known and allow String functions to be called on them.
+    final BeanShellExpressionValidator validator = new BeanShellExpressionValidator(expression);
+    variables = validator.getVariables();
+    stringVariables = validator.getStringVariables();
 
     // Build a method enclosing the expression. This saves the results
     // of the expression parsing, improving performance. Force return
     // value to a String as this is what Vassal is expecting.
+    // Pass the values of any String property names used in the expression as arguments
     setNameSpace(expressionNameSpace);
     if (expression.length() > 0) {
       try {
-        eval("String " + MAGIC2 + "() { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        final StringBuilder argList = new StringBuilder();
+        for (String variable : stringVariables) {
+          if (argList.length() > 0) {
+            argList.append(',');
+          }
+          argList.append("String ").append(variable);
+        }
+        eval("String " + MAGIC2 + "("+argList.toString()+") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -255,6 +269,15 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
     }
 
+    final StringBuilder argList = new StringBuilder();
+    for (String var : stringVariables) {
+      if (argList.length() > 0) {
+        argList.append(',');
+      }
+      final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
+      argList.append('"').append(value.toString()).append('"');
+    }
+
     // Re-evaluate the pre-parsed expression now that the undefined variables have
     // been bound to their Vassal property values.
 
@@ -263,7 +286,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     String result;
     try {
-      eval(MAGIC1 + "=" + MAGIC2 + "()");
+      eval(MAGIC1 + "=" + MAGIC2 + "("+argList.toString()+")");
       result = get(MAGIC1).toString();
     }
     catch (EvalError e) {
@@ -355,7 +378,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
    * <p>
-   * * WARNING * This WILL be inneficient as the number of counters on the
+   * * WARNING * This WILL be inefficient as the number of counters on the
    * map increases.
    *
    * @param property Property Name
