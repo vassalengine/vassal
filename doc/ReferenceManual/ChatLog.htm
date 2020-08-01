@@ -35,10 +35,13 @@
     black text of more routine events. This article will help you design your own chat log reporting so that you can get the most out of this feature.<br>
     <br>
     <h3>Quick Colors</h3>
-    VASSAL provides several "quick color" shortcuts to allow colored text to be put into the chat log by <a href="ReportAction.htm">Report Action</a> traits and other <a href="MessageFormat.htm">Message Formats</a>.
-    This is done by placing a special character as the first character of a chat line. The special first character, if any, will be removed automatically from the message when it is displayed.
-    Each of these characters activates one of the five chat log colors from the Chat Preferences tab; default colors are provided but players are allowed to reconfigure the colors as they wish.
-    Here is a list of the "quick color" first characters: <br>
+    VASSAL provides several "quick color" shortcuts to allow colored text to be put into the chat log by <a href="ReportChanges.htm">Report Action</a> traits and other <a href="MessageFormat.htm">Message Formats</a>.
+    This is done by placing a special character as the first character of a message. The special first character, if any, will be removed automatically from the message when it is displayed.
+    Each of these characters activates one of the five chat log colors from the Chat Preferences tab; default colors are provided but players are allowed to reconfigure the colors as they wish.<br>
+    <br>
+    <i>EXAMPLE:</i> If a <a href="ReportChanges.htm">Report Action</a> trait's message said <i>Hello World.</i> and you wanted to change the text to green, you could simply change the
+    message text to <i>!Hello World.</i> The exclamation point would be automatically removed, and the message would appear as <span style="color:#009933;">Hello World.</span>
+    <br>
     <br>
     <table border="0" cellpadding="2" cellspacing="2" width="100%">
       <tr>
@@ -76,9 +79,11 @@
     <h3>HTML in Chat Log</h3>
     VASSAL's chat log now supports HTML as well as regular text, as long you turn on the proper module setting (this is to maintain compatibility with
     modules created with earlier versions of VASSAL that did not account for such support). To turn on HTML support, [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] 
-    [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] <br>
+    [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk] [asdfasdfalk].
+     Any message with a "Quick Colors" first character, including "|" will also parse HTML regardless of the preference setting. <br>
     <br>
-    With HTML support enabled, you can include many types of HTML tags in your <a href="ReportAction.htm">Report Action</a> traits and other <a href="MessageFormat.htm">Message Formats</a>:<br>
+    With HTML support enabled, you can include many types of HTML tags in your <a href="ReportChanges.htm">Report Action</a> traits and other <a href="MessageFormat.htm">Message Formats</a>.
+    This opens up even more possibilities than the Quick Colors shortcuts and allows you to create an unlimited number of new styles.<br>
     <br>
     <table border="0" cellpadding="2" cellspacing="2" width="100%">
       <tr>
@@ -116,7 +121,7 @@
     a <a href="SpecialDiceButton.htm">Symbolic Dice Button</a>. Follow the directions in that article to create a die, or start with a Symbolic Dice
     Button that you have already created. Now, in the <i>Report Format</i> field, instead of simply reporting your results as e.g. <i>$result1$ rolled by $PlayerName$</i>,
     you will use <i>$result1$</i> to substitute in part of the filename in an HTML &lt;img&gt; tag. In the illustration below, notice how the filename
-    is created as d6-$result1$-blue.png. So the image files would be d6-1-blue.png, d6-2-blue.png, and so forth. The <i>width=14</i> and <i>height=14</i> stylings
+    is created as <i>d6-$result1$-blue.png</i>. So the image files would be <i>d6-1-blue.png</i>, <i>d6-2-blue.png</i>, and so forth. The <i>width=14</i> and <i>height=14</i> stylings
     in the tag force the image to be displayed in that pixel size -- since you probably have dice images e.g. 32x32 pixels so that they fit nicely on the
     toolbar, this prevents you from needing to make new versions just to have smaller images of them in the chat log. You can of course omit the <i>width</i>
     and <i>height</i> styles and insert images of any size you want.<br>
@@ -135,7 +140,7 @@
   </table>
 
   <br>
-  <b>SEE ALSO:</b> <a href="ReportAction.htm">Report Action</a>, <a href="MessageFormat.htm">Message Format</a>, <a href="SpecialDiceButton.htm">Symbolic Dice Button</a>
+  <b>SEE ALSO:</b> <a href="ReportChanges.htm">Report Action</a>, <a href="MessageFormat.htm">Message Format</a>, <a href="SpecialDiceButton.htm">Symbolic Dice Button</a>
 
   <hr size="2" width="100%">
 

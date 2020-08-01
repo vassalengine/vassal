@@ -28,24 +28,36 @@
     used to warn users who attempt to load save files created by a <i>later</i> version of a module into an <i>earlier
     </i> one.<br>
     <br>
-    All modifications to a module are done through the Configuration Window, which is a familiar
-    file/folder type browser in which each file/folder represents a module <a href="GameModule.htm">Component</a>.
+    All additions and modifications to a module are done through the <a href="index.htm">Configuration Window</a>, also
+    frequently referred to as the <a href="index.htm">Editor</a> window, which is a familiar
+    file/folder type browser in which each file/folder represents a module Component.
     The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of
     the Components that are added by default. Right-click on the <i>[Module]</i> to get a context menu with options for 
-    the many types of components you can add to a Vassal module, including <a href="Map.htm">Maps</a>, <a href="ChartWindow.htm">Charts</a>,
-    and <a href="PieceWindows.htm">"Palette"</a> windows full of <a href="GamePiece.htm">game pieces</a>.<br>
-
+    the many types of components you can add to a Vassal module, including <a href="Map.htm">maps</a>, <a href="ChartWindow.htm">charts</a>,
+    and <a href="PieceWindow.htm">palettes</a> full of <a href="GamePiece.htm">game pieces</a>. See <a href="#SubComponents">below</a> for more details.<br>
+    <br>
+    Actually <i><b>playing</b></i> the game takes place in the Module window (see example below). This window includes a Toolbar that  
+    can be configured by the module designer, as well as a <a href="ChatLog.htm">Chat Log</a> to record player messages
+    and game moves. The game's main <a href="Map.htm">Map</a> will be displayed just below the Chat Log.<br>
+    <br>
+    <div align="center">
+    <img src="images/ModuleWindow.png">
+    </div>
+    <div style="text-align:center; font-size:12px; padding-top:4px">Module window during play, showing the Toolbar, a <a href="PieceWindow.htm">Game Piece Palette</a>, and the <a href="ChatLog.htm">Chat Log</a>. The mapboard would appear below.</div><br>
     </td>
     <td valign="top">
     <img src="images/GameModule.png" alt="" title=""><br>
+    <div style="text-align:center; font-size:12px; padding-top:4px">[Module] Properties</div><br>
     <br>
-    <img src="images/BrandNewModule.png">
+    <br>
+    <img src="images/BrandNewModule.png"><br>
+    <div style="text-align:center; font-size:12px; padding-top:4px"><a href="index.htm">Editor</a> window with [Module] Component Highlighted</div><br>
     </td>
     </tr>
     </tbody>
   </table>
   <hr size="2" width="100%">
-  <h2>Sub-Components</h2>
+  <h2><a name="SubComponents">Sub-Components</a></h2>
   <br>
   A proper module consists of many different types of subcomponents. Any of them can be added by right-clicking on the
   module's entry in the Module Editor (the very top entry in the editor) and then selecting the appropriate "Add"
@@ -284,7 +296,7 @@
     Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the
     toolbar. It exists by default and cannot be removed in the Editor. The chat log not only allows players to "chat"
     with each other by typing messages into the lower text line, it also displays a running "log" of game events --
-    messages produced by <a href="ReportAction.htm">Report Action</a> traits and other <a href="MessageFormat.htm">
+    messages produced by <a href="ReportChanges.htm">Report Action</a> traits and other <a href="MessageFormat.htm">
     Message Formats</a> in traits and various module components. Messages from your components can be displayed in a
     variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a
     visually attractive and easy-to-read report log.<br>
