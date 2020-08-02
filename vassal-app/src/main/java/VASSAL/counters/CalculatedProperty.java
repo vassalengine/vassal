@@ -132,7 +132,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     name = st.nextToken("");
-    expression = BeanShellExpression.createExpression(st.nextToken(""));
+    expression = BeanShellExpression.createExpression(st.nextToken(""), true);
   }
 
   protected String getExpression() {

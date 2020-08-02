@@ -160,6 +160,16 @@ public class BeanShellExpression extends Expression {
    * ensure efficient evaluation.
    */
   public static Expression createExpression(String s) {
+    return createExpression(s, false);
+  }
+
+  /**
+   *
+   * @param s String to convert to a Beanshell expressions
+   * @param dontCreateStringExpressions If True, then convert quoted string to Beanshell Expressions, not String Expressions
+   * @return Expression
+   */
+  public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
     String expr;
     final String t = s.trim();
 
@@ -182,9 +192,11 @@ public class BeanShellExpression extends Expression {
     }
 
     // Return a single String as a string without quotes
-    if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
+    if (! dontCreateStringExpressions) {
+      if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
         && expr.indexOf('"', 1) == expr.length() - 1) {
-      return new StringExpression(expr.substring(1, expr.length() - 1));
+        return new StringExpression(expr.substring(1, expr.length() - 1));
+      }
     }
 
     // Return a generalised Beanshell expression

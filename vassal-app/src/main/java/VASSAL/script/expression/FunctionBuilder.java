@@ -60,20 +60,22 @@ public class FunctionBuilder extends JDialog {
     this.function = function;
     setLayout(new MigLayout("fillx,ins 0"));
 
-    JPanel p = new JPanel(new MigLayout("wrap 1,fillx"));
+    JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]"));
 
-    p.add(new JLabel(desc), "align center");
+    p.add(new JLabel(desc), "span 2,align center,wrap,growx");
     for (int i=0; i < parmDesc.length; i++) {
-      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, parmDesc[i] + ":  ", "", targetPiece, options[i], this);
+      final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, "", "", targetPiece, options[i], this);
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
       }
       configs.add(config);
-      p.add(config.getControls(), "align right,growx");
+      p.add(new JLabel(parmDesc[i] + ":"), "align right");
+      p.add(config.getControls(), "align right,growx, wrap");
     }
 
-    result = new BeanShellExpressionConfigurer(null, "Result: ", "", null, BeanShellExpressionConfigurer.Option.NONE, true);
-    p.add(result.getControls(), "align right,growx");
+    result = new BeanShellExpressionConfigurer(null, "", "", null, BeanShellExpressionConfigurer.Option.NONE, true);
+    p.add(new JLabel("Result:"), "align right");
+    p.add(result.getControls(), "align right,growx, wrap");
 
     if (hints != null && hints.length > 0) {
       final JPanel hintPanel = new JPanel(new MigLayout("ins 5"));
@@ -81,10 +83,10 @@ public class FunctionBuilder extends JDialog {
       for (String hint : hints) {
         hintPanel.add(new JLabel(hint), "wrap");
       }
-      p.add(hintPanel, "growx");
+      p.add(hintPanel, "span 2,growx,wrap");
     }
 
-    JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
+    JPanel buttonBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push"));
     JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
@@ -97,7 +99,7 @@ public class FunctionBuilder extends JDialog {
     helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
     buttonBox.add(helpButton);
 
-    p.add(buttonBox, "align center");
+    p.add(buttonBox, "span 2,align center,growx,wrap");
     add(p, "growx");
 
     pack();

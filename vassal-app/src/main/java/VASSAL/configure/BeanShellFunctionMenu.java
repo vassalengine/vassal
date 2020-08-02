@@ -1,5 +1,7 @@
 package VASSAL.configure;
 
+import static VASSAL.configure.BeanShellExpressionConfigurer.Option;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -29,7 +31,6 @@ import javax.swing.JPopupMenu;
 public class BeanShellFunctionMenu extends JPopupMenu {
 
   protected static final String[] SUM_COUNT_HINTS = new String[]{"WARNING - This function needs to scan many pieces and is relatively slow. Use sparingly", "$property$ variables may be used in the Match Expression and will be evaluated on the source piece.", "See the Reference Manual for detailed usage."};
-  protected static final String[] STRING_HINTS = new String[]{"This function can only be used on a String or Function return value.", "Use GetProperty(\"propertyName\").function() to apply this function to a Property value."};
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
@@ -116,15 +117,15 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu stringMenu = new JMenu("String");
     addFunction(stringMenu, ".length", "Return the length of a string", new String[] {"Target String"}, "()");
-    addFunction(stringMenu, ".contains", "Return true if string contains the specified search string", new String[] { "Target String", "Search String" }, "(string)", STRING_HINTS);
-    addFunction(stringMenu, ".startsWith", "Return true if string starts with the specified search string", new String[] { "Target String", "Search String" }, "(string)", STRING_HINTS);
-    addFunction(stringMenu, ".endsWith", "Return true if string ends with the specified search string", new String[] { "Target String", "String String" }, "(string)", STRING_HINTS);
-    addFunction(stringMenu, ".matches", "Return true if string matches the specified Regular Expression", new String[] { "Target String", "Regular Expression" }, "(regExpr)", STRING_HINTS);
-    addFunction(stringMenu, ".indexOf", "Return the position of the specified search string", new String[] { "Target String", "Search String" }, "(string)", STRING_HINTS);
-    addFunction(stringMenu, ".lastIndexOf", "Return the last position of the specified search string", new String[] { "Target String", "Search String" }, "(string)", STRING_HINTS);
-    addFunction(stringMenu, ".substring", "Return substring starting at a given position, up to the end of the string", new String[] { "Target String", "Starting position" }, "(start)", STRING_HINTS);
-    addFunction(stringMenu, ".substring", "Return substring between positions", new String[] { "Target String", "Starting position", "End Position" }, "(start, end)", STRING_HINTS);
-    addFunction(stringMenu, ".replace", "Replace one substring with another", new String[] { "Target String", "String to find", "String to replace" }, "(old, new)", STRING_HINTS);
+    addFunction(stringMenu, ".contains", "Return true if string contains the specified search string", new String[] { "Target String", "Search String" }, "(string)");
+    addFunction(stringMenu, ".startsWith", "Return true if string starts with the specified search string", new String[] { "Target String", "Search String" }, "(string)");
+    addFunction(stringMenu, ".endsWith", "Return true if string ends with the specified search string", new String[] { "Target String", "String String" }, "(string)");
+    addFunction(stringMenu, ".matches", "Return true if string matches the specified Regular Expression", new String[] { "Target String", "Regular Expression" }, "(regExpr)");
+    addFunction(stringMenu, ".indexOf", "Return the position of the specified search string", new String[] { "Target String", "Search String" }, "(string)");
+    addFunction(stringMenu, ".lastIndexOf", "Return the last position of the specified search string", new String[] { "Target String", "Search String" }, "(string)");
+    addFunction(stringMenu, ".substring", "Return substring starting at a given position, up to the end of the string", new String[] { "Target String", "Starting position" }, "(start)");
+    addFunction(stringMenu, ".substring", "Return substring between positions", new String[] { "Target String", "Starting position", "End Position" }, "(start, end)");
+    addFunction(stringMenu, ".replace", "Replace one substring with another", new String[] { "Target String", "String to find", "String to replace" }, "(old, new)");
 
     final JMenu randomMenu = new JMenu("Random");
     addFunction(randomMenu, "Random", "Return a random whole number between 1 and a number (inclusive)", new String[] { "Highest number" }, "(x)");
@@ -134,10 +135,10 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu countMenu = new JMenu("Sum & Count");
     addFunction(countMenu, "SumStack", "Sum the values of the named property in all pieces in the same stack", new String[] { "Property name" }, "(name)");
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new BeanShellExpressionConfigurer.Option[] {BeanShellExpressionConfigurer.Option.NONE, BeanShellExpressionConfigurer.Option.PME});
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new BeanShellExpressionConfigurer.Option[] {BeanShellExpressionConfigurer.Option.NONE, BeanShellExpressionConfigurer.Option.PME, BeanShellExpressionConfigurer.Option.NONE});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new BeanShellExpressionConfigurer.Option[] {BeanShellExpressionConfigurer.Option.PME});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new BeanShellExpressionConfigurer.Option[] {BeanShellExpressionConfigurer.Option.PME, BeanShellExpressionConfigurer.Option.NONE});
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME});
+    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.PME});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE});
 
     final JMenu functionMenu = new JMenu("Function");
     functionMenu.add(mathMenu);
@@ -156,19 +157,19 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   }
 
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints) {
-    final BeanShellExpressionConfigurer.Option[] options = new BeanShellExpressionConfigurer.Option[parms.length];
-    Arrays.fill(options, BeanShellExpressionConfigurer.Option.NONE);
+    final Option[] options = new Option[parms.length];
+    Arrays.fill(options, Option.NONE);
     addFunction (menu, op, desc, parms, parmInfo, hints, options);
   }
 
-  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints, final BeanShellExpressionConfigurer.Option[] options) {
+  protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints, final Option[] options) {
     final JMenuItem item = new JMenuItem(op + ((parmInfo != null && parmInfo.length() == 0) ? "" : " " + parmInfo));
     item.setToolTipText(desc);
     item.addActionListener(e -> buildFunction(op, desc, parms, hints, options));
     menu.add(item);
   }
 
-  protected void buildFunction(String op, String desc, String[] parmDesc, String[] hints, BeanShellExpressionConfigurer.Option[] options) {
+  protected void buildFunction(String op, String desc, String[] parmDesc, String[] hints, Option[] options) {
     if (parmDesc.length == 0) {
       configurer.insertName(op + "()");
     }
