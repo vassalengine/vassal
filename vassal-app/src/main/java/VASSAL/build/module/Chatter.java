@@ -81,14 +81,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$ 
   protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$ 
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
-  protected static final String HTML_COMPATIBILITY = "HTMLcompatibility";    //$NON-NLS-1$
 
   protected Font myFont;
 
   protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
   protected Color systemMsg, myChat, otherChat;
 
-  protected boolean htmlCompatibility; // Disable HTML parsing unless opted in, to maintain backwards compatibility
   protected JTextArea conversation;    // Backward compatibility for overridden classes. Needs something to suppress.
 
   public static String getAnonymousUserName() {
@@ -244,7 +242,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         } 
         else {
           style = "msg";
-          html_allowed = !htmlCompatibility; // Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
+          html_allowed = GlobalOptions.getInstance().chatterHTMLSupport(); // Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
         }
       } 
       else if (s.startsWith("-")) {
@@ -570,17 +568,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
 
     makeStyleSheet(myFont);
-
-
-    final BooleanConfigurer htmlCompatibilityConfigurer = new BooleanConfigurer(HTML_COMPATIBILITY, Resources.getString("Disable HTML in standard report messages (for pre-3.3 compatibility)"), Boolean.TRUE);  //$NON-NLS-1$
-    htmlCompatibilityConfigurer.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        htmlCompatibility = (boolean) e.getNewValue();
-      }
-    });
-    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), htmlCompatibilityConfigurer);
-    htmlCompatibility = (boolean) globalPrefs.getValue(HTML_COMPATIBILITY);    
   }
 
   @Override
