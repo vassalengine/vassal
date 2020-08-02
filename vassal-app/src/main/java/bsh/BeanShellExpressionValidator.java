@@ -1,7 +1,6 @@
 /*
- * $Id: BeanShellExpressionValidator.java,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
  *
- * Copyright (c) 2008-2013 by Brent Easton
+ * Copyright (c) 2008-2020 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
