@@ -91,9 +91,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   private static final Logger logger =
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
-  private Map<String,BasicPieceFactory> basicFactories =
+  private Map<String, BasicPieceFactory> basicFactories =
     new HashMap<>();
-  private Map<String,DecoratorFactory> decoratorFactories =
+  private Map<String, DecoratorFactory> decoratorFactories =
     new HashMap<>();
 
   public BasicCommandEncoder() {
@@ -351,7 +351,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    */
   public Decorator createDecorator(String type, GamePiece inner) {
     Decorator d = null;
-    String prefix = type.substring(0,type.indexOf(';')+1);
+    String prefix = type.substring(0, type.indexOf(';')+1);
     if (prefix.length() == 0) {
       prefix = type;
     }
@@ -361,7 +361,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
     else {
       System.err.println("Unknown type "+type); //$NON-NLS-1$
-      d = new Marker(Marker.ID,inner);
+      d = new Marker(Marker.ID, inner);
     }
     return d;
   }
@@ -375,7 +375,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    */
   protected GamePiece createBasic(String type) {
     GamePiece p = null;
-    String prefix = type.substring(0,type.indexOf(';')+1);
+    String prefix = type.substring(0, type.indexOf(';')+1);
     if (prefix.length() == 0) {
       prefix = type;
     }
@@ -541,11 +541,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
   }
 
-  public static interface DecoratorFactory {
+  public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
 
-  public static interface BasicPieceFactory {
+  public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }
 }

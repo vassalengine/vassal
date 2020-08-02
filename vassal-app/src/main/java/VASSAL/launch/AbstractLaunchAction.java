@@ -110,7 +110,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   protected static final Set<File> editing =
     Collections.synchronizedSet(new HashSet<>());
-  protected static final Map<File,Integer> using =
+  protected static final Map<File, Integer> using =
     Collections.synchronizedMap(new HashMap<>());
 
 /*
@@ -236,7 +236,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     fc.addChoosableFileFilter(new ModuleFileFilter());
   }
 
-  protected class LaunchTask extends SwingWorker<Void,Void> {
+  protected class LaunchTask extends SwingWorker<Void, Void> {
     protected final int id = nextId.getAndIncrement();
 
     // lr might be modified before the task is over, keep a local copy

@@ -137,13 +137,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     Command c = null;
 
-    GamePiece oldPiece = (GamePiece) getProperty(Properties.SNAPSHOT);
+    java.util.Map<String, Object> oldPiece = (java.util.Map<String, Object>) getProperty(Properties.SNAPSHOT);
 
-    boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.getProperty(Properties.INVISIBLE_TO_OTHERS));
+    boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.get(Properties.INVISIBLE_TO_OTHERS));
     boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
 
     PieceAccess.GlobalAccess.hideAll();
-    String oldUnitName = oldPiece == null ? null : oldPiece.getLocalizedName();
+    String oldUnitName = oldPiece == null ? null : (String) oldPiece.get(PropertyExporter.LOCALIZED_NAME);
     format.setProperty(OLD_UNIT_NAME, oldUnitName);
     String newUnitName = outer.getLocalizedName();
     format.setProperty(NEW_UNIT_NAME, newUnitName);
@@ -412,9 +412,9 @@ public class ReportState extends Decorator implements TranslatablePiece {
    *
    */
   private static class OldAndNewPieceProperties implements PropertySource {
-    private GamePiece oldPiece;
-    private GamePiece newPiece;
-    public OldAndNewPieceProperties(GamePiece oldPiece, GamePiece newPiece) {
+    private final java.util.Map<String, Object> oldPiece;
+    private final GamePiece newPiece;
+    public OldAndNewPieceProperties(java.util.Map<String, Object> oldPiece, GamePiece newPiece) {
       super();
       this.oldPiece = oldPiece;
       this.newPiece = newPiece;
@@ -426,7 +426,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
         String name = key.toString();
         if (name.startsWith("old") && name.length() >= 4) {
           name = name.substring(3);
-          value = oldPiece.getProperty(name);
+          value = oldPiece.get(name);
         }
         else {
           value = newPiece.getProperty(key);

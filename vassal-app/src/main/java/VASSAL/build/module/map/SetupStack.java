@@ -808,7 +808,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         break;
       default :
         if (myPiece != null) {
-          myPiece.keyEvent(KeyStroke.getKeyStrokeForEvent(e));
+          myPiece.keyEvent(SwingUtils.getKeyStrokeForEvent(e));
         }
         break;
       }

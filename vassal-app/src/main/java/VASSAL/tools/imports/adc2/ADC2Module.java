@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -622,7 +621,7 @@ public class ADC2Module extends Importer {
         piecePS = new PropertySheet();
         SequenceEncoder se = new SequenceEncoder('~');
         SequenceEncoder state = new SequenceEncoder('~');
-        for(int i = 0; i < pieceValues.length; ++i) {
+        for (int i = 0; i < pieceValues.length; ++i) {
           if (pieceValues[i] != null && !pieceValues[i].equals("")) {
             se.append("0" + pieceValues[i]);
             Object o = getValue(i);
@@ -863,7 +862,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private final HashMap<Integer,SymbolSet> cardDecks = new HashMap<>();
+  private final HashMap<Integer, SymbolSet> cardDecks = new HashMap<>();
 
   public class CardClass extends PieceClass {
     private final int setIndex;
@@ -1119,7 +1118,7 @@ public class ADC2Module extends Importer {
     public PropertySheet getPropertySheetDecorator() {
       SequenceEncoder type = new SequenceEncoder('~');
       SequenceEncoder state = new SequenceEncoder('~');
-      for(int i = 0; i < classValues.length; ++i) {
+      for (int i = 0; i < classValues.length; ++i) {
         if (classValues[i] != null && !classValues[i].equals("")) {
           type.append("0" + classValues[i]);
           Object o = getValue(i);
@@ -1552,7 +1551,7 @@ public class ADC2Module extends Importer {
       g.setFont(new Font("Dialog", Font.PLAIN, 9));
       Rectangle2D r = g.getFontMetrics().getStringBounds(name, g);
       g.drawString(name, tabWidth/2 - (int) (r.getWidth()/2.0) - 1, 11);
-      g.setBackground(new Color(0,0,0,0));
+      g.setBackground(new Color(0, 0, 0, 0));
       g.clearRect(-tabWidth, 0, tabWidth, tabHeight);
     }
   }
@@ -2692,7 +2691,7 @@ public class ADC2Module extends Importer {
   }
 
   private Dimension getMaxDeckSize() throws IOException {
-    Dimension d = new Dimension(0,0);
+    Dimension d = new Dimension(0, 0);
     for (int i = 0; i < nCardSets; ++i)
       getCardDeck(i).getMaxSize(d);
     return d;
@@ -2813,7 +2812,7 @@ public class ADC2Module extends Importer {
     final Map mainMap = getMainMap();
 
     final Point offset = getMap().getCenterOffset();
-    for (java.util.Map.Entry<Integer,ArrayList<Piece>> en : stacks.entrySet()) {
+    for (java.util.Map.Entry<Integer, ArrayList<Piece>> en : stacks.entrySet()) {
       final int hex = en.getKey();
       Point p = getMap().indexToPosition(hex);
       if (p == null) continue;

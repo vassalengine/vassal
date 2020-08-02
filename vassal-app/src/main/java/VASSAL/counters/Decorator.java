@@ -47,7 +47,9 @@ import VASSAL.tools.SequenceEncoder;
  * The abstract class describing a generic 'trait' of a GamePiece.  Follows the Decorator design pattern
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it
  */
-public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource , PersistentPropertyContainer {
+public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource , PersistentPropertyContainer,
+  PropertyExporter {
+
   protected GamePiece piece;
   private Decorator dec;
   private boolean selected = false;
@@ -114,19 +116,15 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   @Override
   public Object getLocalizedProperty(Object key) {
-    if (Properties.KEY_COMMANDS.equals(key)) {
+    if (List.of(
+      Properties.KEY_COMMANDS,
+      Properties.INNER,
+      Properties.OUTER,
+      Properties.VISIBLE_STATE
+    ).contains(key)) {
       return getProperty(key);
     }
-    else if (Properties.INNER.equals(key)) {
-      return getProperty(key);
-    }
-    else if (Properties.OUTER.equals(key)) {
-      return getProperty(key);
-    }
-    else if (Properties.VISIBLE_STATE.equals(key)) {
-      return getProperty(key);
-    }
-    /**
+    /*
      * Return local cached copy of Selection Status
      */
     else if (Properties.SELECTED.equals(key)) {
@@ -233,7 +231,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       mySetState(myNewState);
     }
     if (piece instanceof StateMergeable) {
-      ((StateMergeable)piece).mergeState(innerNewState,innerOldState);
+      ((StateMergeable)piece).mergeState(innerNewState, innerOldState);
     }
     else {
       piece.setState(innerNewState);

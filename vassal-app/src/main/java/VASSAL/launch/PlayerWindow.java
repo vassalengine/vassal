@@ -193,8 +193,10 @@ public class PlayerWindow extends JFrame {
    *     the hideable component is shown or hidden
    * @return the {@link SplitPane} containing the two components
    *
-   * TODO: make this return {@link VASSAL.tools.swing.SplitPane}
+   * @deprecated marked as deprecated to see if modules depend on this, if no modules use this
+   *   make this return {@link VASSAL.tools.swing.SplitPane}
    */
+  @Deprecated
   public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
     int index = -1;
     Container parent = controlPanel.getParent();

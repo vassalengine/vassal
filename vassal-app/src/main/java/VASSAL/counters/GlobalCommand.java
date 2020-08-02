@@ -179,7 +179,7 @@ public class GlobalCommand {
     private void apply(GamePiece p) {
       if (filter == null || filter.accept(p)) {
         tracker.addPiece(p);
-        p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         command.append(p.keyEvent(stroke));
         tracker.addPiece(p);
         selectedCount++;

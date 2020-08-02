@@ -76,6 +76,11 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton launch;
   protected ChatServerConnection client;
   protected JPanel controlPanel;
+
+  /**
+   * @deprecated type will change to {@link SplitPane}
+   */
+  @Deprecated
   protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;

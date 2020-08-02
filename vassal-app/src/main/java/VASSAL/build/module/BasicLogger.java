@@ -21,8 +21,6 @@ package VASSAL.build.module;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -116,11 +114,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final MenuManager mm = MenuManager.getInstance();
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
-    newLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
+    newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.begin_logfile", newLogAction);
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
-    endLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
+    endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.end_logfile", endLogAction);
 
     JButton button = mod.getToolBar().add(undoAction);

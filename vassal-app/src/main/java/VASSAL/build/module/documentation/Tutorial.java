@@ -75,7 +75,7 @@ public class Tutorial extends AbstractConfigurable {
   public void launch() {
     GameModule.getGameModule().warn(Resources.getString("Tutorial.loading_tutorial")); //$NON-NLS-1$
 
-    new SwingWorker<Command,Void>() {
+    new SwingWorker<Command, Void>() {
       @Override
       public Command doInBackground() throws Exception {
         return getTutorialCommand();

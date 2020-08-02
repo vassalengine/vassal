@@ -50,7 +50,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   protected JCheckBox reverseCheckBox;
 
   public BoardSlot(BoardPicker bp) {
-    this(bp,Resources.getString("BoardPicker.select_board")); //$NON-NLS-1$
+    this(bp, Resources.getString("BoardPicker.select_board")); //$NON-NLS-1$
   }
 
   public BoardSlot(BoardPicker bp, String prompt) {

@@ -143,7 +143,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
-  protected java.util.Map<Double,TexturePaint> textures = new HashMap<>();
+  protected java.util.Map<Double, TexturePaint> textures = new HashMap<>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
@@ -247,7 +247,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
-      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece,ShadedPiece.class);
+      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
       if (shaded != null) {
         Area shape = shaded.getArea(this);
         if (shape != null) {
@@ -348,7 +348,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     @Override
     public Dimension getSize() {
-      return new Dimension(2,2);
+      return new Dimension(2, 2);
     }
 
     @Override
@@ -885,7 +885,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Pieces that contribute to shading must implement this interface
    */
-  public static interface ShadedPiece {
+  public interface ShadedPiece {
     /**
      * Returns the Area to add to (or subtract from) the area drawn by the MapShader's.
      * Area is assumed to be at zoom factor 1.0

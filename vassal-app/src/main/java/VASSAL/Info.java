@@ -27,9 +27,6 @@ import java.io.File;
 import VASSAL.tools.version.GitProperties;
 import org.apache.commons.lang3.SystemUtils;
 
-import VASSAL.tools.version.VassalVersionTokenizer;
-import VASSAL.tools.version.VersionFormatException;
-import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -148,11 +145,11 @@ public final class Info {
   }
 
   public static boolean isModuleTooNew(String version) {
-    return compareVersions(version, EXPIRY_VERSION) >= 0;
+    return VersionUtils.compareVersions(version, EXPIRY_VERSION) >= 0;
   }
 
   public static boolean hasOldFormat(String version) {
-    return compareVersions(version, UPDATE_VERSION) < 0;
+    return VersionUtils.compareVersions(version, UPDATE_VERSION) < 0;
   }
 
   /**

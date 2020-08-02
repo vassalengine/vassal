@@ -17,7 +17,7 @@ public class AcceptPeerThread extends Thread {
 
   public AcceptPeerThread(int initialPort, PendingPeerManager ppm) throws IOException {
     this.ppm = ppm;
-    for (int i=0;i<MAX_ATTEMPTS;++i) {
+    for (int i=0; i<MAX_ATTEMPTS; ++i) {
       port = initialPort+i;
       try {
         socket = new ServerSocket(port);

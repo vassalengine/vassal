@@ -105,6 +105,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -261,7 +262,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     else if (VASSAL_VERSION_CREATED.equals(name)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
-      if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
+      if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         WarningDialog.show("GameModule.version_warning",
                            vassalVersionCreated, runningVersion);
       }
@@ -400,6 +401,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
+  
+  
+  /**
+   * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners 
+   */
+  public void refreshKeyStrokeListeners() {
+    keyStrokeListeners.forEach(l -> l.setKeyStroke(l.getKeyStroke()));
+  }
+  
 
   @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
@@ -935,6 +945,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
+
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      pc.getDefinitions().forEach(checker::add);
+    }
+
     checker.fixErrors();
   }
 
