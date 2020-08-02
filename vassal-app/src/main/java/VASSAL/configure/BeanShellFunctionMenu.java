@@ -100,6 +100,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu logicalMenu = new JMenu("Logical");
     addOperator(logicalMenu, "&&", "And");
     addOperator(logicalMenu, "||", "Or");
+    addOperator(logicalMenu, "!", "Not");
     addOperator(logicalMenu, "(", "Left parenthesis");
     addOperator(logicalMenu, ")", "Right parenthesis");
     add(logicalMenu);
