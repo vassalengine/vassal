@@ -32,13 +32,13 @@
     frequently referred to as the <a href="index.htm">Editor</a> window, which is a familiar file/folder type browser in
     which each file/folder represents a module Component. The second illustration on the right shows the Editor's
     configuration window for a "Brand New Module", with all of the Components that are added by default. Right-click on
-    the <i>[Module]</i> to get a context menu with options for the many types of components you can add to a Vassal
+    the <i>[Module]</i> to get a context menu with options for the many types of <a href="#SubComponents">Components</a> you can add to a Vassal
     module, including <a href="Map.htm">maps</a>, <a href="ChartWindow.htm">charts</a>, and <a href="PieceWindow.htm">
     palettes</a> full of <a href="GamePiece.htm">game pieces</a>. See <a href="#SubComponents">below</a> for more
     details.<br>
     <br>
     Actually <i><b>playing</b></i> the game takes place in the Module window (see example below). This window includes a
-    Toolbar that can be configured by the module designer, as well as a <a href="ChatLog.htm">Chat Log</a> to record
+    <a href="Toolbar.htm">Toolbar</a> that can be configured by the module designer, as well as a <a href="ChatLog.htm">Chat Log</a> to record
     player messages and game moves. The game's main <a href="Map.htm">Map</a> will be displayed just below the Chat Log.
     <br>
     <br>
@@ -46,7 +46,7 @@
       <img src="images/ModuleWindow.png">
     </div>
     <div style="text-align:center; font-size:12px; padding-top:4px">
-      Module window during play, showing the Toolbar, a <a href="PieceWindow.htm">Game Piece Palette</a>, and the <a
+      Module window during play, showing the <a href="Toolbar.htm">Toolbar</a>, a <a href="PieceWindow.htm">Game Piece Palette</a>, and the <a
         href="ChatLog.htm">Chat Log</a>. The mapboard would appear below.
     </div>
     <br>
@@ -69,12 +69,118 @@
     </tbody>
   </table>
   <hr size="2" width="100%">
+  <a href="Toolbar.htm"><h2>Toolbar</h2></a><br>
+
+  <img src="images/Toolbar.png"><br>
+
+  <br>
+  The <a href="Toolbar.htm">Toolbar</a> of the main Module window contains buttons for basic functions such as <a href="Toolbar.htm#Undo">Undo</a>, <a href="Toolbar.htm#StepForward">Step Forward</a>, and <a href="Toolbar.htm#Servercontrols">Server Controls</a>, but you can
+  also configure buttons to <a href="SpecialDiceButton.htm">roll dice</a>, <a href="PieceWindow.htm">add pieces to the map</a>, display <a href="Chartwindow.htm">charts</a> and <a href="Map.htm">maps</a>, keep <a href="PlayerHand.htm">player hands</a> and <a href="PrivateWindow.htm">reinforcement pools</a> private, and more. <br>
+  <br>
+  Buttons for basic functions are created by configuring the existing basic components of the module, such as <a href="GlobalOptions.htm">[Global Options]</a> and the <a href="#Definition_of_Player_Sides">Definition of Player Sides</a>.<br>
+  <br>
+  Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <a href="SubComponents">Sub-Components</a> to the Module.<br>
+  <br>
+  <a href="Toolbar.htm">See full article for more details.</a><br>
+  <br>
+  <hr size="2" width="100%">
+
+  <br>
+  <table border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+    <tr>
+    <td valign="top" style="padding-right:10px; text-align:center;">
+    <img src="images/ChatLog.png">
+    </td>
+    <td valign="top">
+    <a name="ChatLog"><h2><a href="ChatLog.htm">Chat Log</a></h2></a><br>
+    Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the
+    toolbar. It exists by default and cannot be removed in the Editor. The chat log not only allows players to "chat"
+    with each other by typing messages into the lower text line, it also displays a running "log" of game events --
+    messages produced by <a href="ReportChanges.htm">Report Action</a> traits and other <a href="MessageFormat.htm">
+    Message Formats</a> in traits and various module components. Messages from your components can be displayed in a
+    variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a
+    visually attractive and easy-to-read report log.<br>
+    <br>
+    <a href="ChatLog.htm">See full article for details.</a>
+    </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <br>
+
+  <hr size="2" width="100%">
+
   <h2><a name="SubComponents">Sub-Components</a></h2>
+
+  <table cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+    <tr>
+    <td valign="top">
+
+    A proper module consists of many different types of subcomponents. Any of them can be added by right-clicking on the
+    <i>[Module]</i> component in the Module Editor (the very top entry in the editor) and then selecting the appropriate <i>Add</i>
+    option.<br>
+    <br>
+
+    <table cellpadding="2" cellspacing="2" width="100%">
+      <tr>
+        <td><a href="DoActionButton.htm">Action Button</a></td>
+        <td><a href="ChartWindow.htm">Chart Window</a></td>
+        <td><a href="ChatLog.htm">Chat Log</a></td>
+        <td><a href="#Definition_of_Player_Sides">Definition of Player Sides</a></td>
+      </tr>
+      <tr>
+        <td><a href="#DiceButton">Dice Button</a></td>
+        <td><a href="GamePieceImageDefinitions.htm">Game Piece Image Definitions</a></td>
+        <td><a href="Inventory.htm">Game Piece Inventory Window</a></td>
+        <td><a href="PieceWindow.htm">Game Piece Palette</a></td>
+      </tr>
+      <tr>
+        <td><a href="Prototypes.htm">Game Piece Prototype Definitions</a></td>
+        <td><a href="Map.htm#GlobalKeyCommand">Global Key Command</a></td>
+        <td><a href="GlobalOptions.htm">Global Options</a></td>
+        <td><a href="GlobalProperties.htm">Global Properties</a></td>
+      </tr>
+      <tr>
+        <td><a href="HelpMenu.htm">Help Menu</a></td>
+        <td><a href="Map.htm">Map Window</a></td>
+        <td><a href="MultiActionButton.htm">Multi-Action Button</a></td>
+        <td><a href="#NotesWindow">Notes Window</a></td>
+      </tr>
+      <tr>
+        <td><a href="PlayerHand.htm">Player Hand</a></td>
+        <td><a href="#PredefinedSetup">Predefined Setup</a></td>
+        <td><a href="PrivateWindow.htm">Private Window</a></td>
+        <td><a href="#RandomTextButton">Random Text Button</a></td>
+      </tr>
+      <tr>
+        <td><a href="SpecialDiceButton.htm">Symbolic Dice Button</a></td>
+        <td><a href="Toolbar.htm">Toolbar</a></td>
+        <td><a href="ToolbarMenu.htm">Toolbar Menu</a></td>
+        <td><a href="TurnTracker.htm">Turn Counter</a></td>
+      </tr>
+    </table>
+    </td>
+
+    <td valign="top">
+    <img src="images/BrandNewModule.png"><br>
+    <div style="text-align:center; font-size:12px; padding-top:4px">
+      <a href="index.htm">Editor</a> window with [Module] Component Highlighted
+    </div>
+    </td>
+
+    </tr>
+    </tbody>
+  </table>
+
   <br>
-  A proper module consists of many different types of subcomponents. Any of them can be added by right-clicking on the
-  module's entry in the Module Editor (the very top entry in the editor) and then selecting the appropriate "Add"
-  option.
   <br>
+
+  <br>
+
+  <hr size="2" width="100%">
 
   <table cellpadding="2" cellspacing="2" width="100%">
     <tbody>
@@ -135,7 +241,7 @@
     name in the restricted component(s).<br>
     <br>
     Only one player may be assigned to a side. &nbsp;When joining a game, players will be prompted to take one of the
-    remaining available sides. Any number of observers (players who belong to no side) are allowed. The "Retire" button,
+    remaining available sides. Any number of observers (players who belong to no side) are allowed. The <a href="Toolbar.htm#Retire">Retire</a> or <a href="Toolbar.htm#SwitchSides">Switch Sides</a> button,
     in the main controls toolbar, allows a player to relinquish their side (making it available to the next player
     joining the game). You can specify the text, icon, and mouse-over tooltip for the toolbar button.<br>
     </td>
@@ -422,8 +528,9 @@
     <tr>
     <td valign="top">
     <h3><a href="Inventory.htm">Game Piece Inventory Window</a></h3>
-    Creates a Toolbar button that will open a window which summarizes the pieces in the current game. You can define exactly which pieces are included in the window and howthey are organized. Can be configured to select a
-    particular subset of pieces and to organize them by their properties.<br>
+    Creates a Toolbar button that will open a window which summarizes the pieces in the current game. You can define
+    exactly which pieces are included in the window and howthey are organized. Can be configured to select a particular
+    subset of pieces and to organize them by their properties.<br>
     <br>
     <a href="Inventory.htm">See full article for details.</a>
     </td>
@@ -448,10 +555,11 @@
     Rolls dice whose faces are represented by graphical images.<br>
     <br>
     A Symbolic Dice Button places a button on the Toolbar which rolls dice that use graphical images to display their
-    faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice, each represented by a <i>[Symbolic Die]</i> component, each of which may in turn have any number of faces
-    (represented by <i>[Symbolic Die Face]</i> sub-components). When the button is clicked, a random face is selected for each
-    Symbolic Die that this component contains. The results of the roll can be reported as text into the chat area,
-    and/or graphically in a separate window and/or in the button itself.<br>    
+    faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice,
+    each represented by a <i>[Symbolic Die]</i> component, each of which may in turn have any number of faces
+    (represented by <i>[Symbolic Die Face]</i> sub-components). When the button is clicked, a random face is selected
+    for each Symbolic Die that this component contains. The results of the roll can be reported as text into the chat
+    area, and/or graphically in a separate window and/or in the button itself.<br>
     <br>
     <a href="SpecialDiceButton.htm">See full article for details.</a>
     </td>
@@ -468,23 +576,25 @@
   <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
-    <td valign="top">A Toolbar button to generate random numbers in the <a href="ChatLog.htm">Chat Log</a>. You may add any
-    number of buttons. Each button will roll a specified number of dice with a specified number of sides and report the
-    result in the Chat Log. <b>Name</b> is the text accompanying the
-    resulting roll in the Chat Log. You may specify <b>Button Text</b> and <b>Tooltip Text</b> for the button and supply an image file to use as a
-    <b>Button Icon</b>. You may also define a <b>Hotkey</b> that acts as a keyboard shortcut for pressing the button. Check the <i>Report
-    Total</i> box to report the sum of all dice (e.g. 3-18 for 3x6-sided dice). If the box is unchecked, the dice will be
-    reported individually (e.g. as "2,6,3"). If the <i>Prompt for values</i> box
-    is checked, then players will be asked to select the number of sides/dice every time they press the dice button
-    during a game.<br>
+    <td valign="top">A Toolbar button to generate random numbers in the <a href="ChatLog.htm">Chat Log</a>. You may add
+    any number of buttons. Each button will roll a specified number of dice with a specified number of sides and report
+    the result in the Chat Log. <b>Name</b> is the text accompanying the resulting roll in the Chat Log. You may specify 
+    <b>Button Text</b> and <b>Tooltip Text</b> for the button and supply an image file to use as a
+    <b>Button Icon</b>. You may also define a <b>Hotkey</b> that acts as a keyboard shortcut for pressing the button.
+    Check the <i>Report Total</i> box to report the sum of all dice (e.g. 3-18 for 3x6-sided dice). If the box is
+    unchecked, the dice will be reported individually (e.g. as "2,6,3"). If the <i>Prompt for values</i> box is checked,
+    then players will be asked to select the number of sides/dice every time they press the dice button during a game.
     <br>
-    <b>Report Format</b> specifies the <a href="MessageFormat.htm">Message Format</a> for reporting the results: <i>$name$</i> is the name of the button as specified above, <i>$result$</i>
+    <br>
+    <b>Report Format</b> specifies the <a href="MessageFormat.htm">Message Format</a> for reporting the results: <i>
+    $name$</i> is the name of the button as specified above, <i>$result$</i>
     is the result of the roll, <i>$nDice$</i> is the number of dice, <i>$nSides$</i> is the number of sides, 
     <i>$plus$</i> is the modifier to each die, and <i>$addToTotal$</i> is the value added to the total.<br>
     <br>
     The <i>$result$</i> of the dice roll is stored as a global <a href="Properties.htm">
-    Property</a> under the name &lt;name&gt;_result, where &lt;name&gt; is the name given to the component. (<i>Example:</i> A dice button is named "2d6" After a roll of 11, the property name
-    $2d6_result$ will resolve to "11" until the next roll.<br>
+    Property</a> under the name &lt;name&gt;_result, where &lt;name&gt; is the name given to the component. (<i>Example:
+    </i> A dice button is named "2d6" After a roll of 11, the property name $2d6_result$ will resolve to "11" until the
+    next roll.<br>
     <br>
     </td>
     <td valign="top"><img src="images/DiceButton.png" alt="" title=""><br>
@@ -503,54 +613,52 @@
     </td>
     <td valign="top">
     <h3><a name="RandomTextButton"></a>Random Text Button</h3>
-    A Random Text Button can be used to randomly select a text message from a list
-    defined beforehand. For example, a button can be defined to select a random letter "A" "B" "C" or "D". Enter each test message 
-    into the box to the left of the <i>Add</i> button and then click the <i>Add</i> button. It can also be
-    used to define dice with irregular numerical values, such as a six-sided die with values 2,3,3,4,4,5. If the
-    values are numerical check the <i>Faces have numeric values</i> box, which enables the <i>Report Total</i> and <i>Add to each
-    die</i> options.<br>
+    A Random Text Button can be used to randomly select a text message from a list defined beforehand. For example, a
+    button can be defined to select a random letter "A" "B" "C" or "D". Enter each test message into the box to the left
+    of the <i>Add</i> button and then click the <i>Add</i> button. It can also be used to define dice with irregular
+    numerical values, such as a six-sided die with values 2,3,3,4,4,5. If the values are numerical check the <i>Faces
+    have numeric values</i> box, which enables the <i>Report Total</i> and <i>Add to each die</i> options.<br>
     </td>
     </tr>
     </tbody>
   </table>
 
   <br>
-  <h3><a name="PredefinedSetup"></a>Pre-defined setup<a href="SpecialDiceButton.htm"></a></h3>
+  <h3><a name="PredefinedSetup">Pre-defined setup</a></h3>
   <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
     <tbody>
     <tr>
-    <td style="vertical-align: top;">Replaces the <i>New Game</i> menu item in the <i>File</i> menu of the main Module window with a
-    new menu item that loads a saved game which you specify in advance.<br>
+    <td style="vertical-align: top;">Replaces the <i>New Game</i> menu item in the <i>File</i> menu of the main Module
+    window with a new menu item that loads a saved game which you specify in advance.<br>
     <br>
     <b>Name:</b>&nbsp; Text of the menu item.<br>
     <br>
-    <b>Contains sub-menus:</b>&nbsp; Instead of specifying a saved game, you can check this box 
-    to add a sub-menu with the given name to the <i>File</i> menu. Then you can add more Pre-defined setups 
-    to this one to create entries in the sub-menu.<br>
+    <b>Contains sub-menus:</b>&nbsp; Instead of specifying a saved game, you can check this box to add a sub-menu with
+    the given name to the <i>File</i> menu. Then you can add more Pre-defined setups to this one to create entries in
+    the sub-menu.<br>
     <br>
-    <b>Use pre-defined file:</b>&nbsp; If left unchecked, this menu entry will start a
-    new game from scratch, like the normal <i>New Game</i> action.<br>
+    <b>Use pre-defined file:</b>&nbsp; If left unchecked, this menu entry will start a new game from scratch, like the
+    normal <i>New Game</i> action.<br>
     <br>
-    <b>Saved Game:</b>&nbsp; Select a saved game from your local hard drive. This game will be loaded when the menu item is selected. If the file does 
-    not exist, then the menu item behaves like the normal <i>New Game</i> item.<br>
+    <b>Saved Game:</b>&nbsp; Select a saved game from your local hard drive. This game will be loaded when the menu item
+    is selected. If the file does not exist, then the menu item behaves like the normal <i>New Game</i> item.<br>
     <br>
-    <i>Example:</i>&nbsp; Add a Pre-defined setup named "Play Scenario" to the module
-    and check <i>contains sub-menus.</i> Then add another set of Pre-defined
-    setups named <i>1939, 1940, 1941, 1942</i> to the first and select a saved game
-    file for each one. Players may now select <i>File-&gt;Play Scenario-&gt;1939</i> to load the 1939 scenario,
+    <i>Example:</i>&nbsp; Add a Pre-defined setup named "Play Scenario" to the module and check <i>contains sub-menus.
+    </i> Then add another set of Pre-defined setups named <i>1939, 1940, 1941, 1942</i> to the first and select a saved
+    game file for each one. Players may now select <i>File-&gt;Play Scenario-&gt;1939</i> to load the 1939 scenario,
     etc.<br>
     <br>
-    <b>CAUTION</b>:&nbsp; When creating a Pre-defined setup in a module with <a href="GameModule.htm#Definition_of_Player_Sides">defined sides</a>, 
-    always remember to click the <i>Retire</i> button and switch to Observer status before saving. Otherwise, the side you chose when creating
-    the game you will be permanently assigned to you.
+    <b>CAUTION</b>:&nbsp; When creating a Pre-defined setup in a module with <a
+      href="GameModule.htm#Definition_of_Player_Sides">defined sides</a>, always remember to click the <i>Retire</i>
+    button and switch to Observer status before saving. Otherwise, the side you chose when creating the game you will be
+    permanently assigned to you.
     </td>
     <td style="vertical-align: top;"><img alt="" src="images/PredefinedSetup1.png"><br>
     <br>
     <img alt="" src="images/PredefinedSetup2.png"><br>
     </td>
     </tr>
-    </tbody>
-  </table>
+    </tbody></table>
 
   <br>
   <br>
@@ -563,8 +671,8 @@
     </td>
     <td valign="top">
     <h3><a href="ChartWindow.htm">Chart Window</a></h3>
-    Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc for player reference.</br>
-    <br>
+    Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc for player
+    reference.</br><br>
     <a href="ChartWindow.htm">See full article for details.</a>
     </td>
     </tr>
@@ -573,14 +681,17 @@
 
   <br>
   <br>
-  
+
   <table cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
     <td valign="top">
-    <h3><a href="PrivateWindow.htm">Private Window</a></h3>
-    A map window that can be seen only by the owning player. This is particularly useful for holding a player's private
-    hand of cards, and/or secret reinforcement pools.<br>
+    <h3><a name="PrivateWindow"><a href="PrivateWindow.htm">Private Window</a></h3>
+    A Private Window behaves much like a normal <a href="Map.htm">Map Window</a>, but is designated as belonging to a
+    particular side or sides. This is particularly useful for holding a secret reinforcement pools. The owning sides must correspond to one or more of the sides defined in the
+    <a href="#Definition_of_Player_Sides">definition of player sides</a>.<br>
+    <br>
+    <a href="PrivateWindow.htm">See full article for details.</a>
     </td>
     <td valign="top" style="text-align:center;">
     <img src="images/PrivateMap.png">
@@ -589,12 +700,29 @@
     </tbody>
   </table>
 
+  <br>
+  <br>
+
   <table cellpadding="2" cellspacing="2" width="100%">
     <tbody>
     <tr>
     <td valign="top" style="padding-right:10px; text-align:center;">
+    <img src="images/PlayerHand.png">
     </td>
     <td valign="top">
+    <h3><a href="PlayerHand.htm">Player Hand</a></h3>
+    A Player Hand is a specialized <a href="Map.htm">Map Window</a> for containing a hand of cards. It is designated as
+    belonging to a particular side or sides. The owning sides must correspond to one or more of the sides defined in the
+    <a href="#Definition_of_Player_Sides">definition of player sides</a>.<br>
+    <br>
+    The main difference between a Player Hand and a <a href="#PrivateWindow">Private Window</a> is that in a Player
+    Hand, the contents are automatically laid out in a row instead of stacking like counters.<br>
+    <br>
+    Like a Private Window, a Player Hand can only be manipulated by the owning player, and can optionally be completely
+    hidden from other players. Cards can be manipulated in the hand (turned face up, etc.) and can be rearranged in
+    order. Cards can be dragged into and out of the window to add/remove them from the hand.<br>
+    <br>
+    <a href="PlayerHand.htm">See full article for details.</a>
     </td>
     </tr>
     </tbody>
@@ -607,18 +735,18 @@
     <tbody>
     <tr>
     <td valign="top">
-    A window for saving text notes along with a game. &nbsp;A "Notes" button will be added to the toolbar of the main
-    controls window, enabled when a game is started. Pushing the button displays the window. &nbsp;The "Public" tab
-    contains notes that are visible to all players and to which all players may add.&nbsp; The "Private" tab contains
-    notes that are visible only to the player who entered them.&nbsp; The "Delayed" tab is for writing messages to be
-    revealed at a later time as a safeguard against cheating.&nbsp; To create a delayed message, hit the "New" button
-    and&nbsp; enter a name and message text.&nbsp; Once created, the text of a message cannot be changed.&nbsp; At the
-    appropriate time, the owning player may reveal the text of the message, at which point other players may read the
-    contents of the message.<br>
+    A window for saving text notes along with a game. A <i>Notes</i> button will be added to the Toolbar of the 
+    Module window, enabled when a game is started. Clicking the button displays the notes window. The <i>Public</i> tab
+    contains notes that are visible to all players and to which all players may add. The <i>Private</i> tab contains
+    notes that are visible only to the player who entered them. The <i>Delayed</i> tab is for writing messages to be
+    revealed at a later time as a safeguard against cheating. To create a delayed message, hit the <i>New</i> button
+    and enter a name and message text. Once created, the text of a message cannot be changed. At the appropriate time, 
+    the owning player may reveal the text of the message, at which point other players may read the contents of the message.<br>
     <br>
     </td>
     <td valign="top">
-    <img src="images/NotesWindow2.png">
+    <img src="images/NotesWindow2.png"><br>
+    <br>
     <img src="images/NotesWindow.png" alt="" title=""><br>
     </td>
     </tr>
@@ -626,29 +754,6 @@
   </table>
   <br>
   <br>
-
-  <table border="0" cellpadding="2" cellspacing="2" width="100%">
-    <tbody>
-    <tr>
-    <td valign="top">
-    <a name="ChatLog"><h3>Chat Log</h3></a><br>
-    Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the
-    toolbar. It exists by default and cannot be removed in the Editor. The chat log not only allows players to "chat"
-    with each other by typing messages into the lower text line, it also displays a running "log" of game events --
-    messages produced by <a href="ReportChanges.htm">Report Action</a> traits and other <a href="MessageFormat.htm">
-    Message Formats</a> in traits and various module components. Messages from your components can be displayed in a
-    variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a
-    visually attractive and easy-to-read report log.<br>
-    <br>
-    <a href="ChatLog.htm">See full article for details.</a>
-    </td>
-    <td valign="top">
-    <img src="images/ChatLog.png">
-
-    </td>
-    </tr>
-    </tbody>
-  </table>
 
 
   </td>
