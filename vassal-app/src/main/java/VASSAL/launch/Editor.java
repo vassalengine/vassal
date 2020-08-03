@@ -47,6 +47,7 @@ import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.version.VersionUtils;
 
 public class Editor extends Launcher {
   public static void main(String[] args) {
@@ -221,7 +222,7 @@ public class Editor extends Launcher {
         // don't permit loading of VASL saved with 3.2 or earlier
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
-          if (Info.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
             if ("VASL".equals(md.getName())) {
               ErrorDialog.show(
                 "Error.VASL_too_old",

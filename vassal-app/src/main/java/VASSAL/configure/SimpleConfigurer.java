@@ -41,7 +41,7 @@ public class SimpleConfigurer extends Configurer
   private Configurable target;
 
   public SimpleConfigurer(Configurable c, Configurer[] attConfigurers) {
-    super(null,c.getConfigureName());
+    super(null, c.getConfigureName());
 
     attConfig = attConfigurers;
     target = c;

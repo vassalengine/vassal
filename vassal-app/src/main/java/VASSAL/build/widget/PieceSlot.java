@@ -48,7 +48,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
 import VASSAL.build.module.Map;
-import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -315,7 +314,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (e.isPopupTrigger()) {
       doPopup(e);
     }
-    else if (SwingUtils.isLeftMouseButton(e)) {
+    else if (SwingUtils.isMainMouseButtonDown(e)) {
       KeyBuffer.getBuffer().clear();
       Map.clearActiveMap();
       if (getPiece() != null) {
@@ -337,7 +336,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       }
       doClear = true;
     }
-    else if (SwingUtils.isLeftMouseButton(e)) {
+    else if (SwingUtils.isMainMouseButtonDown(e)) {
       doClear = true;
     }
 
@@ -363,7 +362,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();
@@ -371,7 +370,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyTyped(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();
@@ -379,7 +378,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void keyReleased(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     e.consume();
     clearExpandedPiece();
     panel.repaint();

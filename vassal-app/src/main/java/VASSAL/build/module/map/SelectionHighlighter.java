@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -123,7 +122,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         Resources.getString("Editor.SelectionHighlight.border_thickness"), //$NON-NLS-1$
         Resources.getString("Editor.SelectionHighlight.image"), //$NON-NLS-1$
         Resources.getString("Editor.SelectionHighlight.offset_x"), //$NON-NLS-1$
-        Resources.getString("Editor.SelectionHighlight.offset_y"),//$NON-NLS-1$
+        Resources.getString("Editor.SelectionHighlight.offset_y"), //$NON-NLS-1$
     };
   }
 

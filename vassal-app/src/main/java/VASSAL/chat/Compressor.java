@@ -129,7 +129,7 @@ public abstract class Compressor {
         }
 
         final byte[] recompressed = Compressor.compress(uncompressed);
-        if (!Arrays.equals(recompressed,contents)) {
+        if (!Arrays.equals(recompressed, contents)) {
 // FIXME: don't throw unchecked exception
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
@@ -151,7 +151,7 @@ public abstract class Compressor {
           }
         }
 
-        if (!Arrays.equals(Compressor.decompress(compressed),contents)) {
+        if (!Arrays.equals(Compressor.decompress(compressed), contents)) {
 // FIXME: don't throw unchecked exception
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }

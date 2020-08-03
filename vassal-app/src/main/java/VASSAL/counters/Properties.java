@@ -25,101 +25,101 @@ public interface Properties {
   /**
    * Return Boolean.TRUE if the piece cannot be seen by the user
    */
-  public static final String INVISIBLE_TO_ME = "Invisible";
+  String INVISIBLE_TO_ME = "Invisible";
 
-  public static final String INVISIBLE_TO_OTHERS = "InvisibleToOthers";
+  String INVISIBLE_TO_OTHERS = "InvisibleToOthers";
 
   /**
    * Return Boolean.TRUE if the piece's identity is not known to other players
    */
-  public static final String OBSCURED_TO_OTHERS = "ObscuredToOthers";
+  String OBSCURED_TO_OTHERS = "ObscuredToOthers";
 
   /**
    * Return Boolean.TRUE if the piece's identity is not known to the user
    */
-  public static final String OBSCURED_TO_ME = "Obscured";
+  String OBSCURED_TO_ME = "Obscured";
 
   /**
    * If a piece is obscured to other players, return a String identifying the player who obscured it
    *
    * @see VASSAL.build.GameModule#getUserId
    */
-  public static final String OBSCURED_BY = Obscurable.ID;
+  String OBSCURED_BY = Obscurable.ID;
   
   /**
    * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to band-select events if the
    * filter rejects them
    */
-  public static final String BAND_SELECT_EVENT_FILTER = "bandSelectEventFilter";
+  String BAND_SELECT_EVENT_FILTER = "bandSelectEventFilter";
 
   /**
    * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to selection events if the
    * filter rejects them
    */
-  public static final String SELECT_EVENT_FILTER = "selectEventFilter";
+  String SELECT_EVENT_FILTER = "selectEventFilter";
 
   /**
    * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to move events if the
    * filter rejects them
    */
-  public static final String MOVE_EVENT_FILTER = "moveEventFilter";
+  String MOVE_EVENT_FILTER = "moveEventFilter";
 
   /**
    * If a piece is hidden to other players, return a STring identifying the player who hit it
    *
    * @see VASSAL.build.GameModule#getUserId
    */
-  public static final String HIDDEN_BY = Hideable.HIDDEN_BY;
+  String HIDDEN_BY = Hideable.HIDDEN_BY;
 
   /**
    * Return Boolean.TRUE if the piece behaves more like a terrain feature than a playing piece
    */
-  public static final String TERRAIN = "Immobile";
+  String TERRAIN = "Immobile";
 
   /**
    * Return Boolean.TRUE if the piece should ignore map grids when being moved
    */
-  public static final String IGNORE_GRID = "IgnoreGrid";
+  String IGNORE_GRID = "IgnoreGrid";
 
   /** Return Boolean.TRUE if the piece does not form stacks */
-  public static final String NO_STACK = "NoStack";
+  String NO_STACK = "NoStack";
 
   /**
    * Return Boolean.TRUE if the piece has been marked as selected
    */
-  public static final String SELECTED = "Selected";
+  String SELECTED = "Selected";
 
   /**
    * Return a KeyCommand[] object representing the popup menu equivalencies for the key commands recognized by this
    * piece
    */
-  public static final String KEY_COMMANDS = "KeyCommands";
+  String KEY_COMMANDS = "KeyCommands";
 
   /**
    * If this piece is a Decorator, return the decorated piece
    */
-  public static final String INNER = "Inner";
+  String INNER = "Inner";
 
   /**
    * If this piece decorated by a Decorator, return the Decorator
    */
-  public static final String OUTER = "Outer";
+  String OUTER = "Outer";
 
   /**
    * Return Boolean.TRUE if this piece has Restricted Access
    */
-  public static final String RESTRICTED = "Restricted";
+  String RESTRICTED = "Restricted";
 
   /**
    * Return Boolean.TRUE if this piece has movement restricted by a Restricted Access trait   */
-  public static final String RESTRICTED_MOVEMENT = "RestrictedMovement";
+  String RESTRICTED_MOVEMENT = "RestrictedMovement";
 
 
   /** Return Boolean.TRUE if this piece has been moved */
-  public static final String MOVED = "Moved";
+  String MOVED = "Moved";
 
   /** Used to store a duplicate of the target piece at some point in time */
-  public static final String SNAPSHOT = "snapshot";
+  String SNAPSHOT = "snapshot";
 
   /**
    * If Boolean.TRUE, then treat the piece as if it were not rotated. This effects the value returned by
@@ -127,17 +127,17 @@ public interface Properties {
    *
    * @see FreeRotator
    */
-  public static final String USE_UNROTATED_SHAPE = "useUnrotatedShape";
+  String USE_UNROTATED_SHAPE = "useUnrotatedShape";
 
   /**
    * Return a String representing the visible features of the piece. If this String changes value, then the piece should
    * be refreshed
    */
-  public static final String VISIBLE_STATE = "visibleState";
+  String VISIBLE_STATE = "visibleState";
 
   /** Return Boolean.TRUE if the piece can never be moved */
-  public static final String NON_MOVABLE = "cannotMove";
+  String NON_MOVABLE = "cannotMove";
 
   /** Global Piece Id */
-  public static final String PIECE_ID = "PieceId";
+  String PIECE_ID = "PieceId";
 }

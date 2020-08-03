@@ -97,7 +97,7 @@ public class FunctionBuilder extends JDialog {
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center");
-    add(p,"growx");
+    add(p, "growx");
 
     pack();
     setLocationRelativeTo(getParent());

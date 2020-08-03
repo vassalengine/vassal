@@ -288,20 +288,20 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public void draw(Graphics g, int x, int y, double zoom, Component obs) {
     drawRegion(g,
-               new Point(x,y),
+               new Point(x, y),
                new Rectangle(x, y,
                              Math.round((float) zoom*boundaries.width),
                              Math.round((float) zoom*boundaries.height)),
                zoom, obs);
   }
 
-  private ConcurrentMap<Point,Future<BufferedImage>> requested =
+  private ConcurrentMap<Point, Future<BufferedImage>> requested =
     new ConcurrentHashMap<>();
 
-  private java.util.Map<Point,Float> alpha =
+  private java.util.Map<Point, Float> alpha =
     new ConcurrentHashMap<>();
 
-  private ConcurrentMap<Point,Future<BufferedImage>> o_requested =
+  private ConcurrentMap<Point, Future<BufferedImage>> o_requested =
     new ConcurrentHashMap<>();
 
   private static Comparator<Point> tileOrdering = new Comparator<>() {

@@ -59,7 +59,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   protected LaunchButton launch;
   protected FormattedString report = new FormattedString();
   protected GlobalProperty property;
-  protected PropertyChangerConfigurer propChangeConfig = new PropertyChangerConfigurer(null,null,this);
+  protected PropertyChangerConfigurer propChangeConfig = new PropertyChangerConfigurer(null, null, this);
   protected FormattedString format = new FormattedString();
 
   public ChangePropertyButton() {
@@ -190,7 +190,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.htm","ChangePropertyToolbarButton");
+    return HelpFile.getReferenceManualPage("GlobalProperties.htm", "ChangePropertyToolbarButton");
   }
 
   @Override

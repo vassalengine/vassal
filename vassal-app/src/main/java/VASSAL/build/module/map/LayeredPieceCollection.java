@@ -102,7 +102,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
-    validator = new SingleChildInstance(map,getClass());
+    validator = new SingleChildInstance(map, getClass());
     map.setPieceCollection(collection);
     if (tempToolBar != null) {
       tempToolBar.setDelegate(map);
@@ -214,7 +214,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     public Object visitDefault(GamePiece p) {
       String property = (String) p.getProperty(propertyName);
       int layer = layerOrder.length;
-      for (int i=0;i<layerOrder.length;++i) {
+      for (int i=0; i<layerOrder.length; ++i) {
         if (layerOrder[i].equals(property)) {
           layer = i;
           break;

@@ -218,7 +218,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
           Point pos = parent.getPosition();
           map.removePiece(parent);
           this.value = value;
-          map.placeOrMerge(parent,pos);
+          map.placeOrMerge(parent, pos);
         }
         else {
           this.value = value;

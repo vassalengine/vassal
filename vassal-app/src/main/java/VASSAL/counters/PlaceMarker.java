@@ -216,8 +216,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     }
 
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
-      marker.setProperty(Properties.SNAPSHOT,
-                         PieceCloner.getInstance().clonePiece(marker));
+      marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
       c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
     }
 

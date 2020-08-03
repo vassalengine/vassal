@@ -65,7 +65,7 @@ public class ValidationReportDialog extends JDialog {
       reportBox.add(new JLabel("The following problems were found in this module."));
       reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
       JList<String> list = new JList<>(warnings.toArray(new String[0]));
-      list.setVisibleRowCount(Math.min(list.getVisibleRowCount(),warnings.size()));
+      list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
       reportBox.add(new ScrollPane(list));
       buttonPanel.add(createOkButton());
       buttonPanel.add(createCancelButton());
@@ -99,7 +99,7 @@ public class ValidationReportDialog extends JDialog {
     return ok;
   }
 
-  public static interface CallBack {
+  public interface CallBack {
     void ok();
     void cancel();
   }

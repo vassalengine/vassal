@@ -63,7 +63,9 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 /**
  * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer {
+public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+  PropertyExporter {
+
   public static final String ID = "piece;";
   private static Highlighter highlighter;
   /**
@@ -278,7 +280,13 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * Properties visible in a masked unit
    */
   public Object getLocalizedPublicProperty(Object key) {
-    if (Properties.KEY_COMMANDS.equals(key)) {
+    if (List.of(
+      Properties.KEY_COMMANDS,
+      DECK_NAME,
+      CURRENT_X,
+      CURRENT_Y,
+      Properties.VISIBLE_STATE
+    ).contains(key)) {
       return getProperty(key);
     }
     else if (LOCATION_NAME.equals(key)) {
@@ -292,9 +300,6 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
     else if (CURRENT_MAP.equals(key)) {
       return getMap() == null ? "" : getMap().getLocalizedConfigureName();
-    }
-    else if (DECK_NAME.equals(key)) {
-      return getProperty(key);
     }
     else if (DECK_POSITION.equals(key)) {
       if (getParent() instanceof Deck) {
@@ -324,15 +329,6 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         }
       }
       return "";
-    }
-    else if (CURRENT_X.equals(key)) {
-      return getProperty(key);
-    }
-    else if (CURRENT_Y.equals(key)) {
-      return getProperty(key);
-    }
-    else if (Properties.VISIBLE_STATE.equals(key)) {
-      return getProperty(key);
     }
     // Check for a property in the scratch-pad properties
     Object prop = props == null ? null : props.get(key);

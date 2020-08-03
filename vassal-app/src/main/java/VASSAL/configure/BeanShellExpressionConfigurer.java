@@ -132,7 +132,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      expressionPanel = new JPanel(new MigLayout("fillx,ins 0","[][grow][][]"));
+      expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]"));
       //expressionPanel.setLayout(new BoxLayout(expressionPanel, BoxLayout.X_AXIS));
       expressionPanel.add(new JLabel(getName()));
       validator = new Validator();
@@ -152,7 +152,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
       });
       expressionPanel.add(validator);
-      expressionPanel.add(extraDetails,"wrap");
+      expressionPanel.add(extraDetails, "wrap");
       validator.validate();
 
       detailPanel = new JPanel();
@@ -432,7 +432,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         buildGlobalMenu(useParentMenu ? parentMenu : myMenu, (AbstractConfigurable) b, useParent);
       }
       else if (b instanceof BoardPicker) {
-        buildGlobalMenu(myMenu,(AbstractBuildable) b, true);
+        buildGlobalMenu(myMenu, (AbstractBuildable) b, true);
       }
     }
 

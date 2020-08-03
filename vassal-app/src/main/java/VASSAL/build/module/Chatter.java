@@ -44,6 +44,8 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -373,7 +375,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // A fun extension would be letting the module designer provide extra class styles. 
   }
-
+  
   /**
    * Set the Font used by the text area
    */

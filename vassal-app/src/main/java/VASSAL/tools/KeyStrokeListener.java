@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.swing.SwingUtils;
+
 /**
  * Utility class for associating an Action with a keystroke from multiple
  * different component sources
@@ -51,7 +53,8 @@ public class KeyStrokeListener {
     }
     if (key != null) {
       for (KeyStrokeSource s : sources) {
-        s.getComponent().unregisterKeyboardAction(key);
+        //BR// We are registering/unregistering events directly with components, so we perform our special Mac keyboard translations.
+        s.getComponent().unregisterKeyboardAction(SwingUtils.genericToSystem(key));
       }
     }
     key = newKey;
@@ -65,7 +68,8 @@ public class KeyStrokeListener {
   }
 
   public void keyPressed(KeyStroke stroke) {
-    if (stroke != null && stroke.equals(key)) {
+    //BR// We are receiving events directly from components, so we perform our special Mac keyboard translations.
+    if (stroke != null && stroke.equals(SwingUtils.genericToSystem(key))) {
       l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
     }
   }
@@ -75,7 +79,8 @@ public class KeyStrokeListener {
       sources.add(src);
     }
     if (key != null) {
-      src.getComponent().registerKeyboardAction(l, key, src.getMode());
+      //BR// We are registering with components directly, so we perform our special Mac keyboard translations.
+      src.getComponent().registerKeyboardAction(l, SwingUtils.genericToSystem(key), src.getMode());
     }
   }
 }

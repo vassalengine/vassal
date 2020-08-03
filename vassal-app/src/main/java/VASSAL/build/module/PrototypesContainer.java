@@ -17,11 +17,12 @@
  */
 package VASSAL.build.module;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
+
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -40,8 +41,15 @@ import VASSAL.i18n.Resources;
  */
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
-  private Map<String,PrototypeDefinition> definitions =
-    new HashMap<>();
+  private final Map<String, PrototypeDefinition> definitions = new HashMap<>();
+
+  /**
+   * Return an unmodifiable Collection of the current Prototype Definitions
+   * @return PrototypeDefinition Collection
+   */
+  public Collection<PrototypeDefinition> getDefinitions() {
+    return Collections.unmodifiableCollection(definitions.values());
+  }
 
   @Override
   public String[] getAttributeDescriptions() {
@@ -74,7 +82,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   @Override
@@ -92,14 +100,11 @@ public class PrototypesContainer extends AbstractConfigurable {
     if (b instanceof PrototypeDefinition) {
       PrototypeDefinition def = (PrototypeDefinition) b;
       definitions.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove(evt.getOldValue());
-            definitions.put((String) evt.getNewValue(),
-                            (PrototypeDefinition) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          definitions.remove(evt.getOldValue());
+          definitions.put((String) evt.getNewValue(),
+                          (PrototypeDefinition) evt.getSource());
         }
       });
     }

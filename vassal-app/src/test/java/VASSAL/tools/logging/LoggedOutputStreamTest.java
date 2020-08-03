@@ -28,8 +28,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
 @RunWith(JMock.class)
 public class LoggedOutputStreamTest {
 

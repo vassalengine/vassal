@@ -83,12 +83,12 @@ import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
-import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
+import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.image.ImageUtils;
@@ -674,8 +674,7 @@ public class PieceMover extends AbstractBuildable
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
-        piece.setProperty(Properties.SNAPSHOT,
-                          PieceCloner.getInstance().clonePiece(piece));
+        piece.setProperty(Properties.SNAPSHOT, ((PropertyExporter) piece).getProperties());
       }
       comm = comm.append(piece.keyEvent(key));
     }
@@ -718,10 +717,10 @@ public class PieceMover extends AbstractBuildable
   protected boolean canHandleEvent(MouseEvent e) {
     return !e.isConsumed() &&
            !e.isShiftDown() &&
-           !SwingUtils.isControlDown(e) &&
+           !SwingUtils.isSelectionToggle(e) &&
            e.getClickCount() < 2 &&
            (e.getButton() == MouseEvent.NOBUTTON ||
-            SwingUtils.isLeftMouseButton(e));
+            SwingUtils.isMainMouseButtonDown(e));
   }
 
   /**

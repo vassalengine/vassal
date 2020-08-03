@@ -24,6 +24,7 @@ import java.util.Vector;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * Evaluates properties of the GameModule and conditionally executes
@@ -149,7 +150,7 @@ public class ConditionalCommand extends Command {
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
-      return Info.compareVersions(propertyValue, value) < 0;
+      return VersionUtils.compareVersions(propertyValue, value) < 0;
     }
   }
 
@@ -175,7 +176,7 @@ public class ConditionalCommand extends Command {
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
-      return Info.compareVersions(propertyValue, value) > 0;
+      return VersionUtils.compareVersions(propertyValue, value) > 0;
     }
   }
 }

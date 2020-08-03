@@ -18,8 +18,6 @@
 package VASSAL.chat.peer2peer;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -146,7 +144,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     if (GameModule.getGameModule() != null) {
       owner = GameModule.getGameModule().getPlayerWindow();
     }
-    frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
+    frame = new JDialog(owner, Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     frame.setLayout(new MigLayout());
 

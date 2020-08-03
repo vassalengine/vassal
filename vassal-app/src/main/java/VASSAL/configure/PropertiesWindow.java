@@ -80,7 +80,7 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(new PropertyChangeListener() {
       @Override

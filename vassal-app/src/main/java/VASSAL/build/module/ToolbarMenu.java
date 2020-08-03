@@ -71,7 +71,7 @@ public class ToolbarMenu extends AbstractConfigurable
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
   public static final String HIDDEN_BY_TOOLBAR = "hidden"; //$NON-NLS-1$
   protected List<String> menuItems = new ArrayList<>();
-  protected Map<AbstractButton,JMenuItem> buttonsToMenuMap =
+  protected Map<AbstractButton, JMenuItem> buttonsToMenuMap =
     new HashMap<>();
   protected LaunchButton launch;
   protected JToolBar toolbar;
@@ -136,7 +136,7 @@ public class ToolbarMenu extends AbstractConfigurable
       return StringArrayConfigurer.arrayToString(
         menuItems.toArray(new String[0]));
     }
-    else if(DESCRIPTION.equals(key)) {
+    else if (DESCRIPTION.equals(key)) {
       return getConfigureName();
     }
     else {
@@ -158,7 +158,7 @@ public class ToolbarMenu extends AbstractConfigurable
     else if (BUTTON_TEXT.equals(key)) {
       launch.setAttribute(key, value);
     }
-    else if(DESCRIPTION.equals(key)) {
+    else if (DESCRIPTION.equals(key)) {
       setConfigureName((String) value);
     }
     else {
@@ -204,7 +204,7 @@ public class ToolbarMenu extends AbstractConfigurable
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    HashMap<String,JButton> nameToButton = new HashMap<>();
+    HashMap<String, JButton> nameToButton = new HashMap<>();
     if (toolbar != null) {
       for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {

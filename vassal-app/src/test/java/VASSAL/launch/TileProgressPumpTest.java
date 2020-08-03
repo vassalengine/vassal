@@ -19,7 +19,6 @@
 package VASSAL.launch;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -35,8 +34,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 @RunWith(JMock.class)
 public class TileProgressPumpTest {

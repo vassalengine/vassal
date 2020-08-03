@@ -23,8 +23,6 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILE_WRITTEN;
 import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHED;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +49,6 @@ import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.image.tilecache.TileUtils;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.FileStore;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.InputOutputStreamPump;
 import VASSAL.tools.io.InputStreamPump;
 import VASSAL.tools.io.ProcessLauncher;
@@ -204,92 +201,75 @@ public class TilingHandler {
     );
 
     // write the image paths to child's stdin, one per line
-    PrintWriter stdin = null;
-    try {
-      stdin = new PrintWriter(proc.stdin);
-      for (String m : multi) {
-        stdin.println(m);
-      }
-    }
-    finally {
-      IOUtils.closeQuietly(stdin);
+    try (PrintWriter stdin = new PrintWriter(proc.stdin)) {
+      multi.forEach(stdin::println);
     }
 
-    Socket csock = null;
-    DataInputStream in = null;
-    try {
-      csock = ssock.accept();
+    try (Socket csock = ssock.accept()) {
       csock.shutdownOutput();
+      try (DataInputStream in = new DataInputStream(csock.getInputStream())) {
+        final Progressor progressor = new Progressor(0, tcount) {
+          @Override
+          protected void run(Pair<Integer, Integer> prog) {
+            pd.setProgress((100 * prog.second) / max);
+          }
+        };
 
-      in = new DataInputStream(csock.getInputStream());
-
-      final Progressor progressor = new Progressor(0, tcount) {
-        @Override
-        protected void run(Pair<Integer, Integer> prog) {
-          pd.setProgress((100*prog.second)/max);
-        }
-      };
-
-      // setup the cancel button in the progress dialog
-      EDT.execute(new Runnable() {
-        @Override
-        public void run() {
-          pd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        // setup the cancel button in the progress dialog
+        EDT.execute(new Runnable() {
+          @Override
+          public void run() {
+            pd.addActionListener(e -> {
               pd.setVisible(false);
               proc.future.cancel(true);
-            }
-          });
-        }
-      });
+            });
+          }
+        });
 
-      boolean done = false;
-      byte type;
-      while (!done) {
-        type = in.readByte();
+        boolean done = false;
+        byte type;
+        while (!done) {
+          type = in.readByte();
 
-        switch (type) {
-        case STARTING_IMAGE:
-          final String ipath = in.readUTF();
+          switch (type) {
+          case STARTING_IMAGE:
+            final String ipath = in.readUTF();
 
-          EDT.execute(new Runnable() {
-            @Override
-            public void run() {
+            EDT.execute(() -> {
               pd.setLabel("Tiling " + ipath);
               if (!pd.isVisible()) pd.setVisible(true);
+            });
+            break;
+
+          case TILE_WRITTEN:
+            progressor.increment();
+
+            if (progressor.get() >= tcount) {
+              pd.setVisible(false);
             }
-          });
-          break;
+            break;
 
-        case TILE_WRITTEN:
-          progressor.increment();
+          case TILING_FINISHED:
+            done = true;
+            break;
 
-          if (progressor.get() >= tcount) {
-            pd.setVisible(false);
+          default:
+            throw new IllegalStateException("bad type: " + type);
           }
-          break;
-
-        case TILING_FINISHED:
-          done = true;
-          break;
-
-        default:
-          throw new IllegalStateException("bad type: " + type);
         }
-      }
 
-      in.close();
-      csock.close();
-      ssock.close();
+      }
     }
     catch (IOException e) {
-
+      logger.error("Error during tiling", e);
     }
     finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(csock);
-      IOUtils.closeQuietly(ssock);
+      try {
+        ssock.close();
+      }
+      catch (IOException e) {
+        logger.error("Error while closing the server socket", e);
+      }
     }
 
     // wait for the tiling process to end

@@ -67,7 +67,7 @@ public class ColoredBorder implements Highlighter {
         if (!br.isEmpty()) {
           final double xzoom = (br.getWidth()+1) / br.getWidth();
           final double yzoom = (br.getHeight()+1) / br.getHeight();
-          final AffineTransform t = AffineTransform.getTranslateInstance(x,y);
+          final AffineTransform t = AffineTransform.getTranslateInstance(x, y);
           t.scale(xzoom*zoom, yzoom*zoom);
 
           final Graphics2D g2d = (Graphics2D) g;

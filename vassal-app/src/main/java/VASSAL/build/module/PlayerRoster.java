@@ -20,8 +20,6 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -59,7 +57,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -646,7 +643,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   /** Call-back interface for when a player changes sides during a game */
-  public static interface SideChangeListener {
+  public interface SideChangeListener {
     void sideChanged(String oldSide, String newSide);
   }
 
