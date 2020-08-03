@@ -277,7 +277,7 @@ public class TextItem extends Item {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(0,0);
+    return new Dimension(0, 0);
   }
 
   public static Item decode(GamePieceLayout l, String s) {

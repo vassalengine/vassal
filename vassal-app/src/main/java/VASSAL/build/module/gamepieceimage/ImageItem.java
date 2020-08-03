@@ -273,7 +273,7 @@ public class ImageItem extends Item {
 
     @Override
     public Dimension getSize() {
-      return new Dimension(10,10);
+      return new Dimension(10, 10);
     }
 
     @Override

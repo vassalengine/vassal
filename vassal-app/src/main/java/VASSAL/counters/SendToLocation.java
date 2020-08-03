@@ -138,9 +138,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     xOffset.setFormat(st.nextToken("0"));
     yOffset.setFormat(st.nextToken("0"));
     description = st.nextToken("");
-    destination = st.nextToken(DEST_LOCATION.substring(0,1));
+    destination = st.nextToken(DEST_LOCATION.substring(0, 1));
     if (destination.length() == 0) {
-      destination = DEST_LOCATION.substring(0,1);
+      destination = DEST_LOCATION.substring(0, 1);
     }
     zone.setFormat(st.nextToken(""));
     region.setFormat(st.nextToken(""));
@@ -217,7 +217,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
            "); map: " + map.getMapName() + ";";
     }
     new Chatter.DisplayText(
-        GameModule.getGameModule().getChatter(),s).execute();
+        GameModule.getGameModule().getChatter(), s).execute();
   }
 
   @Override
@@ -293,7 +293,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             catch (BadCoords e) {
               LogBadGridLocation(dest);
               reportDataError(this, Resources.getString(
-                "Error.not_found", "Grid Location"),map.getMapName());
+                "Error.not_found", "Grid Location"), map.getMapName());
               ; // ignore SendTo request.
             }
           }
@@ -302,7 +302,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           final int xValue = x.getTextAsInt(outer, "Xlocation", this);
           final int yValue = y.getTextAsInt(outer, "YLocation", this);
 
-          dest = new Point(xValue,yValue);
+          dest = new Point(xValue, yValue);
 
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null && dest != null) {
@@ -425,10 +425,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState,';');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
     String mapId = st.nextToken("");
     if (mapId.length() > 0) {
-      setProperty(BACK_MAP,Map.getMapById(mapId));
+      setProperty(BACK_MAP, Map.getMapById(mapId));
     }
     String x = st.nextToken("");
     String y = st.nextToken("");
@@ -523,13 +523,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.key);
+      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
       controls.add(keyInput.getControls());
 
       backNameInput = new StringConfigurer(null, "Send Back Command name:  ", p.backCommandName);
       controls.add(backNameInput.getControls());
 
-      backKeyInput = new NamedHotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
+      backKeyInput = new NamedHotKeyConfigurer(null, "Send Back Keyboard Command:  ", p.backKey);
       controls.add(backKeyInput.getControls());
 
       destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);

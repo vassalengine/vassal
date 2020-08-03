@@ -136,7 +136,7 @@ public interface MutableProperty {
     }
 
     protected Command getChangeCommand(String oldValue, String newValue) {
-      return new ChangePropertyCommand(this,propertyName, oldValue, newValue);
+      return new ChangePropertyCommand(this, propertyName, oldValue, newValue);
     }
 
     @Override

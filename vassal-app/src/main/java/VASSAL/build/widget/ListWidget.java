@@ -58,7 +58,7 @@ public class ListWidget extends Widget
   public static final String SCALE = "scale"; //$NON-NLS-1$
   protected double scale;
 
-  private Map<Object,String> keys = new HashMap<>();
+  private Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
   public ListWidget() {
@@ -170,7 +170,7 @@ public class ListWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {NAME,SCALE,WIDTH,HEIGHT,DIVIDER};
+    return new String[] {NAME, SCALE, WIDTH, HEIGHT, DIVIDER};
   }
 
   @Override

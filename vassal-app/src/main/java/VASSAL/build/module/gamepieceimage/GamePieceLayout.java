@@ -72,17 +72,17 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
   public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
   public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
-  protected static Map<String,String> compass = new HashMap<>();
+  protected static Map<String, String> compass = new HashMap<>();
   static {
-    compass.put(N,"N");
-    compass.put(S,"S");
-    compass.put(E,"E");
-    compass.put(W,"W");
-    compass.put(NE,"NE");
-    compass.put(NW,"NW");
-    compass.put(SE,"SE");
-    compass.put(SW,"SW");
-    compass.put(CENTER,"CENTER");
+    compass.put(N, "N");
+    compass.put(S, "S");
+    compass.put(E, "E");
+    compass.put(W, "W");
+    compass.put(NE, "NE");
+    compass.put(NW, "NW");
+    compass.put(SE, "SE");
+    compass.put(SW, "SW");
+    compass.put(CENTER, "CENTER");
   }
 
   public static String getCompassPoint(String location) {
@@ -92,7 +92,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public Point getPosition(Item item) {
     final String s = getCompassPoint(item.getLocation());
 
-    int x,y;
+    int x, y;
     final Dimension d = item.getSize();
     switch (s.charAt(s.length() - 1)) {
     case 'E':
@@ -334,8 +334,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public Image buildImage(GamePieceImage defn) {
     // Create our base image
     final BufferedImage image = ImageUtils.createCompatibleTranslucentImage(
-      Math.max(width,1),
-      Math.max(height,1)
+      Math.max(width, 1),
+      Math.max(height, 1)
     );
     final Graphics2D g = image.createGraphics();
 

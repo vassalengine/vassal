@@ -196,10 +196,10 @@ public class SymbolItem extends Item {
     }
 
     if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
     else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     symbol.draw(g, r, si.getFgColor().getColor(), si.getBgColor().getColor(), si.getSizeColor().getColor(), (float) lineWidth);
@@ -213,7 +213,7 @@ public class SymbolItem extends Item {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(getWidth(),getHeight());
+    return new Dimension(getWidth(), getHeight());
   }
 
   public static Item decode(GamePieceLayout l, String s) {
