@@ -21,7 +21,6 @@ import java.util.Map;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 
 /**
@@ -76,16 +75,11 @@ public abstract class Expression {
   /**
    * Return a PieceFilter using the expression.
    *
-   * @param ps
-   * @return
+   * @param ps PropertySource to use as source of filter
+   * @return Created PieceFilter
    */
   public PieceFilter getFilter(PropertySource ps) {
-    return new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return true;
-      }
-    };
+    return piece -> true;
   }
 
   public PieceFilter getFilter() {
@@ -140,8 +134,8 @@ public abstract class Expression {
   /**
    * Factory method to create a new Property Match Expression.
    *
-   * @param s
-   * @return
+   * @param s Expression string
+   * @return Generated Expression
    */
   public static Expression createPropertyExpression(String s) {
 
