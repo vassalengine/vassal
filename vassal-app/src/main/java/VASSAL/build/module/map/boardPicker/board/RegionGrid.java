@@ -931,7 +931,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         lastClickedRegion = r;
         setDirty(true);
         final Action a = new EditPropertiesAction(lastClickedRegion, null, this);
-        a.actionPerformed(new ActionEvent(e.getSource(),ActionEvent.ACTION_PERFORMED,"Edit")); //$NON-NLS-1$
+        a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
@@ -947,7 +947,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       else if (command.equals(PROPERTIES)) { //$NON-NLS-1$
         if (lastClickedRegion != null) {
           final Action a = new EditRegionAction(lastClickedRegion, null, this);
-          a.actionPerformed(new ActionEvent(e.getSource(),ActionEvent.ACTION_PERFORMED,"Edit")); //$NON-NLS-1$
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
         }
       }
     }

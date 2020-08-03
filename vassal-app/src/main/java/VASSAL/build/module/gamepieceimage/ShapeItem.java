@@ -215,10 +215,10 @@ public class ShapeItem extends Item {
     Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
     else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     if (fg != null) {
@@ -260,7 +260,7 @@ public class ShapeItem extends Item {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(getWidth(),getHeight());
+    return new Dimension(getWidth(), getHeight());
   }
 
 

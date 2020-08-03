@@ -44,9 +44,9 @@ public class UnitTest implements UserDialog {
     final UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
     final PendingPeerManager ppm = new PendingPeerManager(d);
     final ActivePeerManager apm =
-      new ActivePeerManager(new MyInfo("TestClient",5556),d,ppm); //$NON-NLS-1$
+      new ActivePeerManager(new MyInfo("TestClient", 5556), d, ppm); //$NON-NLS-1$
     final PeerInfo info =
-      new PeerInfo("SocketReader","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
+      new PeerInfo("SocketReader", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("SocketReader"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(10000);
@@ -59,12 +59,12 @@ public class UnitTest implements UserDialog {
   private static void testPeerManagers() throws InterruptedException, IOException {
     UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
     PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
-    new AcceptPeerThread(5555,serverPpm).start();
+    new AcceptPeerThread(5555, serverPpm).start();
 
     UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
     PendingPeerManager ppm = new PendingPeerManager(d);
-    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client",5556),d,ppm); //$NON-NLS-1$
-    PeerInfo info = new PeerInfo("Server","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
+    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
+    PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("Server"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(5000);
@@ -81,7 +81,7 @@ public class UnitTest implements UserDialog {
     ActivePeerManager apm = new ActivePeerManager(myInfo,d,ppm);
     PeerInfo info = new PeerInfo("Server","localhost",5555);
 */
-    final Socket s = new Socket("localhost",5555); //$NON-NLS-1$
+    final Socket s = new Socket("localhost", 5555); //$NON-NLS-1$
 
     final PeerReader reader = new PeerReader(s.getInputStream());
     System.err.println("Created reader " + reader); //$NON-NLS-1$

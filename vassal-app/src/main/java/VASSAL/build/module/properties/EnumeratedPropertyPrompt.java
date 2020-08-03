@@ -62,15 +62,13 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       }
       finalValues[i] = value;
     }
-    final String newValue = (String) JOptionPane.showInputDialog(dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null,finalValues,oldValue);
+    final String newValue = (String) JOptionPane.showInputDialog(
+      dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, finalValues, oldValue);
     return newValue == null ? oldValue : newValue;
   }
 
   public String[] getValidValues() {
     return validValues;
   }
-
-
-
 
 }

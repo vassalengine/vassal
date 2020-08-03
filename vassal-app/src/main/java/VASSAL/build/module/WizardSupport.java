@@ -195,7 +195,7 @@ public class WizardSupport {
         g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
-        new SwingWorker<Void,Void>() {
+        new SwingWorker<Void, Void>() {
           @Override
           protected Void doInBackground() {
             controls.getClient().setConnected(true);

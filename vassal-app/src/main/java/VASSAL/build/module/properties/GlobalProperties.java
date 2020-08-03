@@ -41,7 +41,7 @@ import VASSAL.tools.ToolBarComponent;
 public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
   private TemporaryToolBar tempToolbar = new TemporaryToolBar();
   private PropertySource propertySource;
-  private Map<String,MutableProperty> initialValues = new HashMap<>();
+  private Map<String, MutableProperty> initialValues = new HashMap<>();
   private MutablePropertiesContainer parent;
 
   @Override
@@ -95,7 +95,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public void addTo(Buildable parent) {
     this.parent = (MutablePropertiesContainer) parent;
 
-    for (Map.Entry<String,MutableProperty> e : initialValues.entrySet()) {
+    for (Map.Entry<String, MutableProperty> e : initialValues.entrySet()) {
       this.parent.addMutableProperty(e.getKey(), e.getValue());
     }
 
@@ -108,7 +108,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   @Override
   public void addMutableProperty(String key, MutableProperty p) {
     if (parent == null) {
-      initialValues.put(key,p);
+      initialValues.put(key, p);
     }
     else {
       parent.addMutableProperty(key, p);

@@ -46,7 +46,7 @@ public class FontManager extends AbstractConfigurable {
     return instance;
   }
 
-  protected Map<String,FontStyle> fontStyles = new HashMap<>();
+  protected Map<String, FontStyle> fontStyles = new HashMap<>();
 
   public static final String DIALOG = "Dialog"; //$NON-NLS-1$
   public static final String SERIF = "Serif"; //$NON-NLS-1$
@@ -156,7 +156,7 @@ public class FontManager extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm", "FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
