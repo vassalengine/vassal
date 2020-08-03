@@ -2,6 +2,7 @@
 
 * 13229: Performance: Save property map rather than clone pieces as snapshot
 * 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
+* 13218: Allow a piece get its context menu click location
 * 13205: NPE when trying to display file write failure dialog
 * 13199: MapShader using image throws InternalError on Linux
 * 13197: Hotkeys using Control should use Command on Macs
