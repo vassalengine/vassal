@@ -160,7 +160,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   }
 
   private String typePrefix(String type) {
-    final String prefix = type.substring(0, type.indexOf(';')+1);
+    final String prefix = type.substring(0, type.indexOf(';') + 1);
     return prefix.isEmpty() ? type : prefix;
   }
 
