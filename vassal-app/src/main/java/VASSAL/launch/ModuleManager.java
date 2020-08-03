@@ -305,6 +305,8 @@ public class ModuleManager {
     if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
 
+    new CustomVmOptions().ensureCustomVmOptionsFileExistsInConfDir();
+
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

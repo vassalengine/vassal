@@ -593,6 +593,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       result.add(Info.javaBinPath);
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
+
+      result.addAll(new CustomVmOptions().getCustomVmOptions());
+
       result.add("-DVASSAL.id=" + id);  // instance id
       result.add("-DVASSAL.port=" + port); // MM socket port
 
