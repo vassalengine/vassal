@@ -24,11 +24,13 @@ import java.io.IOException;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.build.module.WizardSupport;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 /**
@@ -77,20 +79,39 @@ public class LoadModuleAction extends GameModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
-//    final JFrame frame = ModuleManagerWindow.getInstance();
-//    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//
-//    try {
     GameModule.init(new BasicModule(new DataArchive(f.getPath())));
-//      ModuleManagerWindow.getInstance().addModule(f);
     Localization.getInstance().translate();
-    new ExtensionsLoader().addTo(GameModule.getGameModule());
-    GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
-
-//      frame.setVisible(false);
-//    }
-//    finally {
-//      frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//    }
+    final GameModule m = GameModule.getGameModule();
+    new ExtensionsLoader().addTo(m);
+    showWizardOrPlayerWindow(m);
   }
+
+  private void showWizardOrPlayerWindow(GameModule module) {
+    final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
+    if (Boolean.TRUE.equals(showWizard)) {
+      module.getWizardSupport().showWelcomeWizard();
+    }
+    else {
+      module.getPlayerWindow().setVisible(true);
+
+      // prompt for username and password if wizard is off
+      // but no username is set
+      if (!isRealName()) {
+        new UsernameAndPasswordDialog(module.getPlayerWindow()).setVisible(true);
+      }
+    }
+  }
+
+  /**
+   * Returns true if user has supplied a real name for current GameModule.
+   *
+   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
+   *
+   * @return <code>true</code> if user supplied a real name
+   */
+  private boolean isRealName() {
+    final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
 }
