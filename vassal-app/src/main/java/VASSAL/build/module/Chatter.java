@@ -107,16 +107,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     style = kit.getStyleSheet();
     myFont = new Font("SansSerif", Font.PLAIN, 12); // Will be overridden by the font from Chat preferences
 
-    for (int i = 0; i < 15; ++i) {
-      try {
+    try {
+      for (int i = 0; i < 15; ++i) {
         kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null);
-      } 
-      catch (BadLocationException ble) {
-        ErrorDialog.bug(ble);
-      } 
-      catch (IOException ex) {
-        ErrorDialog.bug(ex);
       }
+    } 
+    catch (BadLocationException ble) {
+      ErrorDialog.bug(ble);
+    } 
+    catch (IOException ex) {
+      ErrorDialog.bug(ex);
     }
 
     conversationPane.setEditable(false);
