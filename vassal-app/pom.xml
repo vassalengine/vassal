@@ -253,6 +253,7 @@
                     <consoleOutput>true</consoleOutput>
                     <failOnViolation>true</failOnViolation>
                     <linkXRef>true</linkXRef>
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -308,12 +309,32 @@
                     </bottom>
                     <additionalJOption>--allow-script-in-comments</additionalJOption>
                     <doclint>none</doclint>
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <includeFilterFile>src/test/resources/spotbugs-include-filter.xml</includeFilterFile>
+                    <effort>Max</effort>
+                    <threshold>High</threshold>
+                    <xmlOutput>true</xmlOutput>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
