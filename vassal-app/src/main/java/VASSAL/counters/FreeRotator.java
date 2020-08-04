@@ -486,7 +486,7 @@ public class FreeRotator extends Decorator
       else {
         // we are set rotate, set angleIndex to a number between 0 and
         // validAngles.lenth
-        angleIndex = (rand.nextInt(validAngles.length));
+        angleIndex = rand.nextInt(validAngles.length);
       }
       c = tracker.getChangeCommand();
     }
