@@ -1,4 +1,4 @@
-<img src="vassal/vassal-app/src/main/resources/icons/scalable/VASSAL.svg" align="right" />
+<img src="vassal-app/src/main/resources/icons/scalable/VASSAL.svg" align="right" />
 
 # VASSAL
 > The open-source boardgame engine
@@ -24,14 +24,14 @@ Get the [current release](https://github.com/vassalengine/vassal/releases/latest
 
 ### Installation
 
+* Windows: Download and run the installer.
+* Mac OS X: Download the app bundle.
 * Linux
 ```shell
 tar -xvf VASSAL-3.3.2-linux.tar.bz2
 cd VASSAL-3.3.2
 ./VASSAL.sh
 ```
-* Windows: Download and run the installer
-* Mac OS X: Download the app bundle
 
 ## Contributing
 
