@@ -44,6 +44,7 @@ import VASSAL.command.Command;
 import VASSAL.counters.Deck;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.KeyCommandSubMenu;
 import VASSAL.counters.MenuSeparator;
@@ -271,14 +272,8 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     // It is possible for the map to close before the menu is displayed
     if (map.getView().isShowing()) {
 
-      // Inform the piece where player clicked, if it wants to know.  
-      final ChangeTracker ch = new ChangeTracker(p);
-      p.setProperty("ClickedX", e.getPoint().x);
-      p.setProperty("ClickedY", e.getPoint().y);
-      Command comm = ch.getChangeCommand();
-      if ((comm != null) && !comm.isNull()) {
-        GameModule.getGameModule().sendAndLog(comm);
-      }      
+      // Inform the piece where player clicked, if it wants to know.
+      KeyBuffer.getBuffer().setClickPoint(e.getPoint());      
 
       popup.show(map.getView(), pt.x, pt.y);
     }
