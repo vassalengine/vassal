@@ -21,22 +21,38 @@
   <table cellpadding="2" cellspacing="2" border="0" width="100%">
     <tbody>
     <tr>
-    <td valign="top">This trait allows you to specify an arbitrary shape for a Game Piece.<br>
+    <td valign="top">This trait allows you to specify an arbitrary shape for a Game Piece, so that the piece will only
+    be selected when its image is clicked on precisely, rather than being selected whenever the player clicks anywhere
+    inside its "bounding box".<br>
     <br>
-    The shape of a piece is used to determine where the player must click to drag a piece or bring up its popup
-    menu. It also is used to highlight the outline of the piece when it has been selected.<br>
+    The shape of a piece is used to determine where the player must click to drag a piece or bring up its popup menu. It
+    also is used to highlight the outline of the piece when it has been selected. Ordinarily a <i>bounding box</i>
+    around the maximum rectangular limits of the image provides the shape for both the piece's selection boundaries and
+    its highlight outline. .<br>
     <br>
-    By using transparency in your image, you can arrange for your piece be <i>drawn</i> with any shape. However, without the
-    Non-Rectangular trait, the piece can be selected even by clicking on the transparent portions of the image, which
-    can lead to confusion. The Non-Rectangular trait allows you to specify the shape of the piece to be identical
+    By using transparency in your image, you can arrange for your piece be <i>drawn</i> with any shape. However, without
+    the Non-Rectangular trait, the piece can be selected even by clicking on the transparent portions of the image,
+    which can lead to confusion. The Non-Rectangular trait allows you to specify the shape of the piece to be identical
     to the non-transparent portion of an image. Simply select the appropriate image from the drop-down list.<br>
     <br>
-    <b>Note:</b>&nbsp; For most Non-Rectangular pieces, it will be sufficient to simply select the piece image as the "mask" for your Non-Rectangular trait, as it
-    will already have transparency "in just the right places". The black-and-white mask image shown at the left will show you how the image has been
-    interpreted: black indicates non-transparent areas which will accept clicks; white indicates transparent areas that will allow clicks to pass through
-    to whatever is underneath.
+    <b>NOTE:</b> For the most common case, a piece with a simple image that has some transparent portions, and that
+    transparency is contained in the image file as "a transparent color", simply provide the same image again to the
+    Non-Rectangular trait, and this will remove the transparent portions of the piece from the selectable part of the
+    piece.<br>
+    <br>
+    <b>EXAMPLE:</b> In the example shown at right, the file <i>test.png</i> has some orange regions representing the visible parts of a
+    piece, and transparent areas in which nothing will be drawn. At the left, the <i>mask</i> is shown -- the black
+    portions representing areas which can be clicked on to select the piece, and the white areas representing
+    transparent regions, clicking on which will not select the piece. This helps verify that the mask is being read
+    properly.<br>
     </td>
-    <td valign="top"><img src="images/NonRectangular.png" alt=""><br>
+    <td valign="top">
+    <img src="images/NonRectangular.png" alt="">
+    <div style="text-align:center; font-size:12px; padding-top:4px">
+      Mask confirmation at left shows white where transparent.
+    </div>
+
+    <br>
     </td>
     </tr>
     </tbody>
