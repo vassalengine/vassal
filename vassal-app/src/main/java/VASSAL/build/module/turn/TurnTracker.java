@@ -152,8 +152,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected int width = -1;
   protected String lengthStyle = LENGTH_MAXIMUM;
 
-  protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET,this);
-  protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("",this);
+  protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET, this);
+  protected MutableProperty.Impl lastTurn = new MutableProperty.Impl("", this);
 
   public TurnTracker() {
 

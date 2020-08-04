@@ -32,13 +32,13 @@ import VASSAL.tools.lang.Pair;
  */
 public class EventAccumulator<T> implements EventListener<T> {
 
-  protected final Collection<Pair<Object,T>> col;
+  protected final Collection<Pair<Object, T>> col;
 
   public EventAccumulator() {
     this(new ArrayList<>());
   }
 
-  public EventAccumulator(Collection<Pair<Object,T>> col) {
+  public EventAccumulator(Collection<Pair<Object, T>> col) {
     this.col = col;
   }
 
@@ -53,7 +53,7 @@ public class EventAccumulator<T> implements EventListener<T> {
    *
    * @return the collection of sources and events received
    */
-  public Collection<Pair<Object,T>> events() {
+  public Collection<Pair<Object, T>> events() {
     return col;
   }
 }

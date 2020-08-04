@@ -157,7 +157,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     roomControls.addPlayerActionFactory(KickAction.factory(this));
     // serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
-    synchEncoder = new SynchEncoder(this,this);
+    synchEncoder = new SynchEncoder(this, this);
     soundEncoder = new SoundEncoder(this);
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
 

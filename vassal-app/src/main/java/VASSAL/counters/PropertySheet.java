@@ -124,7 +124,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected boolean isUpdating;
 
   protected String state;
-  protected Map<String,Object> properties = new HashMap<>();
+  protected Map<String, Object> properties = new HashMap<>();
   protected List<JComponent> m_fields;
 
 

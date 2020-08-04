@@ -55,7 +55,7 @@ public class JabberClientFactory extends ChatServerFactory {
     catch (NumberFormatException e) {
       e.printStackTrace();
     }
-    ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN),serverConfig.getProperty(JABBER_PWD));
+    ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN), serverConfig.getProperty(JABBER_PWD));
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       @Override

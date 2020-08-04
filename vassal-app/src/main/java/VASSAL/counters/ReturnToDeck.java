@@ -281,7 +281,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       menuName = new StringConfigurer(null, "Menu Text:  ", p.returnCommand);
       controls.add(menuName.getControls());
-      menuKey = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.returnKey);
+      menuKey = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.returnKey);
       deckId = p.deckId;
       controls.add(menuKey.getControls());
       JButton select = new JButton("Select Deck");
@@ -303,7 +303,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       box.add(select);
       box.add(tf);
       controls.add(box);
-      promptText = new StringConfigurer(null,"Prompt for destination deck:  ",p.selectDeckPrompt);
+      promptText = new StringConfigurer(null, "Prompt for destination deck:  ", p.selectDeckPrompt);
       prompt = new JCheckBox("Choose destination deck at game time?");
       controls.add(prompt);
       controls.add(promptText.getControls());

@@ -2,6 +2,7 @@
 
 * 13229: Performance: Save property map rather than clone pieces as snapshot
 * 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
+* 13218: Allow a piece get its context menu click location
 * 13205: NPE when trying to display file write failure dialog
 * 13199: MapShader using image throws InternalError on Linux
 * 13197: Hotkeys using Control should use Command on Macs
@@ -27,11 +28,15 @@
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
+* 13100: Replace Beanshell If function in Expression Builder with inline If ?:
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
 * 13036: Entire contents of a deck can be inadvertently group-selected and moved
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
+* 12999: Add Beanshell functions to generate Random results
 * 12972: Return to Location backMap and backPoint are not sent to clients or
     undone
+* 12980: Set Global Property: Beanshell incorrectly tries to "simplify"
+    expression and generates incorrect result
 * 12970: Setting values of Old... variables are not encoded in a Command
 * 12952: Evalute $..$ strings in Property Match expressions on source pce
 * 12951: Undo of Send to Deck command does not return cards to hand in same

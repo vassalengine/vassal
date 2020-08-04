@@ -1,7 +1,5 @@
 /*
- * $Id: init_expression.bsh,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
- *
- * Copyright (c) 2008-2011 by Brent Easton
+ * Copyright (c) 2008-2020 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -102,6 +100,33 @@ SumLocation(String property) {
 }
 
 /**
+ * Callbacks to Vassal to Sum properties in matching pieces, or count matching pieces
+ */
+Sum(Object propertyName, Object selection) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.sum(_source, propertyName, selection));
+}
+
+Sum(Object propertyName, Object selection, Object mapName) {
+   _interp = this.caller.namespace.getVariable("_interp");
+   _source = this.caller.namespace.getVariable("_source");
+   return unwrap(_interp.sum(_source, propertyName, selection, mapName));
+}
+
+Count(Object selection) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.count(_source, selection));
+}
+
+Count(Object selection, Object mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.count(_source, selection, mapName));
+}
+
+/**
  * Callback to Vassal to display text in a dialog box
  */
 Alert(String text) {
@@ -117,6 +142,25 @@ GetProperty(String name) {
   return unwrap(_interp.getProperty(name));
 }
 
+
+GetZoneProperty(String propertyName, String zoneName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getZoneProperty(propertyName, zoneName));
+}
+
+GetZoneProperty(String propertyName, String zoneName, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getZoneProperty(propertyName, zoneName, mapName));
+}
+
+GetMapProperty(String propertyName, String mapName) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.getMapProperty(propertyName, mapName));
+}
+
 /** 
  * Callback to Vassal to get a localized property
  */
@@ -124,3 +168,34 @@ GetLocalizedProperty(String name) {
   _interp = this.caller.namespace.getVariable("_interp");
   return unwrap(_interp.getLocalizedProperty(name));
 }
+
+/**
+ * Callbacks to Vassal to generate Random Integers
+ * Vassal code will handle all error checking, reporting and handling
+ * Pass the Source object to allow decent error checking
+ */
+ Random(Object max) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.random(_source, "1", max));
+}
+
+ Random(Object min, Object max) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.random(_source, min, max));
+}
+
+ IsRandom() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.isRandom(_source, "50"));
+}
+
+ IsRandom(Object percent) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.isRandom(_source, percent));
+}
+
+

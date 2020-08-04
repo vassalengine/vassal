@@ -57,7 +57,7 @@ public class P2PClientFactory extends ChatServerFactory {
 
     final HttpMessageServer httpMessageServer = new P2PMessageServer();
 
-    final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
+    final P2PClient server = new P2PClient(GameModule.getGameModule(), httpMessageServer, httpMessageServer, new DirectPeerPool(param), param);
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {

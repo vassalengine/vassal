@@ -226,8 +226,8 @@ public class TextBoxItem extends TextItem {
     if (isHTML) l.setContentType("text/html"); //$NON-NLS-1$
     l.setText(s);
     l.setSize(width-2, height-2);
-    l.setBackground(bg != null ? bg : new Color(0,true));
-    l.setForeground(fg != null ? fg : new Color(0,true));
+    l.setBackground(bg != null ? bg : new Color(0, true));
+    l.setForeground(fg != null ? fg : new Color(0, true));
     FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
     Font f = fs.getFont();
     l.setFont(f);
@@ -259,7 +259,7 @@ public class TextBoxItem extends TextItem {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(getWidth(),getHeight());
+    return new Dimension(getWidth(), getHeight());
   }
 
 

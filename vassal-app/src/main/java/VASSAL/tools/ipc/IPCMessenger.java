@@ -25,7 +25,7 @@ public class IPCMessenger {
 
   protected final AtomicLong next_id = new AtomicLong(0L);
 
-  protected final Map<Long,CompletableFuture<IPCMessage>> waiting =
+  protected final Map<Long, CompletableFuture<IPCMessage>> waiting =
     new ConcurrentHashMap<>();
 
   protected final BlockingQueue<IPCMessage> outqueue =

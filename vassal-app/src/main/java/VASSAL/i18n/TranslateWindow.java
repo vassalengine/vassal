@@ -270,7 +270,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     final JPanel buttonBox = new JPanel();
 
     final JButton helpButton = new JButton(Resources.getString(Resources.HELP));
-    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm","module").getContents(),null));
+    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm", "module").getContents(), null));
     buttonBox.add(helpButton);
 
     final JButton okButton = new JButton(Resources.getString(Resources.OK));
@@ -492,10 +492,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       if (renderer == null) {
         Class<?> c = getColumnClass(column);
-        if( c.equals(Object.class) ) {
-          Object o = getValueAt(row,column);
-          if( o != null )
-            c = getValueAt(row,column).getClass();
+        if ( c.equals(Object.class) ) {
+          Object o = getValueAt(row, column);
+          if ( o != null )
+            c = getValueAt(row, column).getClass();
         }
         renderer = getDefaultRenderer(c);
       }
@@ -508,10 +508,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellEditor editor = tableColumn.getCellEditor();
       if (editor == null) {
         Class<?> c = getColumnClass(column);
-        if( c.equals(Object.class) ) {
-          Object o = getValueAt(row,column);
-          if( o != null )
-            c = getValueAt(row,column).getClass();
+        if ( c.equals(Object.class) ) {
+          Object o = getValueAt(row, column);
+          if ( o != null )
+            c = getValueAt(row, column).getClass();
         }
         editor = getDefaultEditor(c);
       }

@@ -84,7 +84,7 @@ public class GlobalCommand {
   }
 
   public Command apply(Map m, PieceFilter filter) {
-    return apply(new Map[]{m},filter);
+    return apply(new Map[]{m}, filter);
   }
   /**
    * Apply the key command to all pieces that pass the given filter on all the given maps

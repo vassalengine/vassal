@@ -863,7 +863,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 // FIXME: why synchronized?
   public synchronized Dimension mapSize() {
-    final Rectangle r = new Rectangle(0,0);
+    final Rectangle r = new Rectangle(0, 0);
     for (Board b : boards) r.add(b.bounds());
     r.width += edgeBuffer.width;
     r.height += edgeBuffer.height;

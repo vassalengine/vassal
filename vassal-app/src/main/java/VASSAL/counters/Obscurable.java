@@ -117,7 +117,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       case PEEK:
         if (s.length() > 1) {
           if (s.length() == 2) {
-            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_DOWN_MASK);
+            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1), InputEvent.CTRL_DOWN_MASK);
           }
           else {
             peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
@@ -627,11 +627,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       Box box = Box.createHorizontalBox();
       obscureCommandInput = new StringConfigurer(null, "Mask Command:  ", p.hideCommand);
       box.add(obscureCommandInput.getControls());
-      obscureKeyInput = new NamedHotKeyConfigurer(null,"  Keyboard Command:  ",p.keyCommand);
+      obscureKeyInput = new NamedHotKeyConfigurer(null, "  Keyboard Command:  ", p.keyCommand);
       box.add(obscureKeyInput.getControls());
       controls.add(box);
 
-      accessConfig = new PieceAccessConfigurer(null,"Can be masked by:  ",p.access);
+      accessConfig = new PieceAccessConfigurer(null, "Can be masked by:  ", p.access);
       controls.add(accessConfig.getControls());
 
       box = Box.createHorizontalBox();
@@ -696,7 +696,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       box.add(showDisplayOption);
       controls.add(box);
 
-      peekKeyInput = new NamedHotKeyConfigurer(null,"Peek Key:  ",p.peekKey);
+      peekKeyInput = new NamedHotKeyConfigurer(null, "Peek Key:  ", p.peekKey);
       peekKeyInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekKeyInput.getControls());
 

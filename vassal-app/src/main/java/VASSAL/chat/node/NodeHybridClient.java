@@ -79,7 +79,7 @@ public class NodeHybridClient extends DynamicClient {
         try {
           int port = Integer.parseInt(address.substring(index + 1));
           address = address.substring(0, index);
-          c = new SocketNodeClient(info.getModuleName(), info.getUserName(),encoder, address, port, msgSvr, welcomeMsgSvr);
+          c = new SocketNodeClient(info.getModuleName(), info.getUserName(), encoder, address, port, msgSvr, welcomeMsgSvr);
         }
         // FIXME: review error message
         catch (NumberFormatException ex) {
@@ -101,8 +101,8 @@ public class NodeHybridClient extends DynamicClient {
   private String getAddressFromURL() throws IOException {
     HttpRequestWrapper r = new HttpRequestWrapper(addressURL);
     Properties p = new Properties();
-    p.put("module",info.getModuleName());  //$NON-NLS-1$
-    p.put("vassalVersion",VASSAL.Info.getVersion());  //$NON-NLS-1$
+    p.put("module", info.getModuleName());  //$NON-NLS-1$
+    p.put("vassalVersion", VASSAL.Info.getVersion());  //$NON-NLS-1$
     List<String> l = r.doGet(p);
     if (l.isEmpty()) {
       throw new IOException(Resources.getString("Server.empty_response"));  //$NON-NLS-1$

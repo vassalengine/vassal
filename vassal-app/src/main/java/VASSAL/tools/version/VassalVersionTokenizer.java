@@ -54,7 +54,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   // be distinguished from the current version from the numeric portion
   // alone need to be maintined here. (E.g., the 3.1.0 tags can be removed
   // as soon as 3.1.1 is released.) We keep one tag for testing purposes.
-  protected static Map<String,Integer> tags = Map.of(
+  protected static Map<String, Integer> tags = Map.of(
     "test", -1
   );
 

@@ -55,7 +55,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
       && msg.startsWith("CHAT")) { //$NON-NLS-1$
       msg = "<" + client.getUserInfo().getName() //$NON-NLS-1$
         + msg.substring(msg.indexOf("> -")); //$NON-NLS-1$
-      Command c = new Chatter.DisplayText(null,msg);
+      Command c = new Chatter.DisplayText(null, msg);
       client.sendTo(sender, c);
     }
   }

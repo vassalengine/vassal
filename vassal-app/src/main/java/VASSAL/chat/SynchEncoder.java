@@ -37,7 +37,7 @@ public class SynchEncoder implements CommandEncoder {
   public Command decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
-      return new SynchCommand(p,client);
+      return new SynchCommand(p, client);
     }
     else {
       return null;

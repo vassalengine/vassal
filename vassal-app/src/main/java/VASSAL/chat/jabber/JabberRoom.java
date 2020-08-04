@@ -522,7 +522,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       }
       final String mv = versionToOption((String) moduleVersionConfig.getSelectedItem());
       props.put(CONFIG_MODULE_VERSION, mv);
-      if(!mv.equals(ANY_OPTION)) {
+      if (!mv.equals(ANY_OPTION)) {
         props.put(CONFIG_MIN_MODULE_VERSION, minimumModuleVersionConfig.getText());
       }
       props.put(CONFIG_CRC_CHECK, Boolean.toString(matchCrcConfig.isSelected()));

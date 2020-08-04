@@ -149,7 +149,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
       descInput = new StringConfigurer(null, "Separator Description:  ", p.desc);
       controls.add(descInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null,"If this keystroke is hidden, hide separator:  ", p.key);
+      keyInput = new NamedHotKeyConfigurer(null, "If this keystroke is hidden, hide separator:  ", p.key);
       controls.add(keyInput.getControls());
     }
 

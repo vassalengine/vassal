@@ -54,7 +54,7 @@ public interface MutablePropertiesContainer {
    *
    */
   public class Impl implements MutablePropertiesContainer {
-    private Map<String,MutableProperty> props = new HashMap<>();
+    private Map<String, MutableProperty> props = new HashMap<>();
     private String id;
 
     public Impl() {
@@ -72,7 +72,7 @@ public interface MutablePropertiesContainer {
 
     @Override
     public void addMutableProperty(String key, MutableProperty p) {
-      props.put(key,p);
+      props.put(key, p);
     }
 
     @Override

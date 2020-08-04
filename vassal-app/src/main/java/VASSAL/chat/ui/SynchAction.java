@@ -83,7 +83,7 @@ public class SynchAction extends AbstractAction {
       final long now = System.currentTimeMillis();
       if ( ! targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON) {
         GameModule.getGameModule().getGameState().setup(false);
-        client.sendTo(p, new SynchCommand(client.getUserInfo(),client));
+        client.sendTo(p, new SynchCommand(client.getUserInfo(), client));
         lastSync = now;
       }
       lastRoom = targetRoom;
@@ -99,7 +99,7 @@ public class SynchAction extends AbstractAction {
         if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
           return null;
         }
-        return new SynchAction(p,client);
+        return new SynchAction(p, client);
       }
     };
   }

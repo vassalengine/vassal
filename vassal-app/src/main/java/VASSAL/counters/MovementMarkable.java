@@ -237,9 +237,9 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     private Ed(MovementMarkable p) {
       iconConfig = p.movedIcon;
       box = Box.createVerticalBox();
-      command = new StringConfigurer(null,"Command:  ",p.command);
+      command = new StringConfigurer(null, "Command:  ", p.command);
       box.add(command.getControls());
-      key = new NamedHotKeyConfigurer(null,"Keyboard command:  ",p.key);
+      key = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.key);
       box.add(key.getControls());
       box.add(iconConfig.getControls());
       xOff = new IntConfigurer(null, "Horizontal Offset:  ", p.xOffset);
