@@ -202,7 +202,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     else {
       watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = new NamedKeyStroke(keys.charAt(i),InputEvent.CTRL_DOWN_MASK);
+        watchKeys[i] = new NamedKeyStroke(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
       }
     }
   }

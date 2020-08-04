@@ -796,7 +796,7 @@ public class Footprint extends MovementMarkable {
       lc = new ColorConfigurer(null, "Line Color:  ", p.lineColor);
       controls.add(lc.getControls());
 
-      lw = new DoubleConfigurer(null,"Line thickness:  ", p.lineWidth);
+      lw = new DoubleConfigurer(null, "Line thickness:  ", p.lineWidth);
       controls.add(lw.getControls());
 
       st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", p.selectedTransparency);

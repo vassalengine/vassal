@@ -89,7 +89,7 @@ public class MessageBoardControls {
       public void actionPerformed(ActionEvent evt) {
         refresh.setEnabled(false);
 
-        new SwingWorker<Message[],Void>() {
+        new SwingWorker<Message[], Void>() {
           @Override
           protected Message[] doInBackground() {
             return server.getMessages();
@@ -135,7 +135,7 @@ public class MessageBoardControls {
       public void actionPerformed(ActionEvent evt) {
         setEnabled(false);
 
-        new SwingWorker<Message[],Void>() {
+        new SwingWorker<Message[], Void>() {
           @Override
           protected Message[] doInBackground() {
             return server.getMessages();
@@ -217,7 +217,7 @@ public class MessageBoardControls {
           okButton.setEnabled(false);
           msgArea.setEnabled(false);
 
-          new SwingWorker<Void,Void>() {
+          new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
               server.postMessage(msgArea.getText());

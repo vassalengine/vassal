@@ -53,7 +53,7 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final Map<RenderingHints.Key,Object> defaultHints =
+  private static final Map<RenderingHints.Key, Object> defaultHints =
     new HashMap<>();
 
   static {
@@ -328,8 +328,8 @@ public class ImageUtils {
     }
     else {
       final GraphicsConfiguration gc = getGraphicsConfiguration();
-      oimg = gc.createCompatibleImage(1,1, BufferedImage.OPAQUE);
-      timg = gc.createCompatibleImage(1,1, BufferedImage.TRANSLUCENT);
+      oimg = gc.createCompatibleImage(1, 1, BufferedImage.OPAQUE);
+      timg = gc.createCompatibleImage(1, 1, BufferedImage.TRANSLUCENT);
     }
 
     compatOpaqueImage = oimg;
@@ -339,7 +339,7 @@ public class ImageUtils {
     compatTranslImageType = compatTransImage.getType();
   }
 
-  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
+  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1, 1);
 
   public static int getCompatibleImageType() {
     return compatOpaqueImageType;

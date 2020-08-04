@@ -82,11 +82,11 @@ public class SavedGameUpdater {
                 path[path.length - 1] instanceof PieceSlot) {
               final PieceSlot slot = (PieceSlot) path[path.length - 1];
               if (!slot.getPiece().getType().equals(p.getType())) {
-                if(!(p instanceof Decorator)) {
+                if (!(p instanceof Decorator)) {
                   GameModule.getGameModule().getChatter().show("Unable to replace " + p.getName() + ": Basic piece only");
                 }
                 else {
-                  ReplaceTrait r = new ReplaceTrait(p,slot.getPiece());
+                  ReplaceTrait r = new ReplaceTrait(p, slot.getPiece());
                   r.replacePiece();
                 }
               }

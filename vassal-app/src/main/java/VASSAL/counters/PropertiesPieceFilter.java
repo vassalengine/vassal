@@ -103,7 +103,7 @@ public class PropertiesPieceFilter {
                 f = new EQ(name, value);
                 break;
               case 7:
-                f = new NOT_MATCH(name,value);
+                f = new NOT_MATCH(name, value);
               }
             }
             break;

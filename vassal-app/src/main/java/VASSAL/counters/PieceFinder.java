@@ -82,7 +82,7 @@ public interface PieceFinder {
 
     // This constructor is safe only if using the PieceFinder.select() method
     public Movable() {
-      this(null,null);
+      this(null, null);
     }
 
     public Movable(Map map, Point pt) {

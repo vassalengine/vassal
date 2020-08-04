@@ -344,7 +344,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public byte[] getEncodedImage(BufferedImage bufferedImage) {
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
-      ImageIO.write(bufferedImage,"png", out); //$NON-NLS-1$
+      ImageIO.write(bufferedImage, "png", out); //$NON-NLS-1$
     }
     catch (IOException e) {
       ErrorDialog.bug(e);

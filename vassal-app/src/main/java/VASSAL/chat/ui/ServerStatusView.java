@@ -173,8 +173,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     refresh(0);
   }
 
-  private SwingWorker<ServerStatus.ModuleSummary[],Void> cur_request = null;
-  private SwingWorker<ServerStatus.ModuleSummary[],Void> hist_request = null;
+  private SwingWorker<ServerStatus.ModuleSummary[], Void> cur_request = null;
+  private SwingWorker<ServerStatus.ModuleSummary[], Void> hist_request = null;
 
   private void refresh(final int page) {
     if (page == 0) {

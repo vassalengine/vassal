@@ -2866,7 +2866,7 @@ public class MapBoard extends Importer {
     // if there is no base map image, avoid creating a lot of layers.
     if (!((BaseLayer) base).hasBaseMap()) {
       Iterator<MapLayer> iter = mapElements.iterator();
-      while(iter.hasNext()) {
+      while (iter.hasNext()) {
         base.overlay(iter.next());
         iter.remove();
       }
@@ -2876,7 +2876,7 @@ public class MapBoard extends Importer {
       mapElements.add(0, base);
       Iterator<MapLayer> iter = mapElements.iterator();
       iter.next();
-      while(iter.hasNext()) {
+      while (iter.hasNext()) {
         MapLayer next = iter.next();
         if (!next.isSwitchable()) {
           Iterator<MapLayer> iter2 = mapElements.iterator();

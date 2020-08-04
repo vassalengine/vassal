@@ -239,9 +239,9 @@ public final class GeneralFilter {
     public float apply(float t) {
       // box (*) box (*) box (*) box
 
-      if(t < 0.0f) t = -t;
+      if (t < 0.0f) t = -t;
 
-      if(t < 1.0f) {
+      if (t < 1.0f) {
         final float tt = t * t;
         return (0.5f * tt * t) - tt + (2.0f / 3.0f);
       }

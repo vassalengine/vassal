@@ -45,7 +45,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   private final KeyCommand[] keyCommands = new KeyCommand[1];
 
   public SubMenu() {
-    this(ID+"Sub-Menu;",null);
+    this(ID+"Sub-Menu;", null);
   }
 
   public SubMenu(String type, GamePiece inner) {
@@ -75,7 +75,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     subMenu = st.nextToken();
     keyCommandSubMenu = new KeyCommandSubMenu(subMenu, this, this);

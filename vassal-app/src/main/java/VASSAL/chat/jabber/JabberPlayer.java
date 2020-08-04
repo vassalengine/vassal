@@ -31,7 +31,7 @@ public class JabberPlayer extends SimplePlayer {
   private JabberRoom joinedRoom;
 
   private JabberPlayer(String jid) {
-    super(jid,"???",new SimpleStatus()); //$NON-NLS-1$
+    super(jid, "???", new SimpleStatus()); //$NON-NLS-1$
     this.jid = jid;
   }
 

@@ -152,7 +152,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       inUseModel.insertElementAt(piece, 0);
       boolean contains = false;
-      for (int i = 0,j = availableModel.size(); i < j; ++i) {
+      for (int i = 0, j = availableModel.size(); i < j; ++i) {
         if (pieceClass.isInstance(availableModel.elementAt(i))) {
           contains = true;
           break;
