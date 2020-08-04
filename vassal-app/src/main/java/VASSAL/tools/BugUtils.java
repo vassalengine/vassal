@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
@@ -84,7 +85,7 @@ public class BugUtils {
   public static String getErrorLog() {
     String log = null;
     final File f = new File(Info.getConfDir(), "errorLog");
-    try (FileReader r = new FileReader(f)) {
+    try (FileReader r = new FileReader(f, Charset.defaultCharset())) {
       log = IOUtils.toString(r);
     }
     catch (IOException e) {

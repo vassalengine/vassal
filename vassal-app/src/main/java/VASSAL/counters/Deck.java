@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1394,7 +1395,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       comm = comm.append(new AddPiece(p));
     }
 
-    try (Writer fw = new FileWriter(f);
+    try (Writer fw = new FileWriter(f, StandardCharsets.UTF_8);
          BufferedWriter out = new BufferedWriter(fw)) {
       gameModule.addCommandEncoder(commandEncoder);
       out.write(gameModule.encode(comm));
@@ -1434,7 +1435,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Command loadDeck(File f) throws IOException {
     String ds;
 
-    try (Reader fr = new FileReader(f);
+    try (Reader fr = new FileReader(f, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(fr)) {
       ds = IOUtils.toString(in);
     }

@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import VASSAL.tools.io.IOUtils;
@@ -40,7 +41,7 @@ import VASSAL.tools.io.IOUtils;
 public class HTTPPostBuilder {
   private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
   private final BufferedWriter bw =
-    new BufferedWriter(new OutputStreamWriter(bytes));
+    new BufferedWriter(new OutputStreamWriter(bytes, StandardCharsets.UTF_8));
 
   private final String boundary = "---------------------------" +
     randomString() + randomString() + randomString();

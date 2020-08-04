@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -85,7 +86,7 @@ public class ZipFileImageTiler {
 
       // Get the image paths from stdin, one per line
       final List<String> pl = new ArrayList<>();
-      try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in))) {
+      try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
         String s;
         while ((s = stdin.readLine()) != null) {
           pl.add(s);

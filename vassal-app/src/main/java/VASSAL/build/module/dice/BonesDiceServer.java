@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -113,7 +114,7 @@ public class BonesDiceServer extends DieServer {
     connection.connect();
 
     try (BufferedReader in = new BufferedReader(
-      new InputStreamReader(connection.getInputStream()))) {
+      new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
 
       String line;
       while ((line = in.readLine()) != null)

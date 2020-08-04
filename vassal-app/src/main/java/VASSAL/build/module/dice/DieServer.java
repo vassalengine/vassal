@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -279,14 +280,14 @@ public abstract class DieServer {
     connection.setDoOutput(true);
 
     try (OutputStream os = connection.getOutputStream();
-         PrintWriter out = new PrintWriter(os)) {
+         PrintWriter out = new PrintWriter(os, true, StandardCharsets.UTF_8)) {
       for (String s : rollString) {
         out.println(s);
       }
     }
 
     try (InputStream is = connection.getInputStream();
-         InputStreamReader isr = new InputStreamReader(is);
+         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(isr)) {
       String inputLine;
       while ((inputLine = in.readLine()) != null) {

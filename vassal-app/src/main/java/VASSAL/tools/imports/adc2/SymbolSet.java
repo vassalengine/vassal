@@ -36,6 +36,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -586,7 +587,7 @@ public class SymbolSet extends Importer {
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
 
-      try (Reader fr = new FileReader(sdx);
+      try (Reader fr = new FileReader(sdx, StandardCharsets.US_ASCII);
            BufferedReader input = new BufferedReader(fr)) {
 
         final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
