@@ -1,79 +1,16 @@
-Vassal [![Build Status](https://travis-ci.com/vassalengine/vassal.svg?branch=master)](https://travis-ci.com/vassalengine/vassal)
-===
+<img src="vassal/vassal-app/src/main/resources/icons/scalable/VASSAL.svg" align="right" />
 
-The VASSAL Team is happy to announce the release of VASSAL 3.3.2.
+# VASSAL
+> The open-source boardgame engine
 
-********************************************************************************
-IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
-********************************************************************************
+[![Build Status](https://travis-ci.com/vassalengine/vassal.svg?branch=master)](https://travis-ci.com/vassalengine/vassal)
+[![License: LGPL v2](https://img.shields.io/badge/License-LGPL%20v2-blue.svg)](https://www.gnu.org/licenses/lgpl-2.0)
 
-* Things may be broken which worked in 3.2.17. If you find a bug introduced
-  since 3.2.17, please report it.
+VASSAL is a game engine for building and playing online adaptations of board games and card games. Play live on the Internet or by email. VASSAL runs on all platforms, and is free, open-source software.
 
-* If you save a module in VASSAL 3.3, you will NOT be able to open it
-  afterwards with VASSAL 3.2. We recommend keeping a backup copy of
-  any pre-3.3 modules you plan to modify in 3.3 until you've verified that
-  everything works to your satisfaction.
+## Getting started
 
-* Some modules containing custom drawing code may render incorrectly on HiDPI
-  displays. If you are the maintainer of such a module, let us know and we
-  can advise you about what needs updating for 3.3 in your code. (We are aware
-  already that VASL has this problem and are working with its maintainers to
-  update it.)
-
-********************************************************************************
-IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT
-********************************************************************************
-
-
-*********************
-Download
-*********************
-
-For Linux:
-
-  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-linux.tar.bz2
-
-For Mac OS X:
-
-  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-macosx.dmg
-
-For Windows (64-bit):
-
-  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-64.exe
-
-For Windows (32-bit):
-
-  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-32.exe
-
-For other operating systems:
-
-  https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-other.zip
-
-
-*************************
-Changes since 3.3.1
-*************************
-
-* 13182: Piece images in Inventory windows are drawn offset on HiDPI screens
-* 13181: Piece images in Inventory windows have truncated height on Macs
-* 13176: Bundled Java fails to start on Mac OS X < 10.13
-* 13175: Add bundle for 32-bit Windows
-* 13152: Version number and year set incorrectly in Mac DMG's Info.plist
-* 13143: HTTPS URLs fail to load (handshake_failure) due to missing
-    jdk.crypto.ec module
-* 13140: Versions with a build number are incorrectly sorted before versions
-    without a build number
-* 13136: Update notifier still has old SourceForge URL for downloads
-* 13126: Right mouse button and Control-Click broken on Macs
-* 12861: Improved behavior of Zone editor
-
-For changes prior to this release, see the change log.
-
-
-*********************
-Minimum Requirements
-*********************
+# Minimum Requirements
 
 VASSAL 3.3 requires Java 11 or later.
 
@@ -81,32 +18,37 @@ The Windows and Mac packages have an appropriate version of Java bundled with
 them, so there is no need to install Java separately on those operating
 systems.
 
+# Releases
 
-*********************
-Help us test
-*********************
+Get the [current release](https://github.com/vassalengine/vassal/releases/latest).
 
-Should you find any problems/oddities/bugs, please tell us so that we can
-fix them for a future release of VASSAL.
+# Getting started
 
-Report bugs here in the Technical Support & Bugs category at the VASSAL
-forums:
+* Linux
+```shell
+tar -xvf VASSAL-3.3.2-linux.tar.bz2
+cd VASSAL-3.3.2
+./VASSAL.sh
+```
+* Windows: Download and run the installer
+* Mac OS X: Download the app bundle
 
-http://www.vassalengine.org/forum/viewforum.php?f=3
+## Contributing
 
-or by email to bugs@vassalengine.org.
+# Bug reports
 
+Please report bugs in the [Technical Support & Bugs](http://www.vassalengine.org/forum/viewforum.php?f=3) section of our forum.
 
-Cheers,
+## License
 
-The VASSAL Team
+This project is licensed under the terms of the [LGPLv2 license](LICENSE).
 
-Special Thanks To:
--------------
+## Acknowledgments
 ![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
 
 YourKit supports open source projects with innovative and intelligent tools
 for monitoring and profiling Java and .NET applications.
-YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>,
-<a href="https://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</a>,
-and <a href="https://www.yourkit.com/youmonitor/">YourKit YouMonitor</a>.
+YourKit is the creator of
+[YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
+and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
