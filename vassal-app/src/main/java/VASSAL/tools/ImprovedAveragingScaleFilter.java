@@ -69,8 +69,8 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
     int sourceOffset = offset;
     int destinationOffset = y * savedWidth + x;
     boolean bytearray = (pixels instanceof byte[]);
-    for (int yy=0;yy<height;yy++) {
-      for (int xx=0;xx<width;xx++)
+    for (int yy=0; yy<height; yy++) {
+      for (int xx=0; xx<width; xx++)
         if (bytearray)
           savedPixels[destinationOffset++]=
             cm.getRGB(((byte[])pixels)[sourceOffset++]&0xff);
@@ -92,10 +92,10 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter{
       // get orig image width and height
       int[] pixels = new int [savedWidth];
       int position;
-      for (int yy=0;yy<savedHeight;yy++) {
+      for (int yy=0; yy<savedHeight; yy++) {
         position=0;
         int start = yy * savedWidth;
-        for (int xx=0;xx<savedWidth;xx++) {
+        for (int xx=0; xx<savedWidth; xx++) {
           pixels[position++] = savedPixels[start+xx];
         }
         super.setPixels (0, yy, savedWidth, 1, defaultCM,

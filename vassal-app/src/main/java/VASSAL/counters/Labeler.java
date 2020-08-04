@@ -691,9 +691,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private JPanel controls = new JPanel();
     private StringConfigurer command;
     private StringConfigurer initialValue;
-    private ColorConfigurer fg,bg;
+    private ColorConfigurer fg, bg;
     private JComboBox<Character> hPos, vPos, hJust, vJust;
-    private IntConfigurer hOff,vOff,fontSize;
+    private IntConfigurer hOff, vOff, fontSize;
     private ListCellRenderer renderer;
     private FormattedStringConfigurer format;
     private JComboBox<String> fontFamily;

@@ -48,10 +48,10 @@ public abstract class MenuManager {
 
   public abstract MenuBarProxy getMenuBarProxyFor(JFrame fc);
 
-  private Map<String,List<MenuItemProxy>> actionLocations =
+  private Map<String, List<MenuItemProxy>> actionLocations =
     new HashMap<>();
 
-  private Map<String,MenuMarker> markers = new HashMap<>();
+  private Map<String, MenuMarker> markers = new HashMap<>();
 
   public MenuItemProxy addKey(String key) {
     List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());

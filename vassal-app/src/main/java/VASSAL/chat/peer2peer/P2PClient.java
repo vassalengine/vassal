@@ -328,7 +328,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   @Override
   public synchronized void showCHAT(PeerInfo pPeerInfo, String msg) {
-    propSupport.firePropertyChange(INCOMING_MSG,null,msg);
+    propSupport.firePropertyChange(INCOMING_MSG, null, msg);
   }
 
   @Override

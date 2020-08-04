@@ -74,7 +74,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private final Map<String,Entry> entries = new HashMap<>();
+  private final Map<String, Entry> entries = new HashMap<>();
 
   private final ReadWriteLock rwl = new CountingReadWriteLock();
   private final Lock r = rwl.readLock();

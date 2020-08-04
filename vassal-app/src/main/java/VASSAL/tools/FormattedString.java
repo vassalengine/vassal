@@ -47,7 +47,7 @@ public class FormattedString {
   // An efficiently evaluable representation of the string
   protected Expression format;
 
-  protected Map<String,String> props = new HashMap<>();
+  protected Map<String, String> props = new HashMap<>();
   protected PropertySource defaultProperties;
 
   public FormattedString() {
@@ -55,11 +55,11 @@ public class FormattedString {
   }
 
   public FormattedString(String s) {
-    this(s,GameModule.getGameModule());
+    this(s, GameModule.getGameModule());
   }
 
   public FormattedString(PropertySource defaultProperties) {
-    this("",defaultProperties);
+    this("", defaultProperties);
   }
 
   public FormattedString(String formatString, PropertySource defaultProperties) {

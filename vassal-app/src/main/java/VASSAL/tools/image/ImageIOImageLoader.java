@@ -89,7 +89,7 @@ public class ImageIOImageLoader implements ImageLoader {
     // in yet another way, which will also lead to same YCbCr mangling.
     // (So far the turquoise pixel happens only with 1.7.0_21 and 1.7.0_25
     // JVMs on Linux...)
-    final int pixel = img.getRGB(0,0);
+    final int pixel = img.getRGB(0, 0);
     switch (pixel) {
     case 0xFF000000:
       YCbCrBug = false;

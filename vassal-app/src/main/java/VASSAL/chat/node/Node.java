@@ -138,7 +138,7 @@ public class Node implements MsgSender {
    */
   public Node getDescendant(String path) {
     Node n = this;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path,'/');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens() && n != null) {
       String id = st.nextToken();
       n = n.getChild(id);
@@ -165,7 +165,7 @@ public class Node implements MsgSender {
     }
     else {
       for (Node n : base.getChildren()) {
-        addLeaves(n,l);
+        addLeaves(n, l);
       }
     }
   }
@@ -214,7 +214,7 @@ public class Node implements MsgSender {
     Node node = null;
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(pathAndInfo, '/');
     while (st.hasMoreTokens()) {
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(),'=');
+      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '=');
       String childId = st2.nextToken();
       String childInfo = st2.nextToken();
       node = base.getChild(childId);
@@ -260,7 +260,7 @@ public class Node implements MsgSender {
            i.hasPrevious(); ) {
         Node n = i.previous();
         SequenceEncoder se2 =
-          new SequenceEncoder(n.getId(),'=').append(n.getInfo());
+          new SequenceEncoder(n.getId(), '=').append(n.getInfo());
         se.append(se2.getValue());
       }
       return se.getValue();

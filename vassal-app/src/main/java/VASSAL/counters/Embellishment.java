@@ -962,7 +962,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2,fillx","[]rel[]rel[]rel[]"));
+      controls.setLayout(new MigLayout("hidemode 2,fillx", "[]rel[]rel[]rel[]"));
 
       nameConfig = new StringConfigurer(null, "Name: ", e.getName());
       controls.add(nameConfig.getControls(), "span 4,wrap,growx");
@@ -1098,7 +1098,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       box.add(suffix);
       controls.add(box, "span 2,center,wrap");
 
-      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0","[grow 1]rel[grow 1]"));
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "[grow 1]rel[grow 1]"));
       JButton b = new JButton("Add Level");
       b.addActionListener(evt -> {
         names.add(null);

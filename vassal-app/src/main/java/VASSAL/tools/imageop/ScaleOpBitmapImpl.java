@@ -150,7 +150,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       dw = Math.min(rop.getTileWidth(), sr.width - dx0);
       dh = Math.min(rop.getTileHeight(), sr.height - dy0);
 
-      size = new Dimension(dw,dh);
+      size = new Dimension(dw, dh);
 
       hash = new HashCodeBuilder().append(sop)
                                   .append(dx0)
@@ -185,7 +185,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       return ImageUtils.toCompatibleImage(new BufferedImage(
         src.getColorModel(),
-        dstR.createWritableTranslatedChild(0,0),
+        dstR.createWritableTranslatedChild(0, 0),
         src.isAlphaPremultiplied(),
         null
       ));

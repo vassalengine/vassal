@@ -215,8 +215,8 @@ public class ZipUpdater implements Runnable {
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
     if (!updaterFile.getName().endsWith(".jar")) {
-      final String newName = updaterFile.getName().replace('.','_')+".jar";
-      updaterFile = new File(updaterFile.getParentFile(),newName);
+      final String newName = updaterFile.getName().replace('.', '_')+".jar";
+      updaterFile = new File(updaterFile.getParentFile(), newName);
     }
     checkSums = new Properties();
 
@@ -362,7 +362,7 @@ public class ZipUpdater implements Runnable {
     catch (final IOException e) {
       e.printStackTrace();
       try {
-        SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName,e));
+        SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName, e));
       }
       catch (Exception e1) {
         e1.printStackTrace();

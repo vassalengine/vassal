@@ -108,12 +108,12 @@ public class FreeRotator extends Decorator
   protected int angleIndex = 0;
 
   @Deprecated
-  protected java.util.Map<Double,Image> images = new HashMap<>();
-  protected java.util.Map<Double,Rectangle> bounds = new HashMap<>();
+  protected java.util.Map<Double, Image> images = new HashMap<>();
+  protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
   @Deprecated
   protected PieceImage unrotated;
   protected GamePieceOp gpOp;
-  protected java.util.Map<Double,RotateScaleOp> rotOp = new HashMap<>();
+  protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
 
   protected double tempAngle, startAngle;
   protected Point pivot;

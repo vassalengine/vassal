@@ -407,7 +407,7 @@ public class SymbolSet extends Importer{
 
   public Dimension getMaxSize(Dimension max) {
     if (max == null)
-      max = new Dimension(0,0);
+      max = new Dimension(0, 0);
     for (SymbolData piece : gamePieceData) {
       BufferedImage im = piece.getImage();
       if (im.getWidth() > max.width)
@@ -426,7 +426,7 @@ public class SymbolSet extends Importer{
    * @return The most frequently occuring dimension for game pieces in this module.
    */
   public Dimension getModalSize() {
-    final HashMap<Dimension,Integer> histogram =
+    final HashMap<Dimension, Integer> histogram =
       new HashMap<>();
 
     for (SymbolData piece : gamePieceData) {
@@ -437,8 +437,8 @@ public class SymbolSet extends Importer{
     }
 
     int max = 0;
-    final Dimension maxDim = new Dimension(0,0);
-    for (Map.Entry<Dimension,Integer> e : histogram.entrySet()) {
+    final Dimension maxDim = new Dimension(0, 0);
+    for (Map.Entry<Dimension, Integer> e : histogram.entrySet()) {
       final Dimension d = e.getKey();
       final int n = e.getValue();
 
