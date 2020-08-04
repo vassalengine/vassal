@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import java.awt.Point;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.counters.BasicPiece;
 
 
 public class KeyBuffer {
@@ -33,10 +36,12 @@ public class KeyBuffer {
   private List<GamePiece> pieces;
   private BoundsTracker bounds;
   private Comparator<GamePiece> pieceSorter = new PieceSorter();
+  private Point clickPoint;
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
     bounds = new BoundsTracker();
+    clickPoint = new Point();
   }
 
   public static void init(KeyBuffer kb) {
@@ -49,6 +54,14 @@ public class KeyBuffer {
       theBuffer = new KeyBuffer();
     }
     return theBuffer;
+  }
+  
+  public void setClickPoint(Point p) {
+    clickPoint.setLocation(p);
+  }
+  
+  public Point getClickPoint() {
+    return clickPoint;
   }
 
   public void add(GamePiece p) {
@@ -109,6 +122,18 @@ public class KeyBuffer {
     for (GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
+      
+      // Send most recent click point location
+      GamePiece bp = Decorator.getInnermost(p);
+      if (bp instanceof BasicPiece) {
+        Command c3 = new NullCommand();
+        c3 = ((BasicPiece)bp).setPersistentProperty(BasicPiece.CLICKED_X, String.valueOf(clickPoint.x));
+        c3.append (((BasicPiece)bp).setPersistentProperty(BasicPiece.CLICKED_Y, String.valueOf(clickPoint.y)));
+        if ((comm != null) && !comm.isNull()) {
+          comm = comm.append(c3);
+        }
+      }              
+      
       Command c2 = p.keyEvent(stroke);
       comm = comm.append(c2);
       bounds.addPiece(p);
