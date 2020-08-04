@@ -28,6 +28,7 @@ import java.util.List;
 
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.property.PersistentPropertyContainer;
 
 
 public class KeyBuffer {
@@ -123,19 +124,11 @@ public class KeyBuffer {
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
       
       // Send most recent click point location
-      GamePiece bp = Decorator.getInnermost(p);
-      if (bp instanceof BasicPiece) {
-        Command c3 = new NullCommand();
-        c3 = ((BasicPiece)bp).setPersistentProperty(BasicPiece.CLICKED_X, String.valueOf(clickPoint.x));
-        c3.append (((BasicPiece)bp).setPersistentProperty(BasicPiece.CLICKED_Y, String.valueOf(clickPoint.y)));
-        if ((comm != null) && !comm.isNull()) {
-          comm = comm.append(c3);
-        }
-      }              
-      
-      Command c2 = p.keyEvent(stroke);
-      comm = comm.append(c2);
-      bounds.addPiece(p);
+      if (p instanceof PersistentPropertyContainer) {
+        comm = comm.append(((PersistentPropertyContainer) p).setPersistentProperty(BasicPiece.CLICKED_X, String.valueOf(clickPoint.x)))
+                   .append(((PersistentPropertyContainer) p).setPersistentProperty(BasicPiece.CLICKED_Y, String.valueOf(clickPoint.y)));
+      }
+      comm = comm.append(p.keyEvent(stroke));
     }
     bounds.repaint();
     return comm;
