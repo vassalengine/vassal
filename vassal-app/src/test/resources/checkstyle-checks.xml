@@ -121,13 +121,13 @@
                                                  or preceding-sibling::*[last()][self::LCURLY]]"/>
         </module>
         <module name="WhitespaceAfter">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="tokens"
              value="COMMA, SEMI, LITERAL_IF, LITERAL_ELSE,
                     LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, DO_WHILE"/>
         </module>
-        <!--
         <module name="WhitespaceAround">
+            <property name="severity" value="warning"/>
             <property name="allowEmptyConstructors" value="true"/>
             <property name="allowEmptyLambdas" value="true"/>
             <property name="allowEmptyMethods" value="true"/>
@@ -146,6 +146,7 @@
             <message key="ws.notPreceded"
              value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
+        <!--
         <module name="OneStatementPerLine"/>
         <module name="MultipleVariableDeclarations"/>
         -->
