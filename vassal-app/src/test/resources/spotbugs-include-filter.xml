@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+        xmlns="https://github.com/spotbugs/filter/3.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.1.1/spotbugs/etc/findbugsfilter.xsd">
+
+    <!-- match all bug categories in VASSAL. package -->
+    <!-- the maven plugin configuration's "threshold" element filters the actually reported categories -->
+    <Match>
+        <Package name="~VASSAL.*" />
+    </Match>
+</FindBugsFilter>
