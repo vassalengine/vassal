@@ -210,16 +210,12 @@ public class FreeRotator extends Decorator
       validAngles[angleIndex] = angle;
     }
     else {
-      // Find nearest valid angle
-      int newIndex = angleIndex;
-      double minDist = Math.abs((validAngles[angleIndex] - angle + 360) % 360);
-      for (int i = 0; i < validAngles.length; ++i) {
-        if (minDist > Math.abs((validAngles[i] - angle + 360) % 360)) {
-          newIndex = i;
-          minDist = Math.abs((validAngles[i] - angle + 360) % 360);
-        }
-      }
-      angleIndex = newIndex;
+      // We (stupidly) store allowed angles in descending order from 0.
+      // Normalize the angle to be in (-360, 0] to match that.
+      angle = ((angle % 360) - 360) % 360;
+      // ex is the expected index of the angle in angles array
+      final double ex = (-angle / 360) * validAngles.length;
+      angleIndex = ((int) Math.round(ex)) % validAngles.length;
     }
   }
 
