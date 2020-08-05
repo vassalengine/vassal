@@ -130,6 +130,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
             p.getParent() == null ||
             p.getParent().isExpanded() ||
           SwingUtils.isSelectionToggle(e) ||
+          SwingUtils.isContextMouseButtonDown(e) ||
           Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           kbuf.add(p);
         }
