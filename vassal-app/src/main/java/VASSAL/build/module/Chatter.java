@@ -84,6 +84,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$ 
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
 
+  @Deprecated
+  protected static final String GAME_MSG_COLOR = "gameMessageColor";
+
   protected Font myFont;
 
   protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
