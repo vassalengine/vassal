@@ -301,7 +301,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // Now we have to fix up any legacy angle brackets around the word <observer>
     keystring = Resources.getString("PlayerRoster.observer");
-    replace = keystring.replace("<","&lt;").replace(">","&gt;");
+    replace = keystring.replace("<", "&lt;").replace(">", "&gt;");
     if (replace != keystring) {
       s = s.replace(keystring, replace);
     }
@@ -555,8 +555,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
 
 
-    final ColorConfigurer otherChatColor = new ColorConfigurer( OTHER_CHAT_COLOR,
-                                                                Resources.getString("Chatter.other_text_preference"), new Color (0,153,255) );
+    final ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR,
+                                                                Resources.getString("Chatter.other_text_preference"), new Color (0, 153, 255));
 
     otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
