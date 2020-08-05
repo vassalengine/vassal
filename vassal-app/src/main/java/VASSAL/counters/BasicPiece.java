@@ -92,6 +92,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   public static final String PIECE_NAME = "PieceName";
   public static final String DECK_NAME = "DeckName";
   public static final String DECK_POSITION = "DeckPosition";
+  public static final String CLICKED_X = "ClickedX";
+  public static final String CLICKED_Y = "ClickedY";
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
@@ -836,6 +838,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     l.add(BASIC_NAME);
     l.add(PIECE_NAME);
     l.add(DECK_NAME);
+    l.add(CLICKED_X);
+    l.add(CLICKED_Y);
     return l;
   }
 }

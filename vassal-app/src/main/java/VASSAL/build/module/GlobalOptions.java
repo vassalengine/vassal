@@ -71,6 +71,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
+  public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
   public static final String NEVER = "Never"; //$NON-NLS-1$
   public static final String PROMPT = "Use Preferences Setting"; //$NON-NLS-1$
@@ -95,6 +96,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private String centerOnMoves = ALWAYS;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
+  private String chatterHTMLSupport = PROMPT; 
   
   private int dragThreshold = 10;
   
@@ -286,7 +288,8 @@ public class GlobalOptions extends AbstractConfigurable {
       null,
       Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
-      Resources.getString("Editor.GlobalOption.playerid_format") //$NON-NLS-1$
+      Resources.getString("Editor.GlobalOption.playerid_format"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalOption.chatter_html_support") //$NON-NLS-1$
     };
   }
 
@@ -298,7 +301,8 @@ public class GlobalOptions extends AbstractConfigurable {
         PROMPT_STRING,
         CENTER_ON_MOVE,
         AUTO_REPORT,
-        PLAYER_ID_FORMAT
+        PLAYER_ID_FORMAT,
+        CHATTER_HTML_SUPPORT
       )
     );
 
@@ -314,7 +318,8 @@ public class GlobalOptions extends AbstractConfigurable {
       null,
       Prompt.class,
       Prompt.class,
-      PlayerIdFormatConfig.class
+      PlayerIdFormatConfig.class,
+      Prompt.class
     };
   }
 
@@ -407,6 +412,9 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (CENTER_ON_MOVE.equals(key)) {
       return centerOnMoves;
     }
+    else if (CHATTER_HTML_SUPPORT.equals(key)) {
+      return chatterHTMLSupport;
+    }
     else if (AUTO_REPORT.equals(key)) {
       return autoReport;
     }
@@ -464,6 +472,13 @@ public class GlobalOptions extends AbstractConfigurable {
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
+    else if (CHATTER_HTML_SUPPORT.equals(key)) {
+      chatterHTMLSupport = (String) value;
+      if (PROMPT.equals(chatterHTMLSupport)) {
+        BooleanConfigurer config = new BooleanConfigurer(CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
+        GameModule.getGameModule().getPrefs().addOption(Resources.getString("Chatter.chat_window"), config);        
+      }
+    }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
       if (PROMPT.equals(autoReport)) {
@@ -495,6 +510,10 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public boolean centerOnOpponentsMove() {
     return isEnabled(centerOnMoves, CENTER_ON_MOVE);
+  }
+  
+  public boolean chatterHTMLSupport() {
+    return isEnabled(chatterHTMLSupport, CHATTER_HTML_SUPPORT);
   }
 
   public boolean isMarkMoveEnabled() {
