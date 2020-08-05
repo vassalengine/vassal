@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13239: Right-click doesn't pick up whole stack anymore
 * 13229: Performance: Save property map rather than clone pieces as snapshot
 * 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
 * 13218: Allow a piece get its context menu click location
