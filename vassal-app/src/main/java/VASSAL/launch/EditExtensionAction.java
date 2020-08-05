@@ -58,7 +58,7 @@ public class EditExtensionAction extends LoadModuleAction {
     final ExtensionEditorWindow w =
       new ExtensionEditorWindow(GameModule.getGameModule(), ext);
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width/2, w.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

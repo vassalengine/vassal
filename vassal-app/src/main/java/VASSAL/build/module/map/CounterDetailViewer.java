@@ -430,7 +430,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
       else {
-        textVisible = (minimumDisplayablePieces==0 && emptyHexReportFormat.getFormat().length() > 0);
+        textVisible = (minimumDisplayablePieces == 0 && emptyHexReportFormat.getFormat().length() > 0);
         graphicsVisible = false;
       }
     }
@@ -1037,7 +1037,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else if (value instanceof String) {
         showOverlap = "true".equals(value);
       }
-    }    
+    }
     else if (UNROTATE_PIECES.equals(name)) {
       if (value instanceof Boolean) {
         unrotatePieces = (Boolean) value;

@@ -113,7 +113,7 @@ public class ImagePicker extends JPanel
     select.removeItemListener(this);
     select.setSelectedItem(name);
     if (name != null && !name.equals(select.getSelectedItem())) {
-      select.setSelectedItem(name+".gif");
+      select.setSelectedItem(name + ".gif");
     }
     select.addItemListener(this);
     revalidate();

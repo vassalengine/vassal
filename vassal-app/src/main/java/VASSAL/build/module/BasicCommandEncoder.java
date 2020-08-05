@@ -267,7 +267,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       @Override
       public Decorator createDecorator(String type, GamePiece inner) {
         return new MenuSeparator(type, inner);
-      }      
+      }
     });
     decoratorFactories.put(Translate.ID, new DecoratorFactory() {
       @Override
@@ -351,7 +351,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    */
   public Decorator createDecorator(String type, GamePiece inner) {
     Decorator d = null;
-    String prefix = type.substring(0, type.indexOf(';')+1);
+    String prefix = type.substring(0, type.indexOf(';') + 1);
     if (prefix.length() == 0) {
       prefix = type;
     }
@@ -360,7 +360,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       d = f.createDecorator(type, inner);
     }
     else {
-      System.err.println("Unknown type "+type); //$NON-NLS-1$
+      System.err.println("Unknown type " + type); //$NON-NLS-1$
       d = new Marker(Marker.ID, inner);
     }
     return d;
@@ -375,7 +375,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    */
   protected GamePiece createBasic(String type) {
     GamePiece p = null;
-    String prefix = type.substring(0, type.indexOf(';')+1);
+    String prefix = type.substring(0, type.indexOf(';') + 1);
     if (prefix.length() == 0) {
       prefix = type;
     }

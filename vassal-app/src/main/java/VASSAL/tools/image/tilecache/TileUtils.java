@@ -299,7 +299,7 @@ public class TileUtils {
     final DataBufferInt db = (DataBufferInt) tile.getRaster().getDataBuffer();
     final int[] data = db.getData();
 
-    bb = ByteBuffer.allocate(4*data.length);
+    bb = ByteBuffer.allocate(4 * data.length);
     bb.asIntBuffer().put(data);
 
     final GZIPOutputStream zout = new GZIPOutputStream(out);
@@ -336,7 +336,7 @@ public class TileUtils {
   public static int tileCount(int iw, int ih, int tw, int th) {
     // TODO: Find a closed-form expression for this, if there is one.
     int tcount = 0;
-    for (int div = 1; iw/div > 0 && ih/div > 0; div <<= 1) {
+    for (int div = 1; iw / div > 0 && ih / div > 0; div <<= 1) {
       tcount += tileCountAtScale(iw, ih, tw, th, div);
     }
     return tcount;
@@ -377,9 +377,9 @@ public class TileUtils {
     if (th < 1) throw new IllegalArgumentException("th = " + th + " < 1");
     if (div < 1) throw new IllegalArgumentException("div = " + div + " < 1");
 
-    final int cols = (int) Math.ceil((double) (iw/div) / tw);
-    final int rows = (int) Math.ceil((double) (ih/div) / th);
-    return cols*rows;
+    final int cols = (int) Math.ceil((double) (iw / div) / tw);
+    final int rows = (int) Math.ceil((double) (ih / div) / th);
+    return cols * rows;
   }
 
   /**

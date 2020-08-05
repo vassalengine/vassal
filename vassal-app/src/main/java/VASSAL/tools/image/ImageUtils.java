@@ -46,7 +46,7 @@ public class ImageUtils {
 
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
-  private static final double DEGTORAD = -Math.PI/180.0;
+  private static final double DEGTORAD = -Math.PI / 180.0;
 
   private static final GeneralFilter.Filter upscale =
     new GeneralFilter.MitchellFilter();
@@ -74,7 +74,7 @@ public class ImageUtils {
                                     double scale,
                                     double angle) {
     final AffineTransform t = AffineTransform.getRotateInstance(
-      DEGTORAD*angle, srect.getCenterX(), srect.getCenterY());
+      DEGTORAD * angle, srect.getCenterX(), srect.getCenterY());
     t.scale(scale, scale);
     return t.createTransformedShape(srect).getBounds();
   }
@@ -124,7 +124,7 @@ public class ImageUtils {
 
       final AffineTransform t = new AffineTransform();
       t.translate(-tbox.x, -tbox.y);
-      t.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
+      t.rotate(DEGTORAD * angle, ubox.getCenterX(), ubox.getCenterY());
       t.scale(scale, scale);
       t.translate(ubox.x, ubox.y);
 
@@ -152,7 +152,7 @@ public class ImageUtils {
 // FIXME: rotation via bilinear interpolation probably decreases quality
         final AffineTransform tx = new AffineTransform();
         tx.translate(-rbox.x, -rbox.y);
-        tx.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
+        tx.rotate(DEGTORAD * angle, ubox.getCenterX(), ubox.getCenterY());
         tx.translate(ubox.x, ubox.y);
 
         final Graphics2D g = rot.createGraphics();
@@ -206,8 +206,8 @@ public class ImageUtils {
    * pseudo-center of the image
    */
   public static Rectangle getBounds(BufferedImage im) {
-    return new Rectangle(-im.getWidth()/2,
-                         -im.getHeight()/2,
+    return new Rectangle(-im.getWidth() / 2,
+                         -im.getHeight() / 2,
                           im.getWidth(),
                           im.getHeight());
   }
@@ -429,7 +429,7 @@ public class ImageUtils {
     final String s = name.toLowerCase();
     for (String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
-        return name.substring(0, name.length()-suffix.length());
+        return name.substring(0, name.length() - suffix.length());
       }
     }
     return name;

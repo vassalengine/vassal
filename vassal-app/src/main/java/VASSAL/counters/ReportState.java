@@ -200,7 +200,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
             format.setFormat("");
           }
           else {
-            format.setFormat("$"+Map.MESSAGE+"$");
+            format.setFormat("$" + Map.MESSAGE + "$");
           }
           format.setProperty(Map.MESSAGE, reportText);
           reportText = format.getLocalizedText(properties);
@@ -240,7 +240,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       catch (NumberFormatException e) {
         cycleIndex = -1;
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to " + newState);
       }
     }
     else {
@@ -304,12 +304,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
-    String[] formats = new String[c+1];
-    String[] descriptions = new String[c+1];
+    String[] formats = new String[c + 1];
+    String[] descriptions = new String[c + 1];
     formats[0] = reportFormat;
     descriptions[0] = getCommandDescription(description, "Report Format");
     int j = 1;
-    for (int i=0; i < c; i++) {
+    for (int i = 0; i < c; i++) {
       formats[j] = cycleReportFormat[i];
       descriptions[j] = getCommandDescription(description, "Report Format " + j);
       j++;

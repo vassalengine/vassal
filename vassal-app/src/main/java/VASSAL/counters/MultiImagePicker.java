@@ -160,7 +160,7 @@ public class MultiImagePicker extends JPanel {
       else {
         c = components[i];
       }
-      multiPanel.add(c, "Image " + (i+1));
+      multiPanel.add(c, "Image " + (i + 1));
     }
 
     imageList.setSelectedIndex(index2);

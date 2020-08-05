@@ -38,8 +38,8 @@ import VASSAL.tools.TemporaryToolBar;
  * according to a property setting
  */
 public class LayeredPieceCollection extends AbstractConfigurable {
-  public static final String PROPERTY_NAME="property";
-  public static final String LAYER_ORDER="layerOrder";
+  public static final String PROPERTY_NAME = "property";
+  public static final String LAYER_ORDER = "layerOrder";
   protected Collection collection = new Collection("Layer", new String[0]);
   protected Map map;
   protected TemporaryToolBar tempToolBar;
@@ -95,7 +95,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
       collection.layerOrder = (String[]) value;
-      collection.initLayers(collection.layerOrder.length+1);
+      collection.initLayers(collection.layerOrder.length + 1);
     }
   }
 
@@ -167,7 +167,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     public void setLayerOrder(String[] layerOrder) {
       this.layerOrder = layerOrder;
-      initLayers(layerOrder.length+1);
+      initLayers(layerOrder.length + 1);
     }
 
     public String getPropertyName() {
@@ -185,7 +185,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     @Override
     public int getLayerForName(String layer) {
-      for (int i=0; i < layerOrder.length; i++) {
+      for (int i = 0; i < layerOrder.length; i++) {
         if (layer.equals(layerOrder[i])) {
           return i;
         }
@@ -214,7 +214,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     public Object visitDefault(GamePiece p) {
       String property = (String) p.getProperty(propertyName);
       int layer = layerOrder.length;
-      for (int i=0; i<layerOrder.length; ++i) {
+      for (int i = 0; i < layerOrder.length; ++i) {
         if (layerOrder[i].equals(property)) {
           layer = i;
           break;

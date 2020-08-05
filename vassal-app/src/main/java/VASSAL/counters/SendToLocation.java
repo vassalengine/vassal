@@ -319,7 +319,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           else {
             Rectangle r = z.getBounds();
             Rectangle r2 = z.getBoard().bounds();
-            dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
+            dest = new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
           }
           break;
 
@@ -377,8 +377,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (parent != null) {
           c = c.append(parent.pieceRemoved(outer));
         }
-       
-      }      
+
+      }
     }
     else if (backCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
@@ -432,12 +432,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
     String x = st.nextToken("");
     String y = st.nextToken("");
-    if (x.length() > 0 && y.length()> 0) {
+    if (x.length() > 0 && y.length() > 0) {
       try {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);
+        reportDataError(this, Resources.getString("Error.non_number_error"),
+          "Back Point=(" + x + "," + y + ")", e);
       }
     }
   }
@@ -543,7 +544,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       controls.add(destInput.getControls());
 
       mapControls = Box.createHorizontalBox();
@@ -612,7 +614,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       controls.add(advancedInput.getControls());
 
       advancedControls = Box.createHorizontalBox();

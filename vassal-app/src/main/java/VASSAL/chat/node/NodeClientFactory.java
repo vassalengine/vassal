@@ -75,7 +75,7 @@ public class NodeClientFactory extends ChatServerFactory {
       }
     };
     HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
-    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);  //$NON-NLS-1$
+    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId() + "." + System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);  //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {

@@ -49,7 +49,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
   @Override
   public String getName() {
     if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {  //$NON-NLS-1$
-      return "("+Chatter.getAnonymousUserName()+")";  //$NON-NLS-1$  //$NON-NLS-2$
+      return "(" + Chatter.getAnonymousUserName() + ")";  //$NON-NLS-1$  //$NON-NLS-2$
     }
     return name;
   }

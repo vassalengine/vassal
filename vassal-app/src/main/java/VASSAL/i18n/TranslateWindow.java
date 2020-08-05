@@ -149,7 +149,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       @Override
       public void actionPerformed(ActionEvent e) {
         getNewTranslation();
-      }});
+      }
+    });
 
     langPanel.add(addButton);
 

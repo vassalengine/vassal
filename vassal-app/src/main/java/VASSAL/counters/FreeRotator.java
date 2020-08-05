@@ -393,7 +393,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e);
       }
     }
     else {
@@ -401,7 +401,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e);
       }
     }
   }
@@ -630,7 +630,7 @@ public class FreeRotator extends Decorator
       if (drawGhost) {
         final Point mousePos = getMap().componentToMap(e.getPoint());
         final double myAngle = getRelativeAngle(mousePos, pivot);
-        tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
+        tempAngle = getAngle() - (myAngle - startAngle) / PI_180;
       }
       getMap().repaint();
     }
@@ -639,7 +639,7 @@ public class FreeRotator extends Decorator
   private double getRelativeAngle(Point p, Point origin) {
     double myAngle;
     if (p.y == origin.y) {
-      myAngle = p.x < origin.x ? -Math.PI/2.0 : Math.PI/2.0;
+      myAngle = p.x < origin.x ? -Math.PI / 2.0 : Math.PI / 2.0;
     }
     else {
       myAngle = Math.atan((double)(p.x - origin.x) / (origin.y - p.y));

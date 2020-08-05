@@ -279,7 +279,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+isPeeking()+piece.getProperty(key);
+      return myGetState() + isPeeking() + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
@@ -324,7 +324,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+isPeeking()+piece.getProperty(key);
+      return myGetState() + isPeeking() + piece.getProperty(key);
     }
     else {
       return super.getLocalizedProperty(key);
@@ -510,7 +510,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (!obscuredToMe()) {
       return super.keyEvent(stroke);
     }
-    else if (isMaskable()){
+    else if (isMaskable()) {
       return myKeyEvent(stroke);
     }
     else {

@@ -152,7 +152,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       // Has an Extension Id been allocated yet?
       if (extensionId.length() == 0) {
         final String id = UUID.randomUUID().toString();
-        extensionId = id.substring(id.length()-3);
+        extensionId = id.substring(id.length() - 3);
       }
 
       // Fix missing, duplicate and illegal GamePieceId's

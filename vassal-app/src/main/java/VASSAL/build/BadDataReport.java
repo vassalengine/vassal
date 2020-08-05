@@ -81,8 +81,8 @@ public class BadDataReport {
   }
 
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
-    String m = ((pieceName != null && pieceName.length() > 0) ? pieceName+" " : "");
-    m += ((traitDesc != null && traitDesc.length() > 0) ? "["+traitDesc+"] " : "");
+    String m = ((pieceName != null && pieceName.length() > 0) ? pieceName + " " : "");
+    m += ((traitDesc != null && traitDesc.length() > 0) ? "[" + traitDesc + "] " : "");
     m += m.length() > 0 ? "- " : "";
     m += message;
     this.message = m;
@@ -117,7 +117,7 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(AbstractConfigurable c, String message, String data, Throwable cause) {
-    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass())+"]: "+message;
+    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass()) + "]: " + message;
     this.cause = cause;
     this.data = data;
   }

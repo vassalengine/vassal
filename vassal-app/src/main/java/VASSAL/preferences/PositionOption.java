@@ -53,8 +53,8 @@ public class PositionOption extends VASSAL.configure.Configurer
 
   private static void adjustInitialOffset() {
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    if (initialPos.x >= d.width-30
-      || initialPos.y >= d.height-30) {
+    if (initialPos.x >= d.width - 30
+      || initialPos.y >= d.height - 30) {
       initialPos.move(0, 0);
     }
     else {

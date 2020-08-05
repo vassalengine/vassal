@@ -1010,39 +1010,39 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   public int componentToMap(int c) {
-    return scale(c, 1.0/getZoom());
+    return scale(c, 1.0 / getZoom());
   }
 
   public Point componentToMap(Point p) {
-    return scale(p, 1.0/getZoom());
+    return scale(p, 1.0 / getZoom());
   }
 
   public Rectangle componentToMap(Rectangle r) {
-    return scale(r, 1.0/getZoom());
+    return scale(r, 1.0 / getZoom());
   }
 
   public int drawingToMap(int c, double os_scale) {
-    return scale(c, 1.0/(getZoom() * os_scale));
+    return scale(c, 1.0 / (getZoom() * os_scale));
   }
 
   public Point drawingToMap(Point p, double os_scale) {
-    return scale(p, 1.0/(getZoom() * os_scale));
+    return scale(p, 1.0 / (getZoom() * os_scale));
   }
 
   public Rectangle drawingToMap(Rectangle r, double os_scale) {
-    return scale(r, 1.0/(getZoom() * os_scale));
+    return scale(r, 1.0 / (getZoom() * os_scale));
   }
 
   public int drawingToComponent(int c, double os_scale) {
-    return scale(c, 1.0/os_scale);
+    return scale(c, 1.0 / os_scale);
   }
 
   public Point drawingToComponent(Point p, double os_scale) {
-    return scale(p, 1.0/os_scale);
+    return scale(p, 1.0 / os_scale);
   }
 
   public Rectangle drawingToComponent(Rectangle r, double os_scale) {
-    return scale(r, 1.0/os_scale);
+    return scale(r, 1.0 / os_scale);
   }
 
   /**
@@ -1196,7 +1196,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * events
    */
   public void popMouseListener() {
-    mouseListenerStack.remove(mouseListenerStack.size()-1);
+    mouseListenerStack.remove(mouseListenerStack.size() - 1);
   }
 
   @Override
@@ -1206,8 +1206,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseExited(MouseEvent e) {
   }
-  
-  
+
+
   public MouseEvent translateEvent(MouseEvent e) {
     // don't write over Java's mouse event
     final MouseEvent mapEvent = new MouseEvent(
@@ -1231,7 +1231,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseClicked(MouseEvent e) {
     if (!mouseListenerStack.isEmpty()) {
-      mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(translateEvent(e));
+      mouseListenerStack.get(mouseListenerStack.size() - 1).mouseClicked(translateEvent(e));
     }
     else if (multicaster != null) {
       multicaster.mouseClicked(translateEvent(e));
@@ -1278,7 +1278,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     activeMap = this;
 
     if (!mouseListenerStack.isEmpty()) {
-      mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(translateEvent(e));
+      mouseListenerStack.get(mouseListenerStack.size() - 1).mousePressed(translateEvent(e));
     }
     else if (multicaster != null) {
       multicaster.mousePressed(translateEvent(e));
@@ -1301,7 +1301,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
-        mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(translateEvent(e));
+        mouseListenerStack.get(mouseListenerStack.size() - 1).mouseReleased(translateEvent(e));
       }
       else if (multicaster != null) {
         multicaster.mouseReleased(translateEvent(e));
@@ -1500,10 +1500,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       public void timingEvent(float fraction) {
         // Constant velocity along each axis, 0.5px/ms
         final long t1 = System.currentTimeMillis();
-        final int dt = (int)((t1 - t0)/2);
+        final int dt = (int)((t1 - t0) / 2);
         t0 = t1;
 
-        scroll(sx*dt, sy*dt);
+        scroll(sx * dt, sy * dt);
 
         // Check whether we have hit an edge
         final Rectangle vrect = scroll.getViewport().getViewRect();
@@ -2189,8 +2189,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       p = mapToComponent(p);
 
       final Rectangle r = theMap.getVisibleRect();
-      r.x = p.x - r.width/2;
-      r.y = p.y - r.height/2;
+      r.x = p.x - r.width / 2;
+      r.y = p.y - r.height / 2;
 
       final Dimension d = getPreferredSize();
       if (r.x + r.width > d.width) r.x = d.width - r.width;

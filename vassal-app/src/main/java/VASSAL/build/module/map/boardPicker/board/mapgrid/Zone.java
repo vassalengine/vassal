@@ -334,7 +334,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     if (!matcher.matches()) {
       throw new BadCoords();
     }
-    assert(matcher.groupCount() == groupCount);
+    assert (matcher.groupCount() == groupCount);
 
     Point p = null;
     if (groupCount > 0) {
@@ -576,7 +576,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   @Override
   public String getMutablePropertiesContainerId() {
-    return (getMap() == null ? "" : getMap().getMapName())+":"+getConfigureName();
+    return (getMap() == null ? "" : getMap().getMapName()) + ":" + getConfigureName();
   }
 
   /*
@@ -742,8 +742,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       editor.reset();
       savePoly = editor.clonePolygon();
       final Rectangle polyBounds = editor.getPolygon().getBounds();
-      final Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
-          polyBounds.y + polyBounds.height/2);
+      final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+          polyBounds.y + polyBounds.height / 2);
       if (!editor.getVisibleRect().contains(polyCenter)) {
         editor.center(polyCenter);
       }

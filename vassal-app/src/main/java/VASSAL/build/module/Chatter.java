@@ -125,7 +125,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   private String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
-    return "<" + (id.length() == 0 ? "("+getAnonymousUserName()+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
+    return "<" + (id.length() == 0 ? "(" + getAnonymousUserName() + ")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public JTextField getInputField() {
@@ -138,7 +138,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public void show(String s) {
     conversation.append("\n" + s); //$NON-NLS-1$
   }
-  
+
   /**
    * Set the Font used by the text area
    */

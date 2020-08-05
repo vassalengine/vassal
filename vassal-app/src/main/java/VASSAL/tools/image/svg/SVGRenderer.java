@@ -118,7 +118,7 @@ public class SVGRenderer {
       root.getAttributeNS(null, "height").replaceFirst("px", ""));
   }
 
-  private static final double DEGTORAD = Math.PI/180.0;
+  private static final double DEGTORAD = Math.PI / 180.0;
 
   public BufferedImage render() {
     return render(0.0, 1.0);
@@ -128,7 +128,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -156,7 +156,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -222,7 +222,7 @@ public class SVGRenderer {
           SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
         );
         g.setAttributeNS(null, "transform", "rotate(0.000001)");
-      
+
         // interpose this <g> element between <svg> and its children
         final Element svg = document.getDocumentElement();
         Node n;
@@ -237,8 +237,8 @@ public class SVGRenderer {
       super.transcode(document, uri, output);
 
        // prepare the image to be painted
-      int w = (int)(width+0.5);
-      int h = (int)(height+0.5);
+      int w = (int)(width + 0.5);
+      int h = (int)(height + 0.5);
 
       // paint the SVG document using the bridge package
       // create the appropriate renderer

@@ -827,8 +827,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
         // Draw each region into the drag cursor in the correct place
         for (Region r : config.selectedRegions) {
-          int x = -boundingBox.x*2;
-          int y = -boundingBox.y*2;
+          int x = -boundingBox.x * 2;
+          int y = -boundingBox.y * 2;
           r.draw(g, boundingBox, getVisibleRect(), 1.0f, false, x, y);
         }
 
@@ -938,7 +938,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         for (Region r : selectedRegions) {
           r.removeFrom(grid);
           grid.remove(r);
-          lastClickedRegion=null;
+          lastClickedRegion = null;
           setDirty(true);
         }
         selectedRegions.clear();
@@ -1005,8 +1005,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (r != null) {
         r.setSelected(false);
         selectedRegions.remove(r);
-        if (lastClickedRegion==r) {
-          lastClickedRegion=null;
+        if (lastClickedRegion == r) {
+          lastClickedRegion = null;
         }
         view.repaint(r.getSelectionRect());
       }
@@ -1057,7 +1057,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         lastClickedRegion = grid.getRegion(p);
 
         if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e) &&
-            (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
+            (lastClickedRegion == null || !lastClickedRegion.isSelected())) {
           unSelectAll();
         }
 
@@ -1111,8 +1111,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (selectionRect != null) {
         // FIXME: inefficient, could be done with only one new Rectangle
         final Rectangle repaintRect =
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3);
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3);
 
         selectionRect.x = Math.min(e.getX(), anchor.x);
         selectionRect.y = Math.min(e.getY(), anchor.y);
@@ -1120,8 +1120,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         selectionRect.height = Math.abs(e.getY() - anchor.y);
 
         repaintRect.add(
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3));
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3));
         view.repaint(repaintRect);
       }
     }

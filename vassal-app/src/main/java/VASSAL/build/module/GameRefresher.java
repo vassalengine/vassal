@@ -361,7 +361,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     public void addMessage(String mess) {
-      results.setText(results.getText()+"\n"+mess);
+      results.setText(results.getText() + "\n" + mess);
     }
   }
 }

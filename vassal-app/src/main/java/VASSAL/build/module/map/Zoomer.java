@@ -98,8 +98,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   // the default zoom levels are powers of 1.6
   protected static final double[] defaultZoomLevels = new double[] {
-    1.0/1.6/1.6,
-    1.0/1.6,
+    1.0 / 1.6 / 1.6,
+    1.0 / 1.6,
     1.0,
     1.6
   };
@@ -160,13 +160,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       cur = Arrays.binarySearch(levels, z);
       if (cur < 0) {
         // if z is not a level, set cur to the next level > z
-        cur = -cur-1;
+        cur = -cur - 1;
 
         // check whether we are close to a level
         if (cur < levels.length && Math.abs(z - levels[cur]) < 0.005) {
           custom = -1;
         }
-        else if (cur > 0 && Math.abs(z - levels[cur-1]) < 0.005) {
+        else if (cur > 0 && Math.abs(z - levels[cur - 1]) < 0.005) {
           --cur;
           custom = -1;
         }
@@ -216,7 +216,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public boolean hasHigherLevel() {
-      return custom < 0 ? cur < levels.length-1 : cur < levels.length;
+      return custom < 0 ? cur < levels.length - 1 : cur < levels.length;
     }
 
     public List<Double> getLevels() {
@@ -467,7 +467,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           final int new_init;
           if (rm_level == z.state.getInitialLevel()) {
             // we're deleting the initial level; keep it the same position
-            new_init = Math.min(rm_level, z.state.getLevelCount()-2);
+            new_init = Math.min(rm_level, z.state.getLevelCount() - 2);
             l.remove(rm_level);
           }
           else {
@@ -484,7 +484,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
           // adjust the selection
           levelList.setSelectedIndex(
-            Math.max(Math.min(rm_level, l.size()-1), 0));
+            Math.max(Math.min(rm_level, l.size() - 1), 0));
           updateButtons();
         }
       });
@@ -544,7 +544,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final String[] s = text.split("/"); //$NON-NLS-1$
       try {
         return s.length > 1 ?
-          Double.parseDouble(s[0])/Double.parseDouble(s[1]) :
+          Double.parseDouble(s[0]) / Double.parseDouble(s[1]) :
           Double.parseDouble(s[0]);
       }
       catch (NumberFormatException ex) {
@@ -600,7 +600,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       private static final long serialVersionUID = 1L;
 
       public void updateModel() {
-        fireContentsChanged(this, 0, z.state.getLevelCount()-1);
+        fireContentsChanged(this, 0, z.state.getLevelCount() - 1);
       }
 
       @Override
@@ -721,7 +721,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         //
         final List<Double> levels = state.getLevels();
         final int initial =
-          Math.max(0, Math.min(levels.size()-1, levels.size()-(Integer) val));
+          Math.max(0, Math.min(levels.size() - 1, levels.size() - (Integer) val));
 
         state = new State(levels, initial);
 
@@ -747,7 +747,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         }
 
         state = new State(levels,
-          Math.min(state.getInitialLevel(), levels.size()-1));
+          Math.min(state.getInitialLevel(), levels.size() - 1));
         init();
       }
     }
@@ -794,10 +794,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   private double deprecatedFactor = -1.0;
 
   private void adjustStateForFactorAndMax() {
-    final double[] levels = new double[deprecatedMax+1];
+    final double[] levels = new double[deprecatedMax + 1];
     for (int i = 0; i < levels.length; ++i)
-      levels[i] = Math.pow(deprecatedFactor, -(i-1));
-    final int initial = Math.min(state.getInitialLevel(), levels.length-1);
+      levels[i] = Math.pow(deprecatedFactor, -(i - 1));
+    final int initial = Math.min(state.getInitialLevel(), levels.length - 1);
     state = new State(levels, initial);
     init();
   }
@@ -823,7 +823,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   protected Point getMapCenter() {
     final Rectangle r = map.getView().getVisibleRect();
-    return map.componentToMap(new Point(r.x + r.width/2, r.y + r.height/2));
+    return map.componentToMap(new Point(r.x + r.width / 2, r.y + r.height / 2));
   }
 
   protected void updateZoomer(Point center) {
@@ -975,7 +975,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           Resources.getString("Zoomer.ZoomDialog.title"), true); //$NON-NLS-1$
         dialog.setVisible(true);
 
-        final double z = dialog.getResult()/100.0;
+        final double z = dialog.getResult() / 100.0;
         if (z > 0 && z != state.getZoom()) {
           setZoomFactor(z);
         }
@@ -984,18 +984,18 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       else if (FIT_WIDTH.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
-        setZoomFactor(vd.getWidth()/md.getWidth());
+        setZoomFactor(vd.getWidth() / md.getWidth());
       }
       else if (FIT_HEIGHT.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
-        setZoomFactor(vd.getHeight()/md.getHeight());
+        setZoomFactor(vd.getHeight() / md.getHeight());
       }
       else if (FIT_VISIBLE.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
-        setZoomFactor(Math.min(vd.getWidth()/md.getWidth(),
-                               vd.getHeight()/md.getHeight()));
+        setZoomFactor(Math.min(vd.getWidth() / md.getWidth(),
+                               vd.getHeight() / md.getHeight()));
       }
       else {
         // this should not happen!
@@ -1103,7 +1103,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       controlsPane.add(percentBox, c);
 
       percentModel =
-        new SpinnerNumberModel(state.getZoom()*100.0, 0.39, 25600.0, 10.0);
+        new SpinnerNumberModel(state.getZoom() * 100.0, 0.39, 25600.0, 10.0);
       percentSpinner = new JSpinner(percentModel);
       percentLabel.setLabelFor(percentSpinner);
       percentSpinner.addChangeListener(this);
@@ -1198,7 +1198,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // we want symmetric behavior, so find reciprocal when zooming out
       boolean swapped = false;
       if (z < 1.0) {
-        z = 1.0/z;
+        z = 1.0 / z;
         swapped = true;
       }
 
@@ -1214,8 +1214,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       double next_cf;
 
       while (Math.abs(r) >= 0.0001 &&
-             Math.abs((double)p1/q1 - z) > 0.0001) {
-        r = 1.0/r;
+             Math.abs((double)p1 / q1 - z) > 0.0001) {
+        r = 1.0 / r;
         next_cf = Math.floor(r);
 
         p2 = (int)(next_cf * p1 + p0);
@@ -1235,14 +1235,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         r -= next_cf;
       }
 
-      z = (double)p1/q1;
+      z = (double)p1 / q1;
 
       // hard upper and lower bounds for zoom ratio
       if (z > 256.0) {
         p1 = 256;
         q1 = 1;
       }
-      else if (z < 1.0/256.0) {
+      else if (z < 1.0 / 256.0) {
         p1 = 1;
         q1 = 256;
       }

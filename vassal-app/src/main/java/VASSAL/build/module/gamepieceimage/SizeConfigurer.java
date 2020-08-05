@@ -97,19 +97,19 @@ public class SizeConfigurer extends StringEnumConfigurer {
         final int sample_h = 12;
         final int sample_g = 1;
 
-        final int w = sample_w*6 + sample_g*5 + 1;
-        final int h = sample_h+1;
+        final int w = sample_w * 6 + sample_g * 5 + 1;
+        final int h = sample_h + 1;
 
         final BufferedImage img = ImageUtils.createCompatibleImage(w, h);
         final Graphics2D g = img.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, w, h);
         g.setColor(Color.black);
-        g.drawRect(0, 0, w-1, h-1);
+        g.drawRect(0, 0, w - 1, h - 1);
 
         final BufferedImage simg = Symbol.NatoUnitSymbolSet.buildSizeImage(
           (String) value, sample_w, sample_h, sample_g);
-        int x = (w/2) - (simg.getWidth()/2);
+        int x = (w / 2) - (simg.getWidth() / 2);
         g.drawImage(simg, x, 0, null);
         g.dispose();
 

@@ -72,8 +72,8 @@ class TileTask implements Callable<Void> {
 
   protected BufferedImage sliceTile() {
     // get actual tile width, height (edge tiles can be less than full size)
-    final int atw = Math.min(tw, dw - tx*tw);
-    final int ath = Math.min(th, dh - ty*th);
+    final int atw = Math.min(tw, dw - tx * tw);
+    final int ath = Math.min(th, dh - ty * th);
 
     final int type = src.getType();
 
@@ -82,7 +82,7 @@ class TileTask implements Callable<Void> {
 
     final Graphics2D g = tile.createGraphics();
     g.drawImage(src, 0, 0, atw, ath,
-                     tx*tw, ty*th, tx*tw+atw, ty*th+ath, null);
+                     tx * tw, ty * th, tx * tw + atw, ty * th + ath, null);
     g.dispose();
 
     return tile;

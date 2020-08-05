@@ -91,7 +91,7 @@ public class LockWatcher extends Thread {
     public void run() {
       try {
         sleep(timeout);
-        System.err.println("No response from server in "+(timeout/1000.0)+" seconds.  Terminating process"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.err.println("No response from server in " + (timeout / 1000.0) + " seconds.  Terminating process"); //$NON-NLS-1$ //$NON-NLS-2$
         System.exit(0);
       }
       // FIXME: review error message
