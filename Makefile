@@ -123,7 +123,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	cp $(DISTDIR)/macosx/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
-	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
+	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app
@@ -150,7 +150,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncom
 $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
-	cp -a CHANGES LICENSE README $@
+	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
 	cp $(DISTDIR)/VASSAL.sh $(DISTDIR)/windows/VASSAL.bat $@
 	find $@ -type f -exec chmod 644 \{\} \+
@@ -167,7 +167,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-
 $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
-	cp -a CHANGES LICENSE README $@
+	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
 	cp $(DISTDIR)/linux/VASSAL.sh $@
 	find $@ -type f -exec chmod 644 \{\} \+
@@ -192,7 +192,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $
 	cp $(TMPDIR)/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
 	cp -a LICENSE $@/LICENSE.txt
-	cp -a README $@/README.txt
+	cp -a README.md $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a $(LIBDIR) $@/lib
 	find $@ -type f -exec chmod 644 \{\} \+
