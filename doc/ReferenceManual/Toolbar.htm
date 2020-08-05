@@ -36,10 +36,49 @@
     href="GlobalOptions.htm">[Global Options]</a> and the <a href="#Definition_of_Player_Sides">Definition of Player
   Sides</a>.<br>
   <br>
-  Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <a href="GameModule.htm#SubComponents">
+  Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <a
+    href="GameModule.htm#SubComponents">
   Sub-Components</a> to the Module. In some cases, Toolbar buttons can also be created by adding sub-components to a Map
   window.<br>
   <br>
+
+  <table cellpadding="2" cellspacing="2" width="100%">
+    <tr>
+    <td><a href="DoActionButton.htm">Action Button</a></td>
+    <td><a href="PieceWindow.htm">Add Game Pieces</a></td>
+    <td><a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a></td>
+    <td><a href="ChartWindow.htm">Charts</a></td>
+    </tr>
+    <tr>
+    <td><a href="Map.htm#MarkUnmoved">Clear Move History</a></td>
+    <td><a href="GameModule.htm#DiceButton">Dice Button</a></td>
+    <td><a href="PieceWindow.htm">Game Piece Palette</a></td>
+    <td><a href="Map.htm#GlobalKeyCommand">Global Key Command</a></td>
+    </tr>
+    <tr>
+    <td><a href="GamePieceLayers.htm#GamePieceLayerControl">Hide Layers</a></td>
+    <td><a href="Map.htm#HidePieces">Hide Pieces</a></td>
+    <td><a href="Map.htm">Maps</a></td>
+    <td><a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a></td>
+    </tr>
+    <tr>
+    <td><a href="MultiActionButton.htm">Multi-Action Button</a></td>
+    <td><a href="PlayerHand.htm">Player Hand</a></td>
+    <td><a href="PrivateWindow.htm">Private Window</a></td>
+    <td><a href="GameModule.htm#RandomTextButton">Random Text Button</a></td>
+    </tr>
+    <tr>
+    <td><a href="Retire">Retire</a></td>
+    <td><a href="ServerControls">Server Controls</a></td>
+    <td><a href="SpecialDiceButton.htm">Symbolic Dice Button</a></td>
+    <td><a href="SwitchSides">Switch Sides</a></td>
+    </tr>
+    <tr>
+    <td><a href="#Undo">Undo</a></td>
+    <td><a href="Map.htm#Zoom">Zoom Controls</a></td>
+    </tr>
+  </table>
+
   <br>
 
   <hr size="2" width="100%">
@@ -95,10 +134,9 @@
     <tbody>
     <tr>
     <td valign="top">
-    <h3><a href="PieceWindow.htm">Game Piece Palette</a></h3>
-    A Game Piece Palette allows an unlimited number of pieces to be created and placed onto any map. This can have
-    several uses -- it can be used as an unlimited supply for certain counters and markers during play. One can also
-    fleshed out with the full counter-set and used as a place from which to set up a game initially to create <a
+    <h3></h3>A Game Piece Palette allows an unlimited number of pieces to be created and placed onto any map. This can
+    have several uses -- it can be used as an unlimited supply for certain counters and markers during play. One can
+    also fleshed out with the full counter-set and used as a place from which to set up a game initially to create <a
       href="GameModule.htm#PredefinedSetup">Predefined Scenarios</a>.<br>
     <br>
     A module can have more than one Game Piece Palette, each with its own Toolbar button. Or, a single Game Piece
@@ -435,17 +473,19 @@
     <tr>
     <td valign="top">
     <h3><a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a></h3>
-    The <a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a> button clears the movement history for all pieces on a particular <a href="Map.htm">map</a>. This
-    both removes any <a href="MarkMoved.htm">Mark When Moved</a> from pieces on the map and clears any <a href="MovementTrail.htm">Movement Trails</a>. A Mark Unmoved
-    button is configured as part of the <a href="Map.htm">Map Window's</a> properties dialog, and appears on the Toolbar for that Map Window. If one is configured for
-    the Main Map, it will appear on the Toolbar for the Module.<br>
+    The <a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a> button clears the movement history for all pieces on a
+    particular <a href="Map.htm">map</a>. This both removes any <a href="MarkMoved.htm">Mark When Moved</a> from pieces
+    on the map and clears any <a href="MovementTrail.htm">Movement Trails</a>. A Mark Unmoved button is configured as
+    part of the <a href="Map.htm">Map Window's</a> properties dialog, and appears on the Toolbar for that Map Window. If
+    one is configured for the Main Map, it will appear on the Toolbar for the Module.<br>
     <br>
     <a href="Map.htm#MarkUnmoved">See the Map Window article for more details.</a>
     </td>
     <td valign="top" style="text-align:center;">
     <img src="images/ClearMoveHistory.png">
     <div style="text-align:center; font-size:12px; padding-top:4px">
-      The <a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a> subsection of a <a href="Map.htm">Map</a> properties dialog.
+      The <a href="Map.htm#MarkUnmoved">Mark Unmoved Button</a> subsection of a <a href="Map.htm">Map</a> properties
+      dialog.
 
     </div>
     </td>
@@ -464,10 +504,11 @@
     <tr>
     <td valign="top">
     <h3><a href="Map.htm#GlobalKeyCommand">Global Key Command</a></h3>
-    <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> buttons send an action to every <a href="GamePiece.htm">Game Piece</a> that matches a
-    given <a href="Expression.htm">Expression</a>. If configured to a specific <a href="Map.htm">Map</a>, it will appear on that map's Toolbar
-    and affect only pieces on that map. If configured as a subcomponent of the <a href="GameModule.htm">Module</a> itself, it will appear on the
-    main Module Toolbar and will affect pieces on every map.<br>
+    <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> buttons send an action to every <a href="GamePiece.htm">
+    Game Piece</a> that matches a given <a href="Expression.htm">Expression</a>. If configured to a specific <a
+      href="Map.htm">Map</a>, it will appear on that map's Toolbar and affect only pieces on that map. If configured as
+    a subcomponent of the <a href="GameModule.htm">Module</a> itself, it will appear on the main Module Toolbar and will
+    affect pieces on every map.<br>
     <br>
     <a href="Map.htm#GlobalKeyCommand">See full article for details.</a><br>
     </td>
@@ -490,8 +531,9 @@
     <td valign="top">
     <h3><a href="DoActionButton.htm">Action Button</a></h3>
 
-    An <a href="DoActionButton.htm">Action Button</a> combines a number of different actions into a single button. When the button is clicked, or receives its Hotkey, it can display a message to the
-    Chat Log Window, Play a sound, and/or send a list of Hotkeys or <a href="NamedKeyCommand.htm">Named Key Commands</a> to other components.<br>
+    An <a href="DoActionButton.htm">Action Button</a> combines a number of different actions into a single button. When
+    the button is clicked, or receives its Hotkey, it can display a message to the Chat Log Window, Play a sound, and/or
+    send a list of Hotkeys or <a href="NamedKeyCommand.htm">Named Key Commands</a> to other components.<br>
     <br>
     <a href="DoActionButton.htm">See full article for details.</a><br>
     </td>
@@ -514,8 +556,9 @@
     <td valign="top">
     <h3><a href="MultiActionButton.htm">Multi-Action Button</a></h3>
 
-    A <a href="MultiActionButton.htm">Multi-Action Button</a> combines several buttons from the Toolbar into a single button. The named would-be buttons are
-    removed from the Toolbar and a new button is added in their place. Clicking this button automatically invokes the actions of all the removed & combined "buttons".<br>
+    A <a href="MultiActionButton.htm">Multi-Action Button</a> combines several buttons from the Toolbar into a single
+    button. The named would-be buttons are removed from the Toolbar and a new button is added in their place. Clicking
+    this button automatically invokes the actions of all the removed & combined "buttons".<br>
     <br>
     <a href="MultiActionButton.htm">See full article for details.</a><br>
     </td>
@@ -537,12 +580,15 @@
     <tr>
     <td valign="top">
     <h3><a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a></h3>
-    A <a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a> changes the value of the Global Property. 
+    A <a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a> changes the value of
+    the Global Property. 
     
-    You can combine multiple buttons into a single drop-down menu using a <a href="ToolbarMenu.htm">Toolbar Menu</a>.<br>
+    You can combine multiple buttons into a single drop-down menu using a <a href="ToolbarMenu.htm">Toolbar Menu</a>.
+    <br>
 
     <br>
-    <a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a>See full article for details.</a><br>
+    <a href="GlobalProperties.htm#ChangePropertyToolbarButton">Change-Property Toolbar Button</a>See full article for
+    details.</a><br>
     </td>
     <td valign="top" style="text-align:center;">
     <img src="images/ChangePropertyButton.png">
