@@ -25,6 +25,7 @@
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
 * 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making
     double-click difficult; also added preference for drag threshold adjustment
+* 13129: New HTML Chatter with colors, fonts/bold/italic, image tags
 * 13124: Removed unused deprecated code
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
