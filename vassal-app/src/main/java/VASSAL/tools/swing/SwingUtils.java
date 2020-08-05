@@ -201,7 +201,7 @@ public class SwingUtils {
     @Override
     @SuppressWarnings("deprecation")
     public KeyStroke systemToGeneric (KeyStroke k) {
-      if (macLegacy) {
+      if (macLegacy || (k == null)) {
         return k;
       }
       int modifiers = k.getModifiers();
@@ -235,7 +235,7 @@ public class SwingUtils {
     @Override
     @SuppressWarnings("deprecation")
     public KeyStroke genericToSystem (KeyStroke k) {
-      if (macLegacy) {
+      if (macLegacy || (k == null)) {
         return k;
       }
       int modifiers = k.getModifiers();
