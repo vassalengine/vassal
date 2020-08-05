@@ -128,7 +128,7 @@ public abstract class EditorWindow extends JFrame {
 
     // edit menu
     final MenuProxy editMenu =
-      new MenuProxy(Resources.getString("General.edit"));
+      new MenuProxy("No"); //Resources.getString("General.edit"));
     editMenu.setMnemonic(Resources.getString("General.edit.shortcut").charAt(0));
 
     editMenu.add(mm.addKey("Editor.cut"));
@@ -171,9 +171,17 @@ public abstract class EditorWindow extends JFrame {
       // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
-      helpMenu.add(mm.addKey("General.help"));
-      helpMenu.add(mm.addKey("Help.user_guide"));
-      helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.table_of_contents"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.using_the_editor"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
+      helpMenu.addSeparator();
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.module_components"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.map_components"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.toolbar_help"));
+      helpMenu.addSeparator();
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
       mb.add(helpMenu);
@@ -229,8 +237,8 @@ public abstract class EditorWindow extends JFrame {
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "README.html").toURI().toURL();
-      mm.addAction("General.help", new ShowHelpAction(url, null));
+                               "ReferenceManual/index.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction(url, null));
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -238,17 +246,50 @@ public abstract class EditorWindow extends JFrame {
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "userguide/userguide.pdf").toURI().toURL();
+                               "ReferenceManual/editor.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction(url, null));
+    }
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
+
+
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
+    //helpMenu.addSeparator();
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.module_components"));
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.map_components"));
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.toolbar_help"));
+    //helpMenu.addSeparator();
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
+    //helpMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
+
+
+
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "designerguide/designerguide.pdf").toURI().toURL();
       mm.addAction("Help.user_guide",
         new ShowHelpAction("Help.user_guide", url, null));
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
+    
+    
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(),
+                               "ReferenceManual/GamePiece.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction(url, null));
+    }
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
+
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "ReferenceManual/index.htm").toURI().toURL();
+                               "ReferenceManual/GamePiece.htm").toURI().toURL();
 
       final ShowHelpAction helpAction = new ShowHelpAction(
         url,
@@ -256,7 +297,7 @@ public abstract class EditorWindow extends JFrame {
       );
 
       helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString(
-        "Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
+        "Editor.ModuleEditor.game_pieces_and_traits")); //$NON-NLS-1$
       toolBar.add(helpAction);
     }
     catch (MalformedURLException e) {
