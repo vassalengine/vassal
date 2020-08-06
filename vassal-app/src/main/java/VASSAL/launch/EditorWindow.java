@@ -59,8 +59,8 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 
 /**
- * EditorWindow is the base class for the three top-level component
- * editors :- ModuleEditorWindow, ExtensionEditorWindow, PluginEditorWindow
+ * EditorWindow is the base class for the three top-level component editors :-
+ * ModuleEditorWindow, ExtensionEditorWindow, PluginEditorWindow
  *
  * @author Brent Easton
  */
@@ -72,10 +72,8 @@ public abstract class EditorWindow extends JFrame {
   protected JMenuItem componentHelpItem;
   protected Action createUpdater;
 
-  protected final HelpWindow helpWindow = new HelpWindow(
-    Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
-    null
-  );
+  protected final HelpWindow helpWindow = new HelpWindow(Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
+      null);
 
   protected ConfigureTree tree;
 
@@ -110,10 +108,9 @@ public abstract class EditorWindow extends JFrame {
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.File", mm.addKey("Editor.save"));
       mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));
-    }
+    } 
     else {
-      final MenuProxy fileMenu =
-        new MenuProxy(Resources.getString("General.file"));
+      final MenuProxy fileMenu = new MenuProxy(Resources.getString("General.file"));
 
       // FIMXE: setting nmemonic from first letter could cause collisions in
       // some languages
@@ -127,8 +124,7 @@ public abstract class EditorWindow extends JFrame {
     }
 
     // edit menu
-    final MenuProxy editMenu =
-      new MenuProxy("No"); //Resources.getString("General.edit"));
+    final MenuProxy editMenu = new MenuProxy("No"); // Resources.getString("General.edit"));
     editMenu.setMnemonic(Resources.getString("General.edit.shortcut").charAt(0));
 
     editMenu.add(mm.addKey("Editor.cut"));
@@ -142,8 +138,7 @@ public abstract class EditorWindow extends JFrame {
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
 
     // tools menu
-    final MenuProxy toolsMenu =
-      new MenuProxy(Resources.getString("General.tools"));
+    final MenuProxy toolsMenu = new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
     toolsMenu.add(mm.addKey("create_module_updater"));
@@ -152,7 +147,7 @@ public abstract class EditorWindow extends JFrame {
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.MenuBar", editMenu);
       mm.addToSection("Editor.MenuBar", toolsMenu);
-    }
+    } 
     else {
       mb.add(editMenu);
       mb.add(toolsMenu);
@@ -160,17 +155,16 @@ public abstract class EditorWindow extends JFrame {
 
     // help menu
     if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Documentation.VASSAL",
-                      mm.addKey("Editor.ModuleEditor.reference_manual"));
-    }
+      mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));
+    } 
     else {
-      final MenuProxy helpMenu =
-        new MenuProxy(Resources.getString("General.help"));
+      final MenuProxy helpMenu = new MenuProxy(Resources.getString("General.help"));
 
       // FIMXE: setting nmemonic from first letter could cause collisions in
       // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
+      //BR// So here I "think"  I'm just adding my happy little help entries. 
       helpMenu.add(mm.addKey("Editor.ModuleEditor.table_of_contents"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.using_the_editor"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
@@ -191,6 +185,7 @@ public abstract class EditorWindow extends JFrame {
 
     saveAction = new SaveAction() {
       private static final long serialVersionUID = 1L;
+
       @Override
       public void actionPerformed(ActionEvent e) {
         save();
@@ -199,13 +194,13 @@ public abstract class EditorWindow extends JFrame {
     };
 
     saveAction.setEnabled(false);
-    saveAction.putValue(Action.ACCELERATOR_KEY,
-      KeyStroke.getKeyStroke(KeyEvent.VK_S, mask));
+    saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, mask));
     mm.addAction("Editor.save", saveAction);
     toolBar.add(saveAction);
 
     saveAsAction = new SaveAsAction() {
       private static final long serialVersionUID = 1L;
+
       @Override
       public void actionPerformed(ActionEvent e) {
         saveAs();
@@ -214,8 +209,7 @@ public abstract class EditorWindow extends JFrame {
     };
 
     saveAsAction.setEnabled(false);
-    saveAsAction.putValue(Action.ACCELERATOR_KEY,
-      KeyStroke.getKeyStroke(KeyEvent.VK_A, mask));
+    saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, mask));
     mm.addAction("Editor.save_as", saveAsAction);
     toolBar.add(saveAsAction);
 
@@ -223,8 +217,7 @@ public abstract class EditorWindow extends JFrame {
 // FXIME: mnemonics should be language-dependant
 //    mm.getAction("General.quit").setMnemonic('Q');
 
-    createUpdater = new AbstractAction(
-                      "Create " + getEditorType() + " updater") {
+    createUpdater = new AbstractAction("Create " + getEditorType() + " updater") {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -234,72 +227,97 @@ public abstract class EditorWindow extends JFrame {
     };
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
-
+    
+    
+    //BR// In theory trying to put my new actions in here in the old pattern, but nothing shows up but "Help". Links themselves mostly work.
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "ReferenceManual/index.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.htm").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction(url, null));
-    }
+    } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "ReferenceManual/editor.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.htm").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction(url, null));
+    } 
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
     }
+
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "designerguide/designerguide.pdf").toURI()
+          .toURL();
+      mm.addAction("Editor.ModuleEditor.designer_guide", new ShowHelpAction("Editor.ModuleEditor.designer_guide", url, null));
+    } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
 
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
-    //helpMenu.addSeparator();
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.module_components"));
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.map_components"));
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.toolbar_help"));
-    //helpMenu.addSeparator();
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
-    //helpMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
-
-
-
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "designerguide/designerguide.pdf").toURI().toURL();
-      mm.addAction("Help.user_guide",
-        new ShowHelpAction("Help.user_guide", url, null));
-    }
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction(url, null));
+    } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
     
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction(url, null));
+    } 
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "ReferenceManual/GamePiece.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.htm").toURI().toURL();
+      mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction(url, null));
+    } 
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
+    }
+
+
+    
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.htm").toURI()
+          .toURL();
       mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction(url, null));
+    } 
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
     }
+    
+    
+    try {
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.htm").toURI()
+          .toURL();
+      mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction(url, null));
+    } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
 
+    //BR// This last one was in a different pattern for some reason. But I can't get it to work right either (and it was the one that
+    //BR// wasn't working in "master" either, and doesn't work in 3.2.17 for that matter). Oddly, *this one* actually displays the right
+    //BR// message in the bar, but *goes to the wrong place* when you click the item -- instead of going to the reference manual entry 
+    //BR// for Properties (Properties.htm), it actually opens the properties for the module component itself (as if you'd double-clicked
+    //BR// the very top component in the editor)
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(),
-                               "ReferenceManual/GamePiece.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.htm").toURI()
+          .toURL();
 
-      final ShowHelpAction helpAction = new ShowHelpAction(
-        url,
-        helpWindow.getClass().getResource("/images/Help16.gif")
-      );
+      final ShowHelpAction helpAction = new ShowHelpAction(url,
+          helpWindow.getClass().getResource("/images/Help16.gif"));
 
-      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString(
-        "Editor.ModuleEditor.game_pieces_and_traits")); //$NON-NLS-1$
+      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
+      
       toolBar.add(helpAction);
-    }
+    } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -312,10 +330,8 @@ public abstract class EditorWindow extends JFrame {
     final JPanel panel = new JPanel();
     panel.setPreferredSize(new Dimension(250, 400));
 
-    scrollPane = new JScrollPane(
-      panel,
-      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     add(scrollPane, BorderLayout.CENTER);
     pack();
@@ -325,7 +341,8 @@ public abstract class EditorWindow extends JFrame {
     for (ChildProxy<?> c : mb.getChildren()) {
       if (c instanceof MenuProxy) {
         final MenuProxy m = (MenuProxy) c;
-        if (name.equals(m.getText())) return m;
+        if (name.equals(m.getText()))
+          return m;
       }
     }
     return null;
@@ -335,6 +352,7 @@ public abstract class EditorWindow extends JFrame {
    * Each component must Save, SaveAs and close itself
    */
   protected abstract void save();
+
   protected abstract void saveAs();
 
   protected void close() {
@@ -346,29 +364,28 @@ public abstract class EditorWindow extends JFrame {
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
     if (report.getWarnings().size() == 0) {
       save.run();
-    }
+    } 
     else {
-      new ValidationReportDialog(report,
-        new ValidationReportDialog.CallBack() {
-          @Override
-          public void ok() {
-            save.run();
-          }
-
-          @Override
-          public void cancel() {
-          }
+      new ValidationReportDialog(report, new ValidationReportDialog.CallBack() {
+        @Override
+        public void ok() {
+          save.run();
         }
-      ).setVisible(true);
+
+        @Override
+        public void cancel() {
+        }
+      }).setVisible(true);
     }
   }
 
   /**
-   * Called by the enclosed ConfigureTree or ExtensionTree when it's dirty
-   * state is changed. The implementing class should override this if they
-   * need to take action like changing menu availability.
+   * Called by the enclosed ConfigureTree or ExtensionTree when it's dirty state
+   * is changed. The implementing class should override this if they need to take
+   * action like changing menu availability.
    *
    * @param changed true if the tree is in a changed (dirty) state
    */
-  public void treeStateChanged(boolean changed) { }
+  public void treeStateChanged(boolean changed) {
+  }
 }
