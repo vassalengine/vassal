@@ -22,10 +22,10 @@
 					Calculator icon <img src="images/calculator.png"> allows the
 					entry of an Expression. Expressions are essentially an in-line <a
 					href="CalculatedProperty.htm">Calculated Property</a> that are 
-					re-evaluated whenever its value is required.<br>
+					re-evaluated whenever their value is required.<br>
 					<br>
 					<a href="PropertyMatchExpression.htm">Property Match Expressions</a> are a special
-					kind of expression that are used in Global Key Commands to select what counters to
+					kind of expression that are used in Global Key Commands to select what Pieces to
 					operate on, and in Trigger Action traits to check if the action is Triggered. These
 					are described on a separate <a href="PropertyMatchExpression.htm">page</a>.<br> 
 					<br>
@@ -40,13 +40,12 @@
 					Formats</a> that are used by various traits and component to generate
 					messages. Message Formats are far more limited than Expressions.
 					They only allow the inclusion of Property values, they do not allow
-					any sort of calculations. <br> 
-				
+					any sort of calculations beyond potentially receiving the value of a Calculated Property. <br> 
 				<a name="beanshell"></a><h3>BeanShell Expressions</h3>
 					BeanShell Expressions (named after the software package
-					the implements them in Vassal) allow you to use arbitrarily complex
+					that implements them in Vassal) allow you to use arbitrarily complex
 					formulae to define the value returned. BeanShell Expressions are
-					marked by being surrounded by braces {}.<br>
+					marked by being surrounded by curly braces {}.<br>
 					<br>
 					The BeanShell processor is an accurate implementation of the Java programming language
 					and BeanShell Expressions are made up of Java language components. You can use any introductory
@@ -69,13 +68,13 @@
 							<td>Strings</td>
 							<td>&nbsp</td>
 							<td>{"German"}</td>
-							<td>A String must be enclosed in """ marks</td> 
+							<td>A String literal, or text message, must be enclosed in """ quotation marks</td> 
 						</tr>
 						<tr>
 							<td>Properties</td>
 							<td>&nbsp</td>
 							<td>{Nation}</td>
-							<td>Any string not enclosed in "" is interpreted as a Property name</td>
+							<td>Any word not enclosed in "" is interpreted as a Property name</td>
 						</tr>
 						<tr>
 							<td>Arithmetic</td>
@@ -94,8 +93,8 @@
 								{Level % 10}
 							</td>
 							<td>
-								Using the + operator on two String will concatenate (join) them. If the values on either
-								side of the + look like whole numbers, Vassal will attempt to add them.
+								Using the + operator on two String will concatenate (join) them. If the values on both
+								sides of the + look like whole numbers, Vassal will attempt to add them.
 							</td>
 						</tr>		
 						<tr>
@@ -154,7 +153,6 @@
 								{If(Nation=="Germany",1,3)}<br>
 								{GetProperty("Nation"+myNation)<br>
 								{SumStack("Attack")}
-								
 							</td>
 							<td>
 								<b>Alert</b> displays a message in a popup dialog box.<br>
@@ -164,7 +162,6 @@
 							</td>
 						</tr>
 					</table>
-	
 				<a name="simple"></a><h3>Simple Expressions</h3>
 					Simple expressions are not surrounded by braces and
 					provide compatibility with earlier versions of Vassal that only
@@ -172,7 +169,6 @@
 					Expressions are far more limited than BeanShell Expressions, only
 					allowing the substitution of property values into a pre-determined
 					string.<br>
-
 					<table>
 						<tr>
 							<td width="20%">A Simple Integer Expression:</td>
@@ -192,7 +188,6 @@
 							but can NOT nest them ($Nation$Count$$).</td>
 						</tr>
 					</table> 
-					
 					<br> 
 					<b>SEE ALSO:</b>&nbsp;<a href="Properties.htm">Properties</a>
 				</td>
