@@ -124,7 +124,7 @@ public abstract class EditorWindow extends JFrame {
     }
 
     // edit menu
-    final MenuProxy editMenu = new MenuProxy("No"); // Resources.getString("General.edit"));
+    final MenuProxy editMenu = new MenuProxy(Resources.getString("General.edit"));
     editMenu.setMnemonic(Resources.getString("General.edit.shortcut").charAt(0));
 
     editMenu.add(mm.addKey("Editor.cut"));
@@ -175,7 +175,7 @@ public abstract class EditorWindow extends JFrame {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
-      helpMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.prop_er_ties"));
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
       mb.add(helpMenu);
@@ -228,11 +228,9 @@ public abstract class EditorWindow extends JFrame {
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
     
-    
-    //BR// In theory trying to put my new actions in here in the old pattern, but nothing shows up but "Help". Links themselves mostly work.
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.htm").toURI().toURL();
-      mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -240,7 +238,7 @@ public abstract class EditorWindow extends JFrame {
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.htm").toURI().toURL();
-      mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction("Editor.ModuleEditor.using_the_editor", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -258,7 +256,7 @@ public abstract class EditorWindow extends JFrame {
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.htm").toURI().toURL();
-      mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -266,7 +264,7 @@ public abstract class EditorWindow extends JFrame {
     
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.htm").toURI().toURL();
-      mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction("Editor.ModuleEditor.map_components", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -274,7 +272,7 @@ public abstract class EditorWindow extends JFrame {
     
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.htm").toURI().toURL();
-      mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction("Editor.ModuleEditor.toolbar_help", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -285,7 +283,7 @@ public abstract class EditorWindow extends JFrame {
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.htm").toURI()
           .toURL();
-      mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction("Editor.ModuleEditor.game_pieces_and_traits", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -295,28 +293,25 @@ public abstract class EditorWindow extends JFrame {
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.htm").toURI()
           .toURL();
-      mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction(url, null));
+      mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction("Editor.ModuleEditor.expressions", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-
-
-    //BR// This last one was in a different pattern for some reason. But I can't get it to work right either (and it was the one that
-    //BR// wasn't working in "master" either, and doesn't work in 3.2.17 for that matter). Oddly, *this one* actually displays the right
-    //BR// message in the bar, but *goes to the wrong place* when you click the item -- instead of going to the reference manual entry 
-    //BR// for Properties (Properties.htm), it actually opens the properties for the module component itself (as if you'd double-clicked
-    //BR// the very top component in the editor)
+    
+    
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.htm").toURI()
           .toURL();
-
-      final ShowHelpAction helpAction = new ShowHelpAction(url,
-          helpWindow.getClass().getResource("/images/Help16.gif"));
-
-      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
       
-      toolBar.add(helpAction);
+      //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.      
+      
+      //final ShowHelpAction helpAction = new ShowHelpAction(url,
+      //    helpWindow.getClass().getResource("/images/Help16.gif"));
+      //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$      
+      //toolBar.add(helpAction);
+      
+      mm.addAction("Editor.ModuleEditor.prop_er_ties", new ShowHelpAction("Editor.ModuleEditor.prop_er_ties", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
