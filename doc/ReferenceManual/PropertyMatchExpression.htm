@@ -54,25 +54,23 @@
   </a>. They use the full syntax and capabilities of the BeanShell language and can be arbitrarily complex:<br>
   <pre>
     {MaxHeight &lt; (CurrentHeight + Growth) && Age > $myAge$} <br>
-    {Nation == (If (unitType=="Infantry", unitNation, formationNation))}
+    {Nation == (unitType=="Infantry" ? unitNation : formationNation)}
   </pre>
   <b>Java String and Math Methods:</b>
   <br>
-  Java string and arithmetic methods can even be used to evaluate properties. For these situations you will need to use
-  GetProperty() or simply () with the name of a Property (rather than simply naming the property or using $..$ notation) in order to
-  have the property recognized correctly:<br>
+  Java string and arithmetic methods can also be used to evaluate properties:<br>
   <table cellpadding="2" cellspacing="2" border="0">
     <tbody>
     <tr>
     <td>
     <pre>
-{ GetProperty("AP_Objectives_"+Variant).contains(GetProperty("LocationName")) ? 1 : 0 }
-    </pre></td><td>Checks if an objectives string contains the Location name.</td>
+{ GetProperty("AP_Objectives_"+Variant).contains(LocationName) ? 1 : 0 }
+    </pre></td><td>Checks if a list of objectives contains the location name string.</td>
     </tr>
     <tr>
     <td>
     <pre>
-{ (LocationName).length() }
+{ LocationName.length() }
     </pre></td><td>The length of the LocationName string</td>
     </tr>
     <tr>
@@ -110,8 +108,7 @@
   </ul>
 </table>
 <br>
-<b>See Also:</b>&nbsp; <a href="Properties.htm">Properties</a>, <a href="Expression.htm">Expressions</a>, <a
-  href="Expression.htm#beanshell">BeanShell Expressions</a>. 
+<b>See Also:</b>&nbsp; <a href="Expression.htm#beanshell">BeanShell Expressions</a>, <a href="Expression.htm">Expressions</a>, <a href="Properties.htm">Properties</a>. 
       </td></tr>
 <tr>
 </tr>
