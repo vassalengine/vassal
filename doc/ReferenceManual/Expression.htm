@@ -60,6 +60,14 @@
     <td style="font-family:Serif;">A String literal, or text message, must be enclosed in "" quotation marks</td>
     </tr>
     <tr>
+    <td style="text-align:center; font-family:serif;"><b>Substitution</b></td>
+    <td>$..$</td>
+    <td>{"$Nation$"}<br>
+    {$Attack$}
+    </td>
+    <td style="font-family:Serif;">Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command. Not normally needed in BeanShell as there are simpler ways to use a property value in an expression, but sometimes useful in <a href="PropertyMatchExpression.htm">Property Match Expressions</a> to use properties from the issueing piece rather than target piece.</td>
+    </tr>
+    <tr>
     <td style="text-align:center; font-family:serif;"><b>Properties</b></td>
     <td>&nbsp</td>
     <td>{Nation}<br>
@@ -279,15 +287,15 @@
     {Count("{ CombatValue > 0 }", "BattleMap") }<br>
     </td>
     <td style="font-family:Serif;">
-    Except for SumStack, these functions can have substantial performance cost as they must check all of the pieces on the map or entire game
-    against the expression. Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and
-    quotation marks inside the expression must be quoted as \"<br>
-    <br>
     <b>SumStack(prop)</b> returns the total of the specified property in all pieces in the same stack as this one.<br>
     <b>Sum(prop, expr)</b> returns the total of the specified property for all pieces in the game matching the expression.<br>
     <b>Sum(prop, expr, map)</b> returns the total of the specified property for all pieces on a specific map matching the expression.<br>
     <b>Count(expr)</b> returns the number of pieces in the game that match the expression.<br>
-    <b>Count(expr, map)</b> returns the number of pieces on a specific map matching the expression.
+    <b>Count(expr, map)</b> returns the number of pieces on a specific map matching the expression.<br>
+    <br>
+    <b>NOTE:</b> Except for SumStack, these functions can have substantial performance cost as they must check all of the pieces on the map or in the entire game
+    against the expression. Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and
+    quotation marks inside the expression must be quoted as \"<br>
     </td>
     </tr>
 
@@ -300,7 +308,7 @@
     {Alert("Adding 1 to HP")}<br>
     </td>
     <td style="font-family:Serif;">
-    <b>Alert</b> displays a message in a popup dialog box, to the currently active player only.<br>
+    <b>Alert</b> displays a message in a popup dialog box, to the currently active player only. If a message needs to be shown to <i>all</i> players, the recommended method is to send something to the Chat Log e.g. with a <a href="ReportChanges.htm">Report Action</a> trait or other <a href="MessageFormat.htm">Message Format</a> field.<br>
     </td>
     </tr>
   </table>
