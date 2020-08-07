@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -110,7 +111,7 @@ public class GameState implements CommandEncoder {
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>
    * entries to the <code>File</code> menu of the controls window
    */
-  public void addTo(GameModule mod) {
+  public void addTo(@SuppressWarnings("unused") GameModule mod) {
     loadGame = new AbstractAction(Resources.getString("GameState.load_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -207,6 +208,17 @@ public class GameState implements CommandEncoder {
    */
   public void removeGameComponent(GameComponent theComponent) {
     gameComponents.remove(theComponent);
+  }
+
+  /**
+   * @return an enumeration of all {@link GameComponent} objects
+   * that have been added to this GameState
+   * @deprecated Use {@link #getGameComponents()} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Enumeration<GameComponent> getGameComponentsEnum() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return Collections.enumeration(gameComponents);
   }
 
   /**
@@ -331,13 +343,10 @@ public class GameState implements CommandEncoder {
       adjustSplitter();
 
       if (gameStarting) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            Logger logger = GameModule.getGameModule().getLogger();
-            if (logger instanceof BasicLogger) {
-              ((BasicLogger)logger).queryNewLogFile(true);
-            }
+        SwingUtilities.invokeLater(() -> {
+          Logger logger = GameModule.getGameModule().getLogger();
+          if (logger instanceof BasicLogger) {
+            ((BasicLogger)logger).queryNewLogFile(true);
           }
         });
       }
@@ -357,12 +366,7 @@ public class GameState implements CommandEncoder {
         if (c instanceof ComponentSplitter.SplitPane) {
           final ComponentSplitter.SplitPane sp = (ComponentSplitter.SplitPane) c;
 
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              sp.setDividerLocation(g.getChatter().getPreferredSize().height);
-            }
-          });
+          SwingUtilities.invokeLater(() -> sp.setDividerLocation(g.getChatter().getPreferredSize().height));
         }
         return;
       }
@@ -396,7 +400,7 @@ public class GameState implements CommandEncoder {
 
       // Check the Save game for validity
       final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
-      if (metaData == null || ! (metaData instanceof SaveMetaData)) {
+      if (!(metaData instanceof SaveMetaData)) {
         WarningDialog.show("GameState.invalid_save_file", f.getPath());
         return;
       }
@@ -649,8 +653,9 @@ public class GameState implements CommandEncoder {
    * @return an Enumeration of all {@link GamePiece}s in the game
    * @deprecated Use {@link #getAllPieces()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(pieces.values());
   }
 
@@ -660,7 +665,7 @@ public class GameState implements CommandEncoder {
   }
 
   public static class SetupCommand extends Command {
-    private boolean gameStarting;
+    private final boolean gameStarting;
 
     public SetupCommand(boolean gameStarting) {
       this.gameStarting = gameStarting;
@@ -894,9 +899,9 @@ public class GameState implements CommandEncoder {
    * Read a saved game and translate it into a Command.  Executing the
    * command will load the saved game.
    *
-   * @param fileName
-   * @return
-   * @throws IOException
+   * @param saveFile Sqve file name
+   * @return Command
+   * @throws IOException I/O Exception
    */
   public Command decodeSavedGame(File saveFile) throws IOException {
     return decodeSavedGame(
