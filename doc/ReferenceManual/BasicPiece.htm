@@ -37,6 +37,9 @@
     <br>
     </td>
     <td valign="top"><img src="images/BasicPiece.png" alt=""><br>
+    <div style="text-align:center; font-size:12px; padding-top:4px">
+      The image is optional, but you should always give each Basic Piece a name.
+    </div>
     </td>
     </tr>
     </tbody>
@@ -79,7 +82,6 @@
       string.        
     </li>
   </ul>
-  <br>
   The following <a href="Properties.htm">Properties</a> are defined after a piece is moved, either manually by
   drag-and-drop movement or by a <a href="SendToLocation.htm">Send To Location</a> trait:<br>
   <ul>
@@ -99,6 +101,18 @@
       contains the previous map Y coordinate</li>
     </li>
   </ul>
+
+  The following <a href="Properties.htm">Properties</a> are defined after the player has selected
+  something from the piece's right-click context menu:<br>
+  <ul>
+    <li><i>ClickedX</i>
+      contains the X location on current map where right-click took place.<br>
+    </li>
+    <li><i>ClickedY</i>
+      contains the Y location on current map where right-click took place.<br>
+    </li>
+  </ul>
+
   </td>
   </tr>
   <tr>
