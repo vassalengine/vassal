@@ -79,9 +79,9 @@ public class NodeClientFactory extends ChatServerFactory {
       }
     };
 
-    final GameModule g = GameModue.getGameModule();
-
     final HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
+    final GameModule g = GameModule.getGameModule();
+
     final SocketNodeClient server = new SocketNodeClient(
       g.getGameName(),
       GameModule.getUserId() + "." + System.currentTimeMillis(),
@@ -94,7 +94,7 @@ public class NodeClientFactory extends ChatServerFactory {
     g.getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     g.getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
 
-    server.addPropertyChangeListener(ChatServerConnection.STATUS, e ->
+    server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
       final String mess = (String) e.getNewValue();
       GameModule.getGameModule().warn(mess);
       logger.error("", mess);
