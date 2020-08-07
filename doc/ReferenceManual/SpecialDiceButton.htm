@@ -21,7 +21,7 @@
   <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
     <tbody>
     <tr>
-    <td style="vertical-align: top;">A Symbolic Dice Button places a button on the Toolbar which rolls dice that use graphical images to display their
+    <td style="vertical-align: top;">A Symbolic Dice Button places a button on the <a href="Toolbar.htm">Toolbar</a> which rolls dice that use graphical images to display their
     faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice, each represented by a <i>[Symbolic Die]</i> component, each of which may in turn have any number of faces
     (represented by <i>[Symbolic Die Face]</i> sub-components). When the button is clicked, a random face is selected for each
     Symbolic Die that this component contains. The results of the roll can be reported as text into the chat area,
@@ -35,13 +35,13 @@
     <br>
     <b>Name:</b>&nbsp; The name of the dice button. <br>
     <br>
-    <b>Button Text:</b>&nbsp; Text for the Toolbar button in the main window.<br>
+    <b>Button Text:</b>&nbsp; Text for the <a href="Toolbar.htm">Toolbar</a> button in the main window.<br>
     <br>
-    <b>Tooltip Text:</b>&nbsp; Optional tooltip text for the Toolbar button in the main window.<br>
+    <b>Tooltip Text:</b>&nbsp; Optional tooltip text for the <a href="Toolbar.htm">Toolbar</a> button in the main window.<br>
     <br>
     <b>Hotkey:&nbsp;</b>Keyboard shortcut or <a href="NamedKeyCommand.htm">Named Key Command</a> for rolling the dice.<br>
     <br>
-    <b>Report results as text:</b>&nbsp; If true, report results to the chat log.<br>
+    <b>Report results as text:</b>&nbsp; If true, report results to the <a href="ChatLog.htm">Chat Log</a>.<br>
     <br>
     <b>Report format:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> specifying the format for reporting text results: <i>$name$</i>
     is the name of the button as specified above, <i>$result1$, $result2$, etc</i>is the
@@ -79,6 +79,10 @@
   <div align="center">
     <img src="images/SpecialDiceHTML.png">
   </div>
+          <div style="text-align:center; font-size:12px; padding-top:4px">
+      Example of a Symbolic Die configured to display dice images inline in the <a href="ChatLog.htm">Chat Log</a>. The <i>$result1$</i> property is used to index the correct image filename.
+    </div>
+
 
   <hr size="2" width="100%">
   <h2>Sub-Components</h2>
@@ -98,6 +102,7 @@
     can create dice with any number of faces desired, no matter how geometrically improbable!
     </td>
     <td style="vertical-align: top;">    <img src="images/SpecialDiceExample.png">
+
     <br>
     </td>
     </tr>

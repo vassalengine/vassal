@@ -14,7 +14,7 @@
   <h1 align="center">VASSAL Reference Manual</h1>
   <div align="center">
     <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a> &gt; <a href="PieceWindow.htm">Game
-    Piece Palette</a></small> <small>&gt;<b></b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Calculated
+    Piece Palette</a></small> <small>&gt; <a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Calculated
     Property</b></small><br>
   </div>
   </td>
@@ -33,9 +33,10 @@
         <img src="images/CalculatedProperty.png" alt=""><br>
       </div>
       <br>
-      A Calculated Property defines a <a href="Properties.htm">Property</a> which has a value that is calculated by a formula each time it is needed. The
-      property can be referred to by other traits in the piece, either for creating <a href="MessageFormat.htm">Message Formats</a> to display messages
-      or in e.g. <a href="PropertyMatchExpression.htm">Property Match Expressions</a>.
+      A Calculated Property defines a <a href="Properties.htm">Property</a> which has a <i>value</i> that is calculated by a
+      formula each time it is needed. The property can be referred to by <i>name</i> in other traits in the piece, either for creating 
+      <a href="MessageFormat.htm">Message Formats</a> to display messages or in e.g. <a
+        href="PropertyMatchExpression.htm">Property Match Expressions</a>. Each place the property <i>name</i> is referred to in an expression, the <i>value</i> will be recalculated and substituted.
       <br>
       <br>
       <b>Property Name:</b>&nbsp;The name of the property that is used to access the formula value.<br>
@@ -45,14 +46,14 @@
       appears as you are typing that tells you if your <a href="Expression.htm#beanshell">BeanShell Expression</a> is
       valid or not.<br>
       <br>
-      <b>Insert:</b>&nbsp;Use the <i>Insert</i> button to access the <a href="Expression.htm#builder">Expression Builder</a> to
-      add expression components such as property names, operators and functions. You can also type the formula in
-      directly.
+      <b>Insert:</b>&nbsp;Use the <i>Insert</i> button to access the <a href="Expression.htm#builder">Expression Builder
+      </a> to add expression components such as property names, operators and functions. You can also type the formula
+      in directly.
       <br><br>
       Note: unlike many fields in VASSAL, Calculated Properties <i>exclusively</i> support <a
         href="Expression.htm#beanshell">BeanShell Expressions</a>. Thus "Old Style VASSAL" comparisons e.g. with single
-      = sign, and the ~= operator, are not supported here. The traditional <i>{..}</i> marks around BeanShell expressions also
-      do not appear in this context.
+      = sign, and the ~= operator, are not supported here. The traditional <i>{..}</i> marks around BeanShell
+      expressions also do not appear in this context.
       <br><br>
       VASSAL will recalculate the value of the Expression <i>each and every</i> time its value is asked for: whether it
       is referenced in another Calculated Property, an Expression or field in another type of trait, or is displayed in

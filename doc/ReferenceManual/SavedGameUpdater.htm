@@ -24,22 +24,24 @@
   <table>
     <tbody>
     <tr>
-    <td>When a game is saved using one version of a VASSAL module, and then re-opened using a later version, the Game
-    Pieces <i>retain their original behavior</i>, even if the definition of the piece has since changed in 
-    the Game Piece Palette and/or in Prototype definitions. This is necessary for modules to be backward-compatible with 
-    old saved games.&nbsp; The <i>Update Saved Games</i> dialog allows you to update a game saved with an older version 
-    of a module to use the corresponding piece definitions in the current version. The intended use is to save work when 
-    creating Predefined Setups for a new module version.<br>
+    <td>When a game is saved using one version of a VASSAL module and then re-opened using a later version, the <a href="GamePiece.htm">Game
+    Pieces</a> <i>retain their original behavior</i>, even if the definition of the piece has since changed in the Game
+    Piece Palette and/or in Prototype definitions. This is necessary for modules to be backward-compatible with old
+    saved games. The <i>Update Saved Games</i> dialog allows you to update a game saved with an older version of a
+    module to use the corresponding piece definitions in the current version. The intended use is to save work when
+    creating <a href="GameModule.htm#PredefinedSetup">Predefined Setups</a> for a new module version.<br>
     <br>
-    The updater works by attempting to match each piece in a saved game to the component in the <a href="PieceWindow.htm">Game Piece Palette</a>, 
-    <a href="Deck.htm">Deck</a>, or <a href="SetupStack.htm">At-Start Stack</a> that it came from.&nbsp; The name of 
-    the piece in the saved game is matched with a component in one of these locations. &nbsp;For example, a piece named "4-6-7" 
-    may be defined in a list called "Squads" within a drop-down menu named "German" inside a tab named "Ground Units". 
-    The Saved Game Updater notes the component in the Game Piece Palette where the "4-6-7" piece was defined in the old 
-    module version, then looks for the same component in the new module version (i.e. the "Ground Units"-&gt;"German"-&gt;"Squads"-&gt;"4-6-7" 
-    component). &nbsp;If it finds the component, it will replace any "4-6-7" piece in the saved game with the piece from that 
-    component, matching the value of Text Labels, Layer activation, rotation, etc., to the best of its ability. It is likely 
-    you will have to load the updated saved game and make some adjustments, as the process is not perfect. &nbsp;<br>
+    The updater works by attempting to match each piece in a saved game to the component in the <a
+      href="PieceWindow.htm">Game Piece Palette</a>, 
+    <a href="Deck.htm">Deck</a>, or <a href="SetupStack.htm">At-Start Stack</a> that it came from.&nbsp; The name of the
+    piece in the saved game is matched with a component in one of these locations. &nbsp;For example, a piece named
+    "4-6-7" may be defined in a list called "Squads" within a drop-down menu named "German" inside a tab named "Ground
+    Units". The Saved Game Updater notes the component in the Game Piece Palette where the "4-6-7" piece was defined in
+    the old module version, then looks for the same component in the new module version (i.e. the "Ground
+    Units"-&gt;"German"-&gt;"Squads"-&gt;"4-6-7" component). &nbsp;If it finds the component, it will replace any
+    "4-6-7" piece in the saved game with the piece from that component, matching the value of Text Labels, Layer
+    activation, rotation, etc., to the best of its ability. It is likely you will have to load the updated saved game
+    and make some adjustments, as the process is not perfect. &nbsp;<br>
     <br>
     Because the updater relies on matching piece names with component names in the editor, it will not work well if many
     different kinds of pieces share the same name, or if the structure of the Game Piece Palette has changed
@@ -60,7 +62,7 @@
       <li>Hit <span style="font-style: italic;">Update games</span> to overwrite the files.</li>
     </ol>
     </td>
-    <td><img alt="" src="images/SavedGameUpdater.png"></td>
+    <td valign="top"><img alt="" src="images/SavedGameUpdater.png"></td>
     </tr>
 
     </tbody>
