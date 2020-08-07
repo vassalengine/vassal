@@ -11,7 +11,7 @@
   <td valign="top">
   <h1>VASSAL Reference Manual</h1>
   <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
-  &gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b></b><a href="GamePiece.htm">Game Piece</a>
+  &gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt; <a href="GamePiece.htm">Game Piece</a>
   </small> <small>&gt; <b>Move Fixed Distance</b></small><br>
   </td>
   </tr>
@@ -24,31 +24,39 @@
     <tbody>
     <tr>
     <td valign="top">
-    Defines a command to move the piece a fixed X and Y distance using <a href="Expression.htm">Expressions</a> to control the amount of
-    movement on each axis.<br/>
+    Defines a command to move the piece a fixed X and Y distance using <a href="Expression.htm">Expressions</a> to
+    control the amount of movement on each axis.<br/>
     <br/>
-    <b>Description:</b>&nbsp; A brief description for this trait that appears in the <a href="GamePiece.htm">Piece Definer window</a> for the piece. Useful, for example, to distinguish between several versions of this trait.<br>
+    <b>Description:</b>&nbsp; A brief description for this trait that appears in the <a href="GamePiece.htm">Piece
+    Definer window</a> for the piece. Useful, for example, to distinguish between several versions of this trait.<br>
     <br>
-    <b>Command Name:</b>&nbsp; Text that appears on the piece's right-click context menu. If left blank, no context menu item will appear, but 
-    the trait can still be activated to move the piece using the key command.<br>
+    <b>Command Name:</b>&nbsp; Text that appears on the piece's right-click context menu. If left blank, no context menu
+    item will appear, but the trait can still be activated to move the piece using the key command.<br>
     <br>
-    <b>Keyboard shortcut:</b>&nbsp; Key command or <a href="NamedKeyCommand.htm">Named Key Command</a> to initiate the movement.<br>
+    <b>Keyboard shortcut:</b>&nbsp; Key command or <a href="NamedKeyCommand.htm">Named Key Command</a> to initiate the
+    movement.<br>
     <br>
-    <b>Distance to the right:</b>&nbsp; An <a href="Expression.htm">Expression</a> specifying the distance to move the piece to the right. Use negative numbers to move the piece to the left.<br>
+    <b>Distance to the right:</b>&nbsp; An <a href="Expression.htm">Expression</a> specifying the distance to move the
+    piece to the right. Use negative numbers to move the piece to the left.<br>
     <br>
-    <b>Distance upwards:</b>&nbsp; An <a href="Expression.htm">Expression</a> specifying the distance to move the piece upwards. Use negative numbers to move the piece down. <br>
+    <b>Distance upwards:</b>&nbsp; An <a href="Expression.htm">Expression</a> specifying the distance to move the piece
+    upwards. Use negative numbers to move the piece down. <br>
     <br>
-    <b>Move entire stack:</b>&nbsp; Check this option to cause the entire stack containing the piece to be moved, if the stack is not expanded. Otherwise, only this piece will be moved.<br>
+    <b>Move entire stack:</b>&nbsp; Check this option to cause the entire stack containing the piece to be moved, if the
+    stack is not expanded. Otherwise, only this piece will be moved.<br>
     <br>
     <b>Advanced Options:</b>&nbsp; Check this option to display additional options to give more control over the
     movement. The two numbers specified in the <a href="Expression.htm">Expressions</a> for movement right, and the two
-    numbers for movement left are multiplied together and added to the left/up distances defined in the basic options.<br>
+    numbers for movement left are multiplied together and added to the left/up distances defined in the basic options.
     <br>
-    <b>IMPORTANT NOTE:</b>&nbsp; If this piece has a <a href="Rotate.htm">Can Rotate</a> trait listed <i>before</i> this trait, then the resulting direction 
-    will be relative to the current facing of the piece.&nbsp; <i>Example:</i>&nbsp; If a piece has traits <i>Can Rotate</i>
-    followed by <i>Move Fixed Distance</i> 60 upwards, then the move command will move the piece in whatever direction the top of 
-    the piece is facing.&nbsp; If a piece has traits <i>Move Fixed Distance</i> 60 upwards followed by <i>Can Rotate</i> then 
-    the move command will move the piece towards the top of the screen regardless of the facing of the piece.<br>
+    <br>
+    <b>IMPORTANT NOTE:</b>&nbsp; If this piece has a <a href="Rotate.htm">Can Rotate</a> trait listed <i>before</i> this
+    trait, then the resulting direction will be relative to the current facing of the piece. <i>Example:</i> If a piece
+    has traits <i>Can Rotate</i>
+    followed by <i>Move Fixed Distance</i> 60 upwards, then the move command will move the piece in whatever direction
+    the top of the piece is facing. If a piece has traits <i>Move Fixed Distance</i> 60 upwards followed by <i>Can
+    Rotate</i> then the move command will move the piece towards the top of the screen regardless of the facing of the
+    piece.<br>
     <br>
     <b>EXAMPLE:</b> An army unit can conduct a forced march for extra movement. The amount of additional movement
     depends on its supply, which is tracked by a <a href="Layer.htm">Layer</a> trait. The Move Fixed Distance trait is
