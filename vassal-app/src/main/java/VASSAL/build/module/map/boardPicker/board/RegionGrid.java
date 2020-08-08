@@ -851,8 +851,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Mouse clicked, see if it is on a Region Point
     @Override
     public void mouseClicked(MouseEvent e) {
+      lastClick = e.getPoint(); // Also used for right clicks and stuff
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        lastClick = e.getPoint();
 
         if (lastClickedRegion != null) {
           if (e.getClickCount() >= 2) { // Double click show properties
