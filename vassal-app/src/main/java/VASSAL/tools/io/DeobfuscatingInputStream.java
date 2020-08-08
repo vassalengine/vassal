@@ -34,6 +34,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class DeobfuscatingInputStream extends FilterInputStream {
 
+  private static final int HEADER_LENGTH = ObfuscatingOutputStream.HEADER.length();
+
   /**
    * @param in the stream to wrap
    * @throws IOException
@@ -42,13 +44,13 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     super(null);
 
     final byte[] header = new byte[ObfuscatingOutputStream.HEADER.length()];
-    readFully(in, header, 0, header.length);
+    readFully(in, header, HEADER_LENGTH);
     if (new String(header, StandardCharsets.UTF_8).equals(ObfuscatingOutputStream.HEADER)) {
       this.in = new DeobfuscatingInputStreamImpl(in);
     }
     else {
       final PushbackInputStream pin =
-        new PushbackInputStream(in, header.length);
+        new PushbackInputStream(in, HEADER_LENGTH);
       pin.unread(header);
       this.in = pin;
     }
@@ -63,12 +65,12 @@ public class DeobfuscatingInputStream extends FilterInputStream {
    * @param len the number of bytes to read
    * @throws IOException if <code>len</code> bytes cannot be read
    */
-  private static int readFully(InputStream in, byte[] bytes, int off, int len)
+  private static int readFully(InputStream in, byte[] bytes, int len)
                                                            throws IOException {
     int count;
     int n = 0;
     while (n < len) {
-      count = in.read(bytes, off + n, len - n);
+      count = in.read(bytes, n, len - n);
       if (count < 0) break;
       n += count;
     }
@@ -83,7 +85,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     public DeobfuscatingInputStreamImpl(InputStream in) throws IOException {
       super(in);
 
-      readFully(in, pair, 0, 2);
+      readFully(in, pair, 2);
       key = (byte) ((unhex(pair[0]) << 4) | unhex(pair[1]));
     }
 
@@ -97,13 +99,12 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     @Override
     public int read() throws IOException {
-      switch (readFully(in, pair, 0, 2)) {
+      switch (readFully(in, pair, 2)) {
       case  0:
         return -1;
-      case  1:
-        throw new IOException();
       case  2:
         return (((unhex(pair[0]) << 4) | unhex(pair[1])) ^ key) & 0xFF;
+      case  1:
       default:
         throw new IOException();
       }
