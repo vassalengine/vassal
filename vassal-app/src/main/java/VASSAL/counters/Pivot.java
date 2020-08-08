@@ -79,7 +79,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Pivot.htm");
+    return HelpFile.getReferenceManualPage("Pivot.html");
   }
 
   @Override

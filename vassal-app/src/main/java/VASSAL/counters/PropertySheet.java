@@ -613,7 +613,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PropertySheet.htm");
+    return HelpFile.getReferenceManualPage("PropertySheet.html");
   }
 
   @Override

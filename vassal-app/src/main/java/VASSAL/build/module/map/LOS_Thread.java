@@ -793,7 +793,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "LOS");
+    return HelpFile.getReferenceManualPage("Map.html", "LOS");
   }
 
   @Override

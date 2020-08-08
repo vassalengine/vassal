@@ -434,7 +434,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalOptions.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GlobalOptions.html"); //$NON-NLS-1$
   }
 
   @Override

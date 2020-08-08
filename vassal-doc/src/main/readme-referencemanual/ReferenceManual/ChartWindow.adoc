@@ -1,0 +1,72 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Chart Window*# +
+ +
+
+'''''
+
+=== Chart Window +
+
+[cols=",,",]
+|===========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+|A window for holding game-play aids:  charts, tables, etc.  Adds a button to the Toolbar of the main Module window.  Clicking the button shows the window with the given name.  The text of the button, an icon, and a hotkey shortcut to open and close the window may be specified. +
+ +
+To add a Chart Window to your module, find the main _[Module]_ entry at the very top of the Editor's configuration window. Right-click it and select _Add Chart Window Menu_. After adding initial settings for your Chart Window, you will find a _[Chart Window Menu]_ component at the very bottom of your module's list of components in the Editor window. You can then right-click the _[Chart Window Menu]_ component to _Add_ any of the types of Sub-Component listed below, thus building out your Chart Window with as many charts as you need. |image:images/ChartWindowConfig.png[image] |image:images/ChartWindow.png[image] +
+|===========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+'''''
+
+=== Sub-Components
+
+[#Chart]##
+
+==== Chart
+
+[cols=",",]
+|======================================================================================================================================================================================
+|Each chart is a GIF/JPEG/PNG image that you must create beforehand with an external program.  You specify the image file and the name of the chart. + |image:images/Chart.png[image] +
+|======================================================================================================================================================================================
+
+ +
+
+==== [#HtmlChart]##HTML Chart
+
+[cols=",",]
+|====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+|Charts can be specified using HTML as well, so long as the HTML is not too complex.  Avoid using the <head> tag, for instance.  HTML Charts can contain hyperlinks to one another, but not to external resources. You can reference any image that exists in the module file. For example, if inf.png is an image used in one of the Game Piece definitions, you can reference it using <img src="inf.png">. Note that because images stick around in a module file even after the components using them have been deleted, you can add images as a regular Chart, delete the Chart, and still use its image in an HtmlChart. + |image:images/HtmlChart.png[image] +
+|====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+ +
+ +
+
+==== Tabbed Pane
+
+A panel with tabs, each of which corresponds to a Chart, Panel, or other Tab panel subcomponent.  The label of the tab will be the name of the subcomponent. +
+ +
+image:images/TabbedPane.png[image]
+
+==== Panel
+
+[cols=",",]
+|=================================================================================================================================================================================================================================================================================================================================
+|A panel that can contain Charts, Tab panels, or other panels.  The "Fixed cell size" box allows you to specify a fixed number of columns that the panel will have.  Otherwise, the subcomponents will appear in a single row, or a single column if the "Vertical layout box is checked. + |image:images/PanelWidget.png[image] +
+ +
+image:images/PanelWidget2.png[image] +
+|=================================================================================================================================================================================================================================================================================================================================
+
+ +
+[#Map]##
+
+==== Map
+
+[cols=",",]
+|====================================================================================================================================================================================================================================================================
+|A fully functioning <<Map.adoc#top,Map Window>> can be embedded within a Chart. You can put different maps under different tabs within the same chart window, and place and move counters onto the charts for bookkeeping purposes. |image:images/ChartMap.png[image] +
+|====================================================================================================================================================================================================================================================================
+
+ +
+ +
+
+ +
+ +

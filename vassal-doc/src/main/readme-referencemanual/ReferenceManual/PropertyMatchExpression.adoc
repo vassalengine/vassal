@@ -1,0 +1,92 @@
+[width="100%",cols="100%",]
+|===============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+a|
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > * Property Match Expressions*# +
+ +
+
+a|
+
+'''''
+
+=== Property Match Expressions +
+
+image:images/PropertyMatchExpression.png[image] +
+ +
+A Property Match Expression is a special type of <<Expression.adoc#top,Expression>> that is used to select a set of counters to be operated on (link:Map.htm#GlobalKeyCommand[Module], link:Map.htm#GlobalKeyCommand[Map], <<DeckGlobalKeyCommand.adoc#top,Deck>> or <<GlobalKeyCommand.adoc#top,Counter>> Global Key Commands) or to test if some condition is true before taking action (<<TriggerAction.adoc#top,Trigger Action>>, <<RestrictCommands.adoc#top,Restrict Commands>>). +
+ +
+Just as there are two type of <<Expression.adoc#top,Expressions>>, there are two types of Property Match Expressions. link:#beanshell[BeanShell Expressions] are identified by being surrounded by curly braces \{}. They are very powerful and can be arbitrarily complex. link:#old[Old-Style Expressions] are identified by not being surrounded by the curly braces \{}. Old-Style Expressions are less powerful than BeanShell expressions and are supported to provide compatibility with earlier versions of Vassal. If you are learning VASSAL for the first time, you will mainly want to learn about BeanShell expressions. +
+ +
+*Comparing Properties For Global Key Commands:* When Property Match Expressions are used in a Global Key Command trait attached to a piece, any references to <<Properties.adoc#top,Properties>> normally refer to the properties of the piece being checked to see if it matches, i.e. the potential "target" piece, rather than the piece that is issuing the Global Key Command. However, there is a special format which can be used to match properties in the potential _target pieces_ against properties in the _issuing piece_ that is generating the command. Any Property name enclosed in $ signs (e.g. $nation$) will be evaluated against the piece issuing the Global Key Command and replaced before the property Match is performed against other pieces. Because the $..$ notation performs an immediate substitution, this means that string values will often need to be put inside of quotation marks. Thus the matching expression \{ nation == "$nation$" } will compare the value of the _nation_ property of the target piece (left side of equation in this case) to the value of the _nation_ property of the issuing piece (right side of the equation in this case). +
+ +
+[#beanshell]##**BeanShell Property Match Expressions** +
+BeanShell Property Match Expressions use the same syntax as link:Expression.htm#beanshell[BeanShell Expressions] . They use the full syntax and capabilities of the BeanShell language and can be arbitrarily complex: +
+
+....
+    {MaxHeight < (CurrentHeight + Growth) && Age > $myAge$} 
+
+    {Nation == (unitType=="Infantry" ? unitNation : formationNation)}
+  
+....
+
+*Java String and Math Methods:* +
+Java string and arithmetic methods can also be used to evaluate properties: +
+
+[width="100%",cols="50%,50%",]
+|==============================================================================
+a|
+....
+{ GetProperty("AP_Objectives_"+Variant).contains(LocationName) ? 1 : 0 }
+    
+....
+
+|Checks if a list of objectives contains the location name string.
+a|
+....
+{ LocationName.length() }
+    
+....
+
+|The length of the LocationName string
+a|
+....
+{ Integer.parseInt((LocationName).replaceAll("[^0-9]","")) }
+    
+....
+
+|Value of any number in LocationName, after removing all non-numeric characters
+a|
+....
+{ Math.abs(MaybeNegative) }
+    
+....
+
+|The absolute value of the numeric property MaybeNegative
+a|
+....
+{ Math.max(OneValue, GetProperty("Value"+WhichValue)) }
+    
+....
+
+|The larger of two numeric properties
+|==============================================================================
+
+ +
+[#old]#*Old-style Property Match Expressions* +
+image:images/PropertyMatchExpression2.png[image] +
+Old-style Property Match Expressions are not surrounded by the curly braces and have a much-restricted syntax compared to their BeanShell equivalent. *They are supported to maintain compatibility with older VASSAL modules -- designers of new modules should prefer the more powerful BeanShell expressions.*#
+
+* The left-hand side of each comparison MUST be a property name.
+* The right-hand side of each comparison MUST be a string NOT surrounded by quotes.
+* The Equals operator is = not ==.
+* Parentheses () may NOT be used to create more complex expressions.
+* Operators and functions may NOT be used to create more complex expressions.
+
+|===============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+ +
+*See Also:*  link:Expression.htm#beanshell[BeanShell Expressions], <<Expression.adoc#top,Expressions>>, <<Properties.adoc#top,Properties>>.
+
+ +

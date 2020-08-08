@@ -69,7 +69,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("UsePrototype.htm");
+    return HelpFile.getReferenceManualPage("UsePrototype.html");
   }
 
   @Override

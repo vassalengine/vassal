@@ -190,7 +190,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.htm", "ChangePropertyToolbarButton");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html", "ChangePropertyToolbarButton");
   }
 
   @Override

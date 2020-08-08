@@ -130,7 +130,7 @@ public class Documentation extends AbstractConfigurable {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm")); //$NON-NLS-1$
+      return new HelpFile(null, new File(dir, "HelpMenu.html")); //$NON-NLS-1$
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);

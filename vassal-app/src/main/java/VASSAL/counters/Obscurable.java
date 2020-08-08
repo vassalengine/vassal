@@ -567,8 +567,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Mask.htm");
-  } //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("Mask.html"); //$NON-NLS-1$//
+  }
 
   @Override
   public PieceEditor getEditor() {

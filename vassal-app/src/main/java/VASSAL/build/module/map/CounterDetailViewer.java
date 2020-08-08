@@ -955,7 +955,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "StackViewer");
+    return HelpFile.getReferenceManualPage("Map.html", "StackViewer");
   }
 
   @Override

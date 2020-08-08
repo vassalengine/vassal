@@ -427,7 +427,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "GlobalKeyCommand");
+    return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand");
   }
 
   @Override

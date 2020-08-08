@@ -119,7 +119,7 @@ public class FontStyle extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm", "FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.html", "FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

@@ -767,7 +767,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Layer.htm");
+    return HelpFile.getReferenceManualPage("Layer.html");
   }
 
   @Override

@@ -51,7 +51,7 @@ public class PlayerHand extends PrivateMap {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PlayerHand.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("PlayerHand.html"); //$NON-NLS-1$
   }
 
   @Override

@@ -520,7 +520,7 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Inventory.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Inventory.html"); //$NON-NLS-1$
   }
 
   @Override

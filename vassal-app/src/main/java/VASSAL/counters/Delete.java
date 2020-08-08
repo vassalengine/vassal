@@ -160,7 +160,7 @@ public class Delete extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm", "Delete");
+    return HelpFile.getReferenceManualPage("GamePiece.html", "Delete");
   }
 
   @Override

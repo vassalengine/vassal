@@ -298,7 +298,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MovementTrail.htm"); //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("MovementTrail.html"); //$NON-NLS-1$//
   }
 
   /**

@@ -495,7 +495,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm");
+    return HelpFile.getReferenceManualPage("GamePiece.html");
   }
 
   @Override

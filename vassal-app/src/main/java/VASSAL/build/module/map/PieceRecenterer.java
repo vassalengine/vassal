@@ -180,7 +180,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "PieceRecenterer");
+    return HelpFile.getReferenceManualPage("Map.html", "PieceRecenterer");
   }
 
   @Override

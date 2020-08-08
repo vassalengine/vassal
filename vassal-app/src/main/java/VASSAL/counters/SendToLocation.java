@@ -486,7 +486,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SendToLocation.htm");
+    return HelpFile.getReferenceManualPage("SendToLocation.html");
   }
 
   @Override

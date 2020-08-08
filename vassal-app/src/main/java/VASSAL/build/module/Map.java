@@ -2273,7 +2273,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Map.html"); //$NON-NLS-1$
   }
 
   @Override

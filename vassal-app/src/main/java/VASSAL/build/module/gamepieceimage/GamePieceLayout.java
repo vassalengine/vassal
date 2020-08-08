@@ -241,7 +241,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GamePieceLayouts.html"); //$NON-NLS-1$
   }
 
   @Override

@@ -500,7 +500,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SpecialDiceButton.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("SpecialDiceButton.html"); //$NON-NLS-1$
   }
 
   /**

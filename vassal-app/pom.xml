@@ -333,6 +333,7 @@
                     <threshold>High</threshold>
                     <xmlOutput>true</xmlOutput>
                     <failOnError>false</failOnError>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>

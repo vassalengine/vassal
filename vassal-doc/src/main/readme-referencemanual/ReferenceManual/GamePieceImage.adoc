@@ -1,0 +1,97 @@
+[width="100%",cols="100%",]
+|=======================================================================================================================================================================================================================================================================================================================================================================================================================================
+a|
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> >#[.small]#<<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>> >#[.small]#<<GamePieceLayouts.adoc#top,Game Piece Layout>>**> Game Piece Image**# +
+ +
+
+a|
+
+'''''
+
+=== Game Piece Image
+
+This component uses a layout created in a <<GamePieceLayouts.adoc#top,Game Piece Layout>> component to create an actual image. Here, you specify the colors, text, and images to use in the layout, as well as the name under which this image will appear in the image-chooser drop-down. You can then begin adding this image to Game Pieces, either in their <<BasicPiece.adoc#top,Basic Piece>> component or in a <<Layer.adoc#top,Layer>>. +
+ +
+
+[width="100%",cols="50%,<50%",]
+|=====================================================================================================================================================================================================================================
+a|
+*Name:* Specify a name for the image definition. This is the name under which this image will appear in the image-chooser drop-down menu in a Game Piece trait's properties. +
+ +
+*Background Color:* Select a background color for the image from the drop down list of available colors, or click the _Cancel_ button on that dialog to use a transparent background. +
+ +
+
+The next section shows a visualization of what the finished image will look like with your choices.
+
+The Items panel shows the configurable items that make up your image layout. Click on an item to display the configurable options for that item in the bottom display panel. There is a different display panel for each type of item.
+
+ +
+
+|image:images/imagedefn.png[image]
+|=====================================================================================================================================================================================================================================
+
+ +
+
+==== Symbol Item Configuration
+
+[width="100%",cols="50%,<50%",]
+|=======================================================================================================================================================
+|*Unit Size:* Select the Unit Size specifier from the drop-down menu. +
+ +
+*1st Symbol:* Select the primary symbol from the drop-down menu. +
+ +
+*2nd Symbol:* Select the pecondary symbol from the drop-down menu. +
+ +
+*Symbol Color:* Select the color used to draw the symbol lines. +
+ +
+*Background Color:* Select the color to use for the background of the symbol body. +
+ +
+*Size Color:* Select the color used to draw the Size Specifier drawn above the symbol body. |image:images/symbolinstance.png[image,width=313,height=168]
+|=======================================================================================================================================================
+
+ +
+
+==== Label Item Configuration
+
+[width="100%",cols="50%,<50%",]
+|===================================================================================================================================
+|*Value:* Enter the text to display on the image. +
+ +
+*Foreground Color:* Select the color to use to draw the text. +
+ +
+*Background Color:* Select the color to use to draw a box behind the text. |image:images/textinstance.png[image,width=313,height=85]
+|===================================================================================================================================
+
+ +
+
+==== Text Box Item Configuration
+
+[width="100%",cols="50%,<50%",]
+|==================================================================================================================
+|*Value:* Enter the text to display on the image. +
+ +
+*Text Color:* Select the color to use to draw the text. +
+ +
+*Background Color:* Select the color to use to draw a box behind the text. |image:images/textboxinstance.png[image]
+|==================================================================================================================
+
+==== Image Item Configuration
+
+Import an image to draw at the position specified in the layout. +
+ +
+
+==== Shape Item Configuration
+
+[width="100%",cols="50%,<50%",]
+|=======================================================================================================
+|*Foreground Color:* Select the fill color for the shape. +
+ +
+*Background Color:* Select the color for the shape's outline. |image:images/ShapeItemInstance.png[image]
+|=======================================================================================================
+
+|=======================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+ +

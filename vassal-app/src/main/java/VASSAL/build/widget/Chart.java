@@ -98,7 +98,7 @@ public class Chart extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "Chart");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Chart");
   }
 
   @Override

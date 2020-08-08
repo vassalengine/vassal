@@ -518,7 +518,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "StackingOptions");
+    return HelpFile.getReferenceManualPage("Map.html", "StackingOptions");
   }
 
   @Override

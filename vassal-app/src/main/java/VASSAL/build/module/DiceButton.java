@@ -461,7 +461,7 @@ public class DiceButton extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
