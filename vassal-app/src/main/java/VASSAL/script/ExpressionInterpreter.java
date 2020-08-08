@@ -25,7 +25,11 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,7 +66,7 @@ import bsh.NameSpace;
  *    will use the one Expression NameSpace.
  *
  */
-public class ExpressionInterpreter extends AbstractInterpreter {
+public class ExpressionInterpreter extends AbstractInterpreter implements Loopable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
@@ -91,6 +95,17 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  
+  
+  public String getComponentTypeName() {
+    return "ExpressionInterpreter";
+  }
+  
+  
+  public String getComponentName() {
+    return "ExpressionInterpreter";
+  }
+  
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -231,12 +246,16 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       return "";
     }
 
+    String result;
+    try {
+      RecursionLimiter.startExecution(this);
+
     // Default to the GameModule to satisfy properties if no
     // GamePiece supplied.
     source = ps == null ? GameModule.getGameModule() : ps;
-
+  
     setNameSpace(expressionNameSpace);
-
+  
     // Bind each undeclared variable with the value of the
     // corresponding Vassal property. Allow for old-style $variable$ references
     for (String var : variables) {
@@ -269,7 +288,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
         }
       }
     }
-
+  
     final StringBuilder argList = new StringBuilder();
     for (String var : stringVariables) {
       if (argList.length() > 0) {
@@ -278,14 +297,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
       argList.append('"').append(value.toString()).append('"');
     }
-
+  
     // Re-evaluate the pre-parsed expression now that the undefined variables have
     // been bound to their Vassal property values.
-
+  
     setVar(THIS, this);
-    setVar(SOURCE, source);
-
-    String result;
+      setVar(SOURCE, source);  
+      
     try {
       eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
       result = get(MAGIC1).toString();
@@ -295,6 +313,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       final String search = MAGIC2 + "();'' : ";
       final int pos = s.indexOf(search);
       throw new ExpressionException(getExpression(), s.substring(pos + search.length()));
+    }
+    }
+    catch (RecursionLimitException e) {
+      result = Resources.getString("Error.infinite_loop_tag");
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
 
     return result;

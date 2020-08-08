@@ -53,8 +53,7 @@ public class FormattedString implements Loopable {
   protected PropertySource defaultProperties;
   
   @Override
-  public String getComponentTypeName() {
-    
+  public String getComponentTypeName() {    
     return "FormattedString";
   }
 
@@ -149,21 +148,21 @@ public class FormattedString implements Loopable {
     try {
       RecursionLimiter.startExecution(this);
       try {
-      return format.evaluate(source, props, localized);
-    }
-    catch (ExpressionException e) {
-      if (source instanceof EditablePiece) {
+        return format.evaluate(source, props, localized);
+      }
+      catch (ExpressionException e) {
+        if (source instanceof EditablePiece) {
         ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else if (source instanceof AbstractConfigurable) {
+        }
+        else if (source instanceof AbstractConfigurable) {
         ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else {
+        }
+        else {
         ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        return "";
       }
-      return "";
     }
-  }
     catch (RecursionLimitException e) {
       return "&lt;infiniteloop&gt;";      
     }
