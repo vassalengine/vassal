@@ -205,7 +205,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         target = parent == null ? outer : parent;
       }
       c = m.getStackMetrics().merge(target, marker);
-      if (index >= 0) {
+      if ((parent != null) && (index >= 0)) { // Parent can come down to us as null
         final ChangeTracker ct = new ChangeTracker(parent);
         parent.insert(marker, index);
         c = c.append(ct.getChangeCommand());
