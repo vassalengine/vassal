@@ -462,6 +462,8 @@ TOKEN : /* OPERATORS */
 | < LEX: "@lteq" >
 | < GE: ">=" >
 | < GEX: "@gteq" >
+| < MATCH: "=~" >
+| < NMATCH: "!~" >
 | < NE: "!=" >
 | < BOOL_OR: "||" >
 | < BOOL_ORX: "@or" >
