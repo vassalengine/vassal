@@ -56,6 +56,7 @@
 * 10314: NPE in GameRefresher if dialog is closed quickly while test is running
 *  3199: Add separators to menus
 *  3042: Improved Retire/Resign/Switch Sides button flow
+*  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
 *  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off
     movement trails
 
