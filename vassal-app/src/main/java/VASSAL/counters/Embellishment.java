@@ -373,7 +373,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
-    String name;
+    String ret;
 
     final String cname = 0 < value && value - 1 < commonName.length ?
                          getCommonName(localized, value - 1) : null;
@@ -385,21 +385,21 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (st.hasMoreTokens()) {
         final String second = st.nextToken();
         if (first.length() == 0) {
-          name = (localized ? piece.getLocalizedName() : piece.getName()) + second;
+          ret = (localized ? piece.getLocalizedName() : piece.getName()) + second;
         }
         else {
-          name = first + (localized ? piece.getLocalizedName() : piece.getName());
+          ret = first + (localized ? piece.getLocalizedName() : piece.getName());
         }
       }
       else {
-        name = first;
+        ret = first;
       }
     }
     else {
-      name = (localized ? piece.getLocalizedName() : piece.getName());
+      ret = (localized ? piece.getLocalizedName() : piece.getName());
     }
 
-    return name;
+    return ret;
   }
 
   /**
@@ -842,13 +842,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   /** Get the localized name of this level (alone) */
   protected String getLocalizedCommonName(int i) {
-    final String name = commonName[i];
-    if (name == null) return null;
-    final String translation = getTranslation(strip(name));
-    if (name.startsWith("+")) {
+    final String cname = commonName[i];
+    if (cname == null) return null;
+    final String translation = getTranslation(strip(cname));
+    if (cname.startsWith("+")) {
       return "+" + translation;
     }
-    if (name.endsWith("+")) {
+    if (cname.endsWith("+")) {
       return translation + "+";
     }
     return translation;
