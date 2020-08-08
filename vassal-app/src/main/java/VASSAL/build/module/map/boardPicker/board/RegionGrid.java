@@ -1047,16 +1047,17 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     @Override
     public void mousePressed(MouseEvent e) {
+      final Point p = e.getPoint();
+      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later. 
+      lastClickedRegion = grid.getRegion(p);
+      
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
       else if (SwingUtils.isMainMouseButtonDown(e)) {
-        final Point p = e.getPoint();
-        lastClick = p;
-        lastClickedRegion = grid.getRegion(p);
 
         if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e) &&
-            (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
+            (lastClickedRegion == null || !lastClickedRegion.isSelected())) {
           unSelectAll();
         }
 
@@ -1110,8 +1111,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (selectionRect != null) {
         // FIXME: inefficient, could be done with only one new Rectangle
         final Rectangle repaintRect =
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3);
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3);
 
         selectionRect.x = Math.min(e.getX(), anchor.x);
         selectionRect.y = Math.min(e.getY(), anchor.y);
@@ -1119,8 +1120,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         selectionRect.height = Math.abs(e.getY() - anchor.y);
 
         repaintRect.add(
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3));
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3));
         view.repaint(repaintRect);
       }
     }
