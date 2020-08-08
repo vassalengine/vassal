@@ -34,8 +34,6 @@ import java.nio.charset.StandardCharsets;
  */
 public class DeobfuscatingInputStream extends FilterInputStream {
 
-  private static final int HEADER_LENGTH = ObfuscatingOutputStream.HEADER.length();
-
   /**
    * @param in the stream to wrap
    * @throws IOException
@@ -44,13 +42,13 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     super(null);
 
     final byte[] header = new byte[ObfuscatingOutputStream.HEADER.length()];
-    readFully(in, header, HEADER_LENGTH);
+    readFully(in, header, header.length);
     if (new String(header, StandardCharsets.UTF_8).equals(ObfuscatingOutputStream.HEADER)) {
       this.in = new DeobfuscatingInputStreamImpl(in);
     }
     else {
       final PushbackInputStream pin =
-        new PushbackInputStream(in, HEADER_LENGTH);
+        new PushbackInputStream(in, header.length);
       pin.unread(header);
       this.in = pin;
     }
