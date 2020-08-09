@@ -66,6 +66,7 @@ public class HTTPPostBuilder {
       .append(endl)
       .append("Content-Disposition: form-data; name=\"")
       .append(name)
+      .append('"')
       .append(endl)
       .append(endl)
       .append(value)
