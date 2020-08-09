@@ -201,11 +201,25 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public void consoleHook(String s, String style, boolean html_allowed) {
     
   }
+  
 
   /**
-   * Display a message in the text area
+   * Display a message in the text area. Ensures we execute in the EDT
    */
-  public void show(String s) {
+  public void show(String s) {  
+    if (SwingUtilities.isEventDispatchThread()) {
+      doShow(s);
+    }
+    else {
+      SwingUtilities.invokeLater(() -> doShow(s));
+    }      
+  }
+
+
+  /**
+   * Display a message in the text area - use show() from outside the class - MUST run on EventDispatchThread
+   */
+  private void doShow(String s) {
     String style;
     boolean html_allowed;
 
@@ -605,27 +619,14 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   
   
   /**
-   * Private send method -- must only execute on Event Dispatch Thread
+   * Displays the message, Also logs and sends to the server a {@link Command}
+   * that displays this message. 
    */
-  private void doSend(String msg) {
+  public void send(String msg) {    
     if (msg != null && !msg.isEmpty()) {
       show(msg);
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
     }
-  }
-    
-
-  /**
-   * Displays the message, Also logs and sends to the server a {@link Command}
-   * that displays this message. Ensures that this only happens on EDT.
-   */
-  public void send(String msg) {    
-    if (SwingUtilities.isEventDispatchThread()) {
-      doSend(msg);
-    }
-    else {
-      SwingUtilities.invokeLater(() -> doSend(msg));
-    }      
   }
 
   /**
