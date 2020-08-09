@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13251: Add Module name to Bug summary, extra info to comments
 * 13239: Right-click doesn't pick up whole stack anymore
 * 13234: Rotation gets stuck due to floating point error
 * 13229: Performance: Save property map rather than clone pieces as snapshot
@@ -47,6 +48,7 @@
 * 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in
     incorrect position
 * 12935: NPE in MoveReporter.shouldMarkMoved assuming nonnull map
+* 12888: NPE in BooleanConfigurer.setValue
 * 12576: At-Start stack attaches to first board listed in module, even if that
     board wasn't selected by player and is inactive
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
