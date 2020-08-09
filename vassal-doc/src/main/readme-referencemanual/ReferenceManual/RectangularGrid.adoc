@@ -1,39 +1,39 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > <<Board.adoc#top,Board>> > *Rectangular Grid*# +
- +
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > <<Board.adoc#top,Board>> > *Rectangular Grid*#
 
 '''''
 
 === Rectangular Grid
 
 [cols=",",]
-|======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
-|A standard rectangular grid for regulating movement on a Board.   +
- +
-*X,Y offset:* The horizontal and vertical position of the center of the first cell of the grid +
- +
-*Cell Height/Width:* Pixel dimensions of a single cell. +
- +
-*Range calculation metric:* Determines the algorithm to be used in range calculations. _Metric_ range uses the larger of the X distance and the Y distance in cells. _Manhattan_ range uses the sum of the X distance and the Y distance, in cells. +
- +
-*Snap to defined point:* If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location. If unchecked, pieces may be placed anywhere. If it is useful for most pieces to snap to legal locations, but for certain types of markers to be allowed anywhere, this can be accomplished by checking this box but adding a <<NonStacking.adoc#top,Does Not Stack>> trait to the pieces which should ignore the grid and selecting the trait's "Ignore map grid when moving" option. +
- +
-*Legal Locations:* Determines whether pieces can be placed on cell edges and/or corners, instead of only at cell centers. +
- +
-*Show Grid:* If checked, then the grid will be drawn over the Board image using the specified color. +
- +
-*Draw Center Dots:* If checked, dots are drawn at the center of each cell using the specified color. +
- +
-*Edit Grid:* Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map. +
- +
- + |image:images/RectangularGrid.png[image] +
-  +
-|======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+|===
+|A standard rectangular grid for regulating movement on a Board.
 
- +
- +
+*X,Y offset:* The horizontal and vertical position of the center of the first cell of the grid
+
+*Cell Height/Width:* Pixel dimensions of a single cell.
+
+*Range calculation metric:* Determines the algorithm to be used in range calculations.
+_Metric_ range uses the larger of the X distance and the Y distance in cells.
+_Manhattan_ range uses the sum of the X distance and the Y distance, in cells.
+
+*Snap to defined point:* If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location.
+If unchecked, pieces may be placed anywhere.
+If it is useful for most pieces to snap to legal locations, but for certain types of markers to be allowed anywhere, this can be accomplished by checking this box but adding a <<NonStacking.adoc#top,Does Not Stack>> trait to the pieces which should ignore the grid and selecting the trait's "Ignore map grid when moving" option.
+
+*Legal Locations:* Determines whether pieces can be placed on cell edges and/or corners, instead of only at cell centers.
+
+*Show Grid:* If checked, then the grid will be drawn over the Board image using the specified color.
+
+*Draw Center Dots:* If checked, dots are drawn at the center of each cell using the specified color.
+
+*Edit Grid:* Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map.
+
+|image:images/RectangularGrid.png
+
+|===
 
 '''''
 
@@ -41,11 +41,10 @@
 
 ==== <<GridNumbering.adoc#top,Grid Numbering>>
 
-Used to assign names to cells on the grid.  Used primarily for automatically reporting moves. +
- +
-To add Grid Numbering to a Rectangular Grid, it is necessary to first add the Rectangular Grid. Then right+click on the Rectangular Grid's entry in the Editor, and select "Add Grid Numbering" (see diagram at right).
+Used to assign names to cells on the grid.
+Used primarily for automatically reporting moves.
 
-image:images/GridNumAdd2.png[image] +
-  +
+To add Grid Numbering to a Rectangular Grid, it is necessary to first add the Rectangular Grid.
+Then right+click on the Rectangular Grid's entry in the Editor, and select "Add Grid Numbering" (see diagram at right).
 
- +
+image:images/GridNumAdd2.png

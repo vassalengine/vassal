@@ -1,34 +1,34 @@
-[width="100%",cols="100%",]
-|=========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
-a|
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Marker*# +
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Marker*#
 
-a|
-
-'''''
-
-=== Marker +
+=== Marker
 
 [cols=",",]
-|=========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
-|A Marker trait is used to mark a game piece permanently as always having a particular <<Properties.adoc#top,Property.>> Unlike many other types of Properties that can be configured on and by pieces (e.g. <<DynamicProperty.adoc#top,Dynamic Properties>>), a Marker's value cannot change during play. In other words, it is like a _constant_ rather than a _variable_ in programming. +
- +
-Setting a property does not in itself give a game piece any particular behavior. The property must be recognized by some other trait or class in the module. Markers are can be referenced in link:Map.htm#GlobalKeyCommand[Global Key Command's] and link:Map.htm#GamePieceLayers[Game Piece Layer] traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>. +
- +
-*Property Name:*  The name of the property. This is how the property can be referenced in <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>. +
- +
-*Property Value:*  The value of the property. This value will remain constant for this piece throughout play, but other pieces could have a Marker of the same name but with a different value. (Example: some pieces could have a Marker named _Type_ whose value is _Infantry_ while other pieces have a Marker also named _Type_ but whose value is _Cavalry_. Pieces could also have an ArmorClass Marker with a numeric value. By using these Marker in expressions, e.g. __\{ (Type == "Infantry") && (ArmorClass < 5) }>__various decisions about pieces could be made by traits. +
- +
-You can combine multiple name/value pairs by separating the names and values with a comma (','). To use a literal comma in a name or value, precede it with a backslash ('\'). +
- +
-*EXAMPLE:*  A Marker with property name "owner" and property value "sigmund" would return "sigmund" from getProperty("owner") or $owner$. Use commas to set multiple properties with a single Marker. A Marker with name "owner,status" and value "sigmund,unknown" would also return "unknown" from getProperty("status") or $status$. +
- +
-*SEE ALSO:*  <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top,Set Global Property>> |image:images/PropertyMarker.png[image] +
-|=========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+|===
+|A Marker trait is used to mark a game piece permanently as always having a particular <<Properties.adoc#top,Property.>> Unlike many other types of Properties that can be configured on and by pieces (e.g.
+<<DynamicProperty.adoc#top,Dynamic Properties>>), a Marker's value cannot change during play.
+In other words, it is like a _constant_ rather than a _variable_ in programming.
 
-'''''
+Setting a property does not in itself give a game piece any particular behavior.
+The property must be recognized by some other trait or class in the module.
+Markers are can be referenced in <<Map.adoc#GlobalKeyCommand,Global Key Command's>> and <<Map.adoc#GamePieceLayers,Game Piece Layer>> traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
 
-|=========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+*Property Name:*  The name of the property.
+This is how the property can be referenced in <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
+
+*Property Value:*  The value of the property.
+This value will remain constant for this piece throughout play, but other pieces could have a Marker of the same name but with a different value.
+(Example: some pieces could have a Marker named _Type_ whose value is _Infantry_ while other pieces have a Marker also named _Type_ but whose value is _Cavalry_.
+Pieces could also have an ArmorClass Marker with a numeric value.
+By using these Marker in expressions, e.g.
+__\{ (Type == "Infantry") && (ArmorClass < 5) }>__various decisions about pieces could be made by traits.
+
+You can combine multiple name/value pairs by separating the names and values with a comma (','). To use a literal comma in a name or value, precede it with a backslash ('\').
+
+*EXAMPLE:*  A Marker with property name "owner" and property value "sigmund" would return "sigmund" from getProperty("owner") or $owner$. Use commas to set multiple properties with a single Marker.
+A Marker with name "owner,status" and value "sigmund,unknown" would also return "unknown" from getProperty("status") or $status$.
+
+*SEE ALSO:*  <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top,Set Global Property>> |image:images/PropertyMarker.png +
+|===

@@ -1,113 +1,111 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Help Menu*# +
- +
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Help Menu*#
 
 '''''
 
 === Help Menu
 
-The "Help" menu in the main control window contains general help files for VASSAL. You may add more help files specific to the module you are creating by right clicking on the _[Help Menu]_ component in the Editor and selecting the appropriate _Add_ option. +
- +
-This can also be used to include a PDF file, e.g. of a rulebook, in your module (see link:PDF[Using PDF Files] , below). +
- +
+The "Help" menu in the main control window contains general help files for VASSAL.
+You may add more help files specific to the module you are creating by right clicking on the _[Help Menu]_ component in the Editor and selecting the appropriate _Add_ option.
+
+This can also be used to include a PDF file, e.g.
+of a rulebook, in your module (see <<#PDF,Using PDF Files>> , below).
 
 '''''
 
 === Sub-Components
 
-==== [#HtmlHelpFile]##HTML Help File
+[#HtmlHelpFile]
+==== HTML Help File
 
-Adds an entry to the help menu.  Selecting the menu opens an external browser on the user's machine with HTML content that you specify. +
- +
-*Menu Entry*:  The menu item to be added to the Help menu. +
- +
-*Contents*:  A folder on your local file system. The contents of the folder will be copied into the module and expanded onto the user's machine when the user selects the menu item. The folder can contains any number of sub-folders and can include image data, style sheets, etc. Be sure that your HTML content makes use of relative URLs. +
- +
-*Starting Page*:  The file within the Contents folder that the user's browser will be pointed to. +
- +
-__Note:  __You can launch an external URL in the user's browser by specifying the URL as the Starting Page and leaving the Contents set to null. +
+Adds an entry to the help menu.
+Selecting the menu opens an external browser on the user's machine with HTML content that you specify.
 
-image:images/HtmlHelpFile.png[image] +
+*Menu Entry*:  The menu item to be added to the Help menu.
 
- +
- +
+*Contents*:  A folder on your local file system.
+The contents of the folder will be copied into the module and expanded onto the user's machine when the user selects the menu item.
+The folder can contains any number of sub-folders and can include image data, style sheets, etc.
+Be sure that your HTML content makes use of relative URLs.
+
+*Starting Page*:  The file within the Contents folder that the user's browser will be pointed to.
+
+__Note:  __You can launch an external URL in the user's browser by specifying the URL as the Starting Page and leaving the Contents set to null.
+
+image:images/HtmlHelpFile.png
 
 [width="100%",cols="50%,50%",]
-|=========================================================================================================================================
-|image:images/HelpFilePDF.png[image] a|
-==== [#PDF]#Using PDF Files:#
+|===
+|image:images/HelpFilePDF.png
+
+a|
+[#PDF]
+==== Using PDF Files:
 
 To include a PDF file on your help menu, follow these steps:
 
-* Put your PDF in a directory on its own on your hard drive (e.g. in a "help" subdirectory of where you keep your original art files, etc)
+* Put your PDF in a directory on its own on your hard drive (e.g.
+in a "help" subdirectory of where you keep your original art files, etc)
 * Right click the _[Help Menu]_ component in the Editor and select _Add HTML Help File_.
 * For the menu entry, type "Rulebook" or whatever you want displayed as the actual Help Menu entry.
 * Set the _Contents_ to the directory (on your hard drive, not in the Vassal vmod/zip file)
 * Set the _Starting Page_ as the PDF file name.
 * Save the module and you should be good to go.
 
-|=========================================================================================================================================
-
- +
+|===
 
 [width="100%",cols="50%,50%",]
-|=============================================================================================================================================
+|===
 a|
-==== [#HelpFile]##Plain Text Help File
+[#HelpFile]
+==== Plain Text Help File
 
-Adds an entry to the Help menu in the main controls window. Selecting the menu displays a new window with the contents of a plain text file. +
- +
-*Menu Entry*:  The menu item to be added to the Help menu. +
- +
-*Text File*:  A file containing the contents of the window to be displayed. +
+Adds an entry to the Help menu in the main controls window.
+Selecting the menu displays a new window with the contents of a plain text file.
 
-|image:images/HelpFile.png[image] +
-|=============================================================================================================================================
+*Menu Entry*:  The menu item to be added to the Help menu.
 
- +
- +
+*Text File*:  A file containing the contents of the window to be displayed.
+
+|image:images/HelpFile.png +
+|===
 
 [width="100%",cols="50%,50%",]
-|=======================================================================================================================================================================
-|image:images/AboutScreen.png[image] + a|
-[#AboutScreen]##
-
+|===
+|image:images/AboutScreen.png
+a|
+[#AboutScreen]
 ==== About Screen
 
- +
-You may use any image you wish as an 'About' screen for your module. Feel free to include text in the image that credits you and any other contributors to the module. +
- +
-The About Screen will always display the current version of both the VASSAL and engine and your module. +
- +
-The About Screen image is also used as a "Splash Screen" when starting your module. +
+You may use any image you wish as an 'About' screen for your module.
+Feel free to include text in the image that credits you and any other contributors to the module.
 
-|=======================================================================================================================================================================
+The About Screen will always display the current version of both the VASSAL and engine and your module.
 
- +
- +
+The About Screen image is also used as a "Splash Screen" when starting your module.
+
+|===
 
 [width="100%",cols="34%,33%,33%",]
-|================================================================================================================================================================================
+|===
 a|
-[#Tutorial]##
-
+[#Tutorial]
 ==== Tutorial
 
-You may create a tutorial by writing a logfile and making it accessible from the help menu. +
- +
-*Menu Text:*  The menu item under the Help Menu +
- +
-*Logfile:*  The logfile that players will step through when they select the corresponding menu item. +
- +
-*Launch automatically:*  If selected, then players will automatically be prompted to run the tutorial the first time they load the module. +
- +
-*Confirm message:*  The text in the yes/no dialog that is displayed to the player when they load the module for the first time. Answering "yes" will load the tutorial logfile. +
- +
+You may create a tutorial by writing a logfile and making it accessible from the help menu.
+
+*Menu Text:*  The menu item under the Help Menu
+
+*Logfile:*  The logfile that players will step through when they select the corresponding menu item.
+
+*Launch automatically:*  If selected, then players will automatically be prompted to run the tutorial the first time they load the module.
+
+*Confirm message:*  The text in the yes/no dialog that is displayed to the player when they load the module for the first time.
+Answering "yes" will load the tutorial logfile.
+
 *Welcome message:*  The message that displays in the chat log when the tutorial is loaded.
 
-|image:images/Tutorial.png[image] + |
-|================================================================================================================================================================================
-
- +
+|image:images/Tutorial.png
+|===

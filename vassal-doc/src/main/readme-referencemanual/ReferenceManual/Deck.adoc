@@ -1,25 +1,32 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > *Deck*# +
- +
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > *Deck*#
 
 '''''
 
 === Deck
 
-A Deck functions like a deck of playing cards, but can also be used to hold a supply of other types of <<GamePiece.adoc#top,Game Piece>>, such as a fixed supply of counters or a "bag of chits" to be randomly drawn from.   Each game begins with the contents of the Deck as specified in the Configuration window.  During a game, players may remove cards from the deck by dragging them from the top of the deck with the mouse.  This removes a card from the Deck and assigns ownership to the dragging player.  Dragging a card onto the deck adds it back to the Deck. +
- +
+A Deck functions like a deck of playing cards, but can also be used to hold a supply of other types of <<GamePiece.adoc#top,Game Piece>>, such as a fixed supply of counters or a "bag of chits" to be randomly drawn from.
+  Each game begins with the contents of the Deck as specified in the Configuration window.
+During a game, players may remove cards from the deck by dragging them from the top of the deck with the mouse.
+This removes a card from the Deck and assigns ownership to the dragging player.
+Dragging a card onto the deck adds it back to the Deck.
+
 The number of cards or pieces in the deck is exposed as a Map-level <<Properties.adoc#top,Property>> with the name _<name>_numPieces._ +
-The number of card or piece types in the deck can be exposed as a Map-level <<Properties.adoc#top,Property>> with the name _<name>_<type>_ (see Perform Counting of Piece Types below). +
- +
-Decks can be added to <<Map.adoc#top,Maps>>, and also to <<PlayerHand.adoc#top,Player Hands>> and <<PrivateWindow.adoc#top,Private Windows>>, each of which is simply a specialized type of Map. To add a Deck, navigate to the _[Map]_, _[Player Hand]_, or _[Private Window]_ component entry in the Editor configuration window for the Map (or specialized map) you wish to add the Deck to. Right-click on that component and select _Add Deck_ from the menu. After you have configured your Deck and clicked the OK button, your new _[Deck]_ component will appear at the bottom of the map's list of Sub-Components. You can then right-click on the _[Deck]_ entry and begin adding Cards and other Deck Sub-Components. +
- +
-*NOTE:*  Because Decks are quite often used to hold "cards", the Game Pieces contained within a Deck will be frequently referred to in Vassal and in documentation as "cards". However keep in mind that a "card" is simply a type of Game Piece, and a Deck can be used to contain _any_ type of Game Piece. The difference between a "card" and a "piece" is only notional, and perhaps represented in the artwork and function of the piece/card. +
- +
+The number of card or piece types in the deck can be exposed as a Map-level <<Properties.adoc#top,Property>> with the name _<name>_<type>_ (see Perform Counting of Piece Types below).
+
+Decks can be added to <<Map.adoc#top,Maps>>, and also to <<PlayerHand.adoc#top,Player Hands>> and <<PrivateWindow.adoc#top,Private Windows>>, each of which is simply a specialized type of Map.
+To add a Deck, navigate to the _[Map]_, _[Player Hand]_, or _[Private Window]_ component entry in the Editor configuration window for the Map (or specialized map) you wish to add the Deck to.
+Right-click on that component and select _Add Deck_ from the menu.
+After you have configured your Deck and clicked the OK button, your new _[Deck]_ component will appear at the bottom of the map's list of Sub-Components.
+You can then right-click on the _[Deck]_ entry and begin adding Cards and other Deck Sub-Components.
+
+*NOTE:*  Because Decks are quite often used to hold "cards", the Game Pieces contained within a Deck will be frequently referred to in Vassal and in documentation as "cards". However keep in mind that a "card" is simply a type of Game Piece, and a Deck can be used to contain _any_ type of Game Piece.
+The difference between a "card" and a "piece" is only notional, and perhaps represented in the artwork and function of the piece/card.
 
 [width="100%",cols="50%,50%",]
-|======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+|===
 a|
 *Name:*  The name of a Deck is not used during game play.
 It is only used for identification in the Editor.
@@ -115,43 +122,54 @@ These can be whatever you like and must be in the format of:
 <expression name> : <expression>
 ....
 
-For each expression, a map-level property called _<deckName>_<expression name>_ is exposed. The exposed value is number of pieces for which that expression evaluates to _true_. An example of how to do this is provided below. NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_. Other dynamic properties will most likely not update if they change after pieces move into a deck. +
- +
-*EXAMPLE:*  An ordinary deck of playing cards for, say, Crazy Eights would be set to: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Always_, _Re-shuffle = Always_, _Reversible = false_. The discard pile would be: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_. +
- +
-A Deck may contain any kind of Game Piece, so it can also be used for draw piles of chits or counters that are drawn randomly and whose total number are limited by the game. If the pieces/cards do not need to be selected randomly and you simply wish to provide a pile of them on the board at game start, consider an <<SetupStack.adoc#top,At-Start Stack>>. +
- +
-*EXAMPLE:*  A strategic game in which a nationality has a fixed force pool of variable-strength Infantry, Armor, etc. counters can be modeled by making a Map Window representing the force pool, with a Deck of Infantry counters, a Deck of Armor counters, etc.  The decks would be set to _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_.  In order to guarantee that the number of each type of counter is fixed, any Clone and Delete traits of the Infantry and Armor counters should be removed. +
- +
-*EXAMPLE:*  You want to create a deck of playing cards and display the number of red cards, the number of black cards, the number of face cards, and the total number of cards in the deck. Create the Deck, check _Perform counting of expressions_. Add the expressions of _red: color = red_ and _black: color = black_.  Also add the expression _facecards: value > 10_. When creating your cards, give them a <<PropertyMarker.adoc#top,Marker>> trait named _color_ with the values of _red_ or _black_ depending on the card. Also give your cards a Marker trait named _value_ with the numeric value of the card. Then, you can refer to the counts with the map-level properties of _<deckname>_red_, _<deckname>_black_, and _<deckname>_facecards_.  The total number of cards currently in the deck can be referenced by the map-level property of _<deckname>_numPieces_. +
- +
+For each expression, a map-level property called _<deckName>_<expression name>_ is exposed.
+The exposed value is number of pieces for which that expression evaluates to _true_.
+An example of how to do this is provided below.
+NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_.
+Other dynamic properties will most likely not update if they change after pieces move into a deck.
 
-|image:images/Deck.png[image]  +
- +
-|======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+*EXAMPLE:*  An ordinary deck of playing cards for, say, Crazy Eights would be set to: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Always_, _Re-shuffle = Always_, _Reversible = false_.
+The discard pile would be: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_.
+
+A Deck may contain any kind of Game Piece, so it can also be used for draw piles of chits or counters that are drawn randomly and whose total number are limited by the game.
+If the pieces/cards do not need to be selected randomly and you simply wish to provide a pile of them on the board at game start, consider an <<SetupStack.adoc#top,At-Start Stack>>.
+
+*EXAMPLE:*  A strategic game in which a nationality has a fixed force pool of variable-strength Infantry, Armor, etc.
+counters can be modeled by making a Map Window representing the force pool, with a Deck of Infantry counters, a Deck of Armor counters, etc.
+The decks would be set to _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_.
+In order to guarantee that the number of each type of counter is fixed, any Clone and Delete traits of the Infantry and Armor counters should be removed.
+
+*EXAMPLE:*  You want to create a deck of playing cards and display the number of red cards, the number of black cards, the number of face cards, and the total number of cards in the deck.
+Create the Deck, check _Perform counting of expressions_.
+Add the expressions of _red: color = red_ and _black: color = black_.
+Also add the expression _facecards: value > 10_.
+When creating your cards, give them a <<PropertyMarker.adoc#top,Marker>> trait named _color_ with the values of _red_ or _black_ depending on the card.
+Also give your cards a Marker trait named _value_ with the numeric value of the card.
+Then, you can refer to the counts with the map-level properties of _<deckname>_red_, _<deckname>_black_, and _<deckname>_facecards_.
+The total number of cards currently in the deck can be referenced by the map-level property of _<deckname>_numPieces_.
+
+|image:images/Deck.png
+
+|===
 
 '''''
 
 === Sub-Components
 
-Sub-Components can be added to a Deck by right-clicking on the _[Deck]_ entry in the Module Editor and selecting the appropriate _Add_ option. +
- +
+Sub-Components can be added to a Deck by right-clicking on the _[Deck]_ entry in the Module Editor and selecting the appropriate _Add_ option.
 
 [width="100%",cols="50%,50%",]
-|=================================================================================================================================================================================================
+|===
 a|
 ==== <<GamePiece.adoc#top,Card>>
 
-A Card is identical to a Game Piece, but is initialized with a <<Mask.adoc#top,Mask>> trait appropriate for a playing card. +
- +
+A Card is identical to a Game Piece, but is initialized with a <<Mask.adoc#top,Mask>> trait appropriate for a playing card.
 
 ==== <<DeckGlobalKeyCommand.adoc#top,Deck Global Key Command>>
 
-Global Key Commands can be added to a Deck and will appear in the right-click context menu of the Deck. The resulting Global Key Command will be applied _only_ to pieces contained in the Deck. +
+Global Key Commands can be added to a Deck and will appear in the right-click context menu of the Deck.
+The resulting Global Key Command will be applied _only_ to pieces contained in the Deck.
 
-|image:images/DeckAdd.png[image] +
-|=================================================================================================================================================================================================
+|image:images/DeckAdd.png +
+|===
 
- +
- +
- +

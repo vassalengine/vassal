@@ -1,59 +1,53 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Text Label*# +
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Text Label*#
 
 '''''
 
-=== Text Label +
+=== Text Label
 
-[width="100%",cols="34%,33%,33%",]
-|=======================================================================================================================================================================================================================================================================================================================================
-a|
-This trait displays a text label on or near the piece. The text of the label can be fixed or specifiable by a player at game time. +
- +
-*Description:*  A description of the purpose of this label that is displayed in the Piece Definer. +
- +
-*Text:*  The starting value for the label text. <<Properties.adoc#top,Properties>> of the piece can be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>. By enclosing the text within tags, you can use simple HTML format to specify various colors, fonts and sizes. +
- +
-Example: _<html><b>Bold text</b><p>with a line break<p>and <font color=red>different</font> <font color=blue>colors</font></html>_ will display as: +
+This trait displays a text label on or near the piece.
+The text of the label can be fixed or specifiable by a player at game time.
 
-[cols=",",]
-|=====================
-| + |*Bold text* +
+*Description:*  A description of the purpose of this label that is displayed in the Piece Definer.
+
+*Text:*  The starting value for the label text.
+<<Properties.adoc#top,Properties>> of the piece can be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>. By enclosing the text within tags, you can use simple HTML format to specify various colors, fonts and sizes.
+
+Example: _<html><b>Bold text</b><p>with a line break<p>and <font color=red>different</font> <font color=blue>colors</font></html>_ will display as:
+
+*Bold text* +
 with a line break +
-and different colors +
-|=====================
+and [red]#different# [blue]#colors#
 
- +
-*Name Format:*  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used. +
- +
-*Menu Command:*  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated. +
- +
-*Menu key command:*  If blank, the text of the label is permanent. If set, then gives the key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to update the text of the label. +
- +
-*Font:*  The Text Label is drawn using this font. +
- +
-*Font size / Bold / Italic:*  The Text Label is drawn at this size, optionally in bold or italics. +
- +
-*Text Color:*  The Text Label is drawn using this color. +
- +
-*Background Color:*  The Text Label is drawn within a solid rectangle of this color. Click Select and then Cancel to use a transparent background. +
- +
-*Vertical Position:*  Draw the Text Label with the given offset from the top, bottom, or center of the piece. +
- +
-*Horizontal Position:*  Draw the Text Label with the given offset from the left, right, or center of the piece. +
- +
-*Vertical justification:*  Whether the top edge, bottom edge, or center of the Text Label will be drawn at the Horizontal Position specified above. +
- +
-*Horizontal justification:*  Whether the right edge, left edge, or center of the label will be drawn at the Vertical Position specified above. +
- +
-*Rotate Text:*  The text will be rotated clockwise by this angle. Rotation is performed after the horizontal/vertical justification and positioning specified above. +
- +
-*Property Name:*  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name. +
- +
+*Name Format:*  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
 
-|image:images/Label.png[image] + | +
-|=======================================================================================================================================================================================================================================================================================================================================
+*Menu Command:*  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
 
-'''''
+*Menu key command:*  If blank, the text of the label is permanent.
+If set, then gives the key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to update the text of the label.
+
+*Font:*  The Text Label is drawn using this font.
+
+*Font size / Bold / Italic:*  The Text Label is drawn at this size, optionally in bold or italics.
+
+*Text Color:*  The Text Label is drawn using this color.
+
+*Background Color:*  The Text Label is drawn within a solid rectangle of this color.
+Click Select and then Cancel to use a transparent background.
+
+*Vertical Position:*  Draw the Text Label with the given offset from the top, bottom, or center of the piece.
+
+*Horizontal Position:*  Draw the Text Label with the given offset from the left, right, or center of the piece.
+
+*Vertical justification:*  Whether the top edge, bottom edge, or center of the Text Label will be drawn at the Horizontal Position specified above.
+
+*Horizontal justification:*  Whether the right edge, left edge, or center of the label will be drawn at the Vertical Position specified above.
+
+*Rotate Text:*  The text will be rotated clockwise by this angle.
+Rotation is performed after the horizontal/vertical justification and positioning specified above.
+
+*Property Name:*  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name.
+
+image:images/Label.png
