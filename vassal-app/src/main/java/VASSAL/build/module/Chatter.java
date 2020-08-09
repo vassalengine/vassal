@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -601,16 +602,30 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       return null;
     }
   }
-
+  
+  
   /**
-   * Displays the message, Also logs and sends to the server a {@link Command}
-   * that displays this message
+   * Private send method -- must only execute on Event Dispatch Thread
    */
-  public void send(String msg) {
+  private void doSend(String msg) {
     if (msg != null && !msg.isEmpty()) {
       show(msg);
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
     }
+  }
+    
+
+  /**
+   * Displays the message, Also logs and sends to the server a {@link Command}
+   * that displays this message. Ensures that this only happens on EDT.
+   */
+  public void send(String msg) {    
+    if (SwingUtilities.isEventDispatchThread()) {
+      doSend(msg);
+    }
+    else {
+      SwingUtilities.invokeLater(() -> doSend(msg));
+    }      
   }
 
   /**
