@@ -43,6 +43,7 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -287,8 +288,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null ) {
             try {
-              dest = b.getGrid().getLocation(gridLocation.getText(outer));
-              if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
+              MapGrid g = b.getGrid(); 
+              if (g != null) { // Board may not have a grid assigned.
+                dest = g.getLocation(gridLocation.getText(outer));
+                if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
+              }
             }
             catch (BadCoords e) {
               LogBadGridLocation(dest);
