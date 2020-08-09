@@ -281,7 +281,7 @@ public final class IconFactory {
       // imageUrl = jar.getURL(DataArchive.IMAGE_DIR
       imageUrl = jar.getURL(DataArchive.IMAGE_DIR+ApplicationIcons.VASSAL_ICON_LARGE);
       imageUrl = new URL (imageUrl.toString().substring(0, imageUrl.toString().length() - ApplicationIcons.VASSAL_ICON_LARGE.length()));
-      logger.info("VASSAL images folder found at "+imageUrl);
+      logger.debug("VASSAL images folder found at "+imageUrl);
       // Determine if we are running locally under a debugger, or
       // from an installation package. If running an installed version
       // of Vassal, the images URL will start with "jar:".
@@ -325,7 +325,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family "+familyName+" created for "+imageName);
           }
           family.setSizeIconPath(size, "/" + path + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -355,7 +355,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family "+familyName+" created for "+imageName);
           }
           family.setScalableIconPath("/" + scalablePath + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -392,7 +392,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.info("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family "+familyName+" created for "+imageName);
           }
           family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
           iconFamilies.put(familyName, family);
@@ -406,7 +406,7 @@ public final class IconFactory {
             IconFamily family = iconFamilies.get(familyName);
             if (family == null) {
               family = new IconFamily(familyName);
-              logger.info("Icon family "+familyName+" created for "+imageName);
+              logger.debug("Icon family "+familyName+" created for "+imageName);
             }
             family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
             iconFamilies.put(familyName, family);
