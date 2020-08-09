@@ -103,15 +103,25 @@ public final class Info {
   private Info() { }
 
   /**
-   * A valid version format is "w.x.[y|bz]", where 'w','x','y', and 'z' are
-   * integers. In the version number, w.x are the major/minor release number,
-   * y is the bug-fix release number, and the 'b' indicates a beta release,
-   * e.g. 3.0b2.
+   * A valid version format is "w.x.y[-z]", where 'w','x', and 'y' are
+   * integers and z is a string. In the version number, w.x are the major/minor release number,
+   * y is the bug-fix release number, and the 'z' identifies an intermediate build
+   * e.g. 3.3.3-allpha1 or 3.3.3-SNAPSHOT
    *
-   * @return the version of the VASSAL engine.
+   * @return the full version of the VASSAL engine.
    */
   public static String getVersion() {
     return gitProperties.getVersion();
+  }
+
+  /**
+   * Bugzilla (and other potential external reporting tools) require onlt the primary numeric portion of
+   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3\
+   *
+   * @return The reportable version number
+   */
+  public static String getReportableVersion() {
+    return getVersion().contains("-") ?  getVersion().substring(0, getVersion().indexOf('-')) : getVersion();
   }
 
   private static final int instanceID;
