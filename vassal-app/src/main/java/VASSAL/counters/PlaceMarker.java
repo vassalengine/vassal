@@ -190,19 +190,23 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         m.getPieceCollection().canMerge(outer, marker)) {
       final Stack parent = getParent();
       GamePiece target = outer;
-      int index = -1;
+      int index = -1;      
       switch (placement) {
       case ABOVE:
-        target = outer;
         break;
       case BELOW:
-        index = parent == null ? 0 : parent.indexOf(outer);
+        if (parent != null) {
+          index = parent.indexOf(outer);
+        }
         break;
       case STACK_BOTTOM:
         index = 0;
         break;
       case STACK_TOP:
-        target = parent == null ? outer : parent;
+        if (parent != null) {
+          target = parent;
+        }
+        break;
       }
       c = m.getStackMetrics().merge(target, marker);
       if ((parent != null) && (index >= 0)) { // Parent can come down to us as null
