@@ -38,14 +38,14 @@ SHELL:=/bin/bash
 
 LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
-DOCDIR:=doc
+DOCDIR:=vassal-doc/target
 DISTDIR:=dist
 JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 VNUM:=3.3.3
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-alpha1
+#MAVEN_VERSION:=$(VNUM)-alpha2
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -76,10 +76,16 @@ DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 NSIS:=makensis
 LAUNCH4J:=~/java/launch4j/launch4j
 
+SKIPS:=
+
+jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true
+jar: $(LIBDIR)/Vengine.jar
+
 compile:
 	$(MVN) compile
 
-jar: $(LIBDIR)/Vengine.jar
+version-set:
+	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
 
 test:
 	$(MVN) test
@@ -87,9 +93,8 @@ test:
 $(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
-$(LIBDIR)/Vengine.jar:
-	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
-	$(MVN) deploy -DgitVersion=$(VERSION)
+$(LIBDIR)/Vengine.jar: version-set
+	$(MVN) deploy -DgitVersion=$(VERSION) $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
@@ -223,18 +228,17 @@ release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(V
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean jar release-other release-linux release-windows release-macosx
+release: clean release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
-post-release:
-	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
+post-release: version-set
 
 upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
-vassal-app/target/$(JARNAME)-javadoc.jar: jar
+vassal-app/target/$(JARNAME)-javadoc.jar: $(LIBDIR)/Vengine.jar
 
 javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
 	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
@@ -245,4 +249,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc clean-javadoc jar
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc jar clean-javadoc version-set

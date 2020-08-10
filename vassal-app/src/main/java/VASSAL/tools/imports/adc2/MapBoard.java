@@ -122,7 +122,7 @@ public class MapBoard extends Importer {
         gp.setProperty("Layer", getName());
         gp = new Marker(Marker.ID + "Type", gp);
         gp.setProperty("Type", "Layer");
-        gp = new Immobilized(gp, Immobilized.ID + "n;V");
+        gp = new Immobilized(Immobilized.ID + "n;V", gp);
 
         // create layer
         LayeredPieceCollection l = getLayeredPieceCollection();
@@ -2985,7 +2985,7 @@ public class MapBoard extends Importer {
     se.append(ADC2Utils.TYPE);
     gp = new Marker(Marker.ID + se.getValue(), gp);
     gp.setProperty(ADC2Utils.TYPE, PLACE_NAME);
-    gp = new Immobilized(gp, Immobilized.ID + "n;V");
+    gp = new Immobilized(Immobilized.ID + "n;V", gp);
     def.setPiece(gp);
 
     // write place names as pieces with no image.

@@ -191,7 +191,10 @@ public class PrefsEditor {
 
   protected synchronized void cancel() {
     for (Configurer c : options) {
-      c.setValue(savedValues.get(c));
+      Object o = savedValues.get(c);
+      if (o != null) {
+        c.setValue(o);
+      }
       c.setFrozen(false);
     }
     dialog.setVisible(false);

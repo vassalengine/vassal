@@ -1005,7 +1005,6 @@ public class ServerAddressBook {
    *
    */
   private class LegacyEntry extends AddressBookEntry {
-
     public LegacyEntry() {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
@@ -1044,24 +1043,19 @@ public class ServerAddressBook {
 
     @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
-
     }
 
     @Override
     protected void getAdditionalProperties(Properties props) {
-
     }
 
     @Override
     protected void setAdditionalProperties(Properties props) {
-
     }
-
   }
 
   /**
    * Address Book entry for a Private VASSAL server
-   *
    */
 //  private class PrivateEntry extends AddressBookEntry {
 //

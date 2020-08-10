@@ -178,7 +178,7 @@ public class SequenceEncoder {
         int end = i;
         while (begin < end) {
           if (val.charAt(end - 1) == '\\') {
-            buffer.append(val.substring(begin, end - 1));
+            buffer.append(val, begin, end - 1);
             begin = end;
             end = val.indexOf(delimit, end + 1);
           }
@@ -192,7 +192,7 @@ public class SequenceEncoder {
           val = null;
         }
         else {
-          buffer.append(val.substring(begin, end));
+          buffer.append(val, begin, end);
           val = end >= val.length() - 1 ? "" : val.substring(end + 1);
         }
 
