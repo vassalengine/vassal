@@ -86,10 +86,10 @@ public class SVGImageUtils {
       synchronized (factory) {
         doc = factory.createDocument(null, in);
       }
-    } 
+    }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
-    } 
+    }
     catch (DOMException | IOException e) {
       throw new ImageIOException(name, e);
     }
@@ -101,7 +101,7 @@ public class SVGImageUtils {
       final int height = (int) (Float.parseFloat(root.getAttributeNS(null, "height").replaceFirst("px", "")) + 0.5);
 
       return new Dimension(width, height);
-    } 
+    }
     catch (NumberFormatException e) {
       throw new ImageIOException(name + " (Only 'px' units supported for height and width in SVG files)", e);
     }
@@ -137,7 +137,7 @@ public class SVGImageUtils {
       synchronized (factory) {
         doc = factory.createDocument(here.toString());
       }
-    } 
+    }
     catch (DOMException e) {
       throw new IOException(e);
     }
@@ -153,7 +153,7 @@ public class SVGImageUtils {
           follow.add(refpath);
           known.add(refpath);
         }
-      } 
+      }
       else {
         throw new IOException("unsupported protocol '" + url.getProtocol() + "' in xlink:href");
       }
@@ -184,7 +184,7 @@ public class SVGImageUtils {
       final Document doc = fac.createDocument(here.toString());
       relativizeElement(doc.getDocumentElement());
       DOMUtilities.writeDocument(doc, sw);
-    } 
+    }
     catch (DOMException e) {
       throw new IOException(e);
     }
