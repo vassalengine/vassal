@@ -64,6 +64,7 @@ import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageUtils;
 
 /**
@@ -98,7 +99,7 @@ public class SVGRenderer {
   public SVGRenderer(String file, InputStream in) throws IOException {
     // load the SVG
     try (in) {
-      // We synchronize on docFactory becuase it does internal caching
+      // We synchronize on docFactory because it does internal caching
       // of the Documents it produces. This ensures that a Document is
       // being modified on one thread only.
       synchronized (docFactory) {
@@ -112,13 +113,18 @@ public class SVGRenderer {
     // get the default image size
     final Element root = doc.getDocumentElement();
 
-    defaultW = Float.parseFloat(
-      root.getAttributeNS(null, "width").replaceFirst("px", ""));
-    defaultH = Float.parseFloat(
-      root.getAttributeNS(null, "height").replaceFirst("px", ""));
+    try {
+      defaultW = Float.parseFloat(
+        root.getAttributeNS(null, "width").replaceFirst("px", ""));
+      defaultH = Float.parseFloat(
+        root.getAttributeNS(null, "height").replaceFirst("px", ""));
+    }
+    catch (NumberFormatException e) { // This follows the pattern in SVGImageUtils for the same situation.
+      throw new ImageIOException(file + " (Only 'px' units supported for height and width in SVG files)", e);
+    }
   }
 
-  private static final double DEGTORAD = Math.PI/180.0;
+  private static final double DEGTORAD = Math.PI / 180.0;
 
   public BufferedImage render() {
     return render(0.0, 1.0);
@@ -128,7 +134,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -156,7 +162,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -237,8 +243,8 @@ public class SVGRenderer {
       super.transcode(document, uri, output);
 
        // prepare the image to be painted
-      int w = (int)(width+0.5);
-      int h = (int)(height+0.5);
+      int w = (int)(width + 0.5);
+      int h = (int)(height + 0.5);
 
       // paint the SVG document using the bridge package
       // create the appropriate renderer

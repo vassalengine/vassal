@@ -55,10 +55,11 @@ import VASSAL.tools.image.ImageNotFoundException;
  */
 public class SVGImageUtils {
   // NB: SAXSVGDocumentFactory isn't thread-safe, we have to synchronize on it.
-  protected static final SAXSVGDocumentFactory factory =
-    new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
+  protected static final SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(
+      XMLResourceDescriptor.getXMLParserClassName());
 
-  private SVGImageUtils() { }
+  private SVGImageUtils() {
+  }
 
   /**
    * Returns the default dimensions of the SVG image.
@@ -78,18 +79,17 @@ public class SVGImageUtils {
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
-  public static Dimension getImageSize(String name, InputStream in)
-                                                          throws IOException {
+  public static Dimension getImageSize(String name, InputStream in) throws IOException {
     // get the SVG
     final Document doc;
     try (in) {
       synchronized (factory) {
         doc = factory.createDocument(null, in);
       }
-    }
+    } 
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
-    }
+    } 
     catch (DOMException | IOException e) {
       throw new ImageIOException(name, e);
     }
@@ -97,41 +97,37 @@ public class SVGImageUtils {
     // get the default image width and height
     final Element root = doc.getDocumentElement();
     try {
-      final int width = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
-      final int height = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
+      final int width = (int) (Float.parseFloat(root.getAttributeNS(null, "width").replaceFirst("px", "")) + 0.5);
+      final int height = (int) (Float.parseFloat(root.getAttributeNS(null, "height").replaceFirst("px", "")) + 0.5);
 
       return new Dimension(width, height);
-    }
+    } 
     catch (NumberFormatException e) {
-      throw new ImageIOException(name, e);
+      throw new ImageIOException(name + " (Only 'px' units supported for height and width in SVG files)", e);
     }
   }
 
   /**
-   * Conducts a recursive depth-first search for external references
-   * in the given SVG file.
+   * Conducts a recursive depth-first search for external references in the given
+   * SVG file.
    *
    * @param path the path of the file to check for external references
    */
-  public static List<String> getExternalReferences(String path)
-                                                           throws IOException {
+  public static List<String> getExternalReferences(String path) throws IOException {
     final ArrayList<String> reflist = new ArrayList<>();
     reflist.add(path);
     return getExternalReferences(path, reflist);
   }
 
   /**
-   * Conducts a recursive depth-first search for external references
-   * in the SVG file named by path. This is a helper function for
+   * Conducts a recursive depth-first search for external references in the SVG
+   * file named by path. This is a helper function for
    * {@link #getExternalReferences}.
    *
-   * @param path the path of the file to check for external references
+   * @param path  the path of the file to check for external references
    * @param known the list of references already found
    */
-  protected static List<String> getExternalReferences(
-                          String path, List<String> known) throws IOException {
+  protected static List<String> getExternalReferences(String path, List<String> known) throws IOException {
 
     final HashSet<String> follow = new HashSet<>();
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
@@ -141,7 +137,7 @@ public class SVGImageUtils {
       synchronized (factory) {
         doc = factory.createDocument(here.toString());
       }
-    }
+    } 
     catch (DOMException e) {
       throw new IOException(e);
     }
@@ -149,8 +145,7 @@ public class SVGImageUtils {
     final NodeList usenodes = doc.getElementsByTagName("use");
     for (int i = 0; i < usenodes.getLength(); ++i) {
       final Element e = (Element) usenodes.item(i);
-      final URL url = new URL(new URL(e.getBaseURI()),
-                              XLinkSupport.getXLinkHref(e));
+      final URL url = new URL(new URL(e.getBaseURI()), XLinkSupport.getXLinkHref(e));
       // balk (for now) unless file is available on our filesystem
       if (url.getProtocol().equals("file")) {
         final String refpath = url.getPath();
@@ -158,10 +153,9 @@ public class SVGImageUtils {
           follow.add(refpath);
           known.add(refpath);
         }
-      }
+      } 
       else {
-        throw new IOException("unsupported protocol '" +
-                              url.getProtocol() + "' in xlink:href");
+        throw new IOException("unsupported protocol '" + url.getProtocol() + "' in xlink:href");
       }
     }
 
@@ -177,13 +171,11 @@ public class SVGImageUtils {
    *
    * @param path the path of the file to be processed
    */
-  public static byte[] relativizeExternalReferences(String path)
-                                                           throws IOException {
+  public static byte[] relativizeExternalReferences(String path) throws IOException {
     // use the GenericDOMImplementation here because
     // SVGDOMImplementation adds unwanted attributes to SVG elements
-    final SAXDocumentFactory fac = new SAXDocumentFactory(
-      new GenericDOMImplementation(),
-      XMLResourceDescriptor.getXMLParserClassName());
+    final SAXDocumentFactory fac = new SAXDocumentFactory(new GenericDOMImplementation(),
+        XMLResourceDescriptor.getXMLParserClassName());
 
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
     final StringWriter sw = new StringWriter();
@@ -192,7 +184,7 @@ public class SVGImageUtils {
       final Document doc = fac.createDocument(here.toString());
       relativizeElement(doc.getDocumentElement());
       DOMUtilities.writeDocument(doc, sw);
-    }
+    } 
     catch (DOMException e) {
       throw new IOException(e);
     }
@@ -213,8 +205,7 @@ public class SVGImageUtils {
     // relativize the xlink:href attribute if there is one
     if (e.hasAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, "href")) {
       try {
-        final URL url = new URL(new URL(e.getBaseURI()),
-                                XLinkSupport.getXLinkHref(e));
+        final URL url = new URL(new URL(e.getBaseURI()), XLinkSupport.getXLinkHref(e));
         final String anchor = url.getRef();
         final String name = new File(url.getPath()).getName();
         XLinkSupport.setXLinkHref(e, name + '#' + anchor);
