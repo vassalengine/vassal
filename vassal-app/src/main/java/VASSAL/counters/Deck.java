@@ -879,7 +879,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("No such map", mapId, null));
+        ErrorDialog.dataWarning(new BadDataReport("No such map", mapId, null));
       }
     }
 

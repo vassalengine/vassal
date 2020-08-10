@@ -41,6 +41,9 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.apache.batik.ext.swing.Resources;
+
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -67,6 +70,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -103,6 +107,15 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     this((PieceSlot) card);
   }
   
+  
+  public String getName() {
+    return name;
+  }
+  
+  
+  public String getPieceDefinition() {
+    return pieceDefinition;
+  }
   
   // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0 
   public double getScale() {
@@ -196,7 +209,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       final AddPiece comm =
         (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
       if (comm == null) {
-        Chatter.warning ("- Couldn't build piece " + pieceDefinition);
+        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));
         System.err.println("Couldn't build piece " + pieceDefinition);
         pieceDefinition = null;
       }

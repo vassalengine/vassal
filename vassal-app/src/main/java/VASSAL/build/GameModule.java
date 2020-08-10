@@ -531,12 +531,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Display the given text in the control window's status line.
    * Save the messages for later if the Chatter has not been initialised yet
    */
-  public void warn(String s) {
-    if (chat == null) {
-      deferredChat.add(s);
-    }
-    else {
-      chat.show(" - " + s); //$NON-NLS-1$
+  public static void warn(String s) {
+    GameModule module = getGameModule();
+    if (module != null) {
+      if (module.chat == null) {
+        module.deferredChat.add(s);
+      }
+      else {
+        module.chat.show(" - " + s); //$NON-NLS-1$
+      }
     }
   }
 

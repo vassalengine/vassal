@@ -171,7 +171,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public void setValue(int val) {
     int theVal = val;
     if (val >= nValues) {
-      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer="+val);
+      reportdataWarning(this, Resources.getString("Error.bad_layer"), "Layer="+val);
       theVal = nValues;
     }
     value = value > 0 ? theVal + 1 : -theVal - 1;
@@ -546,10 +546,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
+      reportdataWarning(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
     }
     catch (ExpressionException e) {
-      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty["+propertyName+"]", e);
+      reportdataWarning(this, Resources.getString("Error.expression_error"), "followProperty["+propertyName+"]", e);
     }
   }
 
@@ -636,7 +636,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          reportDataError(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e);
+          reportdataWarning(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e);
         }
       }
       // random layers

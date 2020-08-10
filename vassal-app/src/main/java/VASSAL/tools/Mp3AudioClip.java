@@ -54,7 +54,7 @@ public class Mp3AudioClip implements AudioClip {
           return GameModule.getGameModule().getDataArchive().getInputStream(name);
         }
         catch (FileNotFoundException e) {
-          ErrorDialog.dataError(new BadDataReport(
+          ErrorDialog.dataWarning(new BadDataReport(
             Resources.getString("Error.not_found", name), "", e));
         }
       }
@@ -116,7 +116,7 @@ public class Mp3AudioClip implements AudioClip {
           player.play();
         }
         catch (JavaLayerException | IOException e) {
-          ErrorDialog.dataError(new BadDataReport(
+          ErrorDialog.dataWarning(new BadDataReport(
             "Error reading sound file", name, e
           ));
         }

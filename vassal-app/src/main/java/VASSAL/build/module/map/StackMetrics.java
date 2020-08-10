@@ -100,7 +100,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
         catch (NumberFormatException NaN) {
           exSepX = DEFAULT_EXSEP_X;
-          ErrorDialog.dataError(
+          ErrorDialog.dataWarning(
               new BadDataReport(
                   Resources.getString("Error.bad_preference", EXSEP_X, "StackMetrics"), (String) value, NaN));
         }
@@ -116,7 +116,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
         catch (NumberFormatException NaN) {
           exSepY = DEFAULT_EXSEP_Y;
-          ErrorDialog.dataError(
+          ErrorDialog.dataWarning(
               new BadDataReport(
                   Resources.getString("Error.bad_preference", EXSEP_Y, "StackMetrics"), (String) value, NaN));
         }
@@ -132,7 +132,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
         catch (NumberFormatException NaN) {
           unexSepX = DEFAULT_UNEXSEP_X;
-          ErrorDialog.dataError(
+          ErrorDialog.dataWarning(
               new BadDataReport(
                   Resources.getString("Error.bad_preference", UNEXSEP_X, "StackMetrics"), (String) value, NaN));
         }
@@ -148,7 +148,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
         catch (NumberFormatException NaN) {
           unexSepY = DEFAULT_UNEXSEP_Y;
-          ErrorDialog.dataError(
+          ErrorDialog.dataWarning(
               new BadDataReport(
                   Resources.getString("Error.bad_preference", UNEXSEP_Y, "StackMetrics"), (String) value, NaN));
         }

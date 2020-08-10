@@ -240,7 +240,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       catch (NumberFormatException e) {
         cycleIndex = -1;
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);
+        reportdataWarning(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);
       }
     }
     else {

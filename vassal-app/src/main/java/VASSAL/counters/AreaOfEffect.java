@@ -267,7 +267,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         return Integer.parseInt(r);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);
+        reportdataWarning(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);
         return 0;
       }
     }

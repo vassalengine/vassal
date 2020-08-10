@@ -292,7 +292,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             }
             catch (BadCoords e) {
               LogBadGridLocation(dest);
-              reportDataError(this, Resources.getString(
+              reportdataWarning(this, Resources.getString(
                 "Error.not_found", "Grid Location"), map.getMapName());
               ; // ignore SendTo request.
             }
@@ -314,7 +314,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           final String zoneName = zone.getText(outer);
           Zone z = map.findZone(zoneName);
           if (z == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
+            reportdataWarning(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
           }
           else {
             Rectangle r = z.getBounds();
@@ -327,7 +327,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           final String regionName = region.getText(outer);
           Region r = map.findRegion(regionName);
           if (r == null) {
-            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));
+            reportdataWarning(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));
           }
           else {
             Rectangle r2 = r.getBoard().bounds();
@@ -418,7 +418,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       i = Integer.parseInt(val);
     }
     catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
+      reportdataWarning(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
     }
     return i;
   }
@@ -437,7 +437,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);
+        reportdataWarning(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);
       }
     }
   }

@@ -184,7 +184,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         pos = getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
+        ErrorDialog.dataWarning(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
       }
     }
   }
@@ -411,7 +411,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected Stack initializeContents() {
     Stack s = createStack();
     Configurable[] c = getConfigureComponents();
+    int num = 0; // For error reporting
     for (Configurable configurable : c) {
+      num++;
       if (configurable instanceof PieceSlot) {
         PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
@@ -421,7 +423,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           s.add(p);
         } 
         else {
-          Chatter.warning("- Bad Piece Data - Failed to create piece in At-Start Stack: " + getConfigureName());
+          ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
         }
       }
     }

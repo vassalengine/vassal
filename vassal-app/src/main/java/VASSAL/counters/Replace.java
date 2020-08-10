@@ -53,7 +53,7 @@ public class Replace extends PlaceMarker {
     Command c;
     c = placeMarker();
     if (c == null) {
-      reportDataError(this, Resources.getString("Error.bad_replace"));
+      reportdataWarning(this, Resources.getString("Error.bad_replace"));
     }
     else {
       Command remove = new RemovePiece(Decorator.getOutermost(this));

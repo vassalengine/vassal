@@ -101,7 +101,7 @@ public class HtmlChart extends Widget implements MouseListener {
       s = IOUtils.toString(in, StandardCharsets.UTF_8);
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
+      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
     }
 
     return s;

@@ -443,7 +443,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
+      reportdataWarning(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
     }
     return;
   }
@@ -556,7 +556,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          reportDataError(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e);
+          reportdataWarning(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e);
         }
       }
       // random layers

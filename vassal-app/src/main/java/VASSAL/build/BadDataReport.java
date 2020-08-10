@@ -17,6 +17,7 @@
 
 package VASSAL.build;
 
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
@@ -28,7 +29,7 @@ import VASSAL.counters.EditablePiece;
  *
  * This is for recoverable errors that occur during game play, as opposed to {@link IllegalBuildException},
  * which covers errors when building a module
- * @see ErrorDialog.dataError()
+ * @see ErrorDialog.dataWarning()
  * @author rodneykinney
  *
  */
@@ -81,8 +82,8 @@ public class BadDataReport {
   }
 
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
-    String m = ((pieceName != null && pieceName.length() > 0) ? pieceName+" " : "");
-    m += ((traitDesc != null && traitDesc.length() > 0) ? "["+traitDesc+"] " : "");
+    String m = ((pieceName != null && pieceName.length() > 0) ? pieceName + " " : "");
+    m += ((traitDesc != null && traitDesc.length() > 0) ? "[" + traitDesc + "] " : "");
     m += m.length() > 0 ? "- " : "";
     m += message;
     this.message = m;
@@ -117,7 +118,7 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(AbstractConfigurable c, String message, String data, Throwable cause) {
-    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass())+"]: "+message;
+    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass()) + "]: " + message;
     this.cause = cause;
     this.data = data;
   }
@@ -125,6 +126,24 @@ public class BadDataReport {
   public BadDataReport(AbstractConfigurable c, String messageKey, String data) {
     this(c, messageKey, data, null);
   }
+  
+  
+
+  /**
+   * Expanded Bad Data Report for PieceSlot
+   * Display the name of the slot
+   *
+   * @param c PieceSlot that generated the error
+   * @param message Resource message key to display
+   * @param data Data causing error
+   */
+  public BadDataReport(PieceSlot slot, String message, String data) {
+    this.message = slot.getName() + ": " + message;
+    this.cause = null;
+    this.data  = data;
+  }
+  
+  
 
   public String getMessage() {
     return message;

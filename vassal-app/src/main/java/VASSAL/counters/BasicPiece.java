@@ -639,7 +639,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (!"null".equals(mapId)) {
       newMap = Map.getMapById(mapId);
       if (newMap == null) {
-        Decorator.reportDataError(this, Resources.getString("Error.not_found", "Map"), "mapId="+mapId);
+        Decorator.reportdataWarning(this, Resources.getString("Error.not_found", "Map"), "mapId="+mapId);
       }
     }
     final Point newPos = new Point(st.nextInt(0), st.nextInt(0));
