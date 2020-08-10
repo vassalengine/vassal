@@ -136,7 +136,9 @@ public final class Info {
     catch (VersionFormatException e) {
       return null;
     }
+  }
 
+  /**
    * Bugzilla (and other potential external reporting tools) require onlt the primary numeric portion of
    * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3\
    *
