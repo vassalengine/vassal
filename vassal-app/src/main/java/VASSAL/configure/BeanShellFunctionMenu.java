@@ -297,7 +297,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     for (Buildable b : buildables) {
       if (b instanceof AbstractConfigurable) {
         // Remove 'filler' menu levels due to intermediate holding components
-        final boolean useParent = (b instanceof GlobalProperties || b instanceof Board ||b instanceof ZonedGrid);
+        final boolean useParent = (b instanceof GlobalProperties || b instanceof Board || b instanceof ZonedGrid);
         buildGlobalMenu(useParentMenu ? parentMenu : myMenu, (AbstractConfigurable) b, useParent);
       }
       else if (b instanceof BoardPicker) {
@@ -320,7 +320,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
       final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
-      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/itemSize.height);
+      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height / itemSize.height);
     }
     return maxScrollItems;
 

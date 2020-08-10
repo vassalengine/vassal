@@ -180,9 +180,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     GameModule.getGameModule().getPrefs().addOption(prefTab, docked);
 
     size.addPropertyChangeListener(e -> setDisplayFont());
-
     bold.addPropertyChangeListener(e -> setDisplayFont());
-
     docked.addPropertyChangeListener(e -> setDocked(isDocked()));
 
     // Set up listeners for prev/next hotkeys

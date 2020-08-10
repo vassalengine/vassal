@@ -258,7 +258,7 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public static Item decode(GamePieceLayout layout, String s) {
-    SequenceEncoder.Decoder sd1= new SequenceEncoder.Decoder(s, '|');
+    SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, '|');
     String t1 = sd1.nextToken(""); //$NON-NLS-1$
     String t2 = sd1.nextToken(""); //$NON-NLS-1$
 

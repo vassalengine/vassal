@@ -1201,8 +1201,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void mouseExited(MouseEvent e) {
   }
-  
-  
+
+
   public MouseEvent translateEvent(MouseEvent e) {
     // don't write over Java's mouse event
     final MouseEvent mapEvent = new MouseEvent(

@@ -90,7 +90,7 @@ public abstract class TurnLevel extends TurnComponent {
     }
     for (Buildable b : getBuildables()) {
       if (b instanceof TurnLevel) {
-        ((TurnLevel) b).findMaximumStrings(levels, currentLevel+1);
+        ((TurnLevel) b).findMaximumStrings(levels, currentLevel + 1);
       }
     }
   }

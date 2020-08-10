@@ -1072,7 +1072,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else if (value instanceof String) {
         showOverlap = "true".equals(value);
       }
-    }    
+    }
     else if (UNROTATE_PIECES.equals(name)) {
       if (value instanceof Boolean) {
         unrotatePieces = (Boolean) value;

@@ -295,7 +295,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
 
     public Entry (String description, String address, String port, String passwd) {
-      this.description =description;
+      this.description = description;
       this.address = address;
       this.port = port;
     }

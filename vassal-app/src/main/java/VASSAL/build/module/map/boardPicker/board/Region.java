@@ -265,8 +265,8 @@ public class Region extends AbstractConfigurable {
     g.setClip(oldClip);
 
     // Calculate and store the selection rectangle
-    int width = g.getFontMetrics().stringWidth(getConfigureName() + "  ")+1; //$NON-NLS-1$
-    int height = g.getFontMetrics().getHeight()+1;
+    int width = g.getFontMetrics().stringWidth(getConfigureName() + "  ") + 1; //$NON-NLS-1$
+    int height = g.getFontMetrics().getHeight() + 1;
 
     selectionRect.setLocation(posX - (width / 2), posY - 1);
     selectionRect.setSize(width, height + labelOffset + 1);

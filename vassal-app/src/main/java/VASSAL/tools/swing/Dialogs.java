@@ -198,7 +198,7 @@ public class Dialogs {
   private static Component buildContents(String title, String description) {
     final JLabel titleLabel = new JLabel(title);
     final Font f = titleLabel.getFont();
-    titleLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
+    titleLabel.setFont(f.deriveFont(Font.BOLD, f.getSize() * 1.2f));
 
     final FlowLabel descriptionLabel = new FlowLabel(description);
 

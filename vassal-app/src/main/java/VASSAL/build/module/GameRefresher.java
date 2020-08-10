@@ -184,12 +184,14 @@ public final class GameRefresher implements GameComponent {
     }
 
     if (isTestMode()) {
-      dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
-      if (notOwnedCount > 0) {
-        dialog.addMessage(Resources.getString("GameRefresher.counters_not_owned_test", notOwnedCount));
-      }
-      if (notFoundCount > 0) {
-        dialog.addMessage(Resources.getString("GameRefresher.counters_not_found_test", notFoundCount));
+      if (dialog != null) { // Could be null if dialog box got closed while we were still running - see start() method above
+        dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
+        if (notOwnedCount > 0) {
+          dialog.addMessage(Resources.getString("GameRefresher.counters_not_owned_test", notOwnedCount));
+        }
+        if (notFoundCount > 0) {
+          dialog.addMessage(Resources.getString("GameRefresher.counters_not_found_test", notFoundCount));
+        }
       }
     }
     else {
@@ -361,7 +363,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     public void addMessage(String mess) {
-      results.setText(results.getText()+"\n"+mess);
+      results.setText(results.getText() + "\n" + mess);
     }
   }
 }

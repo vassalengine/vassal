@@ -210,16 +210,12 @@ public class FreeRotator extends Decorator
       validAngles[angleIndex] = angle;
     }
     else {
-      // Find nearest valid angle
-      int newIndex = angleIndex;
-      double minDist = Math.abs((validAngles[angleIndex] - angle + 360) % 360);
-      for (int i = 0; i < validAngles.length; ++i) {
-        if (minDist > Math.abs((validAngles[i] - angle + 360) % 360)) {
-          newIndex = i;
-          minDist = Math.abs((validAngles[i] - angle + 360) % 360);
-        }
-      }
-      angleIndex = newIndex;
+      // We (stupidly) store allowed angles in descending order from 0.
+      // Normalize the angle to be in (-360, 0] to match that.
+      angle = ((angle % 360) - 360) % 360;
+      // ex is the expected index of the angle in angles array
+      final double ex = (-angle / 360) * validAngles.length;
+      angleIndex = ((int) Math.round(ex)) % validAngles.length;
     }
   }
 
@@ -393,7 +389,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e);
       }
     }
     else {
@@ -401,7 +397,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e);
       }
     }
   }
@@ -486,7 +482,7 @@ public class FreeRotator extends Decorator
       else {
         // we are set rotate, set angleIndex to a number between 0 and
         // validAngles.lenth
-        angleIndex = (rand.nextInt(validAngles.length));
+        angleIndex = rand.nextInt(validAngles.length);
       }
       c = tracker.getChangeCommand();
     }
@@ -626,11 +622,11 @@ public class FreeRotator extends Decorator
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (SwingUtils.isMainMouseButtonDown(e)) {
+    if (SwingUtils.isMainMouseButtonDown(e) && !hasPieceMoved()) { // hasPieceMoved() protects from NPE if gone from map
       if (drawGhost) {
         final Point mousePos = getMap().componentToMap(e.getPoint());
         final double myAngle = getRelativeAngle(mousePos, pivot);
-        tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
+        tempAngle = getAngle() - (myAngle - startAngle) / PI_180;
       }
       getMap().repaint();
     }
@@ -639,7 +635,7 @@ public class FreeRotator extends Decorator
   private double getRelativeAngle(Point p, Point origin) {
     double myAngle;
     if (p.y == origin.y) {
-      myAngle = p.x < origin.x ? -Math.PI/2.0 : Math.PI/2.0;
+      myAngle = p.x < origin.x ? -Math.PI / 2.0 : Math.PI / 2.0;
     }
     else {
       myAngle = Math.atan((double)(p.x - origin.x) / (origin.y - p.y));

@@ -309,7 +309,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       a = ((GeometricGrid)background).getGridShape(center, range);
     }
     if (a == null) {
-      a = new Area(new Ellipse2D.Double(center.x-range, center.y-range, range * 2, range * 2));
+      a = new Area(new Ellipse2D.Double(center.x - range, center.y - range, range * 2, range * 2));
     }
     return a;
   }

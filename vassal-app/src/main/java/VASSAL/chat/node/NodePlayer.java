@@ -60,7 +60,7 @@ public class NodePlayer extends SimplePlayer {
   public void setInfo(Properties p) {
     name = p.getProperty(SimpleStatus.NAME, "???"); //$NON-NLS-1$
     if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {
-      name = "("+Chatter.getAnonymousUserName()+")";
+      name = "(" + Chatter.getAnonymousUserName() + ")";
     }
     id = p.getProperty(ID, id);
     setStatus(new SimpleStatus(

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
- * 
+ *
  */
 package VASSAL.build.widget;
 
@@ -99,19 +99,19 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public PieceSlot(CardSlot card) {
     this((PieceSlot) card);
   }
-  
-  
-  // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0 
+
+
+  // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0
   public double getScale() {
     Widget w = this;
     while ((w = w.getParent()) != null) {
       if (w.hasScale()) {
         return w.getScale();
       }
-    }    
+    }
     return 1.0;
   }
-  
+
 
   protected void copyFrom(PieceSlot piece) {
     c = piece.c;
@@ -254,10 +254,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public Dimension getPreferredSize() {
-    // Preferred size is affected by our module-specified scale 
+    // Preferred size is affected by our module-specified scale
     if (c != null && panel.getGraphics() != null) {
       Dimension bound = c.boundingBox().getSize();
-      bound.width = (int) ((double)bound.width * getScale()); 
+      bound.width = (int) ((double)bound.width * getScale());
       bound.height = (int) ((double)bound.height * getScale());
       return bound;
     }
@@ -423,11 +423,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public void addTo(Buildable par) {
-    // Need to "keep our Widgets in a row" for scale purposes 
+    // Need to "keep our Widgets in a row" for scale purposes
     if (par instanceof Widget) {
       parent = (Widget)par;
     }
-    
+
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
     DragGestureListener dragGestureListener = dge -> {

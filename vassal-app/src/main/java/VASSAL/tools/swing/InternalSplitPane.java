@@ -341,7 +341,7 @@ public class InternalSplitPane extends JSplitPane {
           screenBounds.width - ancestorPos.x
         );
         h = ancestorSize.height;
-        div = prefBSize.width/(double)(prefBSize.width + prefHSize.width);
+        div = prefBSize.width / (double)(prefBSize.width + prefHSize.width);
         break;
       case JSplitPane.VERTICAL_SPLIT:
         w = ancestorSize.width;
@@ -349,7 +349,7 @@ public class InternalSplitPane extends JSplitPane {
           ancestorSize.height + prefHSize.height,
           screenBounds.height - ancestorPos.y
         );
-        div = prefBSize.height/(double)(prefBSize.height + prefHSize.height);
+        div = prefBSize.height / (double)(prefBSize.height + prefHSize.height);
         break;
       }
 

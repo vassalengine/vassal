@@ -76,7 +76,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
           .append(cpc.getOldValue())
           .append(cpc.getNewValue())
           .append(our_cid);
-        s = COMMAND_PREFIX+se.getValue();
+        s = COMMAND_PREFIX + se.getValue();
       }
     }
     return s;

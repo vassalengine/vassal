@@ -158,13 +158,14 @@ public class CounterTurnLevel extends TurnLevel {
   @Override
   protected Component getSetControl() {
 
-    final IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    final IntConfigurer config = new IntConfigurer("", " " + getConfigureName() + ":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         current = (Integer) ((IntConfigurer) e.getSource()).getValue();
         myValue.setPropertyValue(getValueString());
-      }});
+      }
+    });
 
     return config.getControls();
   }

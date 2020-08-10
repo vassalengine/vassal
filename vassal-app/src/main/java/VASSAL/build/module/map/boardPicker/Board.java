@@ -369,8 +369,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
         final int ty = location.y + tile.y * oh;
 
         // find actual tile size
-        final int tw = Math.min(ow, location.x + bounds.width-tx);
-        final int th = Math.min(oh, location.y + bounds.height-ty);
+        final int tw = Math.min(ow, location.x + bounds.width - tx);
+        final int th = Math.min(oh, location.y + bounds.height - ty);
 
         // find position in component
         final int cx = (int)(tx / os_scale);

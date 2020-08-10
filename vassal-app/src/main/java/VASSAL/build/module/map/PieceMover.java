@@ -442,7 +442,7 @@ public class PieceMover extends AbstractBuildable
     }
     return c;
   }
-  
+
   /**
    * @deprecated  {@link #setOldLocations(GamePiece)} to return generated Commands
    * @param p Piece
@@ -464,7 +464,7 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(Decorator.setOldProperties(p));
     }
     return comm;
-    
+
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
@@ -668,7 +668,7 @@ public class PieceMover extends AbstractBuildable
     ProblemDialog.showDeprecated("2020-08-06");
     comm.append(applyKeyAfterMove(pieces, key));
   }
-  
+
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
@@ -1084,7 +1084,7 @@ public class PieceMover extends AbstractBuildable
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
         final Map map = piece.getMap();        
-        
+
         if (piece instanceof Stack) {
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
@@ -1102,10 +1102,10 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
-          
+
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
-          
+
           String owner = "";
           if (piece.getParent() instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);

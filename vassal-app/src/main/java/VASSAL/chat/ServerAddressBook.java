@@ -483,13 +483,15 @@ public class ServerAddressBook {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new PeerServerEntry());
-      }});
+      }
+    });
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
     jabItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new JabberEntry());
-      }});
+      }
+    });
 //    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
 //    privateItem.addActionListener(new ActionListener() {
 //      public void actionPerformed(ActionEvent arg0) {
@@ -1003,7 +1005,6 @@ public class ServerAddressBook {
    *
    */
   private class LegacyEntry extends AddressBookEntry {
-
     public LegacyEntry() {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
@@ -1042,24 +1043,19 @@ public class ServerAddressBook {
 
     @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
-
     }
 
     @Override
     protected void getAdditionalProperties(Properties props) {
-
     }
 
     @Override
     protected void setAdditionalProperties(Properties props) {
-
     }
-
   }
 
   /**
    * Address Book entry for a Private VASSAL server
-   *
    */
 //  private class PrivateEntry extends AddressBookEntry {
 //
@@ -1147,7 +1143,7 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return Resources.getString("ServerAddressBook.peer_server") + " ["+getProperty(DESCRIPTION_KEY)+"]";
+      return Resources.getString("ServerAddressBook.peer_server") + " [" + getProperty(DESCRIPTION_KEY) + "]";
     }
 
     @Override

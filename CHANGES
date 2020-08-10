@@ -1,6 +1,8 @@
 3.3.3-beta1 - ???
 
+* 13251: Add Module name to Bug summary, extra info to comments
 * 13239: Right-click doesn't pick up whole stack anymore
+* 13234: Rotation gets stuck due to floating point error
 * 13229: Performance: Save property map rather than clone pieces as snapshot
 * 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
 * 13218: Allow a piece get its context menu click location
@@ -45,6 +47,8 @@
     state
 * 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in
     incorrect position
+* 12935: NPE in MoveReporter.shouldMarkMoved assuming nonnull map
+* 12888: NPE in BooleanConfigurer.setValue
 * 12576: At-Start stack attaches to first board listed in module, even if that
     board wasn't selected by player and is inactive
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
@@ -52,8 +56,10 @@
     of pieces' to a Deck correctly
 * 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in
     buggy trail behavior
+* 10314: NPE in GameRefresher if dialog is closed quickly while test is running
 *  3199: Add separators to menus
 *  3042: Improved Retire/Resign/Switch Sides button flow
+*  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
 *  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off
     movement trails
 

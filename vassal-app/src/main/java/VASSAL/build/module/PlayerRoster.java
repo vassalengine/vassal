@@ -472,7 +472,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     String mySide = getMySide(); // Get our own side, so we can find the "next" one
     int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
     int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-    for (int tries = 0; i != myidx && tries < sides.size(); i = (i+1) % sides.size(), tries++) { // Wrap-around search of sides
+    for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
       String s = sides.get(i);
       if (!alreadyTaken.contains(s) &&
           !Resources.getString("PlayerRoster.solitaire").equals(s) &&

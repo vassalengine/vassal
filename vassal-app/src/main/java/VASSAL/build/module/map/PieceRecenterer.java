@@ -47,9 +47,9 @@ import VASSAL.tools.NamedKeyStroke;
  * so that their centroid is at the center of the map
  */
 public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor {
-  public static final String BUTTON_TEXT="text";
-  public static final String ICON="icon";
-  public static final String HOTKEY="hotkey";
+  public static final String BUTTON_TEXT = "text";
+  public static final String ICON = "icon";
+  public static final String HOTKEY = "hotkey";
   public static final String TOOLTIP = "tooltip";
 
   protected LaunchButton launch;
@@ -86,8 +86,8 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     }
 
     if (r.height >= 0 && r.width >= 0) {
-      final int dx = map.mapSize().width/2-(r.x+r.width/2);
-      final int dy = map.mapSize().height/2-(r.y+r.height/2);
+      final int dx = map.mapSize().width / 2 - (r.x + r.width / 2);
+      final int dy = map.mapSize().height / 2 - (r.y + r.height / 2);
       for (GamePiece p : pieces) {
         if (Boolean.TRUE.equals(dispatcher.accept(p))) {
           final ChangeTracker tracker = new ChangeTracker(p);

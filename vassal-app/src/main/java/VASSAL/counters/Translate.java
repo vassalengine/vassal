@@ -154,7 +154,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     // This unexpectedly changes the order of trait execution, but is required for the old Move Batcher to work correctly
     if (GlobalOptions.getInstance().isUseClassicMoveFixedDistance()) {
       myGetKeyCommands();
-      if (moveCommand.matches(stroke)) {        
+      if (moveCommand.matches(stroke)) {
         return myKeyEvent(stroke);
       }
     }
@@ -165,35 +165,35 @@ public class Translate extends Decorator implements TranslatablePiece {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
-    if (moveCommand.matches(stroke)) {      
+    if (moveCommand.matches(stroke)) {
       return GlobalOptions.getInstance().isUseClassicMoveFixedDistance() ? classicTranslate(stroke) : newTranslate(stroke);
     }
     return null;
   }
-  
+
   /*
    * New Translate code.
    * Simplified. Get rid of Move Batcher. Use same technique as Send To Location to
    * move counters. A series of Translate commands issues by a Trigger Action will now act as
    * expected and Undo properly.
-   * 
+   *
    * NOTE: If the Stack Move option is used and a series of MFD commands are issued by a Trigger Action
    * then the moving pieces will 'pick up' any pieces they land on along the way. The Stack Move option is not
    * recommended for this reason and now defaults to 'N' and is marked in the Editor as 'Not Recommended'.
    */
   protected Command newTranslate (KeyStroke stroke) {
-    
+
     GamePiece target = findTarget(stroke);
     if (target == null) {
       return null;
     }
-    
+
     // Current Position
     Point p = getPosition();
-    
+
     // Calculate the destination
     translate(p);
-    
+
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
     // Use the first Rotator trait below us, if none, use the highest in the stack.
     FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
@@ -211,7 +211,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
       p = getMap().snapTo(p);
     }
-    
+
     // Move the piece(s)
     Command c = new NullCommand();
     if (target instanceof Stack) {
@@ -225,39 +225,39 @@ public class Translate extends Decorator implements TranslatablePiece {
     else {
       c = c.append(movePiece(target, p));
     }
-    
+
     return c;
   }
-  
+
   /*
    * Move a single piece to a destination
    */
   protected Command movePiece(GamePiece gp, Point dest) {
-    
+
     // Is the piece on a map?
     final Map map = gp.getMap();
     if (map == null) {
-      return null;      
+      return null;
     }
 
     // Set the Old... properties
     Command c = setOldProperties(this);
-    
+
     // Move the piece
     final GamePiece outer = Decorator.getOutermost(gp);
     c = c.append(map.placeOrMerge(outer, dest));
-   
+
     // Apply after Move Key
     if (map.getMoveKey() != null) {
       c = c.append(outer.keyEvent(map.getMoveKey()));
     }
-    
+
     // Unlink from Parent Stack (in case it is a Deck).
     final Stack parent = outer.getParent();
     if (parent != null) {
       c = c.append(parent.pieceRemoved(outer));
     }
-      
+
     return c;
   }
 
@@ -338,7 +338,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
     x = Xdist + Xindex * Xoffset;
     if (b != null) {
-      x = (int)Math.round(b.getMagnification()*x);
+      x = (int)Math.round(b.getMagnification() * x);
     }
 
     final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this);
@@ -347,7 +347,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
     y = Ydist + Yindex * Yoffset;
     if (b != null) {
-      y = (int)Math.round(b.getMagnification()*y);
+      y = (int)Math.round(b.getMagnification() * y);
     }
 
     p.translate(x, -y);
@@ -448,7 +448,8 @@ public class Translate extends Decorator implements TranslatablePiece {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateAdvancedVisibility();
-        }});
+        }
+      });
       controls.add(advancedInput.getControls());
 
       Box b = Box.createHorizontalBox();
@@ -524,7 +525,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       mover = null;
       Command comm = new NullCommand();
       comm = comm.append(additionalCommand);
-      
+
       for (final Move move : moves) {
         final Map.Merger merger =
           new Map.Merger(move.map, move.pos, move.piece);
@@ -603,7 +604,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     public void setKeyEvent(KeyStroke stroke) {
       this.stroke = stroke;
     }
-    
+
     public void setAdditionalCommand(Command c) {
       additionalCommand = c;
     }

@@ -162,7 +162,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final String id = GlobalOptions.getInstance().getPlayerId();
     return String.format("&lt;%s&gt; - %s", id.isEmpty() ? "(" + getAnonymousUserName() + ")" : id, text); //HTML-friendly angle brackets //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
-
+  
   public JTextField getInputField() {
     return input;
   }
@@ -364,7 +364,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // A fun extension would be letting the module designer provide extra class styles. 
   }
-  
+
   /**
    * Set the Font used by the text area
    */

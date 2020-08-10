@@ -276,7 +276,7 @@ public class Footprint extends MovementMarkable {
   protected void recordCurrentPosition() {
     final Point here = this.getPosition();
     if (pointList.isEmpty() ||
-        !pointList.get(pointList.size()-1).equals(here)) {
+        !pointList.get(pointList.size() - 1).equals(here)) {
       addPoint(here);
     }
     else {
@@ -315,7 +315,7 @@ public class Footprint extends MovementMarkable {
     bb.x += pos.x;
     bb.y += pos.y;
 
-    final int circleDiameter = 2*circleRadius;
+    final int circleDiameter = 2 * circleRadius;
     final Rectangle pr = new Rectangle();
 
     for (final Point p: pointList) {
@@ -413,8 +413,8 @@ public class Footprint extends MovementMarkable {
 
     final int clipX = edgeWidth - edgeClipWidth;
     final int clipY = edgeHeight - edgeClipHeight;
-    final int width = mapWidth - 2*(edgeWidth + edgeClipWidth);
-    final int height = mapHeight - 2*(edgeHeight + edgeClipHeight);
+    final int width = mapWidth - 2 * (edgeWidth + edgeClipWidth);
+    final int height = mapHeight - 2 * (edgeHeight + edgeClipHeight);
 
     Rectangle newClip = new Rectangle(
       (int) (clipX * zoom),
@@ -439,7 +439,7 @@ public class Footprint extends MovementMarkable {
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
-    final float thickness = Math.max(1.0f, (float)(zoom*lineWidth));
+    final float thickness = Math.max(1.0f, (float)(zoom * lineWidth));
     g2d.setStroke(new BasicStroke(thickness));
     g2d.setColor(lineColor);
 
@@ -611,7 +611,7 @@ public class Footprint extends MovementMarkable {
       bb.x += pos.x;
       bb.y += pos.y;
 
-      final int circleDiameter = 2*circleRadius;
+      final int circleDiameter = 2 * circleRadius;
       final Rectangle pr = new Rectangle();
 
       for (final Point p: pointList) {

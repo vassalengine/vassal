@@ -128,8 +128,8 @@ public class PolygonEditor extends JPanel {
       r.width = 600;
       r.height = 600;
     }
-    int x = p.x-r.width/2;
-    int y = p.y-r.height/2;
+    int x = p.x - r.width / 2;
+    int y = p.y - r.height / 2;
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
@@ -242,20 +242,20 @@ public class PolygonEditor extends JPanel {
         int x1 = polygon.xpoints[i];
         int y1 = polygon.ypoints[i];
         int x2, y2;
-        if (i == polygon.npoints-1) {
+        if (i == polygon.npoints - 1) {
           x2 = polygon.xpoints[0];
           y2 = polygon.ypoints[0];
         }
         else {
-          x2 = polygon.xpoints[i+1];
-          y2 = polygon.ypoints[i+1];
+          x2 = polygon.xpoints[i + 1];
+          y2 = polygon.ypoints[i + 1];
         }
 
         if (y2 == y1 && x2 == x1) // two verteces on top of each other: skip
           continue;
 
         double d = Point2D.distance(x1, y1, x2, y2); // segment length
-        double comp = ((x2-x1)*(x0-x1) + (y2-y1)*(y0-y1)) / d; // component of projection of selection on segment
+        double comp = ((x2 - x1) * (x0 - x1) + (y2 - y1) * (y0 - y1)) / d; // component of projection of selection on segment
         double dist; // orthogonal distance to segment
 
         if (comp <= 0.0) { // too far out beyond first vertex: just move that vertex if it's closest
@@ -271,15 +271,16 @@ public class PolygonEditor extends JPanel {
           if (dist < minDist) {
             isVertex = true;
             minDist = dist;
-            selected = i+1;
+            selected = i + 1;
           }
         }
         else { // calculate orthogonal distance to segment
-          dist = Math.abs((y2-y1)*e.getX() - (x2-x1)*e.getY() + x2*y1 - y2*x1) / Math.sqrt((y2-y1)*(y2-y1) + (x2-x1)*(x2-x1));
+          dist = Math.abs((y2 - y1) * e.getX() - (x2 - x1) * e.getY() + x2 * y1 - y2 * x1) /
+            Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
           if (dist < minDist) {
             isVertex = false;
             minDist = dist;
-            selected = i+1;
+            selected = i + 1;
           }
         }
       }
