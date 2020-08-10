@@ -47,6 +47,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
@@ -195,6 +196,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       final AddPiece comm =
         (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
       if (comm == null) {
+        Chatter.warning ("- Couldn't build piece " + pieceDefinition);
         System.err.println("Couldn't build piece " + pieceDefinition);
         pieceDefinition = null;
       }

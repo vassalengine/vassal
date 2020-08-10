@@ -80,6 +80,7 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.NewGameIndicator;
@@ -199,9 +200,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           getConfigureBoard().getGrid().getLocation(location);
         }
         catch (BadCoords e) {
-          String msg = "Bad location name "+location+" in "+getConfigureName();
+          String msg = "Bad location name " + location + " in " + getConfigureName();
           if (e.getMessage() != null) {
-            msg += ":  "+e.getMessage();
+            msg += ":  " + e.getMessage();
           }
           report.addWarning(msg);
         }
@@ -418,6 +419,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           p = PieceCloner.getInstance().clonePiece(p);
           GameModule.getGameModule().getGameState().addPiece(p);
           s.add(p);
+        } 
+        else {
+          Chatter.warning("- Bad Piece Data - Failed to create piece in At-Start Stack: " + getConfigureName());
         }
       }
     }
