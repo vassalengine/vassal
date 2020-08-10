@@ -43,9 +43,9 @@ public class VassalTranslation extends Translation {
   protected Properties baseValues = new Properties();
 
   public VassalTranslation() {
-    setConfigureName("VASSAL");
+    setConfigureName(Resources.VASSAL);
 
-    try (InputStream is = getClass().getResourceAsStream("VASSAL.properties")) {
+    try (InputStream is = getClass().getResourceAsStream(Resources.BASE_BUNDLE)) {
       if (is == null) {
         throw new FileNotFoundException("VASSAL.properties not found");
       }
@@ -55,7 +55,7 @@ public class VassalTranslation extends Translation {
       }
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, "VASSAL.properties");
+      ReadErrorDialog.error(e, Resources.BASE_BUNDLE);
     }
   }
 
@@ -66,7 +66,7 @@ public class VassalTranslation extends Translation {
 
   @Override
   protected String getDescription() {
-    return "VASSAL";
+    return Resources.VASSAL;
   }
 
   public void clearProperties() {
