@@ -389,7 +389,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e);
       }
     }
     else {
@@ -397,7 +397,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e);
       }
     }
   }

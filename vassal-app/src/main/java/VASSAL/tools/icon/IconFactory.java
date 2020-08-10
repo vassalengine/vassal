@@ -91,7 +91,7 @@ public final class IconFactory {
 // FIXME: preloadThread is never set to null, cannot be gc'd
     // Find all available Icon Familys within Vassal.
     // May take a little while, so run it on a background thread
-    preloadThread = new Thread(new Runnable(){
+    preloadThread = new Thread(new Runnable() {
       @Override
       public void run() {
         synchronized (preloadLock) {
@@ -132,7 +132,7 @@ public final class IconFactory {
   public static BufferedImage getImage(String iconFamilyName, int size) {
     final IconFamily family = getInstance().getFamily(iconFamilyName);
     if (family == null) {
-      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName()+ " " + iconFamilyName)); //$NON-NLS-1$
+      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName() + " " + iconFamilyName)); //$NON-NLS-1$
     }
     return family.getImage(size);
   }
@@ -279,9 +279,11 @@ public final class IconFactory {
       // Bug 9670 BUT there may also be an images folder in another Jar file in the Classloader path before the Vengine.jar
       // so look for an Icon we know must exist there.
       // imageUrl = jar.getURL(DataArchive.IMAGE_DIR
-      imageUrl = jar.getURL(DataArchive.IMAGE_DIR+ApplicationIcons.VASSAL_ICON_LARGE);
+      imageUrl = jar.getURL(DataArchive.IMAGE_DIR + ApplicationIcons.VASSAL_ICON_LARGE);
       imageUrl = new URL (imageUrl.toString().substring(0, imageUrl.toString().length() - ApplicationIcons.VASSAL_ICON_LARGE.length()));
-      logger.debug("VASSAL images folder found at "+imageUrl);
+
+      logger.debug("VASSAL images folder found at " + imageUrl);
+
       // Determine if we are running locally under a debugger, or
       // from an installation package. If running an installed version
       // of Vassal, the images URL will start with "jar:".
@@ -295,7 +297,7 @@ public final class IconFactory {
         findJarIcons();
       }
       else {
-        throw new IllegalBuildException ("Unknown Vassal Image source type: "+ imageUrl); //$NON-NLS-1$
+        throw new IllegalBuildException ("Unknown Vassal Image source type: " + imageUrl); //$NON-NLS-1$
       }
     }
     catch (IOException e) {
@@ -311,7 +313,7 @@ public final class IconFactory {
    * @throws IOException
    */
   protected void findLocalSizedIcons(int size) throws IOException {
-    final String path = DataArchive.ICON_DIR+IconFamily.SIZE_DIRS[size];
+    final String path = DataArchive.ICON_DIR + IconFamily.SIZE_DIRS[size];
     final URL sizeURL = jar.getURL(path);
 
     try (InputStream in = sizeURL.openStream();
@@ -325,7 +327,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.debug("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family " + familyName + " created for " + imageName);
           }
           family.setSizeIconPath(size, "/" + path + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -341,7 +343,7 @@ public final class IconFactory {
    * @throws IOException
    */
   private void findLocalScalableIcons() throws IOException {
-    final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
+    final String scalablePath = DataArchive.ICON_DIR + IconFamily.SCALABLE_DIR;
     final URL url = jar.getURL(scalablePath);
 
     try (InputStream in = url.openStream();
@@ -355,7 +357,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.debug("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family " + familyName + " created for " + imageName);
           }
           family.setScalableIconPath("/" + scalablePath + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
@@ -371,11 +373,11 @@ public final class IconFactory {
   private void findJarIcons() throws IOException {
 
     // Path to scalable icons
-    final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
+    final String scalablePath = DataArchive.ICON_DIR + IconFamily.SCALABLE_DIR;
     // Path to sized icons
     final String[] sizePaths = new String[IconFamily.SIZE_COUNT];
     for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
-      sizePaths[size] = DataArchive.ICON_DIR+IconFamily.SIZE_DIRS[size];
+      sizePaths[size] = DataArchive.ICON_DIR + IconFamily.SIZE_DIRS[size];
     }
 
     final JarURLConnection j = (JarURLConnection) jar.getURL(DataArchive.IMAGE_DIR).openConnection();
@@ -392,7 +394,7 @@ public final class IconFactory {
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
-            logger.debug("Icon family "+familyName+" created for "+imageName);
+            logger.debug("Icon family " + familyName + " created for " + imageName);
           }
           family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
           iconFamilies.put(familyName, family);
@@ -406,7 +408,7 @@ public final class IconFactory {
             IconFamily family = iconFamilies.get(familyName);
             if (family == null) {
               family = new IconFamily(familyName);
-              logger.debug("Icon family "+familyName+" created for "+imageName);
+              logger.debug("Icon family " + familyName + " created for " + imageName);
             }
             family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
             iconFamilies.put(familyName, family);

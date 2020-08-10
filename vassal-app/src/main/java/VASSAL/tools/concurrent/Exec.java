@@ -10,7 +10,7 @@ public class Exec {
 
   public static ExecutorService ex = new ThreadPoolExecutor(
     Runtime.getRuntime().availableProcessors(),
-    Runtime.getRuntime().availableProcessors()+1,
+    Runtime.getRuntime().availableProcessors() + 1,
     60, TimeUnit.SECONDS,
     new LinkedBlockingQueue<>()
   );

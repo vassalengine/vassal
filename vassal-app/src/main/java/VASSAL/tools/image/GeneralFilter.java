@@ -158,14 +158,14 @@ public final class GeneralFilter {
     private float sinc(float t) {
       if (t == 0.0f) return 1.0f;
       t *= Math.PI;
-      return (float)(Math.sin(t)/t);
+      return (float)(Math.sin(t) / t);
     }
 
     @Override
     public float apply(float t) {
       if (t < -3.0f) return 0.0f;
-      if (t <  0.0f) return sinc(-t) * sinc(-t/3.0f);
-      if (t <  3.0f) return sinc( t) * sinc( t/3.0f);
+      if (t <  0.0f) return sinc(-t) * sinc(-t / 3.0f);
+      if (t <  3.0f) return sinc( t) * sinc( t / 3.0f);
       return 0.0f;
     }
 
@@ -177,23 +177,23 @@ public final class GeneralFilter {
 
   /** A Mitchell filter. */
   public static final class MitchellFilter extends Filter {
-    private static final float B = 1.0f/3.0f;
-    private static final float C = 1.0f/3.0f;
-    private static final float P0 = (  6.0f- 2.0f*B        )/6.0f;
-    private static final float P2 = (-18.0f+12.0f*B+ 6.0f*C)/6.0f;
-    private static final float P3 = ( 12.0f- 9.0f*B- 6.0f*C)/6.0f;
-    private static final float Q0 = (        8.0f*B+24.0f*C)/6.0f;
-    private static final float Q1 = (      -12.0f*B-48.0f*C)/6.0f;
-    private static final float Q2 = (        6.0f*B+30.0f*C)/6.0f;
-    private static final float Q3 = (      - 1.0f*B- 6.0f*C)/6.0f;
+    private static final float B = 1.0f / 3.0f;
+    private static final float C = 1.0f / 3.0f;
+    private static final float P0 = (  6.0f  - 2.0f * B            ) / 6.0f;
+    private static final float P2 = (-18.0f + 12.0f * B  + 6.0f * C) / 6.0f;
+    private static final float P3 = ( 12.0f  - 9.0f * B  - 6.0f * C) / 6.0f;
+    private static final float Q0 = (          8.0f * B + 24.0f * C) / 6.0f;
+    private static final float Q1 = (        -12.0f * B - 48.0f * C) / 6.0f;
+    private static final float Q2 = (          6.0f * B + 30.0f * C) / 6.0f;
+    private static final float Q3 = (         -1.0f * B  - 6.0f * C) / 6.0f;
 
     @Override
     public float apply(float t) {
       if (t < -2.0f) return 0.0f;
-      if (t < -1.0f) return Q0-t*(Q1-t*(Q2-t*Q3));
-      if (t <  0.0f) return P0+t*t*(P2-t*P3);
-      if (t <  1.0f) return P0+t*t*(P2+t*P3);
-      if (t <  2.0f) return Q0+t*(Q1+t*(Q2+t*Q3));
+      if (t < -1.0f) return Q0 - t * (Q1 - t * (Q2 - t * Q3));
+      if (t <  0.0f) return P0 + t * t * (P2 - t * P3);
+      if (t <  1.0f) return P0 + t * t * (P2 + t * P3);
+      if (t <  2.0f) return Q0 + t * (Q1 + t * (Q2 + t * Q3));
       return 0.0f;
     }
 
@@ -334,16 +334,16 @@ public final class GeneralFilter {
     // We want dstX0 * xscale = srcX0, except when that would make
     // xscale = 0; similarly for yscale.
     final float xscale =
-      srcWidth == 1 ? dstWidth : (float)(dstWidth-1) / (srcWidth-1);
+      srcWidth == 1 ? dstWidth : (float)(dstWidth - 1) / (srcWidth - 1);
     final float yscale =
-      srcHeight == 1 ? dstHeight : (float)(dstHeight-1) / (srcHeight-1);
+      srcHeight == 1 ? dstHeight : (float)(dstHeight - 1) / (srcHeight - 1);
 
     final float fwidth = filter.getSamplingRadius();
 
-    final int sx0 = Math.max(0, (int) Math.floor((dx0-fwidth)/xscale));
-    final int sy0 = Math.max(0, (int) Math.floor((dy0-fwidth)/yscale));
-    final int sx1 = Math.min(srcWidth-1, (int) Math.ceil((dx1+fwidth)/xscale));
-    final int sy1 = Math.min(srcHeight-1, (int) Math.ceil((dy1+fwidth)/yscale));
+    final int sx0 = Math.max(0, (int) Math.floor((dx0 - fwidth) / xscale));
+    final int sy0 = Math.max(0, (int) Math.floor((dy0 - fwidth) / yscale));
+    final int sx1 = Math.min(srcWidth - 1, (int) Math.ceil((dx1 + fwidth) / xscale));
+    final int sy1 = Math.min(srcHeight - 1, (int) Math.ceil((dy1 + fwidth) / yscale));
     final int sw = sx1 - sx0 + 1;
     final int sh = sy1 - sy0 + 1;
 
@@ -502,13 +502,13 @@ public final class GeneralFilter {
     for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
 
     final float blur = 1.0f;
-    final float kscale = 1.0f/(blur*Math.max(1.0f/scale, 1.0f));
+    final float kscale = 1.0f / (blur * Math.max(1.0f / scale, 1.0f));
     final float width = fwidth / kscale;
 
     for (int i = 0; i < dl; i++) {
-      final float center = (i+d0+0.5f) / scale;
-      final int start = (int) Math.max(center-width+0.5f, s0);
-      final int stop = (int) Math.min(center+width+0.5f, s0+sl);
+      final float center = (i + d0 + 0.5f) / scale;
+      final int start = (int) Math.max(center - width + 0.5f, s0);
+      final int stop = (int) Math.min(center + width + 0.5f, s0 + sl);
       final int numContrib = stop - start;
 
       contrib[i].n = numContrib;
@@ -518,7 +518,7 @@ public final class GeneralFilter {
       float density = 0.0f;
       for (int n = 0; n < numContrib; n++) {
         density += contrib[i].weight[n] =
-          filter.apply(kscale*(start+n-center+0.5f));
+          filter.apply(kscale * (start + n - center + 0.5f));
       }
 
       if (density != 0.0f && density != 1.0f) {
@@ -543,7 +543,7 @@ public final class GeneralFilter {
     final CList c = xcontrib;
     final int max = c.n;
 
-    final int base = sx0 + c.pixel + sy0*stride;
+    final int base = sx0 + c.pixel + sy0 * stride;
 
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
@@ -552,7 +552,7 @@ public final class GeneralFilter {
       float s_g = 0.0f;  // green sample
       float s_b = 0.0f;  // blue sample
 
-      final int pos = base + k*stride;
+      final int pos = base + k * stride;
 
       final int pel = src[pos];
       boolean bPelDelta = false;
@@ -581,10 +581,10 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         work[k] =
-          (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
-          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a + 0.5f)) << 24 |
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r + 0.5f)) << 16 |
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g + 0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b + 0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -605,7 +605,7 @@ public final class GeneralFilter {
     final CList c = xcontrib;
     final int max = c.n;
 
-    final int base = sx0 + c.pixel + sy0*stride;
+    final int base = sx0 + c.pixel + sy0 * stride;
 
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
@@ -613,7 +613,7 @@ public final class GeneralFilter {
       float s_g = 0.0f;  // green sample
       float s_b = 0.0f;  // blue sample
 
-      final int pos = base + k*stride;
+      final int pos = base + k * stride;
 
       final int pel = src[pos];
       boolean bPelDelta = false;
@@ -641,9 +641,9 @@ public final class GeneralFilter {
 
         // Ugly, but fast.
         work[k] =
-          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r + 0.5f)) << 16 |
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g + 0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b + 0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -695,14 +695,14 @@ public final class GeneralFilter {
         }
 
         // working in premultiplied domain, must clamp R,G,B to A
-        final int a = s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f);
+        final int a = s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a + 0.5f);
 
         // Ugly, but fast.
-        dst[dx + i*dw] =
+        dst[dx + i * dw] =
           a << 24 |
-          (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-          (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-          (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
+          (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r + 0.5f)) << 16 |
+          (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g + 0.5f)) <<  8 |
+          (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b + 0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -713,7 +713,7 @@ public final class GeneralFilter {
         final int g = (pel >>>  8) & 0xff;
         final int b = (pel       ) & 0xff;
 
-        dst[dx + i*dw] =
+        dst[dx + i * dw] =
           a << 24 |
             (r > a ? a : r) << 16 |
             (g > a ? a : g) <<  8 |
@@ -763,14 +763,14 @@ public final class GeneralFilter {
         }
 
         // Ugly, but fast.
-        dst[dx + i*dw] =
-          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+        dst[dx + i * dw] =
+          (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r + 0.5f)) << 16 |
+          (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g + 0.5f)) <<  8 |
+          (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b + 0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
-        dst[dx + i*dw] = pel;
+        dst[dx + i * dw] = pel;
       }
     }
   }

@@ -227,7 +227,7 @@ public class ShapeItem extends Item {
         g.fillRect(r.x, r.y, r.width, r.height);
       }
       else if (shape.equals(RRECT)) {
-        g.fillRoundRect(r.x, r.y, r.width, r.height, bevel*2, bevel*2);
+        g.fillRoundRect(r.x, r.y, r.width, r.height, bevel * 2, bevel * 2);
       }
       else if (shape.equals(OVAL)) {
         g.fillOval(r.x, r.y, r.width, r.height);
@@ -240,7 +240,7 @@ public class ShapeItem extends Item {
         g.drawRect(r.x, r.y, r.width, r.height);
       }
       else if (shape.equals(RRECT)) {
-        g.drawRoundRect(r.x, r.y, r.width, r.height, bevel*2, bevel*2);
+        g.drawRoundRect(r.x, r.y, r.width, r.height, bevel * 2, bevel * 2);
       }
       else if (shape.equals(OVAL)) {
         g.drawOval(r.x, r.y, r.width, r.height);

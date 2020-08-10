@@ -483,13 +483,15 @@ public class ServerAddressBook {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new PeerServerEntry());
-      }});
+      }
+    });
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
     jabItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         addEntry(new JabberEntry());
-      }});
+      }
+    });
 //    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
 //    privateItem.addActionListener(new ActionListener() {
 //      public void actionPerformed(ActionEvent arg0) {
@@ -1141,7 +1143,7 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return Resources.getString("ServerAddressBook.peer_server") + " ["+getProperty(DESCRIPTION_KEY)+"]";
+      return Resources.getString("ServerAddressBook.peer_server") + " [" + getProperty(DESCRIPTION_KEY) + "]";
     }
 
     @Override

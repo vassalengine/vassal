@@ -101,7 +101,7 @@ public abstract class MenuManager {
       // check from the end of the group to the next visible item
       // and insert a separator if that item is not one
       if (nextVisibleItemNotASeparator(end)) {
-        ((MenuProxy) parent).insertSeparator(endPos+1);
+        ((MenuProxy) parent).insertSeparator(endPos + 1);
       }
 
       // check from the start of the group to the previous visible
@@ -131,12 +131,12 @@ public abstract class MenuManager {
         if (visibleItemBefore(start)) {
           // if we have a group on each side, or before but not after;
           // remove our top separator
-          parent.remove(startPos-1);
+          parent.remove(startPos - 1);
         }
         else if (visibleItemAfter(end)) {
           // we have a group after, but none before;
           // remove our bottom separator
-          parent.remove(endPos+1);
+          parent.remove(endPos + 1);
         }
         // otherwise, we were the sole group, our parent has no visible
         // items now

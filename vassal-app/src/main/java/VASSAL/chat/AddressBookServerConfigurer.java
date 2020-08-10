@@ -69,7 +69,7 @@ public class AddressBookServerConfigurer extends Configurer {
       header = new JLabel(DISCONNECTED);
       controls.add(header, "wrap"); //$NON-NLS-1$
       addressBook = new ServerAddressBook();
-      addressBook.addPropertyChangeListener(new PropertyChangeListener(){
+      addressBook.addPropertyChangeListener(new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
           if (ServerAddressBook.CURRENT_SERVER.equals(e.getPropertyName())) {
@@ -77,7 +77,8 @@ public class AddressBookServerConfigurer extends Configurer {
             setValue(e.getNewValue());
             addressBook.setFrozen(false);
           }
-        }});
+        }
+      });
       controls.add(addressBook.getControls());
     }
 

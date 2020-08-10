@@ -54,7 +54,7 @@ import VASSAL.tools.NamedKeyStroke;
  * result in the Chatter */
 public class DiceButton extends AbstractConfigurable {
   protected java.util.Random ran;
-  protected int nSides = 6, nDice = 2, plus = 0, addToTotal=0;
+  protected int nSides = 6, nDice = 2, plus = 0, addToTotal = 0;
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
@@ -322,7 +322,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName()+"_result"); //$NON-NLS-1$
+      property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
       launch.setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
@@ -452,7 +452,7 @@ public class DiceButton extends AbstractConfigurable {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName()+"_result");
+    l.add(getConfigureName() + "_result");
     return l;
   }
 }

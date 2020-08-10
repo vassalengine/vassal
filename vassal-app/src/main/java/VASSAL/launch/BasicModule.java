@@ -157,13 +157,15 @@ public class BasicModule extends GameModule {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
-      }});
+      }
+    });
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
-      }});
+      }
+    });
     StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(new PropertyChangeListener() {
       @Override

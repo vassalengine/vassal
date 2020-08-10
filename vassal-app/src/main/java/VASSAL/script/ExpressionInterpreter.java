@@ -159,7 +159,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           }
           argList.append("String ").append(variable);
         }
-        eval("String " + MAGIC2 + "("+argList.toString()+") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -287,7 +287,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     String result;
     try {
-      eval(MAGIC1 + "=" + MAGIC2 + "("+argList.toString()+")");
+      eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
       result = get(MAGIC1).toString();
     }
     catch (EvalError e) {

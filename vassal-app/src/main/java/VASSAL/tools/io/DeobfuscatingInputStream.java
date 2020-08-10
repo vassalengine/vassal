@@ -91,7 +91,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     public int read(byte[] bytes, int off, int len) throws IOException {
       int b = 0;
       int i = 0;
-      while (i < len && (b = read()) >= 0) bytes[(i++)+off] = (byte) b;
+      while (i < len && (b = read()) >= 0) bytes[(i++) + off] = (byte) b;
       return b == -1 && i == 0 ? -1 : i;
     }
 

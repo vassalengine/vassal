@@ -58,7 +58,7 @@ public class EditModuleAction extends LoadModuleAction {
     final ModuleEditorWindow w =
       new ModuleEditorWindow(GameModule.getGameModule());
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width/2, w.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

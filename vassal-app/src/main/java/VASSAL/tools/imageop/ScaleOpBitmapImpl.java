@@ -142,11 +142,11 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final Rectangle sr =
         new Rectangle(0, 0,
-          (int)(sop.getWidth()*scale),
-          (int)(sop.getHeight()*scale));
+          (int)(sop.getWidth() * scale),
+          (int)(sop.getHeight() * scale));
 
-      dx0 = tileX*rop.getTileWidth();
-      dy0 = tileY*rop.getTileHeight();
+      dx0 = tileX * rop.getTileWidth();
+      dy0 = tileY * rop.getTileHeight();
       dw = Math.min(rop.getTileWidth(), sr.width - dx0);
       dh = Math.min(rop.getTileHeight(), sr.height - dy0);
 
@@ -174,8 +174,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final Rectangle sr =
         new Rectangle(0, 0,
-          (int)(sop.getWidth()*scale),
-          (int)(sop.getHeight()*scale));
+          (int)(sop.getWidth() * scale),
+          (int)(sop.getHeight() * scale));
 
       final WritableRaster dstR = src.getColorModel()
                                      .createCompatibleWritableRaster(dw, dh)

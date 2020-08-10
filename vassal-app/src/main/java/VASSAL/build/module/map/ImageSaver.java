@@ -222,11 +222,11 @@ public class ImageSaver extends AbstractConfigurable {
     if (w < 1 || h < 1) {
       if (s.width < s.height) {
         w = 1;
-        h = s.height/s.width;
+        h = s.height / s.width;
       }
       else {
         h = 1;
-        w = s.width/s.height;
+        w = s.width / s.height;
       }
     }
 
@@ -358,7 +358,7 @@ public class ImageSaver extends AbstractConfigurable {
 
         @Override
         public void imageProgress(ImageWriter source, float percentageDone) {
-          setProgress(Math.round((100*tilesDone + percentageDone)/tiles));
+          setProgress(Math.round((100 * tilesDone + percentageDone) / tiles));
         }
 
         @Override
@@ -403,12 +403,12 @@ public class ImageSaver extends AbstractConfigurable {
       // ensure that the size of the image data array (4 bytes per pixel)
       // does not exceed the maximum array size, 2^31-1 elements;
       // otherwise we'll overflow an int and have a negavive array size
-      while ((long)tw * th > Integer.MAX_VALUE/4) {
+      while ((long)tw * th > Integer.MAX_VALUE / 4) {
         if (tw > th) {
-          tw = (int) Math.ceil(tw/2.0);
+          tw = (int) Math.ceil(tw / 2.0);
         }
         else {
-          th = (int) Math.ceil(th/2.0);
+          th = (int) Math.ceil(th / 2.0);
         }
       }
 
@@ -419,10 +419,10 @@ public class ImageSaver extends AbstractConfigurable {
         }
         catch (OutOfMemoryError e) {
           if (tw > th) {
-            tw = (int) Math.ceil(tw/2.0);
+            tw = (int) Math.ceil(tw / 2.0);
           }
           else {
-            th = (int) Math.ceil(th/2.0);
+            th = (int) Math.ceil(th / 2.0);
           }
         }
       }
@@ -459,10 +459,10 @@ public class ImageSaver extends AbstractConfigurable {
               base + "." + tx + "." + ty + suffix);
 
             final Rectangle r = new Rectangle(
-              tw*tx,
-              th*ty,
-              Math.min(tw, w - tw*tx),
-              Math.min(th, h - th*ty)
+              tw * tx,
+              th * ty,
+              Math.min(tw, w - tw * tx),
+              Math.min(th, h - th * ty)
             );
 
             writeImage(f, img, r);
@@ -489,7 +489,7 @@ public class ImageSaver extends AbstractConfigurable {
       catch (ExecutionException e) {
         final Throwable c = e.getCause();
         if (c instanceof IOException) {
-          WriteErrorDialog.error(e, (IOException) c, files.get(files.size()-1));
+          WriteErrorDialog.error(e, (IOException) c, files.get(files.size() - 1));
         }
         else {
           ErrorDialog.bug(e);

@@ -87,12 +87,12 @@ public abstract class TurnLevel extends TurnComponent {
 
   public void findMaximumStrings(List<String> levels, int currentLevel) {
     String s = getLongestFormattedValue();
-    if (levels.size() < (currentLevel+1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
+    if (levels.size() < (currentLevel + 1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
       levels.add(currentLevel, s);
     }
     for (Buildable b : getBuildables()) {
       if (b instanceof TurnLevel) {
-        ((TurnLevel) b).findMaximumStrings(levels, currentLevel+1);
+        ((TurnLevel) b).findMaximumStrings(levels, currentLevel + 1);
       }
     }
   }

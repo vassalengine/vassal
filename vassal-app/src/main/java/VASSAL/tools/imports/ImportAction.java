@@ -99,7 +99,7 @@ public final class ImportAction extends EditModuleAction {
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
 
     chooser.resetChoosableFileFilters();
-    for (int i = IMPORTERS.length-1; i >= 0; --i) {
+    for (int i = IMPORTERS.length - 1; i >= 0; --i) {
       chooser.addChoosableFileFilter(new ExtensionFileFilter(
         DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase()
                         + ";*" + EXTENSIONS[i].toUpperCase() + ")",
@@ -145,7 +145,7 @@ public final class ImportAction extends EditModuleAction {
     actionCancelled = true;
 
     fc.resetChoosableFileFilters();
-    for (int i = IMPORTERS.length-1; i >= 0; --i) {
+    for (int i = IMPORTERS.length - 1; i >= 0; --i) {
       fc.addChoosableFileFilter(new ExtensionFileFilter(
           DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase() + ";*" + EXTENSIONS[i].toUpperCase() + ")",
           new String[] {EXTENSIONS[i]})

@@ -135,6 +135,6 @@ public class ChangePiece extends Command {
 
   @Override
   public String getDetails() {
-    return "id="+id+",oldState="+oldState+",newState="+newState;
+    return "id=" + id + ",oldState=" + oldState + ",newState=" + newState;
   }
 }

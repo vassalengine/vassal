@@ -445,7 +445,7 @@ public class PieceMover extends AbstractBuildable
     }
     return c;
   }
-  
+
   /**
    * Replaced by {@link #setOldLocations(GamePiece)} to return generated Commands
    * @param p
@@ -466,7 +466,7 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(Decorator.setOldProperties(p));
     }
     return comm;
-    
+
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
@@ -630,7 +630,7 @@ public class PieceMover extends AbstractBuildable
           }
         }
         else {
-          for (int i = draggedPieces.size()-1; i >= 0; --i) {
+          for (int i = draggedPieces.size() - 1; i >= 0; --i) {
             comm = comm.append(movedPiece(draggedPieces.get(i), mergeWith.getPosition()));
             comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPieces.get(i)));
           }
@@ -669,7 +669,7 @@ public class PieceMover extends AbstractBuildable
   protected void applyKeyAfterMove(List<GamePiece> pieces, Command comm, KeyStroke key) {
     comm.append(applyKeyAfterMove(pieces, key));
   }
-  
+
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
@@ -1051,7 +1051,7 @@ public class PieceMover extends AbstractBuildable
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
-          r.translate(sm.unexSepX*stackCount, -sm.unexSepY*stackCount);
+          r.translate(sm.unexSepX * stackCount, -sm.unexSepY * stackCount);
         }
 
         boundingBox.add(r);
@@ -1073,9 +1073,9 @@ public class PieceMover extends AbstractBuildable
 
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
-        final Map map = piece.getMap();        
-        
-        if (piece instanceof Stack){
+        final Map map = piece.getMap();
+
+        if (piece instanceof Stack) {
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
                         EXTRA_BORDER - boundingBox.y + pos.y,
@@ -1092,10 +1092,10 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
-          
+
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
-          
+
           String owner = "";
           if (piece.getParent() instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
@@ -1151,7 +1151,7 @@ public class PieceMover extends AbstractBuildable
       for (int f = 0; f < b; ++f) {
         final int alpha = CURSOR_ALPHA * (f + 1) / b;
         g.setColor(new Color(0xff, 0xff, 0xff, alpha));
-        g.drawRect(f, f, w-2*f, h-2*f);
+        g.drawRect(f, f, w - 2 * f, h - 2 * f);
       }
 
       // paint in the source image

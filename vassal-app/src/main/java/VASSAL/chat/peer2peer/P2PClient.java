@@ -356,7 +356,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       props = new PropertiesEncoder(pPeerInfo.getChatName()).getProperties();
       name = props.getProperty(SimpleStatus.NAME);
       ip = props.getProperty(SimpleStatus.IP);
-      details = name+" ("+ip+":"+pPeerInfo.getPort()+")";
+      details = name + " (" + ip + ":" + pPeerInfo.getPort() + ")";
     }
     catch (IOException ex) {
       details = "";

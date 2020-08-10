@@ -57,10 +57,10 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
 
     tileSize = DEFAULT_TILE_SIZE;
 
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
+    numXTiles = (int) Math.ceil((double)size.width / tileSize.width);
+    numYTiles = (int) Math.ceil((double)size.height / tileSize.height);
 
-    tiles = new ImageOp[numXTiles*numYTiles];
+    tiles = new ImageOp[numXTiles * numYTiles];
   }
 
   /** {@inheritDoc} */
@@ -106,9 +106,9 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    */
   @Override
   public ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
+    ImageOp top = tiles[tileY * numXTiles + tileX];
     if (top == null) {
-      top = tiles[tileY*numXTiles + tileX] = createTileOp(tileX, tileY);
+      top = tiles[tileY * numXTiles + tileX] = createTileOp(tileX, tileY);
     }
 
     return top;
@@ -167,13 +167,13 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
       return new Point[0];
     }
 
-    final int minTileX = rect.x/tileSize.width;
-    final int minTileY = rect.y/tileSize.height;
-    final int maxTileX = (rect.x + rect.width - 1)/tileSize.width;
-    final int maxTileY = (rect.y + rect.height - 1)/tileSize.height;
+    final int minTileX = rect.x / tileSize.width;
+    final int minTileY = rect.y / tileSize.height;
+    final int maxTileX = (rect.x + rect.width - 1) / tileSize.width;
+    final int maxTileY = (rect.y + rect.height - 1) / tileSize.height;
 
     final Point[] tilesInRect =
-      new Point[(maxTileX-minTileX+1)*(maxTileY-minTileY+1)];
+      new Point[(maxTileX - minTileX + 1) * (maxTileY - minTileY + 1)];
 
 // FIXME: Maybe do this by keeping a MRU cache of Points.
 // Maybe not, profiling shows that this isn't causing the gc to run much.

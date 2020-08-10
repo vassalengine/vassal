@@ -59,7 +59,7 @@ public class ZoneProperty extends GlobalProperty {
     String boardName = board == null ? null : board.getName();
     Map map = board == null ? null : board.getMap();
     String mapName = map == null ? null : map.getConfigureName();
-    return getConfigureName()+"\t"+zoneName+"\t"+boardName+"\t"+mapName;
+    return getConfigureName() + "\t" + zoneName + "\t" + boardName + "\t" + mapName;
   }
 
   @Override

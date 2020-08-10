@@ -85,7 +85,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   public PieceDefiner(String id, GpIdSupport s) {
     this();
     pieceId = id;
-    pieceIdLabel.setText("Id: "+id);
+    pieceIdLabel.setText("Id: " + id);
     gpidSupport = s;
   }
 

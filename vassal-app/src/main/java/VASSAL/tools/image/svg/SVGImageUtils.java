@@ -98,9 +98,9 @@ public class SVGImageUtils {
     final Element root = doc.getDocumentElement();
     try {
       final int width = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
+        root.getAttributeNS(null, "width").replaceFirst("px", "")) + 0.5);
       final int height = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
+        root.getAttributeNS(null, "height").replaceFirst("px", "")) + 0.5);
 
       return new Dimension(width, height);
     }
