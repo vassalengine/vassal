@@ -30,15 +30,6 @@ public final class DeprecationProcessor extends AbstractProcessor {
         Collectors.partitioningBy(element -> isValidDate(element.getAnnotation(Deprecated.class).since())));
 
       partitionByValidity
-        .get(Boolean.FALSE)
-        .forEach(
-          element -> processingEnv.getMessager().printMessage(
-            Diagnostic.Kind.WARNING,
-            buildMessage(
-              element,
-              "Invalid date of deprecation provided, please use a date in the in ISO format yyyy-MM-dd")));
-
-      partitionByValidity
         .get(Boolean.TRUE)
         .stream()
         .filter(element -> hasYearPassedSinceDeprecation(element.getAnnotation(Deprecated.class).since()))
