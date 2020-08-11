@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -143,7 +144,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     else if (Properties.OUTER.equals(key)) {
       dec = (Decorator) val;
     }
-    /**
+    /*
      * Cache Selection status and pass it on to all inner traits.
      */
     else if (Properties.SELECTED.equals(key)) {
@@ -216,8 +217,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * Compute the difference between <code>newState</code> and <code>oldState</code>
    * and appy that difference to the current state
-   * @param newState
-   * @param oldState
+   * @param newState New State
+   * @param oldState Old State
    */
   @Override
   public void mergeState(String newState, String oldState) {
@@ -297,8 +298,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * The response of this trait alone to the given KeyStroke
-   * @param stroke
-   * @return null if no effect
+   * @param stroke Stroke to apply
+   * @return Generated Command or null if no effect
    * @see #keyEvent
    */
   public abstract Command myKeyEvent(KeyStroke stroke);
@@ -306,8 +307,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * Append the command returned by {@link #myKeyEvent} with the command returned
    * by the inner piece's {@link GamePiece#keyEvent} method.
-   * @param stroke
-   * @return
+   * @param stroke Stroke to apply
+   * @return Generated Command or null if no effect
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
@@ -327,7 +328,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * @param p
+   * @param p Trait to find the outermost trait of.
    * @return the outermost Decorator instance of this piece, i.e. the entire piece with all traits
    */
   public static GamePiece getOutermost(GamePiece p) {
@@ -339,7 +340,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    *
-   * @param p
+   * @param p Trait to find the Innermost trait of
    * @return the innermost GamePiece of this piece.  In most cases, an instance of {@link BasicPiece}
    */
   public static GamePiece getInnermost(GamePiece p) {
@@ -372,7 +373,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return super.toString();
     }
     else {
-      return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]";
+      return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; //$NON-NLS-1$//
     }
   }
 
@@ -387,7 +388,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Return I18n data for this piece
-   * @return
+   * @return I18n data
    */
   public PieceI18nData getI18nData() {
     return new PieceI18nData(this);
@@ -445,7 +446,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Set the Oldxxxx properties related to movement
-   * @param p
+   * @param p Piece to set properties on
    */
   public static Command setOldProperties(GamePiece p) {
 
@@ -487,10 +488,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
+   * @deprecated
    * Use {@link #setOldProperties(GamePiece)
    */
-  @Deprecated
+  @Deprecated(since="2020-08-06", forRemoval = true)
   public Command setOldProperties() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return setOldProperties(this);
   }
 

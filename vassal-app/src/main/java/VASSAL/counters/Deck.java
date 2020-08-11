@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -168,6 +169,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   private final GameModule gameModule;
 
   /**
+   * Not for internal use, but required for initial build of module
+   *
    * @deprecated use {@link #Deck(GameModule)}
    */
   @Deprecated
@@ -178,17 +181,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * @deprecated use {@link #Deck(GameModule, String)}
    */
-  @Deprecated
+  @Deprecated(since="2020-08-06", forRemoval = true)
   public Deck(String type) {
     this(GameModule.getGameModule(), type);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
    * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
    */
-  @Deprecated
+  @Deprecated(since="2020-08-06", forRemoval = true)
   public Deck(String type, PropertySource source) {
     this(GameModule.getGameModule(), type, source);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   public Deck(GameModule gameModule) {
@@ -675,7 +680,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated public KeyStroke getEmptyKey() {
+  @Deprecated(since="2020-08-06", forRemoval = true)
+  public KeyStroke getEmptyKey() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return emptyKey.getKeyStroke();
   }
 
@@ -683,7 +690,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return emptyKey;
   }
 
-  @Deprecated public void setEmptyKey(KeyStroke k) {
+  @Deprecated(since="2020-08-06", forRemoval = true)
+  public void setEmptyKey(KeyStroke k) {
+    ProblemDialog.showDeprecated("2020-08-06");
     emptyKey = new NamedKeyStroke(k);
   }
 
@@ -845,8 +854,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the contents of this Deck to an Iterator of GamePieces
    * @deprecated Use {@link #setContents(Collection)} instead.
    */
-  @Deprecated
+  @Deprecated(since="2020-08-06", forRemoval = true)
   protected Command setContents(Iterator<GamePiece> it) {
+    ProblemDialog.showDeprecated("2020-08-06");
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
     while (it.hasNext()) {
