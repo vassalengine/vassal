@@ -190,7 +190,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
 
     if (piles.size() == 0) {
-      reportdataWarning(this, "No decks in module.");
+      reportDataError(this, "No decks in module.");
       return null;
     }
 

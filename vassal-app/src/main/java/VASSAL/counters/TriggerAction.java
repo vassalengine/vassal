@@ -293,7 +293,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       i = Integer.parseInt(val);
     }
     catch (NumberFormatException e) {
-      reportdataWarning(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
+      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
     }
     return i;
   }
