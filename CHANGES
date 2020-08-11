@@ -1,6 +1,7 @@
 3.3.3-beta1 - ???
 
 * 13251: Add Module name to Bug summary, extra info to comments
+* 13250: Add implementation of Missing !~ Beanshell operator
 * 13239: Right-click doesn't pick up whole stack anymore
 * 13234: Rotation gets stuck due to floating point error
 * 13229: Performance: Save property map rather than clone pieces as snapshot
