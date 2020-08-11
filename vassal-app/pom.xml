@@ -152,7 +152,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.4.5</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -164,11 +164,6 @@
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>mockito</id>
-            <url>https://dl.bintray.com/mockito/maven</url>
-        </repository>
-
         <!-- for org.netbeans:wizard -->
         <repository>
             <id>geotoolkit</id>
