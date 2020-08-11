@@ -124,7 +124,7 @@ public class RandomTextButton extends DiceButton {
           }
         }
         catch (NumberFormatException ex) {
-          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll-1]));
+          ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll - 1]));
           roll = 1;
         }
       }

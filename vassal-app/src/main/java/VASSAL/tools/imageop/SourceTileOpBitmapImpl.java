@@ -54,12 +54,12 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     final int sw = sop.getWidth();
     final int sh = sop.getHeight();
 
-    x0 = tileX*tw;
-    y0 = tileY*th;
-    x1 = Math.min((tileX+1)*tw, sw);
-    y1 = Math.min((tileY+1)*th, sh);
+    x0 = tileX * tw;
+    y0 = tileY * th;
+    x1 = Math.min((tileX + 1) * tw, sw);
+    y1 = Math.min((tileY + 1) * th, sh);
 
-    size = new Dimension(x1-x0, y1-y0);
+    size = new Dimension(x1 - x0, y1 - y0);
 
     hash = new HashCodeBuilder().append(sop)
                                 .append(x0)

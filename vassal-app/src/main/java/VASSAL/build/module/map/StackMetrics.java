@@ -372,7 +372,7 @@ public class StackMetrics extends AbstractConfigurable {
       g.setColor(blankColor);
       Shape s = p.getShape();
       AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
-      t.translate(x/zoom, y/zoom);
+      t.translate(x / zoom, y / zoom);
       s = t.createTransformedShape(s);
       g2d.fill(s);
       g.setColor(Color.black);
@@ -488,7 +488,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   public Point relativePosition(Stack parent, GamePiece c) {
     final int index =
-      Math.min(parent.indexOf(c), parent.getMaximumVisiblePieceCount()-1);
+      Math.min(parent.indexOf(c), parent.getMaximumVisiblePieceCount() - 1);
 
     if (index < 0) {
       return new Point(0, 0);

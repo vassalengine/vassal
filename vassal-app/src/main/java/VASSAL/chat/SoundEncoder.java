@@ -65,7 +65,7 @@ public class SoundEncoder implements CommandEncoder {
       SequenceEncoder se = new SequenceEncoder('\t');
       se.append(cmd.soundKey);
       se.append(playerEncoder.playerToString(cmd.getSender()));
-      s = COMMAND_PREFIX+se.getValue();
+      s = COMMAND_PREFIX + se.getValue();
     }
     return s;
   }

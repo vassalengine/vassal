@@ -287,7 +287,7 @@ public abstract class AbstractMetaData {
       attributeName = name;
       value = target.getAttributeValueString(attributeName);
       String key = target.getI18nData().getFullPrefix();
-      if (key.length()> 0) key += ".";
+      if (key.length() > 0) key += ".";
       key += attributeName;
 
       for (Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {

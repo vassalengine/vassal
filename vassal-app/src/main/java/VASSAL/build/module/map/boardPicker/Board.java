@@ -290,8 +290,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
     drawRegion(g,
                new Point(x, y),
                new Rectangle(x, y,
-                             Math.round((float) zoom*boundaries.width),
-                             Math.round((float) zoom*boundaries.height)),
+                             Math.round((float) zoom * boundaries.width),
+                             Math.round((float) zoom * boundaries.height)),
                zoom, obs);
   }
 
@@ -373,12 +373,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final Point[] tiles = op.getTileIndices(r);
       for (Point tile : tiles) {
         // find tile position
-        final int tx = location.x + tile.x*ow;
-        final int ty = location.y + tile.y*oh;
+        final int tx = location.x + tile.x * ow;
+        final int ty = location.y + tile.y * oh;
 
         // find actual tile size
-        final int tw = Math.min(ow, location.x+bounds.width-tx);
-        final int th = Math.min(oh, location.y+bounds.height-ty);
+        final int tw = Math.min(ow, location.x + bounds.width - tx);
+        final int th = Math.min(oh, location.y + bounds.height - ty);
 
         // find position in component
         final int cx = (int)(tx / os_scale);
@@ -534,8 +534,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
 
     if (magnification != 1.0) {
-      p.x = (int) Math.round(p.x/magnification);
-      p.y = (int) Math.round(p.y/magnification);
+      p.x = (int) Math.round(p.x / magnification);
+      p.y = (int) Math.round(p.y / magnification);
     }
 
     return p;
@@ -546,8 +546,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public Point globalCoordinates(Point p) {
     if (magnification != 1.0) {
-      p.x = (int) Math.round(p.x*magnification);
-      p.y = (int) Math.round(p.y*magnification);
+      p.x = (int) Math.round(p.x * magnification);
+      p.y = (int) Math.round(p.y * magnification);
     }
 
     if (reversed) {
@@ -640,8 +640,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
       boundaries.setSize(boardImageOp.getSize());
 
       if (magnification != 1.0) {
-        boundaries.setSize((int)Math.round(magnification*boundaries.width),
-                           (int)Math.round(magnification*boundaries.height));
+        boundaries.setSize((int)Math.round(magnification * boundaries.width),
+                           (int)Math.round(magnification * boundaries.height));
       }
 
       fixedBoundaries = true;

@@ -398,7 +398,7 @@ public class MassPieceLoader {
         c.setEnabled(!node.isSkip());
         if (node instanceof PieceNode) {
           final String image = node.getImageName();
-          final String i = "<html><img src=\"file:/"+loadDirectory.getAbsolutePath()+"/"+image+"\"></html>";
+          final String i = "<html><img src=\"file:/" + loadDirectory.getAbsolutePath() + "/" + image + "\"></html>";
           c.setToolTipText(i);
         }
         return c;

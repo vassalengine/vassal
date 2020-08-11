@@ -53,7 +53,7 @@ public class FunctionBuilder extends JDialog {
   protected BeanShellExpressionConfigurer result;
 
   public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options, String selectedText) {
-    super(parent, "Function Builder - "+function, true);
+    super(parent, "Function Builder - " + function, true);
     target = c;
     targetPiece = piece;
     save = target.getValueString();
@@ -63,7 +63,7 @@ public class FunctionBuilder extends JDialog {
     JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]"));
 
     p.add(new JLabel(desc), "span 2,align center,wrap,growx");
-    for (int i=0; i < parmDesc.length; i++) {
+    for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, "", "", targetPiece, options[i], this);
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
@@ -144,12 +144,12 @@ public class FunctionBuilder extends JDialog {
     StringBuilder result;
     result = new StringBuilder(function + "(");
     boolean first = true;
-    for (int i=skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
+    for (int i = skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
       BeanShellExpressionConfigurer fec = configs.get(i);
       if (!first) {
         result.append(",");
       }
-      result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()): fec.getValueString());
+      result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()) : fec.getValueString());
       first = false;
     }
     result.append(")");
@@ -161,7 +161,7 @@ public class FunctionBuilder extends JDialog {
   }
 
   private String getExpr (Configurer c) {
-    final Expression e = Expression.createExpression("{"+c.getValueString()+"}");
+    final Expression e = Expression.createExpression("{" + c.getValueString() + "}");
     final boolean isAtomic = (e instanceof IntExpression) || (e instanceof StringExpression);
     return (isAtomic ? "" : "(") + c.getValueString() + (isAtomic ? "" : ")");
   }

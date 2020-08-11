@@ -54,7 +54,8 @@ public class LockableJabberRoomControls extends LockableRoomControls {
         else {
           GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
         }
-      }};
+      }
+    };
     controls.addExtendedNewRoomHandler(extendedRoomCreator);
   }
 

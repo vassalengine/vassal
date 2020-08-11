@@ -436,11 +436,12 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     setDividerLocation(getPreferredDividerLocation());
-    serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
+    serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         setPreferredDividerLocation((Integer) e.getNewValue());
-      }});
+      }
+    });
 
     final Rectangle r = Info.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
@@ -1685,7 +1686,7 @@ public class ModuleManagerWindow extends JFrame {
     public void refresh() {
 
       // Remove any files that no longer exist
-      for (int i = getTreeNode().getChildCount()-1; i >= 0; i--) {
+      for (int i = getTreeNode().getChildCount() - 1; i >= 0; i--) {
         final MyTreeNode fileNode = getTreeNode().getChild(i);
         final SaveFileInfo fileInfo = (SaveFileInfo) fileNode.getNodeInfo();
         if (!fileInfo.getFile().exists()) {
@@ -1737,7 +1738,7 @@ public class ModuleManagerWindow extends JFrame {
      */
     @Override
     public String getSortKey() {
-      return "~~~"+getFile().getName();
+      return "~~~" + getFile().getName();
     }
   }
 

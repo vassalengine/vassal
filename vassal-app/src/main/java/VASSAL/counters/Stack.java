@@ -558,7 +558,7 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public String toString() {
-    return super.toString()+"["+getName()+"]";
+    return super.toString() + "[" + getName() + "]";
   }
 
   /**

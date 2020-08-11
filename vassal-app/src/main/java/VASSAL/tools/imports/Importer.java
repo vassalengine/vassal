@@ -71,7 +71,7 @@ public abstract class Importer {
       collection.setAttribute(LayeredPieceCollection.PROPERTY_NAME, "Layer");
     }
     else {
-      assert(l.size() == 1);
+      assert (l.size() == 1);
       collection = l.get(0);
     }
     return collection;

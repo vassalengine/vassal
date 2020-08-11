@@ -17,15 +17,15 @@ public class AcceptPeerThread extends Thread {
 
   public AcceptPeerThread(int initialPort, PendingPeerManager ppm) throws IOException {
     this.ppm = ppm;
-    for (int i=0; i<MAX_ATTEMPTS; ++i) {
-      port = initialPort+i;
+    for (int i = 0; i < MAX_ATTEMPTS; ++i) {
+      port = initialPort + i;
       try {
         socket = new ServerSocket(port);
         break;
       }
       // FIXME: review error message
       catch (Exception ex) {
-        if (i == MAX_ATTEMPTS -1) {
+        if (i == MAX_ATTEMPTS - 1) {
           throw new IOException(ex);
         }
       }

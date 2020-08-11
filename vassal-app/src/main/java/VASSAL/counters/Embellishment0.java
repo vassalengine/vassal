@@ -417,7 +417,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
-      imagePainter[i].draw(g, x + (int)(zoom*r.x), y + (int)(zoom*r.y), zoom, obs);
+      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), zoom, obs);
     }
 
     if (drawUnderneathWhenSelected &&
@@ -443,7 +443,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
-      reportdataWarning(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
+      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e);
     }
     return;
   }
@@ -588,12 +588,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     // nonpositive value means that layer is inactive
     // null or empty imageName[value-1] means that this layer has no image
     if (value <= 0 ||
-      imageName[value-1] == null ||
-      imageName[value-1].length() == 0 ||
-      imagePainter[value-1] == null ||
-      imagePainter[value-1].getSource() == null) return null;
+      imageName[value - 1] == null ||
+      imageName[value - 1].length() == 0 ||
+      imagePainter[value - 1] == null ||
+      imagePainter[value - 1].getSource() == null) return null;
 
-    return imagePainter[value-1].getSource().getImage();
+    return imagePainter[value - 1].getSource().getImage();
   }
 
   @Override
@@ -1300,7 +1300,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
-    final String prefix = name.length() > 0 ? name+": " : "";
+    final String prefix = name.length() > 0 ? name + ": " : "";
     if (activateKey.length() > 0) {
       data.add(activateCommand, prefix + "Activate command");
     }
@@ -1312,7 +1312,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     }
     // Strip off prefix/suffix marker
     for (int i = 0; i < commonName.length; i++) {
-      data.add(strip(commonName[i]), prefix + "Level " + (i+1) + " name");
+      data.add(strip(commonName[i]), prefix + "Level " + (i + 1) + " name");
     }
     return data;
   }

@@ -50,7 +50,7 @@ import VASSAL.counters.Stack;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
- * This component listens for mouse clicks on a map and draws the selection 
+ * This component listens for mouse clicks on a map and draws the selection
  * rectangle. ...
  *
  * If the user clicks on a {@link GamePiece}, that piece is added to the
@@ -110,7 +110,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE;
     if (p != null) {
-      filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);      
+      filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
       if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
         // Don't "eat" band-selects if unit found is non-movable
         bandSelect = BandSelectType.SPECIAL;
@@ -149,9 +149,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           }
           else if (!s.isExpanded()) {
             s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
-          } 
+          }
           else {
-            kbuf.remove(p);  
+            kbuf.remove(p);
           }
         }
         // End RFE 1659481
@@ -161,18 +161,18 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       map.getPieceCollection().moveToFront(to_front);
     }
     else {
-      bandSelect = BandSelectType.NORMAL; //BR// Allowed to band-select  
+      bandSelect = BandSelectType.NORMAL; //BR// Allowed to band-select
     }
-    
+
     if (bandSelect != BandSelectType.NONE) {
       bandSelectPiece = null;
       if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) { // No deselect if shift key down
         kbuf.clear();
-        
-        //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working 
+
+        //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working
         if (bandSelect == BandSelectType.SPECIAL && p != null && !ignoreEvent) {
           kbuf.add(p);
-          bandSelectPiece = p; 
+          bandSelectPiece = p;
         }
       }
       anchor = map.mapToComponent(e.getPoint());
@@ -194,7 +194,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     PieceVisitorDispatcher d = createDragSelector(
       !SwingUtils.isSelectionToggle(e), e.isAltDown(), map.componentToMap(selection)
     );
-    
+
     // If it was a legit band-select drag (not just a click), our special case
     // only applies if piece is allowed to be band-selected
     if (bandSelectPiece != null) {
@@ -207,12 +207,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         // "lasso" (not that Vassal doesn't already suck immensely at
         // click-vs-drag threshhold). FWIW, this "works".
         final boolean isLasso = finish.distance(anchor) >= 10;
-        if (isLasso) { 
+        if (isLasso) {
           bandSelectPiece = null;
         }
       }
     }
-    
+
     // RFE 1659481 Don't clear the entire selection buffer if either shift
     // or control is down - we select/deselect lassoed counters instead
     if (bandSelectPiece == null && !e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
@@ -341,7 +341,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
      *                    selection.width
      */
     final int ht = thickness / 2 + thickness % 2;
-    final int ht2 = 2*ht;
+    final int ht2 = 2 * ht;
 
     final JComponent view = map.getView();
 

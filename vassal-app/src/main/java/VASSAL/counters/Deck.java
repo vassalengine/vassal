@@ -122,7 +122,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
-  protected FormattedString selectDisplayProperty = new FormattedString("$"+BasicPiece.BASIC_NAME+"$");
+  protected FormattedString selectDisplayProperty = new FormattedString("$" + BasicPiece.BASIC_NAME + "$");
   protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("", this);
@@ -388,7 +388,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     setGlobalCommands(st.nextStringArray(0));
     hotkeyOnEmpty = st.nextBoolean(false);
     emptyKey = st.nextNamedKeyStroke(null);
-    selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
+    selectDisplayProperty.setFormat(st.nextToken("$" + BasicPiece.BASIC_NAME + "$"));
     selectSortProperty = st.nextToken("");
     restrictOption = st.nextBoolean(false);
     restrictExpression.setExpression(st.nextToken(""));
@@ -583,7 +583,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     for (int i = 0; i < countExpressions.length; i++) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -610,10 +610,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     else {
       deckName = n;
     }
-    countProperty.setPropertyName(deckName+"_numPieces");
-    for (int i=0; i<countExpressions.length; ++i) {
+    countProperty.setPropertyName(deckName + "_numPieces");
+    for (int i = 0; i < countExpressions.length; ++i) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -1027,7 +1027,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
-    for (int i=0, n=getMaximumVisiblePieceCount(); i<n; ++i) {
+    for (int i = 0, n = getMaximumVisiblePieceCount(); i < n; ++i) {
       r.y -= 2;
       r.height += 2;
       r.width += 2;

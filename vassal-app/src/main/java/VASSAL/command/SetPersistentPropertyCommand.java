@@ -13,10 +13,10 @@ import VASSAL.property.PersistentPropertyContainer;
 public class SetPersistentPropertyCommand extends Command {
   public static final String COMMAND_PREFIX = "SPP\t";
   protected Object key;
-  protected Object oldValue;  
+  protected Object oldValue;
   protected Object newValue;
   protected String id;
-  
+
 
   public SetPersistentPropertyCommand(String id, Object key, Object oldValue, Object newValue) {
     setKey(key);
@@ -41,9 +41,9 @@ public class SetPersistentPropertyCommand extends Command {
 
   @Override
   public String getDetails() {
-    return "id="+id+",key="+key+",old="+oldValue+",new="+newValue;
+    return "id=" + id + ",key=" + key + ",old=" + oldValue + ",new=" + newValue;
   }
-  
+
   public Object getKey() {
     return key;
   }

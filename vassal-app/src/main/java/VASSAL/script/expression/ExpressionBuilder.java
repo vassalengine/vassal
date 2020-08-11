@@ -57,7 +57,7 @@ public class ExpressionBuilder extends JDialog {
     String value = target.getValueString();
 
     if (value.startsWith("{") && value.endsWith("}")) {
-      setExpression(value.substring(1, value.length()-1));
+      setExpression(value.substring(1, value.length() - 1));
     }
     else {
       setExpression(convert(value));

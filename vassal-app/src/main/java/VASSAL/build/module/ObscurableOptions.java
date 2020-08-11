@@ -198,7 +198,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   public void decodeOptions(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     String setting = sd.nextToken("");
-    if (setting.length()==0) {
+    if (setting.length() == 0) {
       override = null;
     }
     else {

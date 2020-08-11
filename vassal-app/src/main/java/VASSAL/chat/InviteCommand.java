@@ -71,7 +71,7 @@ public class InviteCommand extends Command {
         JOptionPane.QUESTION_MESSAGE,
         null,
         JOptionPane.YES_NO_OPTION,
-        "Invite"+playerId,  //$NON-NLS-1$
+        "Invite" + playerId,  //$NON-NLS-1$
         Resources.getString("Chat.ignore_invitation") //$NON-NLS-1$
       );
 

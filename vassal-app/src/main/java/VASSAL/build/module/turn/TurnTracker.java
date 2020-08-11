@@ -132,7 +132,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected FormattedString turnFormat = new FormattedString(String.join(LEVEL, "$", "1$ $", "2$ $", "3$ $", "4$")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
   protected FormattedString reportFormat = new FormattedString("* <$" + GlobalOptions.PLAYER_ID //$NON-NLS-1$
-      + "$> Turn Updated from $"+OLD_TURN+"$ to $"+NEW_TURN+"$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      + "$> Turn Updated from $" + OLD_TURN + "$ to $" + NEW_TURN + "$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
   protected TurnWindow turnWindow;
   protected TurnWidget turnWidget;
@@ -189,19 +189,22 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         setDisplayFont();
-      }});
+      }
+    });
 
     bold.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         setDisplayFont();
-      }});
+      }
+    });
 
     docked.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         setDocked(isDocked());
-      }});
+      }
+    });
 
     // Set up listeners for prev/next hotkeys
     nextListener = new NamedKeyStrokeListener(new ActionListener() {
@@ -267,8 +270,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     if (NAME.equals(key)) {
       clearGlobalProperties();
       setConfigureName((String) value);
-      lastCommand.setPropertyName(getConfigureName()+PROP_COMMAND);
-      lastTurn.setPropertyName(getConfigureName()+PROP_VALUE);
+      lastCommand.setPropertyName(getConfigureName() + PROP_COMMAND);
+      lastTurn.setPropertyName(getConfigureName() + PROP_VALUE);
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);
@@ -337,7 +340,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected int getMaximumWidth() {
     String maxString = getMaximumTurnString();
     int max = turnWidget.getWidth(maxString);
-    return max+2;
+    return max + 2;
   }
 
   protected void setDisplayFont() {
@@ -473,7 +476,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       TurnTracker t = (TurnTracker) c;
       String[] s = new String[t.getLevelCount()];
       for (int i = 0; i < s.length; i++) {
-        s[i] = LEVEL+(i+1);
+        s[i] = LEVEL + (i + 1);
       }
       return new FormattedStringConfigurer(key, name, s);
     }
@@ -588,7 +591,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       reportFormat.setProperty(NEW_TURN, getTurnString());
 
       String s = updateString(reportFormat.getText(), new String[] { "\\n", "\\t" }, new String[] { " - ", " " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* "+s);
+      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + s);
       c.execute();
       c.append(new SetTurn(this, savedState));
 
@@ -615,7 +618,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     turnFormat.clearProperties();
     for (int i = 0; i < levels.size(); i++) {
-      turnFormat.setProperty(LEVEL+(i+1), levels.get(i));
+      turnFormat.setProperty(LEVEL + (i + 1), levels.get(i));
     }
     return turnFormat.getText(GameModule.getGameModule());
   }
@@ -629,7 +632,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     turnFormat.clearProperties();
     List<TurnLevel> turnDesc = getActiveChildLevels();
     for (int i = 0; i < 15; i++) {
-      turnFormat.setProperty(LEVEL+(i+1), i < turnDesc.size() ? turnDesc.get(i).getTurnString() : "");
+      turnFormat.setProperty(LEVEL + (i + 1), i < turnDesc.size() ? turnDesc.get(i).getTurnString() : "");
     }
     return turnFormat.getText(GameModule.getGameModule());
   }
@@ -683,7 +686,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     if (level.hasRolledOver()) {
       currentLevel--;
       if (currentLevel < 0) {
-        currentLevel = getTurnLevelCount()-1;
+        currentLevel = getTurnLevelCount() - 1;
       }
       getTurnLevel(currentLevel).setHigh();
     }
@@ -740,7 +743,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public Command decode(String command) {
     Command comm = null;
-    if (command.startsWith(COMMAND_PREFIX+getId())) {
+    if (command.startsWith(COMMAND_PREFIX + getId())) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
       sd.nextToken(""); //$NON-NLS-1$
       comm = new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
@@ -799,7 +802,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public void replace(StringBuilder s, String from, String to) {
     int i = s.indexOf(from);
     while (i >= 0) {
-      s = s.replace(i, i+2, to);
+      s = s.replace(i, i + 2, to);
       i = s.indexOf(from);
     }
   }
@@ -911,7 +914,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         @Override
         public void actionPerformed(ActionEvent e) {
           doNext();
-        }});
+        }
+      });
 
       prevButton = new IconButton(IconButton.MINUS_ICON, BUTTON_SIZE);
       setPrevStroke(prevListener.getNamedKeyStroke());
@@ -920,7 +924,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         @Override
         public void actionPerformed(ActionEvent e) {
           doPrev();
-        }});
+        }
+      });
 
       // Next, the Label containing the Turn Text
       turnLabel.setFont(getDisplayFont());
@@ -1143,7 +1148,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
                   addChildControls();
               }
             }
-          }});
+          }
+        });
 
         p.add(Box.createRigidArea(FILLER));
         p.add(e.getControls());

@@ -104,7 +104,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return dec;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+piece.getProperty(key);
+      return myGetState() + piece.getProperty(key);
     }
     else if (Properties.SELECTED.equals(key)) {
       return selected;
@@ -159,7 +159,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       piece.setProperty(key, val);
     }
   }
-  
+
   @Override
   public Command setPersistentProperty(Object key, Object val) {
     // Not all GamePieces have persistent properties (though piece almost certainly will).
@@ -168,7 +168,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return null;
   }
-  
+
   @Override
   public Object getPersistentProperty(Object key) {
     // Standard getProperty also returns persistent properties
@@ -372,7 +372,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return super.toString();
     }
     else {
-      return super.toString()+"[name="+getName()+",type="+getType()+",state="+getState()+"]";
+      return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]";
     }
   }
 
@@ -454,7 +454,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return null;
     }
     PersistentPropertyContainer container = (PersistentPropertyContainer) p;
-    
+
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$
     String zoneName = ""; //$NON-NLS-1$
@@ -482,12 +482,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
-    
+
     return comm;
   }
 
   /**
-   * Use {@link #setOldProperties(GamePiece) 
+   * Use {@link #setOldProperties(GamePiece)
    */
   @Deprecated
   public Command setOldProperties() {

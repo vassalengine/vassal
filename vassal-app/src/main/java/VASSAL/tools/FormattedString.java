@@ -130,8 +130,8 @@ public class FormattedString {
     return getText(ps, true);
   }
 
-  protected String getText(PropertySource ps, boolean localized){
-    final PropertySource source = (ps==null) ? defaultProperties : ps;
+  protected String getText(PropertySource ps, boolean localized) {
+    final PropertySource source = (ps == null) ? defaultProperties : ps;
     try {
       return format.evaluate(source, props, localized);
     }
@@ -194,7 +194,7 @@ public class FormattedString {
    * @return error message
    */
   public static String debugInfo(FormattedString format, String value, String description) {
-    return description + (value.equals(format.getFormat()) ? "" : "[" + format.getFormat()+ "]") + "=" + value;
+    return description + (value.equals(format.getFormat()) ? "" : "[" + format.getFormat() + "]") + "=" + value;
   }
 
   public String debugInfo(String value, String description) {

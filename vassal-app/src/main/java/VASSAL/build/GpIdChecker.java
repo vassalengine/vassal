@@ -133,8 +133,8 @@ public class GpIdChecker {
     /*
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
-     *  
-     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be 
+     *
+     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
@@ -154,13 +154,13 @@ public class GpIdChecker {
       try {
         if (extensionsLoaded) {
           goodSlots.put(id, element);
-          System.out.println("Add Id "+id);
+          System.out.println("Add Id " + id);
         }
         else {
           final int iid = Integer.parseInt(id);
           goodSlots.put(id, element);         // gpid is good.
           if (iid >= maxId) {
-            maxId = iid+1;
+            maxId = iid + 1;
           }
         }
       }
@@ -182,7 +182,7 @@ public class GpIdChecker {
     if (chatter == null) {
       chatter = GameModule.getGameModule().getChatter();
     }
-    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- "+text);
+    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text);
     mess.execute();
   }
 
@@ -193,13 +193,13 @@ public class GpIdChecker {
    */
   public void fixErrors() {
     if (maxId >= gpIdSupport.getNextGpId()) {
-      chat("Next GPID updated from "+ gpIdSupport.getNextGpId()+"  to "+(maxId+1));
-      gpIdSupport.setNextGpId(maxId+1);
+      chat("Next GPID updated from " + gpIdSupport.getNextGpId() + "  to " + (maxId + 1));
+      gpIdSupport.setNextGpId(maxId + 1);
     }
     for (SlotElement slotElement : errorSlots) {
       final String before = slotElement.getGpId();
       slotElement.updateGpId();
-      chat(slotElement.toString()+" GPID updated from "+before+" to "+slotElement.getGpId());
+      chat(slotElement.toString() + " GPID updated from " + before + " to " + slotElement.getGpId());
     }
   }
 
@@ -311,7 +311,7 @@ public class GpIdChecker {
 
     @Override
     public String toString() {
-      return marker == null ? "PieceSlot "+slot.getConfigureName() : "Place/Replace trait "+marker.getDescription();
+      return marker == null ? "PieceSlot " + slot.getConfigureName() : "Place/Replace trait " + marker.getDescription();
     }
 
     public void updateGpId() {

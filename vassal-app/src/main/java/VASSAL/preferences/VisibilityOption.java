@@ -56,6 +56,6 @@ public class VisibilityOption extends PositionOption {
 
   @Override
   public String getValueString() {
-    return super.getValueString()+"\t"+isVisible;
+    return super.getValueString() + "\t" + isVisible;
   }
 }

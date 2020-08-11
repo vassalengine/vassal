@@ -63,7 +63,8 @@ public class IntegerPreference extends BasicPreference {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());
-        }});
+        }
+      });
     }
     return config;
   }

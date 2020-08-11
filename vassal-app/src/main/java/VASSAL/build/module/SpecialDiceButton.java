@@ -414,7 +414,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName()+"_result"); //$NON-NLS-1$
+      property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
       launch.setToolTipText((String) o);
     }
     else if (RESULT_CHATTER.equals(key)) {
@@ -558,7 +558,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName()+"_result");
+    l.add(getConfigureName() + "_result");
     return l;
   }
 
@@ -646,7 +646,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         logger.warn(
           "Special Die Button (" + getConfigureName() +
           "): more results (" + results.length + ") requested than dice (" +
-          dice.size() +")"
+          dice.size() + ")"
         );
       }
       for (int i = 0; i < results.length; ++i) {
