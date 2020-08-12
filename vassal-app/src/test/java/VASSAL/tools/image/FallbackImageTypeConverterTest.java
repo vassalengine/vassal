@@ -27,18 +27,15 @@ import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 import static VASSAL.tools.image.AssertImage.*;
 
-@RunWith(JMock.class)
 public class FallbackImageTypeConverterTest {
 
   private static final String test = "src/test/resources/test-images/rainbow.jpg";
@@ -48,7 +45,8 @@ public class FallbackImageTypeConverterTest {
 
   private static BufferedImage src;
 
-  private final Mockery context = new JUnit4Mockery();
+  @Rule
+  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   @BeforeClass
   public static void setup() throws IOException {
