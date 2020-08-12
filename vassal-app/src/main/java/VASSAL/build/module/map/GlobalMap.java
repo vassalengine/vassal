@@ -127,7 +127,7 @@ public class GlobalMap implements AutoConfigurable,
     map.addDrawComponent(this);
     map.getToolBar().add(launch);
 
-    if (b != null) {
+    if (b instanceof Translatable) {
       getI18nData().setOwningComponent((Translatable) b);
     }
 

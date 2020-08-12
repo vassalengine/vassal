@@ -261,8 +261,7 @@ public abstract class DieServer {
       if (reportTotal)
         val.append(total);
 
-      val = new StringBuilder(formatResult(roll.getDescription(), val.toString(), format));
-      GameModule.getGameModule().getChatter().send(val.toString());
+      GameModule.getGameModule().getChatter().send(formatResult(roll.getDescription(), val.toString(), format));
     }
   }
 

@@ -362,13 +362,7 @@ public class ProblemDialog {
       StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE), 2)
         .walk(f -> f.skip(1).limit(1).collect(Collectors.toList())).get(0);
     final String method = frame.getClassName() + "." + frame.getMethodName();
-    String expiry;
-    try {
-      expiry = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d")).plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale()));
-    }
-    catch (Exception ignored) {
-      expiry = Resources.getString("Dialogs.deprecated.later");
-    }
+    String expiry = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d")).plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale()));
 
     return showDisableable(JOptionPane.WARNING_MESSAGE,
       null, null, method,

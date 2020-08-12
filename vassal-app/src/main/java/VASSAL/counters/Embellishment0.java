@@ -81,10 +81,10 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   public static final String OLD_ID = "emb;"; //$NON-NLS-1$//
   public static final String ID = "emb2;"; // New type encoding //$NON-NLS-1$//
 
-  public static final String IMAGE = "_Image"; //$NON-NLS-1$//
-  public static final String NAME = "_Name"; //$NON-NLS-1$//
-  public static final String LEVEL = "_Level"; //$NON-NLS-1$//
-  public static final String ACTIVE = "_Active"; //$NON-NLS-1$//
+  public static final String IMAGE = Embellishment.IMAGE;
+  public static final String NAME = Embellishment.NAME;
+  public static final String LEVEL = Embellishment.LEVEL;
+  public static final String ACTIVE = Embellishment.ACTIVE;
 
   protected String activateKey = "";
   protected String upKey, downKey;

@@ -86,8 +86,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected KeyCommand peek;
 
   public Obscurable() {
-    this(ID + "M;", null);
-  } //$NON-NLS-1$//
+    this(ID + "M;", null); //$NON-NLS-1$//
+  }
 
   public Obscurable(String type, GamePiece d) {
     mySetType(type);
