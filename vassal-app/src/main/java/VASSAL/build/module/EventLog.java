@@ -17,7 +17,10 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,33 +107,43 @@ public class EventLog extends AbstractBuildable
    * @return the events represented by the string
    */
   public static Iterable<Event> decodedEvents(final String s) {
-    return new Iterable<>() {
+    return () -> new Iterator<>() {
+      private final SequenceEncoder.Decoder se =
+        new SequenceEncoder.Decoder(s, '|');
+
       @Override
-      public Iterator<Event> iterator() {
-        return new Iterator<>() {
-          private final SequenceEncoder.Decoder se =
-            new SequenceEncoder.Decoder(s, '|');
+      public boolean hasNext() {
+        return se.hasMoreTokens();
+      }
 
-          @Override
-          public boolean hasNext() {
-            return se.hasMoreTokens();
-          }
+      @Override
+      public Event next() {
+        final SequenceEncoder.Decoder sub =
+          new SequenceEncoder.Decoder(se.nextToken(), ',');
+        return new Event(Long.parseLong(sub.nextToken()),
+                         sub.nextToken(), sub.nextToken());
+      }
 
-          @Override
-          public Event next() {
-            final SequenceEncoder.Decoder sub =
-              new SequenceEncoder.Decoder(se.nextToken(), ',');
-            return new Event(Long.parseLong(sub.nextToken()),
-                             sub.nextToken(), sub.nextToken());
-          }
-
-          @Override
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
       }
     };
+  }
+
+  /** @deprecated Use {@link #decodedEvents(String)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static Enumeration<Event> decodeEvents(String s) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    ArrayList<Event> l = new ArrayList<>();
+    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
+    while (se.hasMoreTokens()) {
+      SequenceEncoder.Decoder sub =
+        new SequenceEncoder.Decoder(se.nextToken(), ',');
+      l.add(new Event(Long.parseLong(sub.nextToken()),
+                      sub.nextToken(), sub.nextToken()));
+    }
+    return Collections.enumeration(l);
   }
 
   /**
@@ -151,10 +164,26 @@ public class EventLog extends AbstractBuildable
     return se.getValue();
   }
 
+  /** @deprecated Use {@link #encodedEvents(Iterable)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static String encodeEvents(Enumeration<?> e) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    final SequenceEncoder se = new SequenceEncoder('|');
+    while (e.hasMoreElements()) {
+      final Event evt = (Event) e.nextElement();
+      final SequenceEncoder sub = new SequenceEncoder(',');
+      sub.append(evt.getTime())
+         .append(evt.getUser())
+         .append(evt.getAction());
+      se.append(sub.getValue());
+    }
+    return se.getValue();
+  }
+
   public static class Event {
-    private long time;
-    private String user;
-    private String action;
+    private final long time;
+    private final String user;
+    private final String action;
 
     public Event(long time, String user, String action) {
       this.time = time;
@@ -176,8 +205,8 @@ public class EventLog extends AbstractBuildable
   }
 
   public static class StoreEvents extends Command {
-    private EventLog log;
-    private String events;
+    private final EventLog log;
+    private final String events;
 
     public StoreEvents(EventLog log, String events) {
       this.log = log;

@@ -18,6 +18,7 @@
  */
 package VASSAL.build.widget;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,7 +28,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.event.KeyEvent;
@@ -37,7 +37,6 @@ import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -79,10 +78,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid";
   protected GamePiece c;
   protected GamePiece expanded;
-  protected String name;
   protected String pieceDefinition;
-  protected static Font FONT = new Font("Dialog", 0, 12);
-  protected JPanel panel;
+  protected static final Font FONT = new Font("Dialog", Font.PLAIN, 12);
+  protected final JPanel panel;
   protected int width, height;
   protected String gpId = ""; // Unique PieceSlot Id
   protected GpIdSupport gpidSupport;
@@ -125,7 +123,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
-    protected PieceSlot pieceSlot;
+    protected final PieceSlot pieceSlot;
 
     public Panel(PieceSlot slot) {
       super();
@@ -432,13 +430,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
-    DragGestureListener dragGestureListener = new DragGestureListener() {
-      @Override
-      public void dragGestureRecognized(DragGestureEvent dge) {
-        if (SwingUtils.isDragTrigger(dge)) {
-          startDrag();
-          AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
-        }
+    DragGestureListener dragGestureListener = dge -> {
+      if (SwingUtils.isDragTrigger(dge)) {
+        startDrag();
+        AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
       }
     };
 
@@ -593,7 +588,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   private static class MyConfigurer extends Configurer implements HelpWindowExtension {
-    private PieceDefiner definer;
+    private final PieceDefiner definer;
 
     public MyConfigurer(PieceSlot slot) {
       super(null, slot.getConfigureName(), slot);
@@ -602,9 +597,14 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
 
     // TODO deprecate HelpWindowExtension interface, then confirm it's not in use anymore and delete
+
+    /**
+     * @deprecated In process of being replaced
+     */
     @Override
-    @Deprecated
+    @Deprecated(since = "2020-08-06", forRemoval = true)
     public void setBaseWindow(HelpWindow w) {
+      ProblemDialog.showDeprecated("2020-08-06");
     }
 
     @Override

@@ -17,10 +17,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Container;
 import java.awt.dnd.DragSource;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -114,9 +113,13 @@ public class GlobalOptions extends AbstractConfigurable {
   private boolean useClassicMoveFixedDistance = false;
   private BooleanConfigurer classicMfd;
 
+  private static void setInstance(GlobalOptions go) {
+    instance = go;
+  }
+
   @Override
   public void addTo(Buildable parent) {
-    instance = this;
+    setInstance(this);
 
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
@@ -165,17 +168,12 @@ public class GlobalOptions extends AbstractConfigurable {
         PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
       }
 
-      bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          PieceMover.AbstractDragHandler.setTheDragHandler(
-            (Boolean.TRUE.equals(e.getNewValue()) ||
-             !DragSource.isDragImageSupported()) ?
-             new PieceMover.DragHandlerNoImage() :
-             new PieceMover.DragHandler()
-          );
-        }
-      });
+      bug10295Conf.addPropertyChangeListener(e -> PieceMover.AbstractDragHandler.setTheDragHandler(
+        (Boolean.TRUE.equals(e.getNewValue()) ||
+         !DragSource.isDragImageSupported()) ?
+         new PieceMover.DragHandlerNoImage() :
+         new PieceMover.DragHandler()
+      ));
 
       prefs.addOption(bug10295Conf);
     }
@@ -196,12 +194,9 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.mouse_drag_threshold"),  //$NON-NLS-1$
       10
     );
-    dragThresholdConf.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        dragThreshold = dragThresholdConf.getIntValue(10);
-        System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
-      }
+    dragThresholdConf.addPropertyChangeListener(e -> {
+      dragThreshold = dragThresholdConf.getIntValue(10);
+      System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
     });
     prefs.addOption(dragThresholdConf);
     
@@ -235,10 +230,12 @@ public class GlobalOptions extends AbstractConfigurable {
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
   }
-  
-  
-  public boolean isPrefMacLegacy() {
-    return macLegacy;
+
+  /** @deprecated No replacement */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public boolean isAveragedScaling() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return true;
   }
   
   

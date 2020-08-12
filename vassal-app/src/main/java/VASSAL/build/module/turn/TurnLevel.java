@@ -21,8 +21,6 @@ package VASSAL.build.module.turn;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,15 +218,12 @@ public abstract class TurnLevel extends TurnComponent {
       }
       StringEnumConfigurer e = new StringEnumConfigurer(null, " Select:  ", s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
-      e.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          String option = ((StringEnumConfigurer) e.getSource()).getValueString();
-          for (int i = 0; i < getTurnLevelCount(); i++) {
-            if (option.equals(getTurnLevel(i).getConfigureName())) {
-              currentSubLevel = i;
-              addChildControls();
-            }
+      e.addPropertyChangeListener(e1 -> {
+        String option = ((StringEnumConfigurer) e1.getSource()).getValueString();
+        for (int i = 0; i < getTurnLevelCount(); i++) {
+          if (option.equals(getTurnLevel(i).getConfigureName())) {
+            currentSubLevel = i;
+            addChildControls();
           }
         }
       });

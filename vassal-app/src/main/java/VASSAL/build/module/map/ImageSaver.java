@@ -17,18 +17,20 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -82,12 +84,7 @@ public class ImageSaver extends AbstractConfigurable {
   protected static ProgressDialog dialog;
 
   public ImageSaver() {
-    final ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        writeMapAsImage();
-      }
-    };
+    final ActionListener al = e -> writeMapAsImage();
 
     launch =
       new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
@@ -199,7 +196,7 @@ public class ImageSaver extends AbstractConfigurable {
     // something with the minimum size or font metrics
     final int l = "Saving map image as ".length() + file.getName().length() + 6;
     final StringBuilder b = new StringBuilder();
-    for (int i = 0; i < l; i++) b.append("N");
+    b.append("N".repeat(Math.max(0, l)));
     dialog.setLabel(b.toString());
 
     dialog.pack();
@@ -247,29 +244,21 @@ public class ImageSaver extends AbstractConfigurable {
   protected void writeMapRectAsImage(File file, int x, int y, int w, int h) {
     final SnapshotTask task = new SnapshotTask(file, x, y, w, h);
 
-    task.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        if ("progress".equals(e.getPropertyName())) {
-          dialog.setProgress((Integer) e.getNewValue());
-        }
-        else if ("state".equals(e.getPropertyName())) {
-          if (e.getNewValue() ==
-              SwingWorker.StateValue.DONE) {
-            // close the dialog on cancellation or completion
-            dialog.setVisible(false);
-            dialog.dispose();
-          }
+    task.addPropertyChangeListener(e -> {
+      if ("progress".equals(e.getPropertyName())) {
+        dialog.setProgress((Integer) e.getNewValue());
+      }
+      else if ("state".equals(e.getPropertyName())) {
+        if (e.getNewValue() ==
+            SwingWorker.StateValue.DONE) {
+          // close the dialog on cancellation or completion
+          dialog.setVisible(false);
+          dialog.dispose();
         }
       }
     });
 
-    dialog.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        task.cancel(true);
-      }
-    });
+    dialog.addActionListener(e -> task.cancel(true));
 
     task.execute();
   }
@@ -323,12 +312,9 @@ public class ImageSaver extends AbstractConfigurable {
       }
 
       // update the dialog on the EDT
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          dialog.setLabel("Saving map image as " + f.getName() + ":");
-          dialog.setIndeterminate(true);
-        }
+      SwingUtilities.invokeLater(() -> {
+        dialog.setLabel("Saving map image as " + f.getName() + ":");
+        dialog.setIndeterminate(true);
       });
 
       // FIXME: do something to estimate how long painting will take
@@ -344,12 +330,7 @@ public class ImageSaver extends AbstractConfigurable {
       g.dispose();
 
       // update the dialog on the EDT
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          dialog.setIndeterminate(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> dialog.setIndeterminate(false));
 
       final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
       iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {
@@ -493,6 +474,62 @@ public class ImageSaver extends AbstractConfigurable {
         }
         else {
           ErrorDialog.bug(e);
+        }
+      }
+    }
+  }
+
+  /**
+   * Write a PNG-encoded snapshot of the map to the given OutputStreams,
+   * dividing the map into vertical sections, one per stream
+   *
+   * @deprecated Use {@link #writeMapAsImage()}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void writeImage(OutputStream[] out) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
+    Dimension buffer = map.getEdgeBuffer();
+    int totalWidth =
+      (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
+    int totalHeight =
+      (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
+    for (int i = 0; i < out.length; ++i) {
+      int height = totalHeight / out.length;
+      if (i == out.length - 1) {
+        height = totalHeight - height * (out.length - 1);
+      }
+
+      Image output = map.getView().createImage(totalWidth, height);
+      Graphics2D gg = (Graphics2D) output.getGraphics();
+
+      map.paintRegion(gg, new Rectangle(
+        -(int) (map.getZoom() * buffer.width),
+        -(int) (map.getZoom() * buffer.height) + height * i,
+        totalWidth, totalHeight), null);
+      gg.dispose();
+      try {
+        MediaTracker t = new MediaTracker(map.getView());
+        t.addImage(output, 0);
+        t.waitForID(0);
+      }
+      catch (Exception e) {
+        logger.error("", e);
+      }
+
+      try {
+        if (output instanceof RenderedImage) {
+          ImageIO.write((RenderedImage) output, "png", out[i]);
+        }
+        else {
+          throw new IOException("Bad image type");
+        }
+      }
+      finally {
+        try {
+          out[i].close();
+        }
+        catch (IOException e) {
+          logger.error("", e);
         }
       }
     }

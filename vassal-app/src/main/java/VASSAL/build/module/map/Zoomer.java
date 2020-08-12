@@ -89,6 +89,12 @@ import VASSAL.tools.NamedKeyStroke;
 public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected Map map;
 
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected double zoom = 1.0;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected int zoomLevel = 0;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected int zoomStart = 1;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected double[] zoomFactor;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected int maxZoom = 4;
+
   protected LaunchButton zoomInButton;
   protected LaunchButton zoomPickButton;
   protected LaunchButton zoomOutButton;
@@ -229,28 +235,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
-    ActionListener zoomIn = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        zoomIn();
-      }
-    };
+    ActionListener zoomIn = e -> zoomIn();
 
-    ActionListener zoomOut = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        zoomOut();
-      }
-    };
+    ActionListener zoomOut = e -> zoomOut();
 
     zoomMenu = new ZoomMenu();
 
-    ActionListener zoomPick = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (zoomPickButton.isShowing()) {
-          zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
-        }
+    ActionListener zoomPick = e -> {
+      if (zoomPickButton.isShowing()) {
+        zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
       }
     };
 
@@ -964,7 +957,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         setZoomLevel(Integer.parseInt(a.getActionCommand()));
         return;
       }
-      catch (NumberFormatException e) {
+      catch (NumberFormatException ignored) {
       }
 
       final String cmd = a.getActionCommand();
