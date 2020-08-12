@@ -257,7 +257,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
       else {
         try {
-          setVar(var, Integer.valueOf(value).intValue());
+          setVar(var, Integer.parseInt(value));
         }
         catch (NumberFormatException e) {
           try {

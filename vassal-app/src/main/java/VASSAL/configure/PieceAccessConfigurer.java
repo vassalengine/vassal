@@ -21,8 +21,6 @@ import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -45,7 +43,7 @@ public class PieceAccessConfigurer extends Configurer {
   protected static String SIDES = "sides:";
   protected JPanel controls;
   protected String[] prompts = new String[] {"Any player", "Any side", "Any of the specified sides"};
-  protected JComboBox selectType;
+  protected JComboBox<String> selectType;
   protected StringArrayConfigurer sideConfig;
 
   public PieceAccessConfigurer(String key, String name, PieceAccess value) {
@@ -77,7 +75,7 @@ public class PieceAccessConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       Box box = Box.createHorizontalBox();
       box.add(new JLabel(getName()));
-      selectType = new JComboBox(getPrompts());
+      selectType = new JComboBox<>(getPrompts());
       selectType.addItemListener(new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -91,12 +89,7 @@ public class PieceAccessConfigurer extends Configurer {
       box.add(selectType);
       controls.add(box);
       sideConfig = new StringArrayConfigurer(null, null);
-      sideConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-        }
-      });
+      sideConfig.addPropertyChangeListener(evt -> updateValue());
       controls.add(sideConfig.getControls());
       updateControls();
     }
@@ -177,8 +170,8 @@ public class PieceAccessConfigurer extends Configurer {
 
   public void setPrompts(String[] prompts) {
     this.prompts = prompts;
-    if (selectType == null) {
-      selectType.setModel(new DefaultComboBoxModel<String>(prompts));
+    if (selectType != null) {
+      selectType.setModel(new DefaultComboBoxModel<>(prompts));
     }
   }
 }

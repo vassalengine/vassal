@@ -660,13 +660,6 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
     setGpId(st.nextToken(""));
 
-    if (persistentProps == null) {
-      persistentProps = new HashMap<>();
-    }
-    else {
-      persistentProps.clear();
-    }
-
     // Persistent Property values will always be String (for now).
     // Create the HashMap as lazily as possible, no point in creating it for pieces that never move
     if (persistentProps != null) {
