@@ -332,15 +332,15 @@ public class ErrorDialog {
     );
   }
 
-  private static final Set<String> reporteddataWarnings =
+  private static final Set<String> reportedDataWarnings =
     Collections.synchronizedSet(new HashSet<>());
 
   public static void dataWarning(BadDataReport e) {
     logger.warn(e.getMessage() + ": " + e.getData());
     if (e.getCause() != null) logger.error("", e.getCause());
 
-    if (!reporteddataWarnings.contains(e.getData())) {
-      reporteddataWarnings.add(e.getData());
+    if (!reportedDataWarnings.contains(e.getData())) {
+      reportedDataWarnings.add(e.getData());
 
       // send a warning to the controls window
       GameModule.warn(Resources.getString("Error.data_error_message", e.getMessage(), e.getData()));
