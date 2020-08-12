@@ -110,7 +110,7 @@ public class SVGImageUtils {
     final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
 
     final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
-    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root); 
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
 
     float w = -1.0f;
     float h = -1.0f;
