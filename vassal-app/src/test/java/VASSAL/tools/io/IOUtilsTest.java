@@ -28,19 +28,11 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-@RunWith(JMock.class)
 public class IOUtilsTest {
-  private final Mockery context = new JUnit4Mockery();
-
   @Test
   public void testCopyFileChannels() throws IOException {
     final File ifile = new File("src/test/resources/IOUtilsTest.txt");
