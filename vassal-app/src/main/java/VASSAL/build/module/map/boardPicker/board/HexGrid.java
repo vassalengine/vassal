@@ -387,7 +387,7 @@ public class HexGrid extends AbstractConfigurable
         val = Double.valueOf((String) val);
       }
       dy = (Double) val;
-      if (dx == sqrt3_2 * 64.0) {
+      if (isClose(dx, sqrt3_2 * 64.0)) {
         dx = sqrt3_2 * dy;
       }
     }
@@ -1062,4 +1062,10 @@ public class HexGrid extends AbstractConfigurable
   public void setSnapScale(int snapScale) {
     this.snapScale = snapScale;
   }
+
+  private static boolean isClose(double x, double y) {
+    final double bounds = 0.01;
+    return x >= (y - bounds) && x <= (y + bounds);
+  }
+
 }
