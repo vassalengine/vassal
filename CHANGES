@@ -1,5 +1,6 @@
 3.3.3-beta1 - ???
 
+* 13276: Center on Moves is now a user preference instead of a module setting
 * 13251: Add Module name to Bug summary, extra info to comments
 * 13250: Add implementation of Missing !~ Beanshell operator
 * 13243: Add functionality to methods to be deprecated and removed gracefully
