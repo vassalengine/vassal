@@ -16,7 +16,7 @@ VASSAL 3.3 requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with
 them, so there is no need to install Java separately on those operating
-systems.
+systems. On Linux, use your package manager to install Java 11 or later.
 
 ### Releases
 
