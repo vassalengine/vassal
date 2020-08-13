@@ -59,6 +59,7 @@
     of pieces' to a Deck correctly
 * 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in
     buggy trail behavior
+* 10414: SVG with non-px dimensions throws ImageIOException
 * 10314: NPE in GameRefresher if dialog is closed quickly while test is running
 *  3199: Add separators to menus
 *  3042: Improved Retire/Resign/Switch Sides button flow
