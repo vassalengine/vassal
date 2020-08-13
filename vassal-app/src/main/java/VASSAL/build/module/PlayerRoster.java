@@ -490,7 +490,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     final GameModule g = GameModule.getGameModule();
     String newSide = (String) JOptionPane.showInputDialog(
       g.getPlayerWindow(),
-      Resources.getString("PlayerRoster.switch_sides"), //$NON-NLS-1$
+      Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()), //$NON-NLS-1$
       Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
       JOptionPane.QUESTION_MESSAGE,
       null,
