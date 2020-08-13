@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.3.2 Released[/b][/size]
+[size=200][b]VASSAL 3.3.3-beta1 Released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.3.2.
+The VASSAL Team is happy to announce the release of VASSAL 3.3.3-beta1, which is a preview release.
 
 
 [size=150][b]IMPORTANT[/b][/size]
@@ -9,43 +9,91 @@ The VASSAL Team is happy to announce the release of VASSAL 3.3.2.
 
 * If you save a module in VASSAL 3.3, you will NOT be able to open it afterwards with VASSAL 3.2. We recommend keeping a backup copy of any pre-3.3 modules you plan to modify in 3.3 until you've verified that everything works to your satisfaction.
 
-* Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware that VASL has this problem and are working with its maintainers to update it.)
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.2/VASSAL-3.3.2-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-other.zip]Other[/url]
 
-[size=150][b]Changes since 3.3.1[/b][/size]
+[size=150][b]Changes since 3.3.2[/b][/size]
 
-* 13182: Piece images in Inventory windows are drawn offset on HiDPI screens
-* 13181: Piece images in Inventory windows have truncated height on Macs
-* 13176: Bundled Java fails to start on Mac OS X < 10.13
-* 13175: Add bundle for 32-bit Windows
-* 13152: Version number and year set incorrectly in Mac DMG's Info.plist
-* 13143: HTTPS URLs fail to load (handshake_failure) due to missing jdk.crypto.ec module
-* 13140: Versions with a build number are incorrectly sorted before versions without a build number
-* 13136: Update notifier still has old SourceForge URL for downloads
-* 13126: Right mouse button and Control-Click broken on Macs
-* 12861: Improved behavior of Zone editor
+New features & improvements
 
-For changes prior to this release, see the change log.
+* 13276: Center on Moves is now a user preference instead of a module setting
+* 13251: Add Module name to Bug summary, extra info to comments
+* 13250: Add implementation of Missing !~ Beanshell operator
+* 13243: Add functionality to methods to be deprecated and removed gracefully
+* 13239: Right-click doesn't pick up whole stack anymore
+* 13229: Performance: Save property map rather than clone pieces as snapshot
+* 13218: Allow a piece get its context menu click location
+* 13191: Add a "Search" command to the editor for searching the nodes/names/descriptions of a module
+* 13184: CounterDetailViewer can now display overlapping counters
+* 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
+* 13172: Undo button can now be assigned a hotkey by module designer
+* 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14, commons-lang3 3.10
+* 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects, and band-select gets Does-Not-Stack filter
+* 13129: New HTML Chatter with colors, fonts/bold/italic, image tags
+* 13124: Removed unused deprecated code
+* 13100: Replace Beanshell If function in Expression Builder with inline If ?:
+* 12999: Add Beanshell functions to generate Random results
+*  3199: Add separators to menus
+*  3042: Improved Retire/Resign/Switch Sides button flow
+*  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off movement trails
+
+Bug fixes
+
+* 13234: Rotation gets stuck due to floating point error
+* 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
+* 13216: Adding regions to Irregular Grid via GUI editor was broken
+* 13205: NPE when trying to display file write failure dialog
+* 13199: MapShader using image throws InternalError on Linux
+* 13197: Hotkeys using Control should use Command on Macs
+* 13196: Ctrl+Click toggles rather than only deselects
+* 13178: Game Refresher does not handle Place Markers or Prototypes correctly
+* 13171: SetGlobalProperty makes menuCommands the wrong type of array
+* 13155: Correct Dutch translations
+* 13153: Consistently ask to start logging when loading a game
+* 13146: Custom classes that are children fail to be culled in PropertiesWindow.initialized (resulting in duplicate buildFile entries)
+* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making double-click difficult; also added preference for drag threshold adjustment
+* 13123: "Mark When Moved" trait puts blank line in menu, even if Command field left completely empty
+* 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
+* 13060: Area Of Effect generates NPE if activated when piece is not on a Map
+* 13036: Entire contents of a deck can be inadvertently group-selected and moved
+* 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
+* 12972: Return to Location backMap and backPoint are not sent to clients or undone
+* 12980: Set Global Property: Beanshell incorrectly tries to "simplify" expression and generates incorrect result
+* 12970: Setting values of Old... variables are not encoded in a Command
+* 12952: Evalute $..$ strings in Property Match expressions on source pce
+* 12951: Undo of Send to Deck command does not return cards to hand in same state
+* 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in incorrect position
+* 12935: NPE in MoveReporter.shouldMarkMoved assuming nonnull map
+* 12888: NPE in BooleanConfigurer.setValue
+* 12576: At-Start stack attaches to first board listed in module, even if that board wasn't selected by player and is inactive
+* 12554: Undo bug: Do not add the whole Stack to the DragBuffer
+* 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number of pieces' to a Deck correctly
+* 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in buggy trail behavior
+* 10414: SVG with non-px dimensions throws ImageIOException
+* 10314: NPE in GameRefresher if dialog is closed quickly while test is running
+*  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
+
+See the [url=http://www.vassalengine.org/wiki/VASSAL_3.3.3_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.3.3-beta1.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
 VASSAL 3.3 requires Java 11 or later.
 
-The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems.
+The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
 
 [size=159][b]Help us test[/b][/size]
 
 Should you find any problems/oddities/bugs, please tell us so that we can
 fix them for a future release of VASSAL.
 
-Report bugs here in the Technical Support & Bugs category at the [url=http://vassalengine.org/forum/viewforum.php?f=3]VASSAL forums[/url] or by email to [email]bugs@vassalengine.org[/email].
+Please report bugs in the Technical Support & Bugs category at the [url=http://vassalengine.org/forum/viewforum.php?f=3]VASSAL forums[/url].
 
 
 Cheers,
