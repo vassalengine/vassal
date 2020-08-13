@@ -438,9 +438,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public void fireKeyStroke(NamedKeyStroke stroke) {
-    if (stroke != null && !stroke.isNull()) {
-      fireKeyStroke(stroke.getKeyStroke());
+    if (stroke == null || stroke.isNull()) {
+      return;
     }
+
+    final KeyStroke innerStroke = stroke.getKeyStroke();
+    if (innerStroke == null) {
+      return;
+    }
+
+    keyStrokeListeners.forEach(l -> l.keyPressed(innerStroke));
   }
 
   /**
