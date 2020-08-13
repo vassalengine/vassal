@@ -450,7 +450,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         cs,
         Resources.getString("Dialogs.incompatible.title"),
         Resources.getString("Dialogs.incompatible.heading"),
-        Resources.getString("Dialogs.incompatible.message", name)
+        Resources.getString("Dialogs.incompatible.message", name) + "\n\n"
+          + Resources.getString("Dialogs.check_for_updated_module")
       );
     }
 

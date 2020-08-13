@@ -362,14 +362,27 @@ public class ProblemDialog {
       StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE), 2)
         .walk(f -> f.skip(1).limit(1).collect(Collectors.toList())).get(0);
     final String method = frame.getClassName() + "." + frame.getMethodName();
-    String expiry = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d")).plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale()));
+    final LocalDate deprecateFrom = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d"));
+    final LocalDate warnUntil = deprecateFrom.plusMonths(6);
+    final String expiry = deprecateFrom.plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale()));
+    final String expiryDetails = Resources.getString("Dialogs.deprecated.message", method, expiry);
 
-    return showDisableable(JOptionPane.WARNING_MESSAGE,
-      null, null, method,
-      Resources.getString("Dialogs.out_of_date"),
-      Resources.getString("Dialogs.out_of_date"),
-      Resources.getString("Dialogs.deprecated.message", method, expiry)
-    );
+    if (LocalDate.now().isBefore(warnUntil)) {
+      if (! DialogUtils.isDisabled(expiryDetails)) {
+        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + expiryDetails);
+        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + Resources.getString("Dialogs.check_for_updated_module"));
+        DialogUtils.setDisabled(expiryDetails, true);
+      }
+      return null;
+    }
+    else {
+      return showDisableable(JOptionPane.WARNING_MESSAGE,
+        null, null, method,
+        Resources.getString("Dialogs.out_of_date"),
+        Resources.getString("Dialogs.out_of_date"),
+        expiryDetails + "\n\n" + Resources.getString("Dialogs.check_for_updated_module")
+      );
+    }
   }
 
   public static Future<?> showOutdatedUsage(String usage) {
@@ -378,7 +391,8 @@ public class ProblemDialog {
       null, null, usage,
       Resources.getString("Dialogs.out_of_date"),
       Resources.getString("Dialogs.out_of_date"),
-      Resources.getString("Dialogs.out_dated_usage", usage)
+      Resources.getString("Dialogs.out_dated_usage", usage) + "\n\n"
+        + Resources.getString("Dialogs.check_for_updated_module")
     );
   }
 
