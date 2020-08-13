@@ -204,8 +204,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      final AddPiece comm =
-        (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
+      final Command raw = GameModule.getGameModule().decode(pieceDefinition);   
+      final AddPiece comm = (c instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
       if (comm == null) {
         ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));
         System.err.println("Couldn't build piece " + pieceDefinition);
@@ -285,20 +285,23 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected void startDrag() {
     // Recenter piece; panel may have been resized at some point resulting
     // in pieces with inaccurate positional information.
+    GamePiece p = getPiece();
+    if (p == null) { // Found new ways to NPE after you've successfully soft-warninged your failed piece build :)
+      return;
+    }
+    
     final Dimension size = panel.getSize();
-    getPiece().setPosition(new Point(size.width / 2, size.height / 2));
+    p.setPosition(new Point(size.width / 2, size.height / 2));
 
     // Erase selection border to avoid leaving selected after mouse dragged out
-    getPiece().setProperty(Properties.SELECTED, null);
+    p.setProperty(Properties.SELECTED, null);
     panel.repaint();
 
-    if (getPiece() != null) {
-      KeyBuffer.getBuffer().clear();
-      DragBuffer.getBuffer().clear();
-      GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
-      newPiece.setProperty(Properties.PIECE_ID, getGpId());
-      DragBuffer.getBuffer().add(newPiece);
-    }
+    KeyBuffer.getBuffer().clear();
+    DragBuffer.getBuffer().clear();
+    GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
+    newPiece.setProperty(Properties.PIECE_ID, getGpId());
+    DragBuffer.getBuffer().add(newPiece);
   }
 
   protected void doPopup(MouseEvent e) {
