@@ -20,18 +20,7 @@ systems.
 
 ### Releases
 
-Get the [current release](https://github.com/vassalengine/vassal/releases/latest).
-
-### Installation
-
-* Windows: Download and run the installer.
-* Mac OS X: Download the app bundle.
-* Linux: Download and unpack the tarball.
-```shell
-tar -xvf VASSAL-3.3.2-linux.tar.bz2
-cd VASSAL-3.3.2
-./VASSAL.sh
-```
+Get the [current release](https://github.com/vassalengine/vassal/releases/latest). Read the [release notes](http://www.vassalengine.org/wiki/Release_Notes) to see what's new.
 
 ## Contributing
 
@@ -44,11 +33,11 @@ Please report bugs in the [Technical Support & Bugs](http://www.vassalengine.org
 This project is licensed under the terms of the [LGPLv2 license](LICENSE).
 
 ## Acknowledgments
-![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
-
 YourKit supports open source projects with innovative and intelligent tools
 for monitoring and profiling Java and .NET applications.
 YourKit is the creator of
 [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
 [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
 and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
+
+![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
