@@ -746,15 +746,11 @@ public class GameState implements CommandEncoder {
   public void saveGame(File f) throws IOException {
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
-    try (FastByteArrayOutputStream ba = new FastByteArrayOutputStream()) {
-      try (OutputStream out = new ObfuscatingOutputStream(ba)) {
+    try (FileArchive archive = new ZipArchive(f)) {
+      try (OutputStream out = new ObfuscatingOutputStream(archive.getOutputStream(SAVEFILE_ZIP_ENTRY))) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
-
-      try (FileArchive archive = new ZipArchive(f)) {
-        archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
-        (new SaveMetaData()).save(archive);
-      }
+      (new SaveMetaData()).save(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
