@@ -245,6 +245,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
+  
+  
+  public Component getComponent() {
+    return theMap;
+  }
+
 
   // Global Change Reporting control
   public static void setChangeReportingEnabled(boolean b) {
