@@ -747,7 +747,8 @@ public class GameState implements CommandEncoder {
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
-      try (OutputStream out = new ObfuscatingOutputStream(archive.getOutputStream(SAVEFILE_ZIP_ENTRY))) {
+      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           final OutputStream out = new ObfuscatingOutputStream(zout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
       (new SaveMetaData()).save(archive);
