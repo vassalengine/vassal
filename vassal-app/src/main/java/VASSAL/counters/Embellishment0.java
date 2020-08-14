@@ -579,7 +579,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   /** @deprecated Use {@link ImageOp#getImage} instead. */
   @Deprecated(since="2020-08-06", forRemoval = true)
-  protected Image getCurrentImage() {
+  protected Image getCurrentImage() throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
     // nonpositive value means that layer is inactive
     // null or empty imageName[value-1] means that this layer has no image
