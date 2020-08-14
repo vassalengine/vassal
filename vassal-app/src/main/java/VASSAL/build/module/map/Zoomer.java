@@ -671,7 +671,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     listener = new MouseWheelListener() {
       @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
-        if ((e.getScrollAmount() == 0) || !map.getComponent().hasFocus()) {
+        if (e.getScrollAmount() == 0) {
           return;
         }
         
@@ -686,6 +686,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
             zoomOut();
           }
         }
+        
+        map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
       }
     };
     
