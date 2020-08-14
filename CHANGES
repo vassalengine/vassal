@@ -1,5 +1,6 @@
 3.3.3-beta2 - ???
 
+* 13282: Stop logging debug messages by default
 * 13281: Added inadvertently removed throws declaration for
     Embellishment0.getCurrentImage()
 * 13280 - NPE in KeyStrokeListener.keyPressed()
