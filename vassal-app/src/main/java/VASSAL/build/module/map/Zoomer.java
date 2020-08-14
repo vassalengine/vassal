@@ -681,8 +681,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           if ((units < 0) && state.hasHigherLevel()) {
             zoomIn();
           }
-          
-          if ((units > 0) && state.hasLowerLevel()) {
+          else if ((units > 0) && state.hasLowerLevel()) {
             zoomOut();
           }
         }
