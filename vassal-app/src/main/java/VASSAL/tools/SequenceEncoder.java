@@ -58,10 +58,23 @@ import VASSAL.configure.StringArrayConfigurer;
  */
 public class SequenceEncoder {
   private StringBuilder buffer;
-  private final char delimit;
+  private final char delim;
+
+  // Ugly delimiters: The characters in UGLY can ocucr in what's returned
+  // by String.valueOf() for boolean, int, long, and double---that is,
+  // anything which looks like a number (possibly in scientific notation,
+  // e.g., 1E-6) but also true, false, Infinity, and NaN. When the delimiter
+  // is none of these characters, we can hand these primitive types directly
+  // to the StringBuilder without doing any escaping.
+  //
+  // These characters are all terrible choices for delimiters anyway, so
+  // hopefully no one uses them, but we have to check just in case.
+  private static final String UGLY = "-.0123456789EINaefilnrstuy";
+  private final boolean uglyDelim;
 
   public SequenceEncoder(char delimiter) {
-    delimit = delimiter;
+    delim = delimiter;
+    uglyDelim = UGLY.indexOf(delim) != -1;
   }
 
   public SequenceEncoder(String val, char delimiter) {
@@ -69,47 +82,91 @@ public class SequenceEncoder {
     append(val);
   }
 
-  public SequenceEncoder append(String s) {
-    // start the buffer, or add delimiter after previous token
+  private void startBufferOrAddDelimiter() {
     if (buffer == null) {
       buffer = new StringBuilder();
     }
     else {
-      buffer.append(delimit);
+      buffer.append(delim);
+    }
+  }
+
+  public SequenceEncoder append(String s) {
+    startBufferOrAddDelimiter();
+
+    if (s == null || s.isEmpty()) {
+      return this;
     }
 
-    if (s != null) {
-      if (s.endsWith("\\") || (s.startsWith("'") && s.endsWith("'"))) {
-        buffer.append("'");
-        appendEscapedString(s);
-        buffer.append("'");
-      }
-      else {
-        appendEscapedString(s);
-      }
+    if (s.charAt(0) == '\\' ||
+        (s.charAt(0) == '\'' && s.charAt(s.length()-1) == '\'')) {
+      buffer.append('\'');
+      appendEscapedString(s);
+      buffer.append('\'');
+    }
+    else {
+      appendEscapedString(s);
     }
 
     return this;
   }
 
+  private void appendEscapedChar(char c) {
+    if (c == delim) {
+      buffer.append('\\');
+    }
+    buffer.append(c);
+  }
+
   public SequenceEncoder append(char c) {
-    return append(String.valueOf(c));
+    startBufferOrAddDelimiter();
+
+    if (c == '\\' || c == '\'') {
+      buffer.append('\'');
+      appendEscapedChar(c);
+      buffer.append('\'');
+    }
+    else {
+      appendEscapedChar(c);
+    }
+
+    return this;
   }
 
   public SequenceEncoder append(int i) {
-    return append(String.valueOf(i));
+    if (uglyDelim) {
+      return append(String.valueOf(i));
+    }
+    startBufferOrAddDelimiter();
+    buffer.append(i);
+    return this;
   }
 
   public SequenceEncoder append(long l) {
-    return append(String.valueOf(l));
+    if (uglyDelim) {
+      return append(String.valueOf(l));
+    }
+    startBufferOrAddDelimiter();
+    buffer.append(l);
+    return this;
   }
 
   public SequenceEncoder append(double d) {
-    return append(String.valueOf(d));
+    if (uglyDelim) {
+      return append(String.valueOf(d));
+    }
+    startBufferOrAddDelimiter();
+    buffer.append(d);
+    return this;
   }
 
   public SequenceEncoder append(boolean b) {
-    return append(String.valueOf(b));
+    if (uglyDelim) {
+      return append(String.valueOf(b));
+    }
+    startBufferOrAddDelimiter();
+    buffer.append(b);
+    return this;
   }
 
   public SequenceEncoder append(KeyStroke stroke) {
@@ -138,24 +195,24 @@ public class SequenceEncoder {
 
   private void appendEscapedString(String s) {
     int begin = 0;
-    int end = s.indexOf(delimit);
+    int end = s.indexOf(delim);
 
-    while (begin <= end) {
-      buffer.append(s.substring(begin, end)).append('\\');
+    while (begin < end) {
+      buffer.append(s, begin, end).append('\\');
       begin = end;
-      end = s.indexOf(delimit, end + 1);
+      end = s.indexOf(delim, end + 1);
     }
 
-    buffer.append(s.substring(begin));
+    buffer.append(s, begin, s.length());
   }
 
   public static class Decoder implements Iterator<String> {
     private String val;
-    private final char delimit;
+    private final char delim;
 
     public Decoder(String value, char delimiter) {
       val = value;
-      delimit = delimiter;
+      delim = delimiter;
     }
 
     public boolean hasMoreTokens() {
@@ -167,7 +224,7 @@ public class SequenceEncoder {
 
       String value;
 
-      final int i = val.indexOf(delimit);
+      final int i = val.indexOf(delim);
       if (i < 0) {
         value = val;
         val = null;
@@ -180,7 +237,7 @@ public class SequenceEncoder {
           if (val.charAt(end - 1) == '\\') {
             buffer.append(val, begin, end - 1);
             begin = end;
-            end = val.indexOf(delimit, end + 1);
+            end = val.indexOf(delim, end + 1);
           }
           else {
             break;
@@ -188,7 +245,7 @@ public class SequenceEncoder {
         }
 
         if (end < 0) {
-          buffer.append(val.substring(begin));
+          buffer.append(val, begin, val.length());
           val = null;
         }
         else {
@@ -222,7 +279,7 @@ public class SequenceEncoder {
     }
 
     public Decoder copy() {
-      return new Decoder(val, delimit);
+      return new Decoder(val, delim);
     }
 
     /**
