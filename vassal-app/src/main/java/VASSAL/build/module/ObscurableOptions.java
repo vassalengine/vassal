@@ -134,38 +134,31 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(COMMAND_ID)) {
-      command = command.substring(COMMAND_ID.length());
-      ArrayList<String> l = new ArrayList<>();
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      while (st.hasMoreTokens()) {
-        l.add(st.nextToken());
-      }
-      return new SetAllowed(l);
-    }
-    else {
+    if (!command.startsWith(COMMAND_ID)) {
       return null;
     }
+
+    command = command.substring(COMMAND_ID.length());
+    List<String> l = new ArrayList<>();
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    while (st.hasMoreTokens()) {
+      l.add(st.nextToken());
+    }
+    return new SetAllowed(l);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof SetAllowed) {
-      List<String> l = ((SetAllowed) c).getAllowedIds();
-      if (l.isEmpty()) {
-        return COMMAND_ID;
-      }
-      else {
-        SequenceEncoder se = new SequenceEncoder('\t');
-        for (String s : l) {
-          se.append(s);
-        }
-        return COMMAND_ID + se.getValue();
-      }
-    }
-    else {
+    if (!(c instanceof SetAllowed)) {
       return null;
     }
+
+    final List<String> l = ((SetAllowed) c).getAllowedIds();
+    SequenceEncoder se = new SequenceEncoder('\t');
+    for (String s : l) {
+      se.append(s);
+    }
+    return COMMAND_ID + se.getValue();
   }
 
   /**

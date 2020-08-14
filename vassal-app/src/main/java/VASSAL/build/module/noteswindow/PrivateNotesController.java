@@ -69,29 +69,27 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
 
   @Override
   public Command decode(String command) {
-    Command c = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(
-        command.substring(COMMAND_PREFIX.length()), '\t');
-      String owner = st.nextToken();
-      String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
-      return new SetPrivateTextCommand(this, new PrivateText(owner, text));
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return c;
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    String owner = st.nextToken();
+    String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
+    return new SetPrivateTextCommand(this, new PrivateText(owner, text));
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof SetPrivateTextCommand) {
-      PrivateText t = ((SetPrivateTextCommand) c).getPrivateText();
-      SequenceEncoder se = new SequenceEncoder('\t');
-      s = COMMAND_PREFIX
-          + se.append(t.getOwner())
-          .append(TextConfigurer.escapeNewlines(t.getText()))
-          .getValue();
+    if (!(c instanceof SetPrivateTextCommand)) {
+      return null;
     }
-    return s;
+    PrivateText t = ((SetPrivateTextCommand) c).getPrivateText();
+    SequenceEncoder se = new SequenceEncoder('\t');
+    return COMMAND_PREFIX +
+      se
+        .append(t.getOwner())
+        .append(TextConfigurer.escapeNewlines(t.getText()))
+        .getValue();
   }
 
   @Override

@@ -150,20 +150,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     @Override
     public Command decode(String command) {
-      Command c = null;
-      if (command.startsWith(LoadDeckCommand.PREFIX)) {
-        c = new LoadDeckCommand(Deck.this);
+      if (!command.startsWith(LoadDeckCommand.PREFIX)) {
+        return null;
       }
-      return c;
+      return new LoadDeckCommand(Deck.this);
     }
 
     @Override
     public String encode(Command c) {
-      String s = null;
-      if (c instanceof LoadDeckCommand) {
-        s = LoadDeckCommand.PREFIX;
+      if (!(c instanceof LoadDeckCommand)) {
+        return null;
       }
-      return s;
+      return LoadDeckCommand.PREFIX;
     }
   };
 

@@ -81,11 +81,21 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public static final int COL_NAME = 2;
   public static final int COL_REVEALED = 3;
 
-  // Date formatter to save and restore date/times in the save file
-  public static final DateFormat INTERNAL_DATE_FORMATTER =
-    new SimpleDateFormat("m/d/yy h:mm a");
+  private static final String INTERNAL_DATETIME_FORMAT = "MM/dd/yyyy h:mm a";
 
-  // Date formatter to display date/time to the player
+  /**
+   * Date formatter to save and restore date/times in the save file.
+   *
+   * Not thread-safe!
+   */
+  public static final DateFormat INTERNAL_DATE_FORMATTER =
+    new SimpleDateFormat(INTERNAL_DATETIME_FORMAT);
+
+  /**
+   * Date formatter to display date/time to the player.
+   *
+   * Not thread-safe!
+   */
   public static final DateFormat LOCAL_DATE_FORMATTER =
     DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
 
@@ -119,53 +129,53 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
   @Override
   public Command decode(String command) {
-    Command comm = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(
-        command.substring(COMMAND_PREFIX.length()), '\t');
-      String name = st.nextToken();
-      String owner = st.nextToken();
-      boolean hidden = "true".equals(st.nextToken()); //$NON-NLS-1$
-      String text = TextConfigurer.restoreNewlines(st.nextToken());
-      String handle = ""; //$NON-NLS-1$
-      Date date = null;
-
-      if (st.hasMoreTokens()) {
-        String formattedDate = st.nextToken();
-        try {
-          date = INTERNAL_DATE_FORMATTER.parse(formattedDate);
-        }
-        catch (ParseException e) {
-          ErrorDialog.dataWarning(new BadDataReport("Illegal date format", formattedDate, e));
-        }
-      }
-
-      if (st.hasMoreTokens()) {
-        handle = st.nextToken();
-      }
-
-      SecretNote note = new SecretNote(name, owner, text, hidden, date, handle);
-      comm = new AddSecretNoteCommand(this, note);
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return comm;
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    String name = st.nextToken();
+    String owner = st.nextToken();
+    boolean hidden = "true".equals(st.nextToken()); //$NON-NLS-1$
+    String text = TextConfigurer.restoreNewlines(st.nextToken());
+    String handle = ""; //$NON-NLS-1$
+    Date date = null;
+
+    if (st.hasMoreTokens()) {
+      String formattedDate = st.nextToken();
+      try {
+        date = new SimpleDateFormat(INTERNAL_DATETIME_FORMAT).parse(formattedDate);
+      }
+      catch (ParseException e) {
+        ErrorDialog.dataWarning(new BadDataReport("Illegal date format", formattedDate, e));
+      }
+    }
+
+    if (st.hasMoreTokens()) {
+      handle = st.nextToken();
+    }
+
+    SecretNote note = new SecretNote(name, owner, text, hidden, date, handle);
+    return new AddSecretNoteCommand(this, note);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof AddSecretNoteCommand) {
-      SecretNote note = ((AddSecretNoteCommand) c).getNote();
-      SequenceEncoder se = new SequenceEncoder('\t');
-      String date = note.getDate() == null ? "" : INTERNAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
-      s = COMMAND_PREFIX +
-          se.append(note.getName())
-          .append(note.getOwner())
-          .append(note.isHidden())
-          .append(TextConfigurer.escapeNewlines(note.getText()))
-          .append(date)
-          .append(note.getHandle()).getValue();
+    if (!(c instanceof AddSecretNoteCommand)) {
+      return null;
     }
-    return s;
+    SecretNote note = ((AddSecretNoteCommand) c).getNote();
+    SequenceEncoder se = new SequenceEncoder('\t');
+    String date =
+      note.getDate() == null ? "" : new SimpleDateFormat(INTERNAL_DATETIME_FORMAT).format(note.getDate()); //$NON-NLS-1$
+
+    return COMMAND_PREFIX +
+      se
+        .append(note.getName())
+        .append(note.getOwner())
+        .append(note.isHidden())
+        .append(TextConfigurer.escapeNewlines(note.getText()))
+        .append(date)
+        .append(note.getHandle()).getValue();
   }
 
   @Override

@@ -454,23 +454,24 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   @Override
   public String encode(Command c) {
-    if (c instanceof LogCommand) {
-      return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
-    }
-    else {
+    if (!(c instanceof LogCommand)) {
       return null;
     }
+    return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
   }
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(LOG)) {
-      Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
-      if (logged != null) {
-        return new LogCommand(logged, logInput, stepAction);
-      }
+    if (!command.startsWith(LOG)) {
+      return null;
     }
-    return null;
+
+    Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
+    if (logged == null) {
+      return null;
+    }
+
+    return new LogCommand(logged, logInput, stepAction);
   }
 
   protected Action undoAction = new UndoAction();

@@ -54,30 +54,26 @@ public class PluginsLoader extends ExtensionsLoader {
 
   @Override
   public Command decode(String command) {
-    Command c = null;
     if (command.startsWith(COMMAND_PREFIX)) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
-      c = new ModulePlugin.RegCmd(st.nextToken(), st.nextToken());
+      return new ModulePlugin.RegCmd(st.nextToken(), st.nextToken());
     }
-    else {
-      c = super.decode(command);
-    }
-    return c;
+
+    return super.decode(command);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
     if (c instanceof ModulePlugin.RegCmd) {
       ModulePlugin.RegCmd cmd = (ModulePlugin.RegCmd) c;
       SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cmd.getName()).append(cmd.getVersion());
-      s = COMMAND_PREFIX + se.getValue();
+      se
+        .append(cmd.getName())
+        .append(cmd.getVersion());
+      return COMMAND_PREFIX + se.getValue();
     }
-    else {
-      s = super.encode(c);
-    }
-    return s;
+
+    return super.encode(c);
   }
 
   public static String getPluginDirectory() {

@@ -70,22 +70,18 @@ public class EventLog extends AbstractBuildable
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith(EVENT_LIST)) {
-      return new StoreEvents(this, s.substring(EVENT_LIST.length()));
-    }
-    else {
+    if (!s.startsWith(EVENT_LIST)) {
       return null;
     }
+    return new StoreEvents(this, s.substring(EVENT_LIST.length()));
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof StoreEvents) {
-      return EVENT_LIST + ((StoreEvents) c).getEvents();
-    }
-    else {
+    if (!(c instanceof StoreEvents)) {
       return null;
     }
+    return EVENT_LIST + ((StoreEvents) c).getEvents();
   }
 
   @Override
