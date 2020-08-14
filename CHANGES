@@ -1,4 +1,10 @@
-3.3.3-beta1 - ???
+3.3.3-beta2 - ???
+
+* 13281: Added inadvertently removed throws declaration for
+    Embellishment0.getCurrentImage()
+* 13280 - NPE in KeyStrokeListener.keyPressed()
+
+3.3.3-beta1 - 13 August 2020
 
 * 13276: Center on Moves is now a user preference instead of a module setting
 * 13251: Add Module name to Bug summary, extra info to comments
