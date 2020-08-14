@@ -57,11 +57,19 @@ import VASSAL.configure.StringArrayConfigurer;
  * </pre>
  */
 public class SequenceEncoder {
+
+  /**
+   * contains characters that might be part of a string representation of an int, long, double or boolean
+   */
+  private static final String UGLY = "-.0123456789EINaefilnrstuy";
+
   private StringBuilder buffer;
-  private final char delimit;
+  private final char delimiter;
+  private final boolean uglyDelimiter;
 
   public SequenceEncoder(char delimiter) {
-    delimit = delimiter;
+    this.delimiter = delimiter;
+    uglyDelimiter = UGLY.indexOf(delimiter) >= 0;
   }
 
   public SequenceEncoder(String val, char delimiter) {
@@ -74,9 +82,9 @@ public class SequenceEncoder {
 
     if (s != null) {
       if (s.endsWith("\\") || (s.startsWith("'") && s.endsWith("'"))) {
-        buffer.append("'");
+        buffer.append('\'');
         appendEscapedString(s);
-        buffer.append("'");
+        buffer.append('\'');
       }
       else {
         appendEscapedString(s);
@@ -87,28 +95,54 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(char c) {
-    return append(String.valueOf(c));
+    if (c == '\\' || c == '\'') {
+      buffer.append('\'');
+      if (c == delimiter) {
+        buffer.append('\\');
+      }
+      buffer.append(c);
+      buffer.append('\'');
+    }
+    else {
+      if (c == delimiter) {
+        buffer.append('\\');
+      }
+      buffer.append(c);
+    }
+    return this;
   }
 
   public SequenceEncoder append(int i) {
+    if (uglyDelimiter) {
+      return append(String.valueOf(i));
+    }
     startBufferOrAddDelimiter();
     buffer.append(i);
     return this;
   }
 
   public SequenceEncoder append(long l) {
+    if (uglyDelimiter) {
+      return append(String.valueOf(l));
+    }
     startBufferOrAddDelimiter();
     buffer.append(l);
     return this;
   }
 
   public SequenceEncoder append(double d) {
+    if (uglyDelimiter) {
+      return append(String.valueOf(d));
+    }
     startBufferOrAddDelimiter();
     buffer.append(d);
     return this;
   }
 
   public SequenceEncoder append(boolean b) {
+    if (uglyDelimiter) {
+      return append(String.valueOf(b));
+    }
     startBufferOrAddDelimiter();
     buffer.append(b);
     return this;
@@ -142,7 +176,7 @@ public class SequenceEncoder {
       buffer = new StringBuilder();
     }
     else {
-      buffer.append(delimit);
+      buffer.append(delimiter);
     }
   }
 
@@ -152,12 +186,12 @@ public class SequenceEncoder {
 
   private void appendEscapedString(String s) {
     int begin = 0;
-    int end = s.indexOf(delimit);
+    int end = s.indexOf(delimiter);
 
     while (begin <= end) {
       buffer.append(s, begin, end).append('\\');
       begin = end;
-      end = s.indexOf(delimit, end + 1);
+      end = s.indexOf(delimiter, end + 1);
     }
 
     buffer.append(s.substring(begin));
@@ -242,7 +276,7 @@ public class SequenceEncoder {
     /**
      * Parse the next token into an integer
      * @param defaultValue Return this value if no more tokens, or next token doesn't parse to an integer
-     * @return
+     * @return next int token
      */
     public int nextInt(int defaultValue) {
       if (val != null) {
@@ -250,6 +284,7 @@ public class SequenceEncoder {
           defaultValue = Integer.parseInt(nextToken());
         }
         catch (NumberFormatException e) {
+          // do nothing, this can happen and is handled by the surrounding code
         }
       }
       return defaultValue;
@@ -261,6 +296,7 @@ public class SequenceEncoder {
           defaultValue = Long.parseLong(nextToken());
         }
         catch (NumberFormatException e) {
+          // do nothing, this can happen and is handled by the surrounding code
         }
       }
       return defaultValue;
@@ -272,6 +308,7 @@ public class SequenceEncoder {
           defaultValue = Double.parseDouble(nextToken());
         }
         catch (NumberFormatException e) {
+          // do nothing, this can happen and is handled by the surrounding code
         }
       }
       return defaultValue;
@@ -284,7 +321,7 @@ public class SequenceEncoder {
     /**
      * Return the first character of the next token
      * @param defaultValue Return this value if no more tokens, or if next token has zero length
-     * @return
+     * @return first character of the next token
      */
     public char nextChar(char defaultValue) {
       if (val != null) {
@@ -355,8 +392,8 @@ public class SequenceEncoder {
 
     /**
      * Return the next token, or the default value if there are no more tokens
-     * @param defaultValue
-     * @return
+     * @param defaultValue value to return if there are no more tokens
+     * @return next token, or the default value
      */
     public String nextToken(String defaultValue) {
       return val != null ? nextToken() : defaultValue;
