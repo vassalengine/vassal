@@ -25,7 +25,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -184,6 +186,29 @@ public class StringArrayConfigurer extends Configurer {
     if (s == null || s.length == 0) {
       return "";
     }
+
+    final String delimiter = ",";
+
+    return Arrays
+      .stream(s)
+      .map(item -> {
+        if (item == null) {
+          return "";
+        }
+
+        if (!item.contains(",")) {
+          return item;
+        }
+
+        return item.replaceAll(delimiter, "\\\\" + delimiter);
+      })
+      .collect(Collectors.joining(delimiter));
+  }
+
+  public static String arrayToStringOld(String[] s) {
+    if (s == null || s.length == 0) {
+      return "";
+    }
     SequenceEncoder se = new SequenceEncoder(',');
     for (String item : s) {
       se.append(item != null ? item : "");
@@ -229,19 +254,4 @@ public class StringArrayConfigurer extends Configurer {
     }
   }
 
-  // TODO move test code to a manual unit test annotated with @Ignore
-  public static void main(String[] args) {
-    JFrame f = new JFrame();
-    final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(c.getName() + " = " + c.getValueString());
-      }
-    });
-    c.setValue("Rack,Shack,Benny");
-    f.add(c.getControls());
-    f.pack();
-    f.setVisible(true);
-  }
 }

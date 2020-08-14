@@ -24,6 +24,7 @@ import javax.swing.KeyStroke;
 
 import VASSAL.configure.PropertyExpression;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -214,5 +215,20 @@ public class SequenceEncoderTest {
 
     assertEquals("", sd.nextToken());
     assertEquals(value2, sd.nextToken());
+  }
+
+  @Ignore
+  @Test
+  public void manualTest() {
+    final String[] args = new String[] { "foo", "bar", "baz"};
+    SequenceEncoder se = new SequenceEncoder(',');
+    for (String arg : args) {
+      se.append(arg);
+    }
+    System.out.println(se.getValue());
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(se.getValue(), ',');
+    while (st.hasMoreTokens()) {
+      System.out.println(st.nextToken());
+    }
   }
 }

@@ -70,13 +70,7 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(String s) {
-    // start the buffer, or add delimiter after previous token
-    if (buffer == null) {
-      buffer = new StringBuilder();
-    }
-    else {
-      buffer.append(delimit);
-    }
+    startBufferOrAddDelimiter();
 
     if (s != null) {
       if (s.endsWith("\\") || (s.startsWith("'") && s.endsWith("'"))) {
@@ -97,19 +91,27 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(int i) {
-    return append(String.valueOf(i));
+    startBufferOrAddDelimiter();
+    buffer.append(i);
+    return this;
   }
 
   public SequenceEncoder append(long l) {
-    return append(String.valueOf(l));
+    startBufferOrAddDelimiter();
+    buffer.append(l);
+    return this;
   }
 
   public SequenceEncoder append(double d) {
-    return append(String.valueOf(d));
+    startBufferOrAddDelimiter();
+    buffer.append(d);
+    return this;
   }
 
   public SequenceEncoder append(boolean b) {
-    return append(String.valueOf(b));
+    startBufferOrAddDelimiter();
+    buffer.append(b);
+    return this;
   }
 
   public SequenceEncoder append(KeyStroke stroke) {
@@ -132,6 +134,18 @@ public class SequenceEncoder {
     return append(p.getExpression());
   }
 
+  /**
+   * start the buffer, or add delimiter after previous token
+   */
+  private void startBufferOrAddDelimiter() {
+    if (buffer == null) {
+      buffer = new StringBuilder();
+    }
+    else {
+      buffer.append(delimit);
+    }
+  }
+
   public String getValue() {
     return buffer != null ? buffer.toString() : null;
   }
@@ -141,7 +155,7 @@ public class SequenceEncoder {
     int end = s.indexOf(delimit);
 
     while (begin <= end) {
-      buffer.append(s.substring(begin, end)).append('\\');
+      buffer.append(s, begin, end).append('\\');
       begin = end;
       end = s.indexOf(delimit, end + 1);
     }
@@ -365,15 +379,4 @@ public class SequenceEncoder {
     }
   }
 
-  public static void main(String[] args) {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String arg : args) {
-      se.append(arg);
-    }
-    System.out.println(se.getValue());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(se.getValue(), ',');
-    while (st.hasMoreTokens()) {
-      System.out.println(st.nextToken());
-    }
-  }
 }
