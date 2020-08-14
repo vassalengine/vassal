@@ -149,6 +149,14 @@ public class SequenceEncoderTest {
   }
 
   @Test
+  public void testEncodeDecodeStringStartingWithDelim() {
+    final String VALUE = ",hahahahah";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+  }
+
+  @Test
   public void testEncodeDecodeStringArray() {
     final String[] VALUE = {"line 1", "line 2,", "line 3'", "line 4\n"};
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);

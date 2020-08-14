@@ -197,7 +197,7 @@ public class SequenceEncoder {
     int begin = 0;
     int end = s.indexOf(delim);
 
-    while (begin < end) {
+    while (begin <= end) {
       buffer.append(s, begin, end).append('\\');
       begin = end;
       end = s.indexOf(delim, end + 1);
