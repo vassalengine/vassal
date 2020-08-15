@@ -210,9 +210,17 @@ public class SequenceEncoder {
     private String val;
     private final char delim;
 
+    private StringBuilder buf;
+
+    private int start;
+    private final int stop;
+
     public Decoder(String value, char delimiter) {
       val = value;
       delim = delimiter;
+
+      start = 0;
+      stop = val != null ? val.length() : 0;
     }
 
     public boolean hasMoreTokens() {
@@ -222,45 +230,67 @@ public class SequenceEncoder {
     public String nextToken() {
       if (!hasMoreTokens()) throw new NoSuchElementException();
 
-      String value;
-
-      final int i = val.indexOf(delim);
-      if (i < 0) {
-        value = val;
+      if (start == stop) {
         val = null;
+        return "";
       }
-      else {
-        final StringBuilder buffer = new StringBuilder();
-        int begin = 0;
-        int end = i;
-        while (begin < end) {
-          if (val.charAt(end - 1) == '\\') {
-            buffer.append(val, begin, end - 1);
-            begin = end;
-            end = val.indexOf(delim, end + 1);
+
+      String tok = null;
+
+      int i = start;
+      for ( ; i < stop; ++i) {
+        if (val.charAt(i) == delim) {
+          if (i > 0 && val.charAt(i-1) == '\\') {
+            // escaped delimiter
+            if (buf == null) {
+              buf = new StringBuilder();
+            }
+            buf.append(val, start, i-1);
+            start = i;
           }
           else {
+            // real delimiter
+            if (buf == null) {
+              tok = val.substring(start, i);
+            }
+            else {
+              buf.append(val, start, i);
+            }
+            start = i+1;
             break;
           }
         }
+      }
 
-        if (end < 0) {
-          buffer.append(val, begin, val.length());
-          val = null;
+      if (start < i) {
+        // i == stop; we reached the end without a delimiter
+        if (buf == null) {
+          tok = val.substring(start);
         }
         else {
-          buffer.append(val, begin, end);
-          val = end >= val.length() - 1 ? "" : val.substring(end + 1);
+          buf.append(val, start, stop);
         }
-
-        value = buffer.toString();
+        val = null;
       }
 
-      if (value.length() > 1 && value.startsWith("'") && value.endsWith("'")) {
-        value = value.substring(1, value.length() - 1);
+      if (buf == null) {
+        tok = unquote(tok);
+      }
+      else {
+        tok = unquote(buf);
+        buf.setLength(0);
       }
 
-      return value;
+      return tok;
+    }
+
+    private String unquote(CharSequence cs) {
+      // strip enclosure by single quotes
+      final int len = cs.length();
+      return (
+        len > 1 && cs.charAt(0) == '\'' && cs.charAt(len) == '\'' ?
+        cs.subSequence(1, len - 1) : cs
+      ).toString();
     }
 
     @Override
