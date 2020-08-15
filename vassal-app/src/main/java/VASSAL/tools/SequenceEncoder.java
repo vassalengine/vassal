@@ -235,6 +235,9 @@ public class SequenceEncoder {
         return "";
       }
 
+      if (buf != null) {
+        buf.setLength(0);
+      }
       String tok = null;
 
       int i = start;
@@ -250,7 +253,7 @@ public class SequenceEncoder {
           }
           else {
             // real delimiter
-            if (buf == null) {
+            if (buf == null || buf.length() == 0) {
               tok = val.substring(start, i);
             }
             else {
@@ -264,7 +267,7 @@ public class SequenceEncoder {
 
       if (start < i) {
         // i == stop; we reached the end without a delimiter
-        if (buf == null) {
+        if (buf == null || buf.length() == 0) {
           tok = val.substring(start);
         }
         else {
@@ -273,15 +276,7 @@ public class SequenceEncoder {
         val = null;
       }
 
-      if (buf == null) {
-        tok = unquote(tok);
-      }
-      else {
-        tok = unquote(buf);
-        buf.setLength(0);
-      }
-
-      return tok;
+      return unquote(tok != null ? tok : buf);
     }
 
     private String unquote(CharSequence cs) {
