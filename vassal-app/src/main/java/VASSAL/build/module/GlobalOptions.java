@@ -111,7 +111,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private boolean useSingleWindow;
   
   private boolean useClassicMoveFixedDistance = false;
-  private BooleanConfigurer classicMfd;
+  private BooleanConfigurer classicMfd;  
 
   private static void setInstance(GlobalOptions go) {
     instance = go;
@@ -214,7 +214,7 @@ public class GlobalOptions extends AbstractConfigurable {
     
     BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
-    
+       
     validator = new SingleChildInstance(gm, getClass());
   }
 
@@ -497,6 +497,10 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public boolean centerOnOpponentsMove() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
+  }
+  
+  public String chatterHTMLSetting() {
+    return chatterHTMLSupport;
   }
   
   public boolean chatterHTMLSupport() {
