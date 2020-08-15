@@ -49,7 +49,6 @@ import VASSAL.build.Widget;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.module.map.MenuDisplayer;
 import VASSAL.build.module.map.PieceMover.AbstractDragHandler;
 import VASSAL.command.AddPiece;
@@ -587,24 +586,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     gpId = id;
   }
 
-  private static class MyConfigurer extends Configurer implements HelpWindowExtension {
+  private static class MyConfigurer extends Configurer {
     private final PieceDefiner definer;
 
     public MyConfigurer(PieceSlot slot) {
       super(null, slot.getConfigureName(), slot);
       definer = new PieceDefiner(slot.getGpId(), slot.gpidSupport);
       definer.setPiece(slot.getPiece());
-    }
-
-    // TODO deprecate HelpWindowExtension interface, then confirm it's not in use anymore and delete
-
-    /**
-     * @deprecated In process of being replaced
-     */
-    @Override
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public void setBaseWindow(HelpWindow w) {
-      ProblemDialog.showDeprecated("2020-08-06");
     }
 
     @Override
