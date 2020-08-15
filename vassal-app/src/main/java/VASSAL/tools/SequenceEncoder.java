@@ -256,7 +256,7 @@ public class SequenceEncoder {
         value = buffer.toString();
       }
 
-      if (value.startsWith("'") && value.endsWith("'") && value.length() > 1) {
+      if (value.length() > 1 && value.startsWith("'") && value.endsWith("'")) {
         value = value.substring(1, value.length() - 1);
       }
 
