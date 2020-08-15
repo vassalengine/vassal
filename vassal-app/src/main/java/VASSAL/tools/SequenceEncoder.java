@@ -231,6 +231,7 @@ public class SequenceEncoder {
       if (!hasMoreTokens()) throw new NoSuchElementException();
 
       if (start == stop) {
+        // token for "null" is the empty string
         val = null;
         return "";
       }
@@ -238,13 +239,13 @@ public class SequenceEncoder {
       if (buf != null) {
         buf.setLength(0);
       }
-      String tok = null;
 
+      String tok = null;
       int i = start;
       for ( ; i < stop; ++i) {
         if (val.charAt(i) == delim) {
           if (i > 0 && val.charAt(i-1) == '\\') {
-            // escaped delimiter
+            // escaped delimiter; piece together the token
             if (buf == null) {
               buf = new StringBuilder();
             }
@@ -254,9 +255,11 @@ public class SequenceEncoder {
           else {
             // real delimiter
             if (buf == null || buf.length() == 0) {
+              // no escapes; take the token whole
               tok = val.substring(start, i);
             }
             else {
+              // had an earlier escape; cobble on the end
               buf.append(val, start, i);
             }
             start = i+1;
@@ -268,9 +271,11 @@ public class SequenceEncoder {
       if (start < i) {
         // i == stop; we reached the end without a delimiter
         if (buf == null || buf.length() == 0) {
+          // no escapes; take the token whole
           tok = val.substring(start);
         }
         else {
+          // had an earlier escape; cobble on the end
           buf.append(val, start, stop);
         }
         val = null;
