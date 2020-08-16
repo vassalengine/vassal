@@ -398,8 +398,8 @@ public class ServerAddressBook {
     public void actionPerformed(ActionEvent e) {
       ServerAddressBook.getInstance().setCurrentServer(entry);
     }
-
   }
+
   public void addPropertyChangeListener(PropertyChangeListener l) {
     changeSupport.addPropertyChangeListener(l);
   }
