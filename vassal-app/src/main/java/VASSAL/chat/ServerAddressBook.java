@@ -518,6 +518,7 @@ public class ServerAddressBook {
         peerServer = true;
       }
     }
+
     if (!jabber) {
       final AddressBookEntry entry = new VassalJabberEntry();
       entry.setCurrent(true);
@@ -525,18 +526,20 @@ public class ServerAddressBook {
       addressBook.addElement(entry);
       updated = true;
     }
+
     if (!legacy) {
       addressBook.addElement(new LegacyEntry());
       updated = true;
     }
+
     if (!peerServer) {
       addressBook.addElement(new PeerServerEntry());
       updated = true;
     }
+
     if (updated) {
       saveAddressBook();
     }
-
   }
 
   private void saveAddressBook() {
