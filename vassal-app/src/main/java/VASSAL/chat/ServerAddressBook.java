@@ -900,7 +900,7 @@ public class ServerAddressBook {
       String details;
       final String login = getProperty(JabberClientFactory.JABBER_LOGIN);
       final String pw = getProperty(JabberClientFactory.JABBER_PWD);
-      if (login == null || login.length() == 0 || pw == null || pw.length() == 0) {
+      if (login == null || login.isEmpty() || pw == null || pw.isEmpty()) {
         details = Resources.getString("ServerAddressBook.login_details_required"); //$NON-NLS-1$
       }
       else {
