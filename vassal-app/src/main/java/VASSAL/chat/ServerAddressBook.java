@@ -437,8 +437,10 @@ public class ServerAddressBook {
 
   private void removeServer(int index) {
     final AddressBookEntry e = addressBook.get(index);
-    int i = JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources
-        .getString("ServerAddressBook.remove_server", e.getDescription())); //$NON-NLS-1$
+    final int i = JOptionPane.showConfirmDialog(
+      GameModule.getGameModule().getPlayerWindow(),
+      Resources.getString("ServerAddressBook.remove_server", e.getDescription()) //$NON-NLS-1$
+    );
     if (i == 0) {
       addressBook.remove(index);
       myList.setSelectedIndex(-1);
@@ -948,7 +950,6 @@ public class ServerAddressBook {
       c.add(new JLabel(Resources.getString("ServerAddressBook.password"))); //$NON-NLS-1$
       c.add(jabberPw, "wrap, grow, push"); //$NON-NLS-1$
     }
-
   }
 
   /**
