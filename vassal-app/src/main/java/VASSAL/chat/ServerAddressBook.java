@@ -75,6 +75,8 @@ public class ServerAddressBook {
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
   protected static final String P2P_MODE_KEY = P2PClientFactory.P2P_MODE_KEY;
   protected static final String P2P_SERVER_MODE = P2PClientFactory.P2P_SERVER_MODE;
+
+  @Deprecated(since = "2020-08-16", forRemoval = true)
   protected static final String P2P_CLIENT_MODE = P2PClientFactory.P2P_CLIENT_MODE;
   // protected static final String PRIVATE_TYPE = PrivateClientFactory.PRIVATE_TYPE;
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
@@ -230,7 +232,6 @@ public class ServerAddressBook {
 
   public JComponent getControls() {
     if (controls == null) {
-
       controls = new JPanel(new MigLayout());
       addressConfig = new StringConfigurer(ADDRESS_PREF, null, ""); //$NON-NLS-1$
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
@@ -250,7 +251,6 @@ public class ServerAddressBook {
           }
         }
       });
-
 
       final JScrollPane scroll = new JScrollPane(myList);
       myList.repaint();
@@ -451,8 +451,10 @@ public class ServerAddressBook {
 
   private void addServer() {
     final JPopupMenu popup = new JPopupMenu();
+
     final JMenuItem p2pItem = new JMenuItem(Resources.getString("ServerAddressBook.peer_server"));
     p2pItem.addActionListener(e -> addEntry(new PeerServerEntry()));
+
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
     jabItem.addActionListener(e -> addEntry(new JabberEntry()));
 //    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
@@ -465,6 +467,7 @@ public class ServerAddressBook {
     popup.add(jabItem);
     popup.show(addButton, 0, 0);
   }
+
   private void addEntry(AddressBookEntry e) {
     if (e.edit()) {
       addressBook.addElement(e);
@@ -484,14 +487,13 @@ public class ServerAddressBook {
   private void loadAddressBook() {
     decodeAddressBook(addressConfig.getValueString());
 
-    // Remove any PeerClientEntry's, these are obsolete
     final DefaultListModel<AddressBookEntry> newAddressBook = new DefaultListModel<>();
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof LegacyEntry) {
         newAddressBook.add(0, entry);
       }
-      else if (!(entry instanceof PeerClientEntry)) {
+      else {
         newAddressBook.addElement(entry);
       }
     }
@@ -502,7 +504,6 @@ public class ServerAddressBook {
     boolean legacy = false;
     boolean jabber = false;
     boolean peerServer = false;
-    // boolean peerClient = false;
     boolean updated = false;
 
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
@@ -516,9 +517,6 @@ public class ServerAddressBook {
       else if (entry instanceof PeerServerEntry) {
         peerServer = true;
       }
-//      else if (entry instanceof PeerClientEntry) {
-//        peerClient = true;
-//      }
     }
     if (!jabber) {
       final AddressBookEntry entry = new VassalJabberEntry();
@@ -535,10 +533,6 @@ public class ServerAddressBook {
       addressBook.addElement(new PeerServerEntry());
       updated = true;
     }
-//    if (!peerClient) {
-//      addressBook.addElement(new PeerClientEntry());
-//      updated = true;
-//    }
     if (updated) {
       saveAddressBook();
     }
@@ -613,9 +607,6 @@ public class ServerAddressBook {
       final String ctype = newProperties.getProperty(P2P_MODE_KEY);
       if (P2P_SERVER_MODE.equals(ctype)) {
         return new PeerServerEntry(newProperties);
-      }
-      else if (P2P_CLIENT_MODE.equals(ctype)) {
-        return new PeerClientEntry(newProperties);
       }
     }
     return null;
@@ -1015,68 +1006,68 @@ public class ServerAddressBook {
   /**
    * Address Book entry for a Private VASSAL server
    */
-//  private class PrivateEntry extends AddressBookEntry {
-//
-//    private JTextField serverPort = new JTextField();
-//    private JTextField serverIp = new JTextField();
-//
-//    public PrivateEntry() {
-//      this(new Properties());
-//      setDescription(Resources.getString("ServerAddressBook.private_server")); //$NON-NLS-1$
-//      setType(PRIVATE_TYPE);
-//      setProperty(PrivateClientFactory.PORT, "5050"); //$NON-NLS-1$
-//    }
-//
-//    public PrivateEntry(Properties props) {
-//      super(props);
-//    }
-//
-//    public String toString() {
-//      return Resources.getString("ServerAddressBook.private_server") + " [" + getDescription() + "]";
-//    }
-//
-//    public String getDescription() {
-//      return super.getDescription() + " " + getProperty(PrivateClientFactory.URL) + ":" + getProperty(PrivateClientFactory.PORT);
-//    }
-//
-//    protected String getIconName() {
-//      return "VASSAL-private"; //$NON-NLS-1$
-//    }
-//
-//    protected boolean isRemovable() {
-//      return true;
-//    }
-//
-//    protected boolean isEditable() {
-//      return true;
-//    }
-//
-//    protected boolean isDescriptionEditable() {
-//      return true;
-//    }
-//
-//    protected void addAdditionalControls(JComponent c, boolean enabled) {
-//      serverIp.setEditable(enabled);
-//      c.add(new JLabel(Resources.getString("ServerAddressBook.server_ip"))); //$NON-NLS-1$
-//      c.add(serverIp, "wrap, growx, push"); //$NON-NLS-1$
-//
-//      serverPort.setEditable(enabled);
-//      c.add(new JLabel(Resources.getString("ServerAddressBook.server_port"))); //$NON-NLS-1$
-//      c.add(serverPort, "wrap, growx, push"); //$NON-NLS-1$
-//    }
-//
-//    protected void getAdditionalProperties(Properties props) {
-//      props.setProperty(PrivateClientFactory.URL, serverIp.getText());
-//      props.setProperty(PrivateClientFactory.PORT, serverPort.getText());
-//      props.setProperty(TYPE_KEY, PRIVATE_TYPE);
-//    }
-//
-//    protected void setAdditionalProperties(Properties props) {
-//      serverIp.setText(props.getProperty(PrivateClientFactory.URL));
-//      serverPort.setText(props.getProperty(PrivateClientFactory.PORT));
-//    }
-//
-//  }
+/*
+  private class PrivateEntry extends AddressBookEntry {
+    private JTextField serverPort = new JTextField();
+    private JTextField serverIp = new JTextField();
+
+    public PrivateEntry() {
+      this(new Properties());
+      setDescription(Resources.getString("ServerAddressBook.private_server")); //$NON-NLS-1$
+      setType(PRIVATE_TYPE);
+      setProperty(PrivateClientFactory.PORT, "5050"); //$NON-NLS-1$
+    }
+
+    public PrivateEntry(Properties props) {
+      super(props);
+    }
+
+    public String toString() {
+      return Resources.getString("ServerAddressBook.private_server") + " [" + getDescription() + "]";
+    }
+
+    public String getDescription() {
+      return super.getDescription() + " " + getProperty(PrivateClientFactory.URL) + ":" + getProperty(PrivateClientFactory.PORT);
+    }
+
+    protected String getIconName() {
+      return "VASSAL"; //$NON-NLS-1$
+    }
+
+    protected boolean isRemovable() {
+      return true;
+    }
+
+    protected boolean isEditable() {
+      return true;
+    }
+
+    protected boolean isDescriptionEditable() {
+      return true;
+    }
+
+    protected void addAdditionalControls(JComponent c, boolean enabled) {
+      serverIp.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_ip"))); //$NON-NLS-1$
+      c.add(serverIp, "wrap, growx, push"); //$NON-NLS-1$
+
+      serverPort.setEditable(enabled);
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_port"))); //$NON-NLS-1$
+      c.add(serverPort, "wrap, growx, push"); //$NON-NLS-1$
+    }
+
+    protected void getAdditionalProperties(Properties props) {
+      props.setProperty(PrivateClientFactory.URL, serverIp.getText());
+      props.setProperty(PrivateClientFactory.PORT, serverPort.getText());
+      props.setProperty(TYPE_KEY, PRIVATE_TYPE);
+    }
+
+    protected void setAdditionalProperties(Properties props) {
+      serverIp.setText(props.getProperty(PrivateClientFactory.URL));
+      serverPort.setText(props.getProperty(PrivateClientFactory.PORT));
+    }
+  }
+*/
 
   /**
    * Address Book Entry for a Peer to Peer connection
@@ -1144,133 +1135,6 @@ public class ServerAddressBook {
       serverPw.setEditable(enabled);
       c.add(new JLabel(Resources.getString("ServerAddressBook.server_password"))); //$NON-NLS-1$
       c.add(serverPw, "wrap, growx, push"); //$NON-NLS-1$
-
-      c.add(new JLabel(Resources.getString("Peer2Peer.internet_address"))); //$NON-NLS-1$
-      final JTextField externalIP = new JTextField(getExternalAddress());
-      externalIP.setEditable(false);
-      c.add(externalIP, "wrap, growx, push"); //$NON-NLS-1$
-
-      if (!getLocalAddress().equals(getExternalAddress())) {
-        c.add(new JLabel(Resources.getString("Peer2Peer.local_address"))); //$NON-NLS-1$
-        final JTextField localIP = new JTextField(getLocalAddress());
-        localIP.setEditable(false);
-        c.add(localIP, "wrap, growx, push"); //$NON-NLS-1$
-      }
-    }
-
-  }
-
-  /**
-   * Address Book Entry for a Peer to Peer connection in Client Mode
-   *
-   */
-  @Deprecated private class PeerClientEntry extends AddressBookEntry {
-
-    private JTextField listenPort = new JTextField();
-    private JTextField serverName = new JTextField();
-    private JTextField serverPort = new JTextField();
-    private JTextField serverIp = new JTextField();
-
-    @SuppressWarnings("unused")
-    public PeerClientEntry() {
-      super();
-      setDescription(Resources.getString("ServerAddressBook.peer_client")); //$NON-NLS-1$
-      setType(P2P_TYPE);
-      setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
-      setProperty(P2PClientFactory.P2P_LISTEN_PORT, "5050"); //$NON-NLS-1$
-      setProperty(P2PClientFactory.P2P_SERVER_NAME, ""); //$NON-NLS-1$
-      setProperty(P2PClientFactory.P2P_SERVER_PORT, "5050"); //$NON-NLS-1$
-      setProperty(P2PClientFactory.P2P_SERVER_IP, ""); //$NON-NLS-1$
-
-    }
-
-    public PeerClientEntry(Properties props) {
-      super(props);
-    }
-
-    public String toString() {
-      final String listenPort = getProperty(P2PClientFactory.P2P_LISTEN_PORT);
-      final String serverName = getProperty(P2PClientFactory.P2P_SERVER_NAME);
-      final String serverIp = getProperty(P2PClientFactory.P2P_SERVER_IP);
-      final String serverPort = getProperty(P2PClientFactory.P2P_SERVER_PORT);
-
-      final StringBuilder desc = new StringBuilder(Resources.getString("ServerAddressBook.peer_client"));
-
-      if (serverIp == null || serverIp.length() == 0) {
-        desc.append(" [");
-        desc.append(Resources.getString("ServerAddressBook.listening", listenPort));
-        desc.append("]");
-      }
-      else {
-        if (serverName != null && serverName.length() > 0) {
-          desc.append(" - ");
-          desc.append(serverName);
-        }
-        if (serverIp != null && serverIp.length() > 0) {
-          desc.append(" [");
-          desc.append(serverIp);
-          desc.append(":");
-          desc.append(serverPort);
-          desc.append("]");
-        }
-      }
-
-      return desc.toString();
-    }
-
-    @Override
-    public boolean isRemovable() {
-      return true;
-    }
-
-    @Override
-    protected boolean isDescriptionEditable() {
-      return false;
-    }
-
-    @Override
-    protected String getIconName() {
-      return "network-idle"; //$NON-NLS-1$
-    }
-
-    @Override
-    protected void setAdditionalProperties(Properties p) {
-      setType(P2P_TYPE);
-      setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
-      listenPort.setText(p.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
-      serverIp.setText(p.getProperty(P2PClientFactory.P2P_SERVER_IP));
-      serverPort.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PORT));
-      serverName.setText(p.getProperty(P2PClientFactory.P2P_SERVER_NAME));
-      setDescription(toString());
-    }
-
-    @Override
-    protected void getAdditionalProperties(Properties props) {
-      props.setProperty(TYPE_KEY, P2P_TYPE);
-      props.setProperty(P2P_MODE_KEY, P2P_CLIENT_MODE);
-      props.setProperty(P2PClientFactory.P2P_LISTEN_PORT, listenPort.getText());
-      props.setProperty(P2PClientFactory.P2P_SERVER_IP, serverIp.getText());
-      props.setProperty(P2PClientFactory.P2P_SERVER_PORT, serverPort.getText());
-      props.setProperty(P2PClientFactory.P2P_SERVER_NAME, serverName.getText());
-    }
-
-    @Override
-    protected void addAdditionalControls(JComponent c, boolean enabled) {
-      serverName.setEditable(enabled);
-      c.add(new JLabel(Resources.getString("ServerAddressBook.server_name"))); //$NON-NLS-1$
-      c.add(serverName, "wrap, growx, push"); //$NON-NLS-1$
-
-      serverIp.setEditable(enabled);
-      c.add(new JLabel(Resources.getString("ServerAddressBook.server_ip"))); //$NON-NLS-1$
-      c.add(serverIp, "wrap, growx, push"); //$NON-NLS-1$
-
-      serverPort.setEditable(enabled);
-      c.add(new JLabel(Resources.getString("ServerAddressBook.server_port"))); //$NON-NLS-1$
-      c.add(serverPort, "wrap, growx, push"); //$NON-NLS-1$
-
-      listenPort.setEditable(enabled);
-      c.add(new JLabel(Resources.getString("ServerAddressBook.invite_port"))); //$NON-NLS-1$
-      c.add(listenPort, "wrap, growx, push"); //$NON-NLS-1$
 
       c.add(new JLabel(Resources.getString("Peer2Peer.internet_address"))); //$NON-NLS-1$
       final JTextField externalIP = new JTextField(getExternalAddress());
