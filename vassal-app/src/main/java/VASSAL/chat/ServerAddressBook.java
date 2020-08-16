@@ -1070,14 +1070,12 @@ public class ServerAddressBook {
       serverPort.setText(props.getProperty(PrivateClientFactory.PORT));
     }
   }
-*/
 
   /**
    * Address Book Entry for a Peer to Peer connection
    *
    */
   private class PeerServerEntry extends AddressBookEntry {
-
     private JTextField listenPort = new JTextField();
     private JTextField serverPw = new JTextField();
 
@@ -1151,7 +1149,6 @@ public class ServerAddressBook {
         c.add(localIP, "wrap, growx, push"); //$NON-NLS-1$
       }
     }
-
   }
 
   /**
@@ -1172,8 +1169,11 @@ public class ServerAddressBook {
 
       if (standardFont == null) {
         standardFont = getFont();
-        highlightFont = new Font(standardFont.getFamily(), Font.BOLD + Font.ITALIC, standardFont
-            .getSize());
+        highlightFont = new Font(
+          standardFont.getFamily(),
+          Font.BOLD | Font.ITALIC,
+          standardFont.getSize()
+        );
       }
 
       if (value instanceof AddressBookEntry) {
