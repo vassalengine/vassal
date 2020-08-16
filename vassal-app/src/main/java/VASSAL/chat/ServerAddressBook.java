@@ -20,7 +20,6 @@ package VASSAL.chat;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
@@ -50,7 +49,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
@@ -241,12 +239,7 @@ public class ServerAddressBook {
       myList = new JList<>(addressBook);
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       myList.setCellRenderer(new MyRenderer());
-      myList.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent evt) {
-          updateButtonVisibility();
-        }
-      });
+      myList.addListSelectionListener(e -> updateButtonVisibility());
       myList.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -265,39 +258,19 @@ public class ServerAddressBook {
 
       setButton = new JButton(Resources.getString("ServerAddressBook.set_current")); //$NON-NLS-1$
       setButton.setToolTipText(Resources.getString("ServerAddressBook.set_selected_server")); //$NON-NLS-1$
-      setButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setCurrentServer(myList.getSelectedIndex());
-        }
-      });
+      setButton.addActionListener(e -> setCurrentServer(myList.getSelectedIndex()));
 
       addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.setToolTipText(Resources.getString("ServerAddressBook.add_jabber_server")); //$NON-NLS-1$
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          addServer();
-        }
-      });
+      addButton.addActionListener(e -> addServer());
 
       removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.setToolTipText(Resources.getString("ServerAddressBook.remove_selected_server")); //$NON-NLS-1$
-      removeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          removeServer(myList.getSelectedIndex());
-        }
-      });
+      removeButton.addActionListener(e -> removeServer(myList.getSelectedIndex()));
 
       editButton = new JButton(Resources.getString(Resources.EDIT));
       editButton.setToolTipText(Resources.getString("ServerAddressBook.edit_server")); //$NON-NLS-1$
-      editButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editServer(myList.getSelectedIndex());
-        }
-      });
+      editButton.addActionListener(e -> editServer(myList.getSelectedIndex()));
 
       controls.add(addButton, "grow, push"); //$NON-NLS-1$
       controls.add(editButton, "grow, push"); //$NON-NLS-1$
@@ -479,19 +452,9 @@ public class ServerAddressBook {
   private void addServer() {
     final JPopupMenu popup = new JPopupMenu();
     final JMenuItem p2pItem = new JMenuItem(Resources.getString("ServerAddressBook.peer_server"));
-    p2pItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        addEntry(new PeerServerEntry());
-      }
-    });
+    p2pItem.addActionListener(e -> addEntry(new PeerServerEntry()));
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
-    jabItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        addEntry(new JabberEntry());
-      }
-    });
+    jabItem.addActionListener(e -> addEntry(new JabberEntry()));
 //    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
 //    privateItem.addActionListener(new ActionListener() {
 //      public void actionPerformed(ActionEvent arg0) {
@@ -528,7 +491,7 @@ public class ServerAddressBook {
       if (entry instanceof LegacyEntry) {
         newAddressBook.add(0, entry);
       }
-      else if (! (entry instanceof PeerClientEntry)) {
+      else if (!(entry instanceof PeerClientEntry)) {
         newAddressBook.addElement(entry);
       }
     }
@@ -895,12 +858,7 @@ public class ServerAddressBook {
       c.add(jabberPw, "wrap, grow, push"); //$NON-NLS-1$
 
       testButton = new JButton(Resources.getString("ServerAddressBook.test_connection")); //$NON-NLS-1$
-      testButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          test();
-        }
-      });
+      testButton.addActionListener(e -> test());
       c.add(testButton, "span 2, align center, wrap"); //$NON-NLS-1$
     }
 
