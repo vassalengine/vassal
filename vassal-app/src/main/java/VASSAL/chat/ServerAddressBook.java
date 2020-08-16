@@ -325,7 +325,6 @@ public class ServerAddressBook {
         setCurrentServer(index);
         return;
       }
-
       else if (DYNAMIC_TYPE.equals(type) && DYNAMIC_TYPE.equals(ep.getProperty(TYPE_KEY))
           && ep.getProperty(DYNAMIC_TYPE).equals(dtype)) {
         setCurrentServer(index);
@@ -1186,7 +1185,6 @@ public class ServerAddressBook {
         else {
           setFont(standardFont);
         }
-
       }
       return this;
     }
