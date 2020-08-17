@@ -73,11 +73,14 @@ public class ServerAddressBook {
   protected static final String DYNAMIC_TYPE = DynamicClientFactory.DYNAMIC_TYPE;
   protected static final String JABBER_TYPE = JabberClientFactory.JABBER_SERVER_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
-  protected static final String P2P_MODE_KEY = P2PClientFactory.P2P_MODE_KEY;
-  protected static final String P2P_SERVER_MODE = P2PClientFactory.P2P_SERVER_MODE;
 
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  protected static final String P2P_MODE_KEY = P2PClientFactory.P2P_MODE_KEY;
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  protected static final String P2P_SERVER_MODE = P2PClientFactory.P2P_SERVER_MODE;
   @Deprecated(since = "2020-08-16", forRemoval = true)
   protected static final String P2P_CLIENT_MODE = P2PClientFactory.P2P_CLIENT_MODE;
+
   // protected static final String PRIVATE_TYPE = PrivateClientFactory.PRIVATE_TYPE;
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
   protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
@@ -315,7 +318,6 @@ public class ServerAddressBook {
     int index = 0;
     final String type = p.getProperty(TYPE_KEY);
     final String dtype = p.getProperty(DYNAMIC_TYPE);
-    final String ctype = p.getProperty(P2P_MODE_KEY);
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final Properties ep = entry.getProperties();
@@ -329,8 +331,7 @@ public class ServerAddressBook {
         setCurrentServer(index);
         return;
       }
-      else if (P2P_TYPE.equals(type) && P2P_TYPE.equals(ep.getProperty(TYPE_KEY))
-          && ep.getProperty(P2P_MODE_KEY).equals(ctype)) {
+      else if (P2P_TYPE.equals(type) && P2P_TYPE.equals(ep.getProperty(TYPE_KEY))) {
         setCurrentServer(index);
       }
 
@@ -607,10 +608,7 @@ public class ServerAddressBook {
       }
     }
     else if (P2P_TYPE.equals(type)) {
-      final String ctype = newProperties.getProperty(P2P_MODE_KEY);
-      if (P2P_SERVER_MODE.equals(ctype)) {
-        return new PeerServerEntry(newProperties);
-      }
+      return new PeerServerEntry(newProperties);
     }
     return null;
   }
@@ -1078,7 +1076,6 @@ public class ServerAddressBook {
       super();
       setDescription(Resources.getString("ServerAddressBook.peer_server")); //$NON-NLS-1$
       setType(P2P_TYPE);
-      setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
       setProperty(P2PClientFactory.P2P_LISTEN_PORT, "5050"); //$NON-NLS-1$
       setProperty(P2PClientFactory.P2P_SERVER_PW, "xyzzy"); //$NON-NLS-1$
     }
@@ -1109,7 +1106,6 @@ public class ServerAddressBook {
     @Override
     protected void setAdditionalProperties(Properties p) {
       setType(P2P_TYPE);
-      setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
       listenPort.setText(p.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
       serverPw.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PW));
     }
@@ -1117,7 +1113,6 @@ public class ServerAddressBook {
     @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, P2P_TYPE);
-      props.setProperty(P2P_MODE_KEY, P2P_SERVER_MODE);
       props.setProperty(P2PClientFactory.P2P_LISTEN_PORT, listenPort.getText());
       props.setProperty(P2PClientFactory.P2P_SERVER_PW, serverPw.getText());
     }
