@@ -38,7 +38,7 @@ public class PlayerNode extends Node implements SocketWatcher {
 
   public PlayerNode(Socket socket, AsynchronousServerNode server) throws IOException {
     super(null, null, null);
-    server = server;
+    this.server = server;
     input = new SocketHandler(socket, this);
     input.start();
   }
