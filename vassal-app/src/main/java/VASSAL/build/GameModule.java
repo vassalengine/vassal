@@ -17,6 +17,7 @@
  */
 package VASSAL.build;
 
+
 import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -98,10 +99,11 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.chat.AddressBookServerConfigurer;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.DynamicClient;
-import VASSAL.chat.DynamicClientFactory;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
@@ -478,10 +480,13 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * Initialize and register our multiplayer server controls
    */
   protected void initServer() {
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
-    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
+    ChatServerFactory.register(PrivateNodeClientFactory.PRIVATE_TYPE, new PrivateNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
+
+    // legacy server used to be stored as node type
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new OfficialNodeClientFactory());
 
     server = new DynamicClient();
     AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);

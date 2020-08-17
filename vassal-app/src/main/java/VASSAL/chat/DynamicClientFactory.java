@@ -22,6 +22,7 @@ import java.util.Properties;
 /**
  * @author rkinney
  */
+@Deprecated(since = "2020-08-17", forRemoval = true)
 public class DynamicClientFactory extends ChatServerFactory {
   public static final String DYNAMIC_TYPE = "dynamic"; //$NON-NLS-1$
   public static final String URL = "url"; //$NON-NLS-1$

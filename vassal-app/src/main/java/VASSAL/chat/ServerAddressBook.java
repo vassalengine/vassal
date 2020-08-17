@@ -53,7 +53,7 @@ import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
 import VASSAL.chat.jabber.JabberClient;
 import VASSAL.chat.jabber.JabberClientFactory;
-import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
@@ -68,8 +68,7 @@ import VASSAL.tools.swing.SwingUtils;
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
   protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
-  protected static final String LEGACY_TYPE = NodeClientFactory.NODE_TYPE;
-  protected static final String DYNAMIC_TYPE = DynamicClientFactory.DYNAMIC_TYPE;
+  protected static final String LEGACY_TYPE = OfficialNodeClientFactory.OFFICIAL_TYPE;
   protected static final String JABBER_TYPE = JabberClientFactory.JABBER_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
 
@@ -316,7 +315,6 @@ public class ServerAddressBook {
     // Check for Basic Types, regardless of other properties
     int index = 0;
     final String type = p.getProperty(TYPE_KEY);
-    final String dtype = p.getProperty(DYNAMIC_TYPE);
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final Properties ep = entry.getProperties();
@@ -325,13 +323,13 @@ public class ServerAddressBook {
         setCurrentServer(index);
         return;
       }
-      else if (DYNAMIC_TYPE.equals(type) && DYNAMIC_TYPE.equals(ep.getProperty(TYPE_KEY))
-          && ep.getProperty(DYNAMIC_TYPE).equals(dtype)) {
+      else if (LEGACY_TYPE.equals(type) && LEGACY_TYPE.equals(ep.getProperty(TYPE_KEY))) {
         setCurrentServer(index);
         return;
       }
       else if (P2P_TYPE.equals(type) && P2P_TYPE.equals(ep.getProperty(TYPE_KEY))) {
         setCurrentServer(index);
+        return;
       }
 
       index++;
@@ -511,20 +509,9 @@ public class ServerAddressBook {
       if (entry instanceof LegacyEntry) {
         legacy = true;
       }
-      else if (entry instanceof VassalJabberEntry) {
-        jabber = true;
-      }
       else if (entry instanceof PeerServerEntry) {
         peerServer = true;
       }
-    }
-
-    if (!jabber) {
-      final AddressBookEntry entry = new VassalJabberEntry();
-      entry.setCurrent(true);
-      currentEntry = entry;
-      addressBook.addElement(entry);
-      updated = true;
     }
 
     if (!legacy) {
@@ -594,17 +581,11 @@ public class ServerAddressBook {
 
   private AddressBookEntry buildEntry(Properties newProperties) {
     final String type = newProperties.getProperty(TYPE_KEY);
-    if (JABBER_TYPE.equals(type)) {
-      return new JabberEntry(newProperties);
+    if (LEGACY_TYPE.equals(type)) {
+      return new LegacyEntry(newProperties);
     }
-    else if (DYNAMIC_TYPE.equals(type)) {
-      final String dtype = newProperties.getProperty(DYNAMIC_TYPE);
-      if (JABBER_TYPE.equals(dtype)) {
-        return new VassalJabberEntry(newProperties);
-      }
-      else if (LEGACY_TYPE.equals(dtype)) {
-        return new LegacyEntry(newProperties);
-      }
+    else if (JABBER_TYPE.equals(type)) {
+      return new JabberEntry(newProperties);
     }
     else if (P2P_TYPE.equals(type)) {
       return new PeerServerEntry(newProperties);
@@ -872,6 +853,7 @@ public class ServerAddressBook {
    * Address Book entry for the VASSAL Jabber server
    *
    */
+/*
   private class VassalJabberEntry extends AddressBookEntry {
     protected JTextField jabberUser = new JTextField();
     protected JTextField jabberPw = new JTextField();
@@ -944,6 +926,7 @@ public class ServerAddressBook {
       c.add(jabberPw, "wrap, grow, push"); //$NON-NLS-1$
     }
   }
+*/
 
   /**
    * Address Book entry for the VASSAL legacy server
@@ -953,8 +936,7 @@ public class ServerAddressBook {
     public LegacyEntry() {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
-      setType(DYNAMIC_TYPE);
-      setProperty(DynamicClientFactory.DYNAMIC_TYPE, NodeClientFactory.NODE_TYPE);
+      setType(LEGACY_TYPE);
     }
 
     public LegacyEntry(Properties props) {
