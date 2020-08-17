@@ -784,7 +784,6 @@ public class ServerAddressBook {
    *
    */
   private class JabberEntry extends AddressBookEntry {
-
     private JTextField jabberHost = new JTextField();
     private JTextField jabberPort = new JTextField();
     private JTextField jabberUser = new JTextField();
@@ -830,11 +829,11 @@ public class ServerAddressBook {
 
     @Override
     protected void getAdditionalProperties(Properties props) {
+      props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
       props.setProperty(JabberClientFactory.JABBER_HOST, jabberHost.getText());
       props.setProperty(JabberClientFactory.JABBER_PORT, jabberPort.getText());
       props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
       props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
-      props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
     }
 
     @Override
@@ -925,18 +924,18 @@ public class ServerAddressBook {
 
     @Override
     protected void setAdditionalProperties(Properties props) {
-      jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
-      jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
       setType(DYNAMIC_TYPE);
       setProperty(DYNAMIC_TYPE, JABBER_TYPE);
+      jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
+      jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
     }
 
     @Override
     protected void getAdditionalProperties(Properties props) {
-      props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
-      props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
       props.setProperty(TYPE_KEY, DYNAMIC_TYPE);
       props.setProperty(DYNAMIC_TYPE, JABBER_TYPE);
+      props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
+      props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
     }
 
     @Override
