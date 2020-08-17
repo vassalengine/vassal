@@ -34,13 +34,17 @@ public class JabberClientFactory extends ChatServerFactory {
   private static final Logger logger =
     LoggerFactory.getLogger(JabberClientFactory.class);
 
-  public static final String JABBER_SERVER_TYPE = "jabber"; //$NON-NLS-1$
+
+  public static final String JABBER_TYPE = "jabber"; //$NON-NLS-1$
   public static final String JABBER_PWD = "jabberPassword"; //$NON-NLS-1$
   public static final String JABBER_LOGIN = "jabberLogin"; //$NON-NLS-1$
   public static final String JABBER_PORT = "jabberPort"; //$NON-NLS-1$
   public static final String JABBER_HOST = "jabberHost"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_PORT = "5222"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_HOST = "localhost"; //$NON-NLS-1$
+
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  public static final String JABBER_SERVER_TYPE = JABBER_TYPE;
 
   @Override
   public ChatServerConnection buildServer(Properties serverConfig) {

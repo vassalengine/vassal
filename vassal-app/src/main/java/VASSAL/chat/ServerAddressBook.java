@@ -71,7 +71,7 @@ public class ServerAddressBook {
   protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
   protected static final String LEGACY_TYPE = NodeClientFactory.NODE_TYPE;
   protected static final String DYNAMIC_TYPE = DynamicClientFactory.DYNAMIC_TYPE;
-  protected static final String JABBER_TYPE = JabberClientFactory.JABBER_SERVER_TYPE;
+  protected static final String JABBER_TYPE = JabberClientFactory.JABBER_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
 
   @Deprecated(since = "2020-08-17", forRemoval = true)
@@ -826,7 +826,7 @@ public class ServerAddressBook {
 
     @Override
     protected void getAdditionalProperties(Properties props) {
-      props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
+      props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_TYPE);
       props.setProperty(JabberClientFactory.JABBER_HOST, jabberHost.getText());
       props.setProperty(JabberClientFactory.JABBER_PORT, jabberPort.getText());
       props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
@@ -881,7 +881,7 @@ public class ServerAddressBook {
       this(new Properties());
       setDescription("VASSAL" + Resources.getString("ServerAddressBook.jabber_server")); //$NON-NLS-1$ //$NON-NLS-2$
       setType(DYNAMIC_TYPE);
-      setProperty(DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
+      setProperty(DYNAMIC_TYPE, JabberClientFactory.JABBER_TYPE);
       setProperty(JabberClientFactory.JABBER_LOGIN, ""); //$NON-NLS-1$
       setProperty(JabberClientFactory.JABBER_PWD, ""); //$NON-NLS-1$
     }
