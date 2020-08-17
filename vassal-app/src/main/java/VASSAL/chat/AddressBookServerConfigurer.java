@@ -60,7 +60,6 @@ public class AddressBookServerConfigurer extends Configurer {
 
   @Override
   public Component getControls() {
-
     if (controls == null) {
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
