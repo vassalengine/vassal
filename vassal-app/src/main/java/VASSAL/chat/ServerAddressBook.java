@@ -343,7 +343,6 @@ public class ServerAddressBook {
       setCurrentServer(addressBook.indexOf(newEntry));
     }
     saveAddressBook();
-
   }
 
   private void setCurrentServer(AddressBookEntry e) {
@@ -375,8 +374,7 @@ public class ServerAddressBook {
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final JMenuItem item = new JMenuItem(entry.toString());
-      final AbstractAction action = new MenuAction(entry);
-      item.setAction(action);
+      item.setAction(new MenuAction(entry));
       item.setIcon(entry.getIcon(IconFamily.SMALL));
       popup.add(item);
     }
@@ -479,7 +477,6 @@ public class ServerAddressBook {
    * @return
    */
   public Properties getDefaultServerProperties() {
-    // return (new VassalJabberEntry()).getProperties();
     return (new LegacyEntry()).getProperties();
   }
 
