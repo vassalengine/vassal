@@ -62,17 +62,14 @@ public class Flare extends AbstractConfigurable
     this.colorBlue = 0;
     this.active = false;
   }
-  
-  @Override
+
   public String getDescription() {
     return Resources.getString("Map Flare");
   }
   
-  @Override
   public static String getConfigureTypeName() {
     return Resources.getString("Map Flare");
   }
-
 
   public Class<?>[] getAttributeTypes() {
     return (Class<?>[]) new Class[] { Integer.class, Integer.class, Integer.class, Integer.class };
