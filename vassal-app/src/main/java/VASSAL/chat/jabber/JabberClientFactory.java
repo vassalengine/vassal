@@ -17,8 +17,6 @@
  */
 package VASSAL.chat.jabber;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -57,13 +55,10 @@ public class JabberClientFactory extends ChatServerFactory {
     }
     ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN), serverConfig.getProperty(JABBER_PWD));
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        final String mess = (String) evt.getNewValue();
-        GameModule.getGameModule().warn(mess);
-        logger.error("", mess);
-      }
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
+      final String mess = (String) e.getNewValue();
+      GameModule.getGameModule().warn(mess);
+      logger.error("", mess);
     });
     client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return client;
