@@ -52,10 +52,9 @@ import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.chat.AddressBookServerConfigurer;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.DynamicClient;
-import VASSAL.chat.DynamicClientFactory;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.jabber.JabberClientFactory;
-import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
@@ -183,8 +182,7 @@ public class BasicModule extends GameModule {
   }
 
   protected void initServer() {
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
-    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
 

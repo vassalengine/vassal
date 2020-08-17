@@ -47,7 +47,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.jabber.JabberClientFactory;
-import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -217,14 +217,7 @@ public class ServerConfigurer extends Configurer {
 
   protected Properties buildJabberProperties() {
     Properties p = new Properties();
-    if (jabberHostPrompt.isSelected()) {
-      p.setProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
-    }
-    else {
-      // Build a Jabber server with dynamically-determined host and server
-      p.setProperty(ChatServerFactory.TYPE_KEY, DynamicClientFactory.DYNAMIC_TYPE);
-      p.setProperty(DynamicClientFactory.DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
-    }
+    p.setProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_TYPE);
     p.putAll(getJabberConfigProperties());
     return p;
   }
@@ -254,9 +247,7 @@ public class ServerConfigurer extends Configurer {
 
   protected Properties buildLegacyProperties() {
     Properties p = new Properties();
-    // Build a legacy server with dynamically-determined host and server
-    p.setProperty(ChatServerFactory.TYPE_KEY, DynamicClientFactory.DYNAMIC_TYPE);
-    p.setProperty(DynamicClientFactory.DYNAMIC_TYPE, NodeClientFactory.NODE_TYPE);
+    p.setProperty(ChatServerFactory.TYPE_KEY, OfficialNodeClientFactory.OFFICIAL_TYPE);
     p.putAll(getJabberConfigProperties());
     return p;
   }
@@ -284,19 +275,15 @@ public class ServerConfigurer extends Configurer {
     super.setValue(o);
     if (!noUpdate && o instanceof Properties && controls != null) {
       Properties p = (Properties) o;
-      String type = p.getProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
-      String finalType = type;
-      if (DynamicClientFactory.DYNAMIC_TYPE.equals(type)) {
-        finalType = p.getProperty(DynamicClientFactory.DYNAMIC_TYPE);
-      }
-      if (NodeClientFactory.NODE_TYPE.equals(finalType)) {
+      String type = p.getProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_TYPE);
+      if (OfficialNodeClientFactory.OFFICIAL_TYPE.equals(type)) {
         legacyButton.setSelected(true);
       }
-      else if (JabberClientFactory.JABBER_SERVER_TYPE.equals(finalType)) {
+      else if (JabberClientFactory.JABBER_TYPE.equals(type)) {
         jabberButton.setSelected(true);
-        jabberHostPrompt.setSelected(type.equals(finalType));
+        jabberHostPrompt.setSelected(true);
       }
-      else if (P2PClientFactory.P2P_TYPE.equals(finalType)) {
+      else if (P2PClientFactory.P2P_TYPE.equals(type)) {
         p2pButton.setSelected(true);
       }
       jabberAccountName.setText(p.getProperty(JabberClientFactory.JABBER_LOGIN));
@@ -324,13 +311,9 @@ public class ServerConfigurer extends Configurer {
 
   private Properties getServerInfo() {
     Properties p = (Properties) getValue();
-    if (p == null) {
-      p = new Properties();
-    }
-    else {
-      p = new Properties(p);
-    }
-    if (DynamicClientFactory.DYNAMIC_TYPE.equals(p.getProperty(ChatServerFactory.TYPE_KEY))) {
+    p = p == null ? new Properties() : new Properties(p);
+
+    if (!JabberClientFactory.JABBER_TYPE.equals(p.getProperty(ChatServerFactory.TYPE_KEY))) {
       p.remove(JabberClientFactory.JABBER_HOST);
       p.remove(JabberClientFactory.JABBER_PORT);
     }
@@ -339,8 +322,7 @@ public class ServerConfigurer extends Configurer {
   }
 
   public static void main(String[] args) {
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
-    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
     new MacOSXMenuManager();
