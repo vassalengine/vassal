@@ -1,0 +1,4 @@
+files:
+  - source: /vassal-app/src/main/resources/VASSAL/i18n/*.properties
+    translation: >-
+      /vassal-app/src/main/resources/VASSAL/i18n/%file_name%_%locale_with_underscore%.%file_extension%
