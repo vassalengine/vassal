@@ -311,7 +311,6 @@ public class ServerAddressBook {
   }
 
   public void setCurrentServer(Properties p) {
-
     // Check for Basic Types, regardless of other properties
     int index = 0;
     final String type = p.getProperty(TYPE_KEY);
