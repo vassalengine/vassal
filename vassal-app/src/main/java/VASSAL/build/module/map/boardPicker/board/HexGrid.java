@@ -99,6 +99,9 @@ public class HexGrid extends AbstractConfigurable
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
 
+  private static final double DEFAULT_HEIGHT = 64.0;
+  private static final double DEFAULT_WIDTH = sqrt3_2 * DEFAULT_HEIGHT;
+
   @Override
   public String[] getAttributeNames() {
     return new String[] {
@@ -218,7 +221,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public HexGrid() {
-    this(64.0, false);
+    this(DEFAULT_HEIGHT, DEFAULT_WIDTH, false);
   }
 
   @Override
@@ -387,7 +390,7 @@ public class HexGrid extends AbstractConfigurable
         val = Double.valueOf((String) val);
       }
       dy = (Double) val;
-      if (dx == sqrt3_2 * 64.0) {
+      if (Double.compare(dx, DEFAULT_WIDTH) == 0) {
         dx = sqrt3_2 * dy;
       }
     }
