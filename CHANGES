@@ -1,7 +1,10 @@
 3.3.4 - ???
 
 * 13290: Optimized serialization, unserialization
+* 13076: NPE in FlowView$FlowStrategy.layoutRow()
 * 12648: Setup stack doesn't recover from a piece build failure
+* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
+*  3215: Global Options icons do not update themselves properly
 
 3.3.3-beta2 - ???
 
