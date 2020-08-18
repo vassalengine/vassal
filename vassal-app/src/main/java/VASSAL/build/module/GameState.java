@@ -756,7 +756,7 @@ public class GameState implements CommandEncoder {
 
     Launcher.getInstance().sendSaveCmd(f);
 
-    setModified(false);
+    lastSave = save;
     GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
   }
 
