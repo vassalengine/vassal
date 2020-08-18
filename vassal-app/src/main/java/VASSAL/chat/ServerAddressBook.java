@@ -55,6 +55,7 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.jabber.JabberClient;
 import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
@@ -69,7 +70,9 @@ import VASSAL.tools.swing.SwingUtils;
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
   protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
+
   protected static final String LEGACY_TYPE = OfficialNodeClientFactory.OFFICIAL_TYPE;
+  protected static final String PRIVATE_TYPE = PrivateNodeClientFactory.PRIVATE_TYPE;
   protected static final String JABBER_TYPE = JabberClientFactory.JABBER_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
 
@@ -80,7 +83,6 @@ public class ServerAddressBook {
   @Deprecated(since = "2020-08-16", forRemoval = true)
   protected static final String P2P_CLIENT_MODE = P2PClientFactory.P2P_CLIENT_MODE;
 
-  // protected static final String PRIVATE_TYPE = PrivateClientFactory.PRIVATE_TYPE;
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
   protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
   protected final int LEAF_ICON_SIZE = IconFamily.SMALL;
@@ -454,13 +456,12 @@ public class ServerAddressBook {
 
     final JMenuItem jabItem = new JMenuItem(Resources.getString("ServerAddressBook.jabber_server"));
     jabItem.addActionListener(e -> addEntry(new JabberEntry()));
-//    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
-//    privateItem.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent arg0) {
-//        addEntry(new PrivateEntry());
-//      }});
+
+    final JMenuItem privateItem = new JMenuItem(Resources.getString("ServerAddressBook.private_server"));
+    privateItem.addActionListener(e -> addEntry(new PrivateEntry()));
+
     popup.add(p2pItem);
-//    popup.add(privateItem);
+    popup.add(privateItem);
     popup.add(jabItem);
     popup.show(addButton, 0, 0);
   }
@@ -495,25 +496,32 @@ public class ServerAddressBook {
     }
     addressBook = newAddressBook;
 
-    // Ensure that the Address Book has the basic
-    // servers in it.
-    boolean legacy = false;
-    boolean jabber = false;
+    // Ensure that the Address Book has the basic servers in it.
+    boolean legacyServer = false;
     boolean peerServer = false;
+    boolean privateServer = false;
     boolean updated = false;
 
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof LegacyEntry) {
-        legacy = true;
+        legacyServer = true;
       }
       else if (entry instanceof PeerServerEntry) {
         peerServer = true;
       }
+      else if (entry instanceof PrivateEntry) {
+        privateServer = true;
+      }
     }
 
-    if (!legacy) {
+    if (!legacyServer) {
       addressBook.addElement(new LegacyEntry());
+      updated = true;
+    }
+
+    if (!privateServer) {
+      addressBook.addElement(new PrivateEntry());
       updated = true;
     }
 
@@ -581,6 +589,9 @@ public class ServerAddressBook {
     final String type = newProperties.getProperty(TYPE_KEY);
     if (LEGACY_TYPE.equals(type)) {
       return new LegacyEntry(newProperties);
+    }
+    else if (PRIVATE_TYPE.equals(type)) {
+      return new PrivateEntry(newProperties);
     }
     else if (JABBER_TYPE.equals(type)) {
       return new JabberEntry(newProperties);
@@ -941,6 +952,7 @@ public class ServerAddressBook {
       super(props);
     }
 
+    @Override
     public String toString() {
       return getDescription();
     }
@@ -981,46 +993,53 @@ public class ServerAddressBook {
   /**
    * Address Book entry for a Private VASSAL server
    */
-/*
   private class PrivateEntry extends AddressBookEntry {
-    private JTextField serverPort = new JTextField();
-    private JTextField serverIp = new JTextField();
+    private final JTextField serverPort = new JTextField();
+    private final JTextField serverIp = new JTextField();
 
     public PrivateEntry() {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.private_server")); //$NON-NLS-1$
       setType(PRIVATE_TYPE);
-      setProperty(PrivateClientFactory.PORT, "5050"); //$NON-NLS-1$
+      setProperty(PrivateNodeClientFactory.HOST, "localhost"); //$NON-NLS-1$
+      setProperty(PrivateNodeClientFactory.PORT, "5050"); //$NON-NLS-1$
     }
 
     public PrivateEntry(Properties props) {
       super(props);
     }
 
+    @Override
     public String toString() {
       return Resources.getString("ServerAddressBook.private_server") + " [" + getDescription() + "]";
     }
 
+    @Override
     public String getDescription() {
-      return super.getDescription() + " " + getProperty(PrivateClientFactory.URL) + ":" + getProperty(PrivateClientFactory.PORT);
+      return super.getDescription() + " " + getProperty(PrivateNodeClientFactory.HOST) + ":" + getProperty(PrivateNodeClientFactory.PORT);
     }
 
+    @Override
     protected String getIconName() {
       return "VASSAL"; //$NON-NLS-1$
     }
 
+    @Override
     protected boolean isRemovable() {
       return true;
     }
 
+    @Override
     protected boolean isEditable() {
       return true;
     }
 
+    @Override
     protected boolean isDescriptionEditable() {
       return true;
     }
 
+    @Override
     protected void addAdditionalControls(JComponent c, boolean enabled) {
       serverIp.setEditable(enabled);
       c.add(new JLabel(Resources.getString("ServerAddressBook.server_ip"))); //$NON-NLS-1$
@@ -1031,15 +1050,16 @@ public class ServerAddressBook {
       c.add(serverPort, "wrap, growx, push"); //$NON-NLS-1$
     }
 
+    @Override
     protected void getAdditionalProperties(Properties props) {
-      props.setProperty(PrivateClientFactory.URL, serverIp.getText());
-      props.setProperty(PrivateClientFactory.PORT, serverPort.getText());
       props.setProperty(TYPE_KEY, PRIVATE_TYPE);
+      props.setProperty(PrivateNodeClientFactory.HOST, serverIp.getText());
+      props.setProperty(PrivateNodeClientFactory.PORT, serverPort.getText());
     }
 
     protected void setAdditionalProperties(Properties props) {
-      serverIp.setText(props.getProperty(PrivateClientFactory.URL));
-      serverPort.setText(props.getProperty(PrivateClientFactory.PORT));
+      serverIp.setText(props.getProperty(PrivateNodeClientFactory.HOST));
+      serverPort.setText(props.getProperty(PrivateNodeClientFactory.PORT));
     }
   }
 
