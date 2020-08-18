@@ -129,6 +129,12 @@
             <artifactId>maven-artifact</artifactId>
             <version>3.6.3</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>vassal-deprecation</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
@@ -223,6 +229,9 @@
                     </compilerArgs>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>false</showWarnings>
+                    <annotationProcessors>
+                        <annotationProcessor>org.vassalengine.deprecation.DeprecationProcessor</annotationProcessor>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
             <plugin>
