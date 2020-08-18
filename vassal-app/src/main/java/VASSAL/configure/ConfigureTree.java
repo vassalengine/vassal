@@ -1599,6 +1599,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               }
             }
           }
+          
+          if (searchParameters.isMatchExpressions()) {
+            //
+          }
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
@@ -1637,8 +1641,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       
       p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.      
       do {
-        if (!protoskip && (p instanceof EditablePiece)) { // Skip the fake "Basic Piece" on a Prototype definition
+        if (!protoskip && (p instanceof EditablePiece) && (p instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
           String desc = ((EditablePiece) p).getDescription();
+          Decorator trait = (Decorator)p;
           boolean traitShown = false;
           
           if (searchParameters.isMatchTraits()) {
@@ -1653,8 +1658,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
           
           if (searchParameters.isMatchExpressions()) {
-            
-            
+            ArrayList<String> expList = trait.getExpressionList();
+            //            
           }          
         }
         protoskip = false;
