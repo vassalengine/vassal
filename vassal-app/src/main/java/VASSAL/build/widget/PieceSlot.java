@@ -203,9 +203,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (c == null && pieceDefinition != null) {
       final Command raw = GameModule.getGameModule().decode(pieceDefinition);   
       final AddPiece comm = (c instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
-      if (comm == null) {
+      if ((comm == null) || comm.isNull() || !(comm instanceof AddPiece)) {
         ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));
-        System.err.println("Couldn't build piece " + pieceDefinition);
         pieceDefinition = null;
       }
       else {
