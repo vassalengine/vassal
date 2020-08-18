@@ -28,39 +28,64 @@ import java.awt.Graphics;
 import VASSAL.build.GameModule;
 import VASSAL.build.Buildable;
 import javax.swing.Timer;
+
+import org.apache.commons.lang3.SystemUtils;
+
 import java.awt.Point;
 import VASSAL.build.module.Map;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionListener;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.command.CommandEncoder;
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.command.FlareCommand;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.SwingUtils;
 
 public class Flare extends AbstractConfigurable
     implements CommandEncoder, GameComponent, Drawable, ActionListener, MouseListener {
   public static final String COMMAND_PREFIX = "FLARE:";
   private Map map;
   private int circleSize;
-  private int colorRed;
-  private int colorGreen;
-  private int colorBlue;
-  private static final int CIRCLE_DURATION = 2000;
+  private int pulses;
+  private int pulsesPerSec;
+  private int frame;
+  private boolean animate;
+  private int frames;
+  private int framesPerPulse;
+  private String flareKey;
+  private Color color;
+  private static int CIRCLE_RATE    = 33; // 33ms for approx 30 frames/sec
+  private static int DEFAULT_FRAMES = 60; // 2 sec for basic "no animation" pulse
   private Point clickPoint;
   private Boolean active;
   private Timer timer;
-  public static final String CIRCLESIZE = "circlesize";
-  public static final String COLORRED = "colorred";
-  public static final String COLORGREEN = "colorgreen";
-  public static final String COLORBLUE = "colorblue";
+  public static final String CIRCLE_SIZE  = "circleSize";
+  public static final String CIRCLE_COLOR = "circleColor";
+  public static final String FLARE_KEY    = "flareKey";
+  public static final String PULSES       = "flarePulses";
+  public static final String PULSES_PER_SEC = "flarePulsesPerSec";
+  
+  public static final String FLARE_ALT_LOCAL     = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
+  public static final String FLARE_CTRL_LOCAL    = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
+  public static final String FLARE_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));
+  
+  public static final String FLARE_ALT = "keyAlt";
+  public static final String FLARE_CTRL = "keyCtrl";
+  
+
 
   public Flare() {
     this.circleSize = 100;
-    this.colorRed = 255;
-    this.colorGreen = 0;
-    this.colorBlue = 0;
+    this.color = Color.RED;
     this.active = false;
+    this.flareKey = FLARE_ALT;
+    this.pulses       = 6;
+    this.pulsesPerSec = 3;
   }
 
   public String getDescription() {
@@ -72,35 +97,54 @@ public class Flare extends AbstractConfigurable
   }
 
   public Class<?>[] getAttributeTypes() {
-    return (Class<?>[]) new Class[] { Integer.class, Integer.class, Integer.class, Integer.class };
+    return (Class<?>[]) new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Integer.class, Integer.class };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { "circlesize", "colorred", "colorgreen", "colorblue" };
+    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, PULSES, PULSES_PER_SEC };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Circle Size", "Red", "Green", "Blue" };
+    return new String[] { Resources.getString("Editor.Flare.flare_key"), 
+                          Resources.getString("Editor.Flare.circle_size"), 
+                          Resources.getString("Editor.Flare.circle_color"),
+                          Resources.getString("Editor.Flare.pulses"),
+                          Resources.getString("Editor.Flare.pulses_per_sec") };
   }
 
   public String getAttributeValueString(final String key) {
-    if ("circlesize".equals(key)) {
+    if (FLARE_KEY.equals(key)) {
+      return new StringBuilder().append(this.flareKey).toString();
+    }
+    else if (CIRCLE_SIZE.equals(key)) {
       return new StringBuilder().append(this.circleSize).toString();
     }
-    if ("colorred".equals(key)) {
-      return new StringBuilder().append(this.colorRed).toString();
+    else if (CIRCLE_COLOR.equals(key)) {
+      return new StringBuilder().append(ColorConfigurer.colorToString(this.color)).toString();
     }
-    if ("colorgreen".equals(key)) {
-      return new StringBuilder().append(this.colorGreen).toString();
+    else if (PULSES.equals(key)) {
+      return new StringBuilder().append(this.pulses).toString();
     }
-    if ("colorblue".equals(key)) {
-      return new StringBuilder().append(this.colorBlue).toString();
+    else if (PULSES_PER_SEC.equals(key)) {
+      return new StringBuilder().append(this.pulsesPerSec).toString();
     }
     return null;
   }
-
-  public void setAttribute(final String key, final Object value) {
-    if ("circlesize".equals(key)) {
+  
+  
+  public void setAttribute(String key, Object value) {
+    if (FLARE_KEY.equals(key)) {
+      if (FLARE_ALT_LOCAL.equals(value)) {
+        this.flareKey = FLARE_ALT;
+      } 
+      else if (FLARE_COMMAND_LOCAL.equals(value) || FLARE_CTRL_LOCAL.equals(value)) {
+        this.flareKey = FLARE_CTRL;
+      } 
+      else {
+        this.flareKey = (String) value;
+      }
+    }
+    else if (CIRCLE_SIZE.equals(key)) {
       if (value instanceof String) {
         this.circleSize = Integer.parseInt((String) value); 
       } 
@@ -108,31 +152,36 @@ public class Flare extends AbstractConfigurable
         this.circleSize = (Integer) value;
       }
     } 
-    else if ("colorred".equals(key)) {
+    else if (CIRCLE_COLOR.equals(key)) {
       if (value instanceof String) {
-        this.colorRed = Integer.parseInt((String) value);
-      } 
-      else if (value instanceof Integer) {
-        this.colorRed = (Integer) value;
+        value = ColorConfigurer.stringToColor((String) value);
       }
-    } 
-    else if ("colorgreen".equals(key)) {
+      this.color = (Color)value;
+    }
+    else if (PULSES.equals(key)) {
       if (value instanceof String) {
-        this.colorGreen = Integer.parseInt((String) value);
+        this.pulses = Integer.parseInt((String) value);
       } 
-      else if (value instanceof Integer) {
-        this.colorGreen = (Integer) value;
+      else {
+        this.pulses = (Integer) value;
       }
-    } 
-    else if ("colorblue".equals(key)) {
+    }
+    else if (PULSES_PER_SEC.equals(key)) {
       if (value instanceof String) {
-        this.colorBlue = Integer.parseInt((String) value);
+        this.pulsesPerSec = Integer.parseInt((String) value);
       } 
-      else if (value instanceof Integer) {
-        this.colorBlue = (Integer) value;
+      else {
+        this.pulsesPerSec = (Integer) value;
       }
     }
   }
+  
+  
+  @Override
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("Flare.htm");  //$NON-NLS-1$
+  }
+  
 
   public void addTo(final Buildable parent) {
     if (parent instanceof Map) {
@@ -140,7 +189,8 @@ public class Flare extends AbstractConfigurable
       GameModule.getGameModule().addCommandEncoder((CommandEncoder) this);
       this.map.addDrawComponent((Drawable) this);
       this.map.addLocalMouseListener((MouseListener) this);
-      this.timer = new Timer(CIRCLE_DURATION, this);
+      this.timer  = new Timer(CIRCLE_RATE, this);
+      this.frame  = 0;
     }
   }
   
@@ -157,6 +207,18 @@ public class Flare extends AbstractConfigurable
     }
     this.active = true;
     this.timer.restart();
+    this.frame = 0;
+    
+    this.animate = ((this.pulses > 0) && (this.pulsesPerSec > 0));
+    if (this.animate) {
+      this.framesPerPulse = 30 / this.pulsesPerSec;
+      if (this.framesPerPulse < 1) this.framesPerPulse = 1;
+      this.frames = this.pulses * framesPerPulse;
+    } 
+    else {
+      this.frames = DEFAULT_FRAMES;
+    }
+    
     this.map.getView().repaint();
   }
 
@@ -164,18 +226,21 @@ public class Flare extends AbstractConfigurable
     if (this.active && this.clickPoint != null) {                 
       final Graphics2D g2d = (Graphics2D) g;
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-      final int diameter = (int)(map.getZoom() * os_scale * this.circleSize);
+      
+      int diameter = (int)(map.getZoom() * os_scale * this.circleSize);
+      if (animate) {
+        diameter = diameter * (framesPerPulse - (frame % framesPerPulse)) / framesPerPulse;
+      }
+      if (diameter <= 0) {
+        return;
+      }
 
       // translate the piece center for current zoom
-      
       final Point p = map.mapToDrawing(clickPoint, os_scale);                             
       
       // draw a circle around the selected point
-      g2d.setColor(Color.RED);
-      final Color drawColor = new Color(this.colorRed, this.colorGreen, this.colorBlue);
-      g.setColor(drawColor);
+      g2d.setColor(color);
       g2d.setStroke(new BasicStroke((float)(3 * os_scale)));
-      
       g2d.drawOval(p.x - diameter / 2, p.y - diameter / 2, diameter, diameter); 
     }
   }
@@ -201,31 +266,43 @@ public class Flare extends AbstractConfigurable
     return null;
   }
 
-  public HelpFile getHelpFile() {
-    return null;
-  }
-
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
   public void actionPerformed(final ActionEvent e) {
-    this.active = false;
-    this.timer.stop();
-    this.map.repaint();
+    this.frame++;
+    if (this.frame >= this.frames) {
+      this.active = false;
+      this.timer.stop();
+    }
+    if (!this.active || this.animate) {
+      this.map.repaint();  
+    }    
   }
 
   public void mouseClicked(final MouseEvent e) {
   }
 
   public void mousePressed(final MouseEvent e) {
-    if (e.isAltDown()) {
-      this.clickPoint = new Point(e.getX(), e.getY());
-      final GameModule mod = GameModule.getGameModule();
-      final Command c = (Command) new FlareCommand(this);
-      mod.sendAndLog(c);
-      this.startAnimation(true);
+    if (!SwingUtils.isMainMouseButtonDown(e)) {
+      return;
     }
+    if (FLARE_CTRL.equals(flareKey)) {
+      if (!SwingUtils.isSelectionToggle(e)) {
+        return;
+      }
+    }
+    else {
+      if (!e.isAltDown()) {
+        return;
+      }
+    }
+    this.clickPoint = new Point(e.getX(), e.getY());
+    final GameModule mod = GameModule.getGameModule();
+    final Command c = (Command) new FlareCommand(this);
+    mod.sendAndLog(c);
+    this.startAnimation(true);
   }
 
   public void mouseReleased(final MouseEvent e) {
@@ -251,4 +328,16 @@ public class Flare extends AbstractConfigurable
   public Point getClickPoint() {
     return this.clickPoint;
   }
+  
+  
+  public static class FlareKeyConfig extends StringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      String[] values = new String[2];
+      values[0] = FLARE_ALT_LOCAL;
+      values[1] = (SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy()) ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL; // Show proper Mac "Ctrl" key
+      return values;
+    }
+  }
+
 }

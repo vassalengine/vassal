@@ -257,6 +257,11 @@ public class GlobalOptions extends AbstractConfigurable {
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
+  
+  
+  public boolean getPrefMacLegacy() {
+    return macLegacy;
+  }
  
 
   public static String getConfigureTypeName() {
