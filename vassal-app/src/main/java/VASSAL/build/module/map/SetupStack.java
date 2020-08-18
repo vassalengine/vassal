@@ -80,6 +80,7 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.NewGameIndicator;
@@ -183,7 +184,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         pos = getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
+        ErrorDialog.dataWarning(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
       }
     }
   }
@@ -410,13 +411,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected Stack initializeContents() {
     Stack s = createStack();
     Configurable[] c = getConfigureComponents();
+    int num = 0; // For error reporting
     for (Configurable configurable : c) {
+      num++;
       if (configurable instanceof PieceSlot) {
         PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
-        p = PieceCloner.getInstance().clonePiece(p);
-        GameModule.getGameModule().getGameState().addPiece(p);
-        s.add(p);
+        if (p != null) { // In case slot fails to "build the piece", which is a possibility.
+          p = PieceCloner.getInstance().clonePiece(p);
+          GameModule.getGameModule().getGameState().addPiece(p);
+          s.add(p);
+        } 
+        else {
+          ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
+        }
       }
     }
     GameModule.getGameModule().getGameState().addPiece(s);

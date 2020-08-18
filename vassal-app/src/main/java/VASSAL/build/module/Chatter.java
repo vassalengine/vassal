@@ -566,6 +566,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
     }
   }
+  
+  
+  
+  /**
+   * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.  
+   */
+  public static void warning(String msg) {
+    Chatter chatter = GameModule.getGameModule().getChatter();
+    chatter.send(msg);
+  }
+  
 
   /**
    * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
