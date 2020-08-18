@@ -1,6 +1,7 @@
 3.3.4 - ???
 
 * 13290: Optimized serialization, unserialization
+* 12648: Setup stack doesn't recover from a piece build failure
 
 3.3.3-beta2 - ???
 
