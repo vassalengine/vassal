@@ -35,13 +35,16 @@ import bsh.NameSpace;
  */
 public class BeanShell {
 
-  private static BeanShell instance = new BeanShell();
+  public static final String TRUE = "true"; //$NON-NLS-1$//
+  public static final String FALSE = "false"; //$NON-NLS-1$//
+
+  private static final BeanShell instance = new BeanShell();
 
   public static BeanShell getInstance() {
     return instance;
   }
 
-  protected static final String INIT_SCRIPT = "/VASSAL/script/init_script.bsh";
+  protected static final String INIT_SCRIPT = "/VASSAL/script/init_script.bsh"; //$NON-NLS-1$//
 
   /*
    * An interpreter for adding script methods to the global NameSpace
@@ -56,13 +59,11 @@ public class BeanShell {
   public void init() {
     // Read in the Vassal Script init script
     URL ini = instance.getClass().getResource(INIT_SCRIPT);
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(
-        new InputStreamReader(
-        ini.openStream()));
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(
+        ini.openStream()))) {
       CompileResult result = compile(in);
-      if (! result.isSuccess()) {
+      if (!result.isSuccess()) {
         result.printStackTrace();
       }
     }
@@ -70,16 +71,7 @@ public class BeanShell {
       //FIXME: Error message
       WarningDialog.show(e, "");
     }
-    finally {
-      if (in != null) {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          //
-        }
-      }
-    }
+    //
   }
 
   public CompileResult compile(Reader in) {
@@ -104,8 +96,10 @@ public class BeanShell {
   /**
    * Execute a Script named in a component DoAction or trait DoAction.
    * Action Scripts take no parameters and return no value.
-   * @param script
+   * Currently unused, please retain (Brent).
+   * @param scriptName Script Name
    */
+  @SuppressWarnings("unused")
   public void executeActionScript(String scriptName) {
     try {
       globalInterpreter.evaluate(scriptName + "();");
@@ -128,17 +122,17 @@ public class BeanShell {
   /**
    * Convert a String value into a wrapped primitive object if possible.
    *
-   * @param value
+   * @param value Value to wrap
    * @return wrapped value
    */
   public static Object wrap (String value) {
     if (value == null) {
       return "";
     }
-    else if ("true".equals(value)) {
+    else if (TRUE.equals(value)) {
       return Boolean.TRUE;
     }
-    else if ("false".equals(value)) {
+    else if (FALSE.equals(value)) {
       return Boolean.FALSE;
     }
     else {

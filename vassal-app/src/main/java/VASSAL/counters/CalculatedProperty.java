@@ -50,7 +50,7 @@ import VASSAL.tools.SequenceEncoder;
  * */
 public class CalculatedProperty extends Decorator implements EditablePiece, Loopable {
 
-  public static final String ID = "calcProp;";
+  public static final String ID = "calcProp;"; //$NON-NLS-1$
 
   protected static int counter = 0;
 
@@ -124,7 +124,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
+    return HelpFile.getReferenceManualPage("CalculatedProperty.htm"); //$NON-NLS-1$
   }
 
   @Override
@@ -185,7 +185,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     }
     catch (ExpressionException e) {
       ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"),
-        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e));
+        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e)); //$NON-NLS-1$
       return "";
     }
   }

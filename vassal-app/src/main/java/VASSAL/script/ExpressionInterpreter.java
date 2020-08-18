@@ -25,6 +25,7 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.Stack;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.ErrorDialog;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -67,12 +68,14 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   private static final long serialVersionUID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
 
-  protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh";
-  protected static final String THIS = "_interp";
-  protected static final String SOURCE = "_source";
-  protected static final String MAGIC1 = "_xyzzy";
-  protected static final String MAGIC2 = "_plugh";
-  protected static final String MAGIC3 = "_plover";
+  public static final String RANDOM = "Random"; //$NON-NLS-1$//
+  public static final String ISRANDOM = "IsRandom"; //$NON-NLS-1$//
+
+  protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh"; //$NON-NLS-1$//
+  protected static final String MAGIC1 = "_xyzzy"; //$NON-NLS-1$//
+  protected static final String MAGIC2 = "_plugh"; //$NON-NLS-1$//
+  protected static final String MAGIC3 = "_plover"; //$NON-NLS-1$//
+
 
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
@@ -133,7 +136,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Create the Expression level namespace as a child of the
     // top level namespace
-    expressionNameSpace = new NameSpace(topLevelNameSpace, "expression");
+    expressionNameSpace = new NameSpace(topLevelNameSpace, "expression"); //$NON-NLS-1$//
 
     // Get a list of any variables used in the expression. These are
     // property names that will need to be evaluated at expression
@@ -157,9 +160,9 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           if (argList.length() > 0) {
             argList.append(',');
           }
-          argList.append("String ").append(variable);
+          argList.append("String ").append(variable); //$NON-NLS-1$//
         }
-        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}"); //$NON-NLS-1$//
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -179,14 +182,14 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * methods available to expressions.
    */
   protected void initialiseStatic() {
-    topLevelNameSpace = new NameSpace(null, getClassManager(), "topLevel");
+    topLevelNameSpace = new NameSpace(null, getClassManager(), "topLevel"); //$NON-NLS-1$//
     setNameSpace(topLevelNameSpace);
-    getNameSpace().importClass("VASSAL.build.module.properties.PropertySource");
-    getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
+    getNameSpace().importClass("VASSAL.build.module.properties.PropertySource"); //$NON-NLS-1$//
+    getNameSpace().importClass("VASSAL.script.ExpressionInterpreter"); //$NON-NLS-1$//
 
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini);
+    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); //$NON-NLS-1$//
 
     try (InputStream is = ini.openStream();
          InputStreamReader isr = new InputStreamReader(is);
@@ -195,12 +198,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
         eval(in);
       }
       catch (EvalError e) {
-        logger.error("Error trying to read init script: " + ini);
+        logger.error("Error trying to read init script: " + ini); //$NON-NLS-1$//
         WarningDialog.show(e, "");
       }
     }
     catch (IOException e) {
-      logger.error("Error trying to read init script: " + ini);
+      logger.error("Error trying to read init script: " + ini); //$NON-NLS-1$//
       WarningDialog.show(e, "");
     }
   }
@@ -249,10 +252,10 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       if (value == null) {
         setVar(var, "");
       }
-      else if ("true".equals(value)) {
+      else if (BeanShell.TRUE.equals(value)) {
         setVar(var, true);
       }
-      else if ("false".equals(value)) {
+      else if (BeanShell.FALSE.equals(value)) {
         setVar(var, false);
       }
       else {
@@ -316,10 +319,10 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     if (value == null) {
       return "";
     }
-    else if ("true".equals(value)) {
+    else if (BeanShell.TRUE.equals(value)) {
       return Boolean.TRUE;
     }
-    else if ("false".equals(value)) {
+    else if (BeanShell.FALSE.equals(value)) {
       return Boolean.FALSE;
     }
     else {
@@ -384,6 +387,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * @param ps       GamePiece
    * @return total
    */
+  @SuppressWarnings("unused") // Called from Beanshell
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
@@ -415,6 +419,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * @param ps       GamePiece
    * @return total
    */
+  @SuppressWarnings("unused") // Called from Beanshell
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
@@ -461,8 +466,8 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    */
 
   public Object random(Object source, Object minString, Object maxString) {
-    final int min = parseInt(source, "Random", minString, 1);
-    int max = parseInt(source, "Random", maxString, 1);
+    final int min = parseInt(source, RANDOM, minString, 1);
+    int max = parseInt(source, RANDOM, maxString, 1);
     if (max < min) {
       max = min;
     }
@@ -473,8 +478,9 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     return GameModule.getGameModule().getRNG().nextInt(range) + min;
   }
 
+  @SuppressWarnings("unused") // Called from Beanshell
   public Object isRandom(Object source, Object percentString) {
-    int percent = parseInt(source, "IsRandom", percentString, 50);
+    int percent = parseInt(source, ISRANDOM, percentString, 50);
     if (percent < 0)
       percent = 0;
     if (percent > 100)
@@ -514,11 +520,11 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyName instanceof String)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
+    final String matchString = buildMatchString ((String) propertyMatch, sourcePiece);
     final List<Map> maps = getMapList(mapName, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
 
@@ -558,11 +564,11 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     int result = 0;
 
     if (! (source instanceof GamePiece)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
+    final String matchString = buildMatchString((String) propertyMatch, sourcePiece);
 
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
@@ -585,6 +591,26 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
 
     return result;
+  }
+
+  /**
+   * buildMatchString
+   * Replace any $...$ variables in a PropertyMatch Expression with values
+   * sourced from the supplied property source
+   *
+   * Evaluating $....$ variables is expensive, so don't even try unless the String
+   * contains at least 2 '$' characters.
+   *
+   * @param propertyMatch Property Match Expression
+   * @param ps Property Source
+   * @return Expanded Match String
+   */
+  private String buildMatchString (String propertyMatch, PropertySource ps) {
+    final int pos1 = propertyMatch.indexOf('$');
+    if (pos1 >= 0 && propertyMatch.lastIndexOf('$') != pos1) {
+      return new FormattedStringExpression(propertyMatch).evaluate(ps);
+    }
+    return propertyMatch;
   }
 
   private String unescape(String expr) {

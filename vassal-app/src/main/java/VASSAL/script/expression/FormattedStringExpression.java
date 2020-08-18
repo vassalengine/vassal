@@ -33,6 +33,11 @@ public class FormattedStringExpression extends Expression {
     setExpression(s);
   }
 
+  @Override
+  public String evaluate(PropertySource ps) {
+    return evaluate(ps, null, false);
+  }
+
   /**
    * Evaluate this expression.
    * NB. Code moved from FormattedString.java

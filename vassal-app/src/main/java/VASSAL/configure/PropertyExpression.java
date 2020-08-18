@@ -76,9 +76,9 @@ public class PropertyExpression implements PieceFilter {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //$NON-NLS-1$//
     }
-    return "true".equals(result);
+    return "true".equals(result); //$NON-NLS-1$//
   }
 
 }
