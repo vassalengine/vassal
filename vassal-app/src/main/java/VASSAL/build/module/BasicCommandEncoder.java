@@ -45,6 +45,7 @@ import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Delete;
+import VASSAL.counters.Deselect;
 import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.Embellishment0;
@@ -191,7 +192,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(RestrictCommands.ID, RestrictCommands::new),
     Map.entry(PlaySound.ID, PlaySound::new),
     Map.entry(ActionButton.ID, ActionButton::new),
-    Map.entry(GlobalHotKey.ID, GlobalHotKey::new)
+    Map.entry(GlobalHotKey.ID, GlobalHotKey::new),
+    Map.entry(Deselect.ID, Deselect::new)
   );
 
   /**
