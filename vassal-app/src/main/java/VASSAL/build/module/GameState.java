@@ -746,13 +746,11 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
-    final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-    try (OutputStream out = new ObfuscatingOutputStream(ba)) {
-      out.write(save.getBytes(StandardCharsets.UTF_8));
-    }
-
     try (FileArchive archive = new ZipArchive(f)) {
-      archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+        out.write(save.getBytes(StandardCharsets.UTF_8));
+      }
       (new SaveMetaData()).save(archive);
     }
 
