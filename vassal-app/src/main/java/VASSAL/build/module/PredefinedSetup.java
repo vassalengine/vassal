@@ -186,7 +186,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
                   .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"), fileName, e)); //$NON-NLS-1$ //$NON-NLS-2$
+        ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"), fileName, e)); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     else {

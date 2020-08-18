@@ -1,4 +1,19 @@
-3.3.3-beta1 - ???
+3.3.4 - ???
+
+* 13290: Optimized serialization, unserialization
+* 13076: NPE in FlowView$FlowStrategy.layoutRow()
+* 12648: Setup stack doesn't recover from a piece build failure
+* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
+*  3215: Global Options icons do not update themselves properly
+
+3.3.3-beta2 - ???
+
+* 13282: Stop logging debug messages by default
+* 13281: Added inadvertently removed throws declaration for
+    Embellishment0.getCurrentImage()
+* 13280 - NPE in KeyStrokeListener.keyPressed()
+
+3.3.3-beta1 - 13 August 2020
 
 * 13276: Center on Moves is now a user preference instead of a module setting
 * 13251: Add Module name to Bug summary, extra info to comments

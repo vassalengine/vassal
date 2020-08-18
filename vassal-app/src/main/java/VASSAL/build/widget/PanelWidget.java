@@ -223,7 +223,7 @@ public class PanelWidget extends Widget {
 
       if (nColumns < 1) {
         // FIXME: also dialog should not permit values < 1 to be entered
-        ErrorDialog.dataError(
+        ErrorDialog.dataWarning(
           new BadDataReport("Panel has < 1 column:", getConfigureName()));
 
         nColumns = 1;

@@ -565,7 +565,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       chat.show(" - " + s); //$NON-NLS-1$
     }
   }
-
+  
+  
   /**
    * @return a single Random number generator that all objects may share
    */

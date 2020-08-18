@@ -101,7 +101,7 @@ public class PositionOption extends VASSAL.configure.Configurer
       // as a PositionOption, either currently, or due to editing.
       // Don't throw a bug, just log it.
       if (in.indexOf('\t') > 0) {
-        ErrorDialog.dataError(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
+        ErrorDialog.dataWarning(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
       }
       else {
         ErrorDialog.bug(e);

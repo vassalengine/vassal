@@ -491,7 +491,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     catch (Exception e) {
       final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
       final String data = "Data=[" + value.toString() + "].";
-      ErrorDialog.dataError(new BadDataReport(message, data, e));
+      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;
   }

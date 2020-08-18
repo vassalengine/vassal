@@ -425,15 +425,15 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Report a Data Error detected by a trait
    */
   protected static void reportDataError(EditablePiece piece, String message, String data, Throwable e) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data, e));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message, data, e));
   }
 
   protected static void reportDataError(EditablePiece piece, String message, String data) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message, data));
   }
 
   protected static void reportDataError(EditablePiece piece, String message) {
-    ErrorDialog.dataError(new BadDataReport(piece, message));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message));
   }
 
   /**

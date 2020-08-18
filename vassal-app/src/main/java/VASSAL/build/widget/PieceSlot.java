@@ -40,16 +40,19 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.apache.batik.ext.swing.Resources;
+
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.module.map.MenuDisplayer;
 import VASSAL.build.module.map.PieceMover.AbstractDragHandler;
 import VASSAL.command.AddPiece;
@@ -65,6 +68,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -99,8 +103,15 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public PieceSlot(CardSlot card) {
     this((PieceSlot) card);
   }
-
-
+  
+  public String getName() {
+    return name;
+  }
+  
+  public String getPieceDefinition() {
+    return pieceDefinition;
+  }
+  
   // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0
   public double getScale() {
     Widget w = this;
@@ -190,10 +201,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      final AddPiece comm =
-        (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
-      if (comm == null) {
-        System.err.println("Couldn't build piece " + pieceDefinition);
+      final Command raw = GameModule.getGameModule().decode(pieceDefinition);   
+      final AddPiece comm = (c instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
+      if ((comm == null) || comm.isNull() || !(comm instanceof AddPiece)) {
+        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));
         pieceDefinition = null;
       }
       else {
@@ -270,20 +281,23 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected void startDrag() {
     // Recenter piece; panel may have been resized at some point resulting
     // in pieces with inaccurate positional information.
+    GamePiece p = getPiece();
+    if (p == null) { // Found new ways to NPE after you've successfully soft-warninged your failed piece build :)
+      return;
+    }
+    
     final Dimension size = panel.getSize();
-    getPiece().setPosition(new Point(size.width / 2, size.height / 2));
+    p.setPosition(new Point(size.width / 2, size.height / 2));
 
     // Erase selection border to avoid leaving selected after mouse dragged out
-    getPiece().setProperty(Properties.SELECTED, null);
+    p.setProperty(Properties.SELECTED, null);
     panel.repaint();
 
-    if (getPiece() != null) {
-      KeyBuffer.getBuffer().clear();
-      DragBuffer.getBuffer().clear();
-      GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
-      newPiece.setProperty(Properties.PIECE_ID, getGpId());
-      DragBuffer.getBuffer().add(newPiece);
-    }
+    KeyBuffer.getBuffer().clear();
+    DragBuffer.getBuffer().clear();
+    GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
+    newPiece.setProperty(Properties.PIECE_ID, getGpId());
+    DragBuffer.getBuffer().add(newPiece);
   }
 
   protected void doPopup(MouseEvent e) {
@@ -587,24 +601,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     gpId = id;
   }
 
-  private static class MyConfigurer extends Configurer implements HelpWindowExtension {
+  private static class MyConfigurer extends Configurer {
     private final PieceDefiner definer;
 
     public MyConfigurer(PieceSlot slot) {
       super(null, slot.getConfigureName(), slot);
       definer = new PieceDefiner(slot.getGpId(), slot.gpidSupport);
       definer.setPiece(slot.getPiece());
-    }
-
-    // TODO deprecate HelpWindowExtension interface, then confirm it's not in use anymore and delete
-
-    /**
-     * @deprecated In process of being replaced
-     */
-    @Override
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public void setBaseWindow(HelpWindow w) {
-      ProblemDialog.showDeprecated("2020-08-06");
     }
 
     @Override

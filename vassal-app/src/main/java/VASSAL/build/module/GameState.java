@@ -508,8 +508,6 @@ public class GameState implements CommandEncoder {
   public void saveGame() {
     final GameModule g = GameModule.getGameModule();
 
-    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
         return;
@@ -517,7 +515,6 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
-        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
@@ -536,8 +533,6 @@ public class GameState implements CommandEncoder {
   public void saveGameAs() {
     final GameModule g = GameModule.getGameModule();
 
-    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-
     final File saveFile = getSaveFile();
     if (saveFile == null) {
       g.warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
@@ -550,7 +545,6 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
-        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
@@ -749,21 +743,21 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
+    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
-    final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-    try (OutputStream out = new ObfuscatingOutputStream(ba)) {
-      out.write(save.getBytes(StandardCharsets.UTF_8));
-    }
-
     try (FileArchive archive = new ZipArchive(f)) {
-      archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+        out.write(save.getBytes(StandardCharsets.UTF_8));
+      }
       (new SaveMetaData()).save(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
+    GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
   }
 
   public void loadGameInBackground(final File f) {
