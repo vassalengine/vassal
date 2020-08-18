@@ -9,6 +9,9 @@
 
 3.3.3-beta2 - ???
 
+* 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules
+    without GlobalOptions
+* 13289: Don't print "Saving game" twice when using Save As
 * 13282: Stop logging debug messages by default
 * 13281: Added inadvertently removed throws declaration for
     Embellishment0.getCurrentImage()
