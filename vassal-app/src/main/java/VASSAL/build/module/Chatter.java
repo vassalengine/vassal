@@ -36,6 +36,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -189,11 +190,25 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public void consoleHook(String s, String style, boolean html_allowed) {
     
   }
+  
 
   /**
-   * Display a message in the text area
+   * Display a message in the text area. Ensures we execute in the EDT
    */
-  public void show(String s) {
+  public void show(String s) {  
+    if (SwingUtilities.isEventDispatchThread()) {
+      doShow(s);
+    }
+    else {
+      SwingUtilities.invokeLater(() -> doShow(s));
+    }      
+  }
+
+
+  /**
+   * Display a message in the text area - use show() from outside the class - MUST run on EventDispatchThread
+   */
+  private void doShow(String s) {
     String style;
     boolean html_allowed;
 
@@ -555,12 +570,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       return null;
     }
   }
-
+  
+  
   /**
    * Displays the message, Also logs and sends to the server a {@link Command}
-   * that displays this message
+   * that displays this message. 
    */
-  public void send(String msg) {
+  public void send(String msg) {    
     if (msg != null && !msg.isEmpty()) {
       show(msg);
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
