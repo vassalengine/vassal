@@ -668,28 +668,25 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().add(zoomOutButton);
 
     // Ctrl+Mousewheel to zoom in/out.
-    listener = new MouseWheelListener() {
-      @Override
-      public void mouseWheelMoved(MouseWheelEvent e) {
-        if (e.getScrollAmount() == 0) {
-          return;
-        }
-        
-        if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && SwingUtils.isSelectionToggle(e)) {
-          int units = e.getUnitsToScroll();
-          
-          if ((units < 0) && state.hasHigherLevel()) {
-            zoomIn();
-          }
-          else if ((units > 0) && state.hasLowerLevel()) {
-            zoomOut();
-          }
-        }
-        
-        map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
+    listener = e -> {
+      if (e.getScrollAmount() == 0) {
+        return;
       }
+
+      if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && SwingUtils.isSelectionToggle(e)) {
+        int units = e.getUnitsToScroll();
+
+        if ((units < 0) && state.hasHigherLevel()) {
+          zoomIn();
+        }
+        else if ((units > 0) && state.hasLowerLevel()) {
+          zoomOut();
+        }
+      }
+
+      map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
     };
-        
+       
     map.getComponent().addMouseWheelListener(listener);
   }
   
