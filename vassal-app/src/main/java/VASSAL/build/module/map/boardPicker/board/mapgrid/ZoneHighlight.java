@@ -95,7 +95,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
    */
   public void draw(Graphics2D g2d, Shape s, double scale) {
 
-    if ((color != null && opacity > 0 ) || STYLE_IMAGE.equals(style)) {
+    if ((color != null && opacity > 0) || STYLE_IMAGE.equals(style)) {
       final Stroke oldStroke = g2d.getStroke();
       final Color oldColor = g2d.getColor();
       final Composite oldComposite = g2d.getComposite();

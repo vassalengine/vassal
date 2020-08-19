@@ -197,13 +197,17 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           final Player player = playerMgr.getPlayer(inviter + JID_RESOURCE);
           final String playerName = player.getName() + "(" + playerLogin + ")"; //$NON-NLS-1$ //$NON-NLS-2$
           final String roomName = roomMgr.getRoomByJID(JabberClient.this, room).getName();
-          final int i = Dialogs.showConfirmDialog(GameModule
-            .getGameModule().getPlayerWindow(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
-            Resources.getString("Chat.invite_heading"), Resources.getString( //$NON-NLS-1$
-                "Chat.invitation", playerName, roomName), //$NON-NLS-1$
-            JOptionPane.QUESTION_MESSAGE, null,
-            JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources //$NON-NLS-1$
-                .getString("Chat.ignore_invitation")); //$NON-NLS-1$
+          final int i = Dialogs.showConfirmDialog(
+            GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+            Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+            Resources.getString("Chat.invitation", playerName, roomName), //$NON-NLS-1$
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            JOptionPane.YES_NO_OPTION,
+            "Invite" + inviter, //$NON-NLS-1$
+            Resources.getString("Chat.ignore_invitation")); //$NON-NLS-1$
+
           if (i == 0) {
             doInvite(inviter, roomName);
           }

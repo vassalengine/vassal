@@ -73,7 +73,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected FunctionBuilder builder;
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
-    this(key, name, val, piece, Option.NONE );
+    this(key, name, val, piece, Option.NONE);
   }
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option) {

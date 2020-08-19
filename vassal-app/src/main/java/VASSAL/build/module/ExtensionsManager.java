@@ -125,7 +125,7 @@ public class ExtensionsManager {
       inactiveDir = new File(extDir, "inactive");
       if (mustExist) {
         inactiveDir = ensureExists(inactiveDir);
-        if ( inactiveDir == null ) {
+        if (inactiveDir == null) {
           return null;
         }
       }

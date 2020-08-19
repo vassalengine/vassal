@@ -57,7 +57,7 @@ public interface ServerStatus {
       return moduleName;
     }
 
-    public void setModuleName( String moduleName ) {
+    public void setModuleName(String moduleName) {
       this.moduleName = moduleName;
     }
 
