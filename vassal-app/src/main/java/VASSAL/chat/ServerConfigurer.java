@@ -19,9 +19,7 @@ package VASSAL.chat;
 
 import java.awt.Component;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -85,12 +83,10 @@ public class ServerConfigurer extends Configurer {
   public ServerConfigurer(String key, String name, HybridClient client) {
     super(key, name, new Properties());
     this.client = client;
-    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        enableControls(Boolean.TRUE.equals(evt.getNewValue()));
-      }
-    });
+    client.addPropertyChangeListener(
+      ChatServerConnection.CONNECTED,
+      e -> enableControls(Boolean.TRUE.equals(e.getNewValue()))
+    );
     getControls();
     setValue(buildLegacyProperties());
   }
@@ -103,21 +99,18 @@ public class ServerConfigurer extends Configurer {
       controls.add(header, "wrap"); //$NON-NLS-1$
       ButtonGroup group = new ButtonGroup();
       jabberButton = new JRadioButton(JABBER_BUTTON);
-      jabberButton.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          if (e.getStateChange() == ItemEvent.SELECTED) {
-            noUpdate = true;
-            setValue(buildJabberProperties());
-            noUpdate = false;
-          }
-          jabberHostPrompt.setEnabled(jabberButton.isSelected());
-          jabberHost.setEnabled(jabberButton.isSelected() && jabberHostPrompt.isSelected());
-          jabberAccountName.setEnabled(jabberButton.isSelected());
-          jabberPassword.setEnabled(jabberButton.isSelected());
-          jabberAccountPrompt.setEnabled(jabberButton.isSelected());
-          jabberPasswordPrompt.setEnabled(jabberButton.isSelected());
+      jabberButton.addItemListener(e -> {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+          noUpdate = true;
+          setValue(buildJabberProperties());
+          noUpdate = false;
         }
+        jabberHostPrompt.setEnabled(jabberButton.isSelected());
+        jabberHost.setEnabled(jabberButton.isSelected() && jabberHostPrompt.isSelected());
+        jabberAccountName.setEnabled(jabberButton.isSelected());
+        jabberPassword.setEnabled(jabberButton.isSelected());
+        jabberAccountPrompt.setEnabled(jabberButton.isSelected());
+        jabberPasswordPrompt.setEnabled(jabberButton.isSelected());
       });
       jabberAccountPrompt = new JLabel(Resources.getString("Server.account_name")); //$NON-NLS-1$
       jabberAccountPrompt.setEnabled(false);
@@ -131,12 +124,9 @@ public class ServerConfigurer extends Configurer {
       jabberHostPrompt.setEnabled(false);
       jabberHost = new JTextField(18);
       jabberHost.setEnabled(false);
-      jabberHostPrompt.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          jabberHost.setEnabled(jabberHostPrompt.isSelected() && jabberButton.isSelected());
-          docListener.changedUpdate(null);
-        }
+      jabberHostPrompt.addItemListener(e -> {
+        jabberHost.setEnabled(jabberHostPrompt.isSelected() && jabberButton.isSelected());
+        docListener.changedUpdate(null);
       });
       jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST + ":" + JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
       docListener = new DocumentListener() {
@@ -191,27 +181,21 @@ public class ServerConfigurer extends Configurer {
         controls.add(jabberHost, "wrap, growx"); //$NON-NLS-1$
       }
       p2pButton = new JRadioButton(P2P_BUTTON);
-      p2pButton.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          if (e.getStateChange() == ItemEvent.SELECTED) {
-            noUpdate = true;
-            setValue(buildPeerProperties());
-            noUpdate = false;
-          }
+      p2pButton.addItemListener(e -> {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+          noUpdate = true;
+          setValue(buildPeerProperties());
+          noUpdate = false;
         }
       });
       group.add(p2pButton);
       controls.add(p2pButton, "wrap"); //$NON-NLS-1$
       legacyButton = new JRadioButton(LEGACY_BUTTON);
-      legacyButton.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          if (e.getStateChange() == ItemEvent.SELECTED) {
-            noUpdate = true;
-            setValue(buildLegacyProperties());
-            noUpdate = false;
-          }
+      legacyButton.addItemListener(e -> {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+          noUpdate = true;
+          setValue(buildLegacyProperties());
+          noUpdate = false;
         }
       });
       controls.add(legacyButton);
@@ -350,6 +334,7 @@ public class ServerConfigurer extends Configurer {
       p.remove(JabberClientFactory.JABBER_HOST);
       p.remove(JabberClientFactory.JABBER_PORT);
     }
+
     return p;
   }
 
@@ -357,7 +342,7 @@ public class ServerConfigurer extends Configurer {
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
     ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
-    ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
     new MacOSXMenuManager();
     HybridClient c = new HybridClient();
     ServerConfigurer config = new ServerConfigurer("server", "server", c); //$NON-NLS-1$ //$NON-NLS-2$

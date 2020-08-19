@@ -47,9 +47,9 @@ public class DynamicClient extends HybridClient {
   private boolean connecting;
 
   public DynamicClient() {
-    this(LEGACY_URL);
   }
 
+  @Deprecated(since = "2020-08-16", forRemoval = true)
   public DynamicClient(String serverConfigURL) {
   }
 

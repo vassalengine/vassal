@@ -186,7 +186,8 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
     ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
-    ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
+
     server = new DynamicClient();
     AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
