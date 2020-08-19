@@ -103,8 +103,8 @@ public class PropertyExpression implements PieceFilter {
       result = expression.evaluate(ps);
     }
     catch (ExpressionException e) {
-      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //$NON-NLS-1$//
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
     }
     return BeanShell.TRUE.equals(result); //$NON-NLS-1$//
   }

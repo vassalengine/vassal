@@ -231,7 +231,7 @@ public class SetGlobalProperty extends DynamicProperty {
         if (prop == null) {
           final String message = "Unable to locate Global Property in " + propertyLevel + ".";
           final String data = "Property Expression=[" + key + "], Property Name=" + propertyName + "].";
-          ErrorDialog.dataError(new BadDataReport(this, message, data));
+          ErrorDialog.dataWarning(new BadDataReport(this, message, data));
         }
         else {
           String oldValue = prop.getPropertyValue();

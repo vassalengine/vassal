@@ -1,5 +1,19 @@
+3.3.4 - ???
+
+* 13301: Don't rewrite save state when we already have it
+* 13290: Optimized serialization, unserialization
+* 13076: NPE in FlowView$FlowStrategy.layoutRow()
+* 12798: ClassCastException: NullCommand cannot be cast to AddPiece
+* 12648: Setup stack doesn't recover from a piece build failure
+* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
+* 11827: NPE in SendToLocation.getSendLocation()
+*  3215: Global Options icons do not update themselves properly
+
 3.3.3-beta2 - ???
 
+* 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules
+    without GlobalOptions
+* 13289: Don't print "Saving game" twice when using Save As
 * 13282: Stop logging debug messages by default
 * 13281: Added inadvertently removed throws declaration for
     Embellishment0.getCurrentImage()

@@ -137,13 +137,13 @@ public class FormattedString {
     }
     catch (ExpressionException e) {
       if (source instanceof EditablePiece) {
-        ErrorDialog.dataError(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
       }
       else if (source instanceof AbstractConfigurable) {
-        ErrorDialog.dataError(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
       }
       else {
-        ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
       }
       return "";
     }
@@ -162,7 +162,7 @@ public class FormattedString {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
     }
     return result;
   }
@@ -174,7 +174,7 @@ public class FormattedString {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
     }
     return result;
   }
