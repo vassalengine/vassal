@@ -400,7 +400,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final Point result = new Point(x, y);
 
     // Cache the position once the label image has been generated
-    if (lblSize.height > 0 && lblSize.width > 0 ) {
+    if (lblSize.height > 0 && lblSize.width > 0) {
       position = result;
     }
 

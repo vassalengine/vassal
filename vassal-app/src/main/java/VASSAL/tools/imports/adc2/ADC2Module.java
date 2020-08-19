@@ -2140,7 +2140,7 @@ public class ADC2Module extends Importer {
   protected void readPieceValueBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Piece Value");
 
-    for (int i = 0; i < pieceValues .length; ++i)
+    for (int i = 0; i < pieceValues.length; ++i)
       pieceValues[i] = readNullTerminatedString(in, 15);
   }
 

@@ -911,7 +911,7 @@ public class MapBoard extends Importer {
         // check to see if lower right-hand corner is on the wrong
         // square
       }
-      else if ( (r.y & 1) == 1 ) {
+      else if ((r.y & 1) == 1) {
         // top is odd and bottom is even
         if (map.firstHexLeft())
           lowerRight.x += getHexSize() / 2;
@@ -1852,7 +1852,7 @@ public class MapBoard extends Importer {
         // check to see if lower right-hand corner is on the wrong
         // square
       }
-      else if ( (r.x & 1) == 1) {
+      else if ((r.x & 1) == 1) {
         // left is odd and right is even
         if (map.firstHexDown())
           lowerRight.y += getHexSize();

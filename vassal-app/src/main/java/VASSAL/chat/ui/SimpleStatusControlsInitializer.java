@@ -87,7 +87,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
           client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
           JOptionPane.showMessageDialog(controls.getRoomTree(), Resources.getString("Chat.im_back"), Resources.getString("Chat.away_from_keyboard"), JOptionPane.PLAIN_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
           s = (SimpleStatus) p.getStatus();
-          s = new SimpleStatus(s.isLooking(), false , s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
+          s = new SimpleStatus(s.isLooking(), false, s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
           client.setUserInfo(new SimplePlayer(p.getId(), p.getName(), s));
         }
       }

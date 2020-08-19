@@ -197,7 +197,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       else {
         Point p = getSendLocation();
         c.setEnabled(getMap() != null && p != null &&
-            (map != getMap() || !p.equals(getPosition())) );
+            (map != getMap() || !p.equals(getPosition())));
       }
     }
     return command;
@@ -208,7 +208,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (getMap() == null) {
       s += "getMap is null";
     }
-    else if ( p == null) {
+    else if (p == null) {
       s += "p is null";
     }
     else {
@@ -286,7 +286,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         switch (destination.charAt(0)) {
         case 'G':
           b = map.getBoardByName(boardName.getText(outer));
-          if (b != null ) {
+          if (b != null) {
             try {
               MapGrid g = b.getGrid(); 
               if (g != null) { // Board may not have a grid assigned.

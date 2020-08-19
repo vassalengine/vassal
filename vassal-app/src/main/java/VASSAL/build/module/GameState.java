@@ -707,7 +707,10 @@ public class GameState implements CommandEncoder {
     String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
     String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
     cond = new ConditionalCommand.Lt(GameModule.MODULE_VERSION, moduleVersion);
-    c.append(new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch2", moduleName, moduleVersion ))));  //$NON-NLS-1$
+    c.append(
+      new ConditionalCommand(
+        new ConditionalCommand.Condition[]{cond},
+        new AlertCommand(Resources.getString("GameState.version_mismatch2", moduleName, moduleVersion))));  //$NON-NLS-1$
     return c;
   }
 

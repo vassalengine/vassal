@@ -158,7 +158,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( );
+    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {

@@ -520,16 +520,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
 
 
-    final ColorConfigurer myChatColor = new ColorConfigurer( MY_CHAT_COLOR,
-                                                             Resources.getString("Chatter.my_text_preference"), new Color(9, 32, 229) );
+    final ColorConfigurer myChatColor = new ColorConfigurer(
+      MY_CHAT_COLOR,
+      Resources.getString("Chatter.my_text_preference"),
+      new Color(9, 32, 229));
 
     myChatColor.addPropertyChangeListener(e -> {
       myChat = (Color) e.getNewValue();
       makeStyleSheet(null);
     });
 
-    globalPrefs.addOption( Resources.getString("Chatter.chat_window"),
-                           myChatColor );
+    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), myChatColor);
 
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
 
@@ -542,7 +543,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       makeStyleSheet(null);
     });
 
-    globalPrefs.addOption( Resources.getString("Chatter.chat_window"), otherChatColor );      
+    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     
     // Put up the HTML Enable/Disable checkbox if we're supposed to have it.

@@ -48,7 +48,7 @@ import VASSAL.tools.SequenceEncoder;
  * The abstract class describing a generic 'trait' of a GamePiece.  Follows the Decorator design pattern
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it
  */
-public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource , PersistentPropertyContainer,
+public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
   protected GamePiece piece;

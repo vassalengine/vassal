@@ -175,7 +175,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
-      for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         checkGpIds(buildable, checker);
       }
     }
@@ -201,7 +201,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       updateGpIds(((ExtensionElement) b).getExtension());
     }
     else if (b instanceof AbstractBuildable) {
-      for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         updateGpIds(buildable);
       }
     }
@@ -328,8 +328,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
-            getName(), value, runningVersion ));
+        GameModule.getGameModule().warn(
+          Resources.getString(
+            "ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
+            getName(),
+            value,
+            runningVersion));
       }
     }
     else if (VERSION.equals(key)) {
