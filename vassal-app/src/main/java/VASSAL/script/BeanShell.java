@@ -96,10 +96,8 @@ public class BeanShell {
   /**
    * Execute a Script named in a component DoAction or trait DoAction.
    * Action Scripts take no parameters and return no value.
-   * Currently unused, please retain (Brent).
    * @param scriptName Script Name
    */
-  @SuppressWarnings("unused")
   public void executeActionScript(String scriptName) {
     try {
       globalInterpreter.evaluate(scriptName + "();");

@@ -387,7 +387,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * @param ps       GamePiece
    * @return total
    */
-  @SuppressWarnings("unused") // Called from Beanshell
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
@@ -419,7 +418,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * @param ps       GamePiece
    * @return total
    */
-  @SuppressWarnings("unused") // Called from Beanshell
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
@@ -464,7 +462,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * - isRandom(percent) - Return true percent% of the time
    * - isRandom()        - Equivalent to Random(50) (init_beanshell.bsh calls isRandom(50))
    */
-
   public Object random(Object source, Object minString, Object maxString) {
     final int min = parseInt(source, RANDOM, minString, 1);
     int max = parseInt(source, RANDOM, maxString, 1);
@@ -478,7 +475,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     return GameModule.getGameModule().getRNG().nextInt(range) + min;
   }
 
-  @SuppressWarnings("unused") // Called from Beanshell
   public Object isRandom(Object source, Object percentString) {
     int percent = parseInt(source, ISRANDOM, percentString, 50);
     if (percent < 0)
@@ -520,13 +516,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyName instanceof String)) return 0;
-    if (! (propertyMatch instanceof String)) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
+    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
-    final String matchString = buildMatchString ((String) propertyMatch, sourcePiece);
     final List<Map> maps = getMapList(mapName, sourcePiece);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
@@ -564,15 +560,15 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     int result = 0;
 
     if (! (source instanceof GamePiece)) return 0;
-    if (! (propertyMatch instanceof String)) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
+    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
-    final String matchString = buildMatchString((String) propertyMatch, sourcePiece);
 
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
@@ -591,26 +587,6 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
 
     return result;
-  }
-
-  /**
-   * buildMatchString
-   * Replace any $...$ variables in a PropertyMatch Expression with values
-   * sourced from the supplied property source
-   *
-   * Evaluating $....$ variables is expensive, so don't even try unless the String
-   * contains at least 2 '$' characters.
-   *
-   * @param propertyMatch Property Match Expression
-   * @param ps Property Source
-   * @return Expanded Match String
-   */
-  private String buildMatchString (String propertyMatch, PropertySource ps) {
-    final int pos1 = propertyMatch.indexOf('$');
-    if (pos1 >= 0 && propertyMatch.lastIndexOf('$') != pos1) {
-      return new FormattedStringExpression(propertyMatch).evaluate(ps);
-    }
-    return propertyMatch;
   }
 
   private String unescape(String expr) {
