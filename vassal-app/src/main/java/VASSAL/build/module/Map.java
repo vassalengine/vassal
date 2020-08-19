@@ -1950,8 +1950,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         return false;
       }
     }
-    // should be impossible
-    return true;
+    // should be impossible (and yet is not, if there are no maps in the module at all -- BR)
+    return false;
   }
 
   /**
@@ -1966,12 +1966,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final GameModule g = GameModule.getGameModule();
 
       if (shouldDockIntoMainWindow()) {
-        mainWindowDock.showComponent();
-        final int height = (Integer)
-          Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-        if (height > 0) {
-          final Container top = mainWindowDock.getTopLevelAncestor();
-          top.setSize(top.getWidth(), height);
+        if (mainWindowDock != null) { // This is protected from null elsewhere, and crashed null here, so I'm thinking protect here too.
+          mainWindowDock.showComponent();
+          final int height = (Integer)
+            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+          if (height > 0) {
+            final Container top = mainWindowDock.getTopLevelAncestor();
+            top.setSize(top.getWidth(), height);
+          }
         }
         if (toolBar.getParent() == null) {
           g.getToolBar().addSeparator();
