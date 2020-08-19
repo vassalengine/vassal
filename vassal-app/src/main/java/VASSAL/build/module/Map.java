@@ -1949,8 +1949,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         return false;
       }
     }
-    // should be impossible
-    return true;
+    // should be impossible (and yet is not, if there are no maps in the module at all -- BR)
+    return false;
   }
 
   /**
