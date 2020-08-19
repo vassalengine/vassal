@@ -129,7 +129,7 @@ public class Footprint extends MovementMarkable {
   }
 
   /** @deprecated Use {@link #pointList} directly. */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Enumeration<Point> getPointList() {
     ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(pointList);

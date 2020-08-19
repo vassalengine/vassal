@@ -98,7 +98,7 @@ public class ConditionalCommand extends Command {
     }
 
     /** @deprecated Use {@link #getValueList()} instead. */
-    @Deprecated(since="2020-08-06", forRemoval = true)
+    @Deprecated(since = "2020-08-06", forRemoval = true)
     public Enumeration<String> getValues() {
       ProblemDialog.showDeprecated("2020-08-06");
       return Collections.enumeration(allowed);

@@ -483,7 +483,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * @param id ignored
    * @deprecated
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isMaskableBy(@SuppressWarnings("unused") String id) {
     ProblemDialog.showDeprecated("2020-08-06");
     return isMaskable();
@@ -581,7 +581,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * @param allHidden True to hide all pieces
    * @deprecated
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static void setAllHidden(boolean allHidden) {
     ProblemDialog.showDeprecated("2020-08-06");
     if (allHidden) {

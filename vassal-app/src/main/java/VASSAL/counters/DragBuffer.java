@@ -212,7 +212,7 @@ public class DragBuffer {
   /**
    * @deprecated Use {@link #sort(Comparator)} instead.
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   @SuppressWarnings("unchecked")
   public void sort(VASSAL.tools.Sort.Comparator comp) {
     ProblemDialog.showDeprecated("2020-08-06");
@@ -220,7 +220,7 @@ public class DragBuffer {
   }
 
   /** @deprecated No Replacement */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static void init(@SuppressWarnings("unused") DragBuffer db) {
     ProblemDialog.showDeprecated("2020-08-06");
   }

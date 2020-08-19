@@ -491,7 +491,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @deprecated
    * Use {@link #setOldProperties(GamePiece)
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Command setOldProperties() {
     ProblemDialog.showDeprecated("2020-08-06");
     return setOldProperties(this);
