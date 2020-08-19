@@ -689,10 +689,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
       }
     };
-    
-    if (listener != null) {
-      map.getComponent().addMouseWheelListener(listener);
-    }
+        
+    map.getComponent().addMouseWheelListener(listener);
   }
   
   
