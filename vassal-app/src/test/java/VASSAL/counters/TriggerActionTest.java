@@ -46,6 +46,8 @@ public class TriggerActionTest {
 
   final static String TRUE_EXPRESSION = "BasicName=";
   final static String FALSE_EXPRESSION = "BasicName=xyzzy";
+  final static String TRUE_BSH_EXPRESSION = "{BasicName==\"\"}";
+  final static String FALSE_BSH_EXPRESSION = "{BasicName==\"xyzzy\"}";
   final static Map MAP = mock(Map.class);
   static TriggerAction trigger;
 
@@ -72,10 +74,15 @@ public class TriggerActionTest {
         // Property         Map   Result  Message
         { "",               null, false,  "No Match expression, Unit not on map, KeyCommand should be disabled"     },
         { "",               MAP,  true,   "No Match expression, Unit on map, KeyCommand should be enabled"  },
-        { FALSE_EXPRESSION, null, false,  "Match expression false, Unit not on map, KeyCommand should be disabled" },
-        { FALSE_EXPRESSION, MAP,  false,  "Match expression false, unit on map, KeyCommand should be disabled" },
-        { TRUE_EXPRESSION,  null, false,  "Match expression true, Unit not on map, KeyCommand should be disabled" },
-        { TRUE_EXPRESSION,  MAP,  true,   "Match expression true, Unit on map, KeyCommand should be enabled" }
+        { FALSE_EXPRESSION, null, false,  "Classic Match expression false, Unit not on map, KeyCommand should be disabled" },
+        { FALSE_EXPRESSION, MAP,  false,  "Classic Match expression false, unit on map, KeyCommand should be disabled" },
+        { TRUE_EXPRESSION,  null, false,  "Classic Match expression true, Unit not on map, KeyCommand should be disabled" },
+        { TRUE_EXPRESSION,  MAP,  true,   "Classic Match expression true, Unit on map, KeyCommand should be enabled" },
+        { FALSE_BSH_EXPRESSION, null, false,  "Beanshell Match expression false, Unit not on map, KeyCommand should be disabled" },
+        { FALSE_BSH_EXPRESSION, MAP,  false,  "Beanshell Match expression false, unit on map, KeyCommand should be disabled" },
+        { TRUE_BSH_EXPRESSION,  null, false,  "Beanshell Match expression true, Unit not on map, KeyCommand should be disabled" },
+        { TRUE_BSH_EXPRESSION,  MAP,  true,   "Beanshell Match expression true, Unit on map, KeyCommand should be enabled" }
+
     });
   }
 
