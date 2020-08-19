@@ -90,11 +90,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   private static final Logger logger =
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
-  interface DecoratorFactory {
+  public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
 
-  interface BasicPieceFactory {
+  public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }
 
