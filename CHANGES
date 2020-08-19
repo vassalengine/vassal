@@ -1,5 +1,7 @@
 3.3.3-beta2 - ???
 
+* 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should
+    have remained public
 * 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules
     without GlobalOptions
 * 13289: Don't print "Saving game" twice when using Save As
