@@ -8,6 +8,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.script.expression.NullExpression;
+import VASSAL.script.expression.PropertyMatchExpression;
 import VASSAL.tools.ErrorDialog;
 
 /*
@@ -48,7 +49,11 @@ public class PropertyExpression implements PieceFilter {
 
   @Override
   public boolean accept(GamePiece piece) {
-    return accept(piece, piece);
+    // Classic Property Match Expressions need to use the old-style call sequence.
+    if (expression instanceof PropertyMatchExpression) {
+      return expression.getFilter(piece).accept(piece);
+    }
+    return isTrue(piece);
   }
 
   public boolean accept(GamePiece source, GamePiece piece) {
