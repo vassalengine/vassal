@@ -50,7 +50,7 @@ public class ChangePiece extends Command {
    * to that of the piece when this Command is executed.
    * @deprecated
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public ChangePiece(String id, String newState) {
     this(id, null, newState);
     ProblemDialog.showDeprecated("2020-08-06");

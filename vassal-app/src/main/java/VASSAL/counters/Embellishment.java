@@ -454,7 +454,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   /** @deprecated No Replacement */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public String oldGetType() {
     ProblemDialog.showDeprecated("2020-08-06");
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -670,7 +670,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   /** @deprecated Use {@link ImageOp#getImage()} instead. */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Image getCurrentImage() {
     ProblemDialog.showDeprecated("2020-08-06");
     // nonpositive value means that layer is inactive

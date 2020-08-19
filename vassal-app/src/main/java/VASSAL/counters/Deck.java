@@ -181,7 +181,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * @deprecated use {@link #Deck(GameModule, String)}
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type) {
     this(GameModule.getGameModule(), type);
     ProblemDialog.showDeprecated("2020-08-06");
@@ -190,7 +190,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type, PropertySource source) {
     this(GameModule.getGameModule(), type, source);
     ProblemDialog.showDeprecated("2020-08-06");
@@ -680,7 +680,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public KeyStroke getEmptyKey() {
     ProblemDialog.showDeprecated("2020-08-06");
     return emptyKey.getKeyStroke();
@@ -690,7 +690,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return emptyKey;
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setEmptyKey(KeyStroke k) {
     ProblemDialog.showDeprecated("2020-08-06");
     emptyKey = new NamedKeyStroke(k);
@@ -854,7 +854,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the contents of this Deck to an Iterator of GamePieces
    * @deprecated Use {@link #setContents(Collection)} instead.
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Command setContents(Iterator<GamePiece> it) {
     ProblemDialog.showDeprecated("2020-08-06");
     ChangeTracker track = new ChangeTracker(this);

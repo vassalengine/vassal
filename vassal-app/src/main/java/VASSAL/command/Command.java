@@ -122,7 +122,7 @@ public abstract class Command {
   /**
    * @deprecated Use {@link #isAtomic()}
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected boolean hasNullSubcommands() {
     ProblemDialog.showDeprecated("2020-08-06");
     return isAtomic();
