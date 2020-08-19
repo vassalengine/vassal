@@ -152,13 +152,13 @@ public class FormattedString implements Loopable {
       }
       catch (ExpressionException e) {
         if (source instanceof EditablePiece) {
-        ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
         }
         else if (source instanceof AbstractConfigurable) {
-        ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
         }
         else {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
         }
         return "";
       }
