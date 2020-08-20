@@ -2,6 +2,7 @@
 
 * 13301: Don't rewrite save state when we already have it
 * 13290: Optimized serialization, unserialization
+* 13275: Ctrl+Mousewheel to zoom
 * 13200: NPE in Map.setup() when attempting to dock main map
 * 13076: NPE in FlowView$FlowStrategy.layoutRow()
 * 12798: ClassCastException: NullCommand cannot be cast to AddPiece
