@@ -17,29 +17,25 @@
 
 package VASSAL.build.module.map;
 
+import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import VASSAL.build.GameModule;
-import VASSAL.build.Buildable;
 import javax.swing.Timer;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.awt.Point;
-import VASSAL.build.module.Map;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionListener;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.command.CommandEncoder;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
 import VASSAL.command.FlareCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.StringEnum;
@@ -59,8 +55,8 @@ public class Flare extends AbstractConfigurable
   private int framesPerPulse;
   private String flareKey;
   private Color color;
-  private static int CIRCLE_RATE    = 33; // 33ms for approx 30 frames/sec
-  private static int DEFAULT_FRAMES = 60; // 2 sec for basic "no animation" pulse
+  private static final int CIRCLE_RATE    = 33; // 33ms for approx 30 frames/sec
+  private static final int DEFAULT_FRAMES = 60; // 2 sec for basic "no animation" pulse
   private Point clickPoint;
   private Boolean active;
   private Timer timer;
@@ -80,12 +76,12 @@ public class Flare extends AbstractConfigurable
 
 
   public Flare() {
-    this.circleSize = 100;
-    this.color = Color.RED;
-    this.active = false;
-    this.flareKey = FLARE_ALT;
-    this.pulses       = 6;
-    this.pulsesPerSec = 3;
+    circleSize   = 100;
+    color        = Color.RED;
+    active       = false;
+    flareKey     = FLARE_ALT;
+    pulses       = 6;
+    pulsesPerSec = 3;
   }
 
   public String getDescription() {
@@ -97,7 +93,7 @@ public class Flare extends AbstractConfigurable
   }
 
   public Class<?>[] getAttributeTypes() {
-    return (Class<?>[]) new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Integer.class, Integer.class };
+    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Integer.class, Integer.class };
   }
 
   public String[] getAttributeNames() {
@@ -114,19 +110,19 @@ public class Flare extends AbstractConfigurable
 
   public String getAttributeValueString(final String key) {
     if (FLARE_KEY.equals(key)) {
-      return new StringBuilder().append(this.flareKey).toString();
+      return flareKey;
     }
     else if (CIRCLE_SIZE.equals(key)) {
-      return new StringBuilder().append(this.circleSize).toString();
+      return String.valueOf(this.circleSize);
     }
     else if (CIRCLE_COLOR.equals(key)) {
-      return new StringBuilder().append(ColorConfigurer.colorToString(this.color)).toString();
+      return ColorConfigurer.colorToString(this.color);
     }
     else if (PULSES.equals(key)) {
-      return new StringBuilder().append(this.pulses).toString();
+      return String.valueOf(this.pulses);
     }
     else if (PULSES_PER_SEC.equals(key)) {
-      return new StringBuilder().append(this.pulsesPerSec).toString();
+      return String.valueOf(this.pulsesPerSec);
     }
     return null;
   }
@@ -135,43 +131,43 @@ public class Flare extends AbstractConfigurable
   public void setAttribute(String key, Object value) {
     if (FLARE_KEY.equals(key)) {
       if (FLARE_ALT_LOCAL.equals(value)) {
-        this.flareKey = FLARE_ALT;
+        flareKey = FLARE_ALT;
       } 
       else if (FLARE_COMMAND_LOCAL.equals(value) || FLARE_CTRL_LOCAL.equals(value)) {
-        this.flareKey = FLARE_CTRL;
+        flareKey = FLARE_CTRL;
       } 
       else {
-        this.flareKey = (String) value;
+        flareKey = (String) value;
       }
     }
     else if (CIRCLE_SIZE.equals(key)) {
       if (value instanceof String) {
-        this.circleSize = Integer.parseInt((String) value); 
+        circleSize = Integer.parseInt((String) value);
       } 
       else if (value instanceof Integer) {
-        this.circleSize = (Integer) value;
+        circleSize = (Integer) value;
       }
     } 
     else if (CIRCLE_COLOR.equals(key)) {
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      this.color = (Color)value;
+      color = (Color)value;
     }
     else if (PULSES.equals(key)) {
       if (value instanceof String) {
-        this.pulses = Integer.parseInt((String) value);
+        pulses = Integer.parseInt((String) value);
       } 
       else {
-        this.pulses = (Integer) value;
+        pulses = (Integer) value;
       }
     }
     else if (PULSES_PER_SEC.equals(key)) {
       if (value instanceof String) {
-        this.pulsesPerSec = Integer.parseInt((String) value);
+        pulsesPerSec = Integer.parseInt((String) value);
       } 
       else {
-        this.pulsesPerSec = (Integer) value;
+        pulsesPerSec = (Integer) value;
       }
     }
   }
@@ -185,49 +181,49 @@ public class Flare extends AbstractConfigurable
 
   public void addTo(final Buildable parent) {
     if (parent instanceof Map) {
-      this.map = (Map) parent;
-      GameModule.getGameModule().addCommandEncoder((CommandEncoder) this);
-      this.map.addDrawComponent((Drawable) this);
-      this.map.addLocalMouseListener((MouseListener) this);
-      this.timer  = new Timer(CIRCLE_RATE, this);
-      this.frame  = 0;
+      map = (Map) parent;
+      GameModule.getGameModule().addCommandEncoder(this);
+      map.addDrawComponent(this);
+      map.addLocalMouseListener(this);
+      timer  = new Timer(CIRCLE_RATE, this);
+      frame  = 0;
     }
   }
   
   public void removeFrom(final Buildable parent) {
     if (parent instanceof Map) {
-      GameModule.getGameModule().removeCommandEncoder((CommandEncoder) this);
+      GameModule.getGameModule().removeCommandEncoder(this);
     }
   }
 
 
   public void startAnimation(final boolean isLocal) {
     if (!isLocal) {
-      this.map.centerAt(this.clickPoint);
+      map.centerAt(this.clickPoint);
     }
-    this.active = true;
-    this.timer.restart();
-    this.frame = 0;
+    active = true;
+    timer.restart();
+    frame = 0;
     
-    this.animate = ((this.pulses > 0) && (this.pulsesPerSec > 0));
-    if (this.animate) {
-      this.framesPerPulse = 30 / this.pulsesPerSec;
-      if (this.framesPerPulse < 1) this.framesPerPulse = 1;
-      this.frames = this.pulses * framesPerPulse;
+    animate = ((pulses > 0) && (pulsesPerSec > 0));
+    if (animate) {
+      framesPerPulse = 30 / pulsesPerSec;
+      if (framesPerPulse < 1) framesPerPulse = 1;
+      frames = pulses * framesPerPulse;
     } 
     else {
-      this.frames = DEFAULT_FRAMES;
+      frames = DEFAULT_FRAMES;
     }
     
-    this.map.getView().repaint();
+    map.getView().repaint();
   }
 
   public void draw(final Graphics g, final Map map) {
-    if (this.active && this.clickPoint != null) {                 
+    if (active && clickPoint != null) {
       final Graphics2D g2d = (Graphics2D) g;
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
       
-      int diameter = (int)(map.getZoom() * os_scale * this.circleSize);
+      int diameter = (int)(map.getZoom() * os_scale * circleSize);
       if (animate) {
         diameter = diameter * (framesPerPulse - (frame % framesPerPulse)) / framesPerPulse;
       }
@@ -236,11 +232,13 @@ public class Flare extends AbstractConfigurable
       }
 
       // translate the piece center for current zoom
-      final Point p = map.mapToDrawing(clickPoint, os_scale);                             
+      final Point p = map.mapToDrawing(clickPoint, os_scale);
       
       // draw a circle around the selected point
       g2d.setColor(color);
       g2d.setStroke(new BasicStroke((float)(3 * os_scale)));
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
       g2d.drawOval(p.x - diameter / 2, p.y - diameter / 2, diameter, diameter); 
     }
   }
@@ -260,8 +258,8 @@ public class Flare extends AbstractConfigurable
     if (s.startsWith(COMMAND_PREFIX)) {
       final int x = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
       final int y = Integer.parseInt(s.substring(s.indexOf(",") + 1));
-      this.clickPoint = new Point(x, y);
-      return (Command) new FlareCommand(this);
+      clickPoint = new Point(x, y);
+      return new FlareCommand(this);
     }
     return null;
   }
@@ -271,13 +269,13 @@ public class Flare extends AbstractConfigurable
   }
 
   public void actionPerformed(final ActionEvent e) {
-    this.frame++;
-    if (this.frame >= this.frames) {
-      this.active = false;
-      this.timer.stop();
+    frame++;
+    if (frame >= frames) {
+      active = false;
+      timer.stop();
     }
-    if (!this.active || this.animate) {
-      this.map.repaint();  
+    if (!active || animate) {
+      map.repaint();
     }    
   }
 
@@ -298,11 +296,11 @@ public class Flare extends AbstractConfigurable
         return;
       }
     }
-    this.clickPoint = new Point(e.getX(), e.getY());
+    clickPoint = new Point(e.getX(), e.getY());
     final GameModule mod = GameModule.getGameModule();
-    final Command c = (Command) new FlareCommand(this);
+    final Command c = new FlareCommand(this);
     mod.sendAndLog(c);
-    this.startAnimation(true);
+    startAnimation(true);
   }
 
   public void mouseReleased(final MouseEvent e) {
@@ -322,11 +320,11 @@ public class Flare extends AbstractConfigurable
   }
 
   public void setClickPoint(final Point p) {
-    this.clickPoint = p;
+    clickPoint = p;
   }
 
   public Point getClickPoint() {
-    return this.clickPoint;
+    return clickPoint;
   }
   
   
