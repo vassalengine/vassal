@@ -520,7 +520,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       addChild(new KeyBufferer());
       addChild(new ImageSaver());
       addChild(new CounterDetailViewer());
-      setMapName("Main Map"); //FIXME shouldn't this be localized?
+      setMapName(Resources.getString("Map.main_map"));
     }
     if (getComponentsOf(GlobalProperties.class).isEmpty()) {
       addChild(new GlobalProperties());
