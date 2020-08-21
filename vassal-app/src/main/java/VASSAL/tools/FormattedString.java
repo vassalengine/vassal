@@ -29,7 +29,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
@@ -164,7 +163,8 @@ public class FormattedString implements Loopable {
       }
     }
     catch (RecursionLimitException e) {
-      return "&lt;infiniteloop&gt;";      
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
+      return "";
     }
     finally {
       RecursionLimiter.endExecution();

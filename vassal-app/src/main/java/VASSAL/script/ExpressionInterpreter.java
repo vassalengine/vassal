@@ -276,11 +276,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         }
         else {
           try {
-            setVar(var, Integer.valueOf(value).intValue());
+            setVar(var, Integer.parseInt(value));
           }
           catch (NumberFormatException e) {
             try {
-              setVar(var, Float.valueOf(value).floatValue());
+              setVar(var, Float.parseFloat(value));
             }
             catch (NumberFormatException e1) {
               setVar(var, value);
@@ -316,7 +316,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
     }
     catch (RecursionLimitException e) {
-      result = Resources.getString("Error.infinite_loop_tag");
+      result = "";
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
     }
     finally {
       RecursionLimiter.endExecution();
