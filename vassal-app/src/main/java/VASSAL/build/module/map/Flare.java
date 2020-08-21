@@ -17,17 +17,18 @@
 
 package VASSAL.build.module.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.BasicStroke;
 import java.awt.event.MouseListener;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import javax.swing.Timer;
+
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -48,37 +49,31 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
 public class Flare extends AbstractConfigurable
-    implements CommandEncoder, GameComponent, Drawable, ActionListener, MouseListener {
+        implements CommandEncoder, GameComponent, Drawable, MouseListener {
   public static final String COMMAND_PREFIX = "FLARE:";
   private Map map;
   private int circleSize;
   private int pulses;
   private int pulsesPerSec;
-  private int frame;
   private boolean animate;
-  private int frames;
-  private int framesPerPulse;
   private String flareKey;
   private Color color;
-  private static final int CIRCLE_RATE    = 33; // 33ms for approx 30 frames/sec
-  private static final int DEFAULT_FRAMES = 60; // 2 sec for basic "no animation" pulse
   private Point clickPoint;
-  private Boolean active;
-  private Timer timer;
+  private volatile boolean active;
   public static final String CIRCLE_SIZE  = "circleSize";
   public static final String CIRCLE_COLOR = "circleColor";
   public static final String FLARE_KEY    = "flareKey";
   public static final String PULSES       = "flarePulses";
   public static final String PULSES_PER_SEC = "flarePulsesPerSec";
-  
+
   public static final String FLARE_ALT_LOCAL     = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
   public static final String FLARE_CTRL_LOCAL    = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
   public static final String FLARE_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));
-  
+
   public static final String FLARE_ALT = "keyAlt";
   public static final String FLARE_CTRL = "keyCtrl";
-  
 
+  private static final int STROKE = 3;
 
   public Flare() {
     circleSize   = 100;
@@ -92,7 +87,7 @@ public class Flare extends AbstractConfigurable
   public String getDescription() {
     return Resources.getString("Map Flare");
   }
-  
+
   public static String getConfigureTypeName() {
     return Resources.getString("Map Flare");
   }
@@ -106,11 +101,11 @@ public class Flare extends AbstractConfigurable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { Resources.getString("Editor.Flare.flare_key"), 
-                          Resources.getString("Editor.Flare.circle_size"), 
-                          Resources.getString("Editor.Flare.circle_color"),
-                          Resources.getString("Editor.Flare.pulses"),
-                          Resources.getString("Editor.Flare.pulses_per_sec") };
+    return new String[] { Resources.getString("Editor.Flare.flare_key"),
+            Resources.getString("Editor.Flare.circle_size"),
+            Resources.getString("Editor.Flare.circle_color"),
+            Resources.getString("Editor.Flare.pulses"),
+            Resources.getString("Editor.Flare.pulses_per_sec") };
   }
 
   public String getAttributeValueString(final String key) {
@@ -131,16 +126,16 @@ public class Flare extends AbstractConfigurable
     }
     return null;
   }
-  
-  
+
+
   public void setAttribute(String key, Object value) {
     if (FLARE_KEY.equals(key)) {
       if (FLARE_ALT_LOCAL.equals(value)) {
         flareKey = FLARE_ALT;
-      } 
+      }
       else if (FLARE_COMMAND_LOCAL.equals(value) || FLARE_CTRL_LOCAL.equals(value)) {
         flareKey = FLARE_CTRL;
-      } 
+      }
       else {
         flareKey = (String) value;
       }
@@ -148,11 +143,11 @@ public class Flare extends AbstractConfigurable
     else if (CIRCLE_SIZE.equals(key)) {
       if (value instanceof String) {
         circleSize = Integer.parseInt((String) value);
-      } 
+      }
       else if (value instanceof Integer) {
         circleSize = (Integer) value;
       }
-    } 
+    }
     else if (CIRCLE_COLOR.equals(key)) {
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
@@ -162,7 +157,7 @@ public class Flare extends AbstractConfigurable
     else if (PULSES.equals(key)) {
       if (value instanceof String) {
         pulses = Integer.parseInt((String) value);
-      } 
+      }
       else {
         pulses = (Integer) value;
       }
@@ -170,19 +165,19 @@ public class Flare extends AbstractConfigurable
     else if (PULSES_PER_SEC.equals(key)) {
       if (value instanceof String) {
         pulsesPerSec = Integer.parseInt((String) value);
-      } 
+      }
       else {
         pulsesPerSec = (Integer) value;
       }
     }
   }
-  
-  
+
+
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Flare.htm");  //$NON-NLS-1$
   }
-  
+
 
   public void addTo(final Buildable parent) {
     if (parent instanceof Map) {
@@ -190,61 +185,91 @@ public class Flare extends AbstractConfigurable
       GameModule.getGameModule().addCommandEncoder(this);
       map.addDrawComponent(this);
       map.addLocalMouseListener(this);
-      timer  = new Timer(CIRCLE_RATE, this);
-      frame  = 0;
     }
   }
-  
+
   public void removeFrom(final Buildable parent) {
     if (parent instanceof Map) {
       GameModule.getGameModule().removeCommandEncoder(this);
     }
   }
 
+  private double os_scale = 1.0;
+
+  private volatile float animfrac;
+
+  private void repaintArea() {
+    map.repaint(new Rectangle(
+            (int)(clickPoint.x - circleSize / 2.0 - 2 * STROKE * os_scale),
+            (int)(clickPoint.y - circleSize / 2.0 - 2 * STROKE * os_scale),
+            (int)(circleSize + 4 * STROKE * os_scale + 0.5),
+            (int)(circleSize + 4 * STROKE * os_scale + 0.5)
+    ));
+  }
+
+  private final Animator animator = new Animator(0, new TimingTargetAdapter() {
+    @Override
+    public void begin() {
+      active = true;
+      animfrac = 0.0f;
+      repaintArea();
+    }
+
+    @Override
+    public void timingEvent(float fraction) {
+      animfrac = fraction;
+      repaintArea();
+    }
+
+    @Override
+    public void end() {
+      active = false;
+      repaintArea();
+    }
+  });
 
   public void startAnimation(final boolean isLocal) {
     if (!isLocal) {
       map.centerAt(this.clickPoint);
     }
-    active = true;
-    timer.restart();
-    frame = 0;
-    
-    animate = ((pulses > 0) && (pulsesPerSec > 0));
-    if (animate) {
-      framesPerPulse = 30 / pulsesPerSec;
-      if (framesPerPulse < 1) framesPerPulse = 1;
-      frames = pulses * framesPerPulse;
-    } 
-    else {
-      frames = DEFAULT_FRAMES;
-    }
-    
-    map.getView().repaint();
+
+    animator.stop();
+    animate = pulses > 0 && pulsesPerSec > 0;
+    animator.setRepeatCount(Math.max(pulses, 1));
+    animator.setDuration(1000 / Math.max(pulsesPerSec, 1));
+    animator.start();
   }
 
   public void draw(final Graphics g, final Map map) {
     if (active && clickPoint != null) {
       final Graphics2D g2d = (Graphics2D) g;
-      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-      
-      int diameter = (int)(map.getZoom() * os_scale * circleSize);
+      os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+      double diameter = map.getZoom() * os_scale * circleSize;
       if (animate) {
-        diameter = diameter * (framesPerPulse - (frame % framesPerPulse)) / framesPerPulse;
+        diameter *= animfrac;
       }
-      if (diameter <= 0) {
+
+      if (diameter <= 0.0) {
         return;
       }
 
       // translate the piece center for current zoom
       final Point p = map.mapToDrawing(clickPoint, os_scale);
-      
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+              RenderingHints.VALUE_ANTIALIAS_ON);
+
       // draw a circle around the selected point
       g2d.setColor(color);
-      g2d.setStroke(new BasicStroke((float)(3 * os_scale)));
+      g2d.setStroke(new BasicStroke((float)(STROKE * os_scale)));
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-      g2d.drawOval(p.x - diameter / 2, p.y - diameter / 2, diameter, diameter); 
+              RenderingHints.VALUE_ANTIALIAS_ON);
+      g2d.drawOval(
+              (int)(p.x - diameter / 2.0),
+              (int)(p.y - diameter / 2.0),
+              (int)(diameter + 0.5),
+              (int)(diameter + 0.5)
+      );
     }
   }
 
@@ -271,17 +296,6 @@ public class Flare extends AbstractConfigurable
 
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
-  }
-
-  public void actionPerformed(final ActionEvent e) {
-    frame++;
-    if (frame >= frames) {
-      active = false;
-      timer.stop();
-    }
-    if (!active || animate) {
-      map.repaint();
-    }    
   }
 
   public void mouseClicked(final MouseEvent e) {
@@ -331,8 +345,8 @@ public class Flare extends AbstractConfigurable
   public Point getClickPoint() {
     return clickPoint;
   }
-  
-  
+
+
   public static class FlareKeyConfig extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
