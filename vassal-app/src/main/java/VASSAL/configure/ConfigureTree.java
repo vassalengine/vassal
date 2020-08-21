@@ -138,6 +138,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action helpAction;
 
   private final SearchParameters searchParameters;
+  protected static Chatter chatter;
 
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
@@ -204,7 +205,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     TreePath path = new TreePath(((DefaultMutableTreeNode)(getModel().getRoot())).getPath());
     setSelectionPath(path);
     scrollPathToVisible(path);
+    
+    chatter = GameModule.getGameModule().getChatter();
   }
+  
+  
+  protected static void chat(String text) {
+    if (chatter != null) {
+      chatter.show("- " + text);
+    }
+  }
+
 
   public JFrame getFrame() {
     return editorWindow;
@@ -333,7 +344,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @return Search action - runs search dialog box, then searches
    */
   protected Action buildSearchAction(final Configurable target) {
-    final Action a = new SearchAction(this, searchParameters, GameModule.getGameModule().getChatter());
+    final Action a = new SearchAction(this, searchParameters);
     a.setEnabled(true);
     return a;
   }
@@ -431,6 +442,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent e) {
         if (cutData != null) {
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
+          if (!cutData.isNodeAncestor(targetNode)) {
+            chat (Resources.getString("Editor.cant_cut_ancestor_to_child"));
+            return;
+          }
           final Configurable cutObj = (Configurable) cutData.getUserObject();
           final Configurable convertedCutObj = convertChild(target, cutObj);
           if (remove(getParent(cutData), cutObj)) {
@@ -1315,20 +1330,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     private final ConfigureTree configureTree;
     private final SearchParameters searchParameters;
-    private final Chatter chatter;
 
     /**
      * Constructs a new {@link SearchAction}
      *
      * @param configureTree back reference to the {@link ConfigureTree}
      * @param searchParameters reference to the search parameter object
-     * @param chatter reference to the {@link Chatter}
      */
-    public SearchAction(ConfigureTree configureTree, SearchParameters searchParameters, Chatter chatter) {
+    public SearchAction(ConfigureTree configureTree, SearchParameters searchParameters) {
       super(configureTree.getSearchCmd());
       this.configureTree = configureTree;
       this.searchParameters = searchParameters;
-      this.chatter = chatter;
     }
 
     @Override
@@ -1361,7 +1373,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes()) {
             searchParameters.setMatchNames(true);
             names.setSelected(true);
-            chat (Resources.getString("Editor.search_all_off"));
+            ConfigureTree.chat (Resources.getString("Editor.search_all_off"));
           }
 
           if (!searchParameters.getSearchString().isEmpty()) {
@@ -1504,13 +1516,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return target.toLowerCase().contains(searchString.toLowerCase());
       }
     }
-
-    private void chat(String text) {
-      if (chatter != null) {
-        chatter.show("- " + text);
-      }
-    }
-
   }
 
 }
