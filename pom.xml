@@ -4,7 +4,7 @@
 
     <groupId>org.vassalengine</groupId>
     <artifactId>vassal-parent</artifactId>
-    <version>3.3.3-SNAPSHOT</version>
+    <version>3.3.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Vassal Engine</name>
@@ -19,6 +19,7 @@
     </licenses>
 
     <modules>
+        <module>vassal-deprecation</module>
         <module>vassal-app</module>
         <module>vassal-doc</module>
         <module>release-prepare</module>
@@ -74,7 +75,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.34</version>
+                            <version>8.35</version>
                         </dependency>
                     </dependencies>
                 </plugin>

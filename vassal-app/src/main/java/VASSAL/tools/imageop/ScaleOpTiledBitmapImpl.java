@@ -55,9 +55,9 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
   @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
-    final double iscale = 1.0/scale;
+    final double iscale = 1.0 / scale;
     final boolean invPow2 = Math.floor(iscale) == iscale &&
-                            (((int) iscale) & (((int) iscale)-1)) == 0;
+                            (((int) iscale) & (((int) iscale) - 1)) == 0;
 
     if (invPow2 && sop instanceof SourceOp) {
       final String name = ((SourceOp) sop).getName();
@@ -125,7 +125,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       else {
         // cobble this tile from pyramid tiles at the lub size
         final double nscale =
-          1.0/(1 << (int) Math.floor(Math.log(1.0/scale)/Math.log(2)));
+          1.0 / (1 << (int) Math.floor(Math.log(1.0 / scale) / Math.log(2)));
 
         rsop = new ScaleOpTiledBitmapImpl(rop.sop, nscale);
       }
@@ -133,18 +133,18 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       sd = rsop.getSize();
 
       // We want dx0 * xscale = sx0, unless that makes xscale = 0.
-      xscale = sd.width == 1 ?  dd.width : (float)(dd.width-1)/(sd.width-1);
+      xscale = sd.width == 1 ?  dd.width : (float)(dd.width - 1) / (sd.width - 1);
 
       // We want dy0 * yscale = sy0, unless that makes yscale = 0.
-      yscale = sd.height == 1 ? dd.height : (float)(dd.height-1)/(sd.height-1);
+      yscale = sd.height == 1 ? dd.height : (float)(dd.height - 1) / (sd.height - 1);
 
       final float fw = scale < 1.0f ?
         downFilter.getSamplingRadius() : upFilter.getSamplingRadius();
 
-      sx0 = Math.max(0, (int) Math.floor((dx0-fw)/xscale));
-      sy0 = Math.max(0, (int) Math.floor((dy0-fw)/yscale));
-      sx1 = Math.min(sd.width-1, (int) Math.ceil((dx1+fw)/xscale));
-      sy1 = Math.min(sd.height-1, (int) Math.ceil((dy1+fw)/yscale));
+      sx0 = Math.max(0, (int) Math.floor((dx0 - fw) / xscale));
+      sy0 = Math.max(0, (int) Math.floor((dy0 - fw) / yscale));
+      sx1 = Math.min(sd.width - 1, (int) Math.ceil((dx1 + fw) / xscale));
+      sy1 = Math.min(sd.height - 1, (int) Math.ceil((dy1 + fw) / yscale));
       sw = sx1 - sx0 + 1;
       sh = sy1 - sy0 + 1;
 
@@ -205,7 +205,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
       for (Point tile : tiles) {
         g.drawImage(rsop.getTile(tile, null),
-                    tile.x*tw-sx0, tile.y*th-sy0, null);
+                    tile.x * tw - sx0, tile.y * th - sy0, null);
       }
 
       g.dispose();

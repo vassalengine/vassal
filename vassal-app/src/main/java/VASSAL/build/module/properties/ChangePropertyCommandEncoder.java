@@ -47,7 +47,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
       String newValue = st.nextToken(null);
       String containerId = st.nextToken("");
 
-      if (key != null ) {
+      if (key != null) {
         /*
          * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
          * behaviour is to execute the change on the first matching property found in any container
@@ -76,7 +76,7 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
           .append(cpc.getOldValue())
           .append(cpc.getNewValue())
           .append(our_cid);
-        s = COMMAND_PREFIX+se.getValue();
+        s = COMMAND_PREFIX + se.getValue();
       }
     }
     return s;

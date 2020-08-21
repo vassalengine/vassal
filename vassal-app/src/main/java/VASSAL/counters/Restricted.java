@@ -52,7 +52,7 @@ public class Restricted extends Decorator implements EditablePiece {
   public static final String ID = "restrict;";
   private String[] side;
   private boolean restrictByPlayer;
-  private String owningPlayer="";
+  private String owningPlayer = "";
   private boolean restrictMovement = true;
   private static PlayerRoster.SideChangeListener handleRetirement;
 

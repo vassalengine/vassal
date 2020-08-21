@@ -108,7 +108,7 @@ public class BeanShell {
    */
   public void executeActionScript(String scriptName) {
     try {
-      globalInterpreter.evaluate(scriptName+"();");
+      globalInterpreter.evaluate(scriptName + "();");
     }
     catch (EvalError e) {
       e.printStackTrace();

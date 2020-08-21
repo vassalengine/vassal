@@ -119,12 +119,12 @@ public class RandomTextButton extends DiceButton {
             roll = Integer.parseInt(m_faces[roll - 1]) + plus;
           }
           else {
-            ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
+            ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
             roll = plus;
           }
         }
         catch (NumberFormatException ex) {
-          ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll-1]));
+          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_non_numeric", name), m_faces[roll - 1]));
           roll = 1;
         }
       }
@@ -139,7 +139,7 @@ public class RandomTextButton extends DiceButton {
             result.append(m_faces[roll - 1]);
           }
           else {
-            ErrorDialog.dataError(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
+            ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
             result.append("0");
           }
         else

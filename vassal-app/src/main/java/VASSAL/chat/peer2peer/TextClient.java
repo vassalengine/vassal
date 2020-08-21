@@ -249,7 +249,7 @@ public class TextClient {
     public String encode(Command c) {
       String s = null;
       if (c instanceof ShowText) {
-        return "CHAT"+((ShowText)c).getMessage(); //$NON-NLS-1$
+        return "CHAT" + ((ShowText)c).getMessage(); //$NON-NLS-1$
       }
       return s;
     }

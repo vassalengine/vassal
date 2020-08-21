@@ -196,7 +196,8 @@ public class TextItemInstance extends ItemInstance {
         @Override
         public boolean shouldBeVisible() {
           return isOutline();
-        }};
+        }
+      };
     }
     else {
       return super.getAttributeVisibility(name);

@@ -66,7 +66,7 @@ class JPEGDecoder {
   static final int APP14 = 0xFFEE;
 
   public static boolean decodeSignature(DataInputStream in) throws IOException {
-    return in.readUnsignedShort() == SOI; 
+    return in.readUnsignedShort() == SOI;
   }
 
   public static Chunk decodeChunk(DataInputStream in) throws IOException {
@@ -84,7 +84,7 @@ class JPEGDecoder {
     }
     else {
       final int length = in.readUnsignedShort();
-      data = new byte[length-2]; // length is inclusive of its own 2 bytes
+      data = new byte[length - 2]; // length is inclusive of its own 2 bytes
       in.readFully(data);
     }
 

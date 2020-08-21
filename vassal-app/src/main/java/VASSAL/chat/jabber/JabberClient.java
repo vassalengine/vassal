@@ -194,16 +194,20 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           String inviter, String reason, String password, Message mess) {
         if (INVITE.equals(reason)) {
           final String playerLogin = inviter.split("@")[0]; //$NON-NLS-1$
-          final Player player = playerMgr.getPlayer(inviter+JID_RESOURCE);
+          final Player player = playerMgr.getPlayer(inviter + JID_RESOURCE);
           final String playerName = player.getName() + "(" + playerLogin + ")"; //$NON-NLS-1$ //$NON-NLS-2$
           final String roomName = roomMgr.getRoomByJID(JabberClient.this, room).getName();
-          final int i = Dialogs.showConfirmDialog(GameModule
-            .getGameModule().getPlayerWindow(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
-            Resources.getString("Chat.invite_heading"), Resources.getString( //$NON-NLS-1$
-                "Chat.invitation", playerName, roomName), //$NON-NLS-1$
-            JOptionPane.QUESTION_MESSAGE, null,
-            JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources //$NON-NLS-1$
-                .getString("Chat.ignore_invitation")); //$NON-NLS-1$
+          final int i = Dialogs.showConfirmDialog(
+            GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+            Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+            Resources.getString("Chat.invitation", playerName, roomName), //$NON-NLS-1$
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            JOptionPane.YES_NO_OPTION,
+            "Invite" + inviter, //$NON-NLS-1$
+            Resources.getString("Chat.ignore_invitation")); //$NON-NLS-1$
+
           if (i == 0) {
             doInvite(inviter, roomName);
           }
@@ -211,7 +215,8 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
             MultiUserChat.decline(conn, room, inviter, "");                 //$NON-NLS-1$
           }
         }
-      }};
+      }
+    };
 
     // Listen for other clients leaving a room I own and revoke their membership
     userListener = new DefaultParticipantStatusListener() {
@@ -420,9 +425,9 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
 
   public void processServerMessage(String subject, String message) {
     final GameModule g = GameModule.getGameModule();
-    g.warn("##### " + Resources.getString("JabberClient.message_from_admin", host+":"+port)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    g.warn("##### " + Resources.getString("JabberClient.message_from_admin", host + ":" + port)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     if (subject != null) {
-      g.warn(Resources.getString("JabberClient.subject")+subject); //$NON-NLS-1$
+      g.warn(Resources.getString("JabberClient.subject") + subject); //$NON-NLS-1$
     }
     g.warn(message);
     g.warn("##### " + Resources.getString("JabberClient.end_message")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -579,7 +584,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       currentChat.grantMembership(invitee.getId());
     }
     catch (XMPPException e) {
-      ErrorDialog.bug(new Throwable("Unable to grant membership to room "+getCurrentRoom().getName()+" to player "+invitee.getId(), e)); //$NON-NLS-1$ //$NON-NLS-2$
+      ErrorDialog.bug(new Throwable("Unable to grant membership to room " + getCurrentRoom().getName() + " to player " + invitee.getId(), e)); //$NON-NLS-1$ //$NON-NLS-2$
     }
     currentChat.invite(((JabberPlayer) invitee).getRawJid(), INVITE); //$NON-NLS-1$
   }
@@ -928,7 +933,8 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
             }
           }
           return accept;
-        }};
+        }
+      };
 
       public TrackStatus(String prefix) {
         this.prefix = prefix;
@@ -969,7 +975,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           if (p.getType().equals(Presence.Type.available)) {
             PacketExtension ext = p.getExtension(QUERY_USER);
             JabberRoom room = null;
-            if (ext instanceof MUCUser){
+            if (ext instanceof MUCUser) {
               final String affiliation = ((MUCUser) ext).getItem().getAffiliation();
               final String jid = playerMgr.getPlayer(getAbsolutePlayerJID(p.getFrom())).getJid();
               String roomJid = (String) p.getProperty(ROOM_JID);
@@ -1220,7 +1226,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   public static String testConnection(String host, String port, String login, String passwd) {
-    final StringBuilder text = new StringBuilder(Resources.getString("JabberClient.testing_connection")+host+":"+port+" "+login+"/"+passwd).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    final StringBuilder text = new StringBuilder(Resources.getString("JabberClient.testing_connection") + host + ":" + port + " " + login + "/" + passwd).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     if (host.length() == 0) {
       return text.append(Resources.getString("JabberClient.error_no_host")).toString(); //$NON-NLS-1$

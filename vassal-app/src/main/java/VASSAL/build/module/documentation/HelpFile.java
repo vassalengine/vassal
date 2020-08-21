@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -159,6 +160,13 @@ public class HelpFile extends AbstractConfigurable {
     return contents;
   }
 
+  /** @deprecated Use {@link URLUtils#toURL(File)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static URL toURL(File f) throws MalformedURLException {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return URLUtils.toURL(f);
+  }
+
   @Override
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
@@ -268,7 +276,7 @@ public class HelpFile extends AbstractConfigurable {
 
   public static HelpFile getReferenceManualPage(String page, String anchor) {
     if (anchor != null && !anchor.startsWith("#")) { //$NON-NLS-1$
-      anchor = "#"+anchor; //$NON-NLS-1$
+      anchor = "#" + anchor; //$NON-NLS-1$
     }
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$

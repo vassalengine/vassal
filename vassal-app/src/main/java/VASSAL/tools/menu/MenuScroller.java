@@ -17,17 +17,12 @@
  * at http://www.opensource.org.
  */
 
-/**
- * @(#)MenuScroller.java  1.5.0 04/02/12
- */
 package VASSAL.tools.menu;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -40,6 +35,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
+import VASSAL.tools.ProblemDialog;
 
 /**
  * A class that provides scrolling capabilities to a long menu dropdown or
@@ -55,11 +52,10 @@ import javax.swing.event.PopupMenuListener;
  */
 public class MenuScroller {
 
-  //private JMenu menu;
   private JPopupMenu menu;
   private Component[] menuItems;
-  private MenuScrollItem upItem;
-  private MenuScrollItem downItem;
+  private final MenuScrollItem upItem;
+  private final MenuScrollItem downItem;
   private final MenuScrollListener menuListener = new MenuScrollListener();
   private int scrollCount;
   private int interval;
@@ -436,24 +432,16 @@ public class MenuScroller {
   /**
    * Removes this MenuScroller from the associated menu and restores the
    * default behavior of the menu.
+   *
+   * @deprecated will be removed without replacement.
    */
+  @Deprecated(since = "2020-08-01", forRemoval = true)
   public void dispose() {
+    ProblemDialog.showDeprecated("2020-08-01");
     if (menu != null) {
       menu.removePopupMenuListener(menuListener);
       menu = null;
     }
-  }
-
-  /**
-   * Ensures that the <code>dispose</code> method of this MenuScroller is
-   * called when there are no more refrences to it.
-   *
-   * @exception  Throwable if an error occurs.
-   * @see MenuScroller#dispose()
-   */
-  @Override
-  public void finalize() throws Throwable {
-    dispose();
   }
 
   private void refreshMenu() {
@@ -534,21 +522,19 @@ public class MenuScroller {
     private static final long serialVersionUID = 1L;
 
     public MenuScrollTimer(final int increment, int interval) {
-      super(interval, new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          firstIndex += increment;
-          refreshMenu();
-        }
+      super(interval, e -> {
+        firstIndex += increment;
+        refreshMenu();
       });
     }
   }
 
   private class MenuScrollItem extends JMenuItem
           implements ChangeListener {
+
     private static final long serialVersionUID = 1L;
-    private MenuScrollTimer timer;
+
+    private final MenuScrollTimer timer;
 
     public MenuScrollItem(MenuIcon icon, int increment) {
       setIcon(icon);
@@ -572,10 +558,11 @@ public class MenuScroller {
     }
   }
 
-  private static enum MenuIcon implements Icon {
+  private enum MenuIcon implements Icon {
 
     UP(9, 1, 9),
     DOWN(1, 9, 1);
+
     final int[] xPoints = {1, 5, 9};
     final int[] yPoints;
 

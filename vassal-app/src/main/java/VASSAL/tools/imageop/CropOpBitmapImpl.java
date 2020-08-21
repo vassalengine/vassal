@@ -66,7 +66,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     }
 
     if (x1 <= x0) {
-      throw new IllegalArgumentException("left = "+ x0 + ", right = " + x1);
+      throw new IllegalArgumentException("left = " + x0 + ", right = " + x1);
     }
 
     if (y1 <= y0) {
@@ -79,7 +79,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     this.x1 = x1;
     this.y1 = y1;
 
-    size = new Dimension(x1-x0, y1-y0);
+    size = new Dimension(x1 - x0, y1 - y0);
 
     hash = new HashCodeBuilder().append(sop)
                                 .append(x0)
@@ -92,7 +92,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     final Point[] tiles =
-      sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));
+      sop.getTileIndices(new Rectangle(x0, y0, x1 - x0, y1 - y0));
 
     final ArrayList<VASSAL.tools.opcache.Op<?>> ops =
       new ArrayList<>(tiles.length);
@@ -111,7 +111,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   public BufferedImage eval() throws Exception {
     // cobble source from tiles
     final Point[] tiles =
-      sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));
+      sop.getTileIndices(new Rectangle(x0, y0, x1 - x0, y1 - y0));
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
@@ -124,7 +124,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final Graphics2D g = dst.createGraphics();
 
     for (Point tile : tiles) {
-      g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
+      g.drawImage(sop.getTile(tile, null), tile.x * tw - x0, tile.y * th - y0, null);
     }
 
     g.dispose();
@@ -138,10 +138,10 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new CropOpBitmapImpl(this,
-                         tileX*tileSize.width,
-                         tileY*tileSize.height,
-                         Math.min((tileX+1)*tileSize.width, size.width),
-                         Math.min((tileY+1)*tileSize.height, size.height));
+                         tileX * tileSize.width,
+                         tileY * tileSize.height,
+                         Math.min((tileX + 1) * tileSize.width, size.width),
+                         Math.min((tileY + 1) * tileSize.height, size.height));
   }
 
   /**

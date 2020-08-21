@@ -46,7 +46,7 @@ public class NewExtensionAction extends GameModuleAction {
     JFrame frame = GameModule.getGameModule().getPlayerWindow();
     ExtensionEditorWindow w = new ExtensionEditorWindow(GameModule.getGameModule(), ext);
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width/2, w.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

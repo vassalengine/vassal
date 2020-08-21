@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -26,7 +27,6 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -97,12 +97,7 @@ public class GlobalMap implements AutoConfigurable,
     scroll.setAlignmentX(0.0f);
     scroll.setAlignmentY(0.0f);
 
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        scroll.setVisible(!scroll.isVisible());
-      }
-    };
+    ActionListener al = e -> scroll.setVisible(!scroll.isVisible());
 
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);
@@ -261,6 +256,34 @@ public class GlobalMap implements AutoConfigurable,
     return true;
   }
 
+  /**
+   * Transform a point from Map coordinates to coordinates in the overview
+   * window
+   *
+   * @param p Point
+   * @return Transformed Point
+   * @deprecated Use {@link #mapToComponent(Point)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Point componentCoordinates(Point p) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return mapToComponent(p);
+  }
+
+  /**
+   * Transform a point from coordinates in the overview window to Map
+   * coordinates
+   *
+   * @param p Point
+   * @return Transformed Point
+   * @deprecated Use {@link #componentToMap(Point)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Point mapCoordinates(Point p) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return componentToMap(p);
+  }
+
   public Point componentToMap(Point p) {
     return new Point(
       (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
@@ -288,7 +311,7 @@ public class GlobalMap implements AutoConfigurable,
     );
   }
 
-  public String getToolTipText(MouseEvent e) {
+  public String getToolTipText(@SuppressWarnings("unused") MouseEvent e) {
     return null;
   }
 
@@ -548,8 +571,8 @@ public class GlobalMap implements AutoConfigurable,
     @Override
     public Dimension getPreferredSize() {
       return new Dimension(
-        (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * scale),
-        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale)
+        (int)((map.mapSize().width - 2 * map.getEdgeBuffer().width) * scale),
+        (int)((map.mapSize().height - 2 * map.getEdgeBuffer().height) * scale)
       );
     }
   }

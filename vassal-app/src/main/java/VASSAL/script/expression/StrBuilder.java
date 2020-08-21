@@ -60,7 +60,7 @@ public class StrBuilder extends JDialog {
     final JPanel p = new JPanel();
     p.setLayout(new MigLayout("fillx", "[grow 0]rel[grow 1]"));
 
-    p.add(new JLabel(type+":"), "growx");
+    p.add(new JLabel(type + ":"), "growx");
     entry = new StringConfigurer("", "");
     p.add(entry.getControls(), "wrap,growx");
 
@@ -102,10 +102,10 @@ public class StrBuilder extends JDialog {
   protected void save() {
     String result = entry.getValueString();
     if (result.startsWith("\"") && result.endsWith("\"")) {
-      result = result.substring(1, result.length()-1);
+      result = result.substring(1, result.length() - 1);
     }
     result = result.replace("\"", "\\\"");
-    target.setValue("\""+result+"\"");
+    target.setValue("\"" + result + "\"");
     dispose();
   }
 

@@ -29,7 +29,7 @@ import javax.swing.JMenu;
  */
 public class MenuProxy extends AbstractParent<JMenu> {
   private String text;
-  private char mnemonic=0;
+  private char mnemonic = 0;
 
   public MenuProxy() { }
 

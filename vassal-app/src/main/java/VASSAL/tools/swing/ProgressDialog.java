@@ -130,9 +130,9 @@ public class ProgressDialog extends JDialog {
 
     // Process the listeners last to first, notifying
     // those that are interested in this event.
-    for (int i = larr.length-2; i >= 0; i -= 2) {
+    for (int i = larr.length - 2; i >= 0; i -= 2) {
       if (larr[i] == ActionListener.class) {
-        ((ActionListener) larr[i+1]).actionPerformed(e);
+        ((ActionListener) larr[i + 1]).actionPerformed(e);
       }
     }
   }

@@ -40,7 +40,7 @@ public class SumProperties implements PropertySource {
     Object value = null;
     final String keyString = key.toString();
     if (keyString.startsWith("sum(") && keyString.endsWith(")")) {
-      final String propertyName = keyString.substring(4, keyString.length()-1);
+      final String propertyName = keyString.substring(4, keyString.length() - 1);
       int sum = 0;
       boolean indeterminate = false;
       for (GamePiece p : pieces) {

@@ -184,7 +184,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
       return expression.evaluate(Decorator.getOutermost(this));
     }
     catch (ExpressionException e) {
-      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), piece.getProperty(BasicPiece.BASIC_NAME)+"-Calculated Property["+name+"]="+getExpression()+", Error="+e.getError(), e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
+        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e));
       return "";
     }
   }

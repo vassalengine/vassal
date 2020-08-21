@@ -31,7 +31,7 @@ public class SinglePropertyExpression extends Expression {
 
   public SinglePropertyExpression (String ex) {
     if (ex.startsWith("$") && ex.endsWith("$")) {
-      setExpression(ex.substring(1, ex.length()-1));
+      setExpression(ex.substring(1, ex.length() - 1));
     }
     else {
       setExpression(ex);

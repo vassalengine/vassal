@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -62,6 +63,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected int x = 0;
   protected int y = 0;
   protected VisibilityCondition visibilityCondition;
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected Image image;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   @Override
@@ -105,7 +108,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   protected boolean accept(GamePiece p) {
-    return matchProperties.isNull() ? true : matchProperties.accept(p);
+    return matchProperties.isNull() || matchProperties.accept(p);
   }
 
   public static String getConfigureTypeName() {
@@ -145,20 +148,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name) || THICKNESS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !useImage;
-        }
-      };
+      return () -> !useImage;
     }
     else if (List.of(IMAGE, X_OFFSET, Y_OFFSET).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return useImage;
-        }
-      };
+      return () -> useImage;
     }
     else {
       return super.getAttributeVisibility(name);

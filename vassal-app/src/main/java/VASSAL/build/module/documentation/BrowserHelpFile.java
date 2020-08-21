@@ -422,7 +422,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static class ContentsConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new DirectoryConfigurer(key, name){
+      return new DirectoryConfigurer(key, name) {
         @Override
         public Component getControls() {
           Component controls = super.getControls();

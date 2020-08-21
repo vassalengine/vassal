@@ -70,7 +70,7 @@ public interface MutableProperty {
    */
   public class Impl implements MutableProperty {
     private PropertyChangeSupport propSupport;
-    private String value="";
+    private String value = "";
     private String propertyName;
     private MutablePropertiesContainer parent;
 

@@ -436,9 +436,9 @@ public class Symbol {
 
       BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
 
-      int xpos = bounds.x + (bounds.width/2) - (bi.getWidth()/2) + gap; // + (gap/2) - (bi.getWidth()/2);
+      int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
       int ypos = bounds.y - sym_h - 1;
-      g.drawImage(bi, xpos, ypos , null);
+      g.drawImage(bi, xpos, ypos, null);
 
     }
 
@@ -456,9 +456,9 @@ public class Symbol {
     }
 
     protected static BufferedImage createImage(int count, int sym_w, int sym_h, int gap) {
-      int w = sym_w * count + gap * (count-1)+1;
+      int w = sym_w * count + gap * (count - 1) + 1;
       if (w < 1) w = sym_w;
-      return ImageUtils.createCompatibleTranslucentImage(w, sym_h+1);
+      return ImageUtils.createCompatibleTranslucentImage(w, sym_h + 1);
     }
 
     public static BufferedImage buildSizeImage(Graphics g, int count, String type, int sym_w, int sym_h, int gap) {
@@ -467,7 +467,7 @@ public class Symbol {
       BufferedImage bi;
 
       if (type.equals(INSTALLATION_SYMBOL)) {
-        bi = createImage(count, sym_w*3, sym_h, gap);
+        bi = createImage(count, sym_w * 3, sym_h, gap);
       }
       else {
         bi = createImage(count, sym_w, sym_h, gap);
@@ -484,22 +484,22 @@ public class Symbol {
       for (int i = 0; i < count; i++) {
         if (type.equals(TEAM_SYMBOL)) {
           int radius = sym_w / 2;
-          big.drawOval(x_pos, sym_h/3, radius * 2, radius * 2);
-          big.drawLine(x_pos, sym_h, x_pos+sym_w, 0);
+          big.drawOval(x_pos, sym_h / 3, radius * 2, radius * 2);
+          big.drawLine(x_pos, sym_h, x_pos + sym_w, 0);
         }
         else if (type.equals(SQUAD_SYMBOL)) {
           int radius = sym_w / 2;
-          big.fillOval(x_pos, sym_h/3, radius * 2, radius * 2);
+          big.fillOval(x_pos, sym_h / 3, radius * 2, radius * 2);
         }
         else if (type.equals(COMPANY_SYMBOL)) {
-          big.drawLine(x_pos+sym_w/2, 0, x_pos+sym_w/2, sym_h);
+          big.drawLine(x_pos + sym_w / 2, 0, x_pos + sym_w / 2, sym_h);
         }
         else if (type.equals(BRIGADE_SYMBOL)) {
-          big.drawLine(x_pos, 0, x_pos+sym_w, sym_h);
-          big.drawLine(x_pos, sym_h, x_pos+sym_w, 0);
+          big.drawLine(x_pos, 0, x_pos + sym_w, sym_h);
+          big.drawLine(x_pos, sym_h, x_pos + sym_w, 0);
         }
         else if (type.equals(INSTALLATION_SYMBOL)) {
-          big.fillRect(x_pos, sym_h/2, x_pos+3*sym_w, sym_h);
+          big.fillRect(x_pos, sym_h / 2, x_pos + 3 * sym_w, sym_h);
         }
         x_pos += sym_w + gap;
       }

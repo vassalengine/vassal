@@ -137,12 +137,13 @@ public class ChatServerControls extends AbstractBuildable {
     toolbar.addSeparator();
 
     configServerButton = new JButton();
-    configServerButton.addActionListener(new ActionListener(){
+    configServerButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         ServerAddressBook.editCurrentServer(!client.isConnected());
-      }});
-    configServerButton.addMouseListener(new MouseAdapter(){
+      }
+    });
+    configServerButton.addMouseListener(new MouseAdapter() {
       private void maybePopup(MouseEvent e) {
         if (!client.isConnected() && e.isPopupTrigger()) {
           showChangeServerMenu();
@@ -321,11 +322,12 @@ public class ChatServerControls extends AbstractBuildable {
       }
     };
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
-    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener(){
+    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         updateConfigServerToolTipText();
-      }});
+      }
+    });
   }
 
   public ChatServerConnection getClient() {

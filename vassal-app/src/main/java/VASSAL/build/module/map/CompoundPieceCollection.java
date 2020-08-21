@@ -42,7 +42,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   protected void initLayers(int layerCount) {
     layers = new SimplePieceCollection[layerCount];
     enabled = new boolean[layerCount];
-    for (int i=0; i<layers.length; ++i) {
+    for (int i = 0; i < layers.length; ++i) {
       layers[i] = new SimplePieceCollection();
       enabled[i] = true;
     }
@@ -110,7 +110,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     int layer = getLayerForPiece(p);
     int index = layers[layer].indexOf(p);
     if (index >= 0) {
-      for (int i=0; i<layer-1; ++i) {
+      for (int i = 0; i < layer - 1; ++i) {
         index += layers[i].getPieces().length;
       }
     }
@@ -229,7 +229,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
    */
   public void rotate(boolean rotateUp) {
     if (rotateUp) {
-      setBottomLayer(bottomLayer-1);
+      setBottomLayer(bottomLayer - 1);
     }
     else {
       setBottomLayer(bottomLayer + 1);

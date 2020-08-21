@@ -473,7 +473,10 @@ public final class Primitive implements ParserConstants, java.io.Serializable
                 
             case MATCH:
                 return Boolean.valueOf(Pattern.matches(rhs, lhs));
-                
+
+            case NMATCH:
+                return ! Boolean.valueOf(Pattern.matches(rhs, lhs));
+
             default:
                 throw new InterpreterError(
           "Unimplemented binary String operator");

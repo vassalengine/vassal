@@ -60,12 +60,12 @@ public class IconButton extends JButton {
       g.drawLine(5, size / 2, size - 5, size / 2);
       break;
     case TICK_ICON:
-      g.drawLine(5, size/2, size/2, size-5);
-      g.drawLine(size/2, size-5, 5, size-5);
+      g.drawLine(5, size / 2, size / 2, size - 5);
+      g.drawLine(size / 2, size - 5, 5, size - 5);
       break;
     case CROSS_ICON:
-      g.drawLine(5, 5, size-5, size-5);
-      g.drawLine(5, size-5, size-5, 5);
+      g.drawLine(5, 5, size - 5, size - 5);
+      g.drawLine(5, size - 5, size - 5, 5);
       break;
     }
     setIcon(new ImageIcon(image));

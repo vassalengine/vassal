@@ -73,7 +73,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected FunctionBuilder builder;
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
-    this(key, name, val, piece, Option.NONE );
+    this(key, name, val, piece, Option.NONE);
   }
 
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece, Option option) {
@@ -108,7 +108,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void strip() {
     final String s = getValueString().trim();
     if (s.startsWith("{") && s.endsWith("}")) {
-      setValue(s.substring(1, s.length()-1));
+      setValue(s.substring(1, s.length() - 1));
     }
   }
 
@@ -252,14 +252,14 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     boolean valid = true;
     for (int i = 0; i < name.length() && valid; i++) {
       final char c = name.charAt(i);
-      if (i==0) {
+      if (i == 0) {
         valid = Character.isJavaIdentifierStart(c);
       }
       else {
         valid = Character.isJavaIdentifierPart(c);
       }
     }
-    return valid ? name : "GetProperty(\""+name+"\")";
+    return valid ? name : "GetProperty(\"" + name + "\")";
   }
 
   protected void setDetails(String error, List<String> v, List<String> m) {
@@ -323,7 +323,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       if (status == VALID) {
         setIcon(tick);
       }
-      else if (status == INVALID){
+      else if (status == INVALID) {
         setIcon(cross);
       }
       else {

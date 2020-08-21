@@ -398,7 +398,7 @@ public class MassPieceLoader {
         c.setEnabled(!node.isSkip());
         if (node instanceof PieceNode) {
           final String image = node.getImageName();
-          final String i = "<html><img src=\"file:/"+loadDirectory.getAbsolutePath()+"/"+image+"\"></html>";
+          final String i = "<html><img src=\"file:/" + loadDirectory.getAbsolutePath() + "/" + image + "\"></html>";
           c.setToolTipText(i);
         }
         return c;
@@ -803,6 +803,9 @@ public class MassPieceLoader {
     @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
       if (column == SKIP_COL || column == COPIES_COL) {
+        if (this.getPathForRow(row) == null) {
+          return new NullRenderer();
+        }
         if (!(this.getPathForRow(row).getLastPathComponent() instanceof PieceNode)) {
           return new NullRenderer();
         }

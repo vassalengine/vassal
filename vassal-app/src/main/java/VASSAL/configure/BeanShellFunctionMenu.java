@@ -138,8 +138,8 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     addFunction(countMenu, "SumStack", "Sum the values of the named property in all pieces in the same stack", new String[] { "Property name" }, "(name)");
     addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME});
     addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.PME});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME});
+    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE});
 
     final JMenu functionMenu = new JMenu("Function");
     functionMenu.add(mathMenu);
@@ -297,7 +297,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     for (Buildable b : buildables) {
       if (b instanceof AbstractConfigurable) {
         // Remove 'filler' menu levels due to intermediate holding components
-        final boolean useParent = (b instanceof GlobalProperties || b instanceof Board ||b instanceof ZonedGrid);
+        final boolean useParent = (b instanceof GlobalProperties || b instanceof Board || b instanceof ZonedGrid);
         buildGlobalMenu(useParentMenu ? parentMenu : myMenu, (AbstractConfigurable) b, useParent);
       }
       else if (b instanceof BoardPicker) {
@@ -320,7 +320,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
       final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
-      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height/itemSize.height);
+      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height / itemSize.height);
     }
     return maxScrollItems;
 

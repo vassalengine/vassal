@@ -25,6 +25,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Window;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
@@ -33,6 +34,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -257,6 +259,17 @@ public class PrivateMap extends Map {
     super.setBoards(c);
   }
 
+  /** @deprecated Use {@link #setBoards(Collection)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setBoards(Enumeration<Board> boardList) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    if (surrogate != null) {
+      boardList = surrogate.getAllBoards();
+      edgeBuffer = surrogate.getEdgeBuffer();
+    }
+    super.setBoards(boardList);
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PrivateMap.component_type"); //$NON-NLS-1$
   }
@@ -286,11 +299,9 @@ public class PrivateMap extends Map {
     private static final long serialVersionUID = 1L;
 
     private boolean listenersActive;
-    private List<KeyListener> keyListeners = new ArrayList<>();
-    private List<MouseListener> mouseListeners =
-      new ArrayList<>();
-    private List<MouseMotionListener> mouseMotionListeners =
-      new ArrayList<>();
+    private final List<KeyListener> keyListeners = new ArrayList<>();
+    private final List<MouseListener> mouseListeners = new ArrayList<>();
+    private final List<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
     private DropTarget dropTarget;
 
     public View(PrivateMap m) {

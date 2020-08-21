@@ -96,8 +96,8 @@ public class TilesToImage {
     final int th_last = d.height;
 
     // create the new image
-    final int w = tw*(tcols-1) + tw_last;
-    final int h = th*(trows-1) + th_last;
+    final int w = tw * (tcols - 1) + tw_last;
+    final int h = th * (trows - 1) + th_last;
 
     final BufferedImage img =
       new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -112,7 +112,7 @@ public class TilesToImage {
           new File(base + "(" + tx + "," + ty + ")@1:" + scale);
         final BufferedImage tile = TileUtils.read(tfile);
 
-        g.drawImage(tile, tx*tw, ty*th, null);
+        g.drawImage(tile, tx * tw, ty * th, null);
       }
     }
 

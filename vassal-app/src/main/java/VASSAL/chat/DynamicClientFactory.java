@@ -28,8 +28,7 @@ public class DynamicClientFactory extends ChatServerFactory {
 
   @Override
   public ChatServerConnection buildServer(Properties param) {
-    String url = param.getProperty(URL);
-    DynamicClient client = url == null ? new DynamicClient() : new DynamicClient(url);
+    DynamicClient client = new DynamicClient();
     if (param.containsKey(DYNAMIC_TYPE)) {
       // Force the type of the dynamically created server proxy
       param.setProperty(ChatServerFactory.TYPE_KEY, param.getProperty(DYNAMIC_TYPE));

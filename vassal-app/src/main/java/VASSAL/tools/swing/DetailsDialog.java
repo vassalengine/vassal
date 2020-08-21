@@ -54,7 +54,7 @@ public class DetailsDialog {
     // set a slightly larger, bold font for the header
     final JLabel headerLabel = new JLabel(header);
     final Font f = headerLabel.getFont();
-    headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
+    headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize() * 1.2f));
 
     // put together the paragraphs of the message
     final FlowLabel messageLabel = new FlowLabel(message);

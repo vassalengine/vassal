@@ -57,7 +57,7 @@ import VASSAL.tools.imports.Importer;
  * @author Michael Kiefte
  *
  */
-public class SymbolSet extends Importer{
+public class SymbolSet extends Importer {
 
   private static final int OLD_SYMBOL_SET_FORMAT = 0xFD;
 
@@ -218,9 +218,9 @@ public class SymbolSet extends Importer{
      */
     private BufferedImage getImage(Rectangle rect2) {
       if (img == null) {
-        if ( isMask && (rect.width <= 0 || rect.height <= 0
-            || rect.width+rect.x > bitmap.getWidth()
-            || rect.height+rect.y > bitmap.getHeight() )) {
+        if (isMask && (rect.width <= 0 || rect.height <= 0
+            || rect.width + rect.x > bitmap.getWidth()
+            || rect.height + rect.y > bitmap.getHeight())) {
           // Images with invalid masks appear to be completely transparent.
           // This is a hassle generating new ones all the time, but there's nothing
           // to say that the real mask can't be different sizes at every call,
@@ -433,7 +433,7 @@ public class SymbolSet extends Importer{
       final BufferedImage im = piece.getImage();
       final Dimension d = new Dimension(im.getWidth(), im.getHeight());
       final Integer i = histogram.get(d);
-      histogram.put(d, i == null ? 1 : i+1);
+      histogram.put(d, i == null ? 1 : i + 1);
     }
 
     int max = 0;
@@ -599,7 +599,7 @@ public class SymbolSet extends Importer{
           for (int i = 0; i < pieces.length; ++i) {
             line = input.readLine();
             int idx = Integer.parseInt(line);
-            pieces[i] = gamePieceData[idx-1];
+            pieces[i] = gamePieceData[idx - 1];
           }
         }
         catch (EOFException e) {

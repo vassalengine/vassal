@@ -149,7 +149,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       @Override
       public void actionPerformed(ActionEvent e) {
         getNewTranslation();
-      }});
+      }
+    });
 
     langPanel.add(addButton);
 
@@ -481,9 +482,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     public MyTable() {
       super(new MyTableModel());
-      setDefaultRenderer( JComponent.class, new JComponentCellRenderer() );
-      setDefaultEditor( JComponent.class, new JComponentCellEditor() );
-
+      setDefaultRenderer(JComponent.class, new JComponentCellRenderer());
+      setDefaultEditor(JComponent.class, new JComponentCellEditor());
     }
 
     @Override
@@ -492,9 +492,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       if (renderer == null) {
         Class<?> c = getColumnClass(column);
-        if ( c.equals(Object.class) ) {
+        if (c.equals(Object.class)) {
           Object o = getValueAt(row, column);
-          if ( o != null )
+          if (o != null)
             c = getValueAt(row, column).getClass();
         }
         renderer = getDefaultRenderer(c);
@@ -508,9 +508,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableCellEditor editor = tableColumn.getCellEditor();
       if (editor == null) {
         Class<?> c = getColumnClass(column);
-        if ( c.equals(Object.class) ) {
+        if (c.equals(Object.class)) {
           Object o = getValueAt(row, column);
-          if ( o != null )
+          if (o != null)
             c = getValueAt(row, column).getClass();
         }
         editor = getDefaultEditor(c);
@@ -566,9 +566,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     @Override
     public boolean shouldSelectCell(EventObject anEvent) {
       if (editorComponent != null && anEvent instanceof MouseEvent
-        && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED ) {
+        && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED) {
 
-        Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
+        Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3);
         ((CopyButton) dispatchComponent).setSelected(true);
       }
       return false;

@@ -434,7 +434,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       add(vassalVersionConfig);
       minimumVassalVersionConfig = new JTextField(12);
       minimumVassalVersionConfig.setText(vassalVersion);
@@ -446,7 +447,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
 
       add(moduleVersionConfig);
       minimumModuleVersionConfig = new JTextField(12);
@@ -459,7 +461,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateVisibility();
-        }});
+        }
+      });
       add(matchCrcConfig);
       crcConfig = new JTextField(12);
       crcConfig.setText(Long.toHexString(GameModule.getGameModule().getCrc()));

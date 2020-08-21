@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -42,7 +43,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.dnd.InvalidDnDOperationException;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -225,7 +225,7 @@ public class PieceMover extends AbstractBuildable
    * drag buffer.
    *
    * @see #createDragTargetSelector
-   * @return
+   * @return Dispatcher
    */
   protected PieceVisitorDispatcher createSelectionProcessor() {
     return new DeckVisitorDispatcher(new DeckVisitor() {
@@ -250,7 +250,7 @@ public class PieceMover extends AbstractBuildable
 
         s.asList().forEach(
           selectAllUnitsInStackRegardlessOfSelection ?
-          (p) -> dbuf.add(p) :
+            dbuf::add :
           (p) -> {
             if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
               dbuf.add(p);
@@ -301,7 +301,7 @@ public class PieceMover extends AbstractBuildable
    * The default implementation is to return the first piece whose shape
    * contains the point clicked on.
    *
-   * @return
+   * @return Piece Finder
    */
   protected PieceFinder createDragTargetSelector() {
     return new PieceFinder.Movable() {
@@ -346,17 +346,14 @@ public class PieceMover extends AbstractBuildable
 
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
-        final ActionListener al = new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            final GamePiece[] p = map.getAllPieces();
-            final Command c = new NullCommand();
-            for (GamePiece gamePiece : p) {
-              c.append(markMoved(gamePiece, false));
-            }
-            GameModule.getGameModule().sendAndLog(c);
-            map.repaint();
+        final ActionListener al = e -> {
+          final GamePiece[] p = map.getAllPieces();
+          final Command c = new NullCommand();
+          for (GamePiece gamePiece : p) {
+            c.append(markMoved(gamePiece, false));
           }
+          GameModule.getGameModule().sendAndLog(c);
+          map.repaint();
         };
 
         markUnmovedButton =
@@ -445,13 +442,14 @@ public class PieceMover extends AbstractBuildable
     }
     return c;
   }
-  
+
   /**
-   * Replaced by {@link #setOldLocations(GamePiece)} to return generated Commands
-   * @param p
+   * @deprecated  {@link #setOldLocations(GamePiece)} to return generated Commands
+   * @param p Piece
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected void setOldLocation(GamePiece p) {
+    ProblemDialog.showDeprecated("2020-08-06");
     setOldLocations(p);
   }
 
@@ -466,7 +464,7 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(Decorator.setOldProperties(p));
     }
     return comm;
-    
+
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {
@@ -630,7 +628,7 @@ public class PieceMover extends AbstractBuildable
           }
         }
         else {
-          for (int i = draggedPieces.size()-1; i >= 0; --i) {
+          for (int i = draggedPieces.size() - 1; i >= 0; --i) {
             comm = comm.append(movedPiece(draggedPieces.get(i), mergeWith.getPosition()));
             comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPieces.get(i)));
           }
@@ -663,13 +661,14 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * Replace by {@link #applyKeyAfterMove(List, KeyStroke)} to return Commands
+   * @deprecated Use {@link #applyKeyAfterMove(List, KeyStroke)} to return Commands
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected void applyKeyAfterMove(List<GamePiece> pieces, Command comm, KeyStroke key) {
+    ProblemDialog.showDeprecated("2020-08-06");
     comm.append(applyKeyAfterMove(pieces, key));
   }
-  
+
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
     Command comm = new NullCommand();
     for (GamePiece piece : pieces) {
@@ -684,7 +683,7 @@ public class PieceMover extends AbstractBuildable
   /**
    * This listener is used for faking drag-and-drop on Java 1.1 systems
    *
-   * @param e
+   * @param e Event
    */
   @Override
   public void mousePressed(MouseEvent e) {
@@ -710,6 +709,17 @@ public class PieceMover extends AbstractBuildable
     else {
       DragBuffer.getBuffer().clear();
     }
+    // show/hide selection boxes
+    map.repaint();
+  }
+
+  /** @deprecated Use {@link #selectMovablePieces(MouseEvent)}. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected void selectMovablePieces(Point point) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    final GamePiece p = map.findPiece(point, dragTargetSelector);
+    dragBegin = point;
+    selectionProcessor.accept(p);
     // show/hide selection boxes
     map.repaint();
   }
@@ -843,7 +853,7 @@ public class PieceMover extends AbstractBuildable
     protected JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
     //      private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
-    private Point drawOffset = new Point(); // translates event coords to local
+    private final Point drawOffset = new Point(); // translates event coords to local
                                             // drawing coords
     private Rectangle boundingBox; // image bounds
     private int originalPieceOffsetX; // How far drag STARTED from gamepiece's
@@ -955,11 +965,11 @@ public class PieceMover extends AbstractBuildable
 
     /** Common functionality abstracted from makeDragImage and makeDragCursor
      *
-     * @param zoom
-     * @param doOffset
-     * @param target
-     * @param setSize
-     * @return
+     * @param zoom Zoom Level
+     * @param doOffset Drag Offset
+     * @param target Target Component
+     * @param setSize Set Size
+     * @return Drag Image
      */
     BufferedImage makeDragImageCursorCommon(double zoom, boolean doOffset,
       Component target, boolean setSize) {
@@ -1051,7 +1061,7 @@ public class PieceMover extends AbstractBuildable
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
-          r.translate(sm.unexSepX*stackCount, -sm.unexSepY*stackCount);
+          r.translate(sm.unexSepX * stackCount, -sm.unexSepY * stackCount);
         }
 
         boundingBox.add(r);
@@ -1074,8 +1084,8 @@ public class PieceMover extends AbstractBuildable
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
         final Map map = piece.getMap();        
-        
-        if (piece instanceof Stack){
+
+        if (piece instanceof Stack) {
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
                         EXTRA_BORDER - boundingBox.y + pos.y,
@@ -1092,10 +1102,10 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
-          
+
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
-          
+
           String owner = "";
           if (piece.getParent() instanceof Deck) {
             owner = (String)piece.getProperty(Properties.OBSCURED_BY);
@@ -1151,7 +1161,7 @@ public class PieceMover extends AbstractBuildable
       for (int f = 0; f < b; ++f) {
         final int alpha = CURSOR_ALPHA * (f + 1) / b;
         g.setColor(new Color(0xff, 0xff, 0xff, alpha));
-        g.drawRect(f, f, w-2*f, h-2*f);
+        g.drawRect(f, f, w - 2 * f, h - 2 * f);
       }
 
       // paint in the source image
@@ -1177,7 +1187,7 @@ public class PieceMover extends AbstractBuildable
       }
       // FIXME: Fix by replacing AWT Drag 'n Drop with Swing DnD.
       // Catch and ignore spurious DragGestures
-      catch (InvalidDnDOperationException e) {
+      catch (InvalidDnDOperationException ignored) {
       }
     }
 

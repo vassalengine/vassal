@@ -392,7 +392,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       if (p.neverBandSelect) {
         bandSelectOption.setSelectedIndex(2);
       }
-      else if (p.altToBandSelect ) {
+      else if (p.altToBandSelect) {
         bandSelectOption.setSelectedIndex(1);
       }
       else {

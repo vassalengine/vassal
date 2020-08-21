@@ -20,8 +20,13 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import java.util.concurrent.Future;
 
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,18 +96,13 @@ public class ProblemDialog {
 
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          parent,
-          title,
-          heading,
-          message,
-          messageType
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      parent,
+      title,
+      heading,
+      message,
+      messageType
+    ));
   }
 
   public static Future<?> showDisableable(
@@ -165,20 +165,15 @@ public class ProblemDialog {
 
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          parent,
-          title,
-          heading,
-          message,
-          messageType,
-          key,
-          Resources.getString("Dialogs.disable")
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      parent,
+      title,
+      heading,
+      message,
+      messageType,
+      key,
+      Resources.getString("Dialogs.disable")
+    ));
   }
 
   public static Future<?> showDisableableNoI18N(
@@ -191,20 +186,15 @@ public class ProblemDialog {
 
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          getFrame(),
-          title,
-          heading,
-          message,
-          messageType,
-          key,
-          "Don't show this again"
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      getFrame(),
+      title,
+      heading,
+      message,
+      messageType,
+      key,
+      "Don't show this again"
+    ));
   }
 
   public static Future<?> showDetails(
@@ -267,23 +257,18 @@ public class ProblemDialog {
 
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        DetailsDialog.showDialog(
-          parent,
-          title,
-          heading,
-          message,
-          details,
-          Resources.getString("Dialogs.disable"),
-          Resources.getString("Dialogs.show_details"),
-          Resources.getString("Dialogs.hide_details"),
-          messageType,
-          null
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> DetailsDialog.showDialog(
+      parent,
+      title,
+      heading,
+      message,
+      details,
+      Resources.getString("Dialogs.disable"),
+      Resources.getString("Dialogs.show_details"),
+      Resources.getString("Dialogs.hide_details"),
+      messageType,
+      null
+    ));
   }
 
   public static Future<?> showDetailsDisableable(
@@ -353,27 +338,63 @@ public class ProblemDialog {
 
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        DetailsDialog.showDialog(
-          parent,
-          title,
-          heading,
-          message,
-          details,
-          Resources.getString("Dialogs.disable"),
-          Resources.getString("Dialogs.show_details"),
-          Resources.getString("Dialogs.hide_details"),
-          messageType,
-          key
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> DetailsDialog.showDialog(
+      parent,
+      title,
+      heading,
+      message,
+      details,
+      Resources.getString("Dialogs.disable"),
+      Resources.getString("Dialogs.show_details"),
+      Resources.getString("Dialogs.hide_details"),
+      messageType,
+      key
+    ));
   }
 
   private static Frame getFrame() {
     return GameModule.getGameModule() == null
       ? null : GameModule.getGameModule().getPlayerWindow();
   }
+
+  public static Future<?> showDeprecated(String date) {
+    final StackWalker.StackFrame frame =
+      StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE), 2)
+        .walk(f -> f.skip(1).limit(1).collect(Collectors.toList())).get(0);
+    final String method = frame.getClassName() + "." + frame.getMethodName();
+    final LocalDate deprecateFrom = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d"));
+    final LocalDate warnUntil = deprecateFrom.plusMonths(6);
+    final String expiry = deprecateFrom.plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale()));
+    final String expiryDetails = Resources.getString("Dialogs.deprecated.message", method, expiry);
+
+    if (LocalDate.now().isBefore(warnUntil)) {
+      if (! DialogUtils.isDisabled(expiryDetails)) {
+        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + expiryDetails);
+        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + Resources.getString("Dialogs.check_for_updated_module"));
+        DialogUtils.setDisabled(expiryDetails, true);
+      }
+      return null;
+    }
+    else {
+      return showDisableable(JOptionPane.WARNING_MESSAGE,
+        null, null, method,
+        Resources.getString("Dialogs.out_of_date"),
+        Resources.getString("Dialogs.out_of_date"),
+        expiryDetails + "\n\n" + Resources.getString("Dialogs.check_for_updated_module")
+      );
+    }
+  }
+
+  public static Future<?> showOutdatedUsage(String usage) {
+
+    return showDisableable(JOptionPane.WARNING_MESSAGE,
+      null, null, usage,
+      Resources.getString("Dialogs.out_of_date"),
+      Resources.getString("Dialogs.out_of_date"),
+      Resources.getString("Dialogs.out_dated_usage", usage) + "\n\n"
+        + Resources.getString("Dialogs.check_for_updated_module")
+    );
+  }
+
+
 }

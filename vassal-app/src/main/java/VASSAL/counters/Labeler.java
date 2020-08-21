@@ -153,7 +153,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   protected String clean(String s) {
     // Cannot use $PieceName$ in a label format, must use $pieceName$
-    return s.replace("$"+BAD_PIECE_NAME+"$", "$"+PIECE_NAME+"$");
+    return s.replace("$" + BAD_PIECE_NAME + "$", "$" + PIECE_NAME + "$");
   }
 
   @Override
@@ -175,7 +175,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return getLabel();
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return getLabel()+piece.getProperty(key);
+      return getLabel() + piece.getProperty(key);
     }
     else {
       return super.getProperty(key);
@@ -228,7 +228,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       //
       // Bug 9483
       // Don't evaluate the label while reporting an infinite loop
-      // Can cause further looping so that the infinite loop report 
+      // Can cause further looping so that the infinite loop report
       // never finishes before a StackOverflow occurs
       //
       if (! RecursionLimiter.isReportingInfiniteLoop()) {
@@ -400,7 +400,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final Point result = new Point(x, y);
 
     // Cache the position once the label image has been generated
-    if (lblSize.height > 0 && lblSize.width > 0 ) {
+    if (lblSize.height > 0 && lblSize.width > 0) {
       position = result;
     }
 
@@ -661,7 +661,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return "Text Label" + (description.length() > 0 ? (" - "+description) : "");
+    return "Text Label" + (description.length() > 0 ? (" - " + description) : "");
   }
 
   @Override

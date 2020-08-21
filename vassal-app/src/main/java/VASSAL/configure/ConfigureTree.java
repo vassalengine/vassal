@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -138,7 +139,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   private final SearchParameters searchParameters;
 
-  public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
+  public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
   /** Creates new ConfigureTree */
@@ -474,8 +475,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Currently this is used to allow cut and paste of CardSlots and PieceSlots
    * between Decks and GamePiece Palette components.
    *
-   * @param parent
-   * @param child
+   * @param parent Parent Configurable
+   * @param child Child Configurable
    * @return new Child
    */
   protected Configurable convertChild(Configurable parent, Configurable child) {
@@ -603,8 +604,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * @deprecated Use {@link #buildAddActionsFor(Configurable)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Enumeration<Action> buildAddActions(final Configurable target) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(buildAddActionsFor(target));
   }
 
@@ -912,7 +914,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     if (o instanceof Configurable) return (Configurable) o;
 
-    ErrorDialog.show("Error.not_a_configurable", className);
+    ErrorDialog.show("Error.not_a_configurable", className); //$NON-NLS-1$//
     return null;
   }
 
@@ -1141,7 +1143,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * Find the parent Configurable of a specified Configurable
    *
-   * @param target
+   * @param target target Configurable
    * @return parent
    */
   protected Configurable getParent(Configurable target) {
@@ -1156,8 +1158,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * Record additional available components to add to the popup menu.
    *
-   * @param parent
-   * @param child
+   * @param parent Parent Class
+   * @param child Child Class
    */
   public static void addAdditionalComponent(Class<? extends Buildable> parent, Class<? extends Buildable> child) {
     additionalComponents.add(new AdditionalComponent(parent, child));
@@ -1185,10 +1187,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Container for search parameters
    */
   private static class SearchParameters {
-    public static final String SEARCH_STRING = "searchString";
-    public static final String MATCH_CASE    = "matchCase";
-    public static final String MATCH_NAMES   = "matchNames";
-    public static final String MATCH_TYPES   = "matchTypes";        
+    public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$//
+    public static final String MATCH_CASE    = "matchCase"; //$NON-NLS-1$//
+    public static final String MATCH_NAMES   = "matchNames"; //$NON-NLS-1$//
+    public static final String MATCH_TYPES   = "matchTypes"; //$NON-NLS-1$//
 
     /** Current search string */
     private String searchString;
@@ -1384,20 +1386,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(e1 -> d.dispose());
 
-      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]"));
+      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
 
       // top row
-      d.add(searchLabel, "align right, gapx rel");
-      d.add(search, "pushx, growx, wrap");
+      d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
+      d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
 
       // options row
-      d.add(sensitive, "align center, gapx unrel, span");
-      d.add(names, "gapx unrel");
-      d.add(types, "wrap");
+      d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
+      d.add(names, "gapx unrel"); //$NON-NLS-1$//
+      d.add(types, "wrap"); //$NON-NLS-1$//
 
       // buttons row
-      d.add(find, "tag ok, split");
-      d.add(cancel, "tag cancel");
+      d.add(find, "tag ok, split"); //$NON-NLS-1$//
+      d.add(cancel, "tag cancel"); //$NON-NLS-1$//
 
       d.getRootPane().setDefaultButton(find); // Enter key activates search
 
@@ -1482,9 +1484,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       if (searchParameters.isMatchTypes()) {
         String className = getConfigureName(c.getClass());
-        if (className != null && checkString(className, searchString)) {
-          return true;
-        }
+        return className != null && checkString(className, searchString);
       }
 
       return false;

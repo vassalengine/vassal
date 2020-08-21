@@ -17,6 +17,7 @@
  */
 package VASSAL.build;
 
+import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -106,6 +107,16 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
 
   /**
    * @return all build components that are an instance of the given class
+   * @deprecated Use {@link #getComponentsOf(Class)} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public <T> Enumeration<T> getComponents(Class<T> target) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return Collections.enumeration(getComponentsOf(target));
+  }
+
+  /**
+   * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<>();
@@ -118,11 +129,25 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
+   * Recursively descend the build tree and return an enumeration of all
+   * components that are instances of the given class
+   *
+   * @param target Target class
+   * @return Results
+   * @deprecated Use {@link #getAllDescendantComponentsOf(Class)} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return Collections.enumeration(getAllDescendantComponentsOf(target));
+  }
+
+  /**
    * Recursively descend the build tree and return a {@link List} of all
    * components that are instances of the given class
    *
-   * @param target
-   * @return
+   * @param target Target class
+   * @return Results
    */
   public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
     ArrayList<T> l = new ArrayList<>();
@@ -177,8 +202,9 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    *
    * @deprecated Use {@link #getBuildables()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<Buildable> getBuildComponents() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(buildComponents);
   }
 

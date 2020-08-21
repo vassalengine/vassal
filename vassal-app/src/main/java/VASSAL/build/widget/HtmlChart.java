@@ -101,7 +101,7 @@ public class HtmlChart extends Widget implements MouseListener {
       s = IOUtils.toString(in, StandardCharsets.UTF_8);
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
+      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
     }
 
     return s;
@@ -131,10 +131,10 @@ public class HtmlChart extends Widget implements MouseListener {
       scroller = new ScrollPane(htmlWin);
       scroller.getViewport().setPreferredSize(htmlWin.getPreferredSize());
       scroller.getViewport().setAlignmentY(0.0F);
-      
+
       final Font f = new JLabel().getFont();
       FontMetrics fm = htmlWin.getFontMetrics(f);
-      scroller.getVerticalScrollBar().setUnitIncrement(fm.getHeight()*3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
+      scroller.getVerticalScrollBar().setUnitIncrement(fm.getHeight() * 3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     }
     return scroller;
   }
@@ -278,7 +278,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
         if (hash != -1) {
           // we have an anchor
-          htmlWin.scrollToReference(desc.substring(hash+1));
+          htmlWin.scrollToReference(desc.substring(hash + 1));
         }
       }
       else {

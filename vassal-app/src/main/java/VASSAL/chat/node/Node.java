@@ -80,7 +80,7 @@ public class Node implements MsgSender {
   }
 
   public void remove(Node child) {
-    logger.finer("Removing "+child+" from "+this); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.finer("Removing " + child + " from " + this); //$NON-NLS-1$ //$NON-NLS-2$
     children.remove(child);
   }
 
@@ -93,7 +93,7 @@ public class Node implements MsgSender {
     if (child.parent != null) {
       child.parent.remove(child);
     }
-    logger.finer("Adding "+child+" to "+this); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.finer("Adding " + child + " to " + this); //$NON-NLS-1$ //$NON-NLS-2$
     children.add(child);
     child.setParent(this);
   }
@@ -114,7 +114,7 @@ public class Node implements MsgSender {
   }
 
   public String toString() {
-    return super.toString()+"[id="+id+"]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return super.toString() + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
@@ -256,7 +256,7 @@ public class Node implements MsgSender {
     synchronized (children) {
       SequenceEncoder se = new SequenceEncoder('/');
       List<Node> path = getPathList();
-      for (ListIterator<Node> i = path.listIterator(path.size()-1);
+      for (ListIterator<Node> i = path.listIterator(path.size() - 1);
            i.hasPrevious(); ) {
         Node n = i.previous();
         SequenceEncoder se2 =

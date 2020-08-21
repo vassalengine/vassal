@@ -23,7 +23,7 @@
     <prudent>true</prudent>
   </appender>
 
-  <root level="ALL">
+  <root level="info">
     <appender-ref ref="FILE" />
   </root>
 </configuration>

@@ -43,23 +43,28 @@ DISTDIR:=dist
 JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
-VNUM:=3.3.3
+# numeric part of the version only
+VNUM:=3.3.4
+
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-alpha2
+#MAVEN_VERSION:=$(VNUM)-beta2
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 
-ifeq ($(shell git describe --tags), $(VNUM))
+ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
   # we are at a release tag
   VERSION:=$(MAVEN_VERSION)
 else ifeq ($(GITBRANCH), master)
   # we are somewhere else on master
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
+else ifeq ($(GITBRANCH), release-$(VNUM))
+  # we are on a release branch
+  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
-  # we are on some branch
+  # we are on some other branch
   VERSION:=$(MAVEN_VERSION)-$(GITBRANCH)-$(GITCOMMIT)
 endif
 

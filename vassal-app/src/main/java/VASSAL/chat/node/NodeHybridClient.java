@@ -38,6 +38,7 @@ import VASSAL.i18n.Resources;
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: May 29, 2003
  */
+@Deprecated(since = "2020-08-15", forRemoval = true)
 public class NodeHybridClient extends DynamicClient {
   private String addressURL;
   private MessageBoard msgSvr;

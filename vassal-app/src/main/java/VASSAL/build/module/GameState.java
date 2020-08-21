@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -110,7 +111,7 @@ public class GameState implements CommandEncoder {
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>
    * entries to the <code>File</code> menu of the controls window
    */
-  public void addTo(GameModule mod) {
+  public void addTo(@SuppressWarnings("unused") GameModule mod) {
     loadGame = new AbstractAction(Resources.getString("GameState.load_game")) {
       private static final long serialVersionUID = 1L;
 
@@ -207,6 +208,17 @@ public class GameState implements CommandEncoder {
    */
   public void removeGameComponent(GameComponent theComponent) {
     gameComponents.remove(theComponent);
+  }
+
+  /**
+   * @return an enumeration of all {@link GameComponent} objects
+   * that have been added to this GameState
+   * @deprecated Use {@link #getGameComponents()} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Enumeration<GameComponent> getGameComponentsEnum() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return Collections.enumeration(gameComponents);
   }
 
   /**
@@ -331,13 +343,10 @@ public class GameState implements CommandEncoder {
       adjustSplitter();
 
       if (gameStarting) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            Logger logger = GameModule.getGameModule().getLogger();
-            if (logger instanceof BasicLogger) {
-              ((BasicLogger)logger).queryNewLogFile(true);
-            }
+        SwingUtilities.invokeLater(() -> {
+          Logger logger = GameModule.getGameModule().getLogger();
+          if (logger instanceof BasicLogger) {
+            ((BasicLogger)logger).queryNewLogFile(true);
           }
         });
       }
@@ -357,12 +366,7 @@ public class GameState implements CommandEncoder {
         if (c instanceof ComponentSplitter.SplitPane) {
           final ComponentSplitter.SplitPane sp = (ComponentSplitter.SplitPane) c;
 
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              sp.setDividerLocation(g.getChatter().getPreferredSize().height);
-            }
-          });
+          SwingUtilities.invokeLater(() -> sp.setDividerLocation(g.getChatter().getPreferredSize().height));
         }
         return;
       }
@@ -396,7 +400,7 @@ public class GameState implements CommandEncoder {
 
       // Check the Save game for validity
       final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
-      if (metaData == null || ! (metaData instanceof SaveMetaData)) {
+      if (!(metaData instanceof SaveMetaData)) {
         WarningDialog.show("GameState.invalid_save_file", f.getPath());
         return;
       }
@@ -504,8 +508,6 @@ public class GameState implements CommandEncoder {
   public void saveGame() {
     final GameModule g = GameModule.getGameModule();
 
-    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
         return;
@@ -513,7 +515,6 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
-        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
@@ -532,8 +533,6 @@ public class GameState implements CommandEncoder {
   public void saveGameAs() {
     final GameModule g = GameModule.getGameModule();
 
-    g.warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-
     final File saveFile = getSaveFile();
     if (saveFile == null) {
       g.warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
@@ -546,7 +545,6 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
-        g.warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
@@ -649,8 +647,9 @@ public class GameState implements CommandEncoder {
    * @return an Enumeration of all {@link GamePiece}s in the game
    * @deprecated Use {@link #getAllPieces()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(pieces.values());
   }
 
@@ -660,7 +659,7 @@ public class GameState implements CommandEncoder {
   }
 
   public static class SetupCommand extends Command {
-    private boolean gameStarting;
+    private final boolean gameStarting;
 
     public SetupCommand(boolean gameStarting) {
       this.gameStarting = gameStarting;
@@ -708,7 +707,10 @@ public class GameState implements CommandEncoder {
     String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
     String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
     cond = new ConditionalCommand.Lt(GameModule.MODULE_VERSION, moduleVersion);
-    c.append(new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch2", moduleName, moduleVersion ))));  //$NON-NLS-1$
+    c.append(
+      new ConditionalCommand(
+        new ConditionalCommand.Condition[]{cond},
+        new AlertCommand(Resources.getString("GameState.version_mismatch2", moduleName, moduleVersion))));  //$NON-NLS-1$
     return c;
   }
 
@@ -744,21 +746,21 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
+    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
-    final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-    try (OutputStream out = new ObfuscatingOutputStream(ba)) {
-      out.write(save.getBytes(StandardCharsets.UTF_8));
-    }
-
     try (FileArchive archive = new ZipArchive(f)) {
-      archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+        out.write(save.getBytes(StandardCharsets.UTF_8));
+      }
       (new SaveMetaData()).save(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
 
-    setModified(false);
+    lastSave = save;
+    GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
   }
 
   public void loadGameInBackground(final File f) {
@@ -894,9 +896,9 @@ public class GameState implements CommandEncoder {
    * Read a saved game and translate it into a Command.  Executing the
    * command will load the saved game.
    *
-   * @param fileName
-   * @return
-   * @throws IOException
+   * @param saveFile Sqve file name
+   * @return Command
+   * @throws IOException I/O Exception
    */
   public Command decodeSavedGame(File saveFile) throws IOException {
     return decodeSavedGame(

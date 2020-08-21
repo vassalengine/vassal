@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -47,7 +48,7 @@ import VASSAL.tools.SequenceEncoder;
  * The abstract class describing a generic 'trait' of a GamePiece.  Follows the Decorator design pattern
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it
  */
-public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource , PersistentPropertyContainer,
+public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
   protected GamePiece piece;
@@ -104,7 +105,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return dec;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+piece.getProperty(key);
+      return myGetState() + piece.getProperty(key);
     }
     else if (Properties.SELECTED.equals(key)) {
       return selected;
@@ -143,7 +144,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     else if (Properties.OUTER.equals(key)) {
       dec = (Decorator) val;
     }
-    /**
+    /*
      * Cache Selection status and pass it on to all inner traits.
      */
     else if (Properties.SELECTED.equals(key)) {
@@ -159,7 +160,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       piece.setProperty(key, val);
     }
   }
-  
+
   @Override
   public Command setPersistentProperty(Object key, Object val) {
     // Not all GamePieces have persistent properties (though piece almost certainly will).
@@ -168,7 +169,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return null;
   }
-  
+
   @Override
   public Object getPersistentProperty(Object key) {
     // Standard getProperty also returns persistent properties
@@ -216,8 +217,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * Compute the difference between <code>newState</code> and <code>oldState</code>
    * and appy that difference to the current state
-   * @param newState
-   * @param oldState
+   * @param newState New State
+   * @param oldState Old State
    */
   @Override
   public void mergeState(String newState, String oldState) {
@@ -297,8 +298,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * The response of this trait alone to the given KeyStroke
-   * @param stroke
-   * @return null if no effect
+   * @param stroke Stroke to apply
+   * @return Generated Command or null if no effect
    * @see #keyEvent
    */
   public abstract Command myKeyEvent(KeyStroke stroke);
@@ -306,8 +307,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * Append the command returned by {@link #myKeyEvent} with the command returned
    * by the inner piece's {@link GamePiece#keyEvent} method.
-   * @param stroke
-   * @return
+   * @param stroke Stroke to apply
+   * @return Generated Command or null if no effect
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
@@ -327,7 +328,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * @param p
+   * @param p Trait to find the outermost trait of.
    * @return the outermost Decorator instance of this piece, i.e. the entire piece with all traits
    */
   public static GamePiece getOutermost(GamePiece p) {
@@ -339,7 +340,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    *
-   * @param p
+   * @param p Trait to find the Innermost trait of
    * @return the innermost GamePiece of this piece.  In most cases, an instance of {@link BasicPiece}
    */
   public static GamePiece getInnermost(GamePiece p) {
@@ -372,7 +373,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return super.toString();
     }
     else {
-      return super.toString()+"[name="+getName()+",type="+getType()+",state="+getState()+"]";
+      return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; //$NON-NLS-1$//
     }
   }
 
@@ -387,7 +388,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Return I18n data for this piece
-   * @return
+   * @return I18n data
    */
   public PieceI18nData getI18nData() {
     return new PieceI18nData(this);
@@ -424,15 +425,15 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Report a Data Error detected by a trait
    */
   protected static void reportDataError(EditablePiece piece, String message, String data, Throwable e) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data, e));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message, data, e));
   }
 
   protected static void reportDataError(EditablePiece piece, String message, String data) {
-    ErrorDialog.dataError(new BadDataReport(piece, message, data));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message, data));
   }
 
   protected static void reportDataError(EditablePiece piece, String message) {
-    ErrorDialog.dataError(new BadDataReport(piece, message));
+    ErrorDialog.dataWarning(new BadDataReport(piece, message));
   }
 
   /**
@@ -445,7 +446,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Set the Oldxxxx properties related to movement
-   * @param p
+   * @param p Piece to set properties on
    */
   public static Command setOldProperties(GamePiece p) {
 
@@ -454,7 +455,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
       return null;
     }
     PersistentPropertyContainer container = (PersistentPropertyContainer) p;
-    
+
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$
     String zoneName = ""; //$NON-NLS-1$
@@ -482,15 +483,17 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
-    
+
     return comm;
   }
 
   /**
-   * Use {@link #setOldProperties(GamePiece) 
+   * @deprecated
+   * Use {@link #setOldProperties(GamePiece)
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Command setOldProperties() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return setOldProperties(this);
   }
 

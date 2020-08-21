@@ -145,11 +145,11 @@ public class ExtensionsLoader implements CommandEncoder {
       msg = e.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    GameModule.getGameModule().warn(getErrorMessage(name , msg)); //$NON-NLS-1$
+    GameModule.getGameModule().warn(getErrorMessage(name, msg)); //$NON-NLS-1$
   }
 
   protected String getErrorMessage(String name, String msg) {
-    return Resources.getString("ExtensionsLoader.unable_to_load", name , msg);
+    return Resources.getString("ExtensionsLoader.unable_to_load", name, msg);
   }
 
   @Override

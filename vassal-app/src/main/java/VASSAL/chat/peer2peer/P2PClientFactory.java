@@ -44,13 +44,17 @@ public class P2PClientFactory extends ChatServerFactory {
 
   public static final String P2P_TYPE = "peer2peer"; //$NON-NLS-1$
   public static final String P2P_LISTEN_PORT = "listenPort"; //$NON-NLS-1$
-  public static final String P2P_MODE_KEY = "mode"; //$NON-NLS-1$
-  public static final String P2P_SERVER_MODE = "server"; //$NON-NLS-1$
-  public static final String P2P_CLIENT_MODE = "client"; //$NON-NLS-1$
   public static final String P2P_SERVER_IP = "serverIp"; //$NON-NLS-1$
   public static final String P2P_SERVER_PORT = "serverPort"; //$NON-NLS-1$
   public static final String P2P_SERVER_NAME = "serverName"; //$NON-NLS-1$
   public static final String P2P_SERVER_PW = "serverPw"; //$NON-NLS-1$
+
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  public static final String P2P_MODE_KEY = "mode"; //$NON-NLS-1$
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  public static final String P2P_SERVER_MODE = "server"; //$NON-NLS-1$
+  @Deprecated(since = "2020-08-16", forRemoval = true)
+  public static final String P2P_CLIENT_MODE = "client"; //$NON-NLS-1$
 
   @Override
   public ChatServerConnection buildServer(Properties param) {

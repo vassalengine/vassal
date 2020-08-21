@@ -114,7 +114,8 @@ public class LocaleConfigurer extends Configurer {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
-        }});
+        }
+      });
       panel.add(new JLabel("Language:  "));
       panel.add(langBox);
 
@@ -124,7 +125,8 @@ public class LocaleConfigurer extends Configurer {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
-        }});
+        }
+      });
       panel.add(new JLabel("  Country:  "));
       panel.add(countryBox);
 

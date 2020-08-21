@@ -17,17 +17,14 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -39,20 +36,19 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
-import org.apache.commons.lang3.StringUtils;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
@@ -84,7 +80,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$ 
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected static final String GAME_MSG_COLOR = "gameMessageColor";
 
   protected Font myFont;
@@ -117,11 +113,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null);
       }
     } 
-    catch (BadLocationException ble) {
+    catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
-    } 
-    catch (IOException ex) {
-      ErrorDialog.bug(ex);
     }
 
     conversationPane.setEditable(false);
@@ -134,12 +127,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     input = new JTextField(60);
     input.setFocusTraversalKeysEnabled(false);
-    input.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        send(formatChat(e.getActionCommand()));
-        input.setText(""); //$NON-NLS-1$
-      }
+    input.addActionListener(e -> {
+      send(formatChat(e.getActionCommand()));
+      input.setText(""); //$NON-NLS-1$
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     
@@ -174,7 +164,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final String id = GlobalOptions.getInstance().getPlayerId();
     return String.format("&lt;%s&gt; - %s", id.isEmpty() ? "(" + getAnonymousUserName() + ")" : id, text); //HTML-friendly angle brackets //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
-
+  
   public JTextField getInputField() {
     return input;
   }
@@ -197,14 +187,29 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @param style        - current style name (contains information that might be useful)
    * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
    */
+  @SuppressWarnings("unused")
   public void consoleHook(String s, String style, boolean html_allowed) {
     
   }
+  
 
   /**
-   * Display a message in the text area
+   * Display a message in the text area. Ensures we execute in the EDT
    */
-  public void show(String s) {
+  public void show(String s) {  
+    if (SwingUtilities.isEventDispatchThread()) {
+      doShow(s);
+    }
+    else {
+      SwingUtilities.invokeLater(() -> doShow(s));
+    }      
+  }
+
+
+  /**
+   * Display a message in the text area - use show() from outside the class - MUST run on EventDispatchThread
+   */
+  private void doShow(String s) {
     String style;
     boolean html_allowed;
 
@@ -281,7 +286,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     int base;
     while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
       base = s.toLowerCase().indexOf(keystring);
-      file = s.substring(base + keystring.length(), s.length()).split("\"")[0]; // Pull the filename out from between the quotes
+      file = s.substring(base + keystring.length()).split("\"")[0]; // Pull the filename out from between the quotes
       tag  = s.substring(base, base + keystring.length()) + file + "\""; // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
 
       try {
@@ -305,7 +310,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // Now we have to fix up any legacy angle brackets around the word <observer>
     keystring = Resources.getString("PlayerRoster.observer");
     replace = keystring.replace("<", "&lt;").replace(">", "&gt;");
-    if (replace != keystring) {
+    if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
 
@@ -315,11 +320,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     try {
       kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null);
     } 
-    catch (BadLocationException ble) {
+    catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
-    } 
-    catch (IOException ex) {
-      ErrorDialog.bug(ex);
     }
     conversationPane.update(conversationPane.getGraphics()); // Force graphics to update
     consoleHook(s, style, html_allowed);             
@@ -343,7 +345,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                   "; font-size:" + 
                   (size > 0 ? size : f.getSize()) + 
                   "; " + 
-                  ((font_weight != "") ? "font-weight:" + font_weight + "; " : "") + 
+                  ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +
                   "}");
   }
 
@@ -358,7 +360,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     if (f == null) {
       if (myFont == null) {
-        f = new Font("SansSerif", 0, 12);
+        f = new Font("SansSerif", Font.PLAIN, 12);
         myFont = f;
       } 
       else {
@@ -378,7 +380,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // A fun extension would be letting the module designer provide extra class styles. 
   }
-  
+
   /**
    * Set the Font used by the text area
    */
@@ -424,12 +426,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final FontConfigurer chatFont = new FontConfigurer("ChatFont",
                                                        Resources.getString("Chatter.chat_font_preference"));
 
-    chatFont.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        setFont((Font) evt.getNewValue());
-      }
-    });
+    chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
     mod.getPlayerWindow().addChatter(this);
 
@@ -446,12 +443,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG1_COLOR,
                                                              Resources.getString("Chatter.game_messages_preference"), Color.black);
 
-    gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    gameMsgColor.addPropertyChangeListener(e -> {
+      gameMsg = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsgColor);
@@ -462,12 +456,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer gameMsg2Color = new ColorConfigurer(GAME_MSG2_COLOR,
                                                               Resources.getString("Chatter.game_messages_preference_2"), new Color(0, 153, 51));
 
-    gameMsg2Color.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg2 = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    gameMsg2Color.addPropertyChangeListener(e -> {
+      gameMsg2 = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg2Color);
@@ -478,12 +469,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer gameMsg3Color = new ColorConfigurer(GAME_MSG3_COLOR,
                                                               Resources.getString("Chatter.game_messages_preference_3"), new Color(255, 102, 102));
 
-    gameMsg3Color.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg3 = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    gameMsg3Color.addPropertyChangeListener(e -> {
+      gameMsg3 = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg3Color);
@@ -495,12 +483,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer gameMsg4Color = new ColorConfigurer(GAME_MSG4_COLOR,
                                                               Resources.getString("Chatter.game_messages_preference_4"), new Color(255, 0, 0));
 
-    gameMsg4Color.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg4 = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    gameMsg4Color.addPropertyChangeListener(e -> {
+      gameMsg4 = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg4Color);
@@ -512,12 +497,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer gameMsg5Color = new ColorConfigurer(GAME_MSG5_COLOR,
                                                               Resources.getString("Chatter.game_messages_preference_5"), new Color(153, 0, 153));
 
-    gameMsg5Color.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg5 = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    gameMsg5Color.addPropertyChangeListener(e -> {
+      gameMsg5 = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), gameMsg5Color);
@@ -528,12 +510,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR,
                                                                Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
 
-    systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        systemMsg = (Color) e.getNewValue();
-        makeStyleSheet(null);
-      }
+    systemMsgColor.addPropertyChangeListener(e -> {
+      systemMsg = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), systemMsgColor);
@@ -541,19 +520,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     systemMsg = (Color) globalPrefs.getValue(SYS_MSG_COLOR);
 
 
-    final ColorConfigurer myChatColor = new ColorConfigurer( MY_CHAT_COLOR,
-                                                             Resources.getString("Chatter.my_text_preference"), new Color(9, 32, 229) );
+    final ColorConfigurer myChatColor = new ColorConfigurer(
+      MY_CHAT_COLOR,
+      Resources.getString("Chatter.my_text_preference"),
+      new Color(9, 32, 229));
 
-    myChatColor.addPropertyChangeListener(new PropertyChangeListener() { 
-      @Override
-      public void propertyChange(PropertyChangeEvent e) { 
-        myChat = (Color) e.getNewValue(); 
-        makeStyleSheet(null); 
-      } 
+    myChatColor.addPropertyChangeListener(e -> {
+      myChat = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
-    globalPrefs.addOption( Resources.getString("Chatter.chat_window"),
-                           myChatColor );
+    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), myChatColor);
 
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
 
@@ -561,16 +538,19 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR,
                                                                 Resources.getString("Chatter.other_text_preference"), new Color (0, 153, 255));
 
-    otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) { 
-        otherChat = (Color) e.getNewValue(); 
-        makeStyleSheet(null); 
-      } 
+    otherChatColor.addPropertyChangeListener(e -> {
+      otherChat = (Color) e.getNewValue();
+      makeStyleSheet(null);
     });
 
-    globalPrefs.addOption( Resources.getString("Chatter.chat_window"), otherChatColor );      
+    globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
+    
+    // Put up the HTML Enable/Disable checkbox if we're supposed to have it.
+    if (GlobalOptions.PROMPT.equals(GlobalOptions.getInstance().chatterHTMLSetting())) {
+      BooleanConfigurer config2 = new BooleanConfigurer(GlobalOptions.CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
+      globalPrefs.addOption(Resources.getString("Chatter.chat_window"), config2);        
+    }
 
     makeStyleSheet(myFont);
   }
@@ -592,26 +572,35 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   @Override
   public String encode(Command c) {
     if (c instanceof DisplayText) {
-      return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
-    } 
-    else if (c instanceof VASSAL.build.module.Chatter.DisplayText) {
       return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$
     } 
     else {
       return null;
     }
   }
-
+  
+  
   /**
    * Displays the message, Also logs and sends to the server a {@link Command}
-   * that displays this message
+   * that displays this message. 
    */
-  public void send(String msg) {
+  public void send(String msg) {    
     if (msg != null && !msg.isEmpty()) {
       show(msg);
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
     }
   }
+  
+  
+  
+  /**
+   * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.  
+   */
+  public static void warning(String msg) {
+    Chatter chatter = GameModule.getGameModule().getChatter();
+    chatter.send(msg);
+  }
+  
 
   /**
    * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
@@ -645,7 +634,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * a text message in the Chatter's text area     */
   public static class DisplayText extends Command {
     private String msg;
-    private Chatter c;
+    private final Chatter c;
 
     public DisplayText(Chatter c, String s) {
       this.c = c;
@@ -685,5 +674,18 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     f.add(chat);
     f.pack();
     f.setVisible(true);
+  }
+
+  /** @deprecated No Replacement */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setHandle(@SuppressWarnings("unused") String s) {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
+
+  /** @deprecated use {@link GlobalOptions#getPlayerId()} */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public String getHandle() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return GlobalOptions.getInstance().getPlayerId();
   }
 }

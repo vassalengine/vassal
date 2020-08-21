@@ -196,7 +196,7 @@ public class ZipUpdater implements Runnable {
     }
 
     if (!tempFile.renameTo(destination)) {
-      throw new IOException("Unable to write to file " + destination.getPath()+ ".\nUpdated file is in " + tempFile.getPath());
+      throw new IOException("Unable to write to file " + destination.getPath() + ".\nUpdated file is in " + tempFile.getPath());
     }
   }
 
@@ -215,7 +215,7 @@ public class ZipUpdater implements Runnable {
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
     if (!updaterFile.getName().endsWith(".jar")) {
-      final String newName = updaterFile.getName().replace('.', '_')+".jar";
+      final String newName = updaterFile.getName().replace('.', '_') + ".jar";
       updaterFile = new File(updaterFile.getParentFile(), newName);
     }
     checkSums = new Properties();

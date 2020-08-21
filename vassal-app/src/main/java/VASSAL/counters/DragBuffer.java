@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -177,26 +178,26 @@ public class DragBuffer {
       @Override
       public void mousePressed(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);
-        System.err.println("Press at " + evt.getPoint());
+        System.err.println("Press at " + evt.getPoint()); //$NON-NLS-1$//
       }
 
       @Override
       public void mouseReleased(MouseEvent evt) {
         //        evt.translatePoint(((JFrame)evt.getSource()).getLocationOnScreen().x,((JFrame)evt.getSource()).getLocationOnScreen().y);
-        System.err.println("Release at " + evt.getPoint());
+        System.err.println("Release at " + evt.getPoint()); //$NON-NLS-1$//
       }
 
       @Override
       public void mouseEntered(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);
-        System.err.println("Enter at " + evt.getPoint());
+        System.err.println("Enter at " + evt.getPoint()); //$NON-NLS-1$//
       }
     };
     DragBuffer.getBuffer().addDragSource(f1);
     DragBuffer.getBuffer().addDropTarget(f2, l);
   }
 
-  public Cursor createDragCursor(Component comp) {
+  public Cursor createDragCursor(@SuppressWarnings("unused") Component comp) {
     Cursor c = null;
     if (!pieces.isEmpty()) {
       c = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
@@ -211,14 +212,16 @@ public class DragBuffer {
   /**
    * @deprecated Use {@link #sort(Comparator)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   @SuppressWarnings("unchecked")
   public void sort(VASSAL.tools.Sort.Comparator comp) {
+    ProblemDialog.showDeprecated("2020-08-06");
     sort((Comparator<GamePiece>) comp);
   }
 
-  /** @deprecated */
-  @Deprecated
-  public static void init(DragBuffer db) {
+  /** @deprecated No Replacement */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static void init(@SuppressWarnings("unused") DragBuffer db) {
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 }

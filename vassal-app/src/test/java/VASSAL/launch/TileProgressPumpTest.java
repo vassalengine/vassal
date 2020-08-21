@@ -28,16 +28,14 @@ import VASSAL.tools.concurrent.listener.DummyEventListener;
 import VASSAL.tools.concurrent.listener.EventListener;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(JMock.class)
 public class TileProgressPumpTest {
-  protected final Mockery context = new JUnit4Mockery();
+  @Rule
+  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   protected static class TPP extends TileProgressPump {
     public TPP() {

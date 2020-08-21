@@ -116,7 +116,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
         }
       }
       catch (IOException e) {
-        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip="+clipName, e);
+        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip=" + clipName, e);
       }
     }
     return c;

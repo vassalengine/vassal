@@ -880,8 +880,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       items.add(item.length() == 0 ? "" : item.substring(1));
     }
 
-    final String[] menuNames = new String[items.size()+1];
-    final String[] descriptions = new String[items.size()+1];
+    final String[] menuNames = new String[items.size() + 1];
+    final String[] descriptions = new String[items.size() + 1];
     menuNames[0]  = menuName;
     descriptions[0] = "Property Sheet command";
     int j = 1;
