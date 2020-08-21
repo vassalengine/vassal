@@ -210,7 +210,6 @@ public class Flare extends AbstractConfigurable
   private double os_scale = 1.0;
 
   private volatile float animfrac;
-  private volatile boolean goingUp;
 
   private void repaintArea() {
     map.repaint(new Rectangle(
@@ -221,18 +220,16 @@ public class Flare extends AbstractConfigurable
     ));
   }
 
-  private final Animator animator = new Animator(0, new TimingTargetAdapter() {
+  private final Animator animator = new Animator(0, 1, Animator.RepeatBehavior.LOOP, new TimingTargetAdapter() {
     @Override
     public void begin() {
       active = true;
       animfrac = 0.0f;
-      goingUp  = true;
       repaintArea();
     }
 
     @Override
     public void timingEvent(float fraction) {
-      goingUp = (fraction >= animfrac);
       animfrac = fraction;
       repaintArea();
     }
@@ -265,7 +262,7 @@ public class Flare extends AbstractConfigurable
 
       double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
       if (animate) {
-        diameter *= goingUp ? (1.0 - animfrac) : animfrac; //BR// Always ping "down"
+        diameter *= (1.0 - animfrac); //BR// Always ping "down"
       }
 
       if (diameter <= 0.0) {
