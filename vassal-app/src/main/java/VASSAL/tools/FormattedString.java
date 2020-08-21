@@ -29,6 +29,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
  * FormattedString.java
@@ -39,7 +40,7 @@ import VASSAL.script.expression.ExpressionException;
  *
  *
  */
-public class FormattedString {
+public class FormattedString implements Loopable {
 
   // The actual string for display purposes
   protected String formatString;
@@ -49,6 +50,17 @@ public class FormattedString {
 
   protected Map<String, String> props = new HashMap<>();
   protected PropertySource defaultProperties;
+  
+  @Override
+  public String getComponentTypeName() {    
+    return "FormattedString";
+  }
+
+  @Override
+  public String getComponentName() {
+    return "FormattedString";
+  }
+
 
   public FormattedString() {
     this("");
@@ -133,19 +145,29 @@ public class FormattedString {
   protected String getText(PropertySource ps, boolean localized) {
     final PropertySource source = (ps == null) ? defaultProperties : ps;
     try {
-      return format.evaluate(source, props, localized);
+      RecursionLimiter.startExecution(this);
+      try {
+        return format.evaluate(source, props, localized);
+      }
+      catch (ExpressionException e) {
+        if (source instanceof EditablePiece) {
+          ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        else if (source instanceof AbstractConfigurable) {
+          ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        else {
+          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        return "";
+      }
     }
-    catch (ExpressionException e) {
-      if (source instanceof EditablePiece) {
-        ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else if (source instanceof AbstractConfigurable) {
-        ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
+    catch (RecursionLimitException e) {
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
       return "";
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
   }
 

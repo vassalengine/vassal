@@ -25,7 +25,11 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,7 +66,7 @@ import bsh.NameSpace;
  *    will use the one Expression NameSpace.
  *
  */
-public class ExpressionInterpreter extends AbstractInterpreter {
+public class ExpressionInterpreter extends AbstractInterpreter implements Loopable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
@@ -91,6 +95,17 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  
+  
+  public String getComponentTypeName() {
+    return "ExpressionInterpreter";
+  }
+  
+  
+  public String getComponentName() {
+    return "ExpressionInterpreter";
+  }
+  
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -231,70 +246,81 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       return "";
     }
 
-    // Default to the GameModule to satisfy properties if no
-    // GamePiece supplied.
-    source = ps == null ? GameModule.getGameModule() : ps;
-
-    setNameSpace(expressionNameSpace);
-
-    // Bind each undeclared variable with the value of the
-    // corresponding Vassal property. Allow for old-style $variable$ references
-    for (String var : variables) {
-      String name = var;
-      if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
-        name = name.substring(1, name.length() - 1);
-      }
-      Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
-      String value = prop == null ? "" : prop.toString();
-      if (value == null) {
-        setVar(var, "");
-      }
-      else if ("true".equals(value)) {
-        setVar(var, true);
-      }
-      else if ("false".equals(value)) {
-        setVar(var, false);
-      }
-      else {
-        try {
-          setVar(var, Integer.parseInt(value));
-        }
-        catch (NumberFormatException e) {
-          try {
-            setVar(var, Float.valueOf(value).floatValue());
-          }
-          catch (NumberFormatException e1) {
-            setVar(var, value);
-          }
-        }
-      }
-    }
-
-    final StringBuilder argList = new StringBuilder();
-    for (String var : stringVariables) {
-      if (argList.length() > 0) {
-        argList.append(',');
-      }
-      final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-      argList.append('"').append(value.toString()).append('"');
-    }
-
-    // Re-evaluate the pre-parsed expression now that the undefined variables have
-    // been bound to their Vassal property values.
-
-    setVar(THIS, this);
-    setVar(SOURCE, source);
-
     String result;
     try {
-      eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
-      result = get(MAGIC1).toString();
+      RecursionLimiter.startExecution(this);
+
+      // Default to the GameModule to satisfy properties if no
+      // GamePiece supplied.
+      source = ps == null ? GameModule.getGameModule() : ps;
+  
+      setNameSpace(expressionNameSpace);
+    
+      // Bind each undeclared variable with the value of the
+      // corresponding Vassal property. Allow for old-style $variable$ references
+      for (String var : variables) {
+        String name = var;
+        if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
+          name = name.substring(1, name.length() - 1);
+        }
+        Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        String value = prop == null ? "" : prop.toString();
+        if (value == null) {
+          setVar(var, "");
+        }
+        else if ("true".equals(value)) {
+          setVar(var, true);
+        }
+        else if ("false".equals(value)) {
+          setVar(var, false);
+        }
+        else {
+          try {
+            setVar(var, Integer.parseInt(value));
+          }
+          catch (NumberFormatException e) {
+            try {
+              setVar(var, Float.parseFloat(value));
+            }
+            catch (NumberFormatException e1) {
+              setVar(var, value);
+            }
+          }
+        }
+      }
+    
+      final StringBuilder argList = new StringBuilder();
+      for (String var : stringVariables) {
+        if (argList.length() > 0) {
+          argList.append(',');
+        }
+        final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
+        argList.append('"').append(value.toString()).append('"');
+      }
+  
+      // Re-evaluate the pre-parsed expression now that the undefined variables have
+      // been bound to their Vassal property values.
+    
+      setVar(THIS, this);
+      setVar(SOURCE, source);  
+        
+      try {
+        eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
+        result = get(MAGIC1).toString();
+      }
+      catch (EvalError e) {
+        final String s = e.getRawMessage();
+        final String search = MAGIC2 + "();'' : ";
+        final int pos = s.indexOf(search);
+        throw new ExpressionException(getExpression(), s.substring(pos + search.length()));
+      }
     }
-    catch (EvalError e) {
-      final String s = e.getRawMessage();
-      final String search = MAGIC2 + "();'' : ";
-      final int pos = s.indexOf(search);
-      throw new ExpressionException(getExpression(), s.substring(pos + search.length()));
+    catch (RecursionLimitException e) {
+      result = "";
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
 
     return result;
