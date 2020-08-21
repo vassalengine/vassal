@@ -53,6 +53,7 @@ public class Flare extends AbstractConfigurable
   public static final String COMMAND_PREFIX = "FLARE:";
   private Map map;
   private int circleSize;
+  private boolean circleScale;
   private int pulses;
   private int pulsesPerSec;
   private boolean animate;
@@ -61,6 +62,7 @@ public class Flare extends AbstractConfigurable
   private Point clickPoint;
   private volatile boolean active;
   public static final String CIRCLE_SIZE  = "circleSize";
+  public static final String CIRCLE_SCALE = "circleScale";
   public static final String CIRCLE_COLOR = "circleColor";
   public static final String FLARE_KEY    = "flareKey";
   public static final String PULSES       = "flarePulses";
@@ -77,6 +79,7 @@ public class Flare extends AbstractConfigurable
 
   public Flare() {
     circleSize   = 100;
+    circleScale  = true;
     color        = Color.RED;
     active       = false;
     flareKey     = FLARE_ALT;
@@ -93,17 +96,18 @@ public class Flare extends AbstractConfigurable
   }
 
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Integer.class, Integer.class };
+    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, PULSES, PULSES_PER_SEC };
+    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC };
   }
 
   public String[] getAttributeDescriptions() {
     return new String[] { Resources.getString("Editor.Flare.flare_key"),
             Resources.getString("Editor.Flare.circle_size"),
             Resources.getString("Editor.Flare.circle_color"),
+            Resources.getString("Editor.Flare.circle_scale"),
             Resources.getString("Editor.Flare.pulses"),
             Resources.getString("Editor.Flare.pulses_per_sec") };
   }
@@ -113,16 +117,19 @@ public class Flare extends AbstractConfigurable
       return flareKey;
     }
     else if (CIRCLE_SIZE.equals(key)) {
-      return String.valueOf(this.circleSize);
+      return String.valueOf(circleSize);
     }
     else if (CIRCLE_COLOR.equals(key)) {
-      return ColorConfigurer.colorToString(this.color);
+      return ColorConfigurer.colorToString(color);
+    }
+    else if (CIRCLE_SCALE.equals(key)) {
+      return String.valueOf(circleScale);
     }
     else if (PULSES.equals(key)) {
-      return String.valueOf(this.pulses);
+      return String.valueOf(pulses);
     }
     else if (PULSES_PER_SEC.equals(key)) {
-      return String.valueOf(this.pulsesPerSec);
+      return String.valueOf(pulsesPerSec);
     }
     return null;
   }
@@ -153,6 +160,12 @@ public class Flare extends AbstractConfigurable
         value = ColorConfigurer.stringToColor((String) value);
       }
       color = (Color)value;
+    }
+    else if (CIRCLE_SCALE.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      circleScale = (Boolean)value;
     }
     else if (PULSES.equals(key)) {
       if (value instanceof String) {
@@ -197,6 +210,7 @@ public class Flare extends AbstractConfigurable
   private double os_scale = 1.0;
 
   private volatile float animfrac;
+  private volatile boolean goingUp;
 
   private void repaintArea() {
     map.repaint(new Rectangle(
@@ -212,11 +226,13 @@ public class Flare extends AbstractConfigurable
     public void begin() {
       active = true;
       animfrac = 0.0f;
+      goingUp  = true;
       repaintArea();
     }
 
     @Override
     public void timingEvent(float fraction) {
+      goingUp = (fraction >= animfrac);
       animfrac = fraction;
       repaintArea();
     }
@@ -230,7 +246,9 @@ public class Flare extends AbstractConfigurable
 
   public void startAnimation(final boolean isLocal) {
     if (!isLocal) {
-      map.centerAt(this.clickPoint);
+      if (GlobalOptions.getInstance().centerOnOpponentsMove()) {
+        map.centerAt(clickPoint);
+      }
     }
 
     animator.stop();
@@ -245,9 +263,9 @@ public class Flare extends AbstractConfigurable
       final Graphics2D g2d = (Graphics2D) g;
       os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-      double diameter = map.getZoom() * os_scale * circleSize;
+      double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
       if (animate) {
-        diameter *= animfrac;
+        diameter *= goingUp ? (1.0 - animfrac) : animfrac; //BR// Always ping "down"
       }
 
       if (diameter <= 0.0) {
@@ -294,7 +312,7 @@ public class Flare extends AbstractConfigurable
     return null;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
