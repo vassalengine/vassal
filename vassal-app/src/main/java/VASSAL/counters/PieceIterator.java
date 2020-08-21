@@ -34,7 +34,7 @@ public class PieceIterator {
     pi = i;
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public <T extends GamePiece> PieceIterator(Enumeration<T> e) {
     this(e.asIterator());
     ProblemDialog.showDeprecated("2020-08-06");

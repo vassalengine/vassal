@@ -91,7 +91,7 @@ public class PluginsLoader extends ExtensionsLoader {
 
   @Override
   protected String getErrorMessage(String name, String msg) {
-    return Resources.getString("PluginsLoader.unable_to_load", name , msg);  //$NON-NLS-1$
+    return Resources.getString("PluginsLoader.unable_to_load", name, msg);  //$NON-NLS-1$
   }
 
   /**

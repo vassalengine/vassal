@@ -438,7 +438,7 @@ public class Symbol {
 
       int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
       int ypos = bounds.y - sym_h - 1;
-      g.drawImage(bi, xpos, ypos , null);
+      g.drawImage(bi, xpos, ypos, null);
 
     }
 

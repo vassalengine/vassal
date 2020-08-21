@@ -185,7 +185,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Resources.getString("GlobalOptions.classic_mfd"),
         Boolean.FALSE
       );
-    classicMfd.addPropertyChangeListener( evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
+    classicMfd.addPropertyChangeListener(evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
     prefs.addOption(classicMfd);
 
     //BR// Drag Threshold
@@ -205,7 +205,7 @@ public class GlobalOptions extends AbstractConfigurable {
         MAC_LEGACY,
         Resources.getString("GlobalOptions.mac_legacy"),
         Boolean.FALSE);
-    macLegacyConf.addPropertyChangeListener( evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
+    macLegacyConf.addPropertyChangeListener(evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
     
     if (SystemUtils.IS_OS_MAC_OSX) { 
       // Only need to *display* this preference if we're running on a Mac.

@@ -30,7 +30,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
   private int[] savedPixels;
   private static ColorModel defaultCM = ColorModel.getRGBdefault();
 
-  public ImprovedAveragingScaleFilter(int savedWidth, int savedHeight, int destWidth, int destHeight ) {
+  public ImprovedAveragingScaleFilter(int savedWidth, int savedHeight, int destWidth, int destHeight) {
     super(destWidth, destHeight);
     this.savedWidth = savedWidth;
     this.savedHeight = savedHeight;

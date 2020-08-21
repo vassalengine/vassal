@@ -350,7 +350,7 @@ public class LayoutConfigurer extends Configurer {
     class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
 
       @Override
       public int getColumnCount() {
@@ -389,7 +389,7 @@ public class LayoutConfigurer extends Configurer {
     }
   }
 
-  protected class NewIntConfigurer extends IntConfigurer {
+  protected static class NewIntConfigurer extends IntConfigurer {
 
     NewIntConfigurer(String name, String key, Integer i) {
       super(name, key, i);
@@ -400,7 +400,7 @@ public class LayoutConfigurer extends Configurer {
     }
 
     public int getIntValue() {
-      return (Integer) getValue();
+      return (Integer) super.getValue();
     }
 
   }

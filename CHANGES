@@ -2,6 +2,8 @@
 
 * 13301: Don't rewrite save state when we already have it
 * 13290: Optimized serialization, unserialization
+* 13275: Ctrl+Mousewheel to zoom
+* 13200: NPE in Map.setup() when attempting to dock main map
 * 13076: NPE in FlowView$FlowStrategy.layoutRow()
 * 12798: ClassCastException: NullCommand cannot be cast to AddPiece
 * 12648: Setup stack doesn't recover from a piece build failure
@@ -11,8 +13,11 @@
 
 3.3.3-beta2 - ???
 
+* 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should
+    have remained public
 * 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules
     without GlobalOptions
+* 13291: Fix Beanshell issues with $$ variable processing
 * 13289: Don't print "Saving game" twice when using Save As
 * 13282: Stop logging debug messages by default
 * 13281: Added inadvertently removed throws declaration for

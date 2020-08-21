@@ -141,7 +141,7 @@ public class PropertiesPieceFilter {
   private abstract static class ComparisonFilter implements PieceFilter {
     protected String name;
     protected String value;
-    protected Object alternate;
+    protected Boolean alternate;
 
     public ComparisonFilter(String name, String value) {
       this.name = name;
@@ -192,7 +192,7 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = value.equals(property);
       if (alternate != null) {
-        retVal = retVal || alternate.equals(property);
+        retVal = retVal || alternate.equals(Boolean.parseBoolean(property));
       }
       return retVal;
     }
@@ -218,7 +218,7 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = !value.equals(property);
       if (alternate != null) {
-        retVal = retVal && !alternate.equals(property);
+        retVal = retVal && !alternate.equals(Boolean.parseBoolean(property));
       }
       return retVal;
     }

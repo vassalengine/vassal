@@ -604,7 +604,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   /**
    * @deprecated Use {@link #buildAddActionsFor(Configurable)} instead.
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Enumeration<Action> buildAddActions(final Configurable target) {
     ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(buildAddActionsFor(target));

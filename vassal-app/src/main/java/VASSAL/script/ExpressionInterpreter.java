@@ -540,13 +540,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyName instanceof String)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
     final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
     final List<Map> maps = getMapList(mapName, sourcePiece);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
@@ -584,7 +584,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     int result = 0;
 
     if (! (source instanceof GamePiece)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
     final String matchString = (String) propertyMatch;
@@ -592,7 +592,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {

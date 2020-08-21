@@ -6,4 +6,6 @@
     <!-- exclude non-vassal code from packages bsh.* and org.* -->
     <suppress checks="." files="[\\/]bsh[\\/].*\.java$"/>
     <suppress checks="." files="[\\/]org[\\/].*\.java$"/>
+    <suppress checks="ParenPad" files="GeneralFilter.java"/>
+    <suppress checks="ParenPad" files="ImageIOImageLoader.java"/>
 </suppressions>

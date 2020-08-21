@@ -19,7 +19,6 @@ package VASSAL.chat;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,12 +49,10 @@ public class AddressBookServerConfigurer extends Configurer {
   public AddressBookServerConfigurer(String key, String name, HybridClient client) {
     super(key, name, client);
     this.client = client;
-    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        enableControls(Boolean.TRUE.equals(evt.getNewValue()));
-      }
-    });
+    client.addPropertyChangeListener(
+      ChatServerConnection.CONNECTED,
+      e -> enableControls(Boolean.TRUE.equals(e.getNewValue()))
+    );
     getControls();
     setValue(addressBook.getDefaultServerProperties());
     client.updateDisplayControls(addressBook.getCurrentIcon(), addressBook.getCurrentDescription());
@@ -63,20 +60,16 @@ public class AddressBookServerConfigurer extends Configurer {
 
   @Override
   public Component getControls() {
-
     if (controls == null) {
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
       controls.add(header, "wrap"); //$NON-NLS-1$
       addressBook = new ServerAddressBook();
-      addressBook.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          if (ServerAddressBook.CURRENT_SERVER.equals(e.getPropertyName())) {
-            addressBook.setFrozen(true);
-            setValue(e.getNewValue());
-            addressBook.setFrozen(false);
-          }
+      addressBook.addPropertyChangeListener(e -> {
+        if (ServerAddressBook.CURRENT_SERVER.equals(e.getPropertyName())) {
+          addressBook.setFrozen(true);
+          setValue(e.getNewValue());
+          addressBook.setFrozen(false);
         }
       });
       controls.add(addressBook.getControls());
@@ -139,5 +132,4 @@ public class AddressBookServerConfigurer extends Configurer {
     }
     setValue(p);
   }
-
 }

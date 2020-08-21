@@ -90,7 +90,7 @@ public class ArchiveWriter extends DataArchive {
     this.archive = archive;
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public ArchiveWriter(ZipFile archive) {
     ProblemDialog.showDeprecated("2020-08-06");
     archiveName = archive.getName();
@@ -156,7 +156,7 @@ public class ArchiveWriter extends DataArchive {
     addFile(path, soundDir + fileName);
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isImageAdded(String name) {
     ProblemDialog.showDeprecated("2020-08-06");
     try {
@@ -277,13 +277,13 @@ public class ArchiveWriter extends DataArchive {
    * initialized with a null name, prompt the user to select a new file
    * into which to write archive.
    */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void write() throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
     write(false);
   }
 
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void write(boolean notifyModuleManager) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
     save(notifyModuleManager);

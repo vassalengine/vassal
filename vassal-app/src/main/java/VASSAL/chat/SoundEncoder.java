@@ -89,7 +89,7 @@ public class SoundEncoder implements CommandEncoder {
 
     @Override
     protected void executeCommand() {
-      /**
+      /*
        * Ignore if we don't want to hear from this player anymore, we are
        * already processing a wake-up, or we have already processed a wake-up recently
        */

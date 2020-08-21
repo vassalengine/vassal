@@ -129,7 +129,7 @@ public class Footprint extends MovementMarkable {
   }
 
   /** @deprecated Use {@link #pointList} directly. */
-  @Deprecated(since="2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Enumeration<Point> getPointList() {
     ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(pointList);
@@ -626,10 +626,10 @@ public class Footprint extends MovementMarkable {
       }
 
       // Key commands to force trails to specific states
-      if (trailKeyOn != null && !trailKeyOn.isNull( )) {
+      if (trailKeyOn != null && !trailKeyOn.isNull()) {
         showTrailCommandOn = new KeyCommand("", trailKeyOn, Decorator.getOutermost(this), this);
       }
-      if (trailKeyOff != null && !trailKeyOff.isNull( )) {
+      if (trailKeyOff != null && !trailKeyOff.isNull()) {
         showTrailCommandOff = new KeyCommand("", trailKeyOff, Decorator.getOutermost(this), this);
       }
       if (trailKeyClear != null && !trailKeyClear.isNull()) {

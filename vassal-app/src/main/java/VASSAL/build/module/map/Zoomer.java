@@ -28,6 +28,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +50,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
@@ -80,6 +83,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Controls the zooming in/out of a {@link Map} window.
@@ -99,6 +103,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected LaunchButton zoomPickButton;
   protected LaunchButton zoomOutButton;
   protected ZoomMenu zoomMenu;
+
+  protected MouseWheelListener listener;
 
   protected State state;
 
@@ -660,8 +666,31 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().add(zoomInButton);
     map.getToolBar().add(zoomPickButton);
     map.getToolBar().add(zoomOutButton);
-  }
 
+    // Ctrl+Mousewheel to zoom in/out.
+    listener = e -> {
+      if (e.getScrollAmount() == 0) {
+        return;
+      }
+
+      if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && SwingUtils.isSelectionToggle(e)) {
+        int units = e.getUnitsToScroll();
+
+        if ((units < 0) && state.hasHigherLevel()) {
+          zoomIn();
+        }
+        else if ((units > 0) && state.hasLowerLevel()) {
+          zoomOut();
+        }
+      }
+
+      map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
+    };
+       
+    map.getComponent().addMouseWheelListener(listener);
+  }
+  
+  
   @Override
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
@@ -808,6 +837,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().remove(zoomInButton);
     map.getToolBar().remove(zoomPickButton);
     map.getToolBar().remove(zoomOutButton);
+    
+    if (listener != null) {
+      map.getComponent().removeMouseWheelListener(listener);
+      listener = null;
+    }
   }
 
   public double getZoomFactor() {

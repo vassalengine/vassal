@@ -60,8 +60,11 @@ ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
 else ifeq ($(GITBRANCH), master)
   # we are somewhere else on master
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
+else ifeq ($(GITBRANCH), release-$(VNUM))
+  # we are on a release branch
+  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
-  # we are on some branch
+  # we are on some other branch
   VERSION:=$(MAVEN_VERSION)-$(GITBRANCH)-$(GITCOMMIT)
 endif
 

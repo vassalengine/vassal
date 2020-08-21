@@ -245,6 +245,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
+  
+  
+  public Component getComponent() {
+    return theMap;
+  }
+
 
   // Global Change Reporting control
   public static void setChangeReportingEnabled(boolean b) {
@@ -1950,7 +1956,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         return false;
       }
     }
-    // should be impossible
+    // Module isn't fully built yet, and/or no maps at all in module yet (perhaps THIS map will soon be the first one)
     return true;
   }
 
@@ -1966,12 +1972,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final GameModule g = GameModule.getGameModule();
 
       if (shouldDockIntoMainWindow()) {
-        mainWindowDock.showComponent();
-        final int height = (Integer)
-          Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-        if (height > 0) {
-          final Container top = mainWindowDock.getTopLevelAncestor();
-          top.setSize(top.getWidth(), height);
+        if (mainWindowDock != null) { // This is protected from null elsewhere, and crashed null here, so I'm thinking protect here too.
+          mainWindowDock.showComponent();
+          final int height = (Integer)
+            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+          if (height > 0) {
+            final Container top = mainWindowDock.getTopLevelAncestor();
+            top.setSize(top.getWidth(), height);
+          }
         }
         if (toolBar.getParent() == null) {
           g.getToolBar().addSeparator();

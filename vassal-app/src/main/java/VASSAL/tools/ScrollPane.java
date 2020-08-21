@@ -23,6 +23,7 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  ScrollPane extends JScrollPane to have complete mouse-wheel functionality.
@@ -110,7 +111,7 @@ public class ScrollPane extends JScrollPane {
       public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollAmount() == 0) return;
 
-        if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+        if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && !e.isAltDown() && !SwingUtils.isSelectionToggle(e)) {
           final JScrollBar bar = e.isShiftDown() ?
             horizontalScrollBar : verticalScrollBar;
           if (bar == null || !bar.isVisible()) return;
