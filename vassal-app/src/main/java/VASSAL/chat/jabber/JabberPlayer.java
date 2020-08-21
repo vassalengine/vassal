@@ -78,10 +78,10 @@ public class JabberPlayer extends SimplePlayer {
 
     final String address = StringUtils.parseServer(participant);
     final String[] parts = address.split("\\."); //$NON-NLS-1$
-    final String server = parts[parts.length-1];
+    final String server = parts[parts.length - 1];
     final String nick = StringUtils.parseResource(participant);
 
-    return nick+"@"+server+JabberClient.JID_RESOURCE; //$NON-NLS-1$
+    return nick + "@" + server + JabberClient.JID_RESOURCE; //$NON-NLS-1$
   }
 
   public static class Manager {

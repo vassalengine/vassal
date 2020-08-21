@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -76,6 +77,14 @@ public class InstanceConfigurer extends Configurer {
   @SuppressWarnings("unchecked")
   public List<ItemInstance> getValueList() {
     return (List<ItemInstance>) getValue();
+  }
+
+  /** @deprecated Use {@link #getValueList()} instead. */
+  @SuppressWarnings("unchecked")
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public ArrayList<ItemInstance> getValueArrayList() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return (ArrayList<ItemInstance>) getValue();
   }
 
   @Override
@@ -171,7 +180,6 @@ public class InstanceConfigurer extends Configurer {
     protected static final int NAME_COL = 0;
     protected static final int TYPE_COL = 1;
     protected static final int LOC_COL = 2;
-    protected static final int MAX_COL = 2;
 
     public SymbolPanel() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -191,19 +199,16 @@ public class InstanceConfigurer extends Configurer {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
       ListSelectionModel rowSM = table.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting()) return;
+      rowSM.addListSelectionListener(e -> {
+        if (e.getValueIsAdjusting()) return;
 
-          ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-          if (lsm.isSelectionEmpty()) {
-            showItem(NO_CURRENT_ITEM);
-          }
-          else {
-            int selectedRow = lsm.getMinSelectionIndex();
-            showItem(selectedRow);
-          }
+        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        if (lsm.isSelectionEmpty()) {
+          showItem(NO_CURRENT_ITEM);
+        }
+        else {
+          int selectedRow = lsm.getMinSelectionIndex();
+          showItem(selectedRow);
         }
       });
 
@@ -269,7 +274,7 @@ public class InstanceConfigurer extends Configurer {
     class SymbolTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
 
       @Override
       public int getColumnCount() {

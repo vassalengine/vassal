@@ -64,7 +64,7 @@ public class LoggedOutputStream extends OutputStream {
   @Override
   public synchronized void write(byte[] b, int off, int len) {
     // don't write trailing newlines, logger adds those
-    if (b[off+len-1] == '\n') --len;
+    if (b[off + len - 1] == '\n') --len;
 
     buf.write(b, off, len);
     flush();

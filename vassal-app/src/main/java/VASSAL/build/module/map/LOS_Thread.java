@@ -148,7 +148,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected String anchorLocation = "";
   protected String lastLocation = "";
   protected String lastRange = "";
-  protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $"+FROM_LOCATION+"$ to $"+CHECK_LIST+"$");
+  protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $" + FROM_LOCATION + "$ to $" + CHECK_LIST + "$");
   protected List<String> checkList = new ArrayList<>();
   protected String persistence = CTRL_CLICK;
   protected String persistentIconName;
@@ -483,7 +483,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
     if (drawRange) {
       if (rangeScale > 0) {
-        int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation())/rangeScale);
+        int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation()) / rangeScale);
         drawRange(g, dist);
       }
       else  {
@@ -722,10 +722,10 @@ public class LOS_Thread extends AbstractConfigurable implements
       Point mapAnchor = lastAnchor;
       Point mapArrow = lastArrow;
       int fudge = (int) (1.0 / map.getZoom() * 2);
-      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x)-fudge,
-          Math.min(mapAnchor.y, mapArrow.y)-fudge,
-          Math.abs(mapAnchor.x - mapArrow.x)+1+fudge*2,
-          Math.abs(mapAnchor.y - mapArrow.y)+1+fudge*2);
+      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x) - fudge,
+          Math.min(mapAnchor.y, mapArrow.y) - fudge,
+          Math.abs(mapAnchor.x - mapArrow.x) + 1 + fudge * 2,
+          Math.abs(mapAnchor.y - mapArrow.y) + 1 + fudge * 2);
       map.repaint(r);
 
       if (drawRange) {

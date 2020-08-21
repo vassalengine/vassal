@@ -188,7 +188,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       // The transparency is only drawn on a Map.View component. Only the
       // GamePiece is drawn within other windows (Counter Palette, etc.).
       if (obs instanceof Map.View && getMap() != null) {
-        Area a = getArea();      
+        Area a = getArea();
         if (a != null) {
           final Graphics2D g2d = (Graphics2D) g;
 
@@ -233,7 +233,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       final Rectangle boardBounds = board.bounds();
       final Point boardPosition = new Point(
-        mapPosition.x-boardBounds.x, mapPosition.y-boardBounds.y);
+        mapPosition.x - boardBounds.x, mapPosition.y - boardBounds.y);
 
       a = gGrid.getGridShape(boardPosition, myRadius); // In board co-ords
       final AffineTransform t = AffineTransform.getTranslateInstance(
@@ -267,7 +267,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         return Integer.parseInt(r);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"),
+          "radius[" + radiusMarker + "]=" + r, e);
         return 0;
       }
     }

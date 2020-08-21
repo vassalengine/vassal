@@ -67,7 +67,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     );
 
     final Graphics2D g = dst.createGraphics();
-    g.rotate(Math.PI/2.0*angle, src.getWidth()/2.0, src.getHeight()/2.0);
+    g.rotate(Math.PI / 2.0 * angle, src.getWidth() / 2.0, src.getHeight() / 2.0);
     g.drawImage(src, 0, 0, null);
     g.dispose();
 
@@ -119,37 +119,37 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
 
       switch (angle) {
       case 0:
-        sx0 = tileX*rop.tileSize.width;
-        sy0 = tileY*rop.tileSize.height;
-        sx1 = Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
-        sy1 = Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
+        sx0 = tileX * rop.tileSize.width;
+        sy0 = tileY * rop.tileSize.height;
+        sx1 = Math.min((tileX + 1) * rop.tileSize.width, rop.size.width);
+        sy1 = Math.min((tileY + 1) * rop.tileSize.height, rop.size.height);
         break;
       case 1:
-        sx0 = tileY*rop.tileSize.height;
-        sy0 = tileX*rop.tileSize.width;
-        sx1 = Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
-        sy1 = Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
+        sx0 = tileY * rop.tileSize.height;
+        sy0 = tileX * rop.tileSize.width;
+        sx1 = Math.min((tileY + 1) * rop.tileSize.height, rop.size.height);
+        sy1 = Math.min((tileX + 1) * rop.tileSize.width, rop.size.width);
         break;
       case 2:
-        sx1 = rop.size.width - tileX*rop.tileSize.width;
-        sy1 = rop.size.height - tileY*rop.tileSize.height;
+        sx1 = rop.size.width - tileX * rop.tileSize.width;
+        sy1 = rop.size.height - tileY * rop.tileSize.height;
         sx0 = rop.size.width -
-                Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
+                Math.min((tileX + 1) * rop.tileSize.width, rop.size.width);
         sy0 = rop.size.height -
-                Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
+                Math.min((tileY + 1) * rop.tileSize.height, rop.size.height);
         break;
       case 3:
       default:
-        sx1 = rop.size.height - tileY*rop.tileSize.height;
-        sy1 = rop.size.width - tileX*rop.tileSize.width;
+        sx1 = rop.size.height - tileY * rop.tileSize.height;
+        sy1 = rop.size.width - tileX * rop.tileSize.width;
         sx0 = rop.size.height -
-                Math.min((tileY+1)*rop.tileSize.height, rop.size.height);
+                Math.min((tileY + 1) * rop.tileSize.height, rop.size.height);
         sy0 = rop.size.width -
-                Math.min((tileX+1)*rop.tileSize.width, rop.size.width);
+                Math.min((tileX + 1) * rop.tileSize.width, rop.size.width);
         break;
       }
 
-      size = new Dimension(sx1-sx0, sy1-sy0);
+      size = new Dimension(sx1 - sx0, sy1 - sy0);
 
       sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
 
@@ -173,7 +173,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       );
 
       final Graphics2D g = dst.createGraphics();
-      g.rotate(Math.PI/2.0*angle, src.getWidth()/2.0, src.getHeight()/2.0);
+      g.rotate(Math.PI / 2.0 * angle, src.getWidth() / 2.0, src.getHeight() / 2.0);
       g.drawImage(src, 0, 0, null);
       g.dispose();
 

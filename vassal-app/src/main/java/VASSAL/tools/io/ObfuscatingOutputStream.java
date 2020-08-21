@@ -68,7 +68,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /** {@inheritDoc} */
   @Override
   public void write(byte[] bytes, int off, int len) throws IOException {
-    for (int i = 0; i < len; ++i) write(bytes[off+i]);
+    for (int i = 0; i < len; ++i) write(bytes[off + i]);
   }
 
   private static final byte[] HEX = {

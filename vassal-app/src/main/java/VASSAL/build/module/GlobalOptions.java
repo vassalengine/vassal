@@ -17,10 +17,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Container;
 import java.awt.dnd.DragSource;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,7 +92,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
   private String nonOwnerUnmaskable = NEVER;
-  private String centerOnMoves = ALWAYS;
+  private String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   private String chatterHTMLSupport = PROMPT; 
@@ -112,11 +111,15 @@ public class GlobalOptions extends AbstractConfigurable {
   private boolean useSingleWindow;
   
   private boolean useClassicMoveFixedDistance = false;
-  private BooleanConfigurer classicMfd;
+  private BooleanConfigurer classicMfd;  
+
+  private static void setInstance(GlobalOptions go) {
+    instance = go;
+  }
 
   @Override
   public void addTo(Buildable parent) {
-    instance = this;
+    setInstance(this);
 
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
@@ -165,17 +168,12 @@ public class GlobalOptions extends AbstractConfigurable {
         PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
       }
 
-      bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          PieceMover.AbstractDragHandler.setTheDragHandler(
-            (Boolean.TRUE.equals(e.getNewValue()) ||
-             !DragSource.isDragImageSupported()) ?
-             new PieceMover.DragHandlerNoImage() :
-             new PieceMover.DragHandler()
-          );
-        }
-      });
+      bug10295Conf.addPropertyChangeListener(e -> PieceMover.AbstractDragHandler.setTheDragHandler(
+        (Boolean.TRUE.equals(e.getNewValue()) ||
+         !DragSource.isDragImageSupported()) ?
+         new PieceMover.DragHandlerNoImage() :
+         new PieceMover.DragHandler()
+      ));
 
       prefs.addOption(bug10295Conf);
     }
@@ -187,7 +185,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Resources.getString("GlobalOptions.classic_mfd"),
         Boolean.FALSE
       );
-    classicMfd.addPropertyChangeListener( evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
+    classicMfd.addPropertyChangeListener(evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
     prefs.addOption(classicMfd);
 
     //BR// Drag Threshold
@@ -196,12 +194,9 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.mouse_drag_threshold"),  //$NON-NLS-1$
       10
     );
-    dragThresholdConf.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        dragThreshold = dragThresholdConf.getIntValue(10);
-        System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
-      }
+    dragThresholdConf.addPropertyChangeListener(e -> {
+      dragThreshold = dragThresholdConf.getIntValue(10);
+      System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
     });
     prefs.addOption(dragThresholdConf);
     
@@ -210,13 +205,16 @@ public class GlobalOptions extends AbstractConfigurable {
         MAC_LEGACY,
         Resources.getString("GlobalOptions.mac_legacy"),
         Boolean.FALSE);
-    macLegacyConf.addPropertyChangeListener( evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
+    macLegacyConf.addPropertyChangeListener(evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
     
     if (SystemUtils.IS_OS_MAC_OSX) { 
       // Only need to *display* this preference if we're running on a Mac.
       prefs.addOption(macLegacyConf);
     }
     
+    BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
+    prefs.addOption(config);
+       
     validator = new SingleChildInstance(gm, getClass());
   }
 
@@ -235,10 +233,12 @@ public class GlobalOptions extends AbstractConfigurable {
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
   }
-  
-  
-  public boolean isPrefMacLegacy() {
-    return macLegacy;
+
+  /** @deprecated No replacement */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public boolean isAveragedScaling() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return true;
   }
   
   
@@ -286,7 +286,6 @@ public class GlobalOptions extends AbstractConfigurable {
     return new String[]{
       Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
       null,
-      Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.playerid_format"), //$NON-NLS-1$
       Resources.getString("Editor.GlobalOption.chatter_html_support") //$NON-NLS-1$
@@ -299,7 +298,6 @@ public class GlobalOptions extends AbstractConfigurable {
       Arrays.asList(
         NON_OWNER_UNMASKABLE,
         PROMPT_STRING,
-        CENTER_ON_MOVE,
         AUTO_REPORT,
         PLAYER_ID_FORMAT,
         CHATTER_HTML_SUPPORT
@@ -316,7 +314,6 @@ public class GlobalOptions extends AbstractConfigurable {
     return new Class<?>[]{
       Prompt.class,
       null,
-      Prompt.class,
       Prompt.class,
       PlayerIdFormatConfig.class,
       Prompt.class
@@ -409,9 +406,6 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (PROMPT_STRING.equals(key)) {
       return promptString;
     }
-    else if (CENTER_ON_MOVE.equals(key)) {
-      return centerOnMoves;
-    }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       return chatterHTMLSupport;
     }
@@ -465,13 +459,6 @@ public class GlobalOptions extends AbstractConfigurable {
       promptString = (String) value;
       ObscurableOptions.getInstance().setPrompt(promptString);
     }
-    else if (CENTER_ON_MOVE.equals(key)) {
-      centerOnMoves = (String) value;
-      if (PROMPT.equals(centerOnMoves)) {
-        BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(config);
-      }
-    }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       chatterHTMLSupport = (String) value;
       if (PROMPT.equals(chatterHTMLSupport)) {
@@ -509,7 +496,11 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public boolean centerOnOpponentsMove() {
-    return isEnabled(centerOnMoves, CENTER_ON_MOVE);
+    return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
+  }
+  
+  public String chatterHTMLSetting() {
+    return chatterHTMLSupport;
   }
   
   public boolean chatterHTMLSupport() {

@@ -36,7 +36,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
 
   protected List<ZoneHighlight> highlightList;
   protected String currentColorName;
-  protected Color currentColor ;
+  protected Color currentColor;
 
   public ZonedGridHighlighter() {
     highlightList = new ArrayList<>();

@@ -531,9 +531,9 @@ public class ImageIOImageLoader implements ImageLoader {
       final int pr = ( data[i]        & 0xFF) - 128;
 
       final int a  = (data[i] >> 24) & 0xFF;
-      final int r = (int) Math.round(y + 1.402*pr);
-      final int g = (int) Math.round(y - 0.34414*pb - 0.71414*pr);
-      final int b = (int) Math.round(y + 1.772*pb);
+      final int r = (int) Math.round(y + 1.402 * pr);
+      final int g = (int) Math.round(y - 0.34414 * pb - 0.71414 * pr);
+      final int b = (int) Math.round(y + 1.772 * pb);
 
       data[i] = (a << 24) |
                 ((r < 0 ? 0 : (r > 0xFF ? 0xFF : r)) << 16) |

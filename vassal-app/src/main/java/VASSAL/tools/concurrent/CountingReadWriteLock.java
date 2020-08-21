@@ -131,14 +131,14 @@ public class CountingReadWriteLock implements ReadWriteLock {
     @Override
     protected int tryAcquireShared(int dummy) {
       final int s = getState();
-      return s >= 0 && compareAndSetState(s, s+1) ? 1 : -1;
+      return s >= 0 && compareAndSetState(s, s + 1) ? 1 : -1;
     }
 
     @Override
     protected boolean tryReleaseShared(int dummy) {
       final int s = getState();
       if (s < 1) throw new IllegalMonitorStateException();
-      return compareAndSetState(s, s-1);
+      return compareAndSetState(s, s - 1);
     }
   }
 }

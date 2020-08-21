@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -122,7 +123,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
-  protected FormattedString selectDisplayProperty = new FormattedString("$"+BasicPiece.BASIC_NAME+"$");
+  protected FormattedString selectDisplayProperty = new FormattedString("$" + BasicPiece.BASIC_NAME + "$");
   protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("", this);
@@ -168,6 +169,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   private final GameModule gameModule;
 
   /**
+   * Not for internal use, but required for initial build of module
+   *
    * @deprecated use {@link #Deck(GameModule)}
    */
   @Deprecated
@@ -178,17 +181,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * @deprecated use {@link #Deck(GameModule, String)}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type) {
     this(GameModule.getGameModule(), type);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
    * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type, PropertySource source) {
     this(GameModule.getGameModule(), type, source);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   public Deck(GameModule gameModule) {
@@ -388,7 +393,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     setGlobalCommands(st.nextStringArray(0));
     hotkeyOnEmpty = st.nextBoolean(false);
     emptyKey = st.nextNamedKeyStroke(null);
-    selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
+    selectDisplayProperty.setFormat(st.nextToken("$" + BasicPiece.BASIC_NAME + "$"));
     selectSortProperty = st.nextToken("");
     restrictOption = st.nextBoolean(false);
     restrictExpression.setExpression(st.nextToken(""));
@@ -583,7 +588,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     for (int i = 0; i < countExpressions.length; i++) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -610,10 +615,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     else {
       deckName = n;
     }
-    countProperty.setPropertyName(deckName+"_numPieces");
-    for (int i=0; i<countExpressions.length; ++i) {
+    countProperty.setPropertyName(deckName + "_numPieces");
+    for (int i = 0; i < countExpressions.length; ++i) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -675,7 +680,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated public KeyStroke getEmptyKey() {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public KeyStroke getEmptyKey() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return emptyKey.getKeyStroke();
   }
 
@@ -683,7 +690,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return emptyKey;
   }
 
-  @Deprecated public void setEmptyKey(KeyStroke k) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setEmptyKey(KeyStroke k) {
+    ProblemDialog.showDeprecated("2020-08-06");
     emptyKey = new NamedKeyStroke(k);
   }
 
@@ -845,8 +854,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the contents of this Deck to an Iterator of GamePieces
    * @deprecated Use {@link #setContents(Collection)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Command setContents(Iterator<GamePiece> it) {
+    ProblemDialog.showDeprecated("2020-08-06");
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
     while (it.hasNext()) {
@@ -879,7 +889,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("No such map", mapId, null));
+        ErrorDialog.dataWarning(new BadDataReport("No such map", mapId, null));
       }
     }
 
@@ -1027,7 +1037,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
-    for (int i=0, n=getMaximumVisiblePieceCount(); i<n; ++i) {
+    for (int i = 0, n = getMaximumVisiblePieceCount(); i < n; ++i) {
       r.y -= 2;
       r.height += 2;
       r.width += 2;

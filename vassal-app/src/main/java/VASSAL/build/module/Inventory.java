@@ -1455,7 +1455,7 @@ public class Inventory extends AbstractConfigurable
         found = Integer.parseInt(key.substring(start, match.end()));
 
         // Check for sign
-        if ( (start > 0) && (key.charAt(start-1) == '-') ) {
+        if ((start > 0) && (key.charAt(start - 1) == '-')) {
           // negative integer found
           // FIXME: Is this a safe operation? What happens when
           // MAX_VALUE * -1 < MIN_VALUE?

@@ -73,7 +73,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
     }
 
     // submit only if this change affects the integer percentage
-    setLast(prog, (100*prog)/max > (100*range.first)/max);
+    setLast(prog, (100 * prog) / max > (100 * range.first) / max);
   }
 
   /**
@@ -96,7 +96,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    * Adds some amount to the progress.
    */
   public synchronized void add(int p) {
-    if (p != 0) set(get()+p);
+    if (p != 0) set(get() + p);
   }
 
   /**
@@ -105,7 +105,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    * @param pct the progress percentage
    */
   public void setPct(int pct) {
-    set((pct*max)/100);
+    set((pct * max) / 100);
   }
 
   /**
@@ -114,7 +114,7 @@ public abstract class Progressor extends RangedRunnable<Integer> {
    * @return the progress percentage
    */
   public int getPct() {
-    return (100*get())/max;
+    return (100 * get()) / max;
   }
 
   /**

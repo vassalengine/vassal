@@ -1,5 +1,6 @@
 package VASSAL.build.module.dice;
 
+import VASSAL.tools.ProblemDialog;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -140,11 +141,23 @@ public abstract class DieServer {
     return " *** " + d + " = ";
   }
 
+  /**
+   * The text reported after the results of the roll;
+   * @deprecated No Replacement, handled by Message format
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected String getReportSuffix() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return " ***  <" + GlobalOptions.getInstance().getPlayerId() + ">";
+  }
+
   /*
    * Called by the Inbuilt server - Basically the same as the code
    * in the original DiceButton
    */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void doInbuiltRoll(RollSet mroll) {
+    ProblemDialog.showDeprecated("2020-08-06");
     DieRoll[] rolls = mroll.getDieRolls();
     for (DieRoll roll : rolls) {
       String desc = roll.getDescription();
@@ -211,8 +224,10 @@ public abstract class DieServer {
 
   /**
    * Use the configured FormattedString to format the result of a roll
-   * @param result
-   * @return
+   * @param description Roll Description
+   * @param result Roll Result
+   * @param format Report Format
+   * @return Formatted roll result
    */
   protected String formatResult(String description, String result, FormattedString format) {
     format.setProperty(DiceButton.RESULT, result);
@@ -223,12 +238,12 @@ public abstract class DieServer {
 
 
   public void reportResult(RollSet mroll, FormattedString format) {
-    DieRoll[] rolls = mroll.getDieRolls();
+    final DieRoll[] rolls = mroll.getDieRolls();
     for (DieRoll roll : rolls) {
       int nDice = roll.getNumDice();
       boolean reportTotal = roll.isReportTotal();
 
-      String val = "";
+      StringBuilder val = new StringBuilder();
       int total = 0;
 
       for (int j = 0; j < nDice; j++) {
@@ -237,17 +252,16 @@ public abstract class DieServer {
           total += result;
         }
         else {
-          val += result;
+          val.append(result);
           if (j < nDice - 1)
-            val += ",";
+            val.append(",");
         }
       }
 
       if (reportTotal)
-        val += total;
+        val.append(total);
 
-      val = formatResult(roll.getDescription(), val, format);
-      GameModule.getGameModule().getChatter().send(val);
+      GameModule.getGameModule().getChatter().send(formatResult(roll.getDescription(), val.toString(), format));
     }
   }
 
@@ -283,8 +297,7 @@ public abstract class DieServer {
     parseInternetRollString(toss, new Vector<>(returnString));
   }
 
-  /**
-   *
+  /*
    * Extract the portion of the email address withing the  angle brackets.
    * Allows Email addresses like 'Joe Blow <j.blow@somewhere.com>'
    */

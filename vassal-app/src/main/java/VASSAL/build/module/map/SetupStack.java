@@ -80,6 +80,7 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.NewGameIndicator;
@@ -183,7 +184,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         pos = getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
+        ErrorDialog.dataWarning(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
       }
     }
   }
@@ -199,9 +200,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           getConfigureBoard().getGrid().getLocation(location);
         }
         catch (BadCoords e) {
-          String msg = "Bad location name "+location+" in "+getConfigureName();
+          String msg = "Bad location name " + location + " in " + getConfigureName();
           if (e.getMessage() != null) {
-            msg += ":  "+e.getMessage();
+            msg += ":  " + e.getMessage();
           }
           report.addWarning(msg);
         }
@@ -410,13 +411,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected Stack initializeContents() {
     Stack s = createStack();
     Configurable[] c = getConfigureComponents();
+    int num = 0; // For error reporting
     for (Configurable configurable : c) {
+      num++;
       if (configurable instanceof PieceSlot) {
         PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
-        p = PieceCloner.getInstance().clonePiece(p);
-        GameModule.getGameModule().getGameState().addPiece(p);
-        s.add(p);
+        if (p != null) { // In case slot fails to "build the piece", which is a possibility.
+          p = PieceCloner.getInstance().clonePiece(p);
+          GameModule.getGameModule().getGameState().addPiece(p);
+          s.add(p);
+        } 
+        else {
+          ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
+        }
       }
     }
     GameModule.getGameModule().getGameState().addPiece(s);
@@ -733,7 +741,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public BufferedImage getDummyImage() {
       if (dummyImage == null) {
         dummyImage = ImageUtils.createCompatibleTranslucentImage(
-          dummySize.width*2, dummySize.height*2);
+          dummySize.width * 2, dummySize.height * 2);
         final Graphics2D g = dummyImage.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, dummySize.width, dummySize.height);
@@ -745,7 +753,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     public void drawDummyImage(Graphics g, int x, int y) {
-      drawDummyImage(g, x-dummySize.width/2, y-dummySize.height/2, null, 1.0);
+      drawDummyImage(g, x - dummySize.width / 2, y - dummySize.height / 2, null, 1.0);
     }
 
     public void drawDummyImage(Graphics g, int x, int y, Component obs, double zoom) {
@@ -777,8 +785,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public Rectangle getPieceBoundingBox() {
       Rectangle r = myPiece == null ? new Rectangle() : myPiece.getShape().getBounds();
       if (r == null || r.width == 0 || r.height == 0) {
-        r.x = 0 - dummySize.width/2;
-        r.y = 0 - dummySize.height/2;
+        r.x = 0 - dummySize.width / 2;
+        r.y = 0 - dummySize.height / 2;
         r.width = dummySize.width;
         r.height = dummySize.height;
       }
@@ -991,8 +999,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         r.width = DEFAULT_SIZE.width;
         r.height = DEFAULT_SIZE.height;
       }
-      int x = p.x-r.width/2;
-      int y = p.y-r.height/2;
+      int x = p.x - r.width / 2;
+      int y = p.y - r.height / 2;
       if (x < 0) x = 0;
       if (y < 0) y = 0;
       scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
@@ -1173,7 +1181,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       for (int f = 0; f < b; ++f) {
         final int alpha = CURSOR_ALPHA * (f + 1) / b;
         g.setColor(new Color(0xff, 0xff, 0xff, alpha));
-        g.drawRect(f, f, w-2*f, h-2*f);
+        g.drawRect(f, f, w - 2 * f, h - 2 * f);
       }
 
       // paint in the source image

@@ -23,6 +23,7 @@ import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
 import VASSAL.counters.StateMergeable;
+import VASSAL.tools.ProblemDialog;
 
 /**
  * This Command changes the state of a {@link GamePiece}.  Its undo
@@ -30,7 +31,7 @@ import VASSAL.counters.StateMergeable;
  * reversed.  */
 public class ChangePiece extends Command {
   protected String newState, oldState;
-  private String id;
+  private final String id;
   private Command undo;
 
   /**
@@ -49,8 +50,10 @@ public class ChangePiece extends Command {
    * to that of the piece when this Command is executed.
    * @deprecated
    */
-  @Deprecated public ChangePiece(String id, String newState) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public ChangePiece(String id, String newState) {
     this(id, null, newState);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
@@ -135,6 +138,6 @@ public class ChangePiece extends Command {
 
   @Override
   public String getDetails() {
-    return "id="+id+",oldState="+oldState+",newState="+newState;
+    return "id=" + id + ",oldState=" + oldState + ",newState=" + newState; //$NON-NLS$//
   }
 }

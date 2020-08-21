@@ -59,7 +59,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     double scale) throws ImageIOException {
 
     return TileUtils.read(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0/scale)));
+      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
   }
 
   /** {@inheritDoc} */
@@ -71,7 +71,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     double scale) throws ImageIOException {
 
     return TileUtils.size(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0/scale)));
+      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
   }
 
   /** {@inheritDoc} */
@@ -83,7 +83,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     double scale) throws ImageIOException {
 
     final File f = new File(cpath + '/' +
-      TileUtils.tileName(name, tileX, tileY, (int)(1.0/scale)));
+      TileUtils.tileName(name, tileX, tileY, (int)(1.0 / scale)));
     return f.exists() && f.isFile();
   }
 

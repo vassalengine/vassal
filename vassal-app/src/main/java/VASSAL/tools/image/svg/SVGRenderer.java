@@ -19,6 +19,7 @@
 package VASSAL.tools.image.svg;
 
 import java.awt.AlphaComposite;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -33,7 +34,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -50,7 +50,6 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
-import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -61,6 +60,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGDocument;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
@@ -76,12 +76,10 @@ public class SVGRenderer {
   private static final Logger logger =
     LoggerFactory.getLogger(SVGRenderer.class);
 
-  private static final SAXSVGDocumentFactory docFactory =
-    new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
   private static final ImageRendererFactory rendFactory =
     new ConcreteImageRendererFactory();
 
-  private final Document doc;
+  private final SVGDocument doc;
   private final float defaultW, defaultH;
   private final Rasterizer r = new Rasterizer();
 
@@ -97,28 +95,15 @@ public class SVGRenderer {
    */
   public SVGRenderer(String file, InputStream in) throws IOException {
     // load the SVG
-    try (in) {
-      // We synchronize on docFactory becuase it does internal caching
-      // of the Documents it produces. This ensures that a Document is
-      // being modified on one thread only.
-      synchronized (docFactory) {
-        doc = docFactory.createDocument(file, in);
-      }
-    }
-    catch (DOMException e) {
-      throw new IOException(e);
-    }
+    doc = SVGImageUtils.getDocument(file, in);
 
     // get the default image size
-    final Element root = doc.getDocumentElement();
-
-    defaultW = Float.parseFloat(
-      root.getAttributeNS(null, "width").replaceFirst("px", ""));
-    defaultH = Float.parseFloat(
-      root.getAttributeNS(null, "height").replaceFirst("px", ""));
+    final Dimension s = SVGImageUtils.getImageSize(doc);
+    defaultW = s.width;
+    defaultH = s.height;
   }
 
-  private static final double DEGTORAD = Math.PI/180.0;
+  private static final double DEGTORAD = Math.PI / 180.0;
 
   public BufferedImage render() {
     return render(0.0, 1.0);
@@ -128,7 +113,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -156,7 +141,7 @@ public class SVGRenderer {
     // The renderer needs the bounds unscaled---scaling comes from the
     // width and height hints.
     AffineTransform px = AffineTransform.getRotateInstance(
-      angle*DEGTORAD, defaultW/2.0, defaultH/2.0);
+      angle * DEGTORAD, defaultW / 2.0, defaultH / 2.0);
     r.setTransform(px);
 
     px = new AffineTransform(px);
@@ -222,7 +207,7 @@ public class SVGRenderer {
           SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
         );
         g.setAttributeNS(null, "transform", "rotate(0.000001)");
-      
+
         // interpose this <g> element between <svg> and its children
         final Element svg = document.getDocumentElement();
         Node n;
@@ -237,8 +222,8 @@ public class SVGRenderer {
       super.transcode(document, uri, output);
 
        // prepare the image to be painted
-      int w = (int)(width+0.5);
-      int h = (int)(height+0.5);
+      int w = (int)(width + 0.5);
+      int h = (int)(height + 0.5);
 
       // paint the SVG document using the bridge package
       // create the appropriate renderer

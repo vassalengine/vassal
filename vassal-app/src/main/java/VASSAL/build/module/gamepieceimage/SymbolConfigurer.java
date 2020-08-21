@@ -103,7 +103,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
         final String symbol1 = (String) value;
         final String symbol2 = Symbol.NatoUnitSymbolSet.NONE;
-        final Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);
+        final Rectangle bounds = new Rectangle(0, 0, sample_w - 1, sample_h - 1);
         Symbol.NatoUnitSymbolSet.draw(
           symbol1, symbol2, g, bounds,
           Color.BLACK, Color.WHITE, Color.BLACK, 1.0f, ""); //$NON-NLS-1$

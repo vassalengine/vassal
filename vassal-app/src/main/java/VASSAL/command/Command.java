@@ -17,6 +17,7 @@
  */
 package VASSAL.command;
 
+import VASSAL.tools.ProblemDialog;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -46,7 +47,7 @@ public abstract class Command {
 
   /**
    * Execute this command by first invoking {@link #executeCommand}, then
-   * invoking {@link #execute} recursively on all subcommands.
+   * invoking itself recursively on all subcommands.
    */
   public void execute() {
     try {
@@ -121,7 +122,9 @@ public abstract class Command {
   /**
    * @deprecated Use {@link #isAtomic()}
    */
-  @Deprecated protected boolean hasNullSubcommands() {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected boolean hasNullSubcommands() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return isAtomic();
   }
 
@@ -129,7 +132,7 @@ public abstract class Command {
    * Return true if this command has no sub-commands attached to it
    * (other than null commands).
    *
-   * @return
+   * @return True if this command has no sub-commands
    */
   protected boolean isAtomic() {
     for (Command c : seq) {

@@ -95,7 +95,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
    */
   public void draw(Graphics2D g2d, Shape s, double scale) {
 
-    if ((color != null && opacity > 0 ) || STYLE_IMAGE.equals(style)) {
+    if ((color != null && opacity > 0) || STYLE_IMAGE.equals(style)) {
       final Stroke oldStroke = g2d.getStroke();
       final Color oldColor = g2d.getColor();
       final Composite oldComposite = g2d.getComposite();
@@ -108,7 +108,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
       }
 
       g2d.setComposite(AlphaComposite.getInstance(
-        AlphaComposite.SRC_OVER, opacity/100.0f));
+        AlphaComposite.SRC_OVER, opacity / 100.0f));
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -116,7 +116,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
         g2d.fill(s);
       }
       else {
-        final Stroke stroke = new BasicStroke((float)(width*scale),
+        final Stroke stroke = new BasicStroke((float)(width * scale),
                                               BasicStroke.CAP_ROUND,
                                               BasicStroke.JOIN_ROUND);
         g2d.setStroke(stroke);
@@ -395,7 +395,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
           if (!source.getValueIsAdjusting()) {
             opacity = source.getValue();
           }
-        }});
+        }
+      });
 
       return slider;
     }

@@ -50,7 +50,7 @@ public class Documentation extends AbstractConfigurable {
     final JMenuBar mb = MenuManager.getInstance().getMenuBarFor(
       GameModule.getGameModule().getPlayerWindow());
 
-    return mb.getMenu(mb.getMenuCount()-1);
+    return mb.getMenu(mb.getMenuCount() - 1);
   }
 
   @Override

@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -90,7 +91,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public static final String EXC_BOARDS = "No, exclude Boards in list";
   public static final String INC_BOARDS = "No, only shade Boards in List";
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("MapShader");
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader");
 
   protected LaunchButton launch;
   protected boolean alwaysOn = false;
@@ -267,8 +268,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * pattern.
    * @deprecated Use {@link #getShadePattern(double)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected BufferedImage getShadePattern() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getShadePattern(1.0);
   }
 
@@ -282,11 +284,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return ImageUtils.toType(src, ImageUtils.getCompatibleTranslucentImageType());
   }
 
-  /*
+  /**
    * @deprecated Use {@link #getPatternRect(double)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Rectangle getPatternRect() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return patternRect;
   }
 
@@ -401,8 +404,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * Get/Build the textured paint used to fill in the Shade
    * @deprecated Use {@link #getTexture(double)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected TexturePaint getTexture() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getTexture(1.0);
   }
 
@@ -421,8 +425,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * @deprecated Use {@link #buildTexture(double)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected void buildTexture() {
+    ProblemDialog.showDeprecated("2020-08-06");
     buildTexture(1.0);
   }
 
@@ -590,19 +595,21 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       for (Board b : map.getBoards()) {
         String boardName = b.getName();
         boolean doShade = false;
-        if (boardSelection.equals(ALL_BOARDS)) {
+        switch (boardSelection) {
+        case ALL_BOARDS:
           doShade = true;
-        }
-        else if (boardSelection.equals(EXC_BOARDS)) {
+          break;
+        case EXC_BOARDS:
           doShade = true;
           for (int i = 0; i < boardList.length && doShade; i++) {
             doShade = !boardList[i].equals(boardName);
           }
-        }
-        else if (boardSelection.equals(INC_BOARDS)) {
+          break;
+        case INC_BOARDS:
           for (int i = 0; i < boardList.length && !doShade; i++) {
             doShade = boardList[i].equals(boardName);
           }
+          break;
         }
         if (doShade) {
           boardClip.add(new Area(b.bounds()));
@@ -889,9 +896,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     /**
      * Returns the Area to add to (or subtract from) the area drawn by the MapShader's.
      * Area is assumed to be at zoom factor 1.0
-     * @param shader
+     * @param shader Map Shader
      * @return the Area contributed by the piece
      */
-    public Area getArea(MapShader shader);
+    Area getArea(MapShader shader);
   }
 }

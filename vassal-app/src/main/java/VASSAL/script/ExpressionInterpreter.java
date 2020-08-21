@@ -159,7 +159,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
           }
           argList.append("String ").append(variable);
         }
-        eval("String " + MAGIC2 + "("+argList.toString()+") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -257,7 +257,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       }
       else {
         try {
-          setVar(var, Integer.valueOf(value).intValue());
+          setVar(var, Integer.parseInt(value));
         }
         catch (NumberFormatException e) {
           try {
@@ -287,7 +287,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     String result;
     try {
-      eval(MAGIC1 + "=" + MAGIC2 + "("+argList.toString()+")");
+      eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
       result = get(MAGIC1).toString();
     }
     catch (EvalError e) {
@@ -491,7 +491,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     catch (Exception e) {
       final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
       final String data = "Data=[" + value.toString() + "].";
-      ErrorDialog.dataError(new BadDataReport(message, data, e));
+      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;
   }
@@ -514,13 +514,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyName instanceof String)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
     final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
     final List<Map> maps = getMapList(mapName, sourcePiece);
-    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
@@ -558,7 +558,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     int result = 0;
 
     if (! (source instanceof GamePiece)) return 0;
-    if (! (propertyMatch instanceof String) && propertyMatch != null) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
     final String matchString = (String) propertyMatch;
@@ -566,7 +566,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString));
+    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
     for (Map map : maps) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {

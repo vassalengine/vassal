@@ -69,7 +69,7 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
         if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
           if (ownerFont == null) {
             nonOwnerFont = this.getFont();
-            ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle()+Font.BOLD, nonOwnerFont.getSize());
+            ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle() + Font.BOLD, nonOwnerFont.getSize());
           }
           setFont(ownerFont);
           return l;

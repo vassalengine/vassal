@@ -25,11 +25,11 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class GlobalHotKey extends Decorator implements TranslatablePiece {
-  public static final String ID="globalhotkey;";
+  public static final String ID = "globalhotkey;";
 
   protected NamedKeyStroke commandKey;
   protected NamedKeyStroke globalHotKey;
-  protected String commandName="Hotkey";
+  protected String commandName = "Hotkey";
   protected KeyCommand[] commands;
   protected KeyCommand command;
   protected String description = "";
@@ -67,7 +67,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(commandKey).append(globalHotKey).append(description);
-    return ID+se.getValue();
+    return ID + se.getValue();
   }
 
   @Override
@@ -110,7 +110,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  "+description;
+    return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  " + description;
   }
 
   @Override
@@ -177,7 +177,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());
-      return ID+se.getValue();
+      return ID + se.getValue();
     }
 
   }

@@ -332,20 +332,27 @@ public class ErrorDialog {
     );
   }
 
-  private static final Set<String> reportedDataErrors =
+  private static final Set<String> reportedDataWarnings =
     Collections.synchronizedSet(new HashSet<>());
-
+  
+  
+  @Deprecated
   public static void dataError(BadDataReport e) {
+    dataWarning(e);
+  }
+
+  public static void dataWarning(BadDataReport e) {
     logger.warn(e.getMessage() + ": " + e.getData());
     if (e.getCause() != null) logger.error("", e.getCause());
 
-    if (!reportedDataErrors.contains(e.getData())) {
-      reportedDataErrors.add(e.getData());
+    if (!reportedDataWarnings.contains(e.getData())) {
+      reportedDataWarnings.add(e.getData());
 
       // send a warning to the controls window
-      GameModule.getGameModule().warn(Resources.getString(
-        "Error.data_error_message", e.getMessage(), e.getData()
-      ));
+      final GameModule g = GameModule.getGameModule();
+      if (g != null) {
+        g.warn(Resources.getString("Error.data_error_message", e.getMessage(), e.getData()));
+      }      
     }
   }
 

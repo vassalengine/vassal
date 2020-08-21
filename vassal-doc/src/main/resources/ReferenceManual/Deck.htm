@@ -73,8 +73,11 @@
       specified <a href="MessageFormat.htm">Message Format</a>.<br>
       <br>
       <b>When selecting, sort cards by:</b> &nbsp; When the player is prompted to select specific cards from the deck, the cards can optionally be sorted (alphabetically)
-      using the listed property. Leave blank to list cards by their current position in the deck. <i>Example: &nbsp;cards in a deck can use a <a href="PropertyMarker.htm">Marker</a>
-      trait to specify a card number (001,002, etc.) and always list cards in order of their assigned number.</i><br>
+      using the listed property. Leave blank to list cards by their current position in the deck. <b>NOTE:</b> Unlike the previous field this field simply names a single property,
+      and should not use $..$ markers. To sort by multiple fields a <a href="CalculatedProperty.htm">Calculated Property</a> trait e.g. <i>SortName</i> can be created and serve to
+      concatenate the various fields in an appropriate order. <b>Example:</b> &nbsp;cards in a deck can use a <a href="PropertyMarker.htm">Marker</a>
+      trait named CardNum to specify a card number (001,002, etc.) and always list cards in order of their assigned number: in this case simply fill
+      <i>CardNum</i> into the field, no $..$.<br>
       <br>
       <b>Contents are Face-down:</b>&nbsp; Determines whether cards in the Deck are always drawn face-down, always drawn face-up, or
       can be switched from face-up to face-down with a right-click context menu entry.<br>

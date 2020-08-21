@@ -82,7 +82,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public void setup(boolean gameStarting) {
-    if (gameStarting && !hasStarted){
+    if (gameStarting && !hasStarted) {
       SwingUtilities.invokeLater(this::apply);
     }
     hasStarted = gameStarting;

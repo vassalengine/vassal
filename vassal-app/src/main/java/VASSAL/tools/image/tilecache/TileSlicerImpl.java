@@ -84,9 +84,9 @@ public class TileSlicerImpl implements TileSlicer {
       }
     };
 
-    for (int div = 2; sw/div > 0 && sh/div > 0; div <<= 1) {
-      final int dw = sw/div;
-      final int dh = sh/div;
+    for (int div = 2; sw / div > 0 && sh / div > 0; div <<= 1) {
+      final int dw = sw / div;
+      final int dh = sh / div;
 
       queueTileTasks(
         src, iname, tpath, div, tw, th, dw, dh, scaled, exec, futures

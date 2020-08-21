@@ -113,10 +113,10 @@ public class ColorConfigurer extends Configurer {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
+      ErrorDialog.dataWarning(new BadDataReport("not an integer", s, e));
     }
     catch (IllegalArgumentException | NoSuchElementException e) {
-      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
+      ErrorDialog.dataWarning(new BadDataReport("bad color", s, e));
     }
 
     // default to black in case of bad data

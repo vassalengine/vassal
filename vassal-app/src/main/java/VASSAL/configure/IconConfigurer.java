@@ -89,8 +89,8 @@ public class IconConfigurer extends Configurer {
           final Icon i = getIconValue();
           if (i != null) {
             i.paintIcon(this, g,
-                        getSize().width/2-i.getIconWidth()/2,
-                        getSize().height/2-i.getIconHeight()/2);
+                        getSize().width / 2 - i.getIconWidth() / 2,
+                        getSize().height / 2 - i.getIconHeight() / 2);
           }
         }
       };

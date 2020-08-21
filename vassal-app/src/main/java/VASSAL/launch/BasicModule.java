@@ -157,13 +157,15 @@ public class BasicModule extends GameModule {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
-      }});
+      }
+    });
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent evt) {
         idChangeSupport.firePropertyChange(evt);
-      }});
+      }
+    });
     StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(new PropertyChangeListener() {
       @Override
@@ -184,7 +186,8 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
     ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
-    ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
+
     server = new DynamicClient();
     AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$

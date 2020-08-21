@@ -65,7 +65,7 @@ public class SoundEncoder implements CommandEncoder {
       SequenceEncoder se = new SequenceEncoder('\t');
       se.append(cmd.soundKey);
       se.append(playerEncoder.playerToString(cmd.getSender()));
-      s = COMMAND_PREFIX+se.getValue();
+      s = COMMAND_PREFIX + se.getValue();
     }
     return s;
   }
@@ -89,7 +89,7 @@ public class SoundEncoder implements CommandEncoder {
 
     @Override
     protected void executeCommand() {
-      /**
+      /*
        * Ignore if we don't want to hear from this player anymore, we are
        * already processing a wake-up, or we have already processed a wake-up recently
        */

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -76,11 +77,11 @@ public class FreeRotator extends Decorator
                                     MouseMotionListener,
                                     Drawable,
                                     TranslatablePiece {
-  public static final String ID = "rotate;";
+  public static final String ID = "rotate;"; //$NON-NLS-1$//
 
-  public static final String FACING = "_Facing";
+  public static final String FACING = "_Facing"; //$NON-NLS-1$//
 
-  public static final String DEGREES = "_Degrees";
+  public static final String DEGREES = "_Degrees"; //$NON-NLS-1$//
 
   public static final double PI_180 = Math.PI / 180.0;
 
@@ -107,10 +108,11 @@ public class FreeRotator extends Decorator
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected java.util.Map<Double, Image> images = new HashMap<>();
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
-  @Deprecated
+
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected PieceImage unrotated;
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
@@ -124,7 +126,7 @@ public class FreeRotator extends Decorator
 
   public FreeRotator() {
     // modified for random rotation (added two ; )
-    this(ID + "6;];[;Rotate CW;Rotate CCW;;;;", null);
+    this(ID + "6;];[;Rotate CW;Rotate CCW;;;;", null); //$NON-NLS-1$//
   }
 
   public FreeRotator(String type, GamePiece inner) {
@@ -219,9 +221,10 @@ public class FreeRotator extends Decorator
     }
   }
 
-  /** @deprecated Use {@link boundingBox()} instead. */
-  @Deprecated
+  /** @deprecated Use {@link #boundingBox()} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Rectangle getRotatedBounds() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return boundingBox();
   }
 
@@ -389,7 +392,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e);
       }
     }
     else {
@@ -397,7 +400,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e);
       }
     }
   }
@@ -657,13 +660,14 @@ public class FreeRotator extends Decorator
    * Return a full-scale cached image of this piece, rotated to the appropriate
    * angle.
    *
-   * @param angle
-   * @param obs
-   * @return
+   * @param angle Rotation angle
+   * @param obs Component observer
+   * @return Rotated Image
    * @deprecated Use a {@link GamePieceOp} if you need this Image.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image getRotatedImage(double angle, Component obs) {
+    ProblemDialog.showDeprecated("2020-08-06");
     if (gpOp == null) return null;
 
     if (gpOp.isChanged()) gpOp = Op.piece(piece);
@@ -682,7 +686,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Rotate.htm");
+    return HelpFile.getReferenceManualPage("Rotate.htm"); //$NON-NLS-1$//
   }
 
   @Override
@@ -708,26 +712,26 @@ public class FreeRotator extends Decorator
   }
 
   private static class Ed implements PieceEditor, PropertyChangeListener {
-    private BooleanConfigurer anyConfig;
-    private NamedHotKeyConfigurer anyKeyConfig;
-    private IntConfigurer facingsConfig;
-    private NamedHotKeyConfigurer cwKeyConfig;
-    private NamedHotKeyConfigurer ccwKeyConfig;
+    private final BooleanConfigurer anyConfig;
+    private final  NamedHotKeyConfigurer anyKeyConfig;
+    private final  IntConfigurer facingsConfig;
+    private final  NamedHotKeyConfigurer cwKeyConfig;
+    private final  NamedHotKeyConfigurer ccwKeyConfig;
     // random rotate
-    private NamedHotKeyConfigurer rndKeyConfig;
+    private final  NamedHotKeyConfigurer rndKeyConfig;
     // end random rotate
-    private StringConfigurer nameConfig;
+    private final  StringConfigurer nameConfig;
 
-    private JTextField anyCommand;
-    private JTextField cwCommand;
-    private JTextField ccwCommand;
-    private JTextField rndCommand;
-    private Box anyControls;
-    private Box cwControls;
-    private Box ccwControls;
-    private Box rndControls;
+    private final  JTextField anyCommand;
+    private final  JTextField cwCommand;
+    private final  JTextField ccwCommand;
+    private final  JTextField rndCommand;
+    private final  Box anyControls;
+    private final  Box cwControls;
+    private final  Box ccwControls;
+    private final  Box rndControls;
 
-    private JPanel panel;
+    private final  JPanel panel;
 
     public Ed(FreeRotator p) {
       nameConfig = new StringConfigurer(null, "Description:  ", p.name);

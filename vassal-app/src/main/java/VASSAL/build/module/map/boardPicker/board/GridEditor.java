@@ -340,7 +340,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (setMode && SwingUtils.isMainMouseButtonDown(e)) {
+    if (setMode) {
       if (hp1 == null) {
         hp1 = e.getPoint();
       }
@@ -523,8 +523,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
       if (p != null) {
         g.setColor(Color.red);
-        g.fillOval(p.x-r1/2, p.y-r1/2, r1, r1);
-        g.drawOval(p.x-r2/2, p.y-r2/2, r2, r2);
+        g.fillOval(p.x - r1 / 2, p.y - r1 / 2, r1, r1);
+        g.drawOval(p.x - r2 / 2, p.y - r2 / 2, r2, r2);
       }
     }
 

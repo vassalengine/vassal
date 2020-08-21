@@ -99,7 +99,7 @@ public final class ImportAction extends EditModuleAction {
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
 
     chooser.resetChoosableFileFilters();
-    for (int i = IMPORTERS.length-1; i >= 0; --i) {
+    for (int i = IMPORTERS.length - 1; i >= 0; --i) {
       chooser.addChoosableFileFilter(new ExtensionFileFilter(
         DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase()
                         + ";*" + EXTENSIONS[i].toUpperCase() + ")",
@@ -145,7 +145,7 @@ public final class ImportAction extends EditModuleAction {
     actionCancelled = true;
 
     fc.resetChoosableFileFilters();
-    for (int i = IMPORTERS.length-1; i >= 0; --i) {
+    for (int i = IMPORTERS.length - 1; i >= 0; --i) {
       fc.addChoosableFileFilter(new ExtensionFileFilter(
           DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase() + ";*" + EXTENSIONS[i].toUpperCase() + ")",
           new String[] {EXTENSIONS[i]})
@@ -187,10 +187,10 @@ public final class ImportAction extends EditModuleAction {
     new ModuleEditorWindow(module).setVisible(true);
   }
 
-  /**
-   * Find case-insensitive, cross-platform match for a given Windows file. Will
-   * ask the user if unable to locate the specified file.
-   */
+//  /**
+//   * Find case-insensitive, cross-platform match for a given Windows file. Will
+//   * ask the user if unable to locate the specified file.
+//   */
 //  public File getCaseInsensitiveFile(File f) {
 //    return getCaseInsensitiveFile(f, null, true, null);
 //  }
@@ -199,15 +199,15 @@ public final class ImportAction extends EditModuleAction {
 //    return getCaseInsensitiveFile(f, null, queryIfNotFound, null);
 //  }
 
-  /**
-   * Find case-insensitive, cross-platform match for a given Windows file. If unable
-   * to find a match, will then search the directory of the second file for a match.
-   * Will ask the user if still unable to locate the specified file.
-   *
-   * @param f    File to match with a Windows-specific file-name format.
-   * @param base Another file whose directory to search for a match if unable to find otherwise.
-   * @return     Local match
-   */
+//  /**
+//   * Find case-insensitive, cross-platform match for a given Windows file. If unable
+//   * to find a match, will then search the directory of the second file for a match.
+//   * Will ask the user if still unable to locate the specified file.
+//   *
+//   * @param f    File to match with a Windows-specific file-name format.
+//   * @param base Another file whose directory to search for a match if unable to find otherwise.
+//   * @return     Local match
+//   */
 //  public File getCaseInsensitiveFile(File f, File base) {
 //    return getCaseInsensitiveFile(f, base, true, null);
 //  }
@@ -216,30 +216,30 @@ public final class ImportAction extends EditModuleAction {
 //    return getCaseInsensitiveFile(f, base, queryIfNotFound, null);
 //  }
 
-  /**
-   * Find case-insensitive, cross-platform match for a given Windows file. If unable
-   * to find a match, will then search the directory of the second file for a match.
-   * If still unable to locate the specified file will ask the user to locate the file
-   * using the specified file filter.
-   *
-   * @param f      File to match with a Windows-specific file-name format.
-   * @param base   Another file whose directory to search for a match.
-   * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
-   * @return       Local match
-   */
+//  /**
+//   * Find case-insensitive, cross-platform match for a given Windows file. If unable
+//   * to find a match, will then search the directory of the second file for a match.
+//   * If still unable to locate the specified file will ask the user to locate the file
+//   * using the specified file filter.
+//   *
+//   * @param f      File to match with a Windows-specific file-name format.
+//   * @param base   Another file whose directory to search for a match.
+//   * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
+//   * @return       Local match
+//   */
 //  public File getCaseInsensitiveFile(File f, File base, FileFilter filter) {
 //    return getCaseInsensitiveFile(f, base, true, filter);
 //  }
 
-  /**
-   * Find case-insensitive, cross-platform match for a given Windows file.
-   * If unable to locate the specified file will ask the user to locate the file
-   * using the specified file filter.
-   *
-   * @param f      File to match with a Windows-specific file-name format.
-   * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
-   * @return       Local match
-   */
+//  /**
+//   * Find case-insensitive, cross-platform match for a given Windows file.
+//   * If unable to locate the specified file will ask the user to locate the file
+//   * using the specified file filter.
+//   *
+//   * @param f      File to match with a Windows-specific file-name format.
+//   * @param filter <code>FileFilter</code> to use when asking the user to locate the match.
+//   * @return       Local match
+//   */
 //  public File getCaseInsensitiveFile(File f, FileFilter filter) {
 //    return getCaseInsensitiveFile(f, null, true, filter);
 //  }

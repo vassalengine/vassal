@@ -57,7 +57,7 @@ public interface ServerStatus {
       return moduleName;
     }
 
-    public void setModuleName( String moduleName ) {
+    public void setModuleName(String moduleName) {
       this.moduleName = moduleName;
     }
 
@@ -73,9 +73,9 @@ public interface ServerStatus {
       return rooms.values().toArray(new Room[0]);
     }
 
-    public int numPlayers(){
+    public int numPlayers() {
       Room[] roomsArray = getRooms();
-      int n=0;
+      int n = 0;
       for (Room room : roomsArray) {
         n += ((SimpleRoom) room).numPlayers();
       }

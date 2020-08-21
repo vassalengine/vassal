@@ -54,8 +54,8 @@ class ScaledTileTask extends TileTask {
   @Override
   protected BufferedImage sliceTile() {
     // get actual tile width, height (edge tiles can be less than full size)
-    final int atw = Math.min(tw, dw - tx*tw);
-    final int ath = Math.min(th, dh - ty*th);
+    final int atw = Math.min(tw, dw - tx * tw);
+    final int ath = Math.min(th, dh - ty * th);
 
     final int type = src.getType();
 
@@ -63,7 +63,7 @@ class ScaledTileTask extends TileTask {
     final BufferedImage tile = new BufferedImage(atw, ath, type);
 
     final WritableRaster tileR =
-      tile.getRaster().createWritableTranslatedChild(tx*tw, ty*th);
+      tile.getRaster().createWritableTranslatedChild(tx * tw, ty * th);
     final Rectangle dstFR = new Rectangle(0, 0, dw, dh);
 
     GeneralFilter.zoom(tileR, dstFR, src, filter);

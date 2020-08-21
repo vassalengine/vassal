@@ -34,25 +34,25 @@ import VASSAL.i18n.Localization;
  */
 public abstract class Widget extends AbstractConfigurable {
   public static final String NAME = "entryName";
-  public static final String WIDTH="width";
-  public static final String HEIGHT="height";
+  public static final String WIDTH = "width";
+  public static final String HEIGHT = "height";
   protected Element buildElement;
 
   protected Widget parent;
 
   protected Widget() {
   }
-  
-  
+
+
   public boolean hasScale() {
     return false;
   }
-  
-  
+
+
   public double getScale() {
-    return 1.0;    
+    return 1.0;
   }
-  
+
 
   /**
    * For memory efficiency reasons, a Widget is initialized lazily.

@@ -256,21 +256,21 @@ public class LayoutConfigurer extends Configurer {
       int sel = table.getSelectedRow();
 
       if (action.equals(ADD_SYMBOL)) {
-        addItem(new SymbolItem(layout, "Symbol"+pos)); //$NON-NLS-1$
+        addItem(new SymbolItem(layout, "Symbol" + pos)); //$NON-NLS-1$
       }
       else if (action.equals(ADD_TEXT)) {
-        TextItem item = new TextItem(layout, "Text"+pos); //$NON-NLS-1$
+        TextItem item = new TextItem(layout, "Text" + pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_TEXTBOX)) {
-        TextBoxItem item = new TextBoxItem(layout, "TextBox"+pos); //$NON-NLS-1$
+        TextBoxItem item = new TextBoxItem(layout, "TextBox" + pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_IMAGE)) {
-        addItem(new ImageItem(layout, "Image"+pos)); //$NON-NLS-1$
+        addItem(new ImageItem(layout, "Image" + pos)); //$NON-NLS-1$
       }
       else if (action.equals(ADD_SHAPE)) {
-        addItem(new ShapeItem(layout, "Shape"+pos)); //$NON-NLS-1$
+        addItem(new ShapeItem(layout, "Shape" + pos)); //$NON-NLS-1$
       }
       else if (action.equals(REMOVE)) {
         if (sel >= 0) {
@@ -288,12 +288,12 @@ public class LayoutConfigurer extends Configurer {
       }
       else if (action.equals(UP)) {
         if (sel > 0) {
-          moveItem(sel, sel-1);
+          moveItem(sel, sel - 1);
         }
       }
       else if (action.equals(DOWN)) {
-        if (sel < pos-1) {
-          moveItem(sel, sel+1);
+        if (sel < pos - 1) {
+          moveItem(sel, sel + 1);
         }
 
       }
@@ -350,7 +350,7 @@ public class LayoutConfigurer extends Configurer {
     class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
 
       @Override
       public int getColumnCount() {
@@ -389,7 +389,7 @@ public class LayoutConfigurer extends Configurer {
     }
   }
 
-  protected class NewIntConfigurer extends IntConfigurer {
+  protected static class NewIntConfigurer extends IntConfigurer {
 
     NewIntConfigurer(String name, String key, Integer i) {
       super(name, key, i);
@@ -400,7 +400,7 @@ public class LayoutConfigurer extends Configurer {
     }
 
     public int getIntValue() {
-      return (Integer) getValue();
+      return (Integer) super.getValue();
     }
 
   }

@@ -101,7 +101,7 @@ public class ZipFileImageTiler {
       final Runtime runtime = Runtime.getRuntime();
       final ExecutorService exec = new ThreadPoolExecutor(
         runtime.availableProcessors(),
-        runtime.availableProcessors()+1,
+        runtime.availableProcessors() + 1,
         60, TimeUnit.SECONDS,
         new LinkedBlockingQueue<>(),
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())

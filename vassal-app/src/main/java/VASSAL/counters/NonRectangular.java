@@ -221,26 +221,26 @@ public class NonRectangular extends Decorator implements EditablePiece {
       final BufferedImage bi = ImageUtils.toBufferedImage(im);
       final int w = bi.getWidth();
       final int h = bi.getHeight();
-      final int[] pixels = bi.getRGB(0, 0, w, h, new int[w*h], 0, w);
+      final int[] pixels = bi.getRGB(0, 0, w, h, new int[w * h], 0, w);
 
       // build the outline in strips
       final Area outline = new Area();
       for (int y = 0; y < h; ++y) {
         int left = -1;
         for (int x = 0; x < w; ++x) {
-          if (((pixels[x + y*w] >>> 24) & 0xff) > 0) {
+          if (((pixels[x + y * w] >>> 24) & 0xff) > 0) {
             if (left < 0) {
               left = x;
             }
           }
           else if (left > -1) {
-            outline.add(new Area(new Rectangle(left, y, x-left, 1)));
+            outline.add(new Area(new Rectangle(left, y, x - left, 1)));
             left = -1;
           }
         }
 
         if (left > -1) {
-          outline.add(new Area(new Rectangle(left, y, w-left, 1)));
+          outline.add(new Area(new Rectangle(left, y, w - left, 1)));
         }
       }
 

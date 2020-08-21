@@ -169,7 +169,7 @@ public class CgiServerStatus implements ServerStatus {
     // For large numbers of intervals, use an interval tree instead.
     for (int i = 0; i < requests.size(); i++) {
       final Range<Long> a = requests.get(i);
-      for (int j = i+1; j < requests.size(); j++) {
+      for (int j = i + 1; j < requests.size(); j++) {
         final Range<Long> b = requests.get(j);
         if (a.isOverlappedBy(b)) {
           final long al = a.getMinimum();

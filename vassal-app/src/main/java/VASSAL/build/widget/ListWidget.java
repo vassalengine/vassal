@@ -68,17 +68,17 @@ public class ListWidget extends Widget
   public static String getConfigureTypeName() {
     return "Scrollable List";
   }
-  
+
   @Override
   public boolean hasScale() {
     return true;
   }
-  
+
   @Override
   public double getScale() {
     return scale;
-  }  
-  
+  }
+
   // True if we're part of main (docked) Piece Palette
   protected boolean isMainPiecePalette() {
     Widget w = this;
@@ -86,10 +86,10 @@ public class ListWidget extends Widget
       if (w instanceof PieceWindow) {
         return ((PieceWindow)w).shouldDockIntoMainWindow();
       }
-    }    
-    return false;    
+    }
+    return false;
   }
-  
+
 
   @Override
   public Component getComponent() {
@@ -117,10 +117,10 @@ public class ListWidget extends Widget
       split.setLeftComponent(multiPanel);
       split.setRightComponent(new ScrollPane(list));
 
-      if (width > 0 && height > 0) { 
+      if (width > 0 && height > 0) {
         // This was causing bad behavior in piece palettes - Jlist aggressively grabs space. This lets the size of the rest of the Piece Palette and/or Chatter govern.
-        int grabWidth  = isMainPiecePalette() ? width/2 : width;
-        int grabHeight = isMainPiecePalette() ? height/2 : height;
+        int grabWidth  = isMainPiecePalette() ? width / 2 : width;
+        int grabHeight = isMainPiecePalette() ? height / 2 : height;
         split.setPreferredSize(new Dimension(grabWidth, grabHeight));
       }
       if (divider > 0) {
@@ -204,10 +204,10 @@ public class ListWidget extends Widget
       scale = (Double) value;
       if (scale < 0.01) { //BR// Just gonna go with some sanity.
         scale = 0.01;
-      } 
+      }
       else if (scale >= 4) {
-        scale = 4.0; 
-      } 
+        scale = 4.0;
+      }
     }
   }
 

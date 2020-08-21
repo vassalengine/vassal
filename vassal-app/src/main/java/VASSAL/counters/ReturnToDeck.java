@@ -62,7 +62,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   public static final String ID = "return;";
   protected String deckId;
   protected String returnCommand;
-  protected String selectDeckPrompt="Select destination";
+  protected String selectDeckPrompt = "Select destination";
   protected NamedKeyStroke returnKey;
   protected DrawPile deck;
 

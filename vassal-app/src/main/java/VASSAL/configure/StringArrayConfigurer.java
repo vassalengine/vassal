@@ -124,7 +124,7 @@ public class StringArrayConfigurer extends Configurer {
             if (pos < 0) pos = list.getModel().getSize();
             setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
             setTextValue("");
-            list.setSelectedIndex(pos+1);
+            list.setSelectedIndex(pos + 1);
           }
         }
       };

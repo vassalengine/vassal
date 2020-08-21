@@ -25,13 +25,13 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
@@ -137,7 +137,17 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     Command c = null;
 
-    java.util.Map<String, Object> oldPiece = (java.util.Map<String, Object>) getProperty(Properties.SNAPSHOT);
+    java.util.Map<String, Object> oldPiece;
+    final Object o = getProperty(Properties.SNAPSHOT);
+    // If the SNAPSHOT is returned as a PropertyExporter instead of a Map, then it been set from custom code
+    // that is still calling using PieceCloner.clonePiece. Extract the Property Map from the supplied GamePiece and annoy the user.
+    if (o instanceof PropertyExporter) {
+      oldPiece = ((PropertyExporter) o).getProperties();
+      ProblemDialog.showOutdatedUsage("Custom trait calling setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p))");
+    }
+    else {
+      oldPiece = (java.util.Map<String, Object>) o;
+    }
 
     boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.get(Properties.INVISIBLE_TO_OTHERS));
     boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
@@ -200,7 +210,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
             format.setFormat("");
           }
           else {
-            format.setFormat("$"+Map.MESSAGE+"$");
+            format.setFormat("$" + Map.MESSAGE + "$");
           }
           format.setProperty(Map.MESSAGE, reportText);
           reportText = format.getLocalizedText(properties);
@@ -221,7 +231,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   protected String getPieceName() {
 
-    String name = "";
+    String name;
 
     PieceAccess.GlobalAccess.hideAll();
 
@@ -240,7 +250,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       catch (NumberFormatException e) {
         cycleIndex = -1;
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to " + newState);
       }
     }
     else {
@@ -304,12 +314,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
-    String[] formats = new String[c+1];
-    String[] descriptions = new String[c+1];
+    String[] formats = new String[c + 1];
+    String[] descriptions = new String[c + 1];
     formats[0] = reportFormat;
     descriptions[0] = getCommandDescription(description, "Report Format");
     int j = 1;
-    for (int i=0; i < c; i++) {
+    for (int i = 0; i < c; i++) {
       formats[j] = cycleReportFormat[i];
       descriptions[j] = getCommandDescription(description, "Report Format " + j);
       j++;
@@ -327,13 +337,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   public static class Ed implements PieceEditor {
 
-    private NamedKeyStrokeArrayConfigurer keys;
-    private StringConfigurer format;
-    private JCheckBox cycle;
-    private StringArrayConfigurer cycleFormat;
-    private NamedKeyStrokeArrayConfigurer cycleDownKeys;
+    private final NamedKeyStrokeArrayConfigurer keys;
+    private final StringConfigurer format;
+    private final JCheckBox cycle;
+    private final StringArrayConfigurer cycleFormat;
+    private final NamedKeyStrokeArrayConfigurer cycleDownKeys;
     protected StringConfigurer descInput;
-    private JPanel box;
+    private final JPanel box;
 
     public Ed(ReportState piece) {
 
@@ -363,16 +373,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(cycleFormat.getControls());
       cycleDownKeys = new NamedKeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
       box.add(cycleDownKeys.getControls());
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          format.getControls().setVisible(!cycle.isSelected());
-          cycleFormat.getControls().setVisible(cycle.isSelected());
-          cycleDownKeys.getControls().setVisible(cycle.isSelected());
-          Window w = SwingUtilities.getWindowAncestor(box);
-          if (w != null) {
-            w.pack();
-          }
+      ItemListener l = e -> {
+        format.getControls().setVisible(!cycle.isSelected());
+        cycleFormat.getControls().setVisible(cycle.isSelected());
+        cycleDownKeys.getControls().setVisible(cycle.isSelected());
+        Window w = SwingUtilities.getWindowAncestor(box);
+        if (w != null) {
+          w.pack();
         }
       };
       l.itemStateChanged(null);

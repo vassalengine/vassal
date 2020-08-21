@@ -10,3 +10,8 @@ cache:
 
 git:
   depth: 1
+
+# blocklist
+branches:
+  except:
+    - l10n_master
