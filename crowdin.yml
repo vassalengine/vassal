@@ -5,3 +5,5 @@ files:
   - source: /vassal-app/src/main/resources/VASSAL/i18n/VASSAL.properties
     translation: >-
       /vassal-app/src/main/resources/VASSAL/i18n/%file_name%_%two_letters_code%.%file_extension%
+
+commit_message: "[ci skip]"
