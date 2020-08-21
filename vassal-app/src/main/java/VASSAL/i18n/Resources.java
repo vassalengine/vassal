@@ -360,7 +360,7 @@ public class Resources {
    * @return Localized result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since="2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
   public static String getVassalString(String id) {
     return getInstance().getVassalBundle().getString(id);
   }
@@ -373,7 +373,7 @@ public class Resources {
    * @return Localized Result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since="2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
   public static String getEditorString(String id) {
     return getInstance().getEditorBundle().getString(id);
   }
@@ -388,7 +388,7 @@ public class Resources {
    * @return Localized result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since="2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
   public static String getString(ResourceBundle bundle, String id) {
     String s = null;
     try {
@@ -418,7 +418,7 @@ public class Resources {
       // If no English translation of Vassal is available (as will usually be the case),
       // drop back to the Base bundle.
       if (url == null && name.endsWith(EN_BUNDLE)) {
-        url = getAResource(name.substring(0, name.lastIndexOf(EN_BUNDLE))+BASE_BUNDLE);
+        url = getAResource(name.substring(0, name.lastIndexOf(EN_BUNDLE)) + BASE_BUNDLE);
       }
 
       return url;
