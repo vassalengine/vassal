@@ -262,14 +262,14 @@ public class Flare extends AbstractConfigurable
 
       double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
       if (animate) {
-        diameter *= (1.0 - animfrac); //BR// Always ping "down"
+        diameter *= (1.0 - animfrac);
       }
 
       if (diameter <= 0.0) {
         return;
       }
 
-      // translate the piece center for current zoom
+      // translate the click location for current zoom
       final Point p = map.mapToDrawing(clickPoint, os_scale);
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
               RenderingHints.VALUE_ANTIALIAS_ON);
@@ -365,10 +365,10 @@ public class Flare extends AbstractConfigurable
   public static class FlareKeyConfig extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      String[] values = new String[2];
-      values[0] = FLARE_ALT_LOCAL;
-      values[1] = (SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy()) ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL; // Show proper Mac "Ctrl" key
-      return values;
+      return new String[] {
+        FLARE_ALT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL
+      };
     }
   }
 
