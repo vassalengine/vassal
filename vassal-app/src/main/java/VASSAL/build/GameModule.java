@@ -17,30 +17,12 @@
  */
 package VASSAL.build;
 
-import VASSAL.build.module.BasicLogger;
-import VASSAL.build.module.GameRefresher;
-import VASSAL.build.module.KeyNamer;
-import VASSAL.build.module.PluginsLoader;
-import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.chat.AddressBookServerConfigurer;
-import VASSAL.chat.ChatServerFactory;
-import VASSAL.chat.DynamicClient;
-import VASSAL.chat.DynamicClientFactory;
-import VASSAL.chat.HybridClient;
-import VASSAL.chat.jabber.JabberClientFactory;
-import VASSAL.chat.node.NodeClientFactory;
-import VASSAL.chat.peer2peer.P2PClientFactory;
-import VASSAL.chat.ui.ChatServerControls;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.PasswordConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.TextConfigurer;
-import VASSAL.i18n.Language;
-import VASSAL.preferences.PositionOption;
-import VASSAL.tools.ProblemDialog;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -60,32 +42,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
-
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
+import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
@@ -94,6 +70,7 @@ import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.Plugin;
+import VASSAL.build.module.PluginsLoader;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.PrivateMap;
 import VASSAL.build.module.PrototypesContainer;
@@ -104,26 +81,46 @@ import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
+import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.module.turn.TurnTracker;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.chat.AddressBookServerConfigurer;
+import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.DynamicClient;
+import VASSAL.chat.DynamicClientFactory;
+import VASSAL.chat.HybridClient;
+import VASSAL.chat.jabber.JabberClientFactory;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.MandatoryComponent;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TextConfigurer;
+import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.PlayerWindow;
+import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
@@ -131,16 +128,18 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.version.VersionUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -430,8 +429,13 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+    final Configurer user = new ToggleablePasswordConfigurer(
+      GameModule.SECRET_NAME,
+      Resources.getString("Prefs.password_label"), //$NON-NLS-1$
+      Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$
     user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
