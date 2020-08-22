@@ -1,5 +1,6 @@
 3.3.4 - ???
 
+* 13313: Specify VM options for Player via a file
 * 13301: Don't rewrite save state when we already have it
 * 13290: Optimized serialization, unserialization
 * 13275: Ctrl+Mousewheel to zoom
