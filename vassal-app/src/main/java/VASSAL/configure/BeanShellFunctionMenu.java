@@ -305,7 +305,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       }
     }
 
-    if (! useParentMenu & myMenu.getItemCount() > 0) {
+    if (!useParentMenu && myMenu.getItemCount() > 0) {
       MenuScroller.setScrollerFor(myMenu, getMaxScrollItems(), 100);
       int pos = -1;
       for (int i = 0; i < parentMenu.getItemCount() && pos < 0; i++) {
@@ -323,6 +323,6 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height / itemSize.height);
     }
     return maxScrollItems;
-
   }
+
 }

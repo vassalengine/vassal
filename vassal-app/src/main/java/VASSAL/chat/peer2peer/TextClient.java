@@ -11,6 +11,8 @@ package VASSAL.chat.peer2peer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
@@ -70,16 +72,17 @@ public class TextClient {
   public static String report(Room[] r) {
     final StringBuilder buffer = new StringBuilder();
     for (Room room : r) {
-      buffer.append(room.getName() + ": "); //$NON-NLS-1$
-
-      Player[] p = (Player[]) room.getPlayerList().toArray();
-      for (int j = 0; j < p.length; ++j) {
-        buffer.append(p[j]);
-        if (j < p.length - 1) {
-          buffer.append(", "); //$NON-NLS-1$
-        }
-      }
-      buffer.append("\n"); //$NON-NLS-1$
+      buffer
+        .append(room.getName())
+        .append(": ") //$NON-NLS-1$
+        .append(
+          room
+            .getPlayerList()
+            .stream()
+            .map(Objects::toString)
+            .collect(Collectors.joining(", ")) //$NON-NLS-1$
+        )
+        .append("\n"); //$NON-NLS-1$
     }
     return buffer.toString();
   }

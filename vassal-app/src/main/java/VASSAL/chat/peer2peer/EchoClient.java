@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.litesoft.p2pchat.PeerInfo;
 
@@ -94,15 +95,16 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
     for (VASSAL.chat.Room room : r) {
-      buffer.append(room.getName() + ": "); //$NON-NLS-1$
-      Player[] l = (Player[]) room.getPlayerList().toArray();
-      for (int j = 0; j < l.length; ++j) {
-        buffer.append(l[j]);
-        if (j < l.length - 1) {
-          buffer.append(", "); //$NON-NLS-1$
-        }
-      }
-      buffer.append("\n"); //$NON-NLS-1$
+      buffer
+        .append(room.getName())
+        .append(": ") //$NON-NLS-1$
+        .append(
+          room
+            .getPlayerList()
+            .stream()
+            .map(Object::toString)
+            .collect(Collectors.joining(", "))) //$NON-NLS-1$
+        .append("\n"); //$NON-NLS-1$
     }
     return buffer.toString();
   }
