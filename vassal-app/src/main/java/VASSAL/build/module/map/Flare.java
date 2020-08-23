@@ -68,12 +68,23 @@ public class Flare extends AbstractConfigurable
   public static final String PULSES       = "flarePulses";
   public static final String PULSES_PER_SEC = "flarePulsesPerSec";
 
-  public static final String FLARE_ALT_LOCAL     = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
-  public static final String FLARE_CTRL_LOCAL    = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
-  public static final String FLARE_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));
+  public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
+  public static final String FLARE_CTRL_LOCAL      = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
+  public static final String FLARE_COMMAND_LOCAL   = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));
+  public static final String FLARE_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift"));
+  public static final String FLARE_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.shift_command"));
+  public static final String FLARE_CTRL_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_shift"));
+  public static final String FLARE_ALT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_command"));
+  public static final String FLARE_CTRL_ALT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt"));
+  public static final String FLARE_ALT_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift_command"));
+  public static final String FLARE_CTRL_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt_shift"));
 
-  public static final String FLARE_ALT = "keyAlt";
-  public static final String FLARE_CTRL = "keyCtrl";
+  public static final String FLARE_ALT            = "keyAlt";
+  public static final String FLARE_CTRL           = "keyCtrl";
+  public static final String FLARE_ALT_SHIFT      = "keyAltShift";
+  public static final String FLARE_CTRL_SHIFT     = "keyCtrlShift";
+  public static final String FLARE_CTRL_ALT       = "keyCtrlAlt";
+  public static final String FLARE_CTRL_ALT_SHIFT = "keyCtrlAltShift";
 
   private static final int STROKE = 3;
 
@@ -88,11 +99,11 @@ public class Flare extends AbstractConfigurable
   }
 
   public String getDescription() {
-    return Resources.getString("Map Flare");
+    return Resources.getString("Editor.Flare.desc");
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Map Flare");
+    return Resources.getString("Editor.Flare.configure");
   }
 
   public Class<?>[] getAttributeTypes() {
@@ -142,6 +153,18 @@ public class Flare extends AbstractConfigurable
       }
       else if (FLARE_COMMAND_LOCAL.equals(value) || FLARE_CTRL_LOCAL.equals(value)) {
         flareKey = FLARE_CTRL;
+      }
+      else if (FLARE_ALT_SHIFT_LOCAL.equals(value)) {
+        flareKey = FLARE_ALT_SHIFT;
+      }
+      else if (FLARE_SHIFT_COMMAND_LOCAL.equals(value) || FLARE_CTRL_SHIFT_LOCAL.equals(value)) {
+        flareKey = FLARE_CTRL_SHIFT;
+      }
+      else if (FLARE_ALT_COMMAND_LOCAL.equals(value) || FLARE_CTRL_ALT_LOCAL.equals(value)) {
+        flareKey = FLARE_CTRL_ALT;
+      }
+      else if (FLARE_ALT_SHIFT_COMMAND_LOCAL.equals(value) || FLARE_CTRL_ALT_SHIFT_LOCAL.equals(value)) {
+        flareKey = FLARE_CTRL_ALT_SHIFT;
       }
       else {
         flareKey = (String) value;
@@ -321,12 +344,32 @@ public class Flare extends AbstractConfigurable
       return;
     }
     if (FLARE_CTRL.equals(flareKey)) {
-      if (!SwingUtils.isSelectionToggle(e)) {
+      if (!SwingUtils.isSelectionToggle(e) || e.isAltDown() || e.isShiftDown()) {
         return;
       }
     }
-    else {
-      if (!e.isAltDown()) {
+    else if (FLARE_ALT.equals(flareKey)) {
+      if (!e.isAltDown() || e.isShiftDown() || SwingUtils.isSelectionToggle(e)) {
+        return;
+      }
+    }
+    else if (FLARE_ALT_SHIFT.equals(flareKey)) {
+      if (!e.isAltDown() || !e.isShiftDown() || SwingUtils.isSelectionToggle(e)) {
+        return;
+      }
+    }
+    else if (FLARE_CTRL_SHIFT.equals(flareKey)) {
+      if (!e.isShiftDown() || !SwingUtils.isSelectionToggle(e) || e.isAltDown()) {
+        return;
+      }
+    }
+    else if (FLARE_CTRL_ALT.equals(flareKey)) {
+      if (!e.isAltDown() || !SwingUtils.isSelectionToggle(e) || e.isShiftDown()) {
+        return;
+      }
+    }
+    else if (FLARE_CTRL_ALT_SHIFT.equals(flareKey)) {
+      if (!e.isAltDown() || !e.isShiftDown() || !SwingUtils.isSelectionToggle(e)) {
         return;
       }
     }
@@ -367,7 +410,11 @@ public class Flare extends AbstractConfigurable
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {
         FLARE_ALT_LOCAL,
-        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL
+        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
+        FLARE_ALT_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_SHIFT_COMMAND_LOCAL : FLARE_CTRL_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
       };
     }
   }
