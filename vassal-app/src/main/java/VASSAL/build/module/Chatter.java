@@ -352,8 +352,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         f = myFont;
       }
     }
-    addStyle("body",    f, gameMsg,   "",     0);
-    addStyle("p",       f, gameMsg,   "",     0);
     addStyle(".msg",    f, gameMsg,   "",     0);
     addStyle(".msg2",   f, gameMsg2,  "",     0);
     addStyle(".msg3",   f, gameMsg3,  "",     0);
