@@ -27,12 +27,14 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
@@ -97,6 +99,10 @@ public class Flare extends AbstractConfigurable
   public static final String FLARE_CTRL_SHIFT     = "keyCtrlShift";
   public static final String FLARE_CTRL_ALT       = "keyCtrlAlt";
   public static final String FLARE_CTRL_ALT_SHIFT = "keyCtrlAltShift";
+
+  public static final String FLARE_LOCATION       = "FlareLocation";
+  public static final String FLARE_ZONE           = "FlareZone";
+  public static final String FLARE_MAP            = "FlareMap";
 
   private static final int STROKE = 3;
 
@@ -246,12 +252,10 @@ public class Flare extends AbstractConfigurable
       map.addDrawComponent(this);
       map.addLocalMouseListener(this);
 
-      if (parent instanceof PropertySource) {
-        propertySource = (PropertySource) parent;
-      }
+      propertySource = (PropertySource) parent;
     }
     else {
-      
+      ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", reportFormat.getFormat()));
     }
   }
 
@@ -409,13 +413,20 @@ public class Flare extends AbstractConfigurable
     final GameModule mod = GameModule.getGameModule();
 
     Command c = new NullCommand();
-    String reportText = reportFormat.getLocalizedText(source);
-    if (reportText.length() > 0) {
-      c = new Chatter.DisplayText(
-        GameModule.getGameModule().getChatter(), "*" + reportText);
+    reportFormat.setProperty(FLARE_LOCATION, map.locationName(clickPoint));
+    final Zone z = map.findZone(clickPoint);
+    reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
+    reportFormat.setProperty(FLARE_MAP, map.getMapName());
+    reportFormat.setProperty(GlobalOptions.PLAYER_NAME, (String) mod.getProperty(GlobalOptions.PLAYER_NAME));
+    reportFormat.setProperty(GlobalOptions.PLAYER_NAME_ALT, (String) mod.getProperty(GlobalOptions.PLAYER_NAME_ALT));
+    reportFormat.setProperty(GlobalOptions.PLAYER_SIDE, (String) mod.getProperty(GlobalOptions.PLAYER_SIDE));
+    reportFormat.setProperty(GlobalOptions.PLAYER_SIDE_ALT, (String) mod.getProperty(GlobalOptions.PLAYER_SIDE_ALT));
+    reportFormat.setProperty(GlobalOptions.PLAYER_ID,   (String) mod.getProperty(GlobalOptions.PLAYER_ID));
+    String reportText = reportFormat.getLocalizedText(propertySource);
+    if (reportText.trim().length() > 0) {
+      c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();
     }
-
 
     c = c.append(new FlareCommand(this));
     mod.sendAndLog(c);

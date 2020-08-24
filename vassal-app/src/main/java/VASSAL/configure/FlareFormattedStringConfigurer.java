@@ -18,6 +18,7 @@
 package VASSAL.configure;
 
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.map.Flare;
 import org.apache.commons.lang3.ArrayUtils;
 
 /** Utility subclass of {@link FormattedStringConfigurer} which includes variable
@@ -31,7 +32,10 @@ public class FlareFormattedStringConfigurer extends FormattedStringConfigurer {
       new String[]{
         GlobalOptions.PLAYER_NAME,
         GlobalOptions.PLAYER_SIDE,
-        GlobalOptions.PLAYER_ID
+        GlobalOptions.PLAYER_ID,
+        Flare.FLARE_LOCATION,
+        Flare.FLARE_ZONE,
+        Flare.FLARE_MAP
       },
       options
     );
