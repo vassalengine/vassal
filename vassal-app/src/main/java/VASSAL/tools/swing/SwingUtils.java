@@ -28,11 +28,12 @@ import java.util.Map;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.module.GlobalOptions;
 import org.apache.commons.lang3.SystemUtils;
 
 public class SwingUtils {
   
-  private static boolean macLegacy;
+  private static boolean macLegacy = GlobalOptions.FORCE_MAC_LEGACY;
     
   /**
    * Supports swapping most Control and Command button functions on Mac so as not to punish long-time users for our "old non-standard implementations"
@@ -75,12 +76,12 @@ public class SwingUtils {
     boolean isSelectionToggle(MouseEvent e);
     
     /**
-     * @returns translation of keystroke from local system to Vassal (to handle Mac platform support)
+     * @return translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
     KeyStroke systemToGeneric (KeyStroke k);
     
     /**
-     * @returns translation of keystroke from Vassal to local system (to handle Mac platform support)
+     * @return translation of keystroke from Vassal to local system (to handle Mac platform support)
      */
     KeyStroke genericToSystem (KeyStroke k);    
   }
@@ -257,7 +258,7 @@ public class SwingUtils {
   /**
    * @return whether the event is effectively for the left button. 
    * 
-   * @Deprecated in favor of {@link #isMainMouseButtonDown(MouseEvent)}
+   * @deprecated in favor of {@link #isMainMouseButtonDown(MouseEvent)}
    */
   @Deprecated      
   public static boolean isLeftMouseButton(MouseEvent e) {
@@ -267,7 +268,7 @@ public class SwingUtils {
   /**
    * @return whether the event is effectively for the right button. 
    * 
-   * @Deprecated in favor of {@link #isContextMouseButton(MouseEvent)}
+   * @deprecated in favor of {@link #isContextMouseButtonDown(MouseEvent)}
    */
   @Deprecated
   public static boolean isRightMouseButton(MouseEvent e) {
@@ -277,7 +278,7 @@ public class SwingUtils {
   /**
    * @return whether the event effectively has Control down. 
    * 
-   * @Deprecated. The situation where this was needed with mouse events is now handled by {@link #isSelectionToggle(MouseEvent)}.
+   * @deprecated The situation where this was needed with mouse events is now handled by {@link #isSelectionToggle(MouseEvent)}.
    */
   @Deprecated
   public static boolean isControlDown(MouseEvent e) {
@@ -306,7 +307,7 @@ public class SwingUtils {
   } 
   
   /**
-   * @returns translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)
+   * @return translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)
    * 
    * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
    * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
@@ -319,7 +320,7 @@ public class SwingUtils {
   }  
 
   /**
-   * @returns translation of keystroke from platform-independent Vassal to local system (to handle Mac platform support)
+   * @return translation of keystroke from platform-independent Vassal to local system (to handle Mac platform support)
    * 
    * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
    * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module
@@ -332,7 +333,7 @@ public class SwingUtils {
   }    
   
   /**
-   * @returns translation of KeyEvent (local system) to Vassal (to handle Mac platform support)
+   * @return translation of KeyEvent (local system) to Vassal (to handle Mac platform support)
    * 
    * The main idea here is that on Macs we want the common shortcut keys represented by e.g. Ctrl+C on 
    * Windows and Linux platforms to be represented by Command+C on the Mac, and likewise when module

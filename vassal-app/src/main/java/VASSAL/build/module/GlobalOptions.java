@@ -90,6 +90,8 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String PLAYER_ID_ALT = "playerId"; //$NON-NLS-1$
   public static final String PLAYER_ID_FORMAT = "playerIdFormat"; //$NON-NLS-1$
 
+  public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
+
   private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = PROMPT;
@@ -207,7 +209,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Boolean.FALSE);
     macLegacyConf.addPropertyChangeListener(evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
     
-    if (SystemUtils.IS_OS_MAC_OSX) { 
+    if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC_OSX) { //BR// Disable
       // Only need to *display* this preference if we're running on a Mac.
       prefs.addOption(macLegacyConf);
     }
