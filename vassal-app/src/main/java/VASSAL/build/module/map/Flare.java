@@ -30,7 +30,6 @@ import java.awt.event.MouseEvent;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -72,7 +71,6 @@ public class Flare extends AbstractConfigurable
   private Point clickPoint;
   private FormattedString reportFormat = new FormattedString();
   private volatile boolean active;
-  private PropertySource propertySource;
 
   public static final String CIRCLE_SIZE  = "circleSize";
   public static final String CIRCLE_SCALE = "circleScale";
@@ -251,8 +249,6 @@ public class Flare extends AbstractConfigurable
       GameModule.getGameModule().addCommandEncoder(this);
       map.addDrawComponent(this);
       map.addLocalMouseListener(this);
-
-      propertySource = (PropertySource) parent;
     }
     else {
       ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", reportFormat.getFormat()));
@@ -417,12 +413,7 @@ public class Flare extends AbstractConfigurable
     final Zone z = map.findZone(clickPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
-    reportFormat.setProperty(GlobalOptions.PLAYER_NAME, (String) mod.getProperty(GlobalOptions.PLAYER_NAME));
-    reportFormat.setProperty(GlobalOptions.PLAYER_NAME_ALT, (String) mod.getProperty(GlobalOptions.PLAYER_NAME_ALT));
-    reportFormat.setProperty(GlobalOptions.PLAYER_SIDE, (String) mod.getProperty(GlobalOptions.PLAYER_SIDE));
-    reportFormat.setProperty(GlobalOptions.PLAYER_SIDE_ALT, (String) mod.getProperty(GlobalOptions.PLAYER_SIDE_ALT));
-    reportFormat.setProperty(GlobalOptions.PLAYER_ID,   (String) mod.getProperty(GlobalOptions.PLAYER_ID));
-    String reportText = reportFormat.getLocalizedText(propertySource);
+    String reportText = reportFormat.getLocalizedText(map);
     if (reportText.trim().length() > 0) {
       c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();
