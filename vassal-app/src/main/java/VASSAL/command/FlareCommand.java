@@ -22,17 +22,17 @@ import java.awt.Point;
 import VASSAL.build.module.map.Flare;
 
 public class FlareCommand extends Command {
-  private final Flare finder;
+  private final Flare flare;
   private final Point clickPoint;
     
-  public FlareCommand(final Flare finder) {
-    clickPoint = new Point(finder.getClickPoint());
-    this.finder = finder;
+  public FlareCommand(final Flare flare) {
+    clickPoint = new Point(flare.getClickPoint());
+    this.flare = flare;
   }
     
   protected void executeCommand() {
-    finder.setClickPoint(clickPoint);
-    finder.startAnimation(false);
+    flare.setClickPoint(clickPoint);
+    flare.startAnimation(false);
   }
     
   protected Command myUndoCommand() {

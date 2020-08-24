@@ -27,6 +27,13 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.FormattedString;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
@@ -45,6 +52,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.command.FlareCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.FlareFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -60,13 +68,17 @@ public class Flare extends AbstractConfigurable
   private String flareKey;
   private Color color;
   private Point clickPoint;
+  private FormattedString reportFormat = new FormattedString();
   private volatile boolean active;
+  private PropertySource propertySource;
+
   public static final String CIRCLE_SIZE  = "circleSize";
   public static final String CIRCLE_SCALE = "circleScale";
   public static final String CIRCLE_COLOR = "circleColor";
   public static final String FLARE_KEY    = "flareKey";
   public static final String PULSES       = "flarePulses";
   public static final String PULSES_PER_SEC = "flarePulsesPerSec";
+  public static final String REPORT_FORMAT = "reportFormat";
 
   public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
   public static final String FLARE_CTRL_LOCAL      = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
@@ -107,11 +119,11 @@ public class Flare extends AbstractConfigurable
   }
 
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class };
+    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class, ReportFormatConfig.class };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC };
+    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC, REPORT_FORMAT };
   }
 
   public String[] getAttributeDescriptions() {
@@ -120,7 +132,8 @@ public class Flare extends AbstractConfigurable
             Resources.getString("Editor.Flare.circle_color"),
             Resources.getString("Editor.Flare.circle_scale"),
             Resources.getString("Editor.Flare.pulses"),
-            Resources.getString("Editor.Flare.pulses_per_sec") };
+            Resources.getString("Editor.Flare.pulses_per_sec"),
+            Resources.getString("Editor.report_format")};
   }
 
   public String getAttributeValueString(final String key) {
@@ -141,6 +154,9 @@ public class Flare extends AbstractConfigurable
     }
     else if (PULSES_PER_SEC.equals(key)) {
       return String.valueOf(pulsesPerSec);
+    }
+    else if (REPORT_FORMAT.equals(key)) {
+      return reportFormat.getFormat();
     }
     return null;
   }
@@ -206,6 +222,14 @@ public class Flare extends AbstractConfigurable
         pulsesPerSec = (Integer) value;
       }
     }
+    else if (REPORT_FORMAT.equals(key)) {
+      if (value instanceof String) {
+        reportFormat.setFormat((String)value);
+      }
+      else {
+        reportFormat = (FormattedString)value;
+      }
+    }
   }
 
 
@@ -221,6 +245,13 @@ public class Flare extends AbstractConfigurable
       GameModule.getGameModule().addCommandEncoder(this);
       map.addDrawComponent(this);
       map.addLocalMouseListener(this);
+
+      if (parent instanceof PropertySource) {
+        propertySource = (PropertySource) parent;
+      }
+    }
+    else {
+      
     }
   }
 
@@ -374,8 +405,19 @@ public class Flare extends AbstractConfigurable
       }
     }
     clickPoint = new Point(e.getX(), e.getY());
+
     final GameModule mod = GameModule.getGameModule();
-    final Command c = new FlareCommand(this);
+
+    Command c = new NullCommand();
+    String reportText = reportFormat.getLocalizedText(source);
+    if (reportText.length() > 0) {
+      c = new Chatter.DisplayText(
+        GameModule.getGameModule().getChatter(), "*" + reportText);
+      c.execute();
+    }
+
+
+    c = c.append(new FlareCommand(this));
     mod.sendAndLog(c);
     startAnimation(true);
   }
@@ -419,4 +461,10 @@ public class Flare extends AbstractConfigurable
     }
   }
 
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new FlareFormattedStringConfigurer(key, name, new String[0]);
+    }
+  }
 }
