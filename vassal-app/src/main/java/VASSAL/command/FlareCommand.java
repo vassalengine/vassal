@@ -24,15 +24,26 @@ import VASSAL.build.module.map.Flare;
 public class FlareCommand extends Command {
   private final Flare flare;
   private final Point clickPoint;
+  private final String id;
     
   public FlareCommand(final Flare flare) {
     clickPoint = new Point(flare.getClickPoint());
     this.flare = flare;
+    id = flare.getMap().getId();
   }
-    
+
+  public FlareCommand(final Flare flare, final String id) {
+    clickPoint = new Point(flare.getClickPoint());
+    this.flare = flare;
+    this.id    = id;
+  }
+
+
   protected void executeCommand() {
-    flare.setClickPoint(clickPoint);
-    flare.startAnimation(false);
+    if (id.equals(flare.getMap().getId())) {
+      flare.setClickPoint(clickPoint);
+      flare.startAnimation(false);
+    }
   }
     
   protected Command myUndoCommand() {
@@ -45,5 +56,9 @@ public class FlareCommand extends Command {
     
   public Point getClickPoint() {
     return clickPoint;
+  }
+
+  public String getMapId() {
+    return id;
   }
 }

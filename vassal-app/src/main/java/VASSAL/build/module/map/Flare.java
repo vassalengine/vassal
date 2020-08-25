@@ -36,6 +36,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.SequenceEncoder;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
@@ -142,6 +143,13 @@ public class Flare extends AbstractConfigurable
    */
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Flare.configure");
+  }
+
+  /**
+   * @return the Map associated with this Flare component.
+   */
+  public Map getMap() {
+    return map;
   }
 
   /**
@@ -361,6 +369,10 @@ public class Flare extends AbstractConfigurable
    *                  the ping location if user preferences are set for centering on opponent moves.
    */
   public void startAnimation(final boolean isLocal) {
+    if (map == null) {
+      return; // Means we already mentioned BadModuleData earlier. Now we simply avoid crashing.
+    }
+
     if (!isLocal) {
       if (GlobalOptions.getInstance().centerOnOpponentsMove()) {
         map.centerAt(clickPoint);
@@ -423,7 +435,7 @@ public class Flare extends AbstractConfigurable
    */
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      return COMMAND_PREFIX + ((FlareCommand) c).getClickPoint().x + "," + ((FlareCommand) c).getClickPoint().y;
+      return COMMAND_PREFIX + ((FlareCommand) c).getClickPoint().x + "," + ((FlareCommand) c).getClickPoint().y + "," + ((FlareCommand) c).getMapId();
     }
     return null;
   }
@@ -435,10 +447,13 @@ public class Flare extends AbstractConfigurable
    */
   public Command decode(final String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
-      final int x = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
-      final int y = Integer.parseInt(s.substring(s.indexOf(",") + 1));
+      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+
+      final int x = sd.nextInt(0);
+      final int y = sd.nextInt(0);
+      final String id = sd.nextToken("");
       clickPoint = new Point(x, y);
-      return new FlareCommand(this);
+      return new FlareCommand(this, id);
     }
     return null;
   }
