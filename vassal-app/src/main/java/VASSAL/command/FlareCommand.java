@@ -47,7 +47,7 @@ public class FlareCommand extends Command {
     return clickPoint;
   }
 
-  public String getMapId() {
-    return flare.getMap().getId();
+  public String getId() {
+    return flare.getId();
   }
 }

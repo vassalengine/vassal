@@ -73,6 +73,7 @@ public class Flare extends AbstractConfigurable
   public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
+  protected String id = "";     // Our unique ID
 
   // Attributes
   private int circleSize;       // Maximum circle size in pixels
@@ -442,7 +443,7 @@ public class Flare extends AbstractConfigurable
    */
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      return COMMAND_PREFIX + ((FlareCommand) c).getMapId() + DELIMITER + ((FlareCommand) c).getClickPoint().x + DELIMITER + ((FlareCommand) c).getClickPoint().y;
+      return COMMAND_PREFIX + ((FlareCommand) c).getId() + DELIMITER + ((FlareCommand) c).getClickPoint().x + DELIMITER + ((FlareCommand) c).getClickPoint().y;
     }
     return null;
   }
@@ -453,7 +454,7 @@ public class Flare extends AbstractConfigurable
    * @return Flare Command object
    */
   public Command decode(final String s) {
-    if (s.startsWith(COMMAND_PREFIX + getMap().getId())) { // Make sure this command is heading to our map
+    if (s.startsWith(COMMAND_PREFIX + getId())) { // Make sure this command is for this flare
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
       sd.nextToken(); // Skip over the Id
@@ -562,12 +563,12 @@ public class Flare extends AbstractConfigurable
 
   @Override
   public void setId(String id) {
-
+    this.id = id;
   }
 
   @Override
   public String getId() {
-    return null;
+    return id;
   }
 
   /**
