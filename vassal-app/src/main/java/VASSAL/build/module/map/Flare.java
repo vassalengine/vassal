@@ -68,7 +68,7 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class Flare extends AbstractConfigurable
         implements CommandEncoder, GameComponent, Drawable, MouseListener {
-  public static final String COMMAND_PREFIX = "FLARE:";
+  public static final String COMMAND_PREFIX = "FLARE\t";
 
   // Attributes
   private int circleSize;       // Maximum circle size in pixels
@@ -435,7 +435,7 @@ public class Flare extends AbstractConfigurable
    */
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      return COMMAND_PREFIX + ((FlareCommand) c).getClickPoint().x + "," + ((FlareCommand) c).getClickPoint().y + "," + ((FlareCommand) c).getMapId();
+      return COMMAND_PREFIX + ((FlareCommand) c).getMapId() + "\t" + ((FlareCommand) c).getClickPoint().x + "\t" + ((FlareCommand) c).getClickPoint().y;
     }
     return null;
   }
@@ -446,14 +446,14 @@ public class Flare extends AbstractConfigurable
    * @return Flare Command object
    */
   public Command decode(final String s) {
-    if (s.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
-
+    if (s.startsWith(COMMAND_PREFIX + getMap().getId())) {
+      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '\t');
+      sd.nextToken(); // Skip over the Command Prefix
+      sd.nextToken(); // Skip over the Id
       final int x = sd.nextInt(0);
       final int y = sd.nextInt(0);
-      final String id = sd.nextToken("");
       clickPoint = new Point(x, y);
-      return new FlareCommand(this, id);
+      return new FlareCommand(this);
     }
     return null;
   }
