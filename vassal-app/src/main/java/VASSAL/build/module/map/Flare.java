@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2020 Vassalengine.org   Brian Reynolds
+ * Inspired by VASL piece finder by David Sullivan
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
