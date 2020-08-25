@@ -51,6 +51,13 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 
+/**
+ * CHESS CLOCK CONTROLLER for VASSAL.
+ *
+ * This Module-level component manages a set of one or more {@link ChessClock} clocks. It creates a master "Chess Clocks" button on the
+ * Module's toolbar. Clicking the button shows/hides the clocks themselves, when no clocks are running, or stops all clocks if one
+ * is running. The Chess Clock Control component also contains the configurable elements that specify how the clocks are to be displayed.
+ */
 public class ChessClockControl extends AbstractConfigurable
         implements CommandEncoder, GameComponent, UniqueIdManager.Identifyable {
   protected static UniqueIdManager idMgr = new UniqueIdManager("ChessClockControl"); //$NON-NLS-1$
@@ -133,7 +140,10 @@ public class ChessClockControl extends AbstractConfigurable
     GameModule.getGameModule().addKeyStrokeListener(pauseListener);
   }
 
-  // Registers us with the game module, tool bar, command encoder, etc.
+  /**
+   * Registers us with the game module, tool bar, command encoder, etc.
+   * @param parent - Should be the main GameModule, but in any event that's what we add it to
+   */
   public void addTo(Buildable parent) {
     final GameModule gameModule = GameModule.getGameModule();
     gameModule.getToolBar().add(getComponent());
@@ -148,7 +158,10 @@ public class ChessClockControl extends AbstractConfigurable
     instanceIsActive = true;
   }
 
-  // Unregisters us when shutting down
+  /**
+   * Unregisters us from everything when shutting down.
+   * @param parent - Presumably the main GameModule, but in any event that's what we remove ourselves from.
+   */
   public void removeFrom(Buildable parent) {
     instanceIsActive = false;
 
@@ -159,23 +172,38 @@ public class ChessClockControl extends AbstractConfigurable
     idMgr.remove(this);
   }
 
+  /**
+   * Manages our unique ID
+   * @param id - sets our unique id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * @return our unique id
+   */
   public String getId() {
     return id;
   }
 
-
+  /**
+   * @return true if the group of chess clocks we manage is currently visible
+   */
   public boolean getChessClocksVisible() {
     return chessClocksVisible;
   }
 
+  /**
+   * @return the JButton for our master chessclocks button
+   */
   private JButton getComponent() {
     return chessClockButton;
   }
 
+  /**
+   * @return Component type name, which appears in [..] in Editor window
+   */
   public static String getConfigureTypeName() {
     return "Chess Clock Control";
   }
@@ -183,16 +211,25 @@ public class ChessClockControl extends AbstractConfigurable
 
   // XML file attributes - next six methods configure them, and handle setting/getting.
 
+  /**
+   * @return List of valid subcomponent class types for this component (in our case, individual Chess Clocks!)
+   */
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[] { ChessClock.class };
+  }
+
+  /**
+   * @return Key names for our attributes from the buildFile (XML) definition.
+   */
   @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY,
       PAUSE_HOTKEY, SHOW_TENTHSECONDS, SHOW_SECONDS, SHOW_HOURS, SHOW_DAYS };
   }
 
-  public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { ChessClock.class };
-  }
-
+  /**
+   * @return Descriptions for our buildFile (XML) attributes. These appear when our component is configured in the Editor window.
+   */
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] { "Name: ", "Button Image: ", "Button Text: ", "Tooltip Text: ",
@@ -200,6 +237,9 @@ public class ChessClockControl extends AbstractConfigurable
       "Show Hours: ", "Show Days: " };
   }
 
+  /**
+   * @return Class types for configuring each of our buildFile (XML) attributes. Specifies which flavor of configurer to uses.
+   */
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class[] { String.class, IconConfig.class, String.class, String.class,
@@ -207,6 +247,11 @@ public class ChessClockControl extends AbstractConfigurable
       TimeStyleConfig.class, TimeStyleConfig.class };
   }
 
+  /**
+   * Sets the value of one of this component's XML attributes
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value New value for the attribute. Can be either String version or the actual Object.
+   */
   @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
@@ -254,7 +299,11 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
+  /**
+   * Gets the value of one of this component's XML attributes
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @return String value of the attribute.
+   */
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
@@ -289,38 +338,52 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
+  /**
+   * @return The help file for this component. Used when user clicks "Help" button while configuring the component in the Editor.
+   */
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("ChessClock.htm");  //$NON-NLS-1$
   }
 
-
-  // When we need to find the ChessClockControl in a static context
+  /**
+   * When we need to find a ChessClockControl in a static context
+   * @return First ChessClockControl in our module
+   */
   public static ChessClockControl getInstance() {
     return GameModule.getGameModule().getAllDescendantComponentsOf(ChessClockControl.class).get(0);
   }
 
-
+  /**
+   * @return Setting for showing tenths of seconds. (Always, Auto, Never)
+   */
   public String getShowTenths() {
     return showTenthSeconds;
   }
 
-
+  /**
+   * @return Setting for showing seconds. (Always, Auto, Never)
+   */
   public String getShowSeconds() {
     return showSeconds;
   }
 
-
+  /**
+   * @return Setting for showing hours. (Always, Auto, Never)
+   */
   public String getShowHours() {
     return showHours;
   }
 
-
+  /**
+   * @return Setting for showing days. (Always, Auto, Never)
+   */
   public String getShowDays() {
     return showDays;
   }
 
-
-  //Returns the number of chess clocks currently ticking (active)
+  /**
+   * @return the number of chess clocks currently ticking/active
+   */
   public int getClocksTicking() {
     int running = 0;
     if (instanceIsActive) {
@@ -333,21 +396,25 @@ public class ChessClockControl extends AbstractConfigurable
     return running;
   }
 
-
-  //Returns a command to stop all the clocks
+  /**
+   * @return A command to stop all the clocks
+   */
   public Command stopAllClocks() {
     Command command = new NullCommand();
     if (instanceIsActive) {
       for (ChessClock c : getInstance().chessclocks) {
-        if (!c.isTicking())
+        if (!c.isTicking()) {
           continue;
+        }
         command = command.append(c.updateState(false));
       }
     }
     return command;
   }
 
-  // Returns a command to start the next clock after stopping the one currently running (if any)
+  /**
+   * @return a command to start the next clock after stopping the one currently running (if any)
+   */
   public Command startNextClock() {
     Command command = new NullCommand();
 
@@ -393,7 +460,9 @@ public class ChessClockControl extends AbstractConfigurable
     return command;
   }
 
-  // Hide all the clocks on the toolbar
+  /**
+   * Hide all the clocks on the toolbar
+   */
   public void hideClocks() {
     chessClocksVisible = false;
     if (instanceIsActive) {
@@ -403,7 +472,9 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-  // Show all the clocks on the toolbar
+  /**
+   * Show all the clocks on the toolbar
+   */
   public void showClocks() {
     chessClocksVisible = true;
     if (instanceIsActive) {
@@ -413,8 +484,9 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
-  // Update all clocks (when our time-display format changes)
+  /**
+   * Update all clocks (when our time-display format changes)
+   */
   public void updateAllClocks() {
     if (instanceIsActive) {
       for (ChessClock c : getInstance().chessclocks) {
@@ -423,8 +495,13 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
-  // Figures out the "right thing to do" when player clicks the main chess clock control button
+  /**
+   * Figures out "the right thing to do" when player clicks the main Chess Clock Control button.
+   * Does one of the following, in order of priority:
+   * (1) If the clocks are hidden, show them
+   * (2) If any clock is running, stop them all
+   * (3) Hide all the clocks
+   */
   public void pressControlButton() {
     if (!chessClocksVisible) {
       showClocks();
@@ -441,18 +518,26 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
-
+  /**
+   * Tells Chess Clock Control that this is a real online game, meaning we move to stricter verification
+   * standards for clocks (completely non-online clocks are really just "sandbox toys")
+   * @param online True if this is an online game
+   */
   public void setOnline(boolean online) {
     onlineGame = online;
   }
 
-
+  /**
+   * @return True if this has been marked as an online game
+   */
   public boolean isOnline() {
     return onlineGame;
   }
 
-
+  /**
+   * Handles starting and ending a game from the point of view of Chess Clocks.
+   * @param gameStarting If true, a game is starting. If false, then a game is ending.
+   */
   public void setup(final boolean gameStarting) {
     if (gameStarting) {
       setOnline(GameModule.getGameModule().getServer().isConnected());
@@ -462,24 +547,34 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-  // Allow individual chess clocks to add themselves to our control scheme
+  /**
+   * Allows individual chess clocks to add themselves to our control scheme
+   * @param clock clock to be added
+   */
   public void addChessClock(ChessClock clock) {
     chessclocks.add(clock);
   }
 
+  /**
+   * Removes a chess clock
+   * @param clock clock to be removed
+   */
   public void removeChessClock(ChessClock clock) {
     chessclocks.remove(clock);
   }
 
-
-  // Autoconfigurer for master chessclock button icon
+  /**
+   * Autoconfigurer for master chessclock button icon (allows user to choose an icon image)
+   */
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((ChessClockControl) c).chessClockButton.getAttributeValueString(ICON));
     }
   }
 
-  // Autoconfigurer for the days/hours/minutes/seconds/tenths styles
+  /**
+   * Autoconfigurer for the days/hours/minutes/seconds/tenths styles
+   */
   public static class TimeStyleConfig extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
@@ -487,7 +582,11 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
+  /**
+   * Deserializes our command from a string version, if the command belongs to us.
+   * @param command Serialized string command
+   * @return An {@link UpdateClockControlCommand}
+   */
   public Command decode(final String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
       final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, ':');
@@ -501,6 +600,11 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
+  /**
+   * Serializes our command into a string, if it belongs to us
+   * @param c Command to serialize. Only serialized if it's an UpdateClockControlCommand.
+   * @return Serialized command, or null if command passed wasn't an UpdateClockControlCommand.
+   */
   public String encode(final Command c) {
     if (c instanceof UpdateClockControlCommand) {
       final UpdateClockControlCommand comm = (UpdateClockControlCommand) c;
@@ -514,13 +618,16 @@ public class ChessClockControl extends AbstractConfigurable
     }
   }
 
-
+  /**
+   * @return Our command for restoring from a saved game (or adding an online player)
+   */
   public Command getRestoreCommand() {
     return new UpdateClockControlCommand(chessClocksVisible, onlineGame);
   }
 
-
-  //Our "command" format for passing information about the master clock control between computers (or to/from save and log files)
+  /**
+   * Our "command" format for passing information about the master clock control between computers (or to/from save and log files)
+   */
   public class UpdateClockControlCommand extends Command {
     private final boolean showing;
     private final boolean online;
@@ -530,6 +637,11 @@ public class ChessClockControl extends AbstractConfigurable
       this.online  = online;
     }
 
+    /**
+     * Process a master clock button update.
+     * (1) Update visibility status as appropriate
+     * (2) Check current online status.
+     */
     @Override
     protected void executeCommand() {
       if (showing != chessClocksVisible) {
@@ -562,11 +674,16 @@ public class ChessClockControl extends AbstractConfigurable
   }
 
 
-  // ChessMouseListener class exists so that we can process right-clicks and put up a popup menu.
+  /**
+   * Processes right-clicks on our button to put up a context menu
+   */
   class ChessMouseListener implements MouseListener, ActionListener {
     protected JPopupMenu popup;
 
-    // Process popup results
+    /**
+     * Process popup results
+     * @param e popup result
+     */
     public void actionPerformed(ActionEvent e) {
       String command = e.getActionCommand();
       if (command.contains(CHESSMENU_NEXT)) {
@@ -589,8 +706,9 @@ public class ChessClockControl extends AbstractConfigurable
       }
     }
 
-
-    //Build a popup
+    /**
+     * Build our context menu
+     */
     void buildPopup() {
       popup = new JPopupMenu();
       popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
@@ -629,7 +747,10 @@ public class ChessClockControl extends AbstractConfigurable
       popup.add(item);
     }
 
-
+    /**
+     * Build and display our context menu
+     * @param p Coordinates for popup
+     */
     void doPopup(Point p) {
       buildPopup();
       popup.show(getComponent(), p.x, p.y);

@@ -27,6 +27,7 @@ import javax.swing.UIManager;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ChessClockControl;
@@ -40,19 +41,21 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 
-//
-// CHESS CLOCK class for VASSAL.
-//
-// Class originally created by Michael Kiefte for Twilight Struggle, including handshaking for verification of time totals between online
-// machines.
-//
-// Made more generically configurable, and ChessClockControl added, by Brian Reynolds
-//
-// The ChessClock class itself implements a single timer. A pair (or more, or I suppose only one) of them are then added to ChessClockControl.
-//
+/**
+ * CHESS CLOCK class for VASSAL.
+ *
+ * The ChessClock class itself implements a single timer, which is added as a button to the Module toolbar. Clicking the button starts and stops the clock, which we attempt to keep (roughly) in sync across multiple players' computers. A pair (or more, or I suppose only one) of them are then added to {@link ChessClockControl}.
+ *
+ * @author Brian Reynolds and Michael Kiefte
+ *
+ * Class originally created by Michael Kiefte for Twilight Struggle, including handshaking for verification of time totals between online
+ * machines. Made more generically configurable, and ChessClockControl added, by Brian Reynolds.
+ *
+ */
 public class ChessClock extends AbstractConfigurable implements CommandEncoder, GameComponent, ActionListener {
 
   private static final int MILLISECONDS_PER_MINUTE = 1000 * 60;
@@ -155,7 +158,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   }
 
 
-  // Make sure the static millisecond timer is actually running (unless it hasn't even been initialized yet)
+  /**
+   *  Make sure the static millisecond timer is actually running (unless it hasn't even been initialized yet)
+   */
   protected void startTimer() {
     if (!timer.isRunning()) {
       timer.start();
@@ -163,7 +168,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   }
 
 
-  // Defines the Command by which information about this clock is communicated between machines (and to/from save and log files)
+  /**
+   *  Defines the Command by which information about this clock is communicated between machines (and to/from save and log files)
+   */
   public class UpdateTimerCommand extends Command {
     private final String who; // who = player who is doing the reporting
     private final String name; // name = whose timer is being reported
@@ -172,8 +179,14 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     private final boolean ticking; // BR// Timer currently ticking?
     private final boolean restore; // BR// Restoring save?
 
-    // who = who is reporting; which player
-    // name = which timer
+    /**
+     * @param who who is doing the reporting; which player side
+     * @param name side for whom timer is being reported
+     * @param elapsed elapsed time from our point of view
+     * @param verified verified time (both clients have agreed)
+     * @param ticking Time currently ticking?
+     * @param restore Restoring saved game?
+     */
     public UpdateTimerCommand(String who, String name, long elapsed, long verified, boolean ticking, boolean restore) {
       this.who = who;
       this.name = name;
@@ -183,15 +196,17 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       this.restore = restore;
     }
 
-    // everything that comes from another computer is verified unless its verified
-    // time is earlier than this one
+    /**
+     * Everything that comes from another computer is verified unless its verified time is earlier than what we've already verified.
+     */
     @Override
     protected void executeCommand() {
-      if (!name.equals(side)) // this shouldn't happen
+      if (!name.equals(side)) { // this shouldn't happen
         return;
+      }
       final String me = PlayerRoster.getMySide();
       if (restore) {
-        startTime = -1; // BR// If restoring saved game, clear out millisecond timer
+        startTime = -1; // If restoring saved game, clear out millisecond timer
       }
       startTimer();
       if (GameModule.getGameModule().getServer().isConnected()) {
@@ -203,7 +218,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
       if (who.equals(me) || noChecks) {
         // my computer reporting back: restore
-        // don't update elapsed time. It could have run on before saving
+        // Don't update elapsed time. It could have run on before saving
         if (noChecks) {
           elapsedTime = elapsed;
           verifiedTime = elapsed;
@@ -256,9 +271,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   }
 
 
-  // Updates the color of this chess clock's button/display.
-  // Non-ticking clock uses "default" button look.
-  // Ticking clock uses special background and pulsing foreground.
+  /**
+   * Updates the color of this chess clock's button/display.
+   * Non-ticking clock uses "default" button look.
+   * Ticking clock uses special background and pulsing foreground.
+   */
   protected void updateTimerColor() {
     if (!instanceIsActive) return;
     if (clockTicking) {
@@ -275,26 +292,35 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
+  /**
+   * Put timer in initial state, and invisible.
+   */
   private void initTimerButton() {
     timerButton.setVisible(false);
     updateTimerColor();
   }
 
-
+  /**
+   * Hides this clock
+   */
   public void hideClock() {
     timerButton.setVisible(false);
   }
 
+  /**
+   * Shows this clock
+   */
   public void showClock() {
     timerButton.setVisible(true);
   }
 
 
-  // Updates the clock display for this clock
-  // (1) Checks new elapsed value from millisecond timer.
-  // (2) Calls setTimerButton to clock time (text) on the button
-  // (3) Updates timer button colors if appropriate
+  /**
+   * Updates the clock display for this clock
+   * (1) Checks new elapsed value from millisecond timer.
+   * (2) Calls setTimerButton to clock time (text) on the button
+   * (3) Updates timer button colors if appropriate
+   */
   public void updateDisplay() {
     if (startTime == -1) {
       startTime = System.currentTimeMillis();
@@ -313,7 +339,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  // Updates clock text on the button, based on our configured style
+  /**
+   * Updates clock text on the button, based on our configured style
+   * @return half second tick-tock pulse on/off
+   */
   public boolean setTimerButton() {
     if (!instanceIsActive) return false;
 
@@ -385,69 +414,87 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     return side;
   }
 
-  // Registers us with game module, command encoder, and the Chess Clock Control.
-  public void addTo(Buildable parent) {
-    initTimerButton();
-    final GameModule gameModule = GameModule.getGameModule();
-    gameModule.addCommandEncoder(this);
-    gameModule.getGameState().addGameComponent(this);
+  //
 
-    // BR// Add ourselves to the chess clock controller
+  /**
+   * Registers us with game module, command encoder, and the Chess Clock Control.
+   * @param parent Should be ChessClockControl
+   */
+  public void addTo(Buildable parent) {
     if (parent instanceof ChessClockControl) {
+      initTimerButton();
+      final GameModule gameModule = GameModule.getGameModule();
+      gameModule.addCommandEncoder(this);
+      gameModule.getGameState().addGameComponent(this);
+
+      // BR// Add ourselves to the chess clock controller
       ((ChessClockControl) parent).addChessClock(this);
+      instanceIsActive = true;
     }
     else {
-      ChessClockControl.getInstance().addChessClock(this);
+      ErrorDialog.dataWarning(new BadDataReport("Chess Clock can only be added to Chess Clock Control", ""));
     }
-
-    instanceIsActive = true;
   }
 
+  /**
+   * Adds our clock button to the Module's toolbar
+   */
   public void addToToolbar() {
     final GameModule gameModule = GameModule.getGameModule();
     gameModule.getToolBar().add(timerButton);
   }
 
-  // Unregisters us when we are shutting down
+  /**
+   * Unregisters us when we are shutting down
+   * @param parent Should be ChessClockControl
+   */
   public void removeFrom(Buildable parent) {
     instanceIsActive = false;
 
-    timerButton.setVisible(false);
-    final GameModule gameModule = GameModule.getGameModule();
-    gameModule.getToolBar().remove(timerButton);
-    gameModule.removeCommandEncoder(this);
-    gameModule.getGameState().removeGameComponent(this);
-    if (timer != null) {
-      timer.removeActionListener(this);
-    }
-
     if (parent instanceof ChessClockControl) {
+      timerButton.setVisible(false);
+      final GameModule gameModule = GameModule.getGameModule();
+      gameModule.getToolBar().remove(timerButton);
+      gameModule.removeCommandEncoder(this);
+      gameModule.getGameState().removeGameComponent(this);
+      if (timer != null) {
+        timer.removeActionListener(this);
+      }
+
       ((ChessClockControl) parent).removeChessClock(this);
-    }
-    else {
-      ChessClockControl.getInstance().removeChessClock(this);
     }
   }
 
 
-  // Next several classes deal with our XML file attributes, allowing getting/setting, etc.
-
+  /**
+   * @return Key names for our attributes from the buildFile (XML) definition.
+   */
   @Override
   public String[] getAttributeNames() {
     return new String[] { SIDE, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
   }
 
+  /**
+   * @return Descriptions for our buildFile (XML) attributes. These appear when our component is configured in the Editor window.
+   */
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] { "Player Side for timer: ", "Timer Icon: ", "Ticking Background Color: ", "Ticking Foreground Color: ", "Tocking Foreground Color: ", "Chess Clock Tooltip" };
   }
 
+  /**
+   * @return Class types for configuring each of our buildFile (XML) attributes. Specifies which flavor of configurer to uses.
+   */
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class[] { String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
   }
 
-
+  /**
+   * Sets the value of one of this component's XML attributes
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value New value for the attribute. Can be either String version or the actual Object.
+   */
   @Override
   public void setAttribute(String key, Object value) {
     if (SIDE.equals(key)) {
@@ -480,6 +527,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
+  /**
+   * Gets the value of one of this component's XML attributes
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @return String value of the attribute.
+  */
   @Override
   public String getAttributeValueString(String key) {
     if (SIDE.equals(key)) {
@@ -499,10 +551,16 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
+  /**
+   * @return The help file for this component. Used when user clicks "Help" button while configuring the component in the Editor.
+   */
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("ChessClock.htm");  //$NON-NLS-1$
   }
 
+  /**
+   * @return Configure Tree name for component. Appears in [..] in module editor.
+   */
   public static String getConfigureTypeName() {
     return "Chess Clock";
   }
@@ -512,6 +570,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     return new Class[0];
   }
 
+  /**
+   * Deserializes our command from a string version, if the command belongs to us.
+   * @param command Serialized string command
+   * @return An {@link UpdateTimerCommand}
+   */
   public Command decode(final String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
       final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, ':');
@@ -531,7 +594,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
+  /**
+   * Serializes our command into a string, if it belongs to us
+   * @param c Command to serialize. Only serialized if it's an UpdateTimerCommand.
+   * @return Serialized command, or null if command passed wasn't an UpdateTimerCommand.
+   */
   public String encode(final Command c) {
     if (c instanceof UpdateTimerCommand) {
       final UpdateTimerCommand comm = (UpdateTimerCommand) c;
@@ -549,7 +616,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  // Detect when game is starting
+  /**
+   * Detect when game is starting.
+   * @param gameStarting if true, a game is starting. If false, then a game is ending
+   */
   public void setup(final boolean gameStarting) {
     clockTicking = false;
     if (!gameStarting) {
@@ -560,20 +630,29 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     updateTimerColor();
   }
 
-  // Our command for restoring from a saved game (or adding an online player)
+  /**
+   * @return Our command for restoring from a saved game (or adding an online player)
+   */
   public Command getRestoreCommand() {
     long verified = isReferee(PlayerRoster.getMySide()) ? elapsedTime : verifiedTime;
     return new UpdateTimerCommand(PlayerRoster.getMySide(), getName(), elapsedTime, verified, false, true);
   }
 
-  // This processes our timer updates every 100ms
+  /**
+   * This processes our timer updates every 100ms
+   * @param evt Timer event
+   */
   public void actionPerformed(ActionEvent evt) {
     if (evt.getSource() == timer) {
       updateDisplay();
     }
   }
 
-  // Returns a command to communicate the status of this clock to others
+  /**
+   * Creates a command to update the clock and/or turn it on/off.
+   * @param ticking If true, the clock will be set to "running". If false the clock will be set to "stopped".
+   * @return a command to communicate the status of this clock to others
+   */
   public Command updateState(boolean ticking) {
     final String mySide = PlayerRoster.getMySide();
     if (mySide != null) {
@@ -589,26 +668,36 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
   // These autoconfigurers allow the attributes to be edited in the editor, using intuitive controls instead of just a fill-in-the-blank field.
 
-  // Autoconfigurer for the icon for this timer
+  /**
+   * Autoconfigurer for the icon for this timer. Lets user pick an icon.
+   */
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "");
     }
   }
 
-  // Color auto-configurers
+  /**
+   * Color auto-configurer. Lets user pick a color from the table and/or values.
+   */
   public static class ColorConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TICKING_BACKGROUND_COLOR)));
     }
   }
 
+  /**
+   * Color auto-configurer. Lets user pick a color from the table and/or values.
+   */
   public static class ColorConfig2 implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TICKING_FONT_COLOR)));
     }
   }
 
+  /**
+   * Color auto-configurer. Lets user pick a color from the table and/or values.
+   */
   public static class ColorConfig3 implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TOCKING_FONT_COLOR)));
