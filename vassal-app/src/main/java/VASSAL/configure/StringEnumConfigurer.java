@@ -108,22 +108,6 @@ public class StringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
-  public JComboBox<String> getBox() {
-    return box;
-  }
-
-  public void setBox(JComboBox<String> box) {
-    this.box = box;
-  }
-
-  public Box getPanel() {
-    return panel;
-  }
-
-  public void setPanel(Box panel) {
-    this.panel = panel;
-  }
-
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
