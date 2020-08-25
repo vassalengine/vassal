@@ -31,8 +31,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 
 /**
- * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
- * every time the user attempts to connect
+ * Refreshes every time the user attempts to connect
  *
  * @author rkinney
  *
