@@ -240,7 +240,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
-        (SystemUtils.IS_OS_MAC_OSX ? "ins 0 0 1 0" : "ins 0") +
+        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +
         ",gapx 0,hidemode 3";
       toolBar.setLayout(new MigLayout(constraints));
     }
