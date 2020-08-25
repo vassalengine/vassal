@@ -37,6 +37,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.UniqueIdManager;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
@@ -67,8 +68,11 @@ import VASSAL.tools.swing.SwingUtils;
  * Flare will work with both online play and PBEM play.
  */
 public class Flare extends AbstractConfigurable
-        implements CommandEncoder, GameComponent, Drawable, MouseListener {
-  public static final String COMMAND_PREFIX = "FLARE\t";
+        implements CommandEncoder, GameComponent, Drawable, MouseListener, UniqueIdManager.Identifyable {
+  private static final String DELIMITER = "\t"; //$NON-NLS-1$
+  public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
+
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
 
   // Attributes
   private int circleSize;       // Maximum circle size in pixels
@@ -86,38 +90,38 @@ public class Flare extends AbstractConfigurable
   private volatile boolean active;  // Internal flag if we're currently active
 
   // Attribute names
-  public static final String CIRCLE_SIZE    = "circleSize";
-  public static final String CIRCLE_SCALE   = "circleScale";
-  public static final String CIRCLE_COLOR   = "circleColor";
-  public static final String FLARE_KEY      = "flareKey";
-  public static final String PULSES         = "flarePulses";
-  public static final String PULSES_PER_SEC = "flarePulsesPerSec";
-  public static final String REPORT_FORMAT  = "reportFormat";
+  public static final String CIRCLE_SIZE    = "circleSize";         //$NON-NLS-1$
+  public static final String CIRCLE_SCALE   = "circleScale";        //$NON-NLS-1$
+  public static final String CIRCLE_COLOR   = "circleColor";        //$NON-NLS-1$
+  public static final String FLARE_KEY      = "flareKey";           //$NON-NLS-1$
+  public static final String PULSES         = "flarePulses";        //$NON-NLS-1$
+  public static final String PULSES_PER_SEC = "flarePulsesPerSec";  //$NON-NLS-1$
+  public static final String REPORT_FORMAT  = "reportFormat";       //$NON-NLS-1$
 
   // Friendly (localizable) names for modifier key combinations
-  public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));
-  public static final String FLARE_CTRL_LOCAL      = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));
-  public static final String FLARE_COMMAND_LOCAL   = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));
-  public static final String FLARE_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift"));
-  public static final String FLARE_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.shift_command"));
-  public static final String FLARE_CTRL_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_shift"));
-  public static final String FLARE_ALT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_command"));
-  public static final String FLARE_CTRL_ALT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt"));
-  public static final String FLARE_ALT_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift_command"));
-  public static final String FLARE_CTRL_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt_shift"));
+  public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));                       //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_CTRL_LOCAL      = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl"));                      //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_COMMAND_LOCAL   = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.meta"));                      //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift"));                 //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.shift_command"));         //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_CTRL_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_shift"));               //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_ALT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_command"));             //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_CTRL_ALT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt"));                   //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_ALT_SHIFT_COMMAND_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt_shift_command")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final String FLARE_CTRL_ALT_SHIFT_LOCAL = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.ctrl_alt_shift"));       //$NON-NLS-1$ //$NON-NLS-2$
 
   // The modifier key codes we actually store
-  public static final String FLARE_ALT            = "keyAlt";
-  public static final String FLARE_CTRL           = "keyCtrl";
-  public static final String FLARE_ALT_SHIFT      = "keyAltShift";
-  public static final String FLARE_CTRL_SHIFT     = "keyCtrlShift";
-  public static final String FLARE_CTRL_ALT       = "keyCtrlAlt";
-  public static final String FLARE_CTRL_ALT_SHIFT = "keyCtrlAltShift";
+  public static final String FLARE_ALT            = "keyAlt";          //$NON-NLS-1$
+  public static final String FLARE_CTRL           = "keyCtrl";         //$NON-NLS-1$
+  public static final String FLARE_ALT_SHIFT      = "keyAltShift";     //$NON-NLS-1$
+  public static final String FLARE_CTRL_SHIFT     = "keyCtrlShift";    //$NON-NLS-1$
+  public static final String FLARE_CTRL_ALT       = "keyCtrlAlt";      //$NON-NLS-1$
+  public static final String FLARE_CTRL_ALT_SHIFT = "keyCtrlAltShift"; //$NON-NLS-1$
 
   // Special properties for our FormattedString reportFormat
-  public static final String FLARE_LOCATION       = "FlareLocation";
-  public static final String FLARE_ZONE           = "FlareZone";
-  public static final String FLARE_MAP            = "FlareMap";
+  public static final String FLARE_LOCATION       = "FlareLocation";   //$NON-NLS-1$
+  public static final String FLARE_ZONE           = "FlareZone";       //$NON-NLS-1$
+  public static final String FLARE_MAP            = "FlareMap";        //$NON-NLS-1$
 
   private static final int STROKE = 3;
 
@@ -135,14 +139,14 @@ public class Flare extends AbstractConfigurable
    * @return String description of this component, displayed in Editor.
    */
   public String getDescription() {
-    return Resources.getString("Editor.Flare.desc");
+    return Resources.getString("Editor.Flare.desc"); //$NON-NLS-1$
   }
 
   /**
    * @return String name of component class. The part in [..] in the Editor.
    */
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Flare.configure");
+    return Resources.getString("Editor.Flare.configure"); //$NON-NLS-1$
   }
 
   /**
@@ -173,13 +177,13 @@ public class Flare extends AbstractConfigurable
    * @return list of names for attributes
    */
   public String[] getAttributeDescriptions() {
-    return new String[] { Resources.getString("Editor.Flare.flare_key"),
-            Resources.getString("Editor.Flare.circle_size"),
-            Resources.getString("Editor.Flare.circle_color"),
-            Resources.getString("Editor.Flare.circle_scale"),
-            Resources.getString("Editor.Flare.pulses"),
-            Resources.getString("Editor.Flare.pulses_per_sec"),
-            Resources.getString("Editor.report_format")};
+    return new String[] { Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.circle_size"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.circle_color"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.circle_scale"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.pulses"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.pulses_per_sec"), //$NON-NLS-1$
+            Resources.getString("Editor.report_format")}; //$NON-NLS-1$
   }
 
   /**
@@ -305,6 +309,7 @@ public class Flare extends AbstractConfigurable
    * @param parent - the Map to add the Flare to.
    */
   public void addTo(final Buildable parent) {
+    idMgr.add(this);
     if (parent instanceof Map) {
       map = (Map) parent;
       GameModule.getGameModule().addCommandEncoder(this);
@@ -324,6 +329,7 @@ public class Flare extends AbstractConfigurable
     if (parent instanceof Map) {
       GameModule.getGameModule().removeCommandEncoder(this);
     }
+    idMgr.remove(this);
   }
 
   private double os_scale = 1.0;
@@ -392,36 +398,37 @@ public class Flare extends AbstractConfigurable
    * @param map - Map component
    */
   public void draw(final Graphics g, final Map map) {
-    if (active && clickPoint != null) {
-      final Graphics2D g2d = (Graphics2D) g;
-      os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-
-      double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
-      if (animate) {
-        diameter *= (1.0 - animfrac);
-      }
-
-      if (diameter <= 0.0) {
-        return;
-      }
-
-      // translate the click location for current zoom
-      final Point p = map.mapToDrawing(clickPoint, os_scale);
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-              RenderingHints.VALUE_ANTIALIAS_ON);
-
-      // draw a circle around the selected point
-      g2d.setColor(color);
-      g2d.setStroke(new BasicStroke((float)(STROKE * os_scale)));
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-              RenderingHints.VALUE_ANTIALIAS_ON);
-      g2d.drawOval(
-              (int)(p.x - diameter / 2.0),
-              (int)(p.y - diameter / 2.0),
-              (int)(diameter + 0.5),
-              (int)(diameter + 0.5)
-      );
+    if (!active || (clickPoint == null)) {
+      return;
     }
+    final Graphics2D g2d = (Graphics2D) g;
+    os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+
+    double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
+    if (animate) {
+      diameter *= (1.0 - animfrac);
+    }
+
+    if (diameter <= 0.0) {
+      return;
+    }
+
+    // translate the click location for current zoom
+    final Point p = map.mapToDrawing(clickPoint, os_scale);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+
+    // draw a circle around the selected point
+    g2d.setColor(color);
+    g2d.setStroke(new BasicStroke((float)(STROKE * os_scale)));
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+    g2d.drawOval(
+            (int)(p.x - diameter / 2.0),
+            (int)(p.y - diameter / 2.0),
+            (int)(diameter + 0.5),
+            (int)(diameter + 0.5)
+    );
   }
 
   public boolean drawAboveCounters() {
@@ -435,7 +442,7 @@ public class Flare extends AbstractConfigurable
    */
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      return COMMAND_PREFIX + ((FlareCommand) c).getMapId() + "\t" + ((FlareCommand) c).getClickPoint().x + "\t" + ((FlareCommand) c).getClickPoint().y;
+      return COMMAND_PREFIX + ((FlareCommand) c).getMapId() + DELIMITER + ((FlareCommand) c).getClickPoint().x + DELIMITER + ((FlareCommand) c).getClickPoint().y;
     }
     return null;
   }
@@ -446,8 +453,8 @@ public class Flare extends AbstractConfigurable
    * @return Flare Command object
    */
   public Command decode(final String s) {
-    if (s.startsWith(COMMAND_PREFIX + getMap().getId())) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '\t');
+    if (s.startsWith(COMMAND_PREFIX + getMap().getId())) { // Make sure this command is heading to our map
+      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
       sd.nextToken(); // Skip over the Id
       final int x = sd.nextInt(0);
@@ -551,6 +558,16 @@ public class Flare extends AbstractConfigurable
 
   public Point getClickPoint() {
     return clickPoint;
+  }
+
+  @Override
+  public void setId(String id) {
+
+  }
+
+  @Override
+  public String getId() {
+    return null;
   }
 
   /**

@@ -60,7 +60,7 @@ public class SequenceEncoder {
   private StringBuilder buffer;
   private final char delim;
 
-  // Ugly delimiters: The characters in UGLY can ocucr in what's returned
+  // Ugly delimiters: The characters in UGLY can occur in what's returned
   // by String.valueOf() for boolean, int, long, and double---that is,
   // anything which looks like a number (possibly in scientific notation,
   // e.g., 1E-6) but also true, false, Infinity, and NaN. When the delimiter
@@ -323,7 +323,7 @@ public class SequenceEncoder {
     /**
      * Parse the next token into an integer
      * @param defaultValue Return this value if no more tokens, or next token doesn't parse to an integer
-     * @return
+     * @return next token as an integer, or defaultValue if it didn't exist or didn't parse
      */
     public int nextInt(int defaultValue) {
       if (val != null) {
@@ -331,6 +331,7 @@ public class SequenceEncoder {
           defaultValue = Integer.parseInt(nextToken());
         }
         catch (NumberFormatException e) {
+          // no action
         }
       }
       return defaultValue;
@@ -342,6 +343,7 @@ public class SequenceEncoder {
           defaultValue = Long.parseLong(nextToken());
         }
         catch (NumberFormatException e) {
+          // no action
         }
       }
       return defaultValue;
@@ -353,6 +355,7 @@ public class SequenceEncoder {
           defaultValue = Double.parseDouble(nextToken());
         }
         catch (NumberFormatException e) {
+          // no action
         }
       }
       return defaultValue;
@@ -365,7 +368,7 @@ public class SequenceEncoder {
     /**
      * Return the first character of the next token
      * @param defaultValue Return this value if no more tokens, or if next token has zero length
-     * @return
+     * @return next token if a character is available, or defaultValue if no more tokens or the token has zero length
      */
     public char nextChar(char defaultValue) {
       if (val != null) {
@@ -436,8 +439,8 @@ public class SequenceEncoder {
 
     /**
      * Return the next token, or the default value if there are no more tokens
-     * @param defaultValue
-     * @return
+     * @param defaultValue default value in case there are no more tokens
+     * @return next token, or the default value if no more tokens
      */
     public String nextToken(String defaultValue) {
       return val != null ? nextToken() : defaultValue;
