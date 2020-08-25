@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -317,7 +318,7 @@ public final class IconFactory {
     final URL sizeURL = jar.getURL(path);
 
     try (InputStream in = sizeURL.openStream();
-         InputStreamReader isr = new InputStreamReader(in);
+         InputStreamReader isr = new InputStreamReader(in, Charset.defaultCharset());
          BufferedReader br = new BufferedReader(isr)) {
       String imageName = ""; //$NON-NLS-1$
       while (imageName != null) {
@@ -347,7 +348,7 @@ public final class IconFactory {
     final URL url = jar.getURL(scalablePath);
 
     try (InputStream in = url.openStream();
-         InputStreamReader isr = new InputStreamReader(in);
+         InputStreamReader isr = new InputStreamReader(in, Charset.defaultCharset());
          BufferedReader br = new BufferedReader(isr)) {
       String imageName = ""; //$NON-NLS-1$
       while (imageName != null) {

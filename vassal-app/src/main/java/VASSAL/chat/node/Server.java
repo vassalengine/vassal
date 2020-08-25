@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import VASSAL.tools.ArgsParser;
@@ -84,8 +85,9 @@ public class Server extends Thread {
       handler.start();
       handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+      // open stdin, use native encoding.
       final BufferedReader reader =
-        new BufferedReader(new InputStreamReader(System.in));
+        new BufferedReader(new InputStreamReader(System.in, Charset.defaultCharset()));
       try {
         String line;
         while ((line = reader.readLine()) != null) {

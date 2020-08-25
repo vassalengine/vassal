@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -285,7 +286,7 @@ public class SVGImageUtils {
     }
 
     sw.flush();
-    return sw.toString().getBytes();
+    return sw.toString().getBytes(StandardCharsets.UTF_8);
   }
 
   protected static void relativizeElement(Element e) {

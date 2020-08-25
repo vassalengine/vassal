@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -84,7 +85,7 @@ public abstract class Compressor {
             System.err.println("Input (" + s.length() + ") = " + s); //$NON-NLS-1$ //$NON-NLS-2$
             final String comp = new String(compress(s.getBytes()));
             System.err.println("Compressed (" + comp.length() + ") = " + comp); //$NON-NLS-1$ //$NON-NLS-2$
-            final String decomp = new String(decompress(comp.getBytes()));
+            final String decomp = new String(decompress(comp.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
             System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
           }
           // FIXME: review error message

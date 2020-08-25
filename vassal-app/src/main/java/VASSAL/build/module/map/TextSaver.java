@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 import javax.swing.JOptionPane;
 
@@ -149,7 +150,9 @@ public class TextSaver extends AbstractConfigurable {
     if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION) return;
 
     final File file =  fc.getSelectedFile();
-    try (Writer fw = new FileWriter(file);
+
+    // Writing out a text file for the user to do whatever with. Use the native encoding.
+    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
          BufferedWriter bw = new BufferedWriter(fw);
          PrintWriter p = new PrintWriter(bw)) {
       for (GamePiece gp : map.getPieces()) {

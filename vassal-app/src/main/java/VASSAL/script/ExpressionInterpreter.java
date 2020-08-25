@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -204,7 +205,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini);
 
     try (InputStream is = ini.openStream();
-         InputStreamReader isr = new InputStreamReader(is);
+         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(isr)) {
       try {
         eval(in);

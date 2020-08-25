@@ -52,7 +52,10 @@ import VASSAL.tools.io.IOUtils;
  * the new archive.
  * User: rkinney
  * Date: Oct 23, 2003
+ *
+ * @deprecated removed without replacement
  */
+@Deprecated
 public class ZipUpdater implements Runnable {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipUpdater.class);
@@ -341,7 +344,7 @@ public class ZipUpdater implements Runnable {
 
         try {
           r = new BufferedReader(new InputStreamReader(
-            ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
+            ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME), StandardCharsets.UTF_8));
           final String newArchiveName = r.readLine();
           final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
           updater.write(new File(newArchiveName));

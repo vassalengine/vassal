@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,7 +202,7 @@ public class TilingHandler {
     );
 
     // write the image paths to child's stdin, one per line
-    try (PrintWriter stdin = new PrintWriter(proc.stdin)) {
+    try (PrintWriter stdin = new PrintWriter(proc.stdin, true, StandardCharsets.UTF_8)) {
       multi.forEach(stdin::println);
     }
 

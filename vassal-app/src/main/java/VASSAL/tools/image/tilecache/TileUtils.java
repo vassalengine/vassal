@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -173,9 +174,9 @@ public class TileUtils {
    * @throws IOException if the byte array is not the tile signature
    */
   static void checkSignature(byte[] sig) throws IOException {
-    if (!Arrays.equals(sig, "VASSAL".getBytes())) {
+    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) {
       throw new IOException(
-        "bad signature: got \"" + new String(sig) +
+        "bad signature: got \"" + new String(sig, StandardCharsets.UTF_8) +
         "\", expected \"VASSAL\""
       );
     }
@@ -288,7 +289,7 @@ public class TileUtils {
     // write the header
     bb = ByteBuffer.allocate(18);
 
-    bb.put("VASSAL".getBytes())
+    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8))
       .putInt(tile.getWidth())
       .putInt(tile.getHeight())
       .putInt(tile.getType());

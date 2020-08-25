@@ -20,6 +20,7 @@ package VASSAL.tools.logging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class LoggedOutputStream extends OutputStream {
   @Override
   public synchronized void flush() {
     if (buf.size() > 0) {
-      logger.warn(new String(buf.toByteArray()));
+      logger.warn(new String(buf.toByteArray(), Charset.defaultCharset()));
       buf.reset();
     }
   }
