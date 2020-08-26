@@ -23,6 +23,7 @@ import java.util.ListIterator;
 
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.build.module.GameComponent;
 
 /**
  * A Command represents an action that needs to be transmitted from one client to another - any action that could
@@ -33,7 +34,7 @@ import VASSAL.tools.ThrowableUtils;
  * {@link CommandEncoder}s then serialise ({@link CommandEncoder#encode}) and deserialise ({@link CommandEncoder#decode})
  * Commands to and from an ascii based representation. Commands are encoded by the generated client prior to being sent
  * across network or saved in a log or save file. Commands are decoded by the receiving client on receipt from the network
- * or on reading from a log or save file. Save game creation is a special case where every GameComponent is asked to
+ * or on reading from a log or save file. Save game creation is a special case where every {@link GameComponent} is asked to
  * generate a Command that when executed will cause itself to be recreated in its present state.
  *
  * The {@link #execute} method implements the execution of the command and is called by the receiving client

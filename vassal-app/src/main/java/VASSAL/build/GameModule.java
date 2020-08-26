@@ -85,11 +85,13 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.CompoundValidityChecker;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.BasicModule;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -109,7 +111,13 @@ import VASSAL.tools.version.VersionUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
- * the root of the {@link Buildable} containment hierarchy.
+ * the root of the {@link Buildable} containment hierarchy, although
+ * {@link BasicModule} actually stands in as the root node in the Editor's
+ * {@link ConfigureTree} and contains the root node's own encoder, and
+ * a certain amount of its build logic, in order to allow the root node
+ * to be easily configured in the Editor without fully building/activating
+ * the module.
+ *
  * Components which are added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
