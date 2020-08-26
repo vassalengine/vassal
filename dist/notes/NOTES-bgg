@@ -1,19 +1,55 @@
-[size=18][b]VASSAL 3.3.3-beta1 Released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.3.3-beta1, which is a preview release.
+[size=18][b]VASSAL 3.4.0-beta1 Released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.4.0-beta1, which is a preview release.
+
+(If you're wondering why we're releasing 3.4.0-beta1 next after 3.3.3-beta1: You haven't missed 3.3.3. We decided that the next full release should be 3.4.0 due to added features.)
 
 [size=16][b]IMPORTANT[/b][/size]
-* Things may be broken which worked in 3.2.17. If you find a bug introduced since 3.2.17, please report it.
+* Things may be broken which worked previously. If you find a new bug, please report it.
 
-* If you save a module in VASSAL 3.3, you will NOT be able to open it afterwards with VASSAL 3.2. We recommend keeping a backup copy of any pre-3.3 modules you plan to modify in 3.3 until you've verified that everything works to your satisfaction.
+* If you save a module in VASSAL 3.4, you will NOT be able to open it afterwards with VASSAL 3.3 or earlier. We recommend keeping a backup copy of any pre-3.4 modules you plan to modify in 3.4 until you've verified that everything works to your satisfaction.
 
-* Some modules containing custom drawing code may render incorrectly on HiDPI displays. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.3 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
 
 [size=16][b]Download[/b][/size]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.3.3-beta1/VASSAL-3.3.3-beta1-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.0-beta1/VASSAL-3.4.0-beta1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.0-beta1/VASSAL-3.4.0-beta1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.0-beta1/VASSAL-3.4.0-beta1-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.0-beta1/VASSAL-3.4.0-beta1-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.0-beta1/VASSAL-3.4.0-beta1-other.zip]Other[/url]
+
+[size=16][b]Changes since 3.3.3-beta1[/b][/size]
+
+New features
+
+* 13313: Specify VM options for Player via a file
+* 13275: Ctrl+Mousewheel to zoom
+
+Bug fixes
+
+* 13319: Multiline HTML labels breaks toolbar button alignment
+* 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should have remained public
+* 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules without GlobalOptions
+* 13291: Fix Beanshell issues with $$ variable processing
+* 13289: Don't print "Saving game" twice when using Save As
+* 13281: Added inadvertently removed throws declaration for Embellishment0.getCurrentImage()
+* 13280: NPE in KeyStrokeListener.keyPressed()
+* 13236: StackOverflowError: Expressions and Formatted Strings can infinite-loop
+* 13217: Editor: Prevent pasting a cut ancestor as its own child
+* 13200: NPE in Map.setup() when attempting to dock main map
+* 13076: NPE in FlowView$FlowStrategy.layoutRow()
+* 12798: ClassCastException: NullCommand cannot be cast to AddPiece
+* 12648: Setup stack doesn't recover from a piece build failure
+* 11827: NPE in SendToLocation.getSendLocation()
+* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
+*  3215: Global Options icons do not update themselves properly
+
+Other improvements
+
+* 13325: Specify encoding for String conversion to and from bytes
+* 13301: Don't rewrite save state when we already have it
+* 13290: Optimized serialization, unserialization
+* 13282: Stop logging debug messages by default
+* 13197: Reverted Mac hotkey change from 3.3.3-beta1
 
 [size=16][b]Changes since 3.3.2[/b][/size]
 New features & improvements
@@ -75,10 +111,10 @@ Bug fixes
 * 10314: NPE in GameRefresher if dialog is closed quickly while test is running
 *  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
 
-See the [url=http://www.vassalengine.org/wiki/VASSAL_3.3.3_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.3.3-beta1.
+See the [url=http://www.vassalengine.org/wiki/VASSAL_3.4.0_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.4.0-beta1.
 
 [size=16][b]Minimum Requirements[/b][/size]
-VASSAL 3.3 requires Java 11 or later.
+VASSAL 3.4 requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
 

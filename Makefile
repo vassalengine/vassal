@@ -46,8 +46,8 @@ JDOCDIR:=jdoc
 # numeric part of the version only
 VNUM:=3.4.0
 
-MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-beta1
+#MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+MAVEN_VERSION:=$(VNUM)-beta1
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 

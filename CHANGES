@@ -1,4 +1,4 @@
-3.4.0-beta1 - ???
+3.4.0-beta1 - 26 August 2020
 
 * 13325: Specify encoding for String conversion to and from bytes
 * 13319: Multiline HTML labels breaks toolbar button alignment
@@ -14,11 +14,12 @@
 * 13282: Stop logging debug messages by default
 * 13281: Added inadvertently removed throws declaration for
     Embellishment0.getCurrentImage()
-* 13280 - NPE in KeyStrokeListener.keyPressed()
+* 13280: NPE in KeyStrokeListener.keyPressed()
 * 13275: Ctrl+Mousewheel to zoom
 * 13236: StackOverflowError: Expressions and Formatted Strings can infinite-loop
 * 13217: Editor: Prevent pasting a cut ancestor as its own child
 * 13200: NPE in Map.setup() when attempting to dock main map
+* 13197: Reverted Mac hotkey change from 3.3.3-beta1
 * 13076: NPE in FlowView$FlowStrategy.layoutRow()
 * 12798: ClassCastException: NullCommand cannot be cast to AddPiece
 * 12648: Setup stack doesn't recover from a piece build failure
@@ -145,7 +146,7 @@
 3.3.0-beta1 - 27 April 2020
 
 * 12559: HiDPI support
-* 12558: Bundle Java with VASSAL 
+* 12558: Bundle Java with VASSAL
 * 12557: Compatibility with Java 9+
 * 12556: Mass Piece Definer does not sort image names
 
@@ -169,7 +170,7 @@
 
 3.2.15 - 25 December 2014
 
-* 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 
+* 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation
 * 11769: NPE in Deck.getState()
 
 3.2.14 - 16 December 2014
@@ -305,7 +306,7 @@
 * 10128: Slow Follow Property handling in Embellishment
 * 10125: Expression Builder should return a Property Name, not expression in
     the Set Global Property trait
-* 10124: Comparisons with GetProperty() calls do not work correctly 
+* 10124: Comparisons with GetProperty() calls do not work correctly
 * 10107: NPE in ServerAddressBook.PeerClientEntry.toString()
 * 10101: NPE in MassPieceLoader.MyTreeTableModel.setValueAt()
 * 10099: Counter Detail Viewer displays top card in face down deck as face up
