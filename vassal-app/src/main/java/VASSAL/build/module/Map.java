@@ -73,6 +73,8 @@ import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
@@ -237,7 +239,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     getView();
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
-      toolBar.setLayout(new MigLayout("ins 0,gapx 0,hidemode 3"));
+      final String constraints =
+        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +
+        ",gapx 0,hidemode 3";
+      toolBar.setLayout(new MigLayout(constraints));
     }
     else {
       toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
