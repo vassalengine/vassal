@@ -17,6 +17,7 @@
 
 3.3.3-beta2 - ???
 
+* 13319: Multiline HTML labels breaks toolbar button alignment
 * 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should
     have remained public
 * 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules

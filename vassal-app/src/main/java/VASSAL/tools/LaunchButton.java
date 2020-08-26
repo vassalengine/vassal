@@ -83,6 +83,15 @@ public class LaunchButton extends JButton {
     checkVisibility();
   }
 
+  @Override
+  public int getBaseline(int width, int height) {
+    // Without this, buttons with no text, buttons with single line HTML text,
+    // and buttons with multiline HTML text end up having different baselines.
+    // LaunchButtons go into toolbars only, so there should be no allignment
+    // issues caused by indicating that the baseline is non-applicable.
+    return -1;
+  }
+
   public String getNameAttribute() {
     return nameAtt;
   }

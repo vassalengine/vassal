@@ -21,7 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -170,7 +169,7 @@ public class PlayerWindow extends JFrame {
   }
 
   private void buildToolbar() {
-    toolBar.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
+    toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0f);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.NORTH);
