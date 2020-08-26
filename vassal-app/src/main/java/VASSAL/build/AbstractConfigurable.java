@@ -29,9 +29,10 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
- * An abstract implementation of the Configurable interface. Takes care of most of the Configurable functionality.
- * Provides the basis for a component to have a configuration dialog in the Editor, allowing various attributes to be
- * edited, retained, and saved/loaded from the module's buildFile (XML).
+ * An abstract implementation of the Configurable interface. To make a component which is both buildable from the buildFile(XML),
+ * appears in the Editor window, and then is configurable with a dialog in the Editor, extend this class. Takes care of most of
+ * the Configurable functionality. Provides the basis for a component to have a configuration dialog in the Editor, allowing various
+ * attributes to be edited, retained, and saved/loaded from the module's buildFile (XML).
  */
 public abstract class AbstractConfigurable extends AbstractBuildable implements AutoConfigurable {
   protected PropertyChangeSupport changeSupport;
