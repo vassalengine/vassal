@@ -18,14 +18,26 @@
 package VASSAL.command;
 
 /**
- * Translates a {@link Command} to and from a string
- * Although Commands can be linked into compound commands,
- * each CommandEncoder need only handle single (not compound) commands
+ * Translates a {@link Command} to and from a string.
+ *
+ * A {@link Command} represents an action that needs to be transmitted from one client to another -- any action that
+ * could change the game state in a multiplayer game needs to be encapsulated into a Command so that other players'
+ * clients will reflect it. The CommandEncoders serialise ({@link #encode}) and deserialise ({@link #decode}) those
+ * Java classes to and from an ascii based representation. Commands are encoded by the generated client prior to being
+ * sent across network or saved in a log or save file. Commands are decoded by the receiving client on receipt from the
+ * network or on reading from a log or save file. Save game creation is a special case where every GameComponent is
+ * asked to generate a Command that when executed will cause itself to be recreated.
+ *
+ * The {@link Command#execute()} method implements the execution of the command and is called by the receiving client
+ * after building the Command using <code>decode</code>. The execute() method is sometimes called on the generating client but does
+ * not need to be if the Command is being created to encapsulate something that has already happened on the generating client.
+ *
+ * Although Commands can be linked into compound commands, each CommandEncoder need only handle single (not compound) commands.
  */
 public interface CommandEncoder  {
 
   /** Translate a String into a {@link Command} */
-  public Command decode(String command);
+  Command decode(String command);
   /** Translate a {@link Command} into a String */
-  public String encode(Command c);
+  String encode(Command c);
 }
