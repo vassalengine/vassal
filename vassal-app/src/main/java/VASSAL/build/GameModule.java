@@ -113,7 +113,7 @@ import VASSAL.tools.version.VersionUtils;
  * The GameModule class is the base class for a VASSAL module.  It is
  * the root of the {@link Buildable} containment hierarchy, although
  * {@link BasicModule} actually stands in as the root node in the Editor's
- * {@link ConfigureTree} and contains the root node's own encoder, and
+ * {@link ConfigureTree} and contains the root node's own encoder and
  * a certain amount of its build logic, in order to allow the root node
  * to be easily configured in the Editor without fully building/activating
  * the module.

@@ -34,8 +34,9 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
- * Abstract implementation of the Buildable interface. To make a Buildable component, extend this class
- * (or more likely {@link AbstractConfigurable} if the component is to be configurable in the Editor window).
+ * Abstract implementation of the {@link Buildable} interface. To make a Buildable component, in other words a component
+ * which can be read from the XML buildFile along with a set of attributes, extend this class -- or more likely
+ * {@link AbstractConfigurable} if the component is also to be editable/configurable in the Editor window.
  * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
