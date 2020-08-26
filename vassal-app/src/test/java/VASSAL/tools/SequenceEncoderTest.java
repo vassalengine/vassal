@@ -247,4 +247,11 @@ public class SequenceEncoderTest {
     assertEquals("", sd.nextToken());
     assertEquals(value2, sd.nextToken());
   }
+
+  @Test
+  public void testUnquote() {
+     final String q = "'12345'";
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(q, ',');
+    assertEquals("12345", sd.nextToken());
+  }
 }

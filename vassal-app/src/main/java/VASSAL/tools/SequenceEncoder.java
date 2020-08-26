@@ -288,7 +288,7 @@ public class SequenceEncoder {
       // strip enclosure by single quotes
       final int len = cs.length();
       return (
-        len > 1 && cs.charAt(0) == '\'' && cs.charAt(len) == '\'' ?
+        len > 1 && cs.charAt(0) == '\'' && cs.charAt(len - 1) == '\'' ?
         cs.subSequence(1, len - 1) : cs
       ).toString();
     }
