@@ -31,18 +31,6 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 
-/*
-A Command is a Java class that implements an action that needs to be transmitted from one client to another.
-The CommandEncoders serialise (encode) and deserialise (decode) those Java classes to and from an ascii based representation.
-Commands are encoded by the generated client prior to being sent across network or saved in a log or save file.
-Commands are decoded by the receiving client on receipt from the network or on reading from a log or save file.
-Save game creation is a special case where every GameComponent is asked to generate a Command that when executed
-will cause itself to be recreated.
-
-The execute() method implements the execution of the command and is called by the receiving client after building the Command using decode.
-The execute() method is sometimes called on the generating client but does not need to be of the Command is being created to encapsulate something that has already happened on the generating client.
-*/
-
 /**
  * Encodes a sequence of Strings into a single String with a given delimiter.
  * Escapes the delimiter character if it occurs in the element strings.
