@@ -17,6 +17,7 @@
  */
 package VASSAL.i18n;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -279,25 +280,6 @@ public class Resources {
   }
 
   /**
-   * getPromptString
-   *
-   * Return a translated string for the specified key, using the current language bundles
-   * Add any additional characters required to prepare this string for use as a prompt
-   * label inside an AutoConfigurer.
-   *
-   * Currently, this required suffixing the string with ":  "
-   *
-   * Hopefully, the mysterious someone will fix the AutoConfigurer so this is no longer required.
-   *
-   * @param id Key of string to translate
-   * @return Translated String
-   */
-  // FIXME Locate all usages like "Menu Command:  " and replace with Resources.getPString(Resources.MENU_COMMAND) or Resources.getPString("Editor.menu_command")
-  public static String getPromptString(String id) {
-    return getInstance().getInstanceString(id) + ":  ";
-  }
-
-  /**
    * getString
    *
    * Return a translated string for the specified key, using the current language bundles
@@ -308,26 +290,6 @@ public class Resources {
    */
   public static String getString(String id, Object... params) {
     return getInstance().getBundleForKey(id).getString(id, params);
-  }
-
-  /**
-   * getPromptString
-   *
-   * Return a translated string for the specified key, using the current language bundles
-   * Add any additional characters required to prepare this string for use as a prompt
-   * label inside an AutoConfigurer.
-   *
-   * Currently, this required suffixing the string with ":  "
-   *
-   * Hopefully, the mysterious someone will fix the AutoConfigurer so this is no longer required.
-   *
-   * @param id Key of string to translate
-   * @param params Additional parameters that need to be inserted into the string
-   * @return Translated String
-   */
-  // FIXME Locate all usages like "Menu Command:  " and replace with Resources.getPString(Resources.MENU_COMMAND) or Resources.getPString("Editor.menu_command")
-  public static String getPromptString(String id, Object... params) {
-    return getInstance().getBundleForKey(id).getString(id, params) + ":  "; //$NON-NLS-1$
   }
 
   private String getInstanceString(String id) {
@@ -360,8 +322,9 @@ public class Resources {
    * @return Localized result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getVassalString(String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getInstance().getVassalBundle().getString(id);
   }
 
@@ -373,8 +336,9 @@ public class Resources {
    * @return Localized Result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getEditorString(String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getInstance().getEditorBundle().getString(id);
   }
 
@@ -388,8 +352,9 @@ public class Resources {
    * @return Localized result
    * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // FIXME Add ProblemDialog.showDeprecatedMessage call
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getString(ResourceBundle bundle, String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     String s = null;
     try {
       s = bundle.getString(id);
