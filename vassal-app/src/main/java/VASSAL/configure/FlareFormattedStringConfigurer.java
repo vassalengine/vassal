@@ -33,6 +33,7 @@ public class FlareFormattedStringConfigurer extends FormattedStringConfigurer {
         GlobalOptions.PLAYER_NAME,
         GlobalOptions.PLAYER_SIDE,
         GlobalOptions.PLAYER_ID,
+        Flare.FLARE_NAME,
         Flare.FLARE_LOCATION,
         Flare.FLARE_ZONE,
         Flare.FLARE_MAP

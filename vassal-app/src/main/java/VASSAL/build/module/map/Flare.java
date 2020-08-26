@@ -98,6 +98,7 @@ public class Flare extends AbstractConfigurable
   public static final String PULSES         = "flarePulses";        //$NON-NLS-1$
   public static final String PULSES_PER_SEC = "flarePulsesPerSec";  //$NON-NLS-1$
   public static final String REPORT_FORMAT  = "reportFormat";       //$NON-NLS-1$
+  public static final String NAME           = "flareName";          //$NON-NLS-1$
 
   // Friendly (localizable) names for modifier key combinations
   public static final String FLARE_ALT_LOCAL       = Resources.getString("Editor.Flare.flare_key_desc", Resources.getString("Keys.alt"));                       //$NON-NLS-1$ //$NON-NLS-2$
@@ -120,6 +121,7 @@ public class Flare extends AbstractConfigurable
   public static final String FLARE_CTRL_ALT_SHIFT = "keyCtrlAltShift"; //$NON-NLS-1$
 
   // Special properties for our FormattedString reportFormat
+  public static final String FLARE_NAME           = "FlareName";       //$NON-NLS-1$
   public static final String FLARE_LOCATION       = "FlareLocation";   //$NON-NLS-1$
   public static final String FLARE_ZONE           = "FlareZone";       //$NON-NLS-1$
   public static final String FLARE_MAP            = "FlareMap";        //$NON-NLS-1$
@@ -134,6 +136,7 @@ public class Flare extends AbstractConfigurable
     flareKey     = FLARE_ALT;
     pulses       = 6;
     pulsesPerSec = 3;
+    setConfigureName(Resources.getString("Editor.Flare.desc"));
   }
 
   /**
@@ -162,7 +165,7 @@ public class Flare extends AbstractConfigurable
    * @return list of classes for attributes
    */
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class, ReportFormatConfig.class };
+    return new Class[] { String.class, FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class, ReportFormatConfig.class };
   }
 
   /**
@@ -170,7 +173,7 @@ public class Flare extends AbstractConfigurable
    * @return list of names for attributes
    */
   public String[] getAttributeNames() {
-    return new String[] { FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC, REPORT_FORMAT };
+    return new String[] { NAME, FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC, REPORT_FORMAT };
   }
 
   /**
@@ -178,7 +181,9 @@ public class Flare extends AbstractConfigurable
    * @return list of names for attributes
    */
   public String[] getAttributeDescriptions() {
-    return new String[] { Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
+    return new String[] {
+            Resources.getString("Editor.name_label"), //$NON-NLS-1$
+            Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
             Resources.getString("Editor.Flare.circle_size"), //$NON-NLS-1$
             Resources.getString("Editor.Flare.circle_color"), //$NON-NLS-1$
             Resources.getString("Editor.Flare.circle_scale"), //$NON-NLS-1$
@@ -195,7 +200,10 @@ public class Flare extends AbstractConfigurable
    * @return current the value of one of this component's attributes, in string form.
    */
   public String getAttributeValueString(final String key) {
-    if (FLARE_KEY.equals(key)) {
+    if (NAME.equals(key)) {
+      return getConfigureName();
+    }
+    else if (FLARE_KEY.equals(key)) {
       return flareKey;
     }
     else if (CIRCLE_SIZE.equals(key)) {
@@ -227,7 +235,10 @@ public class Flare extends AbstractConfigurable
    * @param value new value for attribute. Can pass either the Object itself or the String version.
    */
   public void setAttribute(String key, Object value) {
-    if (FLARE_KEY.equals(key)) {
+    if (NAME.equals(key)) {
+      setConfigureName((String) value);
+    }
+    else if (FLARE_KEY.equals(key)) {
       if (FLARE_ALT_LOCAL.equals(value)) {
         flareKey = FLARE_ALT;
       }
@@ -519,6 +530,7 @@ public class Flare extends AbstractConfigurable
     Command c = new NullCommand();
 
     // Set special properties for our reportFormat to use ($FlareLocation$, $FlareZone$, $FlareMap$)
+    reportFormat.setProperty(FLARE_NAME, getAttributeValueString(NAME));
     reportFormat.setProperty(FLARE_LOCATION, map.locationName(clickPoint));
     final Zone z = map.findZone(clickPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
