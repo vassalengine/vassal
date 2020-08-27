@@ -120,7 +120,7 @@ public class GameState implements CommandEncoder {
         loadGame();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
@@ -132,7 +132,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
@@ -144,7 +144,7 @@ public class GameState implements CommandEncoder {
         saveGameAs();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
 
@@ -157,7 +157,7 @@ public class GameState implements CommandEncoder {
         setup(true);
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
@@ -170,7 +170,7 @@ public class GameState implements CommandEncoder {
         setup(false);
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
@@ -354,7 +354,7 @@ public class GameState implements CommandEncoder {
   }
 
   private void adjustSplitter() {
-    // If there is a docked map, set the splitter to a reasaonable location
+    // If there is a docked map, set the splitter to a reasonable location
     final GameModule g = GameModule.getGameModule();
     for (VASSAL.build.module.Map m : g.getComponentsOf(VASSAL.build.module.Map.class)) {
       if (m.shouldDockIntoMainWindow()) {
@@ -913,7 +913,7 @@ public class GameState implements CommandEncoder {
    * Read a saved game and translate it into a Command.  Executing the
    * command will load the saved game.
    *
-   * @param saveFile Sqve file name
+   * @param saveFile Save file name
    * @return Command
    * @throws IOException I/O Exception
    */
