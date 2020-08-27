@@ -87,8 +87,14 @@ import VASSAL.tools.swing.Dialogs;
 
 
 /**
- * The GameState represents the state of the game currently being played.
- * Only one game can be open at once.
+ * The GameState contains methods to track and read/write the complete enumerated game state of the game
+ * currently being played. Its main methods deal with saving/loading games and starting/ending games: see
+ * {@link #saveGameAs()}, {@link #loadGame()}, {@link #setup(boolean)}. In each case, appropriate calls
+ * are made to designated methods in all relevant GameComponents. Can also be queried if a game is in progress
+ * {@link #isGameStarted()} and if the game state has been modified since the last save {@link #isModified()}.
+ *
+ * Only one game can be open at once in a single Player, or in a single Editor/Player pair.
+ *
  * @see GameModule#getGameState
  */
 public class GameState implements CommandEncoder {
