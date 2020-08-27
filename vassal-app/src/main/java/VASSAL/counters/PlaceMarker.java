@@ -419,7 +419,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
-      pieceInput.updateGpId(piece.gpidSupport);
+      pieceInput.setGpidSupport(piece.gpidSupport);
       pieceInput.setGpId(piece.getGpId());
       markerSlotPath = piece.markerSpec;
       p = new JPanel();
