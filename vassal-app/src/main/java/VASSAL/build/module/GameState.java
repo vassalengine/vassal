@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -751,7 +752,8 @@ public class GameState implements CommandEncoder {
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+           final BufferedOutputStream bout = new BufferedOutputStream(zout);
+           final OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
       (new SaveMetaData()).save(archive);
