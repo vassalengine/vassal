@@ -737,7 +737,7 @@ This section lists a variety of ways to enhance your Vassal experience.
 
 Many modules have _extensions_, which are add-on files that provide additional game play options. For example, an extension could include additional battle maps or optional units not included in the regular game. Generally, an extension is associated with a specific module and is not useable with other modules.
 
-Like modules, extensions are not specific to any operating system. A module extension for Vassal 3.1 usually has the suffix .vmdx, although some older extensions have the suffix .mdx or even .zip.
+Like modules, extensions are not specific to any operating system. A module extension for Vassal 3.1 usually has the suffix .vext, although some older extensions have the suffix .mdx or even .zip.
 
 === Activating and Deactivating Extensions
 
@@ -746,7 +746,7 @@ Extensions need to be _activated_ in order to be loaded with a module. Once acti
 To activate an extension:
 
 . In Module Manager, right-click on the module that the extension is for, and select *Add Extension.*
-. Browse to the extension file and click *Open*. The extension is now listed in the Module Manager under the name of the module. A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located. When Vassal loads the module, any extensions in this directory are also loaded. (For example, for the module WorldWarII, upon activating the extension IwoJima.vmdx, the extension is placed in the directory WorldWarII_ext.)
+. Browse to the extension file and click *Open*. The extension is now listed in the Module Manager under the name of the module. A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located. When Vassal loads the module, any extensions in this directory are also loaded. (For example, for the module WorldWarII, upon activating the extension IwoJima.vext, the extension is placed in the directory WorldWarII_ext.)
 
 You can _deactivate_ an extension if you do not wish it to be loaded with the base module.
 
