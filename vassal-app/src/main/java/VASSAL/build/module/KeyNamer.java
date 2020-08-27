@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2020 VassalEngine.org  Brian Reynolds
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -90,19 +92,19 @@ public class KeyNamer implements Buildable {
     }
 
     final int mods = SwingUtils.genericToSystem(k).getModifiers();
-    if ((mods & KeyEvent.SHIFT_DOWN_MASK) > 0) {
+    if ((mods & KeyEvent.SHIFT_DOWN_MASK) != 0) {
       sb.insert(0, "+"); //$NON-NLS-1$
       sb.insert(0, Resources.getString("Keys.shift")); //$NON-NLS-1$
     }
-    if ((mods & KeyEvent.CTRL_DOWN_MASK) > 0) {
+    if ((mods & KeyEvent.CTRL_DOWN_MASK) != 0) {
       sb.insert(0, "+"); //$NON-NLS-1$
       sb.insert(0, Resources.getString("Keys.ctrl")); //$NON-NLS-1$
     }
-    if ((mods & KeyEvent.META_DOWN_MASK) > 0) {  // This is "Command" key on Mac
+    if ((mods & KeyEvent.META_DOWN_MASK) != 0) {  // This is "Command" key on Mac
       sb.insert(0, "+"); //$NON-NLS-1$
       sb.insert(0, Resources.getString("Keys.meta")); //$NON-NLS-1$
     }
-    if ((mods & KeyEvent.ALT_DOWN_MASK) > 0) {
+    if ((mods & KeyEvent.ALT_DOWN_MASK) != 0) {
       sb.insert(0, "+"); //$NON-NLS-1$
       sb.insert(0, Resources.getString("Keys.alt")); //$NON-NLS-1$
     }

@@ -27,11 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import org.apache.commons.lang3.StringUtils;
-
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.KeyNamer;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
