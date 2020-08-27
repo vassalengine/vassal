@@ -641,7 +641,8 @@ public class GameState implements CommandEncoder {
     String msg;  
     if (loadComments != null && loadComments.length() > 0) {
       msg = "!" + Resources.getString("GameState.loaded", f.getName()) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
-    } else {
+    }
+    else {
       msg = Resources.getString("GameState.loaded", f.getName()); //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
@@ -753,8 +754,8 @@ public class GameState implements CommandEncoder {
     SaveMetaData metaData = null;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
-    final String save = saveString();
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+    final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
            final OutputStream out = new ObfuscatingOutputStream(zout)) {
@@ -817,7 +818,8 @@ public class GameState implements CommandEncoder {
             if (loadCommand != null) {
               if (loadComments != null && loadComments.length() > 0) {
                 msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
-              } else {
+              }
+              else {
                 msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
               }
             }
