@@ -555,31 +555,30 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public Shape getShape() {
     Shape innerShape = piece.getShape();
 
-    // If the label has a Control key, then the image of the label is NOT included in the selectable area of the
-    // counter
-    if (! labelKey.isNull()) {
+    // If the label has a Control key, then the image of the label is NOT
+    // included in the selectable area of the counter
+    if (!labelKey.isNull()) {
       return innerShape;
     }
-    else {
-      final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
 
-      // If the label is completely enclosed in the current counter shape, then we can just return
-      // the current shape
-      if (innerShape.contains(r.x, r.y, r.width, r.height)) {
-        return innerShape;
-      }
-      else {
-        final Area a = new Area(innerShape);
+    final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
 
-        // Cache the Area object generated. Only recreate if the label position or size has changed
-        if (!r.equals(lastRect)) {
-          lastShape = new Area(r);
-          lastRect = new Rectangle(r);
-        }
-        a.add(lastShape);
-        return a;
-      }
+    // If the label is completely enclosed in the current counter shape,
+    // then we can just return the current shape
+    if (innerShape.contains(r.x, r.y, r.width, r.height)) {
+      return innerShape;
     }
+
+    final Area a = new Area(innerShape);
+
+    // Cache the Area object generated. Only recreate if the label position
+    // or size has changed
+    if (!r.equals(lastRect)) {
+      lastShape = new Area(r);
+      lastRect = new Rectangle(r);
+    }
+    a.add(lastShape);
+    return a;
   }
 
   @Override
