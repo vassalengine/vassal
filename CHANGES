@@ -1,5 +1,8 @@
 3.5.0-beta1 - ???
 
+* 13219: Added KeyNamer for overriding key names
+* 12946: Prevent top level required components from being deleted in Editor
+
 3.4.0 - ???
 
 * 13217: Editor: Additional fix for cut-and-paste
