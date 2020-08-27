@@ -78,7 +78,6 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
-import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
@@ -507,7 +506,7 @@ public class GameState implements CommandEncoder {
 
   /** Saves the game to an existing file, or prompts for a new one. */
   public void saveGame() {
-    final GameModule g = GameModule.getGameModule();
+    //final GameModule g = GameModule.getGameModule();
 
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
@@ -751,7 +750,7 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    SaveMetaData metaData = null;
+    SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
@@ -768,14 +767,12 @@ public class GameState implements CommandEncoder {
     Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
-    String msg = null;
-    if (metaData != null) {
-      String saveComments = metaData.getLocalizedDescription();
-      if (!StringUtils.isEmpty(saveComments)) {
-        msg = "!" + Resources.getString("GameState.game_saved") + ": <b>" + saveComments + "</b>"; //$NON-NLS-1$
-      }
+    String msg;
+    String saveComments = metaData.getLocalizedDescription();
+    if (!StringUtils.isEmpty(saveComments)) {
+      msg = "!" + Resources.getString("GameState.game_saved") + ": <b>" + saveComments + "</b>"; //$NON-NLS-1$
     }
-    if (msg == null) {
+    else {
       msg = Resources.getString("GameState.game_saved"); //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
