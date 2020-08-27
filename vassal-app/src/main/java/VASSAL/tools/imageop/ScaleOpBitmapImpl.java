@@ -142,15 +142,15 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final Rectangle sr =
         new Rectangle(0, 0,
-          (int)(sop.getWidth()*scale),
-          (int)(sop.getHeight()*scale));
+          (int)(sop.getWidth() * scale),
+          (int)(sop.getHeight() * scale));
 
-      dx0 = tileX*rop.getTileWidth();
-      dy0 = tileY*rop.getTileHeight();
+      dx0 = tileX * rop.getTileWidth();
+      dy0 = tileY * rop.getTileHeight();
       dw = Math.min(rop.getTileWidth(), sr.width - dx0);
       dh = Math.min(rop.getTileHeight(), sr.height - dy0);
 
-      size = new Dimension(dw,dh);
+      size = new Dimension(dw, dh);
 
       hash = new HashCodeBuilder().append(sop)
                                   .append(dx0)
@@ -174,8 +174,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       final Rectangle sr =
         new Rectangle(0, 0,
-          (int)(sop.getWidth()*scale),
-          (int)(sop.getHeight()*scale));
+          (int)(sop.getWidth() * scale),
+          (int)(sop.getHeight() * scale));
 
       final WritableRaster dstR = src.getColorModel()
                                      .createCompatibleWritableRaster(dw, dh)
@@ -185,7 +185,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       return ImageUtils.toCompatibleImage(new BufferedImage(
         src.getColorModel(),
-        dstR.createWritableTranslatedChild(0,0),
+        dstR.createWritableTranslatedChild(0, 0),
         src.isAlphaPremultiplied(),
         null
       ));

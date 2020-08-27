@@ -24,7 +24,7 @@ import VASSAL.command.Command;
  */
 public interface ServerConnection {
   /** Name of the property fired when the connection is opened/clused. Value is Boolean.TRUE or Boolean.FALSE */
-  public static final String CONNECTED = "Connected"; //$NON-NLS-1$
+  String CONNECTED = "Connected"; //$NON-NLS-1$
 
   /** Send a command to other players on the server */
   void sendToOthers(Command c);

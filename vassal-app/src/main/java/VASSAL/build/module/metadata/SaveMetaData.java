@@ -59,9 +59,9 @@ public class SaveMetaData extends AbstractMetaData {
     super();
 
     String comments = "";
-    if ( (Boolean)GameModule.getGameModule().getPrefs().getValue( PROMPT_LOG_COMMENT )){
+    if ((Boolean)GameModule.getGameModule().getPrefs().getValue(PROMPT_LOG_COMMENT)) {
       comments = (String) JOptionPane.showInputDialog(
-        GameModule.getGameModule().getFrame(),
+        GameModule.getGameModule().getPlayerWindow(),
         Resources.getString("BasicLogger.enter_comments"),
         Resources.getString("BasicLogger.log_file_comments"),
         JOptionPane.PLAIN_MESSAGE,

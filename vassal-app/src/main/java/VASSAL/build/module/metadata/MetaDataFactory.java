@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -84,7 +85,7 @@ public class MetaDataFactory {
 
       // read the first few lines of the buildFile
       try (InputStream zin = zip.getInputStream(buildFileEntry);
-           InputStreamReader isr = new InputStreamReader(zin);
+           InputStreamReader isr = new InputStreamReader(zin, StandardCharsets.UTF_8);
            BufferedReader br = new BufferedReader(isr)) {
         for (int i = 0; i < 10; i++) {
           final String s = br.readLine();

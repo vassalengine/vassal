@@ -36,7 +36,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
 
   protected List<ZoneHighlight> highlightList;
   protected String currentColorName;
-  protected Color currentColor ;
+  protected Color currentColor;
 
   public ZonedGridHighlighter() {
     highlightList = new ArrayList<>();
@@ -95,7 +95,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.htm","ZoneHighlighter");
+    return HelpFile.getReferenceManualPage("ZonedGrid.htm", "ZoneHighlighter");
   }
 
   @Override

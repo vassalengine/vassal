@@ -17,8 +17,8 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,14 +54,14 @@ import VASSAL.tools.NamedKeyStroke;
  * result in the Chatter */
 public class DiceButton extends AbstractConfigurable {
   protected java.util.Random ran;
-  protected int nSides = 6, nDice = 2, plus = 0, addToTotal=0;
+  protected int nSides = 6, nDice = 2, plus = 0, addToTotal = 0;
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
-  protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
   protected LaunchButton launch;
   protected String tooltip = ""; //$NON-NLS-1$
-  protected MutableProperty.Impl property = new Impl("",this);
+  protected final MutableProperty.Impl property = new Impl("", this);
 
   public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
@@ -87,46 +87,43 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   protected void initLaunchButton() {
-    final ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (promptAlways) {
-          final DiceButton delegate = new DiceButton() {
-            @Override
-            protected void initLaunchButton() {
-              launch = new LaunchButton(null,BUTTON_TEXT,HOTKEY,null);
-            }
-          };
-
-          final List<String> keepAttributes =
-            Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
-
-          for (String key : keepAttributes) {
-            delegate.setAttribute(key, getAttributeValueString(key));
+    final ActionListener rollAction = e -> {
+      if (promptAlways) {
+        final DiceButton delegate = new DiceButton() {
+          @Override
+          protected void initLaunchButton() {
+            launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, null);
           }
+        };
 
-          final AutoConfigurer ac = new AutoConfigurer(delegate);
-          final ConfigurerWindow w = new ConfigurerWindow(ac, true);
-          for (String key : getAttributeNames()) {
-            if (!keepAttributes.contains(key)) {
-              final Component controls = ac.getConfigurer(key).getControls();
-              controls.getParent().remove(controls);
-            }
-          }
-          w.pack();
-          w.setLocationRelativeTo(launch.getTopLevelAncestor());
-          w.setVisible(true);
+        final List<String> keepAttributes =
+          Arrays.asList(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL);
 
-          for (String key : keepAttributes) {
-            setAttribute(key, delegate.getAttributeValueString(key));
-          }
-          if (! w.isCancelled()) {
-            DR();
+        for (String key : keepAttributes) {
+          delegate.setAttribute(key, getAttributeValueString(key));
+        }
+
+        final AutoConfigurer ac = new AutoConfigurer(delegate);
+        final ConfigurerWindow w = new ConfigurerWindow(ac, true);
+        for (String key : getAttributeNames()) {
+          if (!keepAttributes.contains(key)) {
+            final Component controls = ac.getConfigurer(key).getControls();
+            controls.getParent().remove(controls);
           }
         }
-        else {
+        w.pack();
+        w.setLocationRelativeTo(launch.getTopLevelAncestor());
+        w.setVisible(true);
+
+        for (String key : keepAttributes) {
+          setAttribute(key, delegate.getAttributeValueString(key));
+        }
+        if (! w.isCancelled()) {
           DR();
         }
+      }
+      else {
+        DR();
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
@@ -137,6 +134,27 @@ public class DiceButton extends AbstractConfigurable {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DiceButton.component_type"); //$NON-NLS-1$
+  }
+
+  /**
+   * The text reported before the results of the roll
+   * @deprecated No Replacement
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected String getReportPrefix() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  /**
+   * The text reported after the results of the roll;
+   * @deprecated No Replacement
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected String getReportSuffix() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return " ***  <" //$NON-NLS-1$
+        + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
   }
 
   /**
@@ -181,7 +199,7 @@ public class DiceButton extends AbstractConfigurable {
     }
 
     String report = formatResult(val.toString());
-    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
+    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
     c.append(property.setPropertyValue(val.toString()));
     GameModule.getGameModule().sendAndLog(c);
@@ -189,8 +207,8 @@ public class DiceButton extends AbstractConfigurable {
 
   /**
    * Use the configured FormattedString to format the result of a roll
-   * @param result
-   * @return
+   * @param result Result format
+   * @return Formatted result
    */
   protected String formatResult(String result) {
     reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
@@ -278,19 +296,9 @@ public class DiceButton extends AbstractConfigurable {
     };
   }
 
-  private final VisibilityCondition cond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !promptAlways;
-    }
-  };
+  private final VisibilityCondition cond = () -> !promptAlways;
 
-  private final VisibilityCondition canSort = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !reportTotal;
-    }
-  };
+  private final VisibilityCondition canSort = () -> !reportTotal;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -332,7 +340,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName()+"_result"); //$NON-NLS-1$
+      property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
       launch.setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
@@ -453,7 +461,7 @@ public class DiceButton extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.htm", "DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
@@ -462,7 +470,7 @@ public class DiceButton extends AbstractConfigurable {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName()+"_result");
+    l.add(getConfigureName() + "_result");
     return l;
   }
 }

@@ -32,7 +32,7 @@ import VASSAL.tools.lang.Pair;
  * @since 3.1.11
  */
 public abstract class RangedRunnable<T> implements Runnable {
-  protected Pair<T,T> range;
+  protected Pair<T, T> range;
   protected boolean submitted = false;
 
   /**
@@ -83,7 +83,7 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * @param r the range to process
    */
-  protected abstract void run(Pair<T,T> r);
+  protected abstract void run(Pair<T, T> r);
 
   /**
    * Returns the old range and creates a new range adjacent to the old one.
@@ -91,8 +91,8 @@ public abstract class RangedRunnable<T> implements Runnable {
    *
    * @return the range being flushed
    */
-  private synchronized Pair<T,T> flush() {
-    final Pair<T,T> flushed = range;
+  private synchronized Pair<T, T> flush() {
+    final Pair<T, T> flushed = range;
     range = new Pair<>(flushed.second, null);
     submitted = false;
     return flushed;

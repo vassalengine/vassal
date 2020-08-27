@@ -32,7 +32,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import VASSAL.build.widget.HtmlChart;
-import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 
@@ -78,10 +77,10 @@ public class HTMLWindowHelper implements HyperlinkListener {
     ScrollPane s = new ScrollPane(pane);
     final Font f = new JLabel().getFont();
     FontMetrics fm = w.getFontMetrics(f);
-    s.getVerticalScrollBar().setUnitIncrement(fm.getHeight()*3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
+    s.getVerticalScrollBar().setUnitIncrement(fm.getHeight() * 3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     w.add(s);
     update(contents);
-    w.pack();    
+    w.pack();
 
     final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     int width = Math.max(d.width / 2, w.getSize().width);

@@ -24,6 +24,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,10 +48,10 @@ import java.util.concurrent.ConcurrentMap;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
-                                        implements ConcurrentMap<K,V> {
+public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
+                                        implements ConcurrentMap<K, V> {
 
-  private static final class SoftValue<K,V> extends SoftReference<V> {
+  private static final class SoftValue<K, V> extends SoftReference<V> {
     private final K key;
 
     private SoftValue(K key, V value, ReferenceQueue<V> queue) {
@@ -63,29 +64,28 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       if (this == o) return true;
       if (o == null || o.getClass() != this.getClass()) return false;
       final SoftValue<?, ?> sv = (SoftValue<?, ?>) o;
-      return key.equals(sv.key) &&
-             get() == null ? sv.get() == null : get().equals(sv.get());
+      return key.equals(sv.key) && Objects.equals(get(), sv.get());
     }
 
     @Override
     public int hashCode() {
-      return get() == null ? 0 : get().hashCode();
+      return Objects.hashCode(get());
     }
   }
 
-  private final ConcurrentMap<K,SoftValue<K,V>> map =
+  private final ConcurrentMap<K, SoftValue<K, V>> map =
     new ConcurrentHashMap<>();
 
   private final ReferenceQueue<V> queue = new ReferenceQueue<>();
 
   @SuppressWarnings("unchecked")
   private void processQueue() {
-    SoftValue<K,V> sv;
+    SoftValue<K, V> sv;
     // The ReferenceQueue API is broken. ReferenceQueue<T>.poll()
     // returns a Reference<? extends T>. WTF? How could you ever use
     // this without having to cast back to the kind of Reference
     // you put in?
-    while ((sv = (SoftValue<K,V>) queue.poll()) != null) {
+    while ((sv = (SoftValue<K, V>) queue.poll()) != null) {
       map.remove(sv.key, sv);
 //      System.out.println("Hasta la vista, " + sv.key + ".");
     }
@@ -117,7 +117,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     if (key == null)
       throw new NullPointerException();
 
-    final SoftValue<K,V> sv = map.get(key);
+    final SoftValue<K, V> sv = map.get(key);
     if (sv != null) {
       final V value = sv.get();
       if (value == null) {
@@ -139,7 +139,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       throw new NullPointerException();
 
     processQueue();
-    final SoftValue<K,V> oldSV =
+    final SoftValue<K, V> oldSV =
       map.put(key, new SoftValue<>(key, value, queue));
     return oldSV == null ? null : oldSV.get();
   }
@@ -151,7 +151,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       throw new NullPointerException();
 
     processQueue();
-    final SoftValue<K,V> oldSV = map.remove(key);
+    final SoftValue<K, V> oldSV = map.remove(key);
     return oldSV == null ? null : oldSV.get();
   }
 
@@ -166,13 +166,13 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
   // Views
 
-  private Set<Map.Entry<K,V>> entrySet;
+  private Set<Map.Entry<K, V>> entrySet;
 
   /**
    * An implementation of {@link Map.Entry}. Remove this and use
    * {@link AbstractMap.SimpleEntry} with 1.6+.
    */
-  public static class SimpleEntry<K,V> implements Entry<K,V> {
+  public static class SimpleEntry<K, V> implements Entry<K, V> {
     private final K key;
     private V value;
 
@@ -205,13 +205,12 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
 
     public boolean equals(Object o) {
       if (!(o instanceof Map.Entry)) return false;
-      Map.Entry<?,?> e = (Map.Entry<?,?>) o;
+      Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
       return eq(key, e.getKey()) && eq(value, e.getValue());
     }
 
     public int hashCode() {
-      return (key   == null ? 0 :   key.hashCode()) ^
-             (value == null ? 0 : value.hashCode());
+      return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 
     public String toString() {
@@ -280,7 +279,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       throw new NullPointerException();
 
     processQueue();
-    final SoftValue<K,V> oldSV =
+    final SoftValue<K, V> oldSV =
       map.putIfAbsent(key, new SoftValue<>(key, value, queue));
     return oldSV == null ? null : oldSV.get();
   }
@@ -322,7 +321,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
       throw new NullPointerException();
 
     processQueue();
-    final SoftValue<K,V> oldSV =
+    final SoftValue<K, V> oldSV =
       map.replace(key, new SoftValue<>(key, value, queue));
     return oldSV == null ? null : oldSV.get();
   }

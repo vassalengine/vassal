@@ -21,8 +21,6 @@ package VASSAL.build.module.turn;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +64,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   protected boolean subLevelRolledOver = false;
   protected boolean rolledOver = false;
-  protected MutableProperty.Impl myValue = new MutableProperty.Impl("",this); //$NON-NLS-1$
+  protected MutableProperty.Impl myValue = new MutableProperty.Impl("", this); //$NON-NLS-1$
 
   protected FormattedString turnFormat;
 
@@ -87,12 +85,12 @@ public abstract class TurnLevel extends TurnComponent {
 
   public void findMaximumStrings(List<String> levels, int currentLevel) {
     String s = getLongestFormattedValue();
-    if (levels.size() < (currentLevel+1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
+    if (levels.size() < (currentLevel + 1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
       levels.add(currentLevel, s);
     }
     for (Buildable b : getBuildables()) {
       if (b instanceof TurnLevel) {
-        ((TurnLevel) b).findMaximumStrings(levels, currentLevel+1);
+        ((TurnLevel) b).findMaximumStrings(levels, currentLevel + 1);
       }
     }
   }
@@ -220,15 +218,12 @@ public abstract class TurnLevel extends TurnComponent {
       }
       StringEnumConfigurer e = new StringEnumConfigurer(null, " Select:  ", s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
-      e.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          String option = ((StringEnumConfigurer) e.getSource()).getValueString();
-          for (int i = 0; i < getTurnLevelCount(); i++) {
-            if (option.equals(getTurnLevel(i).getConfigureName())) {
-              currentSubLevel = i;
-              addChildControls();
-            }
+      e.addPropertyChangeListener(e1 -> {
+        String option = ((StringEnumConfigurer) e1.getSource()).getValueString();
+        for (int i = 0; i < getTurnLevelCount(); i++) {
+          if (option.equals(getTurnLevel(i).getConfigureName())) {
+            currentSubLevel = i;
+            addChildControls();
           }
         }
       });

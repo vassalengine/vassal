@@ -43,7 +43,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import VASSAL.tools.IteratorUtils;
 import org.apache.commons.io.FileUtils;
 
 import VASSAL.Info;
@@ -75,7 +74,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private final Map<String,Entry> entries = new HashMap<>();
+  private final Map<String, Entry> entries = new HashMap<>();
 
   private final ReadWriteLock rwl = new CountingReadWriteLock();
   private final Lock r = rwl.readLock();
@@ -452,7 +451,9 @@ public class ZipArchive implements FileArchive {
 
     // Replace old archive with temp archive.
     try {
-      FileUtils.forceDelete(archiveFile);
+      if (archiveFile.exists()) {
+        FileUtils.forceDelete(archiveFile);
+      }
       FileUtils.moveFile(tmpFile, archiveFile);
     }
     catch (IOException e) {
@@ -575,9 +576,7 @@ public class ZipArchive implements FileArchive {
 
     if (archiveFile.exists() && archiveFile.length() > 0) {
       zipFile = new ZipFile(archiveFile);
-      for (ZipEntry e : IteratorUtils.iterate(zipFile.entries().asIterator())) {
-        entries.put(e.getName(), new Entry(e, null));
-      }
+      zipFile.stream().forEach(e -> entries.put(e.getName(), new Entry(e, null)));
     }
   }
 

@@ -97,7 +97,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
   private void buildHistoricalTabs() {
     while (getTabCount() > 1) {
-      removeTabAt(getTabCount()-1);
+      removeTabAt(getTabCount() - 1);
     }
     if (status != null) {
       String[] supported = status.getSupportedTimeRanges();
@@ -157,7 +157,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       path = treeCurrent.getSelectionPath();
       break;
     default:
-      path = historicalTrees[sel-1].getSelectionPath();
+      path = historicalTrees[sel - 1].getSelectionPath();
       break;
     }
     if (path != null) {
@@ -173,8 +173,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     refresh(0);
   }
 
-  private SwingWorker<ServerStatus.ModuleSummary[],Void> cur_request = null;
-  private SwingWorker<ServerStatus.ModuleSummary[],Void> hist_request = null;
+  private SwingWorker<ServerStatus.ModuleSummary[], Void> cur_request = null;
+  private SwingWorker<ServerStatus.ModuleSummary[], Void> hist_request = null;
 
   private void refresh(final int page) {
     if (page == 0) {

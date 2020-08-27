@@ -124,7 +124,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected boolean isUpdating;
 
   protected String state;
-  protected Map<String,Object> properties = new HashMap<>();
+  protected Map<String, Object> properties = new HashMap<>();
   protected List<JComponent> m_fields;
 
 
@@ -376,7 +376,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           }
         }
         else {
-          parent = GameModule.getGameModule().getFrame();
+          parent = GameModule.getGameModule().getPlayerWindow();
         }
 
         frame = new PropertySheetDialog(parent);
@@ -565,7 +565,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
 
         // move window
-        Point p = GameModule.getGameModule().getFrame().getLocation();
+        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
           Point p2 = getMap().mapToComponent(getPosition());
@@ -880,8 +880,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       items.add(item.length() == 0 ? "" : item.substring(1));
     }
 
-    final String[] menuNames = new String[items.size()+1];
-    final String[] descriptions = new String[items.size()+1];
+    final String[] menuNames = new String[items.size() + 1];
+    final String[] descriptions = new String[items.size() + 1];
     menuNames[0]  = menuName;
     descriptions[0] = "Property Sheet command";
     int j = 1;

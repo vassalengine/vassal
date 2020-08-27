@@ -27,19 +27,19 @@ import VASSAL.command.Command;
   */
 public interface ChatServerConnection extends ServerConnection {
   /** Property representing the currently-occupied room */
-  public static final String ROOM = "Room"; //$NON-NLS-1$
+  String ROOM = "Room"; //$NON-NLS-1$
   /** Property representing the list of all rooms */
-  public static final String AVAILABLE_ROOMS = "AvailableRooms"; //$NON-NLS-1$
+  String AVAILABLE_ROOMS = "AvailableRooms"; //$NON-NLS-1$
   /** Property representing an informational message (e.g. "Connection succeeded")*/
-  public static final String STATUS = "Status"; //$NON-NLS-1$
+  String STATUS = "Status"; //$NON-NLS-1$
   /** Property representing the current player's information */
-  public static final String PLAYER_INFO = "Player"; //$NON-NLS-1$
+  String PLAYER_INFO = "Player"; //$NON-NLS-1$
   /** Property representing a message received from the remove server */
-  public static final String INCOMING_MSG = "Msg"; //$NON-NLS-1$
+  String INCOMING_MSG = "Msg"; //$NON-NLS-1$
   /** Property representing the StatusServer implementation */
-  public static final String STATUS_SERVER = "StatusServer"; //$NON-NLS-1$
+  String STATUS_SERVER = "StatusServer"; //$NON-NLS-1$
 
-  public static final String DEFAULT_ROOM_NAME = "Main Room"; //$NON-NLS-1$
+  String DEFAULT_ROOM_NAME = "Main Room"; //$NON-NLS-1$
 
 
   /** Return the room currently occupied by the player */

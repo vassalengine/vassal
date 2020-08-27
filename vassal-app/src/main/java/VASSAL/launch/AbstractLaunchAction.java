@@ -110,7 +110,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   protected static final Set<File> editing =
     Collections.synchronizedSet(new HashSet<>());
-  protected static final Map<File,Integer> using =
+  protected static final Map<File, Integer> using =
     Collections.synchronizedMap(new HashMap<>());
 
 /*
@@ -236,7 +236,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     fc.addChoosableFileFilter(new ModuleFileFilter());
   }
 
-  protected class LaunchTask extends SwingWorker<Void,Void> {
+  protected class LaunchTask extends SwingWorker<Void, Void> {
     protected final int id = nextId.getAndIncrement();
 
     // lr might be modified before the task is over, keep a local copy
@@ -417,61 +417,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final InetAddress lo = InetAddress.getByName(null);
       serverSocket = new ServerSocket(0, 0, lo);
 
-      final int port = serverSocket.getLocalPort();
-
-      // build the argument list
-      final ArrayList<String> al = new ArrayList<>();
-      al.add(Info.javaBinPath);
-      al.add("");   // reserved for initial heap
-      al.add("");   // reserved for maximum heap
-      al.add("-DVASSAL.id=" + id);  // instance id
-      al.add("-DVASSAL.port=" + port); // MM socket port
-
-      // pass on the user's home, if it's set
-      final String userHome = System.getProperty("user.home");
-      if (userHome != null) al.add("-Duser.home=" + userHome);
-
-      // pass on the user's working dir, if it's set
-      final String userDir = System.getProperty("user.dir");
-      if (userDir != null) al.add("-Duser.dir=" + userDir);
-
-      // pass on VASSAL's home dir, if it's set
-      final String vHome = System.getProperty("VASSAL.home");
-      if (vHome != null) al.add("-DVASSAL.home=" + vHome);
-
-      // set the classpath
-      al.add("-cp");
-      al.add(System.getProperty("java.class.path"));
-
-      if (SystemUtils.IS_OS_MAC_OSX) {
-        // set the MacOS X dock parameters
-
-        // use the module name for the dock if we found a module name
-// FIXME: should "Unnamed module" be localized?
-        final String d_name = moduleName != null && moduleName.length() > 0
-          ? moduleName : "Unnamed module";
-
-        // get the path to the app icon
-        final String d_icon = new File(Info.getBaseDir(),
-          "Contents/Resources/VASSAL.icns").getAbsolutePath();
-
-        al.add("-Xdock:name=" + d_name);
-        al.add("-Xdock:icon=" + d_icon);
-      }
-      else if (SystemUtils.IS_OS_WINDOWS) {
-        // Disable the 2D to Direct3D pipeline?
-        final Boolean disableD3d =
-          (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
-        if (Boolean.TRUE.equals(disableD3d)) {
-          al.add("-Dsun.java2d.d3d=false");
-        }
-      }
-
-      al.add(entryPoint);
-
-      al.addAll(Arrays.asList(lr.toArgs()));
-
-      final String[] args = al.toArray(new String[0]);
+      final List<String> argumentList = buildArgumentList(moduleName);
+      final String[] args = argumentList.toArray(new String[0]);
 
       // try to start a child process with the given heap sizes
       args[1] = "-Xms" + initialHeap + "M";
@@ -637,7 +584,70 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         children.remove(ipc);
       }
     }
+
+    private List<String> buildArgumentList(String moduleName) {
+      final List<String> result = new ArrayList<>();
+
+      final int port = serverSocket.getLocalPort();
+
+      result.add(Info.javaBinPath);
+      result.add("");   // reserved for initial heap
+      result.add("");   // reserved for maximum heap
+
+      result.addAll(new CustomVmOptions().getCustomVmOptions());
+
+      result.add("-DVASSAL.id=" + id);  // instance id
+      result.add("-DVASSAL.port=" + port); // MM socket port
+
+      // pass on the user's home, if it's set
+      final String userHome = System.getProperty("user.home");
+      if (userHome != null) result.add("-Duser.home=" + userHome);
+
+      // pass on the user's working dir, if it's set
+      final String userDir = System.getProperty("user.dir");
+      if (userDir != null) result.add("-Duser.dir=" + userDir);
+
+      // pass on VASSAL's home dir, if it's set
+      final String vHome = System.getProperty("VASSAL.home");
+      if (vHome != null) result.add("-DVASSAL.home=" + vHome);
+
+      // set the classpath
+      result.add("-cp");
+      result.add(System.getProperty("java.class.path"));
+
+      if (SystemUtils.IS_OS_MAC_OSX) {
+        // set the MacOS X dock parameters
+
+        // use the module name for the dock if we found a module name
+// FIXME: should "Unnamed module" be localized?
+        final String d_name = moduleName != null && moduleName.length() > 0
+          ? moduleName : "Unnamed module";
+
+        // get the path to the app icon
+        final String d_icon = new File(Info.getBaseDir(),
+          "Contents/Resources/VASSAL.icns").getAbsolutePath();
+
+        result.add("-Xdock:name=" + d_name);
+        result.add("-Xdock:icon=" + d_icon);
+      }
+      else if (SystemUtils.IS_OS_WINDOWS) {
+        // Disable the 2D to Direct3D pipeline?
+        final Boolean disableD3d =
+          (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
+        if (Boolean.TRUE.equals(disableD3d)) {
+          result.add("-Dsun.java2d.d3d=false");
+        }
+      }
+
+      result.add(entryPoint);
+
+      result.addAll(Arrays.asList(lr.toArgs()));
+
+      return result;
+    }
+
   }
+
 
   //
   // Commands

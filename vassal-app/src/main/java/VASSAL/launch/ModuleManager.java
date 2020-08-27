@@ -35,6 +35,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -261,7 +263,7 @@ public class ModuleManager {
     start.startErrorLog();
 
     // log everything which comes across our stderr
-    System.setErr(new PrintStream(new LoggedOutputStream(), true));
+    System.setErr(new PrintStream(new LoggedOutputStream(), true, Charset.defaultCharset()));
 
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
@@ -304,6 +306,8 @@ public class ModuleManager {
 
     if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
+
+    new CustomVmOptions().ensureCustomVmOptionsFileExistsInConfDir();
 
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -395,7 +399,7 @@ public class ModuleManager {
             if (message == null || clientSocket.isClosed()) continue;
 
             try (PrintStream out = new PrintStream(
-              new BufferedOutputStream(clientSocket.getOutputStream()))) {
+              new BufferedOutputStream(clientSocket.getOutputStream()), true, StandardCharsets.UTF_8)) {
 
               out.println(message);
             }

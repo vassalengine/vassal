@@ -1,7 +1,9 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
+import java.util.Arrays;
 
+import javax.swing.AbstractButton;
 import javax.swing.JMenuItem;
 
 import VASSAL.build.GameModule;
@@ -49,7 +51,7 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     try {
       RecursionLimiter.startExecution(this);
 
-      for (int i=0,n=menu.getComponentCount();i<n;++i) {
+      for (int i = 0, n = menu.getComponentCount(); i < n; ++i) {
         Component c = menu.getComponent(i);
         if (c instanceof JMenuItem) {
           ((JMenuItem)c).doClick();

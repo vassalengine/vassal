@@ -38,28 +38,33 @@ SHELL:=/bin/bash
 
 LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
-DOCDIR:=doc
+DOCDIR:=vassal-doc/target
 DISTDIR:=dist
 JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
-VNUM:=3.3.3
+# numeric part of the version only
+VNUM:=3.5.0
+
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-alpha1
+#MAVEN_VERSION:=$(VNUM)-beta1
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
 GITBRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT:=$(shell git rev-parse --short HEAD)
 
-ifeq ($(shell git describe --tags), $(VNUM))
+ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
   # we are at a release tag
   VERSION:=$(MAVEN_VERSION)
 else ifeq ($(GITBRANCH), master)
   # we are somewhere else on master
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
+else ifeq ($(GITBRANCH), release-$(VNUM))
+  # we are on a release branch
+  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
-  # we are on some branch
+  # we are on some other branch
   VERSION:=$(MAVEN_VERSION)-$(GITBRANCH)-$(GITCOMMIT)
 endif
 
@@ -76,10 +81,16 @@ DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 NSIS:=makensis
 LAUNCH4J:=~/java/launch4j/launch4j
 
+SKIPS:=
+
+jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true
+jar: $(LIBDIR)/Vengine.jar
+
 compile:
 	$(MVN) compile
 
-jar: $(LIBDIR)/Vengine.jar
+version-set:
+	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
 
 test:
 	$(MVN) test
@@ -87,9 +98,8 @@ test:
 $(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
-$(LIBDIR)/Vengine.jar:
-	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
-	$(MVN) deploy -DgitVersion=$(VERSION)
+$(LIBDIR)/Vengine.jar: version-set
+	$(MVN) deploy -DgitVersion=$(VERSION) $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
@@ -123,7 +133,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	cp $(DISTDIR)/macosx/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
-	cp -a CHANGES LICENSE README $@/Contents/Resources/doc
+	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app
@@ -150,7 +160,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncom
 $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
-	cp -a CHANGES LICENSE README $@
+	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
 	cp $(DISTDIR)/VASSAL.sh $(DISTDIR)/windows/VASSAL.bat $@
 	find $@ -type f -exec chmod 644 \{\} \+
@@ -167,7 +177,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: $(TMPDIR)/VASSAL-$(VERSION)-other/VASSAL-
 $(TMPDIR)/VASSAL-$(VERSION)-linux/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	mkdir -p $@
 	cp -a $(DOCDIR) $@/doc
-	cp -a CHANGES LICENSE README $@
+	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
 	cp $(DISTDIR)/linux/VASSAL.sh $@
 	find $@ -type f -exec chmod 644 \{\} \+
@@ -192,7 +202,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $
 	cp $(TMPDIR)/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
 	cp -a LICENSE $@/LICENSE.txt
-	cp -a README $@/README.txt
+	cp -a README.md $@
 	cp -a $(DOCDIR) $@/doc
 	cp -a $(LIBDIR) $@/lib
 	find $@ -type f -exec chmod 644 \{\} \+
@@ -223,18 +233,17 @@ release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(V
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean jar release-other release-linux release-windows release-macosx
+release: clean release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
-post-release:
-	$(MVN) versions:set -DnewVersion=$(MAVEN_VERSION) -DgenerateBackupPoms=false
+post-release: version-set
 
 upload:
 	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
-vassal-app/target/$(JARNAME)-javadoc.jar: jar
+vassal-app/target/$(JARNAME)-javadoc.jar: $(LIBDIR)/Vengine.jar
 
 javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
 	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
@@ -245,4 +254,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc clean-javadoc jar
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc jar clean-javadoc version-set

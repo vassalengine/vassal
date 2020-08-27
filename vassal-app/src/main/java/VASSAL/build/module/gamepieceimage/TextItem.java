@@ -58,7 +58,7 @@ public class TextItem extends Item {
 
   protected static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
   protected static final String LABEL = "label"; //$NON-NLS-1$
-  protected static final String DEFAULT_FORMAT = "$"+PIECE_NAME+"$"; //$NON-NLS-1$ //$NON-NLS-2$
+  protected static final String DEFAULT_FORMAT = "$" + PIECE_NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final int AL_CENTER = 0;
   public static final int AL_RIGHT = 1;
@@ -216,7 +216,7 @@ public class TextItem extends Item {
 
     String compass = GamePieceLayout.getCompassPoint(getLocation());
     int hAlign = AL_CENTER;
-    switch (compass.charAt(compass.length()-1)) {
+    switch (compass.charAt(compass.length() - 1)) {
     case 'W':
       hAlign = AL_LEFT;
       break;
@@ -255,7 +255,8 @@ public class TextItem extends Item {
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
       AffineTransform newXForm =
-        AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth()/2, getLayout().getVisualizerHeight()/2);
+        AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth() / 2,
+          getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
     }
 
@@ -277,7 +278,7 @@ public class TextItem extends Item {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(0,0);
+    return new Dimension(0, 0);
   }
 
   public static Item decode(GamePieceLayout l, String s) {
@@ -350,7 +351,7 @@ public class TextItem extends Item {
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, boolean outline, Color outlineColor) {
     g.setFont(f);
     int buffer = g.getFontMetrics().getLeading();
-    int width = g.getFontMetrics().stringWidth(text)+2*buffer;
+    int width = g.getFontMetrics().stringWidth(text) + 2 * buffer;
     int height = g.getFontMetrics().getHeight();
     int x0 = x;
     int y0 = y;
@@ -384,10 +385,10 @@ public class TextItem extends Item {
     int x1 = x0 + buffer;
     if (outline && outlineColor != null) {
       g.setColor(outlineColor);
-      g.drawString(text, x1-1, y1-1);
-      g.drawString(text, x1-1, y1+1);
-      g.drawString(text, x1+1, y1-1);
-      g.drawString(text, x1+1, y1+1);
+      g.drawString(text, x1 - 1, y1 - 1);
+      g.drawString(text, x1 - 1, y1 + 1);
+      g.drawString(text, x1 + 1, y1 - 1);
+      g.drawString(text, x1 + 1, y1 + 1);
     }
 
     g.setColor(fgColor);

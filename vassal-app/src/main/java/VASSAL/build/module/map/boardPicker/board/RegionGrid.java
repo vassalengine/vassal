@@ -101,7 +101,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
 
-  protected Map<Point,Region> regionList = new HashMap<>();
+  protected Map<Point, Region> regionList = new HashMap<>();
   protected GridContainer container;
   protected boolean visible = false;
   protected static boolean inConfig = false;
@@ -643,8 +643,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
         final Rectangle bounds =
-          new Rectangle(new Point(),myBoard.bounds().getSize());
-        grid.forceDraw(g,bounds,bounds,1.0,false);
+          new Rectangle(new Point(), myBoard.bounds().getSize());
+        grid.forceDraw(g, bounds, bounds, 1.0, false);
         final Rectangle selection = config.getSelectionRect();
         if (selection != null) {
           final Graphics2D g2d = (Graphics2D) g;
@@ -827,8 +827,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
         // Draw each region into the drag cursor in the correct place
         for (Region r : config.selectedRegions) {
-          int x = -boundingBox.x*2;
-          int y = -boundingBox.y*2;
+          int x = -boundingBox.x * 2;
+          int y = -boundingBox.y * 2;
           r.draw(g, boundingBox, getVisibleRect(), 1.0f, false, x, y);
         }
 
@@ -851,9 +851,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     // Mouse clicked, see if it is on a Region Point
     @Override
     public void mouseClicked(MouseEvent e) {
+      lastClick = e.getPoint(); // Also used for right clicks and stuff
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        lastClick = e.getPoint();
-
         if (lastClickedRegion != null) {
           if (e.getClickCount() >= 2) { // Double click show properties
             if (lastClickedRegion.getConfigurer() != null) {
@@ -931,14 +930,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         lastClickedRegion = r;
         setDirty(true);
         final Action a = new EditPropertiesAction(lastClickedRegion, null, this);
-        a.actionPerformed(new ActionEvent(e.getSource(),ActionEvent.ACTION_PERFORMED,"Edit")); //$NON-NLS-1$
+        a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
         for (Region r : selectedRegions) {
           r.removeFrom(grid);
           grid.remove(r);
-          lastClickedRegion=null;
+          lastClickedRegion = null;
           setDirty(true);
         }
         selectedRegions.clear();
@@ -947,7 +946,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       else if (command.equals(PROPERTIES)) { //$NON-NLS-1$
         if (lastClickedRegion != null) {
           final Action a = new EditRegionAction(lastClickedRegion, null, this);
-          a.actionPerformed(new ActionEvent(e.getSource(),ActionEvent.ACTION_PERFORMED,"Edit")); //$NON-NLS-1$
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //$NON-NLS-1$
         }
       }
     }
@@ -975,7 +974,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       public void actionPerformed(ActionEvent evt) {
         PropertiesWindow w = openWindows.get(target);
         if (w == null) {
-          w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
+          w = new PropertiesWindow(dialogOwner, false, target, helpWindow);
           w.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -986,7 +985,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
               owner.repaint();
             }
           });
-          openWindows.put(target,w);
+          openWindows.put(target, w);
           w.setVisible(true);
         }
         w.toFront();
@@ -1005,8 +1004,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (r != null) {
         r.setSelected(false);
         selectedRegions.remove(r);
-        if (lastClickedRegion==r) {
-          lastClickedRegion=null;
+        if (lastClickedRegion == r) {
+          lastClickedRegion = null;
         }
         view.repaint(r.getSelectionRect());
       }
@@ -1048,16 +1047,17 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     @Override
     public void mousePressed(MouseEvent e) {
+      final Point p = e.getPoint();
+      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later. 
+      lastClickedRegion = grid.getRegion(p);
+      
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }
       else if (SwingUtils.isMainMouseButtonDown(e)) {
-        final Point p = e.getPoint();
-        lastClick = p;
-        lastClickedRegion = grid.getRegion(p);
 
         if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e) &&
-            (lastClickedRegion==null || !lastClickedRegion.isSelected())) {
+            (lastClickedRegion == null || !lastClickedRegion.isSelected())) {
           unSelectAll();
         }
 
@@ -1111,8 +1111,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (selectionRect != null) {
         // FIXME: inefficient, could be done with only one new Rectangle
         final Rectangle repaintRect =
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3);
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3);
 
         selectionRect.x = Math.min(e.getX(), anchor.x);
         selectionRect.y = Math.min(e.getY(), anchor.y);
@@ -1120,8 +1120,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         selectionRect.height = Math.abs(e.getY() - anchor.y);
 
         repaintRect.add(
-          new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3));
+          new Rectangle(selectionRect.x - 1, selectionRect.y - 1,
+                        selectionRect.width + 3, selectionRect.height + 3));
         view.repaint(repaintRect);
       }
     }

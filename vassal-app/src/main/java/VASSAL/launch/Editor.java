@@ -47,6 +47,7 @@ import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.version.VersionUtils;
 
 public class Editor extends Launcher {
   public static void main(String[] args) {
@@ -85,13 +86,13 @@ public class Editor extends Launcher {
       break;
     case EDIT_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
-      GameModule.getGameModule().getFrame().setVisible(true);
+      GameModule.getGameModule().getPlayerWindow().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
       msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case NEW_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
-      final JFrame f = GameModule.getGameModule().getFrame();
+      final JFrame f = GameModule.getGameModule().getPlayerWindow();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
       msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
@@ -221,7 +222,7 @@ public class Editor extends Launcher {
         // don't permit loading of VASL saved with 3.2 or earlier
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
-          if (Info.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
             if ("VASL".equals(md.getName())) {
               ErrorDialog.show(
                 "Error.VASL_too_old",

@@ -38,6 +38,7 @@ import VASSAL.i18n.Resources;
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: May 29, 2003
  */
+@Deprecated(since = "2020-08-15", forRemoval = true)
 public class NodeHybridClient extends DynamicClient {
   private String addressURL;
   private MessageBoard msgSvr;
@@ -79,7 +80,7 @@ public class NodeHybridClient extends DynamicClient {
         try {
           int port = Integer.parseInt(address.substring(index + 1));
           address = address.substring(0, index);
-          c = new SocketNodeClient(info.getModuleName(), info.getUserName(),encoder, address, port, msgSvr, welcomeMsgSvr);
+          c = new SocketNodeClient(info.getModuleName(), info.getUserName(), encoder, address, port, msgSvr, welcomeMsgSvr);
         }
         // FIXME: review error message
         catch (NumberFormatException ex) {
@@ -101,8 +102,8 @@ public class NodeHybridClient extends DynamicClient {
   private String getAddressFromURL() throws IOException {
     HttpRequestWrapper r = new HttpRequestWrapper(addressURL);
     Properties p = new Properties();
-    p.put("module",info.getModuleName());  //$NON-NLS-1$
-    p.put("vassalVersion",VASSAL.Info.getVersion());  //$NON-NLS-1$
+    p.put("module", info.getModuleName());  //$NON-NLS-1$
+    p.put("vassalVersion", VASSAL.Info.getVersion());  //$NON-NLS-1$
     List<String> l = r.doGet(p);
     if (l.isEmpty()) {
       throw new IOException(Resources.getString("Server.empty_response"));  //$NON-NLS-1$

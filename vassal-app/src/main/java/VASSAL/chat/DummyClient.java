@@ -50,11 +50,11 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
 
       @Override
       public String getUserName() {
-        return GameModule.getGameModule() == null ? "<"+Chatter.getAnonymousUserName()+">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$ //$NON-NLS-2$
+        return GameModule.getGameModule() == null ? "<" + Chatter.getAnonymousUserName() + ">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$ //$NON-NLS-2$
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);
-    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"),httpMessageServer); //$NON-NLS-1$
+    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"), httpMessageServer); //$NON-NLS-1$
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }
 

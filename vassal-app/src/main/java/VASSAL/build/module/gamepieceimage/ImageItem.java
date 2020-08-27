@@ -54,6 +54,7 @@ public class ImageItem extends Item {
 
   protected String imageSource = SRC_FIXED;
   protected String imageName = ""; //$NON-NLS-1$
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected Image image = null;
   protected ImageOp srcOp;
   protected Rectangle imageBounds = new Rectangle();
 
@@ -83,11 +84,8 @@ public class ImageItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[]{
-        Image.class,
-        TextSource.class
-      }
-    );
+      Image.class,
+      TextSource.class);
   }
 
   @Override
@@ -152,19 +150,9 @@ public class ImageItem extends Item {
     }
   }
 
-  private VisibilityCondition falseCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return false;
-    }
-  };
+  private final VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition fixedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return imageSource.equals(SRC_FIXED);
-    }
-  };
+  private final VisibilityCondition fixedCond = () -> imageSource.equals(SRC_FIXED);
 
   public static class TextSource extends StringEnum {
     @Override
@@ -256,7 +244,7 @@ public class ImageItem extends Item {
     private static final BaseOp op = new BaseOp();
 
     @Override
-    public BufferedImage eval() throws Exception {
+    public BufferedImage eval() {
       final BufferedImage img =
         ImageUtils.createCompatibleTranslucentImage(10, 10);
       final Graphics2D bg = img.createGraphics();
@@ -273,7 +261,7 @@ public class ImageItem extends Item {
 
     @Override
     public Dimension getSize() {
-      return new Dimension(10,10);
+      return new Dimension(10, 10);
     }
 
     @Override

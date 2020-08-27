@@ -61,6 +61,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 
+import VASSAL.tools.swing.SplitPane;
 import net.miginfocom.swing.MigLayout;
 
 public class ChatServerControls extends AbstractBuildable {
@@ -75,6 +76,11 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton launch;
   protected ChatServerConnection client;
   protected JPanel controlPanel;
+
+  /**
+   * @deprecated type will change to {@link SplitPane}
+   */
+  @Deprecated
   protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;
@@ -131,12 +137,13 @@ public class ChatServerControls extends AbstractBuildable {
     toolbar.addSeparator();
 
     configServerButton = new JButton();
-    configServerButton.addActionListener(new ActionListener(){
+    configServerButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         ServerAddressBook.editCurrentServer(!client.isConnected());
-      }});
-    configServerButton.addMouseListener(new MouseAdapter(){
+      }
+    });
+    configServerButton.addMouseListener(new MouseAdapter() {
       private void maybePopup(MouseEvent e) {
         if (!client.isConnected() && e.isPopupTrigger()) {
           showChangeServerMenu();
@@ -229,10 +236,9 @@ public class ChatServerControls extends AbstractBuildable {
   public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
-        splitter = ComponentSplitter.split(
-          GameModule.getGameModule().getControlPanel(),
+        splitter = GameModule.getGameModule().getPlayerWindow().splitControlPanel(
           controlPanel,
-          ComponentSplitter.SplitPane.HIDE_RIGHT,
+          SplitPane.HIDE_RIGHT,
           false
         );
         splitter.revalidate();
@@ -316,11 +322,12 @@ public class ChatServerControls extends AbstractBuildable {
       }
     };
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
-    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener(){
+    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener() {
       @Override
       public void propertyChange(PropertyChangeEvent e) {
         updateConfigServerToolTipText();
-      }});
+      }
+    });
   }
 
   public ChatServerConnection getClient() {

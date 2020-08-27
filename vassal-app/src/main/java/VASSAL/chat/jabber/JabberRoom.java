@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import VASSAL.tools.version.VersionUtils;
 import net.miginfocom.swing.MigLayout;
 
 import org.jivesoftware.smack.XMPPException;
@@ -275,7 +276,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       final String thisVassal = Info.getVersion();
       final String targetVassal = getVassalVersion();
       if (MINIMUM_OPTION.equals(option)) {
-        if (Info.compareVersions(thisVassal, targetVassal) < 1) {
+        if (VersionUtils.compareVersions(thisVassal, targetVassal) < 1) {
           return Resources.getString("Chat.bad_min_vassal", thisVassal, targetVassal); //$NON-NLS-1$
         }
       }
@@ -291,7 +292,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       final String thisModule = GameModule.getGameModule().getGameVersion();
       final String targetModule = getModuleVersion();
       if (MINIMUM_OPTION.equals(option)) {
-        if (Info.compareVersions(thisModule, targetModule) < 1) {
+        if (VersionUtils.compareVersions(thisModule, targetModule) < 1) {
           return Resources.getString("Chat.bad_min_module", thisModule, targetModule); //$NON-NLS-1$
         }
       }
@@ -433,7 +434,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       add(vassalVersionConfig);
       minimumVassalVersionConfig = new JTextField(12);
       minimumVassalVersionConfig.setText(vassalVersion);
@@ -445,7 +447,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
 
       add(moduleVersionConfig);
       minimumModuleVersionConfig = new JTextField(12);
@@ -458,7 +461,8 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateVisibility();
-        }});
+        }
+      });
       add(matchCrcConfig);
       crcConfig = new JTextField(12);
       crcConfig.setText(Long.toHexString(GameModule.getGameModule().getCrc()));
@@ -521,7 +525,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       }
       final String mv = versionToOption((String) moduleVersionConfig.getSelectedItem());
       props.put(CONFIG_MODULE_VERSION, mv);
-      if(!mv.equals(ANY_OPTION)) {
+      if (!mv.equals(ANY_OPTION)) {
         props.put(CONFIG_MIN_MODULE_VERSION, minimumModuleVersionConfig.getText());
       }
       props.put(CONFIG_CRC_CHECK, Boolean.toString(matchCrcConfig.isSelected()));

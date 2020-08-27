@@ -41,12 +41,12 @@ public class EditExtensionAction extends LoadModuleAction {
 
   public EditExtensionAction(Component comp) {
     super(comp);
-    putValue(NAME,Resources.getString("Editor.edit_extension"));
+    putValue(NAME, Resources.getString("Editor.edit_extension"));
   }
 
   public EditExtensionAction(File extFile) {
     super(extFile);
-    putValue(NAME,Resources.getString("Editor.edit_extension"));
+    putValue(NAME, Resources.getString("Editor.edit_extension"));
   }
 
   @Override
@@ -54,11 +54,11 @@ public class EditExtensionAction extends LoadModuleAction {
     final ModuleExtension ext =
       new ModuleExtension(new ArchiveWriter(new ZipArchive(f)));
     ext.build();
-    final JFrame frame = GameModule.getGameModule().getFrame();
+    final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     final ExtensionEditorWindow w =
       new ExtensionEditorWindow(GameModule.getGameModule(), ext);
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width/2,w.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

@@ -18,8 +18,9 @@
 package VASSAL.launch;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,17 +31,21 @@ import javax.swing.JToolBar;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;
+import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.swing.SplitPane;
 
 public class PlayerWindow extends JFrame {
+
   private static final long serialVersionUID = 1L;
 
   public JToolBar getToolBar() {
@@ -53,6 +58,7 @@ public class PlayerWindow extends JFrame {
 
   protected final JToolBar toolBar = new JToolBar();
   protected final JPanel controlPanel = new JPanel();
+  private Chatter chatter;
 
   public PlayerWindow() {
     setTitle("VASSAL");
@@ -61,7 +67,14 @@ public class PlayerWindow extends JFrame {
 
     ApplicationIcons.setFor(this);
 
-    // setup menubar and actions
+    setupMenubarAndActions();
+    buildToolbar();
+    buildCentralArea();
+
+    pack();
+  }
+
+  private void setupMenubarAndActions() {
     final MenuManager mm = MenuManager.getInstance();
     final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
 
@@ -153,17 +166,58 @@ public class PlayerWindow extends JFrame {
     mb.add(helpMenu);
 
     setJMenuBar(mm.getMenuBarFor(this));
+  }
 
-    // build toolbar
-    toolBar.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
+  private void buildToolbar() {
+    toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0f);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.NORTH);
+  }
 
-    // build central area
+  private void buildCentralArea() {
     controlPanel.setLayout(new BorderLayout());
     controlPanel.setPreferredSize(new Dimension(800, 600));
     add(controlPanel, BorderLayout.CENTER);
-    pack();
   }
+
+  /**
+   * Create a new hideable panel beside the control panel.
+   *
+   * @param newComponent the hideable component
+   * @param hideablePosition the position of the hideable component, one of
+   * {@link SplitPane#HIDE_TOP}, {@link SplitPane#HIDE_RIGHT},
+   * {@link SplitPane#HIDE_BOTTOM}, {@link SplitPane#HIDE_LEFT}
+   * @param resize If true, the containing window will expand or shrink to an appropriate size when
+   *     the hideable component is shown or hidden
+   * @return the {@link SplitPane} containing the two components
+   *
+   * @deprecated marked as deprecated to see if modules depend on this, if no modules use this
+   *   make this return {@link VASSAL.tools.swing.SplitPane}
+   */
+  @Deprecated
+  public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
+    int index = -1;
+    Container parent = controlPanel.getParent();
+    if (parent != null) {
+      for (int i = 0, n = parent.getComponentCount(); i < n; ++i) {
+        if (controlPanel == parent.getComponent(i)) {
+          index = i;
+          break;
+        }
+      }
+    }
+
+    final VASSAL.tools.swing.SplitPane split = new VASSAL.tools.swing.SplitPane(newComponent, controlPanel, hideablePosition, resize);
+    if (index >= 0) {
+      parent.add(split, index);
+    }
+    return split;
+  }
+
+  public void addChatter(Chatter chatter) {
+    this.chatter = chatter;
+    controlPanel.add(chatter, BorderLayout.CENTER);
+  }
+
 }

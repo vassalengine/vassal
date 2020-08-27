@@ -50,9 +50,10 @@ public class NodeClientFactory extends ChatServerFactory {
 
   @Override
   public ChatServerConnection buildServer(Properties param) {
-    final String host = param.getProperty(NODE_HOST,"game.vassalengine.org");  //$NON-NLS-1$
+    final String host = param.getProperty(NODE_HOST, "game.vassalengine.org");  //$NON-NLS-1$
     final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
-    NodeServerInfo nodeServerInfo = new NodeServerInfo() {
+
+    final NodeServerInfo nodeServerInfo = new NodeServerInfo() {
       @Override
       public String getHostName() {
         return host;
@@ -63,30 +64,44 @@ public class NodeClientFactory extends ChatServerFactory {
         return port;
       }
     };
-    PeerPoolInfo publicInfo = new PeerPoolInfo() {
+
+    final PeerPoolInfo publicInfo = new PeerPoolInfo() {
       @Override
       public String getModuleName() {
-        return GameModule.getGameModule() == null ? UNNAMED_MODULE : GameModule.getGameModule().getGameName();
+        final GameModule g = GameModule.getGameModule();
+        return g == null ? UNNAMED_MODULE : g.getGameName();
       }
 
       @Override
       public String getUserName() {
-        return GameModule.getGameModule() == null ? UNKNOWN_USER : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+        final GameModule g = GameModule.getGameModule();
+        return g == null ? UNKNOWN_USER : (String) g.getPrefs().getValue(GameModule.REAL_NAME);
       }
     };
-    HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
-    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);  //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
-    GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
-    server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        final String mess = (String) evt.getNewValue();
-        GameModule.getGameModule().warn(mess);
-        logger.error("", mess);
-      }
+
+    final HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
+    final GameModule g = GameModule.getGameModule();
+
+    final SocketNodeClient server = new SocketNodeClient(
+      g.getGameName(),
+      GameModule.getUserId() + "." + System.currentTimeMillis(),
+      g,
+      nodeServerInfo,
+      httpMessageServer,
+      httpMessageServer
+    );
+
+    g.getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
+    g.getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
+
+    server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
+      final String mess = (String) e.getNewValue();
+      GameModule.getGameModule().warn(mess);
+      logger.error("", mess);
     });
+
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
+
     return server;
   }
 }

@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -173,9 +174,9 @@ public class TileUtils {
    * @throws IOException if the byte array is not the tile signature
    */
   static void checkSignature(byte[] sig) throws IOException {
-    if (!Arrays.equals(sig, "VASSAL".getBytes())) {
+    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) {
       throw new IOException(
-        "bad signature: got \"" + new String(sig) +
+        "bad signature: got \"" + new String(sig, StandardCharsets.UTF_8) +
         "\", expected \"VASSAL\""
       );
     }
@@ -288,7 +289,7 @@ public class TileUtils {
     // write the header
     bb = ByteBuffer.allocate(18);
 
-    bb.put("VASSAL".getBytes())
+    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8))
       .putInt(tile.getWidth())
       .putInt(tile.getHeight())
       .putInt(tile.getType());
@@ -299,7 +300,7 @@ public class TileUtils {
     final DataBufferInt db = (DataBufferInt) tile.getRaster().getDataBuffer();
     final int[] data = db.getData();
 
-    bb = ByteBuffer.allocate(4*data.length);
+    bb = ByteBuffer.allocate(4 * data.length);
     bb.asIntBuffer().put(data);
 
     final GZIPOutputStream zout = new GZIPOutputStream(out);
@@ -336,7 +337,7 @@ public class TileUtils {
   public static int tileCount(int iw, int ih, int tw, int th) {
     // TODO: Find a closed-form expression for this, if there is one.
     int tcount = 0;
-    for (int div = 1; iw/div > 0 && ih/div > 0; div <<= 1) {
+    for (int div = 1; iw / div > 0 && ih / div > 0; div <<= 1) {
       tcount += tileCountAtScale(iw, ih, tw, th, div);
     }
     return tcount;
@@ -377,9 +378,9 @@ public class TileUtils {
     if (th < 1) throw new IllegalArgumentException("th = " + th + " < 1");
     if (div < 1) throw new IllegalArgumentException("div = " + div + " < 1");
 
-    final int cols = (int) Math.ceil((double) (iw/div) / tw);
-    final int rows = (int) Math.ceil((double) (ih/div) / th);
-    return cols*rows;
+    final int cols = (int) Math.ceil((double) (iw / div) / tw);
+    final int rows = (int) Math.ceil((double) (ih / div) / th);
+    return cols * rows;
   }
 
   /**

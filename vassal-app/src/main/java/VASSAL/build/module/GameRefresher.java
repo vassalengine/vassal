@@ -19,7 +19,6 @@ package VASSAL.build.module;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -122,6 +121,12 @@ public final class GameRefresher implements GameComponent {
     for (PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
+
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      pc.getDefinitions().forEach(gpIdChecker::add);
+    }
+
     if (gpIdChecker.hasErrors()) {
       // Any errors should have been resolved by the GpId check at startup, so
       // this error indicates
@@ -179,12 +184,14 @@ public final class GameRefresher implements GameComponent {
     }
 
     if (isTestMode()) {
-      dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
-      if (notOwnedCount > 0) {
-        dialog.addMessage(Resources.getString("GameRefresher.counters_not_owned_test", notOwnedCount));
-      }
-      if (notFoundCount > 0) {
-        dialog.addMessage(Resources.getString("GameRefresher.counters_not_found_test", notFoundCount));
+      if (dialog != null) { // Could be null if dialog box got closed while we were still running - see start() method above
+        dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
+        if (notOwnedCount > 0) {
+          dialog.addMessage(Resources.getString("GameRefresher.counters_not_owned_test", notOwnedCount));
+        }
+        if (notFoundCount > 0) {
+          dialog.addMessage(Resources.getString("GameRefresher.counters_not_found_test", notFoundCount));
+        }
       }
     }
     else {
@@ -249,7 +256,7 @@ public final class GameRefresher implements GameComponent {
     if (! isTestMode()) {
       // If still in the same stack, move to correct position
       final Stack newStack = newPiece.getParent();
-      if (newStack != null && oldStack != null && newStack == oldStack) {
+      if ((newStack != null) && (newStack == oldStack)) {
         final int newPos = newStack.indexOf(newPiece);
         if (newPos >= 0 && oldPos >= 0 && newPos != oldPos) {
           final String oldState = newStack.getState();
@@ -290,9 +297,9 @@ public final class GameRefresher implements GameComponent {
     refreshAction.setEnabled(gameStarting);
   }
 
-  class RefreshDialog extends JDialog {
+  static class RefreshDialog extends JDialog {
     private static final long serialVersionUID = 1L;
-    private GameRefresher refresher;
+    private final GameRefresher refresher;
     private JTextArea results;
     private JCheckBox nameCheck;
 
@@ -311,30 +318,18 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
-      setLayout(new MigLayout("wrap 1","[center]"));
+      setLayout(new MigLayout("wrap 1", "[center]"));
 
       final JPanel buttonPanel = new JPanel(new MigLayout());
 
       final JButton testButton = new JButton(Resources.getString("General.test"));
-      testButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          test();
-        }});
+      testButton.addActionListener(e -> test());
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
-      runButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          run();
-        }});
+      runButton.addActionListener(e -> run());
 
       final JButton exitButton = new JButton(Resources.getString("General.exit"));
-      exitButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          exit();
-        }});
+      exitButton.addActionListener(e -> exit());
 
       buttonPanel.add(testButton);
       buttonPanel.add(runButton);
@@ -368,7 +363,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     public void addMessage(String mess) {
-      results.setText(results.getText()+"\n"+mess);
+      results.setText(results.getText() + "\n" + mess);
     }
   }
 }

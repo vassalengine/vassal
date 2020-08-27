@@ -213,7 +213,8 @@ public class TextBoxItem extends TextItem {
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
       AffineTransform newXForm =
-        AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth()/2, getLayout().getVisualizerHeight()/2);
+        AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth() / 2,
+          getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
     }
 
@@ -225,9 +226,9 @@ public class TextBoxItem extends TextItem {
     JTextPane l = new JTextPane();
     if (isHTML) l.setContentType("text/html"); //$NON-NLS-1$
     l.setText(s);
-    l.setSize(width-2, height-2);
-    l.setBackground(bg != null ? bg : new Color(0,true));
-    l.setForeground(fg != null ? fg : new Color(0,true));
+    l.setSize(width - 2, height - 2);
+    l.setBackground(bg != null ? bg : new Color(0, true));
+    l.setForeground(fg != null ? fg : new Color(0, true));
     FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
     Font f = fs.getFont();
     l.setFont(f);
@@ -240,7 +241,7 @@ public class TextBoxItem extends TextItem {
     l.paint(big);
     big.dispose();
 
-    g2d.drawImage(img, origin.x+1, origin.y+1, null);
+    g2d.drawImage(img, origin.x + 1, origin.y + 1, null);
 
     if (saveXForm != null) {
       g2d.setTransform(saveXForm);
@@ -259,7 +260,7 @@ public class TextBoxItem extends TextItem {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(getWidth(),getHeight());
+    return new Dimension(getWidth(), getHeight());
   }
 
 

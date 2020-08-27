@@ -21,7 +21,6 @@ import java.util.Map;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.script.ExpressionInterpreter;
@@ -60,7 +59,7 @@ public class BeanShellExpression extends Expression {
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
-      return s.substring(1, s.length()-1);
+      return s.substring(1, s.length() - 1);
     }
     return expr;
   }
@@ -69,7 +68,7 @@ public class BeanShellExpression extends Expression {
     return getExpression() != null && getExpression().indexOf('$') >= 0;
   }
 
-  
+
   /**
    * Return a PieceFilter that selects GamePieces that cause
    * this expression to evaluate to true
@@ -79,35 +78,32 @@ public class BeanShellExpression extends Expression {
     /*
      * If this expression contains old-style $....$ variables, then we need to evaluate these first on the source piece
      * and return a filter using the updated expression.
-     */    
+     */
     if (isDynamic()) {
       // Strip the Beanshell braces so the expression just looks like a string and evaluate the $...$ variables
       final String s = (new FormattedString(strip(getExpression()))).getText(ps);
-      
+
       // Turn the resulting string back into a Beanshell expression and create a filter.
-      return Expression.createExpression("{"+s+"}").getFilter();
+      return Expression.createExpression("{" + s + "}").getFilter();
     }
-    
+
     // Non dynamic, just return a standard filter based on the existing expression.
-    return new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        String result = null;
-        try {
-          result = evaluate(piece);
-        }
-        catch (ExpressionException e) {
-          ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), "Expression="+getExpression()+", Error="+e.getError(), e));
-        }
-        return "true".equals(result);
+    return piece -> {
+      String result = null;
+      try {
+        result = evaluate(piece);
       }
+      catch (ExpressionException e) {
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+      }
+      return "true".equals(result);
     };
   }
 
   /**
    * Convert a Property name to it's BeanShell equivalent.
    *
-   * @param property name
+   * @param prop Property name
    * @return beanshell equivalent
    */
   public static String convertProperty (String prop) {
@@ -124,13 +120,13 @@ public class BeanShellExpression extends Expression {
     // Check it follows Java variable rules
     boolean ok = Character.isJavaIdentifierStart(prop.charAt(0));
     if (ok) {
-      for (int i=1; i < prop.length() && ok; i++) {
+      for (int i = 1; i < prop.length() && ok; i++) {
         ok = Character.isJavaIdentifierPart(prop.charAt(i));
       }
     }
 
     // If not a Java variable, wrap it in GetProperty()
-    return ok ? prop : "GetProperty(\""+prop+"\")";
+    return ok ? prop : "GetProperty(\"" + prop + "\")";
   }
 
   public static boolean isBeanShellExpression(String expr) {
@@ -164,6 +160,16 @@ public class BeanShellExpression extends Expression {
    * ensure efficient evaluation.
    */
   public static Expression createExpression(String s) {
+    return createExpression(s, false);
+  }
+
+  /**
+   *
+   * @param s String to convert to a Beanshell expressions
+   * @param dontCreateStringExpressions If True, then convert quoted string to Beanshell Expressions, not String Expressions
+   * @return Expression
+   */
+  public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
     String expr;
     final String t = s.trim();
 
@@ -186,9 +192,11 @@ public class BeanShellExpression extends Expression {
     }
 
     // Return a single String as a string without quotes
-    if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
+    if (! dontCreateStringExpressions) {
+      if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
         && expr.indexOf('"', 1) == expr.length() - 1) {
-      return new StringExpression(expr.substring(1, expr.length() - 1));
+        return new StringExpression(expr.substring(1, expr.length() - 1));
+      }
     }
 
     // Return a generalised Beanshell expression

@@ -28,7 +28,7 @@ import VASSAL.i18n.Translatable;
  * the Configuration window.
  */
 public interface Configurable extends Translatable {
-  public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
+  String NAME_PROPERTY = "name"; //$NON-NLS-1$
 
   /**
    * Remove this component from its parent

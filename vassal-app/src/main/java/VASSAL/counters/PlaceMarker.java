@@ -207,7 +207,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       c = m.getStackMetrics().merge(target, marker);
       if (index >= 0) {
         final ChangeTracker ct = new ChangeTracker(parent);
-        parent.insert(marker,index);
+        parent.insert(marker, index);
         c = c.append(ct.getChangeCommand());
       }
     }
@@ -216,8 +216,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     }
 
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
-      marker.setProperty(Properties.SNAPSHOT,
-                         PieceCloner.getInstance().clonePiece(marker));
+      marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
       c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
     }
 
@@ -289,7 +288,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       try {
         final Configurable[] c =
           ComponentPathBuilder.getInstance().getPath(markerSpec);
-        final Configurable conf = c[c.length-1];
+        final Configurable conf = c[c.length - 1];
 
         if (conf instanceof PieceSlot) {
           piece = ((PieceSlot) conf).getPiece();
@@ -297,7 +296,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         }
       }
       catch (ComponentPathBuilder.PathFormatException e) {
-        reportDataError(this, Resources.getString("Resources.place_error"), e.getMessage()+" markerSpec="+markerSpec, e);
+        reportDataError(this, Resources.getString("Resources.place_error"),
+          e.getMessage() + " markerSpec=" + markerSpec, e);
       }
     }
     return piece;

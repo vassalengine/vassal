@@ -133,7 +133,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
       hiddenIcon = (String) value;
     }
     else {
-      launch.setAttribute(key,value);
+      launch.setAttribute(key, value);
     }
   }
 
@@ -192,14 +192,14 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   public static class ShowingIconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key,name,DEFAULT_SHOWING_ICON);
+      return new IconConfigurer(key, name, DEFAULT_SHOWING_ICON);
     }
   }
 
   public static class HiddenIconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key,name,DEFAULT_HIDDEN_ICON);
+      return new IconConfigurer(key, name, DEFAULT_HIDDEN_ICON);
     }
   }
 

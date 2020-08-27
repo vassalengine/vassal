@@ -33,6 +33,7 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
@@ -47,9 +48,22 @@ public class PanelWidget extends Widget {
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;
+  protected double scale;
+  public static final String SCALE = "scale"; //$NON-NLS-1$
 
   public PanelWidget() {
+    scale = 1.0;
   }
+  
+  @Override
+  public boolean hasScale() {
+    return true;
+  }
+  
+  @Override
+  public double getScale() {
+    return scale;
+  }  
 
   public static String getConfigureTypeName() {
     return "Panel";
@@ -137,7 +151,8 @@ public class PanelWidget extends Widget {
       NAME,
       FIXED,
       COLS,
-      VERTICAL
+      VERTICAL,
+      SCALE,
     };
   }
 
@@ -147,7 +162,8 @@ public class PanelWidget extends Widget {
       "Name:  ",
       "Fixed cell size?",
       "Number of columns:  ",
-      "Vertical layout?"
+      "Vertical layout?",
+      Resources.getString("Editor.PieceWindow.scale")      
     };
   }
 
@@ -157,7 +173,8 @@ public class PanelWidget extends Widget {
       String.class,
       Boolean.class,
       Integer.class,
-      Boolean.class
+      Boolean.class,
+      Double.class
     };
   }
 
@@ -206,7 +223,7 @@ public class PanelWidget extends Widget {
 
       if (nColumns < 1) {
         // FIXME: also dialog should not permit values < 1 to be entered
-        ErrorDialog.dataError(
+        ErrorDialog.dataWarning(
           new BadDataReport("Panel has < 1 column:", getConfigureName()));
 
         nColumns = 1;
@@ -217,6 +234,18 @@ public class PanelWidget extends Widget {
         value = Boolean.valueOf((String) value);
       }
       vertical = (Boolean) value;
+    }
+    else if (SCALE.equals(name)) {
+      if (value instanceof String) {
+        value = Double.valueOf((String) value);
+      }
+      scale = (Double) value;
+      if (scale < 0.01) { //BR// Just gonna go with some sanity.
+        scale = 0.01;
+      } 
+      else if (scale >= 4) {
+        scale = 4.0; 
+      } 
     }
 
     if (panel != null) {
@@ -239,6 +268,10 @@ public class PanelWidget extends Widget {
     else if (VERTICAL.equals(name)) {
       return String.valueOf(vertical);
     }
+    else if (SCALE.equals(name)) {
+      return String.valueOf(scale);
+    }
     return null;
   }
 }
+

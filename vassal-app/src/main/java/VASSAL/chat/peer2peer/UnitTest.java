@@ -44,9 +44,9 @@ public class UnitTest implements UserDialog {
     final UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
     final PendingPeerManager ppm = new PendingPeerManager(d);
     final ActivePeerManager apm =
-      new ActivePeerManager(new MyInfo("TestClient",5556),d,ppm); //$NON-NLS-1$
+      new ActivePeerManager(new MyInfo("TestClient", 5556), d, ppm); //$NON-NLS-1$
     final PeerInfo info =
-      new PeerInfo("SocketReader","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
+      new PeerInfo("SocketReader", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("SocketReader"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(10000);
@@ -59,12 +59,12 @@ public class UnitTest implements UserDialog {
   private static void testPeerManagers() throws InterruptedException, IOException {
     UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
     PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
-    new AcceptPeerThread(5555,serverPpm).start();
+    new AcceptPeerThread(5555, serverPpm).start();
 
     UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
     PendingPeerManager ppm = new PendingPeerManager(d);
-    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client",5556),d,ppm); //$NON-NLS-1$
-    PeerInfo info = new PeerInfo("Server","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
+    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
+    PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("Server"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(5000);
@@ -81,13 +81,13 @@ public class UnitTest implements UserDialog {
     ActivePeerManager apm = new ActivePeerManager(myInfo,d,ppm);
     PeerInfo info = new PeerInfo("Server","localhost",5555);
 */
-    final Socket s = new Socket("localhost",5555); //$NON-NLS-1$
+    final Socket s = new Socket("localhost", 5555); //$NON-NLS-1$
 
     final PeerReader reader = new PeerReader(s.getInputStream());
     System.err.println("Created reader " + reader); //$NON-NLS-1$
     try {
       final PeerWriter writer = new PeerWriter(s.getOutputStream());
-      System.err.println("Created writer"+writer); //$NON-NLS-1$
+      System.err.println("Created writer" + writer); //$NON-NLS-1$
 //      ActivePeer peer = new ActivePeer(myInfo,d, apm, ppm, info, reader, writer);
 //      peer.sendCHAT("A message");
 
@@ -158,50 +158,50 @@ public class UnitTest implements UserDialog {
 
   @Override
   public void showUnrecognized(PeerInfo pPeerInfo, String pBadMessage) {
-    System.err.println(this+"Unrecognized "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Unrecognized " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showStreamsFailed(PeerInfo pPeerInfo) {
-    System.err.println(this+"Streams Failed "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Streams Failed " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showConnectFailed(PeerInfo pPeerInfo) {
-    System.err.println(this+"Connect Failed "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Connect Failed " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showConnect(PeerInfo pPeerInfo) {
-    System.err.println(this+"Connect "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Connect " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showDisconnect(PeerInfo pPeerInfo) {
-    System.err.println(this+"Disconnect "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Disconnect " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showCHAT(PeerInfo pPeerInfo, String pMessage) {
-    System.err.println(this+"Chat "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Chat " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showPMSG(PeerInfo pPeerInfo, String pMessage) {
-    System.err.println(this+"Private Chat "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Private Chat " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showNAME(PeerInfo pPeerInfo) {
-    System.err.println(this+"Name "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Name " + pPeerInfo); //$NON-NLS-1$
   }
 
   @Override
   public void showHELO(PeerInfo pPeerInfo) {
-    System.err.println(this+"Hello "+pPeerInfo); //$NON-NLS-1$
+    System.err.println(this + "Hello " + pPeerInfo); //$NON-NLS-1$
   }
 
   public String toString() {
-    return id+": "; //$NON-NLS-1$
+    return id + ": "; //$NON-NLS-1$
   }
 }

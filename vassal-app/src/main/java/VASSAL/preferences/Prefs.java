@@ -29,7 +29,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,7 +43,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,

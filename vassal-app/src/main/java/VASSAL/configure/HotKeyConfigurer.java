@@ -74,7 +74,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       tf = new JTextField(8);
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
       tf.setText(keyToString());
       tf.addKeyListener(this);
       p.add(new JLabel(getName()));

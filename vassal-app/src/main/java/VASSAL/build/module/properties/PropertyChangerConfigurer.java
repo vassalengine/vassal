@@ -51,12 +51,10 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final char PROMPT_CODE = 'R';
   protected static final char ENUM_CODE = 'E';
   protected static final char INCR_CODE = 'I';
-  protected static final Map<Class<? extends PropertyChanger>,Character> typeToCode =
-    new HashMap<>();
-  protected static final Map<Class<? extends PropertyChanger>,String> typeToDescription =
-    new HashMap<>();
-  protected static final Map<String,Character> descriptionToCode =
-    new HashMap<>();
+  protected static final Map<Class<? extends PropertyChanger>, Character> typeToCode = new HashMap<>();
+  protected static final Map<Class<? extends PropertyChanger>, String> typeToDescription = new HashMap<>();
+  protected static final Map<String, Character> descriptionToCode = new HashMap<>();
+
   static {
     typeToCode.put(PropertySetter.class, PLAIN_CODE);
     typeToCode.put(PropertyPrompt.class, PROMPT_CODE);
@@ -228,6 +226,7 @@ public class PropertyChangerConfigurer extends Configurer {
     }
     setValue(p);
   }
-  public static interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
+
+  public interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
   }
 }

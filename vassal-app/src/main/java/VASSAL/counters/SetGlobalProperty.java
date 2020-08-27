@@ -226,12 +226,12 @@ public class SetGlobalProperty extends DynamicProperty {
         prop = MutableProperty.Util.findMutableProperty(propertyName, propertyContainers);
         /*
          * Debugging could be painful, so print a useful message in the
-         * Chat Window if no property can be found to update. 
+         * Chat Window if no property can be found to update.
          */
         if (prop == null) {
-          final String message = "Unable to locate Global Property in "+propertyLevel+".";
-          final String data = "Property Expression=["+key+"], Property Name="+propertyName+"].";
-          ErrorDialog.dataError(new BadDataReport(this, message, data));
+          final String message = "Unable to locate Global Property in " + propertyLevel + ".";
+          final String data = "Property Expression=[" + key + "], Property Name=" + propertyName + "].";
+          ErrorDialog.dataWarning(new BadDataReport(this, message, data));
         }
         else {
           String oldValue = prop.getPropertyValue();

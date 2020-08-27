@@ -202,7 +202,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     else {
       watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = new NamedKeyStroke(keys.charAt(i),InputEvent.CTRL_DOWN_MASK);
+        watchKeys[i] = new NamedKeyStroke(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
       }
     }
   }
@@ -260,7 +260,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
-        .append((actionOption.getSelectedIndex()==0) ? HIDE : DISABLE)
+        .append((actionOption.getSelectedIndex() == 0) ? HIDE : DISABLE)
         .append(propertyMatch.getValueString())
         .append(watchKeys.getValueString());
       return ID + se.getValue();

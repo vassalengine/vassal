@@ -95,7 +95,7 @@ public class OpCache {
     }
   }
 
-  protected final ConcurrentMap<Key<?>,Future<?>> cache =
+  protected final ConcurrentMap<Key<?>, Future<?>> cache =
     new ConcurrentSoftHashMap<>();
 
   /**
@@ -186,7 +186,7 @@ public class OpCache {
   /**
    * A request for execution of an {@link Op}, to be queued.
    */
-  private class Request<V> extends SwingWorker<V,Void> {
+  private class Request<V> extends SwingWorker<V, Void> {
     private final Key<V> key;
     private final OpObserver<V> obs;
 
@@ -362,7 +362,7 @@ public class OpCache {
       super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
 
-    public <V> Future<V> submit(SwingWorker<V,?> req) {
+    public <V> Future<V> submit(SwingWorker<V, ?> req) {
       execute(req);
       return req;
     }

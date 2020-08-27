@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -90,7 +91,6 @@ import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
-import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.image.ImageUtils;
 
 /**
@@ -123,12 +123,16 @@ public class WizardSupport {
   }
 
   /**
-   * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline
+   * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline.
+   *
+   * Only adds setups that are not menus.
    *
    * @param setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
-    setups.add(setup);
+    if (!setup.isMenu()) {
+      setups.add(setup);
+    }
   }
 
   public void removePredefinedSetup(PredefinedSetup setup) {
@@ -151,20 +155,6 @@ public class WizardSupport {
   public void showWelcomeWizard() {
 
     final GameModule g = GameModule.getGameModule();
-    final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
-
-    if (! Boolean.TRUE.equals(showWizard)) {
-      g.getFrame().setVisible(true);
-
-      // prompt for username and password if wizard is off
-      // but no username is set
-      // FIXME: this belongs outside of the wizard, not here
-      if (!isRealName()) {
-        new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
-      }
-      return;
-    }
-
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
     final HashMap<String, Wizard> props = new HashMap<>();
@@ -187,10 +177,10 @@ public class WizardSupport {
       if (PLAY_ONLINE_ACTION.equals(action)) {
         final ChatServerControls controls =
           ((BasicModule) g).getServerControls();
-        g.getFrame().setVisible(true);
+        g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
-        new SwingWorker<Void,Void>() {
+        new SwingWorker<Void, Void>() {
           @Override
           protected Void doInBackground() {
             controls.getClient().setConnected(true);
@@ -200,11 +190,11 @@ public class WizardSupport {
       }
       else {
         g.getGameState().setup(true);
-        g.getFrame().setVisible(true);
+        g.getPlayerWindow().setVisible(true);
       }
     }
     else {
-      g.getFrame().setVisible(true);
+      g.getPlayerWindow().setVisible(true);
     }
   }
 
@@ -215,18 +205,14 @@ public class WizardSupport {
   }
 
   public WizardPanelProvider createPlayOfflinePanels() {
-    ArrayList<PredefinedSetup> l = new ArrayList<>();
-    for (PredefinedSetup ps : setups) {
-      if (!ps.isMenu())
-        l.add(ps);
-    }
-    if (l.isEmpty()) {
+    if (setups.isEmpty()) {
       return GameSetupPanels.newInstance();
     }
-    else {
-      return new PlayOfflinePanels(
-          Resources.getString("WizardSupport.WizardSupport.PlayOffline"), Resources.getString("WizardSupport.WizardSupport.SelectSetup"), l); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+
+    return new PlayOfflinePanels(
+      Resources.getString("WizardSupport.WizardSupport.PlayOffline"), //$NON-NLS-1$
+      Resources.getString("WizardSupport.WizardSupport.SelectSetup"), //$NON-NLS-2$
+      setups);
   }
 
   /**
@@ -493,10 +479,10 @@ public class WizardSupport {
    *
    */
   public static class PlayOfflinePanels extends WizardPanelProvider {
-    private List setups;
-    private String description;
+    private final List<PredefinedSetup> setups;
+    private final String description;
 
-    protected PlayOfflinePanels(String title, String singleDescription, List setups) {
+    protected PlayOfflinePanels(String title, String singleDescription, List<PredefinedSetup> setups) {
       super(title, SETUP_KEY, singleDescription);
       this.setups = setups;
       this.description = singleDescription;
@@ -504,8 +490,9 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
-      final JComboBox setupSelection = new JComboBox(setups.toArray());
-      ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
+      DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>(new Vector<>(setups));
+      comboBoxModel.insertElementAt(description, 0);
+      final JComboBox<Object> setupSelection = new JComboBox<>(comboBoxModel);
       setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
         @Override
@@ -533,18 +520,13 @@ public class WizardSupport {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-          JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-          if (value instanceof PredefinedSetup) {
-            PredefinedSetup pds = (PredefinedSetup) value;
-            c.setText((pds).getConfigureName());
-            if (pds.isMenu()) {
-              c.setSize(0, 0);
-            }
-          }
-          else {
-            c.setText(value == null ? "" : value.toString());
-          }
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+          final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+          final String labelText =
+            value instanceof PredefinedSetup ?
+              ((PredefinedSetup) value).getConfigureName() :
+              value == null ? "" : value.toString();
+          c.setText(labelText);
           return c;
         }
       });

@@ -104,7 +104,7 @@ public class DoActionButton extends AbstractConfigurable
   protected int indexStep = 1;
   protected int indexValue;
 
-  protected MutableProperty.Impl loopIndexProperty = new MutableProperty.Impl("",this);
+  protected MutableProperty.Impl loopIndexProperty = new MutableProperty.Impl("", this);
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
@@ -466,56 +466,64 @@ public class DoActionButton extends AbstractConfigurable
         @Override
         public boolean shouldBeVisible() {
           return doReport;
-        }};
+        }
+      };
     }
     else if (SOUND_CLIP.equals(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doSound;
-        }};
+        }
+      };
     }
     else if (HOTKEYS.equals(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doHotkey;
-        }};
+        }
+      };
     }
     else if (LOOP_COUNT.equals(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
-        }};
+        }
+      };
     }
     else if (WHILE_EXPRESSION.equals(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_WHILE.equals(loopType);
-        }};
+        }
+      };
     }
     else if (UNTIL_EXPRESSION.equals(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
-        }};
+        }
+      };
     }
     else if (List.of(LOOP_TYPE, PRE_LOOP_HOTKEY, POST_LOOP_HOTKEY, INDEX).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop;
-        }};
+        }
+      };
     }
     else if (List.of(INDEX_PROPERTY, INDEX_START, INDEX_STEP).contains(name)) {
       return new VisibilityCondition() {
         @Override
         public boolean shouldBeVisible() {
           return doLoop && hasIndex;
-        }};
+        }
+      };
     }
     else {
       return null;

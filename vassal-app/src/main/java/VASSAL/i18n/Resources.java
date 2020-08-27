@@ -348,7 +348,7 @@ public class Resources {
       // If no English translation of Vassal is available (as will usually be the case),
       // drop back to the Base bundle.
       if (url == null && name.endsWith(EN_BUNDLE)) {
-        url = getAResource(name.substring(0, name.lastIndexOf('/')+1)+BASE_BUNDLE);
+        url = getAResource(name.substring(0, name.lastIndexOf('/') + 1) + BASE_BUNDLE);
       }
 
       return url;

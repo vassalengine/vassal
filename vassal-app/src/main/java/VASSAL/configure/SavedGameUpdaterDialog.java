@@ -182,15 +182,15 @@ public class SavedGameUpdaterDialog extends JDialog {
         for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
           try {
             File savedGame = savedGamesModel.getElementAt(i);
-            updater.updateSavedGame(oldPieceInfo,savedGame);
-            GameModule.getGameModule().warn("Updated "+savedGame.getName()+" from version "+versionField.getText()+" to "+GameModule.getGameModule().getGameVersion());
+            updater.updateSavedGame(oldPieceInfo, savedGame);
+            GameModule.getGameModule().warn("Updated " + savedGame.getName() + " from version " + versionField.getText() + " to " + GameModule.getGameModule().getGameVersion());
           }
           // FIXME: review error message
           catch (final IOException e) {
             Runnable showError = new Runnable() {
               @Override
               public void run() {
-                showErrorMessage(e,"Update failed","Unable to save file");
+                showErrorMessage(e, "Update failed", "Unable to save file");
               }
             };
             try {
@@ -249,12 +249,12 @@ public class SavedGameUpdaterDialog extends JDialog {
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
         String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {
-          showErrorMessage(null,"Import failed","Imported info is from the wrong module:  "+moduleName);
+          showErrorMessage(null, "Import failed", "Imported info is from the wrong module:  " + moduleName);
           oldPieceInfo = null;
           versionField.setText(null);
         }
         else if (GameModule.getGameModule().getGameVersion().equals(moduleVersion)) {
-          showErrorMessage(null,"Import failed","Imported info is from the current version, "+moduleVersion+".\nLoad the older version in the editor and export the GamePiece info,\nThen load this module again and import the older version's info");
+          showErrorMessage(null, "Import failed", "Imported info is from the current version, " + moduleVersion + ".\nLoad the older version in the editor and export the GamePiece info,\nThen load this module again and import the older version's info");
           oldPieceInfo = null;
           versionField.setText(null);
         }
@@ -264,7 +264,7 @@ public class SavedGameUpdaterDialog extends JDialog {
       }
       // FIXME: review error message
       catch (IOException e) {
-        showErrorMessage(e,"Import failed","Unable to import info");
+        showErrorMessage(e, "Import failed", "Unable to import info");
         oldPieceInfo = null;
       }
       catch (IllegalArgumentException e) { // catches malformed input files

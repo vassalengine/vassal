@@ -127,7 +127,7 @@ public class Sort {
    * @deprecated Use {@link java.util.Comparator} instead.
    */
   @Deprecated
-  public static interface Comparator {
+  public interface Comparator {
     public int compare(Object o1, Object o2);
   }
 

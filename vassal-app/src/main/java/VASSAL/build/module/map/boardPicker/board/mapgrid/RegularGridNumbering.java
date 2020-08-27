@@ -309,7 +309,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public static class LocationFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION,ROW,COLUMN});
+      return new FormattedStringConfigurer(key, name, new String[]{GRID_LOCATION, ROW, COLUMN});
     }
   }
 
@@ -427,7 +427,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     if (type == 'A')
       return ALPHABETIC_MATCH;
     else
-      return "-?[0-9]{" + (leading+1) + ",}";
+      return "-?[0-9]{" + (leading + 1) + ",}";
   }
 
   @Override
@@ -483,14 +483,14 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 // FIXME: rename to BadCoordsException
       throw new BadCoords();
     }
-    assert(matcher.groupCount() == groupCount && groupCount >= 2);
+    assert (matcher.groupCount() == groupCount && groupCount >= 2);
 
     String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
     String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
     int row = parseName(rowName, vType);
     int col = parseName(colName, hType);
 
-    return getCenterPoint(col-hOff, row-vOff);
+    return getCenterPoint(col - hOff, row - vOff);
   }
 
   public abstract Point getCenterPoint(int col, int row);
@@ -501,8 +501,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     int col = getColumn(pt);
     format.setFormat(locationFormat);
     format.setProperty(GRID_LOCATION, getName(row, col));
-    format.setProperty(ROW, getName(row+vOff, vType, vLeading));
-    format.setProperty(COLUMN, getName(col+hOff, hType, hLeading));
+    format.setProperty(ROW, getName(row + vOff, vType, vLeading));
+    format.setProperty(COLUMN, getName(col + hOff, hType, hLeading));
     return format.getLocalizedText();
   }
 
@@ -524,7 +524,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
         ++index;
       }
       while (index < name.length() && Character.isUpperCase(name.charAt(index))) {
-        if (index < name.length()-1)
+        if (index < name.length() - 1)
           value += 26;
         else
           value += ALPHABET.indexOf(name.charAt(index));

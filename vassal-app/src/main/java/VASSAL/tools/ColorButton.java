@@ -58,8 +58,8 @@ public class ColorButton extends JButton {
   public ColorButton(Color c) {
     super();
     color = c;
-    setIcon(new SwatchIcon(30,15));
-    setMargin(new Insets(2,2,2,2));
+    setIcon(new SwatchIcon(30, 15));
+    setMargin(new Insets(2, 2, 2, 2));
   }
 
   /**
@@ -93,11 +93,11 @@ public class ColorButton extends JButton {
       final int h = (int)(swatchHeight * os_scale);
 
       g.setColor(Color.black);
-      g.drawRect(x, y, w-1, h-1);
+      g.drawRect(x, y, w - 1, h - 1);
 
       if (color != null) {
         g.setColor(color);
-        g.fillRect(x+1, y+1, w-2, h-2);
+        g.fillRect(x + 1, y + 1, w - 2, h - 2);
       }
       else {
         // paint no color and a "nil" if the color is null
@@ -106,8 +106,8 @@ public class ColorButton extends JButton {
         final Font font = FONT.deriveFont((float)(FONT.getSize() * os_scale));
         g.setFont(font);
         g.drawString("nil",
-          x+(w - g.getFontMetrics(font).stringWidth("nil"))/ 2,
-          y+(h + g.getFontMetrics(font).getAscent())/2);
+          x + (w - g.getFontMetrics(font).stringWidth("nil")) / 2,
+          y + (h + g.getFontMetrics(font).getAscent()) / 2);
       }
 
       g2d.setTransform(orig_t);

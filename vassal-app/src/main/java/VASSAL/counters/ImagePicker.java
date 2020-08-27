@@ -59,7 +59,7 @@ public class ImagePicker extends JPanel
   private final JScrollPane imageScroller;
 
   public ImagePicker() {
-    noImage = new JTextArea(1,10);
+    noImage = new JTextArea(1, 10);
     noImage.setFont(FONT);
     noImage.setText("Double-click here to add new image");
     noImage.addMouseListener(this);
@@ -80,7 +80,7 @@ public class ImagePicker extends JPanel
 
     select = new JComboBox<>(ArrayUtils.addFirst(GameModule.getGameModule().getDataArchive().getImageNames(), NO_IMAGE));
     select.addItemListener(this);
-    setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     add(noImage);
     add(select);
   }
@@ -97,7 +97,7 @@ public class ImagePicker extends JPanel
     remove(0);
     if (name == null || name.trim().length() == 0 || name.equals(NO_IMAGE)) {
       imageName = "";
-      add(noImage,0);
+      add(noImage, 0);
     }
     else {
       icon.setOp(Op.load(imageName));
@@ -107,13 +107,13 @@ public class ImagePicker extends JPanel
       imageScroller.setPreferredSize(d);
       imageScroller.setMinimumSize(d);
 
-      add(imageViewer,0);
+      add(imageViewer, 0);
     }
 
     select.removeItemListener(this);
     select.setSelectedItem(name);
     if (name != null && !name.equals(select.getSelectedItem())) {
-      select.setSelectedItem(name+".gif");
+      select.setSelectedItem(name + ".gif");
     }
     select.addItemListener(this);
     revalidate();

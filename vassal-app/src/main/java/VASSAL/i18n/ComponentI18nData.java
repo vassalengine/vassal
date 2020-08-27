@@ -154,7 +154,7 @@ public class ComponentI18nData {
         for (PieceI18nData.Property prop : pieceData.getProperties()) {
           Property property = new Property(prop.getName(), prop.getDescription());
           translatableProperties.put(prop.getName(), property);
-          allProperties.put(prop.getName(),property);
+          allProperties.put(prop.getName(), property);
         }
       }
       if (p instanceof PlaceMarker) {

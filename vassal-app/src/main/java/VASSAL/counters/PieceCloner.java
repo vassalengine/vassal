@@ -59,9 +59,12 @@ public class PieceCloner {
     else if (piece instanceof EditablePiece && piece instanceof Decorator) {
       try {
         clone = piece.getClass().getConstructor().newInstance();
-        ((Decorator)clone).setInner(clonePiece(((Decorator)piece).getInner()));
-        ((EditablePiece)clone).mySetType(((Decorator)piece).myGetType());
-        ((Decorator)clone).mySetState(((Decorator)piece).myGetState());
+        final Decorator dclone = (Decorator) clone;
+        final Decorator dpiece = (Decorator) piece;
+
+        dclone.setInner(clonePiece(dpiece.getInner()));
+        ((EditablePiece)clone).mySetType(dpiece.myGetType());
+        dclone.mySetState(dpiece.myGetState());
       }
       catch (Throwable t) {
         ReflectionUtils.handleNewInstanceFailure(t, piece.getClass());

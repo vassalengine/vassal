@@ -36,6 +36,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +58,7 @@ import VASSAL.tools.imports.Importer;
  * @author Michael Kiefte
  *
  */
-public class SymbolSet extends Importer{
+public class SymbolSet extends Importer {
 
   private static final int OLD_SYMBOL_SET_FORMAT = 0xFD;
 
@@ -218,9 +219,9 @@ public class SymbolSet extends Importer{
      */
     private BufferedImage getImage(Rectangle rect2) {
       if (img == null) {
-        if ( isMask && (rect.width <= 0 || rect.height <= 0
-            || rect.width+rect.x > bitmap.getWidth()
-            || rect.height+rect.y > bitmap.getHeight() )) {
+        if (isMask && (rect.width <= 0 || rect.height <= 0
+            || rect.width + rect.x > bitmap.getWidth()
+            || rect.height + rect.y > bitmap.getHeight())) {
           // Images with invalid masks appear to be completely transparent.
           // This is a hassle generating new ones all the time, but there's nothing
           // to say that the real mask can't be different sizes at every call,
@@ -407,7 +408,7 @@ public class SymbolSet extends Importer{
 
   public Dimension getMaxSize(Dimension max) {
     if (max == null)
-      max = new Dimension(0,0);
+      max = new Dimension(0, 0);
     for (SymbolData piece : gamePieceData) {
       BufferedImage im = piece.getImage();
       if (im.getWidth() > max.width)
@@ -426,19 +427,19 @@ public class SymbolSet extends Importer{
    * @return The most frequently occuring dimension for game pieces in this module.
    */
   public Dimension getModalSize() {
-    final HashMap<Dimension,Integer> histogram =
+    final HashMap<Dimension, Integer> histogram =
       new HashMap<>();
 
     for (SymbolData piece : gamePieceData) {
       final BufferedImage im = piece.getImage();
       final Dimension d = new Dimension(im.getWidth(), im.getHeight());
       final Integer i = histogram.get(d);
-      histogram.put(d, i == null ? 1 : i+1);
+      histogram.put(d, i == null ? 1 : i + 1);
     }
 
     int max = 0;
-    final Dimension maxDim = new Dimension(0,0);
-    for (Map.Entry<Dimension,Integer> e : histogram.entrySet()) {
+    final Dimension maxDim = new Dimension(0, 0);
+    for (Map.Entry<Dimension, Integer> e : histogram.entrySet()) {
       final Dimension d = e.getKey();
       final int n = e.getValue();
 
@@ -586,7 +587,7 @@ public class SymbolSet extends Importer{
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
 
-      try (Reader fr = new FileReader(sdx);
+      try (Reader fr = new FileReader(sdx, StandardCharsets.US_ASCII);
            BufferedReader input = new BufferedReader(fr)) {
 
         final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
@@ -599,7 +600,7 @@ public class SymbolSet extends Importer{
           for (int i = 0; i < pieces.length; ++i) {
             line = input.readLine();
             int idx = Integer.parseInt(line);
-            pieces[i] = gamePieceData[idx-1];
+            pieces[i] = gamePieceData[idx - 1];
           }
         }
         catch (EOFException e) {

@@ -89,7 +89,7 @@ public class ImageIOImageLoader implements ImageLoader {
     // in yet another way, which will also lead to same YCbCr mangling.
     // (So far the turquoise pixel happens only with 1.7.0_21 and 1.7.0_25
     // JVMs on Linux...)
-    final int pixel = img.getRGB(0,0);
+    final int pixel = img.getRGB(0, 0);
     switch (pixel) {
     case 0xFF000000:
       YCbCrBug = false;
@@ -380,7 +380,7 @@ public class ImageIOImageLoader implements ImageLoader {
     return img;
   }
 
-  protected static interface Wrapper<T> {
+  protected interface Wrapper<T> {
     T run(String name, InputStream in) throws IOException;
   }
 
@@ -531,9 +531,9 @@ public class ImageIOImageLoader implements ImageLoader {
       final int pr = ( data[i]        & 0xFF) - 128;
 
       final int a  = (data[i] >> 24) & 0xFF;
-      final int r = (int) Math.round(y + 1.402*pr);
-      final int g = (int) Math.round(y - 0.34414*pb - 0.71414*pr);
-      final int b = (int) Math.round(y + 1.772*pb);
+      final int r = (int) Math.round(y + 1.402 * pr);
+      final int g = (int) Math.round(y - 0.34414 * pb - 0.71414 * pr);
+      final int b = (int) Math.round(y + 1.772 * pb);
 
       data[i] = (a << 24) |
                 ((r < 0 ? 0 : (r > 0xFF ? 0xFF : r)) << 16) |

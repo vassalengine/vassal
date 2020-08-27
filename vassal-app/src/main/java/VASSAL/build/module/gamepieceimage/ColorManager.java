@@ -106,7 +106,7 @@ public class ColorManager extends AbstractConfigurable {
   /**
    * User defined Colors
    */
-  protected Map<String,ColorSwatch> userColors =
+  protected Map<String, ColorSwatch> userColors =
     new HashMap<>();
 
   public ColorManager() {
@@ -221,7 +221,7 @@ public class ColorManager extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm", "NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

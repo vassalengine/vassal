@@ -215,10 +215,10 @@ public class ShapeItem extends Item {
     Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
     else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     if (fg != null) {
@@ -227,7 +227,7 @@ public class ShapeItem extends Item {
         g.fillRect(r.x, r.y, r.width, r.height);
       }
       else if (shape.equals(RRECT)) {
-        g.fillRoundRect(r.x, r.y, r.width, r.height, bevel*2, bevel*2);
+        g.fillRoundRect(r.x, r.y, r.width, r.height, bevel * 2, bevel * 2);
       }
       else if (shape.equals(OVAL)) {
         g.fillOval(r.x, r.y, r.width, r.height);
@@ -240,7 +240,7 @@ public class ShapeItem extends Item {
         g.drawRect(r.x, r.y, r.width, r.height);
       }
       else if (shape.equals(RRECT)) {
-        g.drawRoundRect(r.x, r.y, r.width, r.height, bevel*2, bevel*2);
+        g.drawRoundRect(r.x, r.y, r.width, r.height, bevel * 2, bevel * 2);
       }
       else if (shape.equals(OVAL)) {
         g.drawOval(r.x, r.y, r.width, r.height);
@@ -260,7 +260,7 @@ public class ShapeItem extends Item {
 
   @Override
   public Dimension getSize() {
-    return new Dimension(getWidth(),getHeight());
+    return new Dimension(getWidth(), getHeight());
   }
 
 

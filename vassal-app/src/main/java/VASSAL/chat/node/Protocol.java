@@ -305,25 +305,39 @@ public class Protocol {
     return player;
   }
 
-  /**
-   * A dump of the current connections to the server. Includes a path name and
-   * info for each player node, and info for each room node as well
-   *
-   * @param nodes
-   * @return public static String encodeContentsCommand(Node[] nodes) {
-   *         SequenceEncoder list = new SequenceEncoder('\t'); for (int i = 0; i <
-   *         nodes.length; ++i) { list.append(nodes[i].getPathAndInfo()); }
-   *         return CONTENTS + list.getValue(); }
-   */
+//  /**
+//   * A dump of the current connections to the server. Includes a path name and
+//   * info for each player node, and info for each room node as well
+//   *
+//   * @param nodes
+//   * @return
+//   */
+//  public static String encodeContentsCommand(Node[] nodes) {
+//    SequenceEncoder list = new SequenceEncoder('\t');
+//    for (int i = 0; i < nodes.length; ++i) {
+//      list.append(nodes[i].getPathAndInfo());
+//    }
+//    return CONTENTS + list.getValue();
+//  }
 
-  /**
-   * @see #encodeContentsCommand
-   * @param cmd
-   * @return public static Node decodeContentsCommand(String cmd) { Node node =
-   *         null; if (cmd.startsWith(CONTENTS)) { Node root = new Node(null,
-   *         null, null); SequenceEncoder.Decoder st = new
-   *         SequenceEncoder.Decoder(cmd.substring(CONTENTS.length()), '\t');
-   *         while (st.hasMoreTokens()) { String pathAndInfo = st.nextToken();
-   *         Node.build(root, pathAndInfo); } node = root; } return node; }
-   */
+
+//  /**
+//   * @see #encodeContentsCommand
+//   * @param cmd
+//   * @return
+//   */
+//  public static Node decodeContentsCommand(String cmd) {
+//    Node node = null;
+//    if (cmd.startsWith(CONTENTS)) {
+//      Node root = new Node(null,null, null);
+//      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(CONTENTS.length()), '\t');
+//      while (st.hasMoreTokens()) {
+//        String pathAndInfo = st.nextToken();
+//        Node.build(root, pathAndInfo);
+//      }
+//      node = root;
+//    }
+//    return node;
+//  }
+
 }

@@ -67,7 +67,7 @@ public class PlayerHand extends PrivateMap {
 
   @Override
   public Dimension mapSize() {
-    final Rectangle r = new Rectangle(0,0,200,200);
+    final Rectangle r = new Rectangle(0, 0, 200, 200);
     r.add(new Rectangle(super.mapSize()));
 
     for (GamePiece p : pieces.getPieces()) {

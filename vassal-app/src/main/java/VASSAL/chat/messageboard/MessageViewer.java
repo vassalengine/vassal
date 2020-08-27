@@ -61,17 +61,17 @@ public class MessageViewer extends JPanel {
       cols.addElement(Resources.formatDate(msg.getDate()));
       rows.addElement(cols);
     }
-    model = new DefaultTableModel(rows,names);
+    model = new DefaultTableModel(rows, names);
     msgTable.setModel(model);
     if (!msgList.isEmpty()) {
-      msgTable.getSelectionModel().setSelectionInterval(0,0);
+      msgTable.getSelectionModel().setSelectionInterval(0, 0);
     }
   }
 
   private void initComponents() {
     JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-    model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"),Resources.getString("Chat.date")},0);   //$NON-NLS-1$ //$NON-NLS-2$
+    model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"), Resources.getString("Chat.date")}, 0);   //$NON-NLS-1$ //$NON-NLS-2$
     msgTable = new JTable(model);
     msgTable.getSelectionModel().addListSelectionListener(new ShowMsgText());
     JScrollPane scroll = new JScrollPane(msgTable);

@@ -65,7 +65,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean dotsVisible = false;
   protected Color color = Color.black;
   protected GridContainer container;
-  protected Map<Integer,Area> shapeCache = new HashMap<>();
+  protected Map<Integer, Area> shapeCache = new HashMap<>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
   protected boolean snapTo = true;
@@ -432,38 +432,38 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     if (!cornersLegal || !edgesLegal) {
       if (cornersLegal) {
         if (ny % 2 == 0) {  // on a cell center
-          nx = 2 * (int) round(offsetX/dx);
+          nx = 2 * (int) round(offsetX / dx);
         }
         else { // on a corner
-          nx = 1 + 2 * (int) round(offsetX/dx - 0.5);
+          nx = 1 + 2 * (int) round(offsetX / dx - 0.5);
         }
       }
       else if (edgesLegal) {
         if (ny % 2 == 0) {
           if (nx % 2 == 0) { // Cell center
-            nx = 2 * (int) round(offsetX/dx);
+            nx = 2 * (int) round(offsetX / dx);
           }
           // else Vertical edge - do nothing
         }
         else { // Horizontal edge
-          nx = 2 * (int) round(offsetX/dx);
+          nx = 2 * (int) round(offsetX / dx);
         }
       }
       else {
-        nx = 2*(int)round(offsetX/dx);
-        ny = 2*(int)round(offsetY/dy);
+        nx = 2 * (int)round(offsetX / dx);
+        ny = 2 * (int)round(offsetY / dy);
         if (snapScale > 0) {
-          int deltaX = offsetX - (int)round(nx*dx/2);
-          deltaX = (int)round(deltaX/(0.5*dx/snapScale));
-          deltaX = max(deltaX,1-snapScale);
-          deltaX = min(deltaX,snapScale-1);
-          deltaX = (int)round(deltaX*0.5*dx/snapScale);
-          int deltaY = offsetY - (int)round(ny*dy/2);
-          deltaY = (int)round(deltaY/(0.5*dy/snapScale));
-          deltaY = max(deltaY,1-snapScale);
-          deltaY = min(deltaY,snapScale-1);
-          deltaY = (int)round(deltaY*0.5*dy/snapScale);
-          snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
+          int deltaX = offsetX - (int)round(nx * dx / 2);
+          deltaX = (int)round(deltaX / (0.5 * dx / snapScale));
+          deltaX = max(deltaX, 1 - snapScale);
+          deltaX = min(deltaX, snapScale - 1);
+          deltaX = (int)round(deltaX * 0.5 * dx / snapScale);
+          int deltaY = offsetY - (int)round(ny * dy / 2);
+          deltaY = (int)round(deltaY / (0.5 * dy / snapScale));
+          deltaY = max(deltaY, 1 - snapScale);
+          deltaY = min(deltaY, snapScale - 1);
+          deltaY = (int)round(deltaY * 0.5 * dy / snapScale);
+          snap = new Point((int)round(nx * dx / 2 + deltaX), (int)round(ny * dy / 2 + deltaY));
           snap.translate(origin.x, origin.y);
         }
       }
@@ -615,13 +615,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       if ((isPerpendicular(hp1, hp2) && isPerpendicular(hp1, hp3) && !isPerpendicular(hp2, hp3)) ||
           (isPerpendicular(hp2, hp1) && isPerpendicular(hp2, hp3) && !isPerpendicular(hp1, hp3)) ||
           (isPerpendicular(hp3, hp1) && isPerpendicular(hp3, hp2) && !isPerpendicular(hp1, hp2))) {
-        int height = max(abs(hp1.y-hp2.y), abs(hp1.y-hp3.y));
-        int width = max(abs(hp1.x-hp2.x), abs(hp1.x-hp3.x));
+        int height = max(abs(hp1.y - hp2.y), abs(hp1.y - hp3.y));
+        int width = max(abs(hp1.x - hp2.x), abs(hp1.x - hp3.x));
         int top = min(hp1.y, min(hp2.y, hp3.y));
         int left = min(hp1.x, min(hp2.x, hp3.x));
         grid.setDx(width);
         grid.setDy(height);
-        setNewOrigin(new Point(left+width/2, top+height/2));
+        setNewOrigin(new Point(left + width / 2, top + height / 2));
       }
       else {
         reportShapeError();

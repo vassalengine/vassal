@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -80,13 +81,13 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  *    a version 0 Embellishment trait.
  */
 public class Embellishment extends Decorator implements TranslatablePiece {
-  public static final String OLD_ID = "emb;";
-  public static final String ID = "emb2;"; // New type encoding
+  public static final String OLD_ID = "emb;"; //$NON-NLS-1$//
+  public static final String ID = "emb2;"; // New type encoding //$NON-NLS-1$//
 
-  public static final String IMAGE = "_Image";
-  public static final String NAME = "_Name";
-  public static final String LEVEL = "_Level";
-  public static final String ACTIVE = "_Active";
+  public static final String IMAGE = "_Image"; //$NON-NLS-1$//
+  public static final String NAME = "_Name"; //$NON-NLS-1$//
+  public static final String LEVEL = "_Level"; //$NON-NLS-1$//
+  public static final String ACTIVE = "_Active"; //$NON-NLS-1$//
 
   protected String activateKey = "";
   protected String upKey, downKey;
@@ -166,12 +167,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   /**
    * Set the current level - First level = 0 Does not change the active status
    *
-   * @param val
+   * @param val Value to set
    */
   public void setValue(int val) {
     int theVal = val;
     if (val >= nValues) {
-      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer="+val);
+      reportDataError(this, Resources.getString("Error.bad_layer"), "Layer=" + val); //$NON-NLS-1$//
       theVal = nValues;
     }
     value = value > 0 ? theVal + 1 : -theVal - 1;
@@ -187,7 +188,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
-      activateKey = st.nextToken("A");
+      activateKey = st.nextToken("A"); //$NON-NLS-1$//
       upCommand = st.nextToken("");
       upModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       upKey = st.nextToken("");
@@ -269,7 +270,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * This original way of representing the type causes problems because it's not
    * extensible
    *
-   * @param s
+   * @param s Original type
    */
   private void originalSetType(String s) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
@@ -373,7 +374,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
-    String name;
+    String ret;
 
     final String cname = 0 < value && value - 1 < commonName.length ?
                          getCommonName(localized, value - 1) : null;
@@ -385,21 +386,21 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (st.hasMoreTokens()) {
         final String second = st.nextToken();
         if (first.length() == 0) {
-          name = (localized ? piece.getLocalizedName() : piece.getName()) + second;
+          ret = (localized ? piece.getLocalizedName() : piece.getName()) + second;
         }
         else {
-          name = first + (localized ? piece.getLocalizedName() : piece.getName());
+          ret = first + (localized ? piece.getLocalizedName() : piece.getName());
         }
       }
       else {
-        name = first;
+        ret = first;
       }
     }
     else {
-      name = (localized ? piece.getLocalizedName() : piece.getName());
+      ret = (localized ? piece.getLocalizedName() : piece.getName());
     }
 
-    return name;
+    return ret;
   }
 
   /**
@@ -452,8 +453,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  @Deprecated
+  /** @deprecated No Replacement */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public String oldGetType() {
+    ProblemDialog.showDeprecated("2020-08-06");
     final SequenceEncoder se = new SequenceEncoder(';');
     final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
 
@@ -515,7 +518,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
-      imagePainter[i].draw(g, x + (int)(zoom*r.x), y + (int)(zoom*r.y), zoom, obs);
+      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), zoom, obs);
     }
 
     if (drawUnder) {
@@ -546,10 +549,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
+      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); //$NON-NLS-1$//
     }
     catch (ExpressionException e) {
-      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty["+propertyName+"]", e);
+      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty[" + propertyName + "]", e); //$NON-NLS-1$//
     }
   }
 
@@ -667,17 +670,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   /** @deprecated Use {@link ImageOp#getImage()} instead. */
-  @Deprecated
-  protected Image getCurrentImage() throws java.io.IOException {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected Image getCurrentImage() {
+    ProblemDialog.showDeprecated("2020-08-06");
     // nonpositive value means that layer is inactive
     // null or empty imageName[value-1] means that this layer has no image
     if (value <= 0 ||
-        imageName[value-1] == null ||
-        imageName[value-1].length() == 0 ||
-        imagePainter[value-1] == null ||
-        imagePainter[value-1].getSource() == null) return null;
+        imageName[value - 1] == null ||
+        imageName[value - 1].length() == 0 ||
+        imagePainter[value - 1] == null ||
+        imagePainter[value - 1].getSource() == null) return null;
 
-    return imagePainter[value-1].getSource().getImage();
+    return imagePainter[value - 1].getSource().getImage();
   }
 
   @Override
@@ -842,13 +846,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   /** Get the localized name of this level (alone) */
   protected String getLocalizedCommonName(int i) {
-    final String name = commonName[i];
-    if (name == null) return null;
-    final String translation = getTranslation(strip(name));
-    if (name.startsWith("+")) {
+    final String cname = commonName[i];
+    if (cname == null) return null;
+    final String translation = getTranslation(strip(cname));
+    if (cname.startsWith("+")) {
       return "+" + translation;
     }
-    if (name.endsWith("+")) {
+    if (cname.endsWith("+")) {
       return translation + "+";
     }
     return translation;
@@ -909,70 +913,71 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   protected static class Ed implements PieceEditor {
-    private MultiImagePicker images;
-    private StringConfigurer activateCommand;
-    private StringConfigurer upCommand;
-    private StringConfigurer downCommand;
-    private StringConfigurer rndCommand;
+    private final MultiImagePicker images;
+    private final StringConfigurer activateCommand;
+    private final StringConfigurer upCommand;
+    private final StringConfigurer downCommand;
+    private final StringConfigurer rndCommand;
 
-    private JTextField xOffInput = new JTextField(2);
-    private JTextField yOffInput = new JTextField(2);
-    private JTextField levelNameInput = new JTextField(10);
-    private JRadioButton prefix = new JRadioButton("is prefix");
-    private JRadioButton suffix = new JRadioButton("is suffix");
-    private JCheckBox drawUnderneath = new JCheckBox("Underneath when highlighted?");
-    private FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, "Reset to level:  ");
-    private StringConfigurer resetCommand;
-    private JCheckBox loop = new JCheckBox("Loop through levels?");
+    private final JTextField xOffInput = new JTextField(2);
+    private final JTextField yOffInput = new JTextField(2);
+    private final JTextField levelNameInput = new JTextField(10);
+    private final JRadioButton prefix = new JRadioButton("is prefix");
+    private final JRadioButton suffix = new JRadioButton("is suffix");
+    private final JCheckBox drawUnderneath = new JCheckBox("Underneath when highlighted?");
+    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, "Reset to level:  ");
+    private final StringConfigurer resetCommand;
+    private final JCheckBox loop = new JCheckBox("Loop through levels?");
 
-    private JPanel controls;
+    private final JPanel controls;
     private List<String> names;
     private List<Integer> isPrefix;
     private static final Integer NEITHER = 0;
     private static final Integer PREFIX = 1;
     private static final Integer SUFFIX = 2;
 
-    private BooleanConfigurer followConfig;
-    private PropertyNameExpressionConfigurer propertyConfig;
-    private IntConfigurer firstLevelConfig;
-    private StringConfigurer nameConfig;
+    private final BooleanConfigurer followConfig;
+    private final PropertyNameExpressionConfigurer propertyConfig;
+    private final IntConfigurer firstLevelConfig;
+    private final StringConfigurer nameConfig;
 
-    private JButton up, down;
-    private int version;
-    private BooleanConfigurer alwaysActiveConfig;
-    private NamedHotKeyConfigurer activateConfig;
-    private NamedHotKeyConfigurer increaseConfig;
-    private NamedHotKeyConfigurer decreaseConfig;
-    private NamedHotKeyConfigurer resetConfig;
-    private NamedHotKeyConfigurer rndKeyConfig;
+    private final JButton up;
+    private final JButton down;
+    private final int version;
+    private final BooleanConfigurer alwaysActiveConfig;
+    private final NamedHotKeyConfigurer activateConfig;
+    private final NamedHotKeyConfigurer increaseConfig;
+    private final NamedHotKeyConfigurer decreaseConfig;
+    private final NamedHotKeyConfigurer resetConfig;
+    private final NamedHotKeyConfigurer rndKeyConfig;
 
-    private JLabel activateLabel;
-    private JLabel increaseLabel;
-    private JLabel decreaseLabel;
-    private JLabel resetLabel;
-    private JLabel rndLabel;
+    private final JLabel activateLabel;
+    private final JLabel increaseLabel;
+    private final JLabel decreaseLabel;
+    private final JLabel resetLabel;
+    private final JLabel rndLabel;
 
-    private JLabel actionLabel;
-    private JLabel menuLabel;
-    private JLabel keyLabel;
-    private JLabel optionLabel;
+    private final JLabel actionLabel;
+    private final JLabel menuLabel;
+    private final JLabel keyLabel;
+    private final JLabel optionLabel;
 
     public Ed(Embellishment e) {
       Box box;
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2,fillx","[]rel[]rel[]rel[]"));
+      controls.setLayout(new MigLayout("hidemode 2,fillx", "[]rel[]rel[]rel[]")); //$NON-NLS-1$//
 
       nameConfig = new StringConfigurer(null, "Name: ", e.getName());
-      controls.add(nameConfig.getControls(), "span 4,wrap,growx");
+      controls.add(nameConfig.getControls(), "span 4,wrap,growx"); //$NON-NLS-1$//
 
       alwaysActiveConfig = new BooleanConfigurer(null, "Always active?", e.alwaysActive);
       alwaysActiveConfig.addPropertyChangeListener(evt -> showHideFields());
 
-      controls.add(alwaysActiveConfig.getControls(), "span 2");
-      controls.add(drawUnderneath, "span 2,wrap");
-      controls.add(loop, "span 2");
+      controls.add(alwaysActiveConfig.getControls(), "span 2"); //$NON-NLS-1$//
+      controls.add(drawUnderneath, "span 2,wrap"); //$NON-NLS-1$//
+      controls.add(loop, "span 2"); //$NON-NLS-1$//
 
       final Box offsetControls = Box.createHorizontalBox();
       xOffInput.setMaximumSize(xOffInput.getPreferredSize());
@@ -983,17 +988,17 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       offsetControls.add(xOffInput);
       offsetControls.add(new JLabel(","));
       offsetControls.add(yOffInput);
-      controls.add(offsetControls, "span 2,wrap");
+      controls.add(offsetControls, "span 2,wrap"); //$NON-NLS-1$//
 
       followConfig = new BooleanConfigurer(null, "Levels follow expression value?");
-      controls.add(followConfig.getControls(), "span 2");
+      controls.add(followConfig.getControls(), "span 2"); //$NON-NLS-1$//
 
       final Box levelBox = Box.createHorizontalBox();
       propertyConfig = new PropertyNameExpressionConfigurer(null, "Follow Expression:  ");
       levelBox.add(propertyConfig.getControls());
       firstLevelConfig = new IntConfigurer(null, " Level 1 = ", e.firstLevelValue);
       levelBox.add(firstLevelConfig.getControls());
-      controls.add(levelBox, "span 2,wrap");
+      controls.add(levelBox, "span 2,wrap"); //$NON-NLS-1$//
 
       followConfig.addPropertyChangeListener(e1 -> showHideFields());
 
@@ -1005,15 +1010,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       menuLabel = new JLabel("Menu Command");
       menuLabel.setFont(boldFont);
-      controls.add(menuLabel, "align center");
+      controls.add(menuLabel, "align center"); //$NON-NLS-1$//
 
       keyLabel = new JLabel("Key");
       keyLabel.setFont(boldFont);
-      controls.add(keyLabel, "align center");
+      controls.add(keyLabel, "align center"); //$NON-NLS-1$//
 
       optionLabel = new JLabel("Option");
       optionLabel.setFont(boldFont);
-      controls.add(optionLabel, "align center,wrap");
+      controls.add(optionLabel, "align center,wrap"); //$NON-NLS-1$//
 
       activateConfig = new NamedHotKeyConfigurer(null, "", e.activateKeyStroke);
       increaseConfig = new NamedHotKeyConfigurer(null, "", e.increaseKeyStroke);
@@ -1024,37 +1029,37 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateLabel = new JLabel("Activate Layer");
       controls.add(activateLabel);
       activateCommand = new StringConfigurer(null, "", e.activateCommand);
-      controls.add(activateCommand.getControls(), "align center");
-      controls.add(activateConfig.getControls(), "wrap");
+      controls.add(activateCommand.getControls(), "align center"); //$NON-NLS-1$//
+      controls.add(activateConfig.getControls(), "wrap"); //$NON-NLS-1$//
 
       increaseLabel = new JLabel("Increase Level");
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(null, "", e.upCommand);
-      controls.add(upCommand.getControls(), "align center");
-      controls.add(increaseConfig.getControls(), "wrap");
+      controls.add(upCommand.getControls(), "align center"); //$NON-NLS-1$//
+      controls.add(increaseConfig.getControls(), "wrap"); //$NON-NLS-1$//
 
       decreaseLabel = new JLabel("Decrease Level");
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(null, "", e.downCommand);
-      controls.add(downCommand.getControls(), "align center");
-      controls.add(decreaseConfig.getControls(), "wrap");
+      controls.add(downCommand.getControls(), "align center"); //$NON-NLS-1$//
+      controls.add(decreaseConfig.getControls(), "wrap"); //$NON-NLS-1$//
 
       resetLabel = new JLabel("Reset to Level");
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(null, "", e.resetCommand);
-      controls.add(resetCommand.getControls(), "align center");
+      controls.add(resetCommand.getControls(), "align center"); //$NON-NLS-1$//
       controls.add(resetConfig.getControls());
-      controls.add(resetLevel.getControls(), "wrap");
+      controls.add(resetLevel.getControls(), "wrap"); //$NON-NLS-1$//
 
       rndLabel = new JLabel("Randomize");
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(null, "", e.rndText);
-      controls.add(rndCommand.getControls(), "align center");
-      controls.add(rndKeyConfig.getControls(), "wrap");
+      controls.add(rndCommand.getControls(), "align center"); //$NON-NLS-1$//
+      controls.add(rndKeyConfig.getControls(), "wrap"); //$NON-NLS-1$//
 
       images = getImagePicker();
       images.addListSelectionListener(e12 -> setUpDownEnabled());
-      controls.add(images, "span 4,split,grow");
+      controls.add(images, "span 4,split,grow"); //$NON-NLS-1$//
 
       up = new JButton(IconFactory.getIcon("go-up", IconFamily.XSMALL));
       up.addActionListener(e13 -> moveSelectedUp());
@@ -1067,7 +1072,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       upDownPanel.add(up);
       upDownPanel.add(down);
       upDownPanel.add(Box.createVerticalGlue());
-      controls.add(upDownPanel, "wrap");
+      controls.add(upDownPanel, "wrap"); //$NON-NLS-1$//
 
       box = Box.createHorizontalBox();
       box.add(new JLabel("Level Name:  "));
@@ -1079,7 +1084,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       });
       box.add(levelNameInput);
-      controls.add(box, "span 2,growx");
+      controls.add(box, "span 2,growx"); //$NON-NLS-1$//
 
       box = Box.createHorizontalBox();
       prefix.addActionListener(evt -> {
@@ -1096,16 +1101,16 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       });
       box.add(prefix);
       box.add(suffix);
-      controls.add(box, "span 2,center,wrap");
+      controls.add(box, "span 2,center,wrap"); //$NON-NLS-1$//
 
-      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0","[grow 1]rel[grow 1]"));
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "[grow 1]rel[grow 1]")); //$NON-NLS-1$//
       JButton b = new JButton("Add Level");
       b.addActionListener(evt -> {
         names.add(null);
         isPrefix.add(null);
         images.addEntry();
       });
-      buttonPanel.add(b, "growx");
+      buttonPanel.add(b, "growx"); //$NON-NLS-1$//
 
       b = new JButton("Remove Level");
       b.addActionListener(evt -> {
@@ -1116,8 +1121,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           images.removeEntryAt(index);
         }
       });
-      buttonPanel.add(b, "growx");
-      controls.add(buttonPanel, "span 4,center,growx,wrap");
+      buttonPanel.add(b, "growx"); //$NON-NLS-1$//
+      controls.add(buttonPanel, "span 4,center,growx,wrap"); //$NON-NLS-1$//
 
       images.getList().addListSelectionListener(evt -> updateLevelName());
 
@@ -1130,15 +1135,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
       if (count > 1 && selected > 0) {
-        swap(selected, selected-1);
+        swap(selected, selected - 1);
       }
     }
 
     protected void moveSelectedDown() {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
-      if (count > 1 && selected < (count-1)) {
-        swap(selected, selected+1);
+      if (count > 1 && selected < (count - 1)) {
+        swap(selected, selected + 1);
       }
     }
 
@@ -1159,7 +1164,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final int selected = images.getList().getSelectedIndex();
       final int count = images.getList().getModel().getSize();
       up.setEnabled(count > 1 && selected > 0);
-      down.setEnabled(count > 1 && selected < (count-1));
+      down.setEnabled(count > 1 && selected < (count - 1));
     }
 
     /*
@@ -1394,7 +1399,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
-    final String prefix = name.length() > 0 ? name+": " : "";
+    final String prefix = name.length() > 0 ? name + ": " : "";
     if (activateKey.length() > 0) {
       data.add(activateCommand, prefix + "Activate command");
     }
@@ -1406,7 +1411,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     // Strip off prefix/suffix marker
     for (int i = 0; i < commonName.length; i++) {
-      data.add(strip(commonName[i]), prefix + "Level " + (i+1) + " name");
+      data.add(strip(commonName[i]), prefix + "Level " + (i + 1) + " name");
     }
     return data;
   }

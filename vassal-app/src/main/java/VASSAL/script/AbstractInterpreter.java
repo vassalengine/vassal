@@ -102,7 +102,7 @@ public abstract class AbstractInterpreter extends Interpreter {
     }
   }
 
-  /***************************************************************
+  /*
    * Call-backs from BeanShell Scripts
    */
 

@@ -823,9 +823,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<String> getPropertyNames() {
     List<String> l = new ArrayList<>();
-    l.add(getConfigureName()+"_numPieces");
+    l.add(getConfigureName() + "_numPieces");
     for (String ce : dummy.getCountExpressions()) {
-      l.add(getConfigureName()+"_"+(new Deck.CountExpression(ce)).getName());
+      l.add(getConfigureName() + "_" + (new Deck.CountExpression(ce)).getName());
     }
     return l;
   }

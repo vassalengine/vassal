@@ -84,7 +84,7 @@ public class GlobalCommand {
   }
 
   public Command apply(Map m, PieceFilter filter) {
-    return apply(new Map[]{m},filter);
+    return apply(new Map[]{m}, filter);
   }
   /**
    * Apply the key command to all pieces that pass the given filter on all the given maps
@@ -179,7 +179,7 @@ public class GlobalCommand {
     private void apply(GamePiece p) {
       if (filter == null || filter.accept(p)) {
         tracker.addPiece(p);
-        p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         command.append(p.keyEvent(stroke));
         tracker.addPiece(p);
         selectedCount++;

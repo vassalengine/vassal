@@ -17,11 +17,11 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
@@ -76,14 +76,14 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDiceButton.class);
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
   protected List<SpecialDie> dice = new ArrayList<>();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;
   protected boolean reportResultInButton = false;
-  private LaunchButton launch;
+  private final LaunchButton launch;
   protected String id;
   protected String sMapName;
   protected JDialog dialog; // Dialog to show results graphical
@@ -94,7 +94,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   protected String windowTitleResultFormat = "$" + NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
   protected String tooltip = ""; //$NON-NLS-1$
-  protected MutableProperty.Impl property = new Impl("",this); //$NON-NLS-1$
+  protected final MutableProperty.Impl property = new Impl("", this); //$NON-NLS-1$
 
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
@@ -116,17 +116,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private static final int[] EMPTY = new int[0];
 
   public SpecialDiceButton() {
-    dialog = new JDialog(GameModule.getGameModule().getFrame());
+    dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
     dialog.setLayout(new MigLayout("ins 0"));
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-    final ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        DR();
-      }
-    };
+    final ActionListener rollAction = e -> DR();
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
     setAttribute(NAME, desc);
@@ -143,6 +138,18 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   protected String getReportPrefix() {
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  /**
+   * The text reported after the results of the roll;
+   *
+   * @deprecated Handled by Message Format
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected String getReportSuffix() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return " ***  <" //$NON-NLS-1$
+        + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
   }
 
   /**
@@ -304,28 +311,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public VisibilityCondition getAttributeVisibility(String name) {
     // get size only when output in window or on button
     if (List.of(WINDOW_X, WINDOW_Y, BACKGROUND_COLOR).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultInWindow || reportResultInButton;
-        }
-      };
+      return () -> reportResultInWindow || reportResultInButton;
     }
     else if (CHAT_RESULT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultAsText;
-        }
-      };
+      return () -> reportResultAsText;
     }
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultInWindow;
-        }
-      };
+      return () -> reportResultInWindow;
     }
     else
       return null;
@@ -414,7 +406,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName()+"_result"); //$NON-NLS-1$
+      property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
       launch.setToolTipText((String) o);
     }
     else if (RESULT_CHATTER.equals(key)) {
@@ -558,7 +550,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName()+"_result");
+    l.add(getConfigureName() + "_result");
     return l;
   }
 
@@ -609,8 +601,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * Command for displaying the results of a roll of the dice
    */
   public static class ShowResults extends Command {
-    private SpecialDiceButton target;
-    private int[] rolls;
+    private final SpecialDiceButton target;
+    private final int[] rolls;
 
     public ShowResults(SpecialDiceButton oTarget, int[] results) {
       target = oTarget;
@@ -646,7 +638,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         logger.warn(
           "Special Die Button (" + getConfigureName() +
           "): more results (" + results.length + ") requested than dice (" +
-          dice.size() +")"
+          dice.size() + ")"
         );
       }
       for (int i = 0; i < results.length; ++i) {

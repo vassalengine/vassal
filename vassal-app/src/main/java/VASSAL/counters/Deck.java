@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -33,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -94,7 +96,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
   public static final String NO_USER = "nobody"; // Dummy user ID for turning
-  protected static StackMetrics deckStackMetrics = new StackMetrics(false,2,2,2,2);
+  protected static StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
 
   protected boolean drawOutline = true;
@@ -122,10 +124,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
-  protected FormattedString selectDisplayProperty = new FormattedString("$"+BasicPiece.BASIC_NAME+"$");
+  protected FormattedString selectDisplayProperty = new FormattedString("$" + BasicPiece.BASIC_NAME + "$");
   protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
-    new MutableProperty.Impl("",this);
+    new MutableProperty.Impl("", this);
   protected List<MutableProperty.Impl> expressionProperties = new ArrayList<>();
 
   protected String deckName;
@@ -168,6 +170,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   private final GameModule gameModule;
 
   /**
+   * Not for internal use, but required for initial build of module
+   *
    * @deprecated use {@link #Deck(GameModule)}
    */
   @Deprecated
@@ -178,17 +182,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * @deprecated use {@link #Deck(GameModule, String)}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type) {
     this(GameModule.getGameModule(), type);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
    * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Deck(String type, PropertySource source) {
     this(GameModule.getGameModule(), type, source);
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   public Deck(GameModule gameModule) {
@@ -292,7 +298,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return;
     }
     //test all the expressions for this deck
-    for (int index = 0;index < countExpressions.length;index++) {
+    for (int index = 0; index < countExpressions.length; index++) {
       MutableProperty.Impl prop = expressionProperties.get(index);
       FormattedString formatted =
         new FormattedString(countExpressions[index].getExpression());
@@ -323,7 +329,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void insertPieceAt(GamePiece p, int index) {
     super.insertPieceAt(p, index);
-    updateCounts(p,true);
+    updateCounts(p, true);
     fireNumCardsProperty();
   }
 
@@ -388,7 +394,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     setGlobalCommands(st.nextStringArray(0));
     hotkeyOnEmpty = st.nextBoolean(false);
     emptyKey = st.nextNamedKeyStroke(null);
-    selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
+    selectDisplayProperty.setFormat(st.nextToken("$" + BasicPiece.BASIC_NAME + "$"));
     selectSortProperty = st.nextToken("");
     restrictOption = st.nextBoolean(false);
     restrictExpression.setExpression(st.nextToken(""));
@@ -480,7 +486,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public String[] getCountExpressions() {
     String[] fullstrings = new String[countExpressions.length];
-    for (int index = 0; index < countExpressions.length;index++) {
+    for (int index = 0; index < countExpressions.length; index++) {
       fullstrings[index] = countExpressions[index].getFullString();
     }
     return fullstrings;
@@ -569,7 +575,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setCountExpressions(String[] countExpressionsString) {
     CountExpression[] c = new CountExpression[countExpressionsString.length];
     int goodExpressionCount = 0;
-    for (int index = 0; index < countExpressionsString.length;index++) {
+    for (int index = 0; index < countExpressionsString.length; index++) {
       CountExpression n = new CountExpression(countExpressionsString[index]);
       if (n.getName() != null) {
         c[index] = n;
@@ -579,11 +585,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     this.countExpressions = Arrays.copyOf(c, goodExpressionCount);
     while (countExpressions.length > expressionProperties.size()) {
-      expressionProperties.add(new MutableProperty.Impl("",this));
+      expressionProperties.add(new MutableProperty.Impl("", this));
     }
     for (int i = 0; i < countExpressions.length; i++) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -610,10 +616,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     else {
       deckName = n;
     }
-    countProperty.setPropertyName(deckName+"_numPieces");
-    for (int i=0;i<countExpressions.length;++i) {
+    countProperty.setPropertyName(deckName + "_numPieces");
+    for (int i = 0; i < countExpressions.length; ++i) {
       expressionProperties.get(i).setPropertyName(
-        deckName+"_"+countExpressions[i].getName());
+        deckName + "_" + countExpressions[i].getName());
     }
   }
 
@@ -675,7 +681,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated public KeyStroke getEmptyKey() {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public KeyStroke getEmptyKey() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return emptyKey.getKeyStroke();
   }
 
@@ -683,7 +691,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return emptyKey;
   }
 
-  @Deprecated public void setEmptyKey(KeyStroke k) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setEmptyKey(KeyStroke k) {
+    ProblemDialog.showDeprecated("2020-08-06");
     emptyKey = new NamedKeyStroke(k);
   }
 
@@ -845,8 +855,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * Set the contents of this Deck to an Iterator of GamePieces
    * @deprecated Use {@link #setContents(Collection)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Command setContents(Iterator<GamePiece> it) {
+    ProblemDialog.showDeprecated("2020-08-06");
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
     while (it.hasNext()) {
@@ -879,7 +890,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("No such map",mapId,null));
+        ErrorDialog.dataWarning(new BadDataReport("No such map", mapId, null));
       }
     }
 
@@ -1027,7 +1038,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
-    for (int i=0,n=getMaximumVisiblePieceCount();i<n;++i) {
+    for (int i = 0, n = getMaximumVisiblePieceCount(); i < n; ++i) {
       r.y -= 2;
       r.height += 2;
       r.width += 2;
@@ -1344,7 +1355,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
-         JOptionPane.showConfirmDialog(gameModule.getFrame(),
+         JOptionPane.showConfirmDialog(gameModule.getPlayerWindow(),
           Resources.getString("Deck.overwrite", outputFile.getName()), Resources.getString("Deck.file_exists"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           JOptionPane.YES_NO_OPTION)) {
       outputFile = null;
@@ -1384,7 +1395,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       comm = comm.append(new AddPiece(p));
     }
 
-    try (Writer fw = new FileWriter(f);
+    try (Writer fw = new FileWriter(f, StandardCharsets.UTF_8);
          BufferedWriter out = new BufferedWriter(fw)) {
       gameModule.addCommandEncoder(commandEncoder);
       out.write(gameModule.encode(comm));
@@ -1424,7 +1435,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Command loadDeck(File f) throws IOException {
     String ds;
 
-    try (Reader fr = new FileReader(f);
+    try (Reader fr = new FileReader(f, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(fr)) {
       ds = IOUtils.toString(in);
     }
@@ -1505,7 +1516,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     private String name;
     private String expression;
     public CountExpression(String expressionString) {
-      String[] split = expressionString.split("\\s*:\\s*",2); //$NON-NLS-1$
+      String[] split = expressionString.split("\\s*:\\s*", 2); //$NON-NLS-1$
       if (split.length == 2) {
         name       = split[0];
         expression = split[1];

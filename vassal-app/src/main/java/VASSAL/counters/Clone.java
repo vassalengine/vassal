@@ -108,7 +108,7 @@ public class Clone extends Decorator implements TranslatablePiece {
       newPiece.setState(outer.getState());
       c = new AddPiece(newPiece);
       if (getMap() != null) {
-        c.append(getMap().placeOrMerge(newPiece,outer.getPosition()));
+        c.append(getMap().placeOrMerge(newPiece, outer.getPosition()));
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
       }
@@ -152,7 +152,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm","Clone");
+    return HelpFile.getReferenceManualPage("GamePiece.htm", "Clone");
   }
 
   @Override
@@ -172,7 +172,7 @@ public class Clone extends Decorator implements TranslatablePiece {
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.key);
+      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
       controls.add(keyInput.getControls());
 
     }

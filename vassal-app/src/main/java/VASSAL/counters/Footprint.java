@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -65,7 +66,7 @@ import VASSAL.tools.image.ImageUtils;
  */
 public class Footprint extends MovementMarkable {
 
-  public static final String ID = "footprint;";
+  public static final String ID = "footprint;"; //$NON-NLS-1$//
   private KeyCommand[] commands;
 
   // State Variables (Saved in logfile/sent to opponent)
@@ -128,8 +129,9 @@ public class Footprint extends MovementMarkable {
   }
 
   /** @deprecated Use {@link #pointList} directly. */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Enumeration<Point> getPointList() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(pointList);
   }
 
@@ -276,7 +278,7 @@ public class Footprint extends MovementMarkable {
   protected void recordCurrentPosition() {
     final Point here = this.getPosition();
     if (pointList.isEmpty() ||
-        !pointList.get(pointList.size()-1).equals(here)) {
+        !pointList.get(pointList.size() - 1).equals(here)) {
       addPoint(here);
     }
     else {
@@ -296,7 +298,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MovementTrail.htm");
+    return HelpFile.getReferenceManualPage("MovementTrail.htm"); //$NON-NLS-1$//
   }
 
   /**
@@ -306,29 +308,6 @@ public class Footprint extends MovementMarkable {
   protected void addPoint(Point p) {
     pointList.add(p);
     myBoundingBox = null;
-  }
-
-  private Rectangle getBB() {
-    final Rectangle bb = piece.boundingBox();
-    final Point pos = piece.getPosition();
-
-    bb.x += pos.x;
-    bb.y += pos.y;
-
-    final int circleDiameter = 2*circleRadius;
-    final Rectangle pr = new Rectangle();
-
-    for (final Point p: pointList) {
-      pr.setBounds(
-        p.x - circleRadius, p.y - circleRadius, circleDiameter, circleDiameter
-      );
-      bb.add(pr);
-    }
-
-    bb.x -= pos.x;
-    bb.y -= pos.y;
-
-    return bb;
   }
 
   public void redraw() {
@@ -413,8 +392,8 @@ public class Footprint extends MovementMarkable {
 
     final int clipX = edgeWidth - edgeClipWidth;
     final int clipY = edgeHeight - edgeClipHeight;
-    final int width = mapWidth - 2*(edgeWidth + edgeClipWidth);
-    final int height = mapHeight - 2*(edgeHeight + edgeClipHeight);
+    final int width = mapWidth - 2 * (edgeWidth + edgeClipWidth);
+    final int height = mapHeight - 2 * (edgeHeight + edgeClipHeight);
 
     Rectangle newClip = new Rectangle(
       (int) (clipX * zoom),
@@ -439,7 +418,7 @@ public class Footprint extends MovementMarkable {
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
-    final float thickness = Math.max(1.0f, (float)(zoom*lineWidth));
+    final float thickness = Math.max(1.0f, (float)(zoom * lineWidth));
     g2d.setStroke(new BasicStroke(thickness));
     g2d.setColor(lineColor);
 
@@ -511,7 +490,7 @@ public class Footprint extends MovementMarkable {
             x1 = (int)(p.x * zoom);
             y1 = (int)(p.y * zoom);
             final Font font =
-              new Font("Dialog", Font.PLAIN, (int)(circleRadius * 1.4 * zoom));
+              new Font(Font.DIALOG, Font.PLAIN, (int)(circleRadius * 1.4 * zoom));
             Labeler.drawLabel(g, text, x1, y1, font, Labeler.CENTER,
                               Labeler.CENTER, lineColor, null, null);
 
@@ -531,7 +510,7 @@ public class Footprint extends MovementMarkable {
    * Draw a Circle at the given point.
    * Override this method to do something different (eg. display an Icon)
    */
-  protected void drawPoint(Graphics g, Point p, double zoom, int elementCount) {
+  protected void drawPoint(Graphics g, Point p, double zoom, @SuppressWarnings("unused") int elementCount) {
     final int x = (int)((p.x - circleRadius) * zoom);
     final int y = (int)((p.y - circleRadius) * zoom);
     final int radius = (int)(2 * circleRadius * zoom);
@@ -565,7 +544,7 @@ public class Footprint extends MovementMarkable {
   /**
    * Override this method to return an Image to display within each trail circle
    */
-  protected Image getTrailImage(int elementCount) {
+  protected Image getTrailImage(@SuppressWarnings("unused")int elementCount) {
     return null;
   }
 
@@ -573,7 +552,7 @@ public class Footprint extends MovementMarkable {
    * Override this method to return text to display within each trail circle.
    * Note, there will normally be only room for 1 character.
    */
-  protected String getTrailText(int elementCount) {
+  protected String getTrailText(@SuppressWarnings("unused")int elementCount) {
     return null;
   }
 
@@ -611,7 +590,7 @@ public class Footprint extends MovementMarkable {
       bb.x += pos.x;
       bb.y += pos.y;
 
-      final int circleDiameter = 2*circleRadius;
+      final int circleDiameter = 2 * circleRadius;
       final Rectangle pr = new Rectangle();
 
       for (final Point p: pointList) {
@@ -647,10 +626,10 @@ public class Footprint extends MovementMarkable {
       }
 
       // Key commands to force trails to specific states
-      if (trailKeyOn != null && !trailKeyOn.isNull( )) {
+      if (trailKeyOn != null && !trailKeyOn.isNull()) {
         showTrailCommandOn = new KeyCommand("", trailKeyOn, Decorator.getOutermost(this), this);
       }
-      if (trailKeyOff != null && !trailKeyOff.isNull( )) {
+      if (trailKeyOff != null && !trailKeyOff.isNull()) {
         showTrailCommandOff = new KeyCommand("", trailKeyOff, Decorator.getOutermost(this), this);
       }
       if (trailKeyClear != null && !trailKeyClear.isNull()) {
@@ -743,22 +722,22 @@ public class Footprint extends MovementMarkable {
    * Point Limit
    */
   protected static class Ed implements PieceEditor {
-    private NamedHotKeyConfigurer trailKeyInput;
-    private NamedHotKeyConfigurer trailKeyOn;
-    private NamedHotKeyConfigurer trailKeyOff;
-    private NamedHotKeyConfigurer trailKeyClear;
-    private JPanel controls;
-    private StringConfigurer mc;
-    private BooleanConfigurer iv;
-    private BooleanConfigurer gv;
-    private IntConfigurer cr;
-    private ColorConfigurer fc;
-    private ColorConfigurer lc;
-    private IntConfigurer st;
-    private IntConfigurer ut;
-    private IntConfigurer pb;
-    private IntConfigurer db;
-    private DoubleConfigurer lw;
+    private final NamedHotKeyConfigurer trailKeyInput;
+    private final NamedHotKeyConfigurer trailKeyOn;
+    private final NamedHotKeyConfigurer trailKeyOff;
+    private final NamedHotKeyConfigurer trailKeyClear;
+    private final JPanel controls;
+    private final StringConfigurer mc;
+    private final BooleanConfigurer iv;
+    private final BooleanConfigurer gv;
+    private final IntConfigurer cr;
+    private final ColorConfigurer fc;
+    private final ColorConfigurer lc;
+    private final IntConfigurer st;
+    private final IntConfigurer ut;
+    private final IntConfigurer pb;
+    private final IntConfigurer db;
+    private final DoubleConfigurer lw;
 
     public Ed(Footprint p) {
       controls = new JPanel();
@@ -796,7 +775,7 @@ public class Footprint extends MovementMarkable {
       lc = new ColorConfigurer(null, "Line Color:  ", p.lineColor);
       controls.add(lc.getControls());
 
-      lw = new DoubleConfigurer(null,"Line thickness:  ", p.lineWidth);
+      lw = new DoubleConfigurer(null, "Line thickness:  ", p.lineWidth);
       controls.add(lw.getControls());
 
       st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", p.selectedTransparency);

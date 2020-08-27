@@ -48,7 +48,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   protected String tabName = "";
   protected String variableName = "";
-  protected MutableProperty.Impl property = new MutableProperty.Impl("",this);
+  protected MutableProperty.Impl property = new MutableProperty.Impl("", this);
 
   public BasicPreference() {
     tabName = GameModule.getGameModule().getConfigureName();
@@ -63,7 +63,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {"","Preference Tab Name:  ", "Preference Description:  ", "Global Variable Name:  ", "Default Value:  "};
+    return new String[] {"", "Preference Tab Name:  ", "Preference Description:  ", "Global Variable Name:  ", "Default Value:  "};
   }
 
   @Override

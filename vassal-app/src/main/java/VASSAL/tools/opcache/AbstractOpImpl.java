@@ -91,7 +91,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
     return cache.getFuture(newKey(), obs);
   }
 
-  private static final ConcurrentMap<Op<?>,OpCache.Key<?>> kcache =
+  private static final ConcurrentMap<Op<?>, OpCache.Key<?>> kcache =
     new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */

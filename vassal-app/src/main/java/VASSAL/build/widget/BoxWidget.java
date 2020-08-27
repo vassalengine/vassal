@@ -54,7 +54,7 @@ public class BoxWidget extends Widget
   private List<Widget> built = new ArrayList<>();
   private Dimension size = new Dimension();
 
-  private Map<Object,String> keys = new HashMap<>();
+  private Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
   public BoxWidget() {
@@ -143,7 +143,7 @@ public class BoxWidget extends Widget
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME,WIDTH,HEIGHT};
+    return new String[]{NAME, WIDTH, HEIGHT};
   }
 
   @Override

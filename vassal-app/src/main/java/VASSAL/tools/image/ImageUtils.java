@@ -18,6 +18,7 @@
 
 package VASSAL.tools.image;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -31,6 +32,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,14 +48,14 @@ public class ImageUtils {
 
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
-  private static final double DEGTORAD = -Math.PI/180.0;
+  private static final double DEGTORAD = -Math.PI / 180.0;
 
   private static final GeneralFilter.Filter upscale =
     new GeneralFilter.MitchellFilter();
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final Map<RenderingHints.Key,Object> defaultHints =
+  private static final Map<RenderingHints.Key, Object> defaultHints =
     new HashMap<>();
 
   static {
@@ -66,6 +68,12 @@ public class ImageUtils {
                      RenderingHints.VALUE_ANTIALIAS_ON);
   }
 
+  /** @deprecated All scaling is done with the high-quality scaler now. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static void setHighQualityScaling(@SuppressWarnings("unused") boolean b) {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
+
   public static RenderingHints getDefaultHints() {
     return new RenderingHints(defaultHints);
   }
@@ -73,8 +81,7 @@ public class ImageUtils {
   public static Rectangle transform(Rectangle srect,
                                     double scale,
                                     double angle) {
-    final AffineTransform t = AffineTransform.getRotateInstance(
-      DEGTORAD*angle, srect.getCenterX(), srect.getCenterY());
+    final AffineTransform t = AffineTransform.getRotateInstance(DEGTORAD * angle, srect.getCenterX(), srect.getCenterY());
     t.scale(scale, scale);
     return t.createTransformedShape(srect).getBounds();
   }
@@ -124,7 +131,7 @@ public class ImageUtils {
 
       final AffineTransform t = new AffineTransform();
       t.translate(-tbox.x, -tbox.y);
-      t.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
+      t.rotate(DEGTORAD * angle, ubox.getCenterX(), ubox.getCenterY());
       t.scale(scale, scale);
       t.translate(ubox.x, ubox.y);
 
@@ -152,7 +159,7 @@ public class ImageUtils {
 // FIXME: rotation via bilinear interpolation probably decreases quality
         final AffineTransform tx = new AffineTransform();
         tx.translate(-rbox.x, -rbox.y);
-        tx.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
+        tx.rotate(DEGTORAD * angle, ubox.getCenterX(), ubox.getCenterY());
         tx.translate(ubox.x, ubox.y);
 
         final Graphics2D g = rot.createGraphics();
@@ -183,7 +190,16 @@ public class ImageUtils {
     }
   }
 
-  @SuppressWarnings("fallthrough")
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static BufferedImage transform(BufferedImage src,
+                                        double scale,
+                                        double angle,
+                                        RenderingHints hints,
+                                        @SuppressWarnings("unused") int quality) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return transform(src, scale, angle, hints);
+  }
+
   public static BufferedImage coerceToIntType(BufferedImage img) {
     // ensure that img is a type which GeneralFilter can handle
     switch (img.getType()) {
@@ -201,13 +217,13 @@ public class ImageUtils {
   }
 
   /**
-   * @param im
+   * @param im Image
    * @return the boundaries of this image, where (0,0) is the
    * pseudo-center of the image
    */
   public static Rectangle getBounds(BufferedImage im) {
-    return new Rectangle(-im.getWidth()/2,
-                         -im.getHeight()/2,
+    return new Rectangle(-im.getWidth() / 2,
+                         -im.getHeight() / 2,
                           im.getWidth(),
                           im.getHeight());
   }
@@ -219,8 +235,14 @@ public class ImageUtils {
                           d.height);
   }
 
-  private static final TemporaryFileFactory tfac =
-    () -> File.createTempFile("img", null, Info.getTempDir());
+  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static Dimension getImageSize(InputStream in) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return getImageSize("", in);
+  }
+
+  private static final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, Info.getTempDir());
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
@@ -228,6 +250,13 @@ public class ImageUtils {
   public static Dimension getImageSize(String name, InputStream in)
                                                       throws ImageIOException {
     return loader.size(name, in);
+  }
+
+  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static BufferedImage getImage(InputStream in) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return getImage("", in);
   }
 
   public static BufferedImage getImageResource(String name)
@@ -328,8 +357,8 @@ public class ImageUtils {
     }
     else {
       final GraphicsConfiguration gc = getGraphicsConfiguration();
-      oimg = gc.createCompatibleImage(1,1, BufferedImage.OPAQUE);
-      timg = gc.createCompatibleImage(1,1, BufferedImage.TRANSLUCENT);
+      oimg = gc.createCompatibleImage(1, 1, BufferedImage.OPAQUE);
+      timg = gc.createCompatibleImage(1, 1, BufferedImage.TRANSLUCENT);
     }
 
     compatOpaqueImage = oimg;
@@ -339,7 +368,7 @@ public class ImageUtils {
     compatTranslImageType = compatTransImage.getType();
   }
 
-  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
+  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1, 1);
 
   public static int getCompatibleImageType() {
     return compatOpaqueImageType;
@@ -429,7 +458,7 @@ public class ImageUtils {
     final String s = name.toLowerCase();
     for (String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
-        return name.substring(0, name.length()-suffix.length());
+        return name.substring(0, name.length() - suffix.length());
       }
     }
     return name;

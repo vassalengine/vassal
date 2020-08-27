@@ -1,0 +1,61 @@
+== Sides
+
+Sides represent different players in the game. Defining Sides in a module is optional.
+
+* If you define no module Sides, then all windows and all Game Pieces are visible and accessible to all players.
+* However, if you wish to create components that are accessible only to one player in a game (such as Private Windows), then you _must_ define player Sides. Sides are used for Private Windows, Player Hands, and the Game Piece Traits Mask, Invisible, and Restricted Access. If these components or Traits are not used in your game, then defining Sides may not be necessary for your game.
+
+*Organizing Sides*
+
+You can create these types of Sides. (Note that these types are not specified in a module by name, but are a way of organizing Sides conceptually, for the players.)
+
+* *Single:* With a single Side, each player represents a single group in the game. For example, in a World War II game, the German Side can control German units, but no others.
+* *Compound:* With a compound Side, each player may represent more than one group in the game. Compound Sides could be mixed with single Sides for large multiplayer games that might sometimes be played by few players. For example, in a World War II game, the _Axis_ Side can control both German and Japanese units, and the _Allies_ would take the remaining forces. These two Sides are intended for a game where there are only two players. If the same game were played by 4 players, the players would be expected to select either the German, Japanese, American, Russian and British Sides, so in addition to _Axis_ Side and _Allies_ Side__,__ there are also _German, Japanese, USA, Russia_ and _UK_ as Sides__.__
+* *Solitaire:* A Solitaire Side can access all pieces and boards, to make it easier for solo players to play the game. Since a Solitaire Side can access any game components, there is no need to click *Retire* at the end of each turn to switch Sides and grant access. Inclusion of a Solitaire Side can be a useful way to play games that are played both solo and multiplayer.
+* *Referee:* A Referee or Master Side is created like a Solitaire Side, but has access to anything that can be accessed by other players. In addition, a referee may have Private Windows or Game Pieces that only the referee can use.
+
+*Retiring from a Side*
+
+A Player can relinquish a current Side by clicking the *Retire* button on the Main Controls Toolbar. The button is configurable with these settings:
+
+* *Button Text:* Text of the *Retire* button.
+* *Button Tooltip:* Tooltip shown on mouseover for the *Retire* button.
+* *Button Icon:* Icon used for the *Retire* button.
+
+*Adding Sides to the Module*
+
+Sides can be named anything you choose, and should reflect the groups or forces in the physical game. They can be named for the color of the units, their nationality, or be simply numbered Player 1, Player 2, and so on. Each Side must have a unique name.
+
+A module may have any number of Sides defined.
+
+_All module Sides will appear in the drop-down list offered to players at game start, even if some of them are not used in a particular scenario. There is no way to suppress the display of some Sides from this drop-down._
+
+In addition, each side must have a unique password, which is chosen by the player who plays the Side at game time. The privacy of a Side is ensured by player passwords. Only one player may join a Side. If one Side is taken, when joining a game, players will be prompted to take one of the remaining available Sides.
+
+See the _VASSAL_ _Userʼs Guide_ for more information about Sides and passwords.
+
+*To add to the list of available Sides,*
+
+. In the Configuration Window, right-click the *[Definition of Player Sides]* node, and choose *Properties*.
+. In the *Definition of Player Sides* dialog, under *Sides Available to Players*, enter the name of a Side and click *Add*. The Side is added to the list.
+
+_*Sides: Adding Sides to the Module*_
+
+[arabic, start=3]
+. Repeat Step 2 for each additional Side.
+. Specify text, tooltip and icon for the *Retire* button.
+. Click *Ok*.
+
+When the game begins, the Sides are presented for player selection in the order you specify.
+
+_*Observer Side*_
+
+The _Observer_ Side is included by default in all modules, and may not be deleted. As the name implies, the Observer can watch a game, but will not have access to any Side-restricted components. A game may have any number of Observers logged in at the same time.
+
+The Observer Side is also important when creating Pre-Defined Setups. See page 97 for more information.
+
+_*Next Steps: Restricting Components By Side*_
+
+The process of creating Sides merely makes a list of available Sides for the players to choose from. To restrict components to one or more of these sides, you must now configure Side access for individual components, such as with Private Windows or Player Hands (see _Maps and Boards_ on page 20) or using the Restricted Access, Mask, or Invisible Traits on Game Pieces (see _Trait_ _Descriptions_ beginning on page 42).
+
+Sides assigned to restricted components must match one or more existing Sides exactly as it is spelled in the List of Available Sides. For example, if you restrict pieces in the World War II game to the “UK” Side, then listing “U.K.” as a Side for each component will not correctly grant access. Side names are also case-sensitive.

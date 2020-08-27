@@ -54,7 +54,7 @@ public class PrivMsgCommand extends Command {
                                         .getFocusOwner();
       if (c == null || !SwingUtilities.isDescendingFrom(c, f)) {
         java.awt.Toolkit.getDefaultToolkit().beep();
-        for (int i = 0,j = chat.getComponentCount(); i < j; ++i) {
+        for (int i = 0, j = chat.getComponentCount(); i < j; ++i) {
           if (chat.getComponent(i) instanceof JTextField) {
             (chat.getComponent(i)).requestFocus();
             break;

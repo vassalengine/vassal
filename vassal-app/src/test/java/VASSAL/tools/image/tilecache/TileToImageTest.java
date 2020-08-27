@@ -42,9 +42,10 @@ public class TileToImageTest {
 
     TileToImage.main(new String[] { tile, out_actual });
 
-    final FileInputStream expected = new FileInputStream(out_expected);
-    final FileInputStream actual = new FileInputStream(out_actual);
-    assertTrue(IOUtils.contentEquals(expected, actual));
+    try (FileInputStream expected = new FileInputStream(out_expected);
+         FileInputStream actual = new FileInputStream(out_actual)) {
+      assertTrue(IOUtils.contentEquals(expected, actual));
+    }
   }
 
   @After

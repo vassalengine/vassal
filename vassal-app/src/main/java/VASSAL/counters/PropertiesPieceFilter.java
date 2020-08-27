@@ -103,7 +103,7 @@ public class PropertiesPieceFilter {
                 f = new EQ(name, value);
                 break;
               case 7:
-                f = new NOT_MATCH(name,value);
+                f = new NOT_MATCH(name, value);
               }
             }
             break;
@@ -125,11 +125,11 @@ public class PropertiesPieceFilter {
 
     if (f instanceof BooleanAndPieceFilter) {
       final BooleanAndPieceFilter and = (BooleanAndPieceFilter) f;
-      return "("+toBeanShellString(and.getFilter1()) + ") && (" + toBeanShellString(and.getFilter2()) + ")";
+      return "(" + toBeanShellString(and.getFilter1()) + ") && (" + toBeanShellString(and.getFilter2()) + ")";
     }
     else if (f instanceof BooleanOrPieceFilter) {
       final BooleanOrPieceFilter or = (BooleanOrPieceFilter) f;
-      return "("+toBeanShellString(or.getFilter1()) + ") || (" + toBeanShellString(or.getFilter2()) + ")";
+      return "(" + toBeanShellString(or.getFilter1()) + ") || (" + toBeanShellString(or.getFilter2()) + ")";
     }
     else if (f instanceof ComparisonFilter) {
       return  ((ComparisonFilter) f).toBeanShellString();
@@ -141,7 +141,7 @@ public class PropertiesPieceFilter {
   private abstract static class ComparisonFilter implements PieceFilter {
     protected String name;
     protected String value;
-    protected Object alternate;
+    protected Boolean alternate;
 
     public ComparisonFilter(String name, String value) {
       this.name = name;
@@ -169,7 +169,7 @@ public class PropertiesPieceFilter {
 
     protected String toBeanShellName() {
       if (name.indexOf('$') >= 0) {
-        return "GetProperty("+new FormattedStringExpression(name).toBeanShellString() + ")";
+        return "GetProperty(" + new FormattedStringExpression(name).toBeanShellString() + ")";
       }
       else {
         return BeanShellExpression.convertProperty(name);
@@ -192,13 +192,13 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = value.equals(property);
       if (alternate != null) {
-        retVal = retVal || alternate.equals(property);
+        retVal = retVal || alternate.equals(Boolean.parseBoolean(property));
       }
       return retVal;
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+"=="+value+"]";
+      return "PropertiesPieceFilter[" + name + "==" + value + "]";
     }
 
     @Override
@@ -218,12 +218,12 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = !value.equals(property);
       if (alternate != null) {
-        retVal = retVal && !alternate.equals(property);
+        retVal = retVal && !alternate.equals(Boolean.parseBoolean(property));
       }
       return retVal;
     }
     public String toString() {
-      return "PropertiesPieceFilter["+name+"!="+value+"]";
+      return "PropertiesPieceFilter[" + name + "!=" + value + "]";
     }
 
     @Override
@@ -243,7 +243,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+"<"+value+"]";
+      return "PropertiesPieceFilter[" + name + "<" + value + "]";
     }
 
     @Override
@@ -263,7 +263,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+"<="+value+"]";
+      return "PropertiesPieceFilter[" + name + "<=" + value + "]";
     }
 
     @Override
@@ -283,7 +283,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+">"+value+"]";
+      return "PropertiesPieceFilter[" + name + ">" + value + "]";
     }
 
     @Override
@@ -303,7 +303,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+">="+value+"]";
+      return "PropertiesPieceFilter[" + name + ">=" + value + "]";
     }
 
     @Override
@@ -324,7 +324,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+"~"+value+"]";
+      return "PropertiesPieceFilter[" + name + "~" + value + "]";
     }
 
     @Override
@@ -344,7 +344,7 @@ public class PropertiesPieceFilter {
     }
 
     public String toString() {
-      return "PropertiesPieceFilter["+name+"!~"+value+"]";
+      return "PropertiesPieceFilter[" + name + "!~" + value + "]";
     }
 
     @Override

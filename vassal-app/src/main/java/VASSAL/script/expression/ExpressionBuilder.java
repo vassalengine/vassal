@@ -17,8 +17,6 @@
  */
 package VASSAL.script.expression;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -59,7 +57,7 @@ public class ExpressionBuilder extends JDialog {
     String value = target.getValueString();
 
     if (value.startsWith("{") && value.endsWith("}")) {
-      setExpression(value.substring(1, value.length()-1));
+      setExpression(value.substring(1, value.length() - 1));
     }
     else {
       setExpression(convert(value));
@@ -69,30 +67,15 @@ public class ExpressionBuilder extends JDialog {
 
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     JButton cancelButton = ButtonFactory.getCancelButton();
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString());
-      }
-    });
+    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center");

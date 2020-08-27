@@ -54,8 +54,8 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
   }
 
   public void setInfo(Properties p) {
-    owner = p.getProperty(OWNER,owner);
-    members = StringArrayConfigurer.stringToArray(p.getProperty(MEMBERS,StringArrayConfigurer.arrayToString(members)));
+    owner = p.getProperty(OWNER, owner);
+    members = StringArrayConfigurer.stringToArray(p.getProperty(MEMBERS, StringArrayConfigurer.arrayToString(members)));
     locked = "true".equals(p.getProperty(LOCKED)); //$NON-NLS-1$
   }
 
@@ -65,7 +65,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
       p.setProperty(OWNER, owner);
     }
     if (locked) {
-      p.setProperty(LOCKED,"true"); //$NON-NLS-1$
+      p.setProperty(LOCKED, "true"); //$NON-NLS-1$
     }
     if (members != null) {
       p.setProperty(MEMBERS, StringArrayConfigurer.arrayToString(members));

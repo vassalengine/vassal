@@ -36,7 +36,7 @@ import VASSAL.configure.SingleChildInstance;
  * {@link VASSAL.build.module.gamepieceimage.GamePieceLayout}.
  */
 public class GamePieceLayoutsContainer extends AbstractConfigurable {
-  protected Map<String,GamePieceLayout> definitions = new HashMap<>();
+  protected Map<String, GamePieceLayout> definitions = new HashMap<>();
 
   protected GamePieceLayout getDefinition(String name) {
     return definitions.get(name);
@@ -73,7 +73,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
     setAllAttributesUntranslatable();
   }
 

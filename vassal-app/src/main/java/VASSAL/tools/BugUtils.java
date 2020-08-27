@@ -1,13 +1,16 @@
 package VASSAL.tools;
 
+import VASSAL.build.GameModule;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
+import java.util.stream.Stream;
 
 public class BugUtils {
 
@@ -18,10 +21,10 @@ public class BugUtils {
     final HTTPPostBuilder pb = new HTTPPostBuilder();
 
     final String url = "http://www.vassalengine.org/util/bug.php";
-    pb.setParameter("version", Info.getVersion());
+    pb.setParameter("version", Info.getReportableVersion());
     pb.setParameter("email", email);
     pb.setParameter("summary", getSummary(t));
-    pb.setParameter("description", description);
+    pb.setParameter("description", getDescription(description, errorLog));
     pb.setParameter("log", "errorLog", errorLog);
 
     try (InputStream in = pb.post(url)) {
@@ -39,14 +42,28 @@ public class BugUtils {
     }
   }
 
+  private static String getDescription(String description, String errorLog) {
+    return
+      description + "\n\n" +
+      GameModule.getGameModule().getGameName() + " v" + GameModule.getGameModule().getGameVersion() + " " + Info.getVersion() + "\n\n" +
+      getStackTraceSummary(errorLog);
+  }
+
+  private static String getStackTraceSummary(String errorLog) {
+    final StringBuilder summary = new StringBuilder();
+    final Stream<String> log = errorLog.substring(errorLog.lastIndexOf("ERROR VASSAL.tools.ErrorDialog")).lines();
+    log.skip(1).limit(5).forEach(l -> summary.append(l.replace('\t', ' ')).append('\n'));
+    return summary.toString();
+  }
+
   private static String getSummary(Throwable t) {
-    String summary;
+    String summary = "[" + GameModule.getGameModule().getGameName() + "] ";
     if (t == null) {
-      summary = "Automated Bug Report";
+      summary += "Automated Bug Report";
     }
     else {
       final String tc = t.getClass().getName();
-      summary = tc.substring(tc.lastIndexOf('.') + 1);
+      summary += tc.substring(tc.lastIndexOf('.') + 1);
 
       if (t.getMessage() != null) {
         summary += ": " + t.getMessage();
@@ -68,7 +85,7 @@ public class BugUtils {
   public static String getErrorLog() {
     String log = null;
     final File f = new File(Info.getConfDir(), "errorLog");
-    try (FileReader r = new FileReader(f)) {
+    try (FileReader r = new FileReader(f, Charset.defaultCharset())) {
       log = IOUtils.toString(r);
     }
     catch (IOException e) {

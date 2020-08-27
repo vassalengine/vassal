@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.tools.ProblemDialog;
 import javax.swing.JOptionPane;
 
 import VASSAL.script.expression.Expression;
@@ -32,6 +33,15 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
   protected Constraints propertySource;
+
+  /**
+   * @deprecated Use {@link #EnumeratedPropertyPrompt(DialogParent, String, String[], Constraints)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
+    this (dialogParent, prompt, validValues, null);
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, Constraints propertySource) {
     super(null, prompt);
@@ -62,15 +72,13 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
       }
       finalValues[i] = value;
     }
-    final String newValue = (String) JOptionPane.showInputDialog(dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null,finalValues,oldValue);
+    final String newValue = (String) JOptionPane.showInputDialog(
+      dialogParent.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, finalValues, oldValue);
     return newValue == null ? oldValue : newValue;
   }
 
   public String[] getValidValues() {
     return validValues;
   }
-
-
-
 
 }

@@ -37,8 +37,8 @@ public class PlayerNode extends Node implements SocketWatcher {
   private static ConnectionLimiter connLimiter = new ConnectionLimiter();
 
   public PlayerNode(Socket socket, AsynchronousServerNode server) throws IOException {
-    super(null,null,null);
-    server = server;
+    super(null, null, null);
+    this.server = server;
     input = new SocketHandler(socket, this);
     input.start();
   }
@@ -88,7 +88,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     if ((info = Protocol.decodeRegisterCommand(line)) != null) {
       id = info[0];
       this.info = info[2];
-      server.registerNode(info[1],this);
+      server.registerNode(info[1], this);
     }
     else if ((info = Protocol.decodeJoinCommand(line)) != null) {
       // Requests to move to a locked room must be accompanied by the rooms 'password' which
@@ -107,10 +107,10 @@ public class PlayerNode extends Node implements SocketWatcher {
           }
         }
       }
-      server.move(this,info[0]);
+      server.move(this, info[0]);
     }
     else if ((info = Protocol.decodeForwardCommand(line)) != null) {
-      server.forward(info[0],info[1]);
+      server.forward(info[0], info[1]);
     }
     else if ((info = Protocol.decodeStatsCommand(line)) != null) {
       this.info = info[0];
@@ -129,7 +129,7 @@ public class PlayerNode extends Node implements SocketWatcher {
       }
     }
     else if ((cmd = Protocol.decodeLoginCommand(line)) != null) {
-      connLimiter.register(cmd,input);
+      connLimiter.register(cmd, input);
     }
   }
 

@@ -125,7 +125,7 @@ public class BugDialog extends JDialog {
   private Component buildContentsPanel() {
     deck = new CardLayout();
     contents = new JPanel(deck);
-    contents.setBorder(BorderFactory.createEmptyBorder(12,12,0,12));
+    contents.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
 
     contents.add(buildVersionCheckPanel(),     "versionCheckPanel");
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel");
@@ -152,7 +152,7 @@ public class BugDialog extends JDialog {
   }
 
   private Component buildVersionCheckPanel() {
-    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
+    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40, 40));
     spinner.setBusy(true);
 
     final FlowLabel label =
@@ -446,7 +446,7 @@ public class BugDialog extends JDialog {
     super.setVisible(visible);
   }
 
-  private class CheckRequest extends SwingWorker<Boolean,Void> {
+  private class CheckRequest extends SwingWorker<Boolean, Void> {
     private Timer timer = null;
 
     @Override
@@ -491,7 +491,7 @@ public class BugDialog extends JDialog {
   }
 
   private Component buildSendingBugReportPanel() {
-    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
+    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40, 40));
     spinner.setBusy(true);
 
     final FlowLabel label =
@@ -525,7 +525,7 @@ public class BugDialog extends JDialog {
 
   private SendRequest sendRequest = null;
 
-  private class SendRequest extends SwingWorker<Void,Void> {
+  private class SendRequest extends SwingWorker<Void, Void> {
     private Timer timer = null;
 
     @Override

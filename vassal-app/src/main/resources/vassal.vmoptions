@@ -1,0 +1,9 @@
+#
+# add custom VM options here, one per line, e.g.:
+# -XX:+UseG1GC
+# -XX:MaxGCPauseMillis=200
+#
+# lines beginning with "#" and empty lines will be ignored
+#
+# delete this file to have Vassal regenerate it
+#

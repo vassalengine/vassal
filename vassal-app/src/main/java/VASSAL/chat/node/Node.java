@@ -80,7 +80,7 @@ public class Node implements MsgSender {
   }
 
   public void remove(Node child) {
-    logger.finer("Removing "+child+" from "+this); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.finer("Removing " + child + " from " + this); //$NON-NLS-1$ //$NON-NLS-2$
     children.remove(child);
   }
 
@@ -93,7 +93,7 @@ public class Node implements MsgSender {
     if (child.parent != null) {
       child.parent.remove(child);
     }
-    logger.finer("Adding "+child+" to "+this); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.finer("Adding " + child + " to " + this); //$NON-NLS-1$ //$NON-NLS-2$
     children.add(child);
     child.setParent(this);
   }
@@ -114,7 +114,7 @@ public class Node implements MsgSender {
   }
 
   public String toString() {
-    return super.toString()+"[id="+id+"]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return super.toString() + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
@@ -138,7 +138,7 @@ public class Node implements MsgSender {
    */
   public Node getDescendant(String path) {
     Node n = this;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path,'/');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens() && n != null) {
       String id = st.nextToken();
       n = n.getChild(id);
@@ -165,7 +165,7 @@ public class Node implements MsgSender {
     }
     else {
       for (Node n : base.getChildren()) {
-        addLeaves(n,l);
+        addLeaves(n, l);
       }
     }
   }
@@ -214,7 +214,7 @@ public class Node implements MsgSender {
     Node node = null;
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(pathAndInfo, '/');
     while (st.hasMoreTokens()) {
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(),'=');
+      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '=');
       String childId = st2.nextToken();
       String childInfo = st2.nextToken();
       node = base.getChild(childId);
@@ -256,11 +256,11 @@ public class Node implements MsgSender {
     synchronized (children) {
       SequenceEncoder se = new SequenceEncoder('/');
       List<Node> path = getPathList();
-      for (ListIterator<Node> i = path.listIterator(path.size()-1);
+      for (ListIterator<Node> i = path.listIterator(path.size() - 1);
            i.hasPrevious(); ) {
         Node n = i.previous();
         SequenceEncoder se2 =
-          new SequenceEncoder(n.getId(),'=').append(n.getInfo());
+          new SequenceEncoder(n.getId(), '=').append(n.getInfo());
         se.append(se2.getValue());
       }
       return se.getValue();

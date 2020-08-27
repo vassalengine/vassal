@@ -53,11 +53,11 @@ public class PropertyPrompt implements PropertyChanger {
     return promptText;
   }
 
-  public static interface DialogParent {
+  public interface DialogParent {
     Component getComponent();
   }
 
-  public static interface Constraints extends DialogParent {
+  public interface Constraints extends DialogParent {
     boolean isNumeric();
 
     int getMaximumValue();

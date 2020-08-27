@@ -37,6 +37,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -90,11 +91,11 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
+import VASSAL.counters.PropertyExporter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -223,7 +224,7 @@ public class Inventory extends AbstractConfigurable
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(getComponent());
     GameModule.getGameModule().getGameState().addGameComponent(this);
-    frame = new JDialog(GameModule.getGameModule().getFrame());
+    frame = new JDialog(GameModule.getGameModule().getPlayerWindow());
     frame.setTitle(getConfigureName());
     String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
@@ -414,7 +415,8 @@ public class Inventory extends AbstractConfigurable
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
 
-    try (Writer fw = new FileWriter(file);
+    // Writing out a text file for the user to do whatever with. Use the native encoding.
+    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
          BufferedWriter bw = new BufferedWriter(fw);
          PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
@@ -626,7 +628,7 @@ public class Inventory extends AbstractConfigurable
   public static class SortConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new StringEnumConfigurer(key,name,SORT_OPTIONS);
+      return new StringEnumConfigurer(key, name, SORT_OPTIONS);
     }
   }
 
@@ -960,7 +962,7 @@ public class Inventory extends AbstractConfigurable
       Command comm = null;
       if (p != null) {
         // Save state first
-        p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
+        p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         if (tracker == null) {
           tracker = new BoundsTracker();
           tracker.addPiece(p);
@@ -1455,7 +1457,7 @@ public class Inventory extends AbstractConfigurable
         found = Integer.parseInt(key.substring(start, match.end()));
 
         // Check for sign
-        if ( (start > 0) && (key.charAt(start-1) == '-') ) {
+        if ((start > 0) && (key.charAt(start - 1) == '-')) {
           // negative integer found
           // FIXME: Is this a safe operation? What happens when
           // MAX_VALUE * -1 < MIN_VALUE?
@@ -1515,7 +1517,7 @@ public class Inventory extends AbstractConfigurable
     protected List<TreeModelListener> treeModelListeners =
       new ArrayList<>();
     // This contains shortcuts to the nodes of the tree
-    protected Map<String,CounterNode> inventory;
+    protected Map<String, CounterNode> inventory;
     // The start of the tree
     protected CounterNode root;
     // Text view of the tree

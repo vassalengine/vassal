@@ -56,6 +56,14 @@ public class MoveTracker {
   }
 
   public Command getMoveCommand() {
-    return new MovePiece(piece.getId(),getMapId(),piece.getPosition(),getUnderneathId(),oldMapId,oldPosition,oldUnderneathId, GameModule.getUserId());
+    return new MovePiece(
+      piece.getId(),
+      getMapId(),
+      piece.getPosition(),
+      getUnderneathId(),
+      oldMapId,
+      oldPosition,
+      oldUnderneathId,
+      GameModule.getUserId());
   }
 }

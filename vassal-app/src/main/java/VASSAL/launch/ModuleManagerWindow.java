@@ -35,18 +35,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -121,6 +119,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
@@ -149,9 +148,9 @@ public class ModuleManagerWindow extends JFrame {
   private StringArrayConfigurer recentModuleConfig;
   private File selectedModule;
 
-  private CardLayout modulePanelLayout;
-  private JPanel moduleView;
-  private ComponentSplitter.SplitPane serverStatusView;
+  private final CardLayout modulePanelLayout;
+  private final JPanel moduleView;
+  private final SplitPane serverStatusView;
 
   private MyTreeNode rootNode;
   private MyTree tree;
@@ -161,7 +160,7 @@ public class ModuleManagerWindow extends JFrame {
   private long lastExpansionTime;
   private TreePath lastExpansionPath;
 
-  private IntConfigurer dividerLocationConfig;
+  private final IntConfigurer dividerLocationConfig;
 
   private static final long doubleClickInterval;
   static {
@@ -421,10 +420,10 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    serverStatusView = ComponentSplitter.split(
+    serverStatusView = ComponentSplitter.splitAsNewSplitPane(
       moduleControls,
       serverStatusControls,
-      ComponentSplitter.SplitPane.HIDE_RIGHT,
+      SplitPane.HIDE_RIGHT,
       false
     );
     serverStatusView.revalidate();
@@ -435,11 +434,8 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     setDividerLocation(getPreferredDividerLocation());
-    serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        setPreferredDividerLocation((Integer) e.getNewValue());
-      }});
+    serverStatusView.addPropertyChangeListener("dividerLocation",
+      e -> setPreferredDividerLocation((Integer) e.getNewValue()));
 
     final Rectangle r = Info.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
@@ -461,12 +457,7 @@ public class ModuleManagerWindow extends JFrame {
 
   protected void setDividerLocation(int i) {
     final int loc = i;
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        serverStatusView.setDividerLocation(loc);
-      }
-    };
+    final Runnable r = () -> serverStatusView.setDividerLocation(loc);
     SwingUtilities.invokeLater(r);
   }
 
@@ -495,16 +486,16 @@ public class ModuleManagerWindow extends JFrame {
 
     for (String s : missingModules) {
       logger.info(Resources.getString("ModuleManager.removing_module", s));
-      moduleList.remove(s);
+      final ModuleInfo toRemove = moduleList
+        .stream()
+        .filter(moduleInfo -> moduleInfo.getModuleName().equals(s))
+        .findFirst()
+        .orElse(null);
+      moduleList.remove(toRemove);
       recentModuleConfig.removeValue(s);
     }
 
-    moduleList.sort(new Comparator<>() {
-      @Override
-      public int compare(ModuleInfo f1, ModuleInfo f2) {
-        return f1.compareTo(f2);
-      }
-    });
+    moduleList.sort((f1, f2) -> f1.compareTo(f2));
 
     rootNode = new MyTreeNode(new RootInfo());
 
@@ -1267,7 +1258,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     protected boolean isModuleTooNew() {
-      return metadata == null ? false : Info.isModuleTooNew(metadata.getVassalVersion());
+      return metadata != null && Info.isModuleTooNew(metadata.getVassalVersion());
     }
 
     @Override
@@ -1684,7 +1675,7 @@ public class ModuleManagerWindow extends JFrame {
     public void refresh() {
 
       // Remove any files that no longer exist
-      for (int i = getTreeNode().getChildCount()-1; i >= 0; i--) {
+      for (int i = getTreeNode().getChildCount() - 1; i >= 0; i--) {
         final MyTreeNode fileNode = getTreeNode().getChild(i);
         final SaveFileInfo fileInfo = (SaveFileInfo) fileNode.getNodeInfo();
         if (!fileInfo.getFile().exists()) {
@@ -1736,7 +1727,7 @@ public class ModuleManagerWindow extends JFrame {
      */
     @Override
     public String getSortKey() {
-      return "~~~"+getFile().getName();
+      return "~~~" + getFile().getName();
     }
   }
 

@@ -21,19 +21,16 @@ package VASSAL.tools.concurrent.listener;
 import java.util.Collections;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-@RunWith(JMock.class)
 public class DefaultEventListenerSupportTest {
-
-  protected final Mockery context = new JUnit4Mockery();
+  @Rule
+  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   protected static final EventListener<Boolean> dummy =
                                                  new EventListener<Boolean>() {

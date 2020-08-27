@@ -67,7 +67,7 @@ public class PropertiesEncoder {
 
   private Properties decode(String s) throws IOException {
     final Properties p = new Properties();
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s,'|');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '|');
     final StringBuilder buffer = new StringBuilder();
     while (st.hasMoreTokens()) {
       buffer.append(st.nextToken());

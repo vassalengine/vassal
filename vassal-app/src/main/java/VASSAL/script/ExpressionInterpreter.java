@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2008-2009 by Brent Easton
+ * Copyright (c) 2008-2020 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,11 +17,25 @@
  */
 package VASSAL.script;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceFilter;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +46,8 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Stack;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.WarningDialog;
-import VASSAL.tools.io.IOUtils;
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
@@ -56,7 +67,7 @@ import bsh.NameSpace;
  *    will use the one Expression NameSpace.
  *
  */
-public class ExpressionInterpreter extends AbstractInterpreter {
+public class ExpressionInterpreter extends AbstractInterpreter implements Loopable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
@@ -79,13 +90,25 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
   protected String expression;
   protected PropertySource source;
-  protected List<String> variables = new ArrayList<>();
+  protected List<String> variables;
+  protected List<String> stringVariables;
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  
+  
+  public String getComponentTypeName() {
+    return "ExpressionInterpreter";
+  }
+  
+  
+  public String getComponentName() {
+    return "ExpressionInterpreter";
+  }
+  
 
-  public static ExpressionInterpreter createInterpreter (String expr) throws ExpressionException {
+  public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
     ExpressionInterpreter interpreter = cache.get(e);
     if (interpreter == null) {
@@ -98,7 +121,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
-      return s.substring(1, s.length()-1);
+      return s.substring(1, s.length() - 1);
     }
     return expr;
   }
@@ -108,7 +131,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * can only be created by createInterpreter.
    *
    * @param expr Expression
-   * @throws ExpressionException
+   * @throws ExpressionException Invalid Expression details
    */
   private ExpressionInterpreter(String expr) throws ExpressionException {
     super();
@@ -130,16 +153,29 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Get a list of any variables used in the expression. These are
     // property names that will need to be evaluated at expression
-    // evaluation time
-    variables = new BeanShellExpressionValidator(expression).getVariables();
+    // evaluation time.
+    // stringVariables is a list of the property names that call String functions so we
+    // know must be String type. These will be passed in to the evaluating expression as
+    // parameters to force their type to be known and allow String functions to be called on them.
+    final BeanShellExpressionValidator validator = new BeanShellExpressionValidator(expression);
+    variables = validator.getVariables();
+    stringVariables = validator.getStringVariables();
 
     // Build a method enclosing the expression. This saves the results
     // of the expression parsing, improving performance. Force return
     // value to a String as this is what Vassal is expecting.
+    // Pass the values of any String property names used in the expression as arguments
     setNameSpace(expressionNameSpace);
     if (expression.length() > 0) {
       try {
-        eval("String "+MAGIC2+"() { "+MAGIC3+"=" + expression + "; return "+MAGIC3+".toString();}");
+        final StringBuilder argList = new StringBuilder();
+        for (String variable : stringVariables) {
+          if (argList.length() > 0) {
+            argList.append(',');
+          }
+          argList.append("String ").append(variable);
+        }
+        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -166,27 +202,28 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load "+INIT_SCRIPT+" URI generated="+ ini);
+    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini);
 
     try (InputStream is = ini.openStream();
-         InputStreamReader isr = new InputStreamReader(is);
+         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(isr)) {
       try {
         eval(in);
       }
       catch (EvalError e) {
-        logger.error("Error trying to read init script: "+ ini);
+        logger.error("Error trying to read init script: " + ini);
         WarningDialog.show(e, "");
       }
     }
     catch (IOException e) {
-      logger.error("Error trying to read init script: "+ ini);
+      logger.error("Error trying to read init script: " + ini);
       WarningDialog.show(e, "");
     }
   }
 
   /**
    * Return the current expression
+   *
    * @return expression
    */
   public String getExpression() {
@@ -210,61 +247,81 @@ public class ExpressionInterpreter extends AbstractInterpreter {
       return "";
     }
 
-    // Default to the GameModule to satisfy properties if no
-    // GamePiece supplied.
-    source = ps == null ? GameModule.getGameModule() : ps;
-
-    setNameSpace(expressionNameSpace);
-
-    // Bind each undeclared variable with the value of the
-    // corresponding Vassal property. Allow for old-style $variable$ references
-    for (String var : variables) {
-      String name = var;
-      if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
-        name = name.substring(1, name.length()-1);
-      }
-      Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
-      String value = prop == null ? "" : prop.toString();
-      if (value == null) {
-        setVar(var, "");
-      }
-      else if ("true".equals(value)) {
-        setVar(var, true);
-      }
-      else if ("false".equals(value)) {
-        setVar(var, false);
-      }
-      else {
-        try {
-          setVar(var, Integer.valueOf(value).intValue());
-        }
-        catch (NumberFormatException e) {
-          try {
-            setVar(var, Float.valueOf(value).floatValue());
-          }
-          catch (NumberFormatException e1) {
-            setVar(var, value);
-          }
-        }
-      }
-    }
-
-    // Re-evaluate the pre-parsed expression now that the undefined variables have
-    // been bound to their Vassal property values.
-
-    setVar(THIS, this);
-    setVar(SOURCE, source);
-
-    String result = "";
+    String result;
     try {
-      eval(MAGIC1+"="+MAGIC2+"()");
-      result = get(MAGIC1).toString();
+      RecursionLimiter.startExecution(this);
+
+      // Default to the GameModule to satisfy properties if no
+      // GamePiece supplied.
+      source = ps == null ? GameModule.getGameModule() : ps;
+  
+      setNameSpace(expressionNameSpace);
+    
+      // Bind each undeclared variable with the value of the
+      // corresponding Vassal property. Allow for old-style $variable$ references
+      for (String var : variables) {
+        String name = var;
+        if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
+          name = name.substring(1, name.length() - 1);
+        }
+        Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        String value = prop == null ? "" : prop.toString();
+        if (value == null) {
+          setVar(var, "");
+        }
+        else if ("true".equals(value)) {
+          setVar(var, true);
+        }
+        else if ("false".equals(value)) {
+          setVar(var, false);
+        }
+        else {
+          try {
+            setVar(var, Integer.parseInt(value));
+          }
+          catch (NumberFormatException e) {
+            try {
+              setVar(var, Float.parseFloat(value));
+            }
+            catch (NumberFormatException e1) {
+              setVar(var, value);
+            }
+          }
+        }
+      }
+    
+      final StringBuilder argList = new StringBuilder();
+      for (String var : stringVariables) {
+        if (argList.length() > 0) {
+          argList.append(',');
+        }
+        final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
+        argList.append('"').append(value.toString()).append('"');
+      }
+  
+      // Re-evaluate the pre-parsed expression now that the undefined variables have
+      // been bound to their Vassal property values.
+    
+      setVar(THIS, this);
+      setVar(SOURCE, source);  
+        
+      try {
+        eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
+        result = get(MAGIC1).toString();
+      }
+      catch (EvalError e) {
+        final String s = e.getRawMessage();
+        final String search = MAGIC2 + "();'' : ";
+        final int pos = s.indexOf(search);
+        throw new ExpressionException(getExpression(), s.substring(pos + search.length()));
+      }
     }
-    catch (EvalError e) {
-      final String s = e.getRawMessage();
-      final String search = MAGIC2+"();'' : ";
-      final int pos = s.indexOf(search);
-      throw new ExpressionException(getExpression(), s.substring(pos+search.length()));
+    catch (RecursionLimitException e) {
+      result = "";
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
 
     return result;
@@ -279,7 +336,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * Note this is a non-static copy of BeanShell.wrap(). Callbacks from
    * beanshell (e.g. getProperty) fail if an attempt is made to call a static method.
    *
-   * @param value
+   * @param value Value to wrap
    * @return wrapped value
    */
   public Object wrap(String value) {
@@ -316,13 +373,42 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     return value == null ? "" : wrap(value.toString());
   }
 
+  public Object getZoneProperty(String propertyName, String zoneName) {
+    if (source instanceof GamePiece) {
+      final Map map = ((GamePiece) source).getMap();
+      if (map != null) {
+        final Zone zone = map.findZone(zoneName);
+        if (zone != null) {
+          return wrap((String) zone.getProperty(propertyName));
+        }
+      }
+    }
+    return wrap("");
+  }
+
+  public Object getZoneProperty(String propertyName, String zoneName, String mapName) {
+    final Map map = findVassalMap(mapName);
+    if (map != null) {
+      final Zone zone = map.findZone(zoneName);
+      if (zone != null) {
+        return wrap((String) zone.getProperty(propertyName));
+      }
+    }
+    return wrap("");
+  }
+
+  public Object getMapProperty(String propertyName, String mapName) {
+    final Map map = findVassalMap(mapName);
+    return map == null ? wrap("") : wrap((String) map.getProperty(propertyName));
+  }
+
   /**
    * SumStack(property) function
    * Total the value of the named property in all counters in the
    * same stack as the specified piece.
    *
    * @param property Property Name
-   * @param ps GamePiece
+   * @param ps       GamePiece
    * @return total
    */
   public Object sumStack(String property, PropertySource ps) {
@@ -348,12 +434,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
    * SumLocation(property) function
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
-   *
-   * * WARNING * This WILL be inneficient as the number of counters on the
+   * <p>
+   * * WARNING * This WILL be inefficient as the number of counters on the
    * map increases.
    *
    * @param property Property Name
-   * @param ps GamePiece
+   * @param ps       GamePiece
    * @return total
    */
   public Object sumLocation(String property, PropertySource ps) {
@@ -391,4 +477,178 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     }
     return result;
   }
+
+  /*
+   * Random Numbers
+   *
+   * - random(max)       - Return a Random integer between 1 and max inclusive (init_beanshell.bsh calls random(1, max))
+   * - random(min, max)  - Return a Random integer between min and max inclusive
+   * - isRandom(percent) - Return true percent% of the time
+   * - isRandom()        - Equivalent to Random(50) (init_beanshell.bsh calls isRandom(50))
+   */
+
+  public Object random(Object source, Object minString, Object maxString) {
+    final int min = parseInt(source, "Random", minString, 1);
+    int max = parseInt(source, "Random", maxString, 1);
+    if (max < min) {
+      max = min;
+    }
+    if (min == max) {
+      return min;
+    }
+    final int range = max - min + 1;
+    return GameModule.getGameModule().getRNG().nextInt(range) + min;
+  }
+
+  public Object isRandom(Object source, Object percentString) {
+    int percent = parseInt(source, "IsRandom", percentString, 50);
+    if (percent < 0)
+      percent = 0;
+    if (percent > 100)
+      percent = 100;
+    final int r = GameModule.getGameModule().getRNG().nextInt(100) + 1;
+    return r <= percent;
+  }
+
+  private int parseInt(Object source, String function, Object value, int dflt) {
+    int result = dflt;
+    try {
+      result = Integer.parseInt(value.toString());
+    }
+    catch (Exception e) {
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
+      final String data = "Data=[" + value.toString() + "].";
+      ErrorDialog.dataWarning(new BadDataReport(message, data, e));
+    }
+    return result;
+  }
+
+  /*
+   * Sum & Count
+   *
+   * Sum (property, match)      - Sum named property in units on all maps matching match
+   * Sum (property, match, map) - Sum named property in units on named map matching match
+   * Count (match)              - Count units on all maps matching match
+   * Count (match, map)         - Count units on named map matching match
+
+   */
+  public Object sum(Object source, Object propertyName, Object propertyMatch) {
+    return sum (source, propertyName, propertyMatch, null);
+  }
+
+  public Object sum(Object source, Object propertyName, Object propertyMatch, Object mapName) {
+    int result = 0;
+
+    if (! (source instanceof GamePiece)) return 0;
+    if (! (propertyName instanceof String)) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
+    if (! (mapName == null || mapName instanceof String)) return 0;
+
+    final String matchString = (String) propertyMatch;
+    final GamePiece sourcePiece = (GamePiece) source;
+    final List<Map> maps = getMapList(mapName, sourcePiece);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
+
+    for (Map map : maps) {
+      for (GamePiece piece : map.getAllPieces()) {
+        if (piece instanceof Stack) {
+          for (GamePiece p : ((Stack) piece).asList()) {
+            result += getIntPropertyValue(p, filter, (String) propertyName);
+          }
+        }
+        else {
+          result += getIntPropertyValue(piece, filter, (String) propertyName);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private int getIntPropertyValue (GamePiece piece, PieceFilter filter, String propertyName) {
+    if (filter == null || filter.accept(piece)) {
+      try {
+        return Integer.parseInt((String) piece.getProperty(propertyName));
+      }
+      catch (Exception ignored) {
+
+      }
+    }
+    return 0;
+  }
+
+  public Object count(Object source, Object propertyMatch) {
+    return count(source, propertyMatch, null);
+  }
+
+  public Object count(Object source, Object propertyMatch, Object mapName) {
+    int result = 0;
+
+    if (! (source instanceof GamePiece)) return 0;
+    if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
+    if (! (mapName == null || mapName instanceof String)) return 0;
+
+    final String matchString = (String) propertyMatch;
+    final GamePiece sourcePiece = (GamePiece) source;
+
+    final List<Map> maps = getMapList(mapName, sourcePiece);
+
+    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
+    for (Map map : maps) {
+      for (GamePiece piece : map.getAllPieces()) {
+        if (piece instanceof Stack) {
+          for (GamePiece p : ((Stack) piece).asList()) {
+            if (filter == null || filter.accept(p)) {
+              result++;
+            }
+          }
+        }
+        else {
+          if (filter == null || filter.accept(piece)) {
+            result++;
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private String unescape(String expr) {
+    return expr.replace("\\\"", "\"");
+  }
+
+  private List<Map> getMapList(Object mapName, GamePiece sourcePiece) {
+    final List<Map> maps;
+    if (mapName == null) {
+      maps = Map.getMapList();
+    }
+    else {
+      maps = new ArrayList<>();
+      // Shortcut - See if the parent piece for our source piece is the map we want (most likely)
+      if (sourcePiece != null && sourcePiece.getMap().getMapName().equals(mapName)) {
+        maps.add(sourcePiece.getMap());
+      }
+      // Otherwise, search all maps for the one we want
+      else {
+        for (Map map : Map.getMapList()) {
+          if (map.getMapName().equals(mapName)) {
+            maps.add(map);
+            break;
+          }
+        }
+      }
+    }
+    return maps;
+  }
+
+  private Map findVassalMap(String mapName) {
+    for (Map map : Map.getMapList()) {
+      if (map.getMapName().equals(mapName)) {
+        return map;
+      }
+    }
+    return null;
+  }
+
 }

@@ -18,8 +18,6 @@
 package VASSAL.chat.peer2peer;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -65,7 +63,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private JList<Entry> addressList;
   private DefaultListModel<Entry> addressBook;
   private final Properties params;
-  private final boolean serverMode;
 
   public DirectPeerPool() {
     this (new Properties());
@@ -74,11 +71,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   public DirectPeerPool(Properties param) {
     params = new Properties();
     params.putAll(param);
-    serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
     inviteButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     inviteButton.addActionListener(e -> frame.setVisible(true));
     inviteButton.setEnabled(false);
-    inviteButton.setVisible(P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY)));
+    inviteButton.setVisible(true);
   }
 
   @Override
@@ -104,8 +100,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
   }
 
+  @Deprecated(since = "2020-08-17", forRemoval = true)
   protected boolean isServerMode() {
-    return serverMode;
+    return true;
   }
 
   @Override
@@ -144,9 +141,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
     Frame owner = null;
     if (GameModule.getGameModule() != null) {
-      owner = GameModule.getGameModule().getFrame();
+      owner = GameModule.getGameModule().getPlayerWindow();
     }
-    frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
+    frame = new JDialog(owner, Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     frame.setLayout(new MigLayout());
 
@@ -297,7 +294,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
 
     public Entry (String description, String address, String port, String passwd) {
-      this.description =description;
+      this.description = description;
       this.address = address;
       this.port = port;
     }

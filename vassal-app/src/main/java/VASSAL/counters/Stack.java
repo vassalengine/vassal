@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -44,7 +45,7 @@ import VASSAL.tools.SequenceEncoder;
  * A collection of GamePieces which can be moved as a single unit
  */
 public class Stack implements GamePiece, StateMergeable {
-  public static final String TYPE = "stack";
+  public static final String TYPE = "stack"; //$NON-NLS-1$//
   protected static final int INCR = 5;
   protected GamePiece[] contents = new GamePiece[INCR];
   protected int pieceCount = 0;
@@ -79,8 +80,9 @@ public class Stack implements GamePiece, StateMergeable {
    *         won't affect it.
    * @deprecated use {@link #asList()}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new AllPieceIterator());
     //    return new AllPieceEnum();
   }
@@ -104,11 +106,12 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * Return an enumeration of the pieces in the start, from the top down
    *
-   * @return
-   * @deprecated
+   * @return Reverse order Enumerator
+   * @deprecated Use {@link #getPiecesInVisibleOrderIterator()}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPiecesInReverseOrder() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new ReversePieceIterator());
 //    return new ReversePieceEnum();
   }
@@ -121,10 +124,11 @@ public class Stack implements GamePiece, StateMergeable {
    * Returns pieces in the order in which they are visible to the player --
    * topmost first In other words, selected pieces first, then unselected pieces
    * from the top to the bottom.
-   * @deprecated
+   * @deprecated Use {@link #getPiecesInVisibleOrderIterator()}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPiecesInVisibleOrder() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new VisibleOrderIterator());
 //    return new VisibleOrderEnum();
   }
@@ -149,7 +153,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   /**
    * Perform some action on a GamePiece that has just been removed this Stack
-   * @param p
+   * @param p GamePiece
    * @return a {@link Command} that performs the equivalent action when executed
    */
   public Command pieceRemoved(GamePiece p) {
@@ -202,7 +206,7 @@ public class Stack implements GamePiece, StateMergeable {
    * Adds a piece to the stack. If the piece already exists in the stack, moves
    * it to the top
    *
-   * @param c
+   * @param c Stack to add piece to
    */
   public void add(GamePiece c) {
     insert(c, pieceCount);
@@ -213,8 +217,8 @@ public class Stack implements GamePiece, StateMergeable {
    * {@link #insert} because it assumes the piece does not already belong to
    * this Stack.
    *
-   * @param child
-   * @param index
+   * @param child GamePiece to insert
+   * @param index Insert Index
    */
   public void insertChild(GamePiece child, int index) {
     if (child.getParent() != null) {
@@ -233,7 +237,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   /**
    * Return the number of pieces that could possible be drawn in the stack, regardless of visibility to any particular player
-   * @return
+   * @return Piece Count
    */
   public int getMaximumVisiblePieceCount() {
     return pieceCount;
@@ -243,8 +247,8 @@ public class Stack implements GamePiece, StateMergeable {
    * Inserts a child GamePiece at a given index. If the child piece already
    * belongs to this Stack, it will be repositioned to the given index.
    *
-   * @param p
-   * @param pos
+   * @param p GamePiece to insert
+   * @param pos Insert position
    */
   public void insert(GamePiece p, int pos) {
     if (p == null) {
@@ -272,7 +276,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   /**
    * Perform some action on a GamePiece that has just been added to this Stack
-   * @param p
+   * @param p Game Piece
    * @return a {@link Command} that performs the equivalent action when executed
    */
   public Command pieceAdded(GamePiece p) {
@@ -396,7 +400,7 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * @return the top piece in this stack that is visible to the player with the
    *         given id
-   * @param playerId
+   * @param playerId Player Id to check
    * @see GameModule#getUserId
    */
   public GamePiece topPiece(String playerId) {
@@ -412,7 +416,7 @@ public class Stack implements GamePiece, StateMergeable {
   /**
    * @return the bottom piece in this stack that is visible to the player with
    *         the given id
-   * @param playerId
+   * @param playerId Player Id to Check
    * @see GameModule#getUserId
    */
   public GamePiece bottomPiece(String playerId) {
@@ -466,7 +470,7 @@ public class Stack implements GamePiece, StateMergeable {
   @Override
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y);
+    se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$//
     for (int i = 0; i < pieceCount; ++i) {
       se.append(contents[i].getId());
     }
@@ -487,10 +491,10 @@ public class Stack implements GamePiece, StateMergeable {
     }
 
     Map m = null;
-    if (!"null".equals(mapId)) {
+    if (!"null".equals(mapId)) { //$NON-NLS-1$//
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("Could not find map",mapId,null));
+        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null));
       }
     }
 
@@ -508,8 +512,8 @@ public class Stack implements GamePiece, StateMergeable {
    * Compute the difference between <code>newState</code> and
    * <code>oldState</code> and appy that difference to the current state
    *
-   * @param newState
-   * @param oldState
+   * @param newState New State
+   * @param oldState Old State
    */
   @Override
   public void mergeState(String newState, String oldState) {
@@ -558,14 +562,14 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public String toString() {
-    return super.toString()+"["+getName()+"]";
+    return super.toString() + "[" + getName() + "]";
   }
 
   /**
    * Calls setProperty() on each piece in this stack
    *
-   * @param key
-   * @param val
+   * @param key Property Key
+   * @param val Property Value
    */
   public void setPropertyOnContents(Object key, Object val) {
     asList().forEach(gamePiece -> gamePiece.setProperty(key, val));
@@ -609,7 +613,7 @@ public class Stack implements GamePiece, StateMergeable {
   @Override
   public void setParent(Stack s) {
     if (s != null) {
-      ErrorDialog.dataError(new BadDataReport("Cannot add stack to another stack",toString(),null));
+      ErrorDialog.dataWarning(new BadDataReport("Cannot add stack to another stack", toString(), null));
     }
   }
 

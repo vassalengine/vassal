@@ -63,7 +63,7 @@ public class PropertyNameExpressionBuilder extends ExpressionBuilder {
 
     if (expr.startsWith("GetProperty(\"") && expr.endsWith("\")") &&
         (expr.length() - expr.replaceAll("\"", "").length()) == 2) {
-      target.setValue(expr.substring(13, expr.length()-2));
+      target.setValue(expr.substring(13, expr.length() - 2));
       dispose();
       return;
     }

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -56,7 +57,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 public class Obscurable extends Decorator implements TranslatablePiece {
-  public static final String ID = "obs;";
+  public static final String ID = "obs;"; //$NON-NLS-1$//
   protected static final char INSET = 'I';
   protected static final char BACKGROUND = 'B';
   protected static final char PEEK = 'P';
@@ -85,7 +86,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected KeyCommand peek;
 
   public Obscurable() {
-    this(ID + "M;", null);
+    this(ID + "M;", null); //$NON-NLS-1$//
   }
 
   public Obscurable(String type, GamePiece d) {
@@ -96,8 +97,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public void mySetState(String in) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(in, ';');
-    String token = sd.nextToken("null");
-    obscuredBy = "null".equals(token) ? null : token;
+    String token = sd.nextToken("null"); //$NON-NLS-1$//
+    obscuredBy = "null".equals(token) ? null : token; //$NON-NLS-1$//
     token = sd.nextToken("");
     obscuredOptions = (obscuredBy == null ? null : new ObscurableOptions(token));
   }
@@ -117,7 +118,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       case PEEK:
         if (s.length() > 1) {
           if (s.length() == 2) {
-            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1),InputEvent.CTRL_DOWN_MASK);
+            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1), InputEvent.CTRL_DOWN_MASK);
           }
           else {
             peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
@@ -173,7 +174,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(obscuredBy == null ? "null" : obscuredBy);
+    se.append(obscuredBy == null ? "null" : obscuredBy); //$NON-NLS-1$//
     se.append((obscuredBy == null || obscuredOptions == null) ? "" : obscuredOptions.encodeOptions());
     return se.getValue();
   }
@@ -242,7 +243,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       if (val instanceof String
           || val == null) {
         obscuredBy = (String) val;
-        if ("null".equals(obscuredBy)) {
+        if ("null".equals(obscuredBy)) { //$NON-NLS-1$//
           obscuredBy = null;
           obscuredOptions = null;
         }
@@ -279,7 +280,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+isPeeking()+piece.getProperty(key);
+      return myGetState() + isPeeking() + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
@@ -324,7 +325,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState()+isPeeking()+piece.getProperty(key);
+      return myGetState() + isPeeking() + piece.getProperty(key);
     }
     else {
       return super.getLocalizedProperty(key);
@@ -482,7 +483,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * @param id ignored
    * @deprecated
    */
-  @Deprecated public boolean isMaskableBy(String id) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public boolean isMaskableBy(@SuppressWarnings("unused") String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return isMaskable();
   }
 
@@ -510,7 +513,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (!obscuredToMe()) {
       return super.keyEvent(stroke);
     }
-    else if (isMaskable()){
+    else if (isMaskable()) {
       return myKeyEvent(stroke);
     }
     else {
@@ -551,12 +554,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
       // FIXME: This probably causes a race condition. Can we do this directly?
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
-        }
-      };
+      Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;
@@ -570,7 +568,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Mask.htm");
-  }
+  } //$NON-NLS-1$//
 
   @Override
   public PieceEditor getEditor() {
@@ -580,10 +578,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   /**
    * If true, then all masked pieces are considered masked to all players.
    * Used to temporarily draw pieces as they appear to other players
-   * @param allHidden
+   * @param allHidden True to hide all pieces
    * @deprecated
    */
-  @Deprecated public static void setAllHidden(boolean allHidden) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static void setAllHidden(boolean allHidden) {
+    ProblemDialog.showDeprecated("2020-08-06");
     if (allHidden) {
       PieceAccess.GlobalAccess.hideAll();
     }
@@ -609,17 +609,17 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private ImagePicker picker;
-    private NamedHotKeyConfigurer obscureKeyInput;
-    private StringConfigurer obscureCommandInput, maskNameInput;
-    private StringEnumConfigurer displayOption;
-    private NamedHotKeyConfigurer peekKeyInput;
-    private StringConfigurer peekCommandInput;
-    private JPanel controls = new JPanel();
-    private String[] optionNames = new String[]{"Background", "Plain", "Inset", "Use Image"};
-    private char[] optionChars = new char[]{BACKGROUND, PEEK, INSET, IMAGE};
-    private ImagePicker imagePicker;
-    private PieceAccessConfigurer accessConfig;
+    private final ImagePicker picker;
+    private final NamedHotKeyConfigurer obscureKeyInput;
+    private final StringConfigurer obscureCommandInput, maskNameInput;
+    private final StringEnumConfigurer displayOption;
+    private final NamedHotKeyConfigurer peekKeyInput;
+    private final StringConfigurer peekCommandInput;
+    private final JPanel controls = new JPanel();
+    private final String[] optionNames = new String[]{"Background", "Plain", "Inset", "Use Image"};
+    private final char[] optionChars = new char[]{BACKGROUND, PEEK, INSET, IMAGE};
+    private final ImagePicker imagePicker;
+    private final PieceAccessConfigurer accessConfig;
 
     public Ed(Obscurable p) {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
@@ -627,11 +627,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       Box box = Box.createHorizontalBox();
       obscureCommandInput = new StringConfigurer(null, "Mask Command:  ", p.hideCommand);
       box.add(obscureCommandInput.getControls());
-      obscureKeyInput = new NamedHotKeyConfigurer(null,"  Keyboard Command:  ",p.keyCommand);
+      obscureKeyInput = new NamedHotKeyConfigurer(null, "  Keyboard Command:  ", p.keyCommand);
       box.add(obscureKeyInput.getControls());
       controls.add(box);
 
-      accessConfig = new PieceAccessConfigurer(null,"Can be masked by:  ",p.access);
+      accessConfig = new PieceAccessConfigurer(null, "Can be masked by:  ", p.access);
       controls.add(accessConfig.getControls());
 
       box = Box.createHorizontalBox();
@@ -696,7 +696,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       box.add(showDisplayOption);
       controls.add(box);
 
-      peekKeyInput = new NamedHotKeyConfigurer(null,"Peek Key:  ",p.peekKey);
+      peekKeyInput = new NamedHotKeyConfigurer(null, "Peek Key:  ", p.peekKey);
       peekKeyInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekKeyInput.getControls());
 
@@ -709,24 +709,21 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       imagePicker.setVisible(p.displayStyle == IMAGE);
       controls.add(imagePicker);
 
-      displayOption.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          showDisplayOption.repaint();
-          peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-          peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-          imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
-          Window w = SwingUtilities.getWindowAncestor(controls);
-          if (w != null) {
-            w.pack();
-          }
+      displayOption.addPropertyChangeListener(evt -> {
+        showDisplayOption.repaint();
+        peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
+        peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
+        imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
+        Window w = SwingUtilities.getWindowAncestor(controls);
+        if (w != null) {
+          w.pack();
         }
       });
     }
 
     @Override
     public String getState() {
-      return "null";
+      return "null"; //$NON-NLS-1$//
     }
 
     @Override

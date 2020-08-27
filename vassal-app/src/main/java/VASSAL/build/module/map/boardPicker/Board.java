@@ -17,6 +17,9 @@
  */
 package VASSAL.build.module.map.boardPicker;
 
+import VASSAL.build.module.GameComponent;
+import VASSAL.command.Command;
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,7 +34,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -88,6 +93,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected MapGrid grid = null;
   protected Map map;
   protected double magnification = 1.0;
+
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected Image boardImage;
 
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
@@ -169,20 +177,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REVERSIBLE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return imageFile != null;
-        }
-      };
+      return () -> imageFile != null;
     }
     else if (List.of(WIDTH, HEIGHT, COLOR).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return imageFile == null;
-        }
-      };
+      return () -> imageFile == null;
     }
     else {
       return null;
@@ -288,29 +286,23 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public void draw(Graphics g, int x, int y, double zoom, Component obs) {
     drawRegion(g,
-               new Point(x,y),
+               new Point(x, y),
                new Rectangle(x, y,
-                             Math.round((float) zoom*boundaries.width),
-                             Math.round((float) zoom*boundaries.height)),
+                             Math.round((float) zoom * boundaries.width),
+                             Math.round((float) zoom * boundaries.height)),
                zoom, obs);
   }
 
-  private ConcurrentMap<Point,Future<BufferedImage>> requested =
-    new ConcurrentHashMap<>();
+  private final ConcurrentMap<Point, Future<BufferedImage>> requested = new ConcurrentHashMap<>();
 
-  private java.util.Map<Point,Float> alpha =
-    new ConcurrentHashMap<>();
+  private final java.util.Map<Point, Float> alpha = new ConcurrentHashMap<>();
 
-  private ConcurrentMap<Point,Future<BufferedImage>> o_requested =
-    new ConcurrentHashMap<>();
+  private final ConcurrentMap<Point, Future<BufferedImage>> o_requested = new ConcurrentHashMap<>();
 
-  private static Comparator<Point> tileOrdering = new Comparator<>() {
-    @Override
-    public int compare(Point t1, Point t2) {
-      if (t1.y < t2.y) return -1;
-      if (t1.y > t2.y) return 1;
-      return t1.x - t2.x;
-    }
+  private static final Comparator<Point> tileOrdering = (t1, t2) -> {
+    if (t1.y < t2.y) return -1;
+    if (t1.y > t2.y) return 1;
+    return t1.x - t2.x;
   };
 
   protected void drawTile(Graphics g, Future<BufferedImage> fim,
@@ -373,12 +365,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final Point[] tiles = op.getTileIndices(r);
       for (Point tile : tiles) {
         // find tile position
-        final int tx = location.x + tile.x*ow;
-        final int ty = location.y + tile.y*oh;
+        final int tx = location.x + tile.x * ow;
+        final int ty = location.y + tile.y * oh;
 
         // find actual tile size
-        final int tw = Math.min(ow, location.x+bounds.width-tx);
-        final int th = Math.min(oh, location.y+bounds.height-ty);
+        final int tw = Math.min(ow, location.x + bounds.width - tx);
+        final int th = Math.min(oh, location.y + bounds.height - ty);
 
         // find position in component
         final int cx = (int)(tx / os_scale);
@@ -511,6 +503,22 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public synchronized Image getScaledImage(double zoom, @SuppressWarnings("unused") Component obs) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    try {
+      final ImageOp sop = Op.scale(boardImageOp, zoom);
+      return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
+    }
+    catch (CancellationException | ExecutionException | InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    return null;
+  }
+
   public void setReversed(boolean val) {
     if (reversible) {
       if (reversed != val) {
@@ -534,8 +542,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
 
     if (magnification != 1.0) {
-      p.x = (int) Math.round(p.x/magnification);
-      p.y = (int) Math.round(p.y/magnification);
+      p.x = (int) Math.round(p.x / magnification);
+      p.y = (int) Math.round(p.y / magnification);
     }
 
     return p;
@@ -546,8 +554,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public Point globalCoordinates(Point p) {
     if (magnification != 1.0) {
-      p.x = (int) Math.round(p.x*magnification);
-      p.y = (int) Math.round(p.y*magnification);
+      p.x = (int) Math.round(p.x * magnification);
+      p.y = (int) Math.round(p.y * magnification);
     }
 
     if (reversed) {
@@ -598,8 +606,18 @@ public class Board extends AbstractConfigurable implements GridContainer {
   /**
    * @deprecated Images are now fixed automagically using {@link ImageOp}s.
    */
-  @Deprecated
-  public void fixImage(Component map) { }
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void fixImage(@SuppressWarnings("unused") Component map) {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
+
+ /**
+  * @deprecated Images are now fixed automagically using {@link ImageOp}s.
+  */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void fixImage() {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
   public String locationName(Point p) {
     return grid == null ? null : grid.locationName(localCoordinates(p));
@@ -618,7 +636,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * I.e., if this grid will attempt to snap it to the nearest grid location.
    */
   public boolean isLocationRestricted(Point p) {
-    return grid == null ? false : grid.isLocationRestricted(localCoordinates(p));
+    return grid != null && grid.isLocationRestricted(localCoordinates(p));
   }
 
   public String fileName() {
@@ -640,13 +658,21 @@ public class Board extends AbstractConfigurable implements GridContainer {
       boundaries.setSize(boardImageOp.getSize());
 
       if (magnification != 1.0) {
-        boundaries.setSize((int)Math.round(magnification*boundaries.width),
-                           (int)Math.round(magnification*boundaries.height));
+        boundaries.setSize((int)Math.round(magnification * boundaries.width),
+                           (int)Math.round(magnification * boundaries.height));
       }
 
       fixedBoundaries = true;
     }
     return new Rectangle(boundaries);
+  }
+
+  /**
+   * @deprecated Bounds are now fixed automagically by {@link ImageOp}s.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected void fixBounds() {
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
@@ -670,6 +696,76 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Board.htm");
+  }
+
+  /**
+   * Removes board images from the {@link VASSAL.tools.DataArchive} cache
+   * @deprecated Board images are removed automatically now, when under
+   * memory pressure.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  @SuppressWarnings("all")
+  public void cleanUp() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    if (imageFile != null) {
+      GameModule.getGameModule().getDataArchive().unCacheImage("images/" + imageFile);
+    }
+    if (boardImage != null) {
+      GameModule.getGameModule().getDataArchive().unCacheImage(boardImage);
+      boardImage = null;
+    }
+  }
+
+  /**
+   * Cleans up {@link Board}s (by invoking {@link Board#cleanUp}) when a
+   * game is closed
+   * @deprecated Only used to cleanup <code>Board</code> images, which
+   * is now handled automatically by the cache.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static class Cleanup implements GameComponent {
+    private static Cleanup instance;
+    private final Set<Board> toClean = new HashSet<>();
+    private boolean gameStarted = false;
+
+    public static void init() {
+      if (instance == null) {
+        instance = new Cleanup();
+      }
+    }
+
+    private Cleanup() {
+      GameModule.getGameModule().getGameState().addGameComponent(this);
+    }
+
+    public static Cleanup getInstance() {
+      return instance;
+    }
+
+    /**
+     * Mark this board as needing to be cleaned up when the game is closed
+     *
+     * @param b Board
+     */
+    public void addBoard(Board b) {
+      toClean.add(b);
+    }
+
+    @Override
+    public Command getRestoreCommand() {
+      return null;
+    }
+
+    @Override
+    public void setup(boolean gameStarting) {
+      if (gameStarted && !gameStarting) {
+        for (Board board : toClean) {
+          board.cleanUp();
+        }
+        toClean.clear();
+      }
+      gameStarted = gameStarting;
+    }
   }
 
   public double getMagnification() {

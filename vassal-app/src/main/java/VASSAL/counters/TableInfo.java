@@ -173,7 +173,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         JScrollPane scroll = new ScrollPane(table);
         scroll.getViewport().setPreferredSize(table.getPreferredSize());
         frame.add(scroll);
-        Point p = GameModule.getGameModule().getFrame().getLocation();
+        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
           Point p2 = getMap().mapToComponent(getPosition());
@@ -233,7 +233,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       rowConfig.setValue(p.nRows);
       colConfig.setValue(p.nCols);
       commandConfig.setValue(p.command);
-      keyConfig = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.launchKey);
+      keyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.launchKey);
 
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

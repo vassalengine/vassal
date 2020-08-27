@@ -1,7 +1,6 @@
 /*
- * $Id: BeanShellExpressionValidator.java,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
  *
- * Copyright (c) 2008-2013 by Brent Easton
+ * Copyright (c) 2008-2020 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,11 +32,14 @@ import java.util.List;
 public class BeanShellExpressionValidator {
   
   protected String expression;
-  protected List<String> variables = new ArrayList<String>();
-  protected List<String> methods = new ArrayList<String>();
+  protected List<String> variables = new ArrayList<>();
+  protected List<String> stringVariables = new ArrayList<>();
+  protected List<String> methods = new ArrayList<>();
   protected String error;
-  protected boolean valid = false;
-  
+  protected boolean valid;
+
+  protected final String SUPPORTED_STRING_METHODS = ".length,.contains,.startsWith,.endsWith,.matches,.indexOf,.lastIndexOf,.substring,.replace,";
+
   /**
    * Build a new Validator and validate the expression
    * @param expression Expression to validate
@@ -58,7 +60,15 @@ public class BeanShellExpressionValidator {
   protected void setValid(boolean b) {
     valid = b;
   }
-  
+
+  /**
+   * Return a list of Variable references in the expression that we know must be Strings
+   * @return List of variables
+   */
+  public List<String> getStringVariables() {
+    return stringVariables;
+  }
+
   /**
    * Return a list of Variable references in the expression
    * @return List of variables
@@ -77,7 +87,7 @@ public class BeanShellExpressionValidator {
   
   /**
    * Return an Error Message if no valid
-   * @return
+   * @return Error message
    */
   public String getError() {
     return error;
@@ -133,7 +143,7 @@ public class BeanShellExpressionValidator {
     if (s.trim().startsWith("{") && s.trim().endsWith("}")) {
       final int start = s.indexOf("{");
       final int end = s.lastIndexOf("}");
-      StringBuffer buffer = new StringBuffer(s.length());
+      StringBuilder buffer = new StringBuilder(s.length());
       for (int i = 0; i < s.length(); i++) {
         if (i == start || i == end) {
           buffer.append(' ');
@@ -149,7 +159,7 @@ public class BeanShellExpressionValidator {
   
   /**
    * Process a Parser Node and extract any Variable and Method references.
-   * Assignemnts are not allowed in an expression, so flag as an error
+   * Assignments are not allowed in an expression, so flag as an error
    * @param node Parser Node
    */
   protected boolean processNode (SimpleNode node) {
@@ -158,10 +168,26 @@ public class BeanShellExpressionValidator {
     }
     
     if (node instanceof BSHAmbiguousName) {
-      final String name = ((BSHAmbiguousName) node).getText().trim();
+      final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
-          methods.add(name);
+          // Check for x.y() where y is a String method. x will be a property name we need tp report
+          // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens
+          String[] tokens = name.split(" ");
+          // Only 1 Token, it's a straight method, we're not interested.
+          if (tokens.length == 1) {
+            if (! methods.contains(name)) {
+              methods.add(name);
+            }
+          }
+          else {
+            // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a String variable
+            if (SUPPORTED_STRING_METHODS.contains(tokens[1]+",")) {
+              if (! stringVariables.contains(tokens[0])) {
+                stringVariables.add(tokens[0]);
+              }
+            }
+          }
         }
       }
       else if (! variables.contains(name)) {
@@ -169,7 +195,7 @@ public class BeanShellExpressionValidator {
       }
     }
     else if (node instanceof BSHAssignment) {
-      setError("Assignemts (=) not allowed in Expressions. See Help");
+      setError("Assignments (=) not allowed in Expressions. See Help");
       return false;
     }
     else {

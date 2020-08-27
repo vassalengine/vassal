@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.tools.WarningDialog;
 import bsh.BeanShellExpressionValidator;
@@ -56,29 +57,17 @@ public class BeanShell {
   public void init() {
     // Read in the Vassal Script init script
     URL ini = instance.getClass().getResource(INIT_SCRIPT);
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(
-        new InputStreamReader(
-        ini.openStream()));
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(ini.openStream(), StandardCharsets.UTF_8))) {
+
       CompileResult result = compile(in);
-      if (! result.isSuccess()) {
+      if (!result.isSuccess()) {
         result.printStackTrace();
       }
     }
     catch (IOException e) {
       //FIXME: Error message
       WarningDialog.show(e, "");
-    }
-    finally {
-      if (in != null) {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          //
-        }
-      }
     }
   }
 
@@ -108,7 +97,7 @@ public class BeanShell {
    */
   public void executeActionScript(String scriptName) {
     try {
-      globalInterpreter.evaluate(scriptName+"();");
+      globalInterpreter.evaluate(scriptName + "();");
     }
     catch (EvalError e) {
       e.printStackTrace();

@@ -25,11 +25,9 @@
  */
 package VASSAL.build.module;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -37,6 +35,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
+import java.util.Vector;
 
 /**
  * Determines whether players are allowed to unmask other players pieces.  The module designer may
@@ -79,26 +78,23 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   public void allowSome(String preferencesPrompt) {
     Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
     GameModule.getGameModule().getPrefs().addOption(c);
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Boolean.TRUE.equals(evt.getNewValue())) {
-          ObscurableOptions.getInstance().allow(GameModule.getUserId());
-          String side = PlayerRoster.getMySide();
-          if (side != null) {
-            ObscurableOptions.getInstance().allow(side);
-          }
+    c.addPropertyChangeListener(evt -> {
+      if (Boolean.TRUE.equals(evt.getNewValue())) {
+        ObscurableOptions.getInstance().allow(GameModule.getUserId());
+        String side = PlayerRoster.getMySide();
+        if (side != null) {
+          ObscurableOptions.getInstance().allow(side);
         }
-        else {
-          ObscurableOptions.getInstance().disallow(GameModule.getUserId());
-          String side = PlayerRoster.getMySide();
-          if (side != null) {
-            ObscurableOptions.getInstance().disallow(side);
-          }
-        }
-        GameModule.getGameModule()
-                  .getServer().sendToOthers(new SetAllowed(instance.allowed));
       }
+      else {
+        ObscurableOptions.getInstance().disallow(GameModule.getUserId());
+        String side = PlayerRoster.getMySide();
+        if (side != null) {
+          ObscurableOptions.getInstance().disallow(side);
+        }
+      }
+      GameModule.getGameModule()
+                .getServer().sendToOthers(new SetAllowed(instance.allowed));
     });
     if (Boolean.TRUE.equals(c.getValue())) {
       allow(GameModule.getUserId());
@@ -199,7 +195,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   public void decodeOptions(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     String setting = sd.nextToken("");
-    if (setting.length()==0) {
+    if (setting.length() == 0) {
       override = null;
     }
     else {
@@ -240,9 +236,16 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   }
 
   public static class SetAllowed extends Command {
-    private List<String> allowed;
+    private final List<String> allowed;
 
     public SetAllowed(List<String> allowed) {
+      this.allowed = allowed;
+    }
+
+    /** @deprecated Use {@link #SetAllowed(List)} instead. */
+    @Deprecated(since = "2020-08-06", forRemoval = true)
+    public SetAllowed(Vector<String> allowed) {
+      ProblemDialog.showDeprecated("2020-08-06");
       this.allowed = allowed;
     }
 

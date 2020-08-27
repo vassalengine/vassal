@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import VASSAL.tools.ArgsParser;
@@ -67,7 +68,7 @@ public class Server extends Thread {
     }
     if (!"true".equals(p.getProperty("test"))) { //$NON-NLS-1$ //$NON-NLS-2$
       new Server(new AsynchronousServerNode(reportURL), port);
-      new LockWatcher(1000L*60*30,1000L*60,port).start();
+      new LockWatcher(1000L * 60 * 30, 1000L * 60, port).start();
     }
     if (p.getProperty("test") != null) { //$NON-NLS-1$
       Socket soc = new Socket("localHost", port); //$NON-NLS-1$
@@ -84,8 +85,9 @@ public class Server extends Thread {
       handler.start();
       handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+      // open stdin, use native encoding.
       final BufferedReader reader =
-        new BufferedReader(new InputStreamReader(System.in));
+        new BufferedReader(new InputStreamReader(System.in, Charset.defaultCharset()));
       try {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -114,14 +116,14 @@ public class Server extends Thread {
           else if (line.startsWith("*")) { //$NON-NLS-1$
             int length = Integer.parseInt(line.substring(1));
             final StringBuilder buffer = new StringBuilder();
-            for (int i=0;i<length;++i) {
-              char c = (char) ('a' + i%10);
+            for (int i = 0; i < length; ++i) {
+              char c = (char) ('a' + i % 10);
               if (c == 'a') {
                 c = 'A';
               }
               buffer.append(c);
             }
-            String msg = Protocol.encodeForwardCommand("test/*",buffer.toString()); //$NON-NLS-1$
+            String msg = Protocol.encodeForwardCommand("test/*", buffer.toString()); //$NON-NLS-1$
             handler.writeLine(msg);
           }
           else {

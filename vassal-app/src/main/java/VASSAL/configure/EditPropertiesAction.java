@@ -38,7 +38,7 @@ public class EditPropertiesAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Map<Configurable,PropertiesWindow> openWindows = new HashMap<>();
+  protected static Map<Configurable, PropertiesWindow> openWindows = new HashMap<>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 
@@ -62,7 +62,7 @@ public class EditPropertiesAction extends AbstractAction {
   public void actionPerformed(ActionEvent evt) {
     PropertiesWindow w = openWindows.get(target);
     if (w == null) {
-      w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
+      w = new PropertiesWindow(dialogOwner, false, target, helpWindow);
       w.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(WindowEvent e) {
@@ -72,7 +72,7 @@ public class EditPropertiesAction extends AbstractAction {
           }
         }
       });
-      openWindows.put(target,w);
+      openWindows.put(target, w);
       w.setVisible(true);
       if (tree != null) {
         tree.notifyStateChanged(true);

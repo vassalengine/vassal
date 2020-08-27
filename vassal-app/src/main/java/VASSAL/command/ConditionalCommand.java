@@ -17,22 +17,23 @@
  */
 package VASSAL.command;
 
+import VASSAL.tools.ProblemDialog;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * Evaluates properties of the GameModule and conditionally executes
  * another Command if all values are satisfied.
  */
 public class ConditionalCommand extends Command {
-  private Condition[] conditions;
+  private final Condition[] conditions;
   /** Command to execute if the condition is accepted */
-  private Command delegate;
+  private final Command delegate;
 
   public ConditionalCommand(Condition[] conditions, Command delegate) {
     this.conditions = conditions;
@@ -72,10 +73,10 @@ public class ConditionalCommand extends Command {
 
   public static class Eq extends Condition {
     /** The property to be checked */
-    private String property;
+    private final String property;
     /** To pass the check the value of the property
      * must match one of these values. */
-    private List<String> allowed;
+    private final List<String> allowed;
 
     public Eq(String property, List<String> allowed) {
       this.property = property;
@@ -97,8 +98,9 @@ public class ConditionalCommand extends Command {
     }
 
     /** @deprecated Use {@link #getValueList()} instead. */
-    @Deprecated
+    @Deprecated(since = "2020-08-06", forRemoval = true)
     public Enumeration<String> getValues() {
+      ProblemDialog.showDeprecated("2020-08-06");
       return Collections.enumeration(allowed);
     }
 
@@ -111,7 +113,7 @@ public class ConditionalCommand extends Command {
   }
 
   public static class Not extends Condition {
-    private Condition sub;
+    private final Condition sub;
 
     public Not(Condition sub) {
       this.sub = sub;
@@ -128,8 +130,8 @@ public class ConditionalCommand extends Command {
   }
 
   public static class Lt extends Condition {
-    private String property;
-    private String value;
+    private final String property;
+    private final String value;
 
     public Lt(String property, String value) {
       this.property = property;
@@ -149,13 +151,13 @@ public class ConditionalCommand extends Command {
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
-      return Info.compareVersions(propertyValue, value) < 0;
+      return VersionUtils.compareVersions(propertyValue, value) < 0;
     }
   }
 
   public static class Gt extends Condition {
-    private String property;
-    private String value;
+    private final String property;
+    private final String value;
 
     public Gt(String property, String value) {
       this.property = property;
@@ -175,7 +177,7 @@ public class ConditionalCommand extends Command {
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
-      return Info.compareVersions(propertyValue, value) > 0;
+      return VersionUtils.compareVersions(propertyValue, value) > 0;
     }
   }
 }

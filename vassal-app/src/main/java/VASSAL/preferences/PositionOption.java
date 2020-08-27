@@ -53,9 +53,9 @@ public class PositionOption extends VASSAL.configure.Configurer
 
   private static void adjustInitialOffset() {
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    if (initialPos.x >= d.width-30
-      || initialPos.y >= d.height-30) {
-      initialPos.move(0,0);
+    if (initialPos.x >= d.width - 30
+      || initialPos.y >= d.height - 30) {
+      initialPos.move(0, 0);
     }
     else {
       initialPos.translate(30, 30);
@@ -63,7 +63,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   public PositionOption(String key, Window f) {
-    this(key,f,new Rectangle(initialPos,new Dimension(0,0)));
+    this(key, f, new Rectangle(initialPos, new Dimension(0, 0)));
   }
 
   @Override
@@ -74,7 +74,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   @Override
   public void setValue(Object o) {
     if (o instanceof Rectangle) {
-      bounds = new Rectangle((Rectangle)o);
+      bounds = new Rectangle((Rectangle) o);
       if (theFrame != null) {
         setFrameBounds();
       }
@@ -101,7 +101,7 @@ public class PositionOption extends VASSAL.configure.Configurer
       // as a PositionOption, either currently, or due to editing.
       // Don't throw a bug, just log it.
       if (in.indexOf('\t') > 0) {
-        ErrorDialog.dataError(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
+        ErrorDialog.dataWarning(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
       }
       else {
         ErrorDialog.bug(e);
@@ -158,11 +158,11 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( );
+    final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
     // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
-      theFrame.setSize(new Dimension(Math.abs(bounds.width),Math.abs(bounds.height)));
+      theFrame.setSize(new Dimension(Math.abs(bounds.width), Math.abs(bounds.height)));
     }
     theFrame.setLocation(bounds.getLocation());
 

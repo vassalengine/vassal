@@ -1,7 +1,59 @@
-3.3.3-beta1 - ???
+3.5.0-beta1 - ???
 
+3.4.0 - ???
+
+* 13217: Editor: Additional fix for cut-and-paste
+
+3.4.0-beta1 - 26 August 2020
+
+* 13325: Specify encoding for String conversion to and from bytes
+* 13319: Multiline HTML labels breaks toolbar button alignment
+* 13313: Specify VM options for Player via a file
+* 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should
+    have remained public
+* 13301: Don't rewrite save state when we already have it
+* 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules
+    without GlobalOptions
+* 13291: Fix Beanshell issues with $$ variable processing
+* 13290: Optimized serialization, unserialization
+* 13289: Don't print "Saving game" twice when using Save As
+* 13282: Stop logging debug messages by default
+* 13281: Added inadvertently removed throws declaration for
+    Embellishment0.getCurrentImage()
+* 13280: NPE in KeyStrokeListener.keyPressed()
+* 13275: Ctrl+Mousewheel to zoom
+* 13236: StackOverflowError: Expressions and Formatted Strings can infinite-loop
+* 13217: Editor: Prevent pasting a cut ancestor as its own child
+* 13200: NPE in Map.setup() when attempting to dock main map
+* 13197: Reverted Mac hotkey change from 3.3.3-beta1
+* 13076: NPE in FlowView$FlowStrategy.layoutRow()
+* 12798: ClassCastException: NullCommand cannot be cast to AddPiece
+* 12648: Setup stack doesn't recover from a piece build failure
+* 11827: NPE in SendToLocation.getSendLocation()
+* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
+*  3215: Global Options icons do not update themselves properly
+
+3.3.3-beta1 - 13 August 2020
+
+* 13276: Center on Moves is now a user preference instead of a module setting
+* 13251: Add Module name to Bug summary, extra info to comments
+* 13250: Add implementation of Missing !~ Beanshell operator
+* 13243: Add functionality to methods to be deprecated and removed gracefully
+* 13239: Right-click doesn't pick up whole stack anymore
+* 13234: Rotation gets stuck due to floating point error
+* 13229: Performance: Save property map rather than clone pieces as snapshot
+* 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
+* 13218: Allow a piece get its context menu click location
+* 13216: Adding regions to Irregular Grid via GUI editor was broken
 * 13205: NPE when trying to display file write failure dialog
+* 13199: MapShader using image throws InternalError on Linux
+* 13197: Hotkeys using Control should use Command on Macs
 * 13196: Ctrl+Click toggles rather than only deselects
+* 13191: Add a "Search" command to the editor for searching the
+    nodes/names/descriptions of a module
+* 13184: CounterDetailViewer can now display overlapping counters
+* 13178: Game Refresher does not handle Place Markers or Prototypes correctly
+* 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
 * 13172: Undo button can now be assigned a hotkey by module designer
 * 13171: SetGlobalProperty makes menuCommands the wrong type of array
 * 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14,
@@ -12,22 +64,30 @@
     and band-select gets Does-Not-Stack filter
 * 13146: Custom classes that are children fail to be culled in
     PropertiesWindow.initialized (resulting in duplicate buildFile entries)
-* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making         double-click difficult; also added preference for drag threshold adjustment
+* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making
+    double-click difficult; also added preference for drag threshold adjustment
+* 13129: New HTML Chatter with colors, fonts/bold/italic, image tags
 * 13124: Removed unused deprecated code
 * 13123: "Mark When Moved" trait puts blank line in menu, even if Command
     field left completely empty
 * 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
+* 13100: Replace Beanshell If function in Expression Builder with inline If ?:
 * 13060: Area Of Effect generates NPE if activated when piece is not on a Map
 * 13036: Entire contents of a deck can be inadvertently group-selected and moved
 * 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
+* 12999: Add Beanshell functions to generate Random results
 * 12972: Return to Location backMap and backPoint are not sent to clients or
     undone
+* 12980: Set Global Property: Beanshell incorrectly tries to "simplify"
+    expression and generates incorrect result
 * 12970: Setting values of Old... variables are not encoded in a Command
 * 12952: Evalute $..$ strings in Property Match expressions on source pce
 * 12951: Undo of Send to Deck command does not return cards to hand in same
     state
 * 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in
     incorrect position
+* 12935: NPE in MoveReporter.shouldMarkMoved assuming nonnull map
+* 12888: NPE in BooleanConfigurer.setValue
 * 12576: At-Start stack attaches to first board listed in module, even if that
     board wasn't selected by player and is inactive
 * 12554: Undo bug: Do not add the whole Stack to the DragBuffer
@@ -35,7 +95,11 @@
     of pieces' to a Deck correctly
 * 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in
     buggy trail behavior
+* 10414: SVG with non-px dimensions throws ImageIOException
+* 10314: NPE in GameRefresher if dialog is closed quickly while test is running
+*  3199: Add separators to menus
 *  3042: Improved Retire/Resign/Switch Sides button flow
+*  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
 *  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off
     movement trails
 
@@ -88,7 +152,7 @@
 3.3.0-beta1 - 27 April 2020
 
 * 12559: HiDPI support
-* 12558: Bundle Java with VASSAL 
+* 12558: Bundle Java with VASSAL
 * 12557: Compatibility with Java 9+
 * 12556: Mass Piece Definer does not sort image names
 
@@ -112,7 +176,7 @@
 
 3.2.15 - 25 December 2014
 
-* 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation 
+* 11864: Relative $INSTALL_DIR in VASSAL.sh breaks paths for documentation
 * 11769: NPE in Deck.getState()
 
 3.2.14 - 16 December 2014
@@ -248,7 +312,7 @@
 * 10128: Slow Follow Property handling in Embellishment
 * 10125: Expression Builder should return a Property Name, not expression in
     the Set Global Property trait
-* 10124: Comparisons with GetProperty() calls do not work correctly 
+* 10124: Comparisons with GetProperty() calls do not work correctly
 * 10107: NPE in ServerAddressBook.PeerClientEntry.toString()
 * 10101: NPE in MassPieceLoader.MyTreeTableModel.setValueAt()
 * 10099: Counter Detail Viewer displays top card in face down deck as face up

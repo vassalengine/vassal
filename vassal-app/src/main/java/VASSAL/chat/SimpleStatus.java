@@ -113,7 +113,7 @@ public class SimpleStatus implements PlayerStatus {
 
   public static SimpleStatus decode(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
-    return new SimpleStatus(sd.nextBoolean(false), sd.nextBoolean(false),sd.nextToken(""), sd.nextToken(""),  //$NON-NLS-1$ //$NON-NLS-2$
+    return new SimpleStatus(sd.nextBoolean(false), sd.nextBoolean(false), sd.nextToken(""), sd.nextToken(""),  //$NON-NLS-1$ //$NON-NLS-2$
         sd.nextToken(""), sd.nextToken(""), sd.nextToken(""));         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 

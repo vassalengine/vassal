@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -286,7 +287,7 @@ public abstract class AbstractMetaData {
       attributeName = name;
       value = target.getAttributeValueString(attributeName);
       String key = target.getI18nData().getFullPrefix();
-      if (key.length()> 0) key += ".";
+      if (key.length() > 0) key += ".";
       key += attributeName;
 
       for (Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
@@ -345,7 +346,7 @@ public abstract class AbstractMetaData {
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
 
-      for (Map.Entry<String,String> en : translations.entrySet()) {
+      for (Map.Entry<String, String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
         e.setAttribute(LANG_ATTR, en.getValue());
         e.appendChild(doc.createTextNode(en.getKey()));
@@ -356,8 +357,7 @@ public abstract class AbstractMetaData {
 
   /**
    * This is the shared parser for all subclasses of AbstractMetaData.
-   * We use a shared parser because the call to
-   * {@link XMLReaderFactory.createXMLReader()} is extremely expensive.
+   * We use a shared parser.
    * All uses of this parser <i>must</i> be wrapped in a block synchronized
    * on the parser itself.
    */
@@ -369,9 +369,9 @@ public abstract class AbstractMetaData {
 // new one only when there is not an unused one available in the pool.
   static {
     try {
-      parser = XMLReaderFactory.createXMLReader();
+      parser = SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
     }
-    catch (SAXException e) {
+    catch (SAXException | ParserConfigurationException e) {
       // This should never happen.
       ErrorDialog.bug(e);
     }

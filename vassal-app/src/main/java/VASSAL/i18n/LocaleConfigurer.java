@@ -42,9 +42,9 @@ public class LocaleConfigurer extends Configurer {
 
   protected static final String ANY_COUNTRY = "<Any Country>";
   protected Box panel;
-  protected static Map<String,String> languages = new HashMap<>();
+  protected static Map<String, String> languages = new HashMap<>();
   protected static String[] languageList;
-  protected static Map<String,String> countries = new HashMap<>();
+  protected static Map<String, String> countries = new HashMap<>();
   protected static String[] countryList;
 
   protected JComboBox langBox;
@@ -114,7 +114,8 @@ public class LocaleConfigurer extends Configurer {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
-        }});
+        }
+      });
       panel.add(new JLabel("Language:  "));
       panel.add(langBox);
 
@@ -124,7 +125,8 @@ public class LocaleConfigurer extends Configurer {
         @Override
         public void actionPerformed(ActionEvent e) {
           updateValue();
-        }});
+        }
+      });
       panel.add(new JLabel("  Country:  "));
       panel.add(countryBox);
 

@@ -20,7 +20,6 @@ package VASSAL.tools.io;
 
 import VASSAL.Info;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.concurrent.CancellationException;

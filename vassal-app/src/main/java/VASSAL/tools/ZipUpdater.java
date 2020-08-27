@@ -52,7 +52,10 @@ import VASSAL.tools.io.IOUtils;
  * the new archive.
  * User: rkinney
  * Date: Oct 23, 2003
+ *
+ * @deprecated removed without replacement
  */
+@Deprecated
 public class ZipUpdater implements Runnable {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipUpdater.class);
@@ -196,7 +199,7 @@ public class ZipUpdater implements Runnable {
     }
 
     if (!tempFile.renameTo(destination)) {
-      throw new IOException("Unable to write to file " + destination.getPath()+ ".\nUpdated file is in " + tempFile.getPath());
+      throw new IOException("Unable to write to file " + destination.getPath() + ".\nUpdated file is in " + tempFile.getPath());
     }
   }
 
@@ -215,8 +218,8 @@ public class ZipUpdater implements Runnable {
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
     if (!updaterFile.getName().endsWith(".jar")) {
-      final String newName = updaterFile.getName().replace('.','_')+".jar";
-      updaterFile = new File(updaterFile.getParentFile(),newName);
+      final String newName = updaterFile.getName().replace('.', '_') + ".jar";
+      updaterFile = new File(updaterFile.getParentFile(), newName);
     }
     checkSums = new Properties();
 
@@ -341,7 +344,7 @@ public class ZipUpdater implements Runnable {
 
         try {
           r = new BufferedReader(new InputStreamReader(
-            ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
+            ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME), StandardCharsets.UTF_8));
           final String newArchiveName = r.readLine();
           final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
           updater.write(new File(newArchiveName));
@@ -362,7 +365,7 @@ public class ZipUpdater implements Runnable {
     catch (final IOException e) {
       e.printStackTrace();
       try {
-        SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName,e));
+        SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName, e));
       }
       catch (Exception e1) {
         e1.printStackTrace();

@@ -25,17 +25,17 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class GlobalHotKey extends Decorator implements TranslatablePiece {
-  public static final String ID="globalhotkey;";
+  public static final String ID = "globalhotkey;";
 
   protected NamedKeyStroke commandKey;
   protected NamedKeyStroke globalHotKey;
-  protected String commandName="Hotkey";
+  protected String commandName = "Hotkey";
   protected KeyCommand[] commands;
   protected KeyCommand command;
   protected String description = "";
 
   public GlobalHotKey() {
-    this(ID,null);
+    this(ID, null);
   }
 
   public GlobalHotKey(String type, GamePiece inner) {
@@ -46,7 +46,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      command = new KeyCommand(commandName,commandKey,Decorator.getOutermost(this), this);
+      command = new KeyCommand(commandName, commandKey, Decorator.getOutermost(this), this);
       command.setEnabled(getMap() != null);
       if (commandName != null && commandName.length() > 0 && commandKey != null && ! commandKey.isNull()) {
         commands = new KeyCommand[]{command};
@@ -67,7 +67,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(commandKey).append(globalHotKey).append(description);
-    return ID+se.getValue();
+    return ID + se.getValue();
   }
 
   @Override
@@ -95,7 +95,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    piece.draw(g,x,y,obs,zoom);
+    piece.draw(g, x, y, obs, zoom);
   }
 
   @Override
@@ -110,7 +110,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  "+description;
+    return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  " + description;
   }
 
   @Override
@@ -120,7 +120,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()),';');
+    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
     commandName = sd.nextToken();
     commandKey = sd.nextNamedKeyStroke('H');
     globalHotKey = sd.nextNamedKeyStroke(null);
@@ -153,13 +153,13 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       descConfig = new StringConfigurer(null, "Description:  ", k.description);
       controls.add(descConfig.getControls());
 
-      commandConfig = new StringConfigurer(null,"Menu text:  ",k.commandName);
+      commandConfig = new StringConfigurer(null, "Menu text:  ", k.commandName);
       controls.add(commandConfig.getControls());
 
-      commandKeyConfig = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",k.commandKey);
+      commandKeyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", k.commandKey);
       controls.add(commandKeyConfig.getControls());
 
-      hotKeyConfig = new NamedHotKeyConfigurer(null,"Global Hotkey:  ",k.globalHotKey);
+      hotKeyConfig = new NamedHotKeyConfigurer(null, "Global Hotkey:  ", k.globalHotKey);
       controls.add(hotKeyConfig.getControls());
     }
 
@@ -177,7 +177,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());
-      return ID+se.getValue();
+      return ID + se.getValue();
     }
 
   }

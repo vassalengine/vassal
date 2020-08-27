@@ -38,9 +38,9 @@ public interface ServerStatus {
    */
   public ModuleSummary[] getHistory(String timeRange);
 
-  public static class ModuleSummary {
+  public class ModuleSummary {
     private String moduleName;
-    private Map<String,Room> rooms = new HashMap<>();
+    private Map<String, Room> rooms = new HashMap<>();
 
     public ModuleSummary(String moduleName) {
       this.moduleName = moduleName;
@@ -57,7 +57,7 @@ public interface ServerStatus {
       return moduleName;
     }
 
-    public void setModuleName( String moduleName ) {
+    public void setModuleName(String moduleName) {
       this.moduleName = moduleName;
     }
 
@@ -73,9 +73,9 @@ public interface ServerStatus {
       return rooms.values().toArray(new Room[0]);
     }
 
-    public int numPlayers(){
+    public int numPlayers() {
       Room[] roomsArray = getRooms();
-      int n=0;
+      int n = 0;
       for (Room room : roomsArray) {
         n += ((SimpleRoom) room).numPlayers();
       }

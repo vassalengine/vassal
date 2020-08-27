@@ -33,7 +33,6 @@ import java.util.concurrent.Future;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.concurrent.SimpleFuture;
 import VASSAL.tools.concurrent.listener.EventListener;
-import VASSAL.tools.concurrent.listener.MultiEventListenerSupport;
 
 import org.junit.Test;
 

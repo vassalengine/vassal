@@ -186,7 +186,7 @@ public class MovePiece extends Command {
             && map.getStackMetrics().isStackingEnabled()
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
             && s.topPiece(playerId) != null
-            && map.getPieceCollection().canMerge(p,s)) {
+            && map.getPieceCollection().canMerge(p, s)) {
           return map.getStackMetrics().merge(s, p);
         }
         else {
@@ -200,7 +200,7 @@ public class MovePiece extends Command {
             && map.getStackMetrics().isStackingEnabled()
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-            && map.getPieceCollection().canMerge(p,piece)) {
+            && map.getPieceCollection().canMerge(p, piece)) {
           String hiddenBy = (String) piece.getProperty(Properties.HIDDEN_BY);
           if (hiddenBy == null
               || hiddenBy.equals(playerId)) {
@@ -219,7 +219,7 @@ public class MovePiece extends Command {
   }
   @Override
   public String getDetails() {
-    return "id="+id+",map="+newMapId+",position="+newPosition+",under="+newUnderneathId;
+    return "id=" + id + ",map=" + newMapId + ",position=" + newPosition + ",under=" + newUnderneathId;
   }
 
 }

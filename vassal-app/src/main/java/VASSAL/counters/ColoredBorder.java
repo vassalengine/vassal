@@ -65,15 +65,15 @@ public class ColoredBorder implements Highlighter {
 
         // Don't bother if the shape is empty.
         if (!br.isEmpty()) {
-          final double xzoom = (br.getWidth()+1) / br.getWidth();
-          final double yzoom = (br.getHeight()+1) / br.getHeight();
-          final AffineTransform t = AffineTransform.getTranslateInstance(x,y);
-          t.scale(xzoom*zoom, yzoom*zoom);
+          final double xzoom = (br.getWidth() + 1) / br.getWidth();
+          final double yzoom = (br.getHeight() + 1) / br.getHeight();
+          final AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+          t.scale(xzoom * zoom, yzoom * zoom);
 
           final Graphics2D g2d = (Graphics2D) g;
           final Stroke str = g2d.getStroke();
           g2d.setStroke(
-            new BasicStroke(Math.max(1, Math.round(zoom*thickness))));
+            new BasicStroke(Math.max(1, Math.round(zoom * thickness))));
           g2d.setColor(c);
           g2d.draw(t.createTransformedShape(s));
           g2d.setStroke(str);

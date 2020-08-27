@@ -17,6 +17,8 @@
 
 package VASSAL.build;
 
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.PrototypeDefinition;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -42,6 +44,7 @@ public class GpIdChecker {
   protected boolean extensionsLoaded = false;
   final HashMap<String, SlotElement> goodSlots = new HashMap<>();
   final ArrayList<SlotElement> errorSlots = new ArrayList<>();
+  private Chatter chatter;
 
   public GpIdChecker() {
     this(null);
@@ -63,34 +66,55 @@ public class GpIdChecker {
    * Add a PieceSlot to our cross-reference and any PlaceMarker
    * traits it contains.
    *
-   * @param pieceSlot
+   * @param pieceSlot PieceSlot to add to cross-reference
    */
   public void add(PieceSlot pieceSlot) {
     testGpId(pieceSlot.getGpId(), new SlotElement(pieceSlot));
 
     // PlaceMarker traits within the PieceSlot definition also contain GpId's.
-    GamePiece gp = pieceSlot.getPiece();
-    checkTrait(gp, pieceSlot);
+    checkTrait(pieceSlot.getPiece());
+  }
+
+  /**
+   * Add any PieceSlots contained in traits in a Prototype Definition
+   * @param prototype Prototype Definition to check
+   */
+  public void add(PrototypeDefinition prototype) {
+    final GamePiece gp = prototype.getPiece();
+    checkTrait(gp, prototype, gp);
   }
 
   /**
    * Check for PlaceMarker traits in a GamePiece and add them to
    * the cross-reference
    *
-   * @param gp
-   * @param slot
+   * @param gp GamePiece to check
    */
-  protected void checkTrait(GamePiece gp, PieceSlot slot) {
+  protected void checkTrait(GamePiece gp) {
     if (gp == null || gp instanceof BasicPiece) {
       return;
     }
 
     if (gp instanceof PlaceMarker) {
       final PlaceMarker pm = (PlaceMarker) gp;
-      testGpId (pm.getGpId(), new SlotElement(pm, slot));
+      testGpId (pm.getGpId(), new SlotElement(pm));
     }
 
-    checkTrait(((Decorator) gp).getInner(), slot);
+    checkTrait(((Decorator) gp).getInner());
+
+  }
+
+  protected void checkTrait(final GamePiece gp, PrototypeDefinition prototype, GamePiece definition) {
+    if (gp == null || gp instanceof BasicPiece) {
+      return;
+    }
+
+    if (gp instanceof PlaceMarker) {
+      final PlaceMarker pm = (PlaceMarker) gp;
+      testGpId (pm.getGpId(), new SlotElement(pm, prototype, definition));
+    }
+
+    checkTrait(((Decorator) gp).getInner(), prototype, definition);
 
   }
 
@@ -102,15 +126,15 @@ public class GpIdChecker {
    *  Keep a list of the good Slots and the slots with errors.
    *  Also track the maximum GpId
    *
-   * @param id
-   * @param element
+   * @param id GpId to test
+   * @param element Containing SlotElement
    */
   protected void testGpId(String id, SlotElement element) {
     /*
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
-     *  
-     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be 
+     *
+     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
@@ -130,13 +154,13 @@ public class GpIdChecker {
       try {
         if (extensionsLoaded) {
           goodSlots.put(id, element);
-          System.out.println("Add Id "+id);
+          System.out.println("Add Id " + id);
         }
         else {
           final int iid = Integer.parseInt(id);
           goodSlots.put(id, element);         // gpid is good.
           if (iid >= maxId) {
-            maxId = iid+1;
+            maxId = iid + 1;
           }
         }
       }
@@ -148,10 +172,18 @@ public class GpIdChecker {
 
   /**
    * Where any errors found?
-   * @return
+   * @return Error count
    */
   public boolean hasErrors() {
     return errorSlots.size() > 0;
+  }
+
+  private void chat (String text) {
+    if (chatter == null) {
+      chatter = GameModule.getGameModule().getChatter();
+    }
+    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text);
+    mess.execute();
   }
 
   /**
@@ -161,10 +193,13 @@ public class GpIdChecker {
    */
   public void fixErrors() {
     if (maxId >= gpIdSupport.getNextGpId()) {
-      gpIdSupport.setNextGpId(maxId+1);
+      chat("Next GPID updated from " + gpIdSupport.getNextGpId() + "  to " + (maxId + 1));
+      gpIdSupport.setNextGpId(maxId + 1);
     }
     for (SlotElement slotElement : errorSlots) {
+      final String before = slotElement.getGpId();
       slotElement.updateGpId();
+      chat(slotElement.toString() + " GPID updated from " + before + " to " + slotElement.getGpId());
     }
   }
 
@@ -172,10 +207,8 @@ public class GpIdChecker {
    * Locate the SlotElement that matches oldPiece and return a new GamePiece
    * created from that Slot.
    *
-   *
-   *
-   * @param oldPiece
-   * @return
+   * @param oldPiece Old GamePiece
+   * @return Newly created GamePiece
    */
   public GamePiece createUpdatedPiece(GamePiece oldPiece) {
     // Find a slot with a matching gpid
@@ -232,19 +265,24 @@ public class GpIdChecker {
   /**
    * Wrapper class for components that contain a GpId - They will all be either
    * PieceSlot components or PlaceMarker Decorator's.
+   * PlaceMarker's may exist inside Prototypes and require special handling
    * Ideally we would add an interface to these components, but this
    * will break any custom code based on PlaceMarker
    *
    */
-  class SlotElement {
+  static class SlotElement {
 
     private PieceSlot slot;
     private PlaceMarker marker;
     private String id;
+    private PrototypeDefinition prototype;
+    private GamePiece expandedPrototype;
 
     public SlotElement() {
       slot = null;
       marker = null;
+      prototype = null;
+      expandedPrototype = null;
     }
 
     public SlotElement(PieceSlot ps) {
@@ -253,10 +291,17 @@ public class GpIdChecker {
       id = ps.getGpId();
     }
 
-    public SlotElement(PlaceMarker pm, PieceSlot ps) {
+    public SlotElement(PlaceMarker pm) {
       this();
       marker = pm;
-      slot = ps;
+      id = pm.getGpId();
+    }
+
+    public SlotElement(PlaceMarker pm, PrototypeDefinition pd, GamePiece definition) {
+      this();
+      marker = pm;
+      prototype = pd;
+      expandedPrototype = definition;
       id = pm.getGpId();
     }
 
@@ -264,12 +309,23 @@ public class GpIdChecker {
       return id;
     }
 
+    @Override
+    public String toString() {
+      return marker == null ? "PieceSlot " + slot.getConfigureName() : "Place/Replace trait " + marker.getDescription();
+    }
+
     public void updateGpId() {
       if (marker == null) {
         slot.updateGpId();
+        id = slot.getGpId();
       }
       else {
         marker.updateGpId();
+        id = marker.getGpId();
+        // If this PlaceMarker trait lives in a Prototype, then the Prototype definition has to be updated
+        if (prototype != null) {
+          prototype.setPiece(expandedPrototype);
+        }
       }
     }
 
@@ -332,7 +388,7 @@ public class GpIdChecker {
      * @param oldPiece Old piece to search
      * @param typeToFind Type to match
      * @param classToFind Class to match
-     * @return
+     * @return state of located matching Decorator
      */
     protected String findStateFromType(GamePiece oldPiece, String typeToFind, Class<? extends GamePiece> classToFind) {
 

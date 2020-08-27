@@ -44,6 +44,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,6 +60,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
@@ -121,6 +126,8 @@ import VASSAL.tools.imports.Importer;
 import VASSAL.tools.imports.adc2.SymbolSet.SymbolData;
 
 public class ADC2Module extends Importer {
+
+  private static final Logger log = LoggerFactory.getLogger(ADC2Module.class);
 
   private static final String FLIP_DEFINITIONS = "Flip Definitions";
   private static final String ADD_NEW_PIECES = "Add New Pieces";
@@ -219,11 +226,7 @@ public class ADC2Module extends Importer {
       super(name, pieces);
       // cull non-cards
       if (pieces != null) {
-        for (Iterator<Piece> iter = pieces.iterator(); iter.hasNext(); ) {
-          if (!iter.next().isCard()) {
-            iter.remove();
-          }
-        }
+        pieces.removeIf(piece -> !piece.isCard());
       }
     }
 
@@ -354,15 +357,15 @@ public class ADC2Module extends Importer {
 
   static {
     for (int i = 0; i < 3; ++i) {
-      FACING_ANGLES[i+1] = -i*90.0;
-      FACING_ANGLES[i+5] = -(i*90.0 + 45.0);
+      FACING_ANGLES[i + 1] = -i * 90.0;
+      FACING_ANGLES[i + 5] = -(i * 90.0 + 45.0);
     }
 
     for (int i = 0; i < 6; ++i) {
-      FACING_ANGLES[i+10] = -i*60.0;
-      FACING_ANGLES[i+20] = -((i*60.0 - 15.0) % 360.0);
-      FACING_ANGLES[i+30] = -(i*60.0 + 30.0);
-      FACING_ANGLES[i+40] = -(i*60.0 + 15.0);
+      FACING_ANGLES[i + 10] = -i * 60.0;
+      FACING_ANGLES[i + 20] = -((i * 60.0 - 15.0) % 360.0);
+      FACING_ANGLES[i + 30] = -(i * 60.0 + 30.0);
+      FACING_ANGLES[i + 40] = -(i * 60.0 + 15.0);
     }
   }
 
@@ -402,7 +405,7 @@ public class ADC2Module extends Importer {
       this.position = position;
       this.pieceClass = cl;
       this.flags = flags;
-      assert(hidden != null);
+      assert (hidden != null);
       this.hideState = hidden;
       this.facing = facing;
 
@@ -440,11 +443,8 @@ public class ADC2Module extends Importer {
     public boolean equals(Object obj) {
       if (!(obj instanceof Piece))
         return false;
-      if (getUniqueClassName().equals(((Piece) obj).getUniqueClassName()) &&
-        pieceClass == ((Piece) obj).pieceClass)
-        return true;
-      else
-        return false;
+      return getUniqueClassName().equals(((Piece) obj).getUniqueClassName()) &&
+        pieceClass == ((Piece) obj).pieceClass;
     }
 
     @Override
@@ -461,7 +461,7 @@ public class ADC2Module extends Importer {
       final GamePiece gp = getGamePiece();
       if (gp == null)
         return;
-      assert(pieceSlot == null);
+      assert (pieceSlot == null);
       pieceSlot = new PieceSlot(gp);
       insertComponent(pieceSlot, parent);
     }
@@ -470,7 +470,7 @@ public class ADC2Module extends Importer {
       GamePiece gp = getGamePiece();
       if (gp == null)
         return;
-      assert(pieceSlot == null);
+      assert (pieceSlot == null);
       pieceSlot = new CardSlot();
       pieceSlot.setPiece(gp);
       insertComponent(pieceSlot, parent);
@@ -622,7 +622,7 @@ public class ADC2Module extends Importer {
         piecePS = new PropertySheet();
         SequenceEncoder se = new SequenceEncoder('~');
         SequenceEncoder state = new SequenceEncoder('~');
-        for(int i = 0; i < pieceValues.length; ++i) {
+        for (int i = 0; i < pieceValues.length; ++i) {
           if (pieceValues[i] != null && !pieceValues[i].equals("")) {
             se.append("0" + pieceValues[i]);
             Object o = getValue(i);
@@ -714,10 +714,10 @@ public class ADC2Module extends Importer {
     }
 
     protected void setValue(int index, String value) {
-      byte[] b = value.getBytes();
+      byte[] b = value.getBytes(StandardCharsets.US_ASCII);
       int result = 0;
       for (int i = 0; i < 4; ++i)
-        result = (result<<8) + (b[i]&0xff);
+        result = (result << 8) + (b[i] & 0xff);
       values[index] = result;
       types[index] = ValueType.TEXT;
     }
@@ -739,23 +739,23 @@ public class ADC2Module extends Importer {
       int mask = 0x7f000000;
       int length = 0;
       for (int i = 0; i < b.length; ++i) {
-        b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+        b[i] = (byte) ((values[index] & mask) >> ((3 - i) * 8));
         if (b[i] < 0x20 || b[i] > 0x7e)
           break;
         ++length;
         mask >>= 8;
       }
-      return new String(b, 0, length);
+      return new String(b, 0, length, StandardCharsets.US_ASCII);
     }
 
     private boolean getValueAsBoolean(int index) {
-      return values[index] > 0 ? true : false;
+      return values[index] > 0;
     }
 
     public Object getValue(int index) {
       if (types[index] == null)
         return null;
-      switch(types[index]) {
+      switch (types[index]) {
       case NUMERIC:
         return getValueAsInt(index);
       case TEXT:
@@ -798,7 +798,7 @@ public class ADC2Module extends Importer {
     private final SymbolSet.SymbolData hiddenSymbol;
     private final int hiddenPieceOptions;
     private final int order;
-    private final TreeSet<Player> allies = new TreeSet<>((p1, p2) -> p1.order - p2.order);
+    private final TreeSet<Player> allies = new TreeSet<>(Comparator.comparingInt(p -> p.order));
 
     public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
       this.name = name;
@@ -851,9 +851,6 @@ public class ADC2Module extends Importer {
     }
 
     public boolean isAlly(Player player) {
-      if (allies == null) {
-        return false;
-      }
       return allies.contains(player);
     }
 
@@ -863,7 +860,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private final HashMap<Integer,SymbolSet> cardDecks = new HashMap<>();
+  private final HashMap<Integer, SymbolSet> cardDecks = new HashMap<>();
 
   public class CardClass extends PieceClass {
     private final int setIndex;
@@ -901,17 +898,17 @@ public class ADC2Module extends Importer {
 
     @Override
     protected void setValue(int index, boolean value) {
-      assert(false);
+      assert (false);
     }
 
     @Override
     protected void setValue(int index, int value) {
-      assert(false);
+      assert (false);
     }
 
     @Override
     protected void setValue(int index, String value) {
-      assert(false);
+      assert (false);
     }
 
     @Override
@@ -1022,13 +1019,12 @@ public class ADC2Module extends Importer {
       else if (getFlipClass() == flipClass)
         return null;
 
-      final GameModule gameModule = GameModule.getGameModule();
       final String path = flipClass.getFlipClassTreeConfigurePath();
 
       final SequenceEncoder se = new SequenceEncoder(path, ';');
       se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
 
-      flipClass.writeFlipDefinition(gameModule);
+      flipClass.writeFlipDefinition();
 
       return new Replace(Replace.ID + "Flip Back;B;" + se.getValue(), null);
     }
@@ -1047,8 +1043,6 @@ public class ADC2Module extends Importer {
     }
 
     public Decorator getReplaceWithOtherDecorator() throws IOException {
-      GameModule gameModule = GameModule.getGameModule();
-
       final PieceClass flipClass = getFlipClass();
       if (flipClass == null)
         return null;
@@ -1059,12 +1053,12 @@ public class ADC2Module extends Importer {
       se = new SequenceEncoder(path, ';');
       se.append("null").append(0).append(0).append(true).append((NamedKeyStroke) null).append("").append("").append(2).append(true);
 
-      flipClass.writeFlipDefinition(gameModule);
+      flipClass.writeFlipDefinition();
 
       return new Replace(Replace.ID + "Flip;F;" + se.getValue(), null);
     }
 
-    private void writeFlipDefinition(GameModule gameModule) throws IOException {
+    private void writeFlipDefinition() throws IOException {
       if (!flipClassAdded) {
         flipClassAdded = true;
 
@@ -1119,7 +1113,7 @@ public class ADC2Module extends Importer {
     public PropertySheet getPropertySheetDecorator() {
       SequenceEncoder type = new SequenceEncoder('~');
       SequenceEncoder state = new SequenceEncoder('~');
-      for(int i = 0; i < classValues.length; ++i) {
+      for (int i = 0; i < classValues.length; ++i) {
         if (classValues[i] != null && !classValues[i].equals("")) {
           type.append("0" + classValues[i]);
           Object o = getValue(i);
@@ -1168,7 +1162,7 @@ public class ADC2Module extends Importer {
 
     private Embellishment getCombatEmbellishmentDecorator(String command, String key, StateFlag flag) throws IOException {
       BufferedImage image = getSymbol().getImage();
-      int xOffset = (image.getWidth()+1)/2 + 5;
+      int xOffset = (image.getWidth() + 1) / 2 + 5;
       int yOffset = 0;
       String imageName = getFlagTab(image.getHeight(), flag);
       SequenceEncoder se = new SequenceEncoder(';');
@@ -1227,8 +1221,8 @@ public class ADC2Module extends Importer {
     public MovementMarkable getMovementMarkableDecorator() throws IOException {
       SequenceEncoder se = new SequenceEncoder(';');
       BufferedImage img = getSymbol().getImage();
-      int xOffset = (img.getWidth()+1)/2;
-      int yOffset = -img.getHeight()/2;
+      int xOffset = (img.getWidth() + 1) / 2;
+      int yOffset = -img.getHeight() / 2;
       String movedIcon = getFlagTab(img.getHeight(), StateFlag.MOVE);
       se.append(movedIcon).append(xOffset).append(yOffset);
       MovementMarkable p = new MovementMarkable();
@@ -1344,7 +1338,7 @@ public class ADC2Module extends Importer {
 
     protected void setBackFlipClass(int from) {
       backReplace = pieceClasses.get(from);
-      assert(backReplace.getFlipClass() == this);
+      assert (backReplace.getFlipClass() == this);
     }
 
     public PieceClass getFlipClass() {
@@ -1361,10 +1355,10 @@ public class ADC2Module extends Importer {
     }
 
     protected void setValue(int index, String value) {
-      byte[] b = value.getBytes();
+      byte[] b = value.getBytes(StandardCharsets.US_ASCII);
       int result = 0;
       for (int i = 0; i < 4; ++i)
-        result = (result<<8) + (b[i]&0xff);
+        result = (result << 8) + (b[i] & 0xff);
       values[index] = result;
       types[index] = ValueType.TEXT;
     }
@@ -1386,13 +1380,13 @@ public class ADC2Module extends Importer {
       int length = 0;
       int mask = 0x7f000000;
       for (int i = 0; i < b.length; ++i) {
-        b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+        b[i] = (byte) ((values[index] & mask) >> ((3 - i) * 8));
         if (b[i] < 0x20 || b[i] > 0x7e)
           break;
         ++length;
         mask >>= 8;
       }
-      return new String(b, 0, length);
+      return new String(b, 0, length, StandardCharsets.US_ASCII);
     }
 
     public int getNValues() {
@@ -1404,13 +1398,13 @@ public class ADC2Module extends Importer {
     }
 
     public boolean getValueAsBoolean(int index) {
-      return values[index] > 0 ? true : false;
+      return values[index] > 0;
     }
 
     public Object getValue(int index) {
       if (types[index] == null)
         return null;
-      switch(types[index]) {
+      switch (types[index]) {
       case NUMERIC:
         return getValueAsInt(index);
       case TEXT:
@@ -1466,7 +1460,7 @@ public class ADC2Module extends Importer {
   protected SymbolSet getCardDeck(int deck) throws IOException {
     SymbolSet set = cardDecks.get(deck);
     if (set == null) {
-      File f = action.getCaseInsensitiveFile(new File(deckName + "-c" + (deck+1) + ".set"), file, true,
+      File f = action.getCaseInsensitiveFile(new File(deckName + "-c" + (deck + 1) + ".set"), file, true,
         new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
       if (f == null)
         throw new FileNotFoundException("Unable to locate deck symbol set.");
@@ -1546,13 +1540,13 @@ public class ADC2Module extends Importer {
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       g.setColor(background);
-      g.fillRoundRect(-tabWidth, 0, 2*tabWidth, tabHeight, 6, 6);
+      g.fillRoundRect(-tabWidth, 0, 2 * tabWidth, tabHeight, 6, 6);
       g.setColor(foreground);
-      g.drawRoundRect(-tabWidth, 0, 2*tabWidth-1, tabHeight-1, 6, 6);
+      g.drawRoundRect(-tabWidth, 0, 2 * tabWidth - 1, tabHeight - 1, 6, 6);
       g.setFont(new Font("Dialog", Font.PLAIN, 9));
       Rectangle2D r = g.getFontMetrics().getStringBounds(name, g);
-      g.drawString(name, tabWidth/2 - (int) (r.getWidth()/2.0) - 1, 11);
-      g.setBackground(new Color(0,0,0,0));
+      g.drawString(name, tabWidth / 2 - (int) (r.getWidth() / 2.0) - 1, 11);
+      g.setBackground(new Color(0, 0, 0, 0));
       g.clearRect(-tabWidth, 0, tabWidth, tabHeight);
     }
   }
@@ -1567,12 +1561,12 @@ public class ADC2Module extends Importer {
     String imageName = map.get(d);
     if (imageName == null) {
       int tabHeight = 15;
-      int tabSpace = height < 43 ? (height-tabHeight)/2 : tabHeight-1;
+      int tabSpace = height < 43 ? (height - tabHeight) / 2 : tabHeight - 1;
       int tabWidth = 10;
       final BufferedImage icon =
         new BufferedImage(tabWidth, height, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = icon.createGraphics();
-      g.translate(0, tabSpace*flag.tab);
+      g.translate(0, tabSpace * flag.tab);
       flag.drawFlagImage(g);
 
       imageName = getUniqueImageFileName(flag.name + 0 + "x" + height);
@@ -1596,12 +1590,12 @@ public class ADC2Module extends Importer {
     String imageName = map.get(d);
     if (imageName == null) {
       int tabHeight = 15;
-      int tabSpace = d.height < 43 ? (d.height-tabHeight)/2 : tabHeight-1;
+      int tabSpace = d.height < 43 ? (d.height - tabHeight) / 2 : tabHeight - 1;
       int tabWidth = 10;
       final BufferedImage icon = new BufferedImage(
-        d.width + 2*tabWidth, d.height, BufferedImage.TYPE_INT_ARGB);
+        d.width + 2 * tabWidth, d.height, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = icon.createGraphics();
-      g.translate(d.width+tabWidth, tabSpace*flag.tab);
+      g.translate(d.width + tabWidth, tabSpace * flag.tab);
       flag.drawFlagImage(g);
 
       imageName = getUniqueImageFileName(flag.name + d.width + "x" + d.height);
@@ -1681,6 +1675,7 @@ public class ADC2Module extends Importer {
         readPieceStatusDotsBlock(in); // read this in again!
       }
       catch (ADC2Utils.NoMoreBlocksException e) {
+        log.error("Error during import", e);
       }
     }
   }
@@ -1750,15 +1745,17 @@ public class ADC2Module extends Importer {
              DataInputStream input = new DataInputStream(bin)) {
           try {
             while (true) { // loop until EOF
-              while (input.readUnsignedByte() != 0x3b) { }
+              while (input.readUnsignedByte() != 0x3b) {
+                // skip
+              }
               int idx = input.readUnsignedByte();
               int len = input.readUnsignedByte();
               byte[] dimensions = new byte[8];
               input.readFully(dimensions);
               byte[] buf = new byte[len];
               input.readFully(buf);
-              String name = new String(buf);
-              if (idx >=0 && idx <10 && infoPages[idx] == null) {
+              String name = new String(buf, StandardCharsets.US_ASCII);
+              if (idx < 10 && infoPages[idx] == null) {
                 infoPages[idx] = name;
               }
             }
@@ -1923,7 +1920,7 @@ public class ADC2Module extends Importer {
     ADC2Utils.readBlockHeader(in, "Facing");
 
     final int nFacing = in.readUnsignedByte();
-    allowedFacings = new FacingDirection[nFacing+1];
+    allowedFacings = new FacingDirection[nFacing + 1];
     allowedFacings[0] = FacingDirection.NONE;
 
     for (int i = 0; i < nFacing; ++i) {
@@ -1934,17 +1931,17 @@ public class ADC2Module extends Importer {
       if (i == 0 || allowedFacings[i] != FacingDirection.NONE) {
         switch (direction) {
         case 2:
-          allowedFacings[i+1] = FacingDirection.VERTEX;
+          allowedFacings[i + 1] = FacingDirection.VERTEX;
           break;
         case 3:
-          allowedFacings[i+1] = FacingDirection.BOTH;
+          allowedFacings[i + 1] = FacingDirection.BOTH;
           break;
         default:
-          allowedFacings[i+1] = FacingDirection.FLAT_SIDES;
+          allowedFacings[i + 1] = FacingDirection.FLAT_SIDES;
         }
       }
       else {
-        allowedFacings[i+1] = FacingDirection.NONE;
+        allowedFacings[i + 1] = FacingDirection.NONE;
       }
 
       // this describes how the arrow is drawn in ADC2
@@ -1975,7 +1972,8 @@ public class ADC2Module extends Importer {
       ADC2Utils.readBase250Word(in); // );
       // int mustContain =
       ADC2Utils.readBase250Word(in); // class index
-      for (int j = 0; j < 3; ++j) {// one per zoom level
+      for (int j = 0; j < 3; ++j) {
+        // one per zoom level
         // int atLeastNPieces =
         in.readUnsignedByte();
       }
@@ -2100,7 +2098,7 @@ public class ADC2Module extends Importer {
       }
 
       HideState hidden;
-      switch(in.readUnsignedByte()) {
+      switch (in.readUnsignedByte()) {
       case 0:
         hidden = HideState.NOT_HIDDEN;
         break;
@@ -2140,7 +2138,7 @@ public class ADC2Module extends Importer {
   protected void readPieceValueBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Piece Value");
 
-    for (int i = 0; i < pieceValues .length; ++i)
+    for (int i = 0; i < pieceValues.length; ++i)
       pieceValues[i] = readNullTerminatedString(in, 15);
   }
 
@@ -2168,7 +2166,7 @@ public class ADC2Module extends Importer {
           if (j == 1)
             setIndex = t;
           if (setIndex >= nCardSets)
-            nCardSets = setIndex+1;
+            nCardSets = setIndex + 1;
         }
         else {
           switch (t) {
@@ -2212,6 +2210,7 @@ public class ADC2Module extends Importer {
 
   protected void readGameTurnBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Game Turn");
+    @SuppressWarnings("unused")
     int gameTurn = ADC2Utils.readBase250Word(in);
   }
 
@@ -2274,7 +2273,7 @@ public class ADC2Module extends Importer {
     writeSetupStacksToArchive(gameModule);
     writePlayersToArchive(gameModule);
     configureMouseOverStackViewer(gameModule);
-    configureMainMap(gameModule);
+    configureMainMap();
     configureDiceRoller(gameModule);
     if (turnNames.size() > 1)  // must have at least two turns
       configureTurnCounter(gameModule);
@@ -2296,7 +2295,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private void configureMainMap(GameModule gameModule) throws IOException {
+  private void configureMainMap() throws IOException {
     final Map mainMap = getMainMap();
     mainMap.setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
 //  if (usePieceNames) {
@@ -2360,12 +2359,12 @@ public class ADC2Module extends Importer {
       insertComponent(tab, charts);
 
       for (int i = 0; i < infoPages.length; ++i) {
-        File f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "b"+i)), file, false, null);
+        File f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "b" + i)), file, false, null);
         if (f == null) {
-          f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "t"+i)), file, false, null);
+          f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "t" + i)), file, false, null);
         }
         if (f != null) {
-          Boolean isChart = Character.toLowerCase(getExtension(f.getName()).charAt(0)) == 'b';
+          boolean isChart = Character.toLowerCase(getExtension(f.getName()).charAt(0)) == 'b';
           Widget w;
           if (isChart) {
             w = new Chart();
@@ -2382,22 +2381,22 @@ public class ADC2Module extends Importer {
             StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
 
-            try (Reader fr = new FileReader(f);
+            try (Reader fr = new FileReader(f, StandardCharsets.US_ASCII);
                  BufferedReader input = new BufferedReader(fr)) {
-              String line = null;
+              String line;
               do {
                 line = input.readLine();
-
-                if (line != null && line.length() > 0) {
-                  line = line.replaceAll(" (?: )", "&nbsp;");
-                  line = line.replaceAll("(?<=&nbsp;) ", "&nbsp;");
-                  line = line.replaceFirst("^ ", "&nbsp;");
-                  sb.append("<p>" + line + "</p>");
+                if (StringUtils.isNotEmpty(line)) {
+                  line = line
+                    .replaceAll(" (?: )", "&nbsp;")
+                    .replaceAll("(?<=&nbsp;) ", "&nbsp;")
+                    .replaceFirst("^ ", "&nbsp;");
+                  sb.append("<p>").append(line).append("</p>");
                 }
               } while (line != null);
 
               sb.append("</body></html>");
-              gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
+              gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes(StandardCharsets.UTF_8));
               w.setAttribute(HtmlChart.FILE, f.getName());
             }
           }
@@ -2454,7 +2453,7 @@ public class ADC2Module extends Importer {
         if ((classCombatSummaryValues & mask) > 0) {
           if (sb.length() > 0)
             sb.append('-');
-          sb.append("$sum(" + classValue + ")$");
+          sb.append("$sum(").append(classValue).append(")$");
         }
       }
       mask <<= 1;
@@ -2465,7 +2464,7 @@ public class ADC2Module extends Importer {
         if ((pieceCombatSummaryValues & mask) > 0) {
           if (sb.length() > 0)
             sb.append('-');
-          sb.append("$sum(" + pieceValue + ")$");
+          sb.append("$sum(").append(pieceValue).append(")$");
         }
       }
       mask <<= 1;
@@ -2540,7 +2539,7 @@ public class ADC2Module extends Importer {
         insertComponent(stack, hand);
 
         Dimension d = getMaxDeckSize();
-        Point p = new Point(d.width/2 + 10, d.height/2 + 10);
+        Point p = new Point(d.width / 2 + 10, d.height / 2 + 10);
         stack.setAttribute(SetupStack.NAME, pool.name);
         stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
         stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
@@ -2588,7 +2587,7 @@ public class ADC2Module extends Importer {
       deckPanels[i].setMaximumSize(maxSize);
       deckPanels[i].setBorder(BorderFactory.createLoweredBevelBorder());
       if (vertical) {
-        c.gridy = i*2;
+        c.gridy = i * 2;
         c.gridx = 1;
       }
       else {
@@ -2646,8 +2645,8 @@ public class ADC2Module extends Importer {
       JPanel p = deckPanels[i];
       p.getBounds(rv);
       pile.setAttribute(DrawPile.OWNING_BOARD, DECKS);
-      pile.setAttribute(DrawPile.X_POSITION, rv.x + rv.width/2);
-      pile.setAttribute(DrawPile.Y_POSITION, rv.y + rv.height/2);
+      pile.setAttribute(DrawPile.X_POSITION, rv.x + rv.width / 2);
+      pile.setAttribute(DrawPile.Y_POSITION, rv.y + rv.height / 2);
       pile.setAttribute(DrawPile.WIDTH, rv.width);
       pile.setAttribute(DrawPile.HEIGHT, rv.height);
       pile.setAttribute(DrawPile.FACE_DOWN, Deck.ALWAYS);
@@ -2676,7 +2675,7 @@ public class ADC2Module extends Importer {
     insertComponent(menu, gameModule);
     menu.setAttribute(ToolbarMenu.BUTTON_TEXT, "Windows");
     menu.setAttribute(ToolbarMenu.TOOLTIP, "Open trays, decks, charts, and hands.");
-    String[] items = new String[nHands+3];
+    String[] items = new String[nHands + 3];
     items[0] = TRAY;
     items[1] = DECKS;
     int start = 2;
@@ -2686,13 +2685,13 @@ public class ADC2Module extends Importer {
     }
     Iterator<Pool> iter = forcePools.iterator(HandPool.class);
     for (int i = 0; i < nHands; ++i) {
-      items[i+start] = iter.next().getButtonName();
+      items[i + start] = iter.next().getButtonName();
     }
     menu.setAttribute(ToolbarMenu.MENU_ITEMS, StringArrayConfigurer.arrayToString(items));
   }
 
   private Dimension getMaxDeckSize() throws IOException {
-    Dimension d = new Dimension(0,0);
+    Dimension d = new Dimension(0, 0);
     for (int i = 0; i < nCardSets; ++i)
       getCardDeck(i).getMaxSize(d);
     return d;
@@ -2740,8 +2739,8 @@ public class ADC2Module extends Importer {
       ForcePool fp = (ForcePool) iter.next();
       deckPanels[i] = new JPanel();
       deckPanels[i].setBorder(BorderFactory.createLoweredBevelBorder());
-      c.gridy = (i/nColumns)*2;
-      c.gridx = i%nColumns;
+      c.gridy = (i / nColumns) * 2;
+      c.gridx = i % nColumns;
       c.insets.bottom = 2;
       c.insets.top = 5;
       panel.add(deckPanels[i], c);
@@ -2789,8 +2788,8 @@ public class ADC2Module extends Importer {
       JPanel p = deckPanels[i];
       p.getBounds(rv);
       pile.setAttribute(DrawPile.OWNING_BOARD, TRAY);
-      pile.setAttribute(DrawPile.X_POSITION, rv.x + rv.width/2);
-      pile.setAttribute(DrawPile.Y_POSITION, rv.y + rv.height/2);
+      pile.setAttribute(DrawPile.X_POSITION, rv.x + rv.width / 2);
+      pile.setAttribute(DrawPile.Y_POSITION, rv.y + rv.height / 2);
       pile.setAttribute(DrawPile.WIDTH, rv.width);
       pile.setAttribute(DrawPile.HEIGHT, rv.height);
       pile.setAttribute(DrawPile.FACE_DOWN, Deck.NEVER);
@@ -2813,7 +2812,7 @@ public class ADC2Module extends Importer {
     final Map mainMap = getMainMap();
 
     final Point offset = getMap().getCenterOffset();
-    for (java.util.Map.Entry<Integer,ArrayList<Piece>> en : stacks.entrySet()) {
+    for (java.util.Map.Entry<Integer, ArrayList<Piece>> en : stacks.entrySet()) {
       final int hex = en.getKey();
       Point p = getMap().indexToPosition(hex);
       if (p == null) continue;
@@ -2837,12 +2836,16 @@ public class ADC2Module extends Importer {
       if (z != null) {
         try {
           if (mg.getLocation(location) != null) {
-            assert(mg.locationName(mg.getLocation(location)).equals(location));
+            if ((!mg.locationName(mg.getLocation(location)).equals(location))) {
+              throw new AssertionError("Bad location");
+            }
             stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
             stack.setAttribute(SetupStack.LOCATION, location);
           }
         }
-        catch(BadCoords e) {}
+        catch (BadCoords e) {
+          log.error("Error while writing setup stacks", e);
+        }
       }
       for (Piece pc : s) {
         pc.writeToArchive(stack);

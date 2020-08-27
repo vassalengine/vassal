@@ -32,18 +32,22 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * @author Joel Uckelman
@@ -78,7 +82,7 @@ public class Player extends Launcher {
 
       createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
-      GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
+      showWizardOrPlayerWindow(GameModule.getGameModule());
     }
     else {
       GameModule.init(createModule(createDataArchive()));
@@ -86,11 +90,11 @@ public class Player extends Launcher {
       Localization.getInstance().translate();
       final GameModule m = GameModule.getGameModule();
       if (lr.game != null) {
-        m.getFrame().setVisible(true);
+        m.getPlayerWindow().setVisible(true);
         m.getGameState().loadGameInBackground(lr.game);
       }
       else {
-        m.getWizardSupport().showWelcomeWizard();
+        showWizardOrPlayerWindow(m);
       }
     }
 
@@ -131,6 +135,34 @@ public class Player extends Launcher {
     return new BasicModule(archive);
   }
 
+  /**
+   * Returns true if user has supplied a real name for current GameModule.
+   *
+   * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
+   *
+   * @return <code>true</code> if user supplied a real name
+   */
+  private boolean isRealName() {
+    final String name = (String)GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+    return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
+  }
+
+  private void showWizardOrPlayerWindow(GameModule module) {
+    final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
+    if (Boolean.TRUE.equals(showWizard)) {
+      module.getWizardSupport().showWelcomeWizard();
+    }
+    else {
+      module.getPlayerWindow().setVisible(true);
+
+      // prompt for username and password if wizard is off
+      // but no username is set
+      if (!isRealName()) {
+        new UsernameAndPasswordDialog(module.getPlayerWindow()).setVisible(true);
+      }
+    }
+  }
+
   public static class LaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
@@ -155,7 +187,7 @@ public class Player extends Launcher {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
-        if (Info.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+        if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
           if ("VASL".equals(md.getName())) {
             ErrorDialog.show(
               "Error.VASL_too_old",

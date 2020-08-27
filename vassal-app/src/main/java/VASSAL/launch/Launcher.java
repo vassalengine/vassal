@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 import javax.swing.SwingUtilities;
 
@@ -107,7 +108,7 @@ public abstract class Launcher {
     start.startErrorLog();
 
     // log everything which comes across our stderr
-    System.setErr(new PrintStream(new LoggedOutputStream(), true));
+    System.setErr(new PrintStream(new LoggedOutputStream(), true, Charset.defaultCharset()));
 
     logger.info(getClass().getSimpleName());
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
@@ -239,7 +240,7 @@ public abstract class Launcher {
           SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-              module.getFrame().toFront();
+              module.getPlayerWindow().toFront();
               shutdown = module.shutDown();
             }
           });

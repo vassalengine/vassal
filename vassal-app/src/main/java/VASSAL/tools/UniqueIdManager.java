@@ -136,7 +136,7 @@ public class UniqueIdManager implements ValidityChecker {
    * An object with an identifier that can be manipulated by a
    * {@link UniqueIdManager}
    */
-  public static interface Identifyable {
+  public interface Identifyable {
     void setId(String id);
 
     String getId();

@@ -81,7 +81,7 @@ public class HexGrid extends AbstractConfigurable
   protected Color color = Color.black;
   protected boolean sideways = false;
   protected boolean snapTo = true;
-  protected Map<Integer,Area> shapeCache = new HashMap<>();
+  protected Map<Integer, Area> shapeCache = new HashMap<>();
   protected HexGridEditor gridEditor;
 
   public static final String X0 = "x0"; //$NON-NLS-1$
@@ -98,6 +98,9 @@ public class HexGrid extends AbstractConfigurable
   public static final String SNAP_TO = "snapTo"; //$NON-NLS-1$
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
+
+  private static final double DEFAULT_HEIGHT = 64.0;
+  private static final double DEFAULT_WIDTH = sqrt3_2 * DEFAULT_HEIGHT;
 
   @Override
   public String[] getAttributeNames() {
@@ -205,7 +208,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
-  protected boolean alternate = false;// true if hex B1 is above A1
+  protected boolean alternate = false; // true if hex B1 is above A1
 
   public HexGrid(double height, double width, boolean alt) {
     dy = height;
@@ -218,7 +221,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public HexGrid() {
-    this(64.0, false);
+    this(DEFAULT_HEIGHT, DEFAULT_WIDTH, false);
   }
 
   @Override
@@ -387,7 +390,7 @@ public class HexGrid extends AbstractConfigurable
         val = Double.valueOf((String) val);
       }
       dy = (Double) val;
-      if (dx == sqrt3_2 * 64.0) {
+      if (Double.compare(dx, DEFAULT_WIDTH) == 0) {
         dx = sqrt3_2 * dy;
       }
     }
@@ -541,9 +544,9 @@ public class HexGrid extends AbstractConfigurable
     int x = sideX(p.x, p.y);
     int y = sideY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x,p.y);
-      int hexY = hexY(p.x,p.y);
-      if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
+      int hexX = hexX(p.x, p.y);
+      int hexY = hexY(p.x, p.y);
+      if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
         x = hexX;
         y = hexY;
       }
@@ -562,9 +565,9 @@ public class HexGrid extends AbstractConfigurable
     int x = vertexX(p.x, p.y);
     int y = vertexY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x,p.y);
-      int hexY = hexY(p.x,p.y);
-      if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
+      int hexX = hexX(p.x, p.y);
+      int hexY = hexY(p.x, p.y);
+      if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
         x = hexX;
         y = hexY;
       }
@@ -638,7 +641,7 @@ public class HexGrid extends AbstractConfigurable
     float x = (sideways ? centerY : centerX);
     float y = (sideways ? centerX : centerY);
 
-    float x1,y1, x2,y2, x3,y3, x4, y4, x5, y5, x6, y6;
+    float x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6;
 
     float deltaX = (float) (this.dx);
     float deltaY = (float) (this.dy);
@@ -717,10 +720,10 @@ public class HexGrid extends AbstractConfigurable
     int loc = ((int) (dx * (int) floor((x - origin.x + dx / 2) / dx) + origin.x));
     if (snapScale > 0) {
       int delta = x - loc;
-      delta = (int)round(delta/(0.5*dx/snapScale));
-      delta = max(delta,1-snapScale);
-      delta = min(delta,snapScale-1);
-      delta = (int)round(delta*0.5*dx/snapScale);
+      delta = (int)round(delta / (0.5 * dx / snapScale));
+      delta = max(delta, 1 - snapScale);
+      delta = min(delta, snapScale - 1);
+      delta = (int)round(delta * 0.5 * dx / snapScale);
       loc += delta;
     }
     return loc;
@@ -737,10 +740,10 @@ public class HexGrid extends AbstractConfigurable
           (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
     if (snapScale > 0) {
       int delta = y - loc;
-      delta = (int)round(delta/(0.5*dy/snapScale));
-      delta = max(delta,1-snapScale);
-      delta = min(delta,snapScale-1);
-      delta = (int)round(delta*0.5*dy/snapScale);
+      delta = (int)round(delta / (0.5 * dy / snapScale));
+      delta = max(delta, 1 - snapScale);
+      delta = min(delta, snapScale - 1);
+      delta = (int)round(delta * 0.5 * dy / snapScale);
       loc += delta;
     }
     return loc;
@@ -803,7 +806,7 @@ public class HexGrid extends AbstractConfigurable
 
     g2d.setColor(color);
 
-    float x1,y1, x2,y2, x3,y3, x4, y4;
+    float x1, y1, x2, y2, x3, y3, x4, y4;
 
     float deltaX = (float) (this.dx * zoom);
     float deltaY = (float) (this.dy * zoom);
@@ -983,7 +986,7 @@ public class HexGrid extends AbstractConfigurable
     protected void calculate_step2(Point p1, Point p2, Point p3) {
       if (!isPerpendicular(p1, p3) && !isPerpendicular(p2, p3)) {
         if (isHorizontal(p1, p2)) {
-          if ((p3.x < p1.x && p3.x < p2.x) ||(p3.x > p1.x && p3.x > p2.x)) {
+          if ((p3.x < p1.x && p3.x < p2.x) || (p3.x > p1.x && p3.x > p2.x)) {
             check(false, p1, p2, p3);
           }
           else {
@@ -991,7 +994,7 @@ public class HexGrid extends AbstractConfigurable
           }
         }
         else {
-          if ((p3.y < p1.y && p3.y < p2.y) ||(p3.y > p1.y && p3.y > p2.y)) {
+          if ((p3.y < p1.y && p3.y < p2.y) || (p3.y > p1.y && p3.y > p2.y)) {
             check(true, reverse(p1), reverse(p2), reverse(p3));
           }
           else {
@@ -1018,9 +1021,9 @@ public class HexGrid extends AbstractConfigurable
       }
       int height = abs(p3.y - p2.y) * 2;
 
-      int Xoff = min(p1.x, p2.x) % width + r/2;
+      int Xoff = min(p1.x, p2.x) % width + r / 2;
       int col = min(p1.x, p2.x) / width;
-      int Yoff = min(p1.y, p2.y) % height - (col % 2 == 1 ? 0 : height/2);
+      int Yoff = min(p1.y, p2.y) % height - (col % 2 == 1 ? 0 : height / 2);
       if (Yoff < 0) Yoff += height;
 
       setMetrics(width, height, Xoff, Yoff, sideways);
@@ -1037,9 +1040,9 @@ public class HexGrid extends AbstractConfigurable
       int height = abs(p3.x - p2.x) * 2;
 
       int xOrigin = p1.y - (p3.y < p1.y ? 0 : r);
-      int Xoff = xOrigin % width + r/2;
+      int Xoff = xOrigin % width + r / 2;
       int col = xOrigin / width;
-      int Yoff = min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height/2);
+      int Yoff = min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height / 2);
 
       setMetrics(width, height, Xoff, Yoff, sideways);
     }

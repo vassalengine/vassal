@@ -47,9 +47,9 @@ import VASSAL.tools.NamedKeyStroke;
  * so that their centroid is at the center of the map
  */
 public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor {
-  public static final String BUTTON_TEXT="text";
-  public static final String ICON="icon";
-  public static final String HOTKEY="hotkey";
+  public static final String BUTTON_TEXT = "text";
+  public static final String ICON = "icon";
+  public static final String HOTKEY = "hotkey";
   public static final String TOOLTIP = "tooltip";
 
   protected LaunchButton launch;
@@ -63,7 +63,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
         GameModule.getGameModule().sendAndLog(recenter(map));
       }
     };
-    launch = new LaunchButton("Recenter",TOOLTIP,BUTTON_TEXT,HOTKEY,ICON,al);
+    launch = new LaunchButton("Recenter", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
@@ -74,25 +74,25 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   public Command recenter(Map map) {
     final Command c = new NullCommand();
     final GamePiece[] pieces = map.getPieces();
-    final Rectangle r = new Rectangle(0,0,-1,-1);
+    final Rectangle r = new Rectangle(0, 0, -1, -1);
 
     for (GamePiece p : pieces) {
       if (Boolean.TRUE.equals(dispatcher.accept(p))) {
         final Point pt = p.getPosition();
         final Rectangle pRect = p.getShape().getBounds();
-        pRect.translate(pt.x,pt.y);
+        pRect.translate(pt.x, pt.y);
         r.add(pRect);
       }
     }
 
     if (r.height >= 0 && r.width >= 0) {
-      final int dx = map.mapSize().width/2-(r.x+r.width/2);
-      final int dy = map.mapSize().height/2-(r.y+r.height/2);
+      final int dx = map.mapSize().width / 2 - (r.x + r.width / 2);
+      final int dy = map.mapSize().height / 2 - (r.y + r.height / 2);
       for (GamePiece p : pieces) {
         if (Boolean.TRUE.equals(dispatcher.accept(p))) {
           final ChangeTracker tracker = new ChangeTracker(p);
           final Point pt = p.getPosition();
-          pt.translate(dx,dy);
+          pt.translate(dx, dy);
           p.setPosition(pt);
           c.append(tracker.getChangeCommand());
         }
@@ -151,7 +151,8 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     return new String[]{
       BUTTON_TEXT,
       TOOLTIP,
-      ICON,HOTKEY
+      ICON,
+      HOTKEY
     };
   }
 
@@ -189,6 +190,6 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public void setAttribute(String key, Object value) {
-    launch.setAttribute(key,value);
+    launch.setAttribute(key, value);
   }
 }

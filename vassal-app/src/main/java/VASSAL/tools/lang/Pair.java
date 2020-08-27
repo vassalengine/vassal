@@ -27,7 +27,7 @@ package VASSAL.tools.lang;
  * @author Joel Uckelman
  * @since 3.2.0
  */
-public final class Pair<A,B> {
+public final class Pair<A, B> {
   public final A first;
   public final B second;
 
@@ -55,7 +55,7 @@ public final class Pair<A,B> {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
 
-    final Pair<?,?> p = (Pair<?,?>) o;
+    final Pair<?, ?> p = (Pair<?, ?>) o;
     return (first  == p.first  || (first  != null && first.equals(p.first))) &&
            (second == p.second || (second != null && second.equals(p.second)));
   }
@@ -67,7 +67,7 @@ public final class Pair<A,B> {
    * @param second the second value
    * @return the pair containing {@code first} and (@code second}
    */
-  public static <A,B> Pair<A,B> of(A first, B second) {
+  public static <A, B> Pair<A, B> of(A first, B second) {
     return new Pair<>(first, second);
   }
 }

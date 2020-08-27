@@ -29,6 +29,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
  * FormattedString.java
@@ -39,7 +40,7 @@ import VASSAL.script.expression.ExpressionException;
  *
  *
  */
-public class FormattedString {
+public class FormattedString implements Loopable {
 
   // The actual string for display purposes
   protected String formatString;
@@ -47,19 +48,30 @@ public class FormattedString {
   // An efficiently evaluable representation of the string
   protected Expression format;
 
-  protected Map<String,String> props = new HashMap<>();
+  protected Map<String, String> props = new HashMap<>();
   protected PropertySource defaultProperties;
+  
+  @Override
+  public String getComponentTypeName() {    
+    return "FormattedString";
+  }
+
+  @Override
+  public String getComponentName() {
+    return "FormattedString";
+  }
+
 
   public FormattedString() {
     this("");
   }
 
   public FormattedString(String s) {
-    this(s,GameModule.getGameModule());
+    this(s, GameModule.getGameModule());
   }
 
   public FormattedString(PropertySource defaultProperties) {
-    this("",defaultProperties);
+    this("", defaultProperties);
   }
 
   public FormattedString(String formatString, PropertySource defaultProperties) {
@@ -130,22 +142,32 @@ public class FormattedString {
     return getText(ps, true);
   }
 
-  protected String getText(PropertySource ps, boolean localized){
-    final PropertySource source = (ps==null) ? defaultProperties : ps;
+  protected String getText(PropertySource ps, boolean localized) {
+    final PropertySource source = (ps == null) ? defaultProperties : ps;
     try {
-      return format.evaluate(source, props, localized);
+      RecursionLimiter.startExecution(this);
+      try {
+        return format.evaluate(source, props, localized);
+      }
+      catch (ExpressionException e) {
+        if (source instanceof EditablePiece) {
+          ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        else if (source instanceof AbstractConfigurable) {
+          ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        else {
+          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+        }
+        return "";
+      }
     }
-    catch (ExpressionException e) {
-      if (source instanceof EditablePiece) {
-        ErrorDialog.dataError(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else if (source instanceof AbstractConfigurable) {
-        ErrorDialog.dataError(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
-      else {
-        ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
-      }
+    catch (RecursionLimitException e) {
+      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
       return "";
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
   }
 
@@ -162,7 +184,7 @@ public class FormattedString {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
     }
     return result;
   }
@@ -174,7 +196,7 @@ public class FormattedString {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
     }
     return result;
   }
@@ -194,7 +216,7 @@ public class FormattedString {
    * @return error message
    */
   public static String debugInfo(FormattedString format, String value, String description) {
-    return description + (value.equals(format.getFormat()) ? "" : "[" + format.getFormat()+ "]") + "=" + value;
+    return description + (value.equals(format.getFormat()) ? "" : "[" + format.getFormat() + "]") + "=" + value;
   }
 
   public String debugInfo(String value, String description) {

@@ -19,7 +19,6 @@ package VASSAL.tools;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import javax.swing.KeyStroke;
 
@@ -54,6 +53,30 @@ public class SequenceEncoderTest {
   @Test
   public void testEncodeDecodeDouble() {
     final double VALUE = 3.1415926535;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(Double.toString(VALUE), Double.toString(sd.nextDouble(99.9)));
+  }
+
+  @Test
+  public void testEncodeDecodeDoubleNAN() {
+    final double VALUE = Double.NaN;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(Double.toString(VALUE), Double.toString(sd.nextDouble(99.9)));
+  }
+
+  @Test
+  public void testEncodeDecodeDoubleInfinity() {
+    final double VALUE = Double.POSITIVE_INFINITY;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(Double.toString(VALUE), Double.toString(sd.nextDouble(99.9)));
+  }
+
+  @Test
+  public void testEncodeDecodeDoubleNegativeInfinity() {
+    final double VALUE = Double.NEGATIVE_INFINITY;
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     assertEquals(Double.toString(VALUE), Double.toString(sd.nextDouble(99.9)));
@@ -120,6 +143,14 @@ public class SequenceEncoderTest {
   @Test
   public void testEncodeDecodeString() {
     final String VALUE = "How many ,'s in this sentence?\n";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeStringStartingWithDelim() {
+    final String VALUE = ",hahahahah";
     final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     assertEquals(VALUE, sd.nextToken());
@@ -207,13 +238,20 @@ public class SequenceEncoderTest {
     final String value2 = "value";
     final char delim = ';';
 
-    final SequenceEncoder se = new SequenceEncoder(null,delim);
+    final SequenceEncoder se = new SequenceEncoder(null, delim);
     se.append(value2);
 
     final SequenceEncoder.Decoder sd =
-      new SequenceEncoder.Decoder(se.getValue(),delim);
+      new SequenceEncoder.Decoder(se.getValue(), delim);
 
     assertEquals("", sd.nextToken());
     assertEquals(value2, sd.nextToken());
+  }
+
+  @Test
+  public void testUnquote() {
+     final String q = "'12345'";
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(q, ',');
+    assertEquals("12345", sd.nextToken());
   }
 }

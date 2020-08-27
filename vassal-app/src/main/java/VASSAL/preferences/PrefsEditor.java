@@ -55,7 +55,7 @@ public class PrefsEditor {
   private List<Configurer> options = new ArrayList<>();
   private List<Configurer> extras = new ArrayList<>();
   private boolean iterating = false;
-  private Map<Configurer,Object> savedValues = new HashMap<>();
+  private Map<Configurer, Object> savedValues = new HashMap<>();
   private List<Prefs> prefs = new ArrayList<>();
   private JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
@@ -191,7 +191,10 @@ public class PrefsEditor {
 
   protected synchronized void cancel() {
     for (Configurer c : options) {
-      c.setValue(savedValues.get(c));
+      Object o = savedValues.get(c);
+      if (o != null) {
+        c.setValue(o);
+      }
       c.setFrozen(false);
     }
     dialog.setVisible(false);

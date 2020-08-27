@@ -43,11 +43,11 @@ public class ImageConfigurer extends FileConfigurer {
 
     if (resourceDirPref == null) {
       resourceDirPref = new DirectoryConfigurer("imageDir", null);
-      gm.getPrefs().addOption(null,resourceDirPref);
+      gm.getPrefs().addOption(null, resourceDirPref);
     }
 
     final FileChooser fc =
-      FileChooser.createFileChooser(gm.getFrame(), resourceDirPref);
+      FileChooser.createFileChooser(gm.getPlayerWindow(), resourceDirPref);
     fc.setFileFilter(new ImageFileFilter());
     return fc;
   }

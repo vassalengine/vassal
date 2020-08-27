@@ -213,7 +213,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    */
   protected static class ButtonPusher {
     private Set<Map> maps = new HashSet<>();
-    private java.util.Map<Component,ComponentMouseListener>
+    private java.util.Map<Component, ComponentMouseListener>
       componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
@@ -273,8 +273,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
           ActionButton action = (ActionButton) piece;
           if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command
-            p.setProperty(Properties.SNAPSHOT,
-              PieceCloner.getInstance().clonePiece(p));
+            p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
             try {
               RecursionLimiter.startExecution(action);
               Command command = p.keyEvent(action.stroke.getKeyStroke());
@@ -327,7 +326,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtils.isMainMouseButtonDown(e)) {
           final Point point = e.getPoint();
-          point.translate(-xOffset,-yOffset);
+          point.translate(-xOffset, -yOffset);
           doClick(target, point);
           e.getComponent().repaint();
         }

@@ -67,7 +67,7 @@ public interface MapGrid {
 
   public GridNumbering getGridNumbering();
 
-  public static final class BadCoords extends Exception {
+  public final class BadCoords extends Exception {
     private static final long serialVersionUID = 1L;
 
     public BadCoords() {

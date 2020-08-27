@@ -17,10 +17,10 @@
  */
 package VASSAL.build;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.FileDialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
@@ -105,6 +105,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -142,16 +143,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected FileDialog fileDialog;
   protected MutablePropertiesContainer propsContainer = new Impl();
   protected PropertyChangeListener repaintOnPropertyChange =
-      new PropertyChangeListener() {
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    evt -> {
       for (Map map : Map.getMapList()) {
         map.repaint();
       }
-    }
-  };
+    };
 
   protected PlayerWindow frame = new PlayerWindow();
+
+  /**
+   * @deprecated use {@link #getPlayerWindow()} and {@link PlayerWindow#getControlPanel()} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected JPanel controlPanel = frame.getControlPanel();
 
   protected GameState theState;
@@ -175,7 +178,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected int nextGpId = 0;
 
   protected boolean loggingPaused = false;
-  protected Object loggingLock = new Object();
+  protected final Object loggingLock = new Object();
   protected Command pausedCommands;
 
   /*
@@ -185,13 +188,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
-  
+
   private static String oldDragThreshold; //
 
   /**
    * @return the top-level frame of the controls window
+   *
+   * @deprecated use {@link #getPlayerWindow()}
    */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JFrame getFrame() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return frame;
+  }
+
+  public PlayerWindow getPlayerWindow() {
     return frame;
   }
 
@@ -249,7 +260,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     else if (VASSAL_VERSION_CREATED.equals(name)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
-      if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
+      if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         WarningDialog.show("GameModule.version_warning",
                            vassalVersionCreated, runningVersion);
       }
@@ -288,6 +299,22 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return description;
     }
     return null;
+  }
+
+  /**
+   *
+   * A valid verson format is "w.x.y[bz]", where
+   * 'w','x','y', and 'z' are integers.
+   * @return a negative number if <code>v2</code> is a later version
+   * the <code>v1</code>, a positive number if an earlier version,
+   * or zero if the versions are the same.
+   *
+   * @deprecated use {@link VersionUtils#compareVersions(String, String)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static int compareVersions(String v1, String v2) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return VersionUtils.compareVersions(v1, v2);
   }
 
   @Override
@@ -388,17 +415,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
-  
-  
+
+
   /**
-   * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners 
+   * If our keyboard mapping paradigm changes (example: Mac Legacy preference checked/unchecked), we need to reregister all of our KeyStrokeListeners
    */
   public void refreshKeyStrokeListeners() {
     keyStrokeListeners.forEach(l -> l.setKeyStroke(l.getKeyStroke()));
   }
-  
 
-  @Deprecated public void fireKeyStroke(KeyStroke stroke) {
+  /**
+   * @deprecated use {@link #fireKeyStroke(NamedKeyStroke)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void fireKeyStroke(KeyStroke stroke) {
+    ProblemDialog.showDeprecated("2020-08-06");
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
         l.keyPressed(stroke);
@@ -407,9 +438,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public void fireKeyStroke(NamedKeyStroke stroke) {
-    if (stroke != null && !stroke.isNull()) {
-      fireKeyStroke(stroke.getKeyStroke());
+    if (stroke == null || stroke.isNull()) {
+      return;
     }
+
+    final KeyStroke innerStroke = stroke.getKeyStroke();
+    if (innerStroke == null) {
+      return;
+    }
+
+    keyStrokeListeners.forEach(l -> l.keyPressed(innerStroke));
   }
 
   /**
@@ -454,10 +492,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    * A set of preferences that applies to all modules
-   * @return
+   * @deprecated use {@link Prefs#getGlobalPrefs()}
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Prefs getGlobalPrefs() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return Prefs.getGlobalPrefs();
   }
 
@@ -487,8 +526,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Central location to create any type of GamePiece from within VASSAL
    *
-   * @param type
-   * @return
+   * @param type Type for Piece
+   * @return Created Piece
    */
   public GamePiece createPiece(String type) {
     for (CommandEncoder commandEncoder : commandEncoders) {
@@ -526,7 +565,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       chat.show(" - " + s); //$NON-NLS-1$
     }
   }
-
+  
+  
   /**
    * @return a single Random number generator that all objects may share
    */
@@ -555,7 +595,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JComponent getControlPanel() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return controlPanel;
   }
 
@@ -568,7 +613,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   public void setPrefs(Prefs p) {
     preferences = p;
-    preferences.getEditor().initDialog(getFrame());
+    preferences.getEditor().initDialog(getPlayerWindow());
+  }
+
+  /**
+   *
+   * @deprecated no replacement
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setGlobalPrefs(@SuppressWarnings("unused") Prefs p) {
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
@@ -616,7 +670,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public FileChooser getFileChooser() {
     if (fileChooser == null) {
-      fileChooser = FileChooser.createFileChooser(getFrame(),
+      fileChooser = FileChooser.createFileChooser(getPlayerWindow(),
         getGameState().getSavedGameDirectoryPreference());
     }
     else {
@@ -625,6 +679,26 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
 
     return fileChooser;
+  }
+
+  /**
+   * @deprecated Use {@link #getFileChooser} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public FileDialog getFileDialog() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    if (fileDialog == null) {
+      fileDialog = new FileDialog(getPlayerWindow());
+      File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
+      if (f != null) {
+        fileDialog.setDirectory(f.getPath());
+      }
+      fileDialog.setModal(true);
+    }
+    else {
+      fileDialog.setDirectory(fileDialog.getDirectory());
+    }
+    return fileDialog;
   }
 
   /**
@@ -747,7 +821,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void sendAndLog(Command c) {
     if (c != null && !c.isNull()) {
-      synchronized(loggingLock) {
+      synchronized (loggingLock) {
         if (loggingPaused) {
           if (pausedCommands == null) {
             pausedCommands = c;
@@ -771,10 +845,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * While Paused, commands are accumulated into pausedCommands so that they
    * can all be logged at the same time, and generate a single UNDO command.
    *
-   * @return
+   * @return Current logging pause status, false if logging currently paused
    */
   public boolean pauseLogging() {
-    synchronized(loggingLock) {
+    synchronized (loggingLock) {
       if (loggingPaused) {
         return false;
       }
@@ -788,8 +862,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Restart logging and return any outstanding commands
    */
   public Command resumeLogging() {
-    Command c = null;
-    synchronized(loggingLock) {
+    Command c;
+    synchronized (loggingLock) {
       c = pausedCommands == null ? new NullCommand() : pausedCommands;
       pausedCommands = null;
       loggingPaused = false;
@@ -849,7 +923,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         throw e;
       }
     }
-    
+
     /*
      *  If we are editing, check for duplicate, illegal or missing GamePiece Id's
      *  and update if necessary.
@@ -857,7 +931,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
     }
-    
+
     //Save our old drag threshold
     oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
     System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
@@ -875,15 +949,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Unload the module
    */
   public static void unload() {
-    
+
     // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
     if (oldDragThreshold != null) {
-      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);      
+      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);
     }
     else {
-      System.clearProperty("awt.dnd.drag.threshold");            
+      System.clearProperty("awt.dnd.drag.threshold");
     }
-    
+
     if (theModule != null) {
       if (theModule.shutDown()) {
         theModule = null;
@@ -928,6 +1002,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
+
+    // Add any PieceSlots in Prototype Definitions
+    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+      pc.getDefinitions().forEach(checker::add);
+    }
+
     checker.fixErrors();
   }
 

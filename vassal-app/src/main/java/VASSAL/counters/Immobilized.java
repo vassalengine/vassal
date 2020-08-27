@@ -98,10 +98,16 @@ public class Immobilized extends Decorator implements EditablePiece {
   };
 
   public Immobilized() {
-    this(null, Immobilized.ID);
+    this(Immobilized.ID, null);
   }
 
+  /** @deprecated Use {@link #Immobilized(String, GamePiece)} instead. */
+  @Deprecated
   public Immobilized(GamePiece p, String type) {
+    this(type, p);
+  }
+
+  public Immobilized(String type, GamePiece p) {
     setInner(p);
     mySetType(type);
   }
@@ -386,7 +392,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       if (p.neverBandSelect) {
         bandSelectOption.setSelectedIndex(2);
       }
-      else if (p.altToBandSelect ) {
+      else if (p.altToBandSelect) {
         bandSelectOption.setSelectedIndex(1);
       }
       else {

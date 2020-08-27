@@ -18,6 +18,8 @@
 
 package VASSAL.launch;
 
+import java.nio.charset.StandardCharsets;
+
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.image.tilecache.ZipFileImageTiler;
 
@@ -52,7 +54,7 @@ class TileProgressPumpStateMachine {
   public static final int DONE    = 5;
 
   protected void appendName(StringBuilder sb, byte[] buf, int beg, int end) {
-    sb.append(new String(buf, beg, end-beg));
+    sb.append(new String(buf, beg, end - beg, StandardCharsets.UTF_8));
   }
 
   protected boolean hasName(StringBuilder sb) {
@@ -86,11 +88,11 @@ class TileProgressPumpStateMachine {
         // found a carriage return
         if (buf[pos] == '\r') {
           // now look for a linefeed
-          return new int[] { NAME_LF, pos+1 };
+          return new int[] { NAME_LF, pos + 1 };
         }
         else {
           // now look for dots
-          return new int[] { DOTS, pos+1 };
+          return new int[] { DOTS, pos + 1 };
         }
 
         // found a regular character, keep looking
@@ -112,7 +114,7 @@ class TileProgressPumpStateMachine {
     case '\n':
       // found a linefeed
       // now look for dots
-      return new int[] { DOTS, beg+1 };
+      return new int[] { DOTS, beg + 1 };
 
     default:
       // found something else, protocol violation
@@ -130,16 +132,16 @@ class TileProgressPumpStateMachine {
         // found the end of line
 
         // send the buffer up to this position as the progress
-        sendProgress(pos-beg);
+        sendProgress(pos - beg);
 
         // found a carriage return
         if (buf[pos] == '\r') {
           // now look for a linefeed
-          return new int[] { DOTS_LF, pos+1 };
+          return new int[] { DOTS_LF, pos + 1 };
         }
         else {
           // now look for filename
-          return new int[] { NAME, pos+1 };
+          return new int[] { NAME, pos + 1 };
         }
 
       case '.':
@@ -156,7 +158,7 @@ class TileProgressPumpStateMachine {
     // exhausted the buffer without finding end of line
 
     // send the progress to this point
-    sendProgress(end-beg);
+    sendProgress(end - beg);
 
     // continue looking for end of line
     return new int[] { DOTS, end };
@@ -168,7 +170,7 @@ class TileProgressPumpStateMachine {
     case '\n':
       // found a linefeed
       // now look for filename
-      return new int[] { NAME, beg+1 };
+      return new int[] { NAME, beg + 1 };
 
     default:
       // found something else, protocol violation
@@ -199,9 +201,9 @@ class TileProgressPumpStateMachine {
       int[] result;
 
       switch (state) {
-      case NAME:    result = runName(  buf, beg, end, sb); break;
+      case NAME:    result = runName(buf, beg, end, sb); break;
       case NAME_LF: result = runNameLF(buf, beg, end, sb); break;
-      case DOTS:    result = runDots(  buf, beg, end, sb); break;
+      case DOTS:    result = runDots(buf, beg, end, sb); break;
       case DOTS_LF: result = runDotsLF(buf, beg, end, sb); break;
 
       default:

@@ -18,6 +18,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.counters.PieceIterator;
+import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -30,8 +32,6 @@ import java.awt.Shape;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceMotionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -75,7 +75,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
-import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
@@ -96,6 +95,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String PREFERRED_DELAY = "PreferredDelay";
 
   public static final String DELAY = "delay";
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static final String ALWAYS_SHOW_LOC = "alwaysshowloc";
   public static final String DRAW_PIECES = "showgraph";
   public static final String GRAPH_SINGLE_DEPRECATED = "showgraphsingle";
@@ -111,6 +111,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String SHOW_MOVE_SELECTED = "showMoveSelectde";
   public static final String SHOW_NON_MOVABLE = "showNonMovable";
   public static final String SHOW_DECK = "showDeck";
+  public static final String SHOW_OVERLAP = "showOverlap";
   public static final String UNROTATE_PIECES = "unrotatePieces";
   public static final String DISPLAY = "display";
   public static final String LAYER_LIST = "layerList";
@@ -142,6 +143,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected MouseEvent currentMousePosition;
 
   protected int minimumDisplayablePieces = 2;
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected boolean alwaysShowLoc = false;
   protected boolean drawPieces = true;
   protected boolean drawSingleDeprecated = false;
@@ -149,6 +151,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showTextSingleDeprecated = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
+  protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;
@@ -177,11 +180,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public CounterDetailViewer() {
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
-    delayTimer = new Timer(delay, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (mouseInView) showDetails();
-      }
+    delayTimer = new Timer(delay, e -> {
+      if (mouseInView) showDetails();
     });
 
     delayTimer.setRepeats(false);
@@ -245,7 +245,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
+  /**
+   * @deprecated Use {@link #drawGraphics(Graphics, Point, JComponent, List)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
+  protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, PieceIterator pi) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    final ArrayList<GamePiece> a = new ArrayList<>();
+    while (pi.hasMoreElements()) {
+      a.add(pi.nextPiece());
+    }
+    drawGraphics(g, pt, comp, a);
+  }
+
+  protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, List<GamePiece> pieces) {
     fixBounds(pieces);
 
     if (bounds.width <= 0) {
@@ -319,7 +332,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (isTextUnderCounters()) {
         String text = counterReportFormat.getLocalizedText(piece);
         if (text.length() > 0) {
-          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int)(borderOffset * os_scale);
+          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
           int y = dbounds.y + dbounds.height + 10;
           drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
         }
@@ -358,7 +371,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return textVisible && counterReportFormat.getFormat().length() > 0;
   }
 
-  protected void drawText(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
+  /**
+   * @deprecated Use {@link #drawText(Graphics, Point, JComponent, List)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
+  protected void drawText(Graphics g, Point pt, JComponent comp, PieceIterator pi) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    final ArrayList<GamePiece> a = new ArrayList<>();
+    while (pi.hasMoreElements()) {
+      a.add(pi.nextPiece());
+    }
+    drawText(g, pt, comp, a);
+  }
+
+  protected void drawText(Graphics g, @SuppressWarnings("unused") Point pt, @SuppressWarnings("unused") JComponent comp, List<GamePiece> pieces) {
     /*
      * Label with the location If the counter viewer is being displayed, then
      * place the location name just above the left hand end of the counters. If
@@ -368,7 +394,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    String report = "";
+    String report;
     int x = (int)((bounds.x - bounds.width) * os_scale);
     int y = (int)((bounds.y - 5) * os_scale);
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
@@ -401,6 +427,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  /**
+   * @deprecated Use {{@link #drawLabel(Graphics, Point, String)}}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
+  protected void drawLabel(Graphics g, Point pt, String label) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    drawLabel(g, pt, label, Labeler.RIGHT, Labeler.BOTTOM);
+  }
+
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
     if (label != null) {
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
@@ -429,7 +464,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
       else {
-        textVisible = (minimumDisplayablePieces==0 && emptyHexReportFormat.getFormat().length() > 0);
+        textVisible = (minimumDisplayablePieces == 0 && emptyHexReportFormat.getFormat().length() > 0);
         graphicsVisible = false;
       }
     }
@@ -452,7 +487,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     Visitor visitor = new Visitor(new Filter(), map,
-      map.componentToMap(currentMousePosition.getPoint()));
+      map.componentToMap(currentMousePosition.getPoint()), showOverlap);
     DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -560,19 +595,27 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    */
   protected static class Visitor extends PieceFinder.Movable {
     protected List<GamePiece> pieces;
-    protected Filter filter = null;
+    protected Filter filter;
     protected CompoundPieceCollection collection;
     protected int lastLayer = -1;
     protected int insertPos = 0;
     protected Point foundPieceAt;
+    protected boolean showingOverlap;
 
+    @Deprecated(since = "2020-08-06", forRemoval = true)
     public Visitor(Filter filter, Map map, Point pt) {
-      super(map,pt);
+      this(filter, map, pt, false);
+      ProblemDialog.showDeprecated("2020-08-06");
+    }
+
+    public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
+      super(map, pt);
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
       }
       pieces = new ArrayList<>();
       this.filter = filter;
+      showingOverlap = showOverlap;
     }
 
     @Override
@@ -616,8 +659,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * passed pieces from the top down.
      */
     protected void apply(GamePiece p) {
-      int layer = 0;
-      String layerName = "";
+      int layer;
+      String layerName;
 
       layer = collection.getLayerForPiece(p);
       layerName = collection.getLayerNameForPiece(p);
@@ -628,7 +671,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           lastLayer = layer;
         }
 
-        if (foundPieceAt == null) {
+        // Our show-overlap setting controls whether we're allowed to show all pieces overlapping this spot, or only pieces at the exact location of the first piece we find.
+        if (!showingOverlap && foundPieceAt == null) {
           foundPieceAt = p.getPosition();
         }
 
@@ -787,11 +831,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       EMPTY_HEX_REPORT_FORMAT,
       DISPLAY,
       LAYER_LIST,
-      PROPERTY_FILTER,SHOW_NOSTACK,
+      PROPERTY_FILTER,
+      SHOW_NOSTACK,
       SHOW_MOVE_SELECTED,
       SHOW_NON_MOVABLE,
       UNROTATE_PIECES,
-      SHOW_DECK
+      SHOW_DECK,
+      SHOW_OVERLAP,
     };
   }
 
@@ -823,6 +869,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
+       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
       };
   }
 
@@ -853,7 +900,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Boolean.class,
-      Boolean.class
+      Boolean.class,
+      Boolean.class,
     };
   }
 
@@ -1017,6 +1065,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showDeck = "true".equals(value);
       }
     }
+    else if (SHOW_OVERLAP.equals(name)) {
+      if (value instanceof Boolean) {
+        showOverlap = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        showOverlap = "true".equals(value);
+      }
+    }
     else if (UNROTATE_PIECES.equals(name)) {
       if (value instanceof Boolean) {
         unrotatePieces = (Boolean) value;
@@ -1072,7 +1128,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       if (value != null) {
         fontSize = (Integer) value;
-        font = font.deriveFont(fontSize);
+        font = font.deriveFont((float) fontSize);
       }
     }
     else if (PROPERTY_FILTER.equals(name)) {
@@ -1121,6 +1177,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_DECK.equals(name)) {
       return String.valueOf(showDeck);
     }
+    else if (SHOW_OVERLAP.equals(name)) {
+      return String.valueOf(showOverlap);
+    }
     else if (UNROTATE_PIECES.equals(name)) {
       return String.valueOf(unrotatePieces);
     }
@@ -1168,72 +1227,32 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return drawPieces;
-        }
-      };
+      return () -> drawPieces;
     }
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showText;
-        }
-      };
+      return () -> showText;
     }
     else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return true;
-        }
-      };
+      return () -> true;
     }
     else if (LAYER_LIST.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
-        }
-      };
+      return () -> (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return displayWhat.equals(FILTER);
-        }
-      };
+      return () -> displayWhat.equals(FILTER);
     }
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showText && minimumDisplayablePieces == 0;
-        }
-      };
+      return () -> showText && minimumDisplayablePieces == 0;
     }
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showNoStack;
-        }
-      };
+      return () -> showNoStack;
     }
     /*
      * The following fields are not to be displayed. They are either obsolete
      * or maintained for backward compatibility
      */
     else if (List.of(VERSION, SHOW_TEXT_SINGLE_DEPRECATED, GRAPH_SINGLE_DEPRECATED).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return false;
-        }
-      };
+      return () -> false;
     }
     return null;
   }

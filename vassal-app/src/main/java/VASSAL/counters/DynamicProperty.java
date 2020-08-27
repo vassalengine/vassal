@@ -175,7 +175,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public Component getComponent() {
-    return getMap() != null ? getMap().getView().getTopLevelAncestor() : GameModule.getGameModule().getFrame();
+    return getMap() != null ? getMap().getView().getTopLevelAncestor() : GameModule.getGameModule().getPlayerWindow();
   }
 
   @Override
@@ -218,7 +218,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
           Point pos = parent.getPosition();
           map.removePiece(parent);
           this.value = value;
-          map.placeOrMerge(parent,pos);
+          map.placeOrMerge(parent, pos);
         }
         else {
           this.value = value;
@@ -417,7 +417,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   protected static class DynamicKeyCommand extends KeyCommand {
     private static final long serialVersionUID = 1L;
 
-    protected PropertyChanger propChanger = null;
+    protected PropertyChanger propChanger;
 
     public DynamicKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, PropertyChanger propChanger) {
       super(name, key, target, i18nPiece);
@@ -430,7 +430,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    * Configure a single Dynamic Key Command line
    */
   protected static class DynamicKeyCommandConfigurer extends Configurer {
-    protected NamedHotKeyConfigurer keyConfig;
+    protected final NamedHotKeyConfigurer keyConfig;
     protected PropertyChangerConfigurer propChangeConfig;
     protected StringConfigurer commandConfig;
 
@@ -445,12 +445,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 
-      PropertyChangeListener pl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateValue();
-        }
-      };
+      PropertyChangeListener pl = e -> updateValue();
       commandConfig.addPropertyChangeListener(pl);
       keyConfig.addPropertyChangeListener(pl);
       propChangeConfig.addPropertyChangeListener(pl);

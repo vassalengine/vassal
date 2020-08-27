@@ -17,6 +17,8 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.image.ImageUtils;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -32,7 +34,6 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.menu.MenuManager;
@@ -67,6 +68,16 @@ public class AboutScreen extends AbstractConfigurable {
     this.op = op;
   }
 
+  /**
+   * @deprecated Use {@link #AboutScreen(ImageOp)}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public AboutScreen(Image i) {
+    this();
+    ProblemDialog.showDeprecated("2020-08-06");
+    this.op = Op.load(ImageUtils.toBufferedImage(i));
+  }
+
   public void launch() {
     if (op == null) return;
 
@@ -92,7 +103,7 @@ public class AboutScreen extends AbstractConfigurable {
     sb.append("</center></html>");
 
     final AboutWindow w =
-      new AboutWindow(g.getFrame(), op.getImage(), sb.toString());
+      new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
     w.setVisible(true);
     w.toFront();
   }

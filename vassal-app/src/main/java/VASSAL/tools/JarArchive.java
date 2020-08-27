@@ -68,12 +68,11 @@ public class JarArchive extends DataArchive {
       }
     }
 
-    throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
+    throw new FileNotFoundException(String.format("'%s' not found in %s", fileName, getName()));
   }
 
   protected String getAbsolutePath(String file) {
-    return (prefix != null ? "/" + prefix : "" ) + "/" + file;
+    return (prefix != null ? "/" + prefix : "") + "/" + file;
   }
 
   @Override

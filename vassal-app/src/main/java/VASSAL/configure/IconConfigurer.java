@@ -78,23 +78,23 @@ public class IconConfigurer extends Configurer {
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls,BoxLayout.X_AXIS));
+      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       controls.add(new JLabel(getName()));
       final JPanel p = new JPanel() {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void paint(Graphics g) {
-          g.clearRect(0,0,getSize().width,getSize().height);
+          g.clearRect(0, 0, getSize().width, getSize().height);
           final Icon i = getIconValue();
           if (i != null) {
             i.paintIcon(this, g,
-                        getSize().width/2-i.getIconWidth()/2,
-                        getSize().height/2-i.getIconHeight()/2);
+                        getSize().width / 2 - i.getIconWidth() / 2,
+                        getSize().height / 2 - i.getIconHeight() / 2);
           }
         }
       };
-      p.setPreferredSize(new Dimension(32,32));
+      p.setPreferredSize(new Dimension(32, 32));
       controls.add(p);
       final JButton reset = new JButton("Select");
       reset.addActionListener(new ActionListener() {
@@ -131,7 +131,7 @@ public class IconConfigurer extends Configurer {
       final File f = fc.getSelectedFile();
       if (f != null && f.exists()) {
         GameModule.getGameModule().getArchiveWriter()
-                                  .addImage(f.getPath(),f.getName());
+                                  .addImage(f.getPath(), f.getName());
         setValue(f.getName());
       }
     }

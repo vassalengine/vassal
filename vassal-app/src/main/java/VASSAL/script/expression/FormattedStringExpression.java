@@ -21,6 +21,7 @@ import java.util.Map;
 
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.RecursionLimiter;
 
 /**
  * Report Format or old-style Formatted String expression containing at
@@ -49,7 +50,7 @@ public class FormattedStringExpression extends Expression {
       isProperty = !isProperty;
       if (token.length() > 0) {
         /*
-         * Only even numbered tokens with at least one token after them are valid $propertName$ strings.
+         * Only even numbered tokens with at least one token after them are valid $propertyName$ strings.
          */
         if (!isProperty || ! st.hasMoreTokens()) {
           buffer.append(token);

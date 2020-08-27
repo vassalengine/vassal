@@ -43,7 +43,7 @@ public class VisibilityOption extends PositionOption {
 
   @Override
   public void setValue(String in) {
-    StringTokenizer st = new StringTokenizer(in,"\t");
+    StringTokenizer st = new StringTokenizer(in, "\t");
     super.setValue(st.nextToken());
     if (st.hasMoreTokens()) {
       isVisible = "true".equals(st.nextToken());
@@ -56,6 +56,6 @@ public class VisibilityOption extends PositionOption {
 
   @Override
   public String getValueString() {
-    return super.getValueString()+"\t"+isVisible;
+    return super.getValueString() + "\t" + isVisible;
   }
 }

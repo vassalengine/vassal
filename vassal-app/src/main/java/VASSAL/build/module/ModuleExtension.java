@@ -60,6 +60,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * An optional extension to a GameModule
@@ -151,7 +152,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       // Has an Extension Id been allocated yet?
       if (extensionId.length() == 0) {
         final String id = UUID.randomUUID().toString();
-        extensionId = id.substring(id.length()-3);
+        extensionId = id.substring(id.length() - 3);
       }
 
       // Fix missing, duplicate and illegal GamePieceId's
@@ -167,11 +168,14 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     if (b instanceof PieceSlot) {
       checker.add((PieceSlot) b);
     }
+    else if (b instanceof PrototypeDefinition) {
+      checker.add((PrototypeDefinition) b);
+    }
     else if (b instanceof ExtensionElement) {
       checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
-      for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         checkGpIds(buildable, checker);
       }
     }
@@ -197,7 +201,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       updateGpIds(((ExtensionElement) b).getExtension());
     }
     else if (b instanceof AbstractBuildable) {
-      for ( Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         updateGpIds(buildable);
       }
     }
@@ -253,7 +257,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     boolean confirm = true;
     if (archive instanceof ArchiveWriter && !buildString().equals(lastSave)) {
       switch (JOptionPane.showConfirmDialog(
-        GameModule.getGameModule().getFrame(),
+        GameModule.getGameModule().getPlayerWindow(),
         Resources.getString("ModuleExtension.save_extension"), //$NON-NLS-1$
         "", JOptionPane.YES_NO_CANCEL_OPTION)) { //$NON-NLS-1$
       case JOptionPane.YES_OPTION:
@@ -313,7 +317,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     else if (BASE_MODULE_VERSION.equals(key)) {
       String version = (String) value;
-      if (!universal && Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
+      if (!universal && VersionUtils.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
             Resources.getString("ModuleExtension.wrong_module_version",
                 getName(), version, GameModule.getGameModule().getGameVersion(),
@@ -323,9 +327,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     else if (VASSAL_VERSION_CREATED.equals(key)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
-      if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
-            getName(), value, runningVersion ));
+      if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
+        GameModule.getGameModule().warn(
+          Resources.getString(
+            "ModuleExtension.wrong_vassal_version", //$NON-NLS-1$
+            getName(),
+            value,
+            runningVersion));
       }
     }
     else if (VERSION.equals(key)) {
@@ -455,7 +463,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         @Override
         public void actionPerformed(ActionEvent e) {
           String s = (String)JOptionPane.showInputDialog(
-              GameModule.getGameModule().getFrame(),
+              GameModule.getGameModule().getPlayerWindow(),
               "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
               "",
               JOptionPane.WARNING_MESSAGE,
@@ -545,7 +553,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
            GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
         if (ext.getName().equals(name)) {
           containsExtension = true;
-          if (Info.compareVersions(ext.getVersion(), version) > 0) {
+          if (VersionUtils.compareVersions(ext.getVersion(), version) > 0) {
             GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;

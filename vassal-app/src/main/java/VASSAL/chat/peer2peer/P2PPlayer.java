@@ -106,7 +106,7 @@ public class P2PPlayer extends SimplePlayer {
 
   @Override
   public void setId(String id) {
-    props.put(ID,id);
+    props.put(ID, id);
     setProps();
   }
 

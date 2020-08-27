@@ -138,7 +138,7 @@ public class LaunchRequest implements Serializable {
       final Iterator<String> i = autoext.iterator();
       sb.append(i.next());
       while (i.hasNext()) sb.append(',').append(i.next());
-      args.add(sb.toString().replace(' ','_'));
+      args.add(sb.toString().replace(' ', '_'));
     }
 
     args.add("--");
@@ -234,7 +234,7 @@ public class LaunchRequest implements Serializable {
       case AUTO_EXT:
         if (lr.autoext == null) lr.autoext = new ArrayList<>();
         for (String ext : g.getOptarg().split(",")) {
-          lr.autoext.add(ext.replace("_"," "));
+          lr.autoext.add(ext.replace("_", " "));
         }
         break;
       case EDIT_EXT:
@@ -288,7 +288,7 @@ public class LaunchRequest implements Serializable {
         lr.standalone = true;
         break;
       case ':':
-        die("LaunchRequest.missing_argument", args[g.getOptind()-1]);
+        die("LaunchRequest.missing_argument", args[g.getOptind() - 1]);
         break;
       case '?':
         // NB: getOptind() is not advanced if the unrecognized option
@@ -297,7 +297,7 @@ public class LaunchRequest implements Serializable {
         die(
           "LaunchRequest.unrecognized_option",
           g.getOptopt() == 0 ?
-            args[g.getOptind()-1] : '-' + String.valueOf((char) g.getOptopt())
+            args[g.getOptind() - 1] : '-' + String.valueOf((char) g.getOptopt())
         );
         break;
       default:

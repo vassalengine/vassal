@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -26,8 +27,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,12 +84,13 @@ import VASSAL.tools.SequenceEncoder;
  * to the start of a game by prompting the player to select boards if none have been specified.
  */
 public class BoardPicker extends AbstractBuildable implements ActionListener, GameComponent, GameSetupStep, Configurable, CommandEncoder, ValidityChecker {
-  private static final long serialVersionUID = 1L;
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
   protected List<Board> possibleBoards = new ArrayList<>();
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected JTextField status;
   protected JLabel statusLabel;
   protected Map map;
   protected JPanel slotPanel;
@@ -261,7 +261,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       }
       names.add(b.getName());
       if (b.getName() == null) {
-        report.addWarning(Resources.getString("BoardPicker.no_name",ConfigureTree.getConfigureName(map)));
+        report.addWarning(Resources.getString("BoardPicker.no_name", ConfigureTree.getConfigureName(map)));
       }
       b.validate(b, report);
     }
@@ -360,6 +360,13 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     }
   }
 
+  /** @deprecated Use {@link #setBoards(Collection)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void setBoards(Enumeration<Board> bdEnum) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    setBoards(Collections.list(bdEnum));
+  }
+
   protected void selectBoards(Component c) {
     reset();
     final JDialog d = new JDialog((Frame) null, true);
@@ -367,22 +374,14 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     final Box b = Box.createVerticalBox();
     final Box buttons = Box.createHorizontalBox();
     final JButton ok = new JButton(Resources.getString(Resources.OK));
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final List<Board> l = getBoardsFromControls();
-        defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
-        d.dispose();
-      }
+    ok.addActionListener(e -> {
+      final List<Board> l = getBoardsFromControls();
+      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
+      d.dispose();
     });
     buttons.add(ok);
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    cancel.addActionListener(e -> d.dispose());
     buttons.add(cancel);
     b.add(controls);
     b.add(buttons);
@@ -398,7 +397,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   public Collection<Board> getSelectedBoards() {
     if (currentBoards == null) {
-      return Collections.<Board>emptyList();
+      return Collections.emptyList();
     }
     else {
       return Collections.unmodifiableCollection(currentBoards);
@@ -410,6 +409,17 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   public List<String> getSelectedBoardNames() {
     return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
+  }
+
+  /**
+   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
+   *         savefile
+   * @deprecated Use {@link #getSelectedBoards()} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Enumeration<Board> getCurrentBoards() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return Collections.enumeration(getSelectedBoards());
   }
 
   /**
@@ -553,9 +563,18 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   /**
+   * @deprecated Use {@link #getBoardsFromControls()}.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Vector<Board> pickBoards() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return new Vector<>(getBoardsFromControls());
+  }
+
+  /**
    * Return the list of boards as specified in the current controls
    *
-   * @return
+   * @return List of Boards
    */
   public List<Board> getBoardsFromControls() {
     ArrayList<Board> boardList = new ArrayList<>();
@@ -740,12 +759,20 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   public static class SetBoards extends Command {
-    private BoardPicker target;
-    private List<Board> boards;
+    private final BoardPicker target;
+    private final List<Board> boards;
 
     public SetBoards(BoardPicker picker, List<Board> bds) {
       target = picker;
       boards = bds;
+    }
+
+    /** @deprecated Use {@link #SetBoards(BoardPicker,List)}. */
+    @Deprecated(since = "2020-08-06", forRemoval = true)
+    public SetBoards(BoardPicker target, Vector<Board> boards) {
+      ProblemDialog.showDeprecated("2020-08-06");
+      this.target = target;
+      this.boards = boards;
     }
 
     @Override
@@ -764,75 +791,49 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   private class Config extends Configurer {
-    private JPanel controls;
-    private JButton selectButton;
-    private IntConfigurer width;
-    private IntConfigurer height;
-    private DoubleConfigurer scale;
-    private StringConfigurer title;
-    private StringConfigurer prompt;
+    private final JPanel controls;
 
     public Config() {
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
-      title.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            BoardPicker.this.title = (String) evt.getNewValue();
-          }
+      StringConfigurer title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
+      title.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          BoardPicker.this.title = (String) evt.getNewValue();
         }
       });
       controls.add(title.getControls());
-      prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
-      prompt.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            BoardPicker.this.boardPrompt = (String) evt.getNewValue();
-          }
+      StringConfigurer prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
+      prompt.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          BoardPicker.this.boardPrompt = (String) evt.getNewValue();
         }
       });
       controls.add(prompt.getControls());
-      scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
-      scale.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            slotScale = (Double) evt.getNewValue();
-          }
+      DoubleConfigurer scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
+      scale.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          slotScale = (Double) evt.getNewValue();
         }
       });
       controls.add(scale.getControls());
-      width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
-      width.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            psize.width = (Integer) evt.getNewValue();
-          }
+      IntConfigurer width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
+      width.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          psize.width = (Integer) evt.getNewValue();
         }
       });
       controls.add(width.getControls());
-      height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
-      height.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            psize.height = (Integer) evt.getNewValue();
-          }
+      IntConfigurer height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
+      height.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          psize.height = (Integer) evt.getNewValue();
         }
       });
       controls.add(height.getControls());
-      selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
-      selectButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null);
-        }
-      });
+      JButton selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
+      selectButton.addActionListener(e -> selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null));
       controls.add(selectButton);
     }
 
@@ -890,6 +891,14 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (controls != null) {
       controls.repaint();
     }
+  }
+
+  /**
+   * @deprecated No replacement
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void pack() {
+    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   @Override  // PG-2011-09-24

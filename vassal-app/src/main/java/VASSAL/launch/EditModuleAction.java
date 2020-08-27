@@ -49,7 +49,7 @@ public class EditModuleAction extends LoadModuleAction {
 
 // FIXME: really hide the MM?
 //    ModuleManagerWindow.getInstance().setVisible(false);
-    final JFrame frame = GameModule.getGameModule().getFrame();
+    final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setVisible(true);
 
     // GameModule only produces a final buildString() once its frame displays
@@ -58,7 +58,7 @@ public class EditModuleAction extends LoadModuleAction {
     final ModuleEditorWindow w =
       new ModuleEditorWindow(GameModule.getGameModule());
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width/2,w.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

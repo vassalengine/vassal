@@ -58,15 +58,15 @@ public class NodePlayer extends SimplePlayer {
   }
 
   public void setInfo(Properties p) {
-    name = p.getProperty(SimpleStatus.NAME,"???"); //$NON-NLS-1$
+    name = p.getProperty(SimpleStatus.NAME, "???"); //$NON-NLS-1$
     if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {
-      name = "("+Chatter.getAnonymousUserName()+")";
+      name = "(" + Chatter.getAnonymousUserName() + ")";
     }
-    id = p.getProperty(ID,id);
+    id = p.getProperty(ID, id);
     setStatus(new SimpleStatus(
                     "true".equals(p.getProperty(SimpleStatus.LOOKING)), //$NON-NLS-1$
                     "true".equals(p.getProperty(SimpleStatus.AWAY)), //$NON-NLS-1$
-                    p.getProperty(SimpleStatus.PROFILE,""), //$NON-NLS-1$
+                    p.getProperty(SimpleStatus.PROFILE, ""), //$NON-NLS-1$
                     p.getProperty(SimpleStatus.CLIENT, ""), //$NON-NLS-1$
                     p.getProperty(SimpleStatus.IP, ""), //$NON-NLS-1$
                     p.getProperty(SimpleStatus.MODULE_VERSION, ""), //$NON-NLS-1$
@@ -76,33 +76,33 @@ public class NodePlayer extends SimplePlayer {
   public Properties toProperties() {
     final Properties p1 = new Properties();
     if (name != null) {
-      p1.put(SimpleStatus.NAME,name);
+      p1.put(SimpleStatus.NAME, name);
     }
     final SimpleStatus status = (SimpleStatus)getStatus();
     p1.put(SimpleStatus.LOOKING, String.valueOf(status.isLooking()));
     p1.put(SimpleStatus.AWAY, String.valueOf(status.isAway()));
     final String profile = status.getProfile();
     if (profile != null) {
-      p1.put(SimpleStatus.PROFILE,profile);
+      p1.put(SimpleStatus.PROFILE, profile);
     }
     final String client = status.getClient();
     if (client != null) {
-      p1.put(SimpleStatus.CLIENT,client);
+      p1.put(SimpleStatus.CLIENT, client);
     }
     final String ip = status.getIp();
     if (ip != null) {
-      p1.put(SimpleStatus.IP,ip);
+      p1.put(SimpleStatus.IP, ip);
     }
     final String moduleVersion = status.getModuleVersion();
     if (moduleVersion != null) {
-      p1.put(SimpleStatus.MODULE_VERSION,moduleVersion);
+      p1.put(SimpleStatus.MODULE_VERSION, moduleVersion);
     }
     final String crc = status.getCrc();
     if (ip != null) {
-      p1.put(SimpleStatus.CRC,crc);
+      p1.put(SimpleStatus.CRC, crc);
     }
     Properties p = p1;
-    p.put(ID,id == null ? "" : id);
+    p.put(ID, id == null ? "" : id);
     return p;
   }
 }

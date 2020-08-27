@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.map;
 
+import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -30,11 +31,11 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -90,7 +91,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public static final String EXC_BOARDS = "No, exclude Boards in list";
   public static final String INC_BOARDS = "No, only shade Boards in List";
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("MapShader");
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader");
 
   protected LaunchButton launch;
   protected boolean alwaysOn = false;
@@ -143,10 +144,20 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
-  protected java.util.Map<Double,TexturePaint> textures = new HashMap<>();
+  protected java.util.Map<Double, TexturePaint> textures = new HashMap<>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
+
+  public MapShader() {
+    launch = new LaunchButton(
+      "Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
+    );
+    launch.setEnabled(false);
+    setLaunchButtonVisibility();
+    setConfigureName("Shading");
+    reset();
+  }
 
   @Override
   public void draw(Graphics g, Map map) {
@@ -154,38 +165,44 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return;
     }
 
+    Area area = getShadeShape(map);
+    if (area.isEmpty()) {
+      return;
+    }
+
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double zoom = map.getZoom() * os_scale;
-    buildStroke(zoom);
+
+    if (zoom != 1.0) {
+      area = new Area(AffineTransform.getScaleInstance(zoom, zoom)
+                                     .createTransformedShape(area));
+    }
 
     final Composite oldComposite = g2d.getComposite();
     final Color oldColor = g2d.getColor();
     final Paint oldPaint = g2d.getPaint();
-    final Stroke oldStroke = g2d.getStroke();
 
     g2d.setComposite(getComposite());
     g2d.setColor(getColor());
-    g2d.setPaint(
-      scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
-      getTexture(zoom) : getTexture());
-    Area area = getShadeShape(map);
-    if (zoom != 1.0) {
-      area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
-                                     .createTransformedShape(area));
-    }
+    g2d.setPaint(getTexture(zoom));
+
     g2d.fill(area);
+
     if (border) {
+      final Stroke oldStroke = g2d.getStroke();
+
       g2d.setComposite(getBorderComposite());
       g2d.setStroke(getStroke(zoom));
       g2d.setColor(getBorderColor());
       g2d.draw(area);
+
+      g2d.setStroke(oldStroke);
     }
 
     g2d.setComposite(oldComposite);
     g2d.setColor(oldColor);
     g2d.setPaint(oldPaint);
-    g2d.setStroke(oldStroke);
   }
 
   /**
@@ -221,11 +238,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected Area getShadeShape(Map map) {
     final Area myShape = type.equals(FG_TYPE) ?
       new Area() : new Area(getBoardClip());
-
-    for (GamePiece p : map.getPieces()) {
-      checkPiece(myShape, p);
-    }
-
+    Arrays.stream(map.getPieces()).forEach(p -> checkPiece(myShape, p));
     return myShape;
   }
 
@@ -235,7 +248,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
-      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece,ShadedPiece.class);
+      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
       if (shaded != null) {
         Area shape = shaded.getArea(this);
         if (shape != null) {
@@ -253,23 +266,39 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Get/Build the repeating rectangle used to generate the shade texture
    * pattern.
+   * @deprecated Use {@link #getShadePattern(double)} instead.
    */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected BufferedImage getShadePattern() {
-    if (srcOp == null) buildShadePattern();
-    return srcOp.getImage();
+    ProblemDialog.showDeprecated("2020-08-06");
+    return getShadePattern(1.0);
   }
 
   protected BufferedImage getShadePattern(double zoom) {
-    if (srcOp == null) buildShadePattern();
-    return Op.scale(srcOp,zoom).getImage();
+    if (srcOp == null) {
+      buildShadePattern();
+    }
+
+    final BufferedImage src = (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
+    // Linux xrender apparently requires translucency and its own copy
+    return ImageUtils.toType(src, ImageUtils.getCompatibleTranslucentImageType());
   }
 
+  /**
+   * @deprecated Use {@link #getPatternRect(double)} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Rectangle getPatternRect() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return patternRect;
   }
 
   protected Rectangle getPatternRect(double zoom) {
-    return new Rectangle((int)Math.round(zoom*patternRect.width),(int)Math.round(zoom*patternRect.height));
+    return zoom == 1.0 ? patternRect :
+      new Rectangle(
+        (int)Math.round(zoom * patternRect.width),
+        (int)Math.round(zoom * patternRect.height)
+      );
   }
 
   protected void buildShadePattern() {
@@ -322,7 +351,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     @Override
     public Dimension getSize() {
-      return new Dimension(2,2);
+      return new Dimension(2, 2);
     }
 
     @Override
@@ -358,7 +387,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     if (stroke == null) {
       buildStroke(zoom);
     }
-
     return stroke;
   }
 
@@ -374,30 +402,42 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   /**
    * Get/Build the textured paint used to fill in the Shade
+   * @deprecated Use {@link #getTexture(double)} instead.
    */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected TexturePaint getTexture() {
-    if (texture == null) {
-      buildTexture();
-    }
-    return texture;
+    ProblemDialog.showDeprecated("2020-08-06");
+    return getTexture(1.0);
   }
 
   protected TexturePaint getTexture(double zoom) {
-    if (zoom == 1.0) {
-      return getTexture();
+    final boolean usingScaledImage =
+      scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
+
+    if (!usingScaledImage) {
+      zoom = 1.0;
     }
-    TexturePaint texture = textures.get(zoom);
-    if (texture == null) {
-      texture = new TexturePaint(getShadePattern(zoom),getPatternRect(zoom));
-      textures.put(zoom,texture);
-    }
+
+    texture = textures.computeIfAbsent(zoom, this::makeTexture);
     return texture;
   }
 
+  /**
+   * @deprecated Use {@link #buildTexture(double)} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected void buildTexture() {
-    if (getShadePattern() != null) {
-      texture = new TexturePaint(getShadePattern(), getPatternRect());
-    }
+    ProblemDialog.showDeprecated("2020-08-06");
+    buildTexture(1.0);
+  }
+
+  protected void buildTexture(double zoom) {
+    texture = makeTexture(zoom);
+  }
+
+  protected TexturePaint makeTexture(double zoom) {
+    final BufferedImage pat = getShadePattern(zoom);
+    return pat != null ? new TexturePaint(pat, getPatternRect(zoom)) : null;
   }
 
   public Color getColor() {
@@ -516,21 +556,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
-  public MapShader() {
-
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        toggleShading();
-      }
-    };
-    launch = new LaunchButton("Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
-    launch.setEnabled(false);
-    setLaunchButtonVisibility();
-    setConfigureName("Shading");
-    reset();
-  }
-
   public void reset() {
     shadingVisible = isAlwaysOn() || isStartsOn();
   }
@@ -565,25 +590,26 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * Build a clipping region excluding boards that do not needed to be Shaded.
    */
   protected void buildBoardClip() {
-
     if (boardClip == null) {
       boardClip = new Area();
       for (Board b : map.getBoards()) {
         String boardName = b.getName();
         boolean doShade = false;
-        if (boardSelection.equals(ALL_BOARDS)) {
+        switch (boardSelection) {
+        case ALL_BOARDS:
           doShade = true;
-        }
-        else if (boardSelection.equals(EXC_BOARDS)) {
+          break;
+        case EXC_BOARDS:
           doShade = true;
           for (int i = 0; i < boardList.length && doShade; i++) {
             doShade = !boardList[i].equals(boardName);
           }
-        }
-        else if (boardSelection.equals(INC_BOARDS)) {
+          break;
+        case INC_BOARDS:
           for (int i = 0; i < boardList.length && !doShade; i++) {
             doShade = boardList[i].equals(boardName);
           }
+          break;
         }
         if (doShade) {
           boardClip.add(new Area(b.bounds()));
@@ -619,6 +645,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((MapShader) c).launch.getAttributeValueString(ICON));
     }
+  }
+
+  protected void buildPatternAndTexture() {
+    textures.clear();
+    buildShadePattern();
+    buildTexture(1.0);
   }
 
   @Override
@@ -665,8 +697,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (PATTERN.equals(key)) {
       pattern = (String) value;
-      buildShadePattern();
-      buildTexture();
+      buildPatternAndTexture();
     }
     else if (COLOR.equals(key)) {
       if (value instanceof String) {
@@ -676,8 +707,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       // and leave pattern and texture unchanged
       if (value != null) {
         color = (Color) value;
-        buildShadePattern();
-        buildTexture();
+        buildPatternAndTexture();
       }
     }
     else if (IMAGE.equals(key)) {
@@ -685,9 +715,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         value = ((File) value).getName();
       }
       imageName = (String) value;
-      buildShadePattern();
-      textures.clear();
-      buildTexture();
+      buildPatternAndTexture();
     }
     else if (SCALE_IMAGE.equals(key)) {
       if (value instanceof String) {
@@ -795,57 +823,27 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else {
       return launch.getAttributeValueString(key);
     }
-
   }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (List.of(ICON, HOT_KEY, BUTTON_TEXT, STARTS_ON, TOOLTIP).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isAlwaysOn();
-        }
-      };
+      return () -> !isAlwaysOn();
     }
     else if (BOARD_LIST.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !boardSelection.equals(ALL_BOARDS);
-        }
-      };
+      return () -> !boardSelection.equals(ALL_BOARDS);
     }
     else if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> !pattern.equals(TYPE_IMAGE);
     }
     else if (IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (SCALE_IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }};
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (List.of(BORDER_COLOR, BORDER_WIDTH, BORDER_OPACITY).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return border;
-        }
-      };
+      return () -> border;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -894,13 +892,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Pieces that contribute to shading must implement this interface
    */
-  public static interface ShadedPiece {
+  public interface ShadedPiece {
     /**
      * Returns the Area to add to (or subtract from) the area drawn by the MapShader's.
      * Area is assumed to be at zoom factor 1.0
-     * @param shader
+     * @param shader Map Shader
      * @return the Area contributed by the piece
      */
-    public Area getArea(MapShader shader);
+    Area getArea(MapShader shader);
   }
 }

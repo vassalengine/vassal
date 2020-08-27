@@ -77,7 +77,7 @@
             <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
         </module>
         <module name="EmptyBlock">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="option" value="TEXT"/>
             <property name="tokens"
              value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
@@ -89,7 +89,7 @@
         </module>
         -->
         <module name="LeftCurly">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="tokens"
              value="ANNOTATION_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF,
                     INTERFACE_DEF, LAMBDA, LITERAL_CASE, LITERAL_CATCH, LITERAL_DEFAULT,
@@ -97,14 +97,12 @@
                     LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF,
                     OBJBLOCK, STATIC_INIT"/>
         </module>
-        <!--
         <module name="RightCurly">
+            <property name="severity" value="error"/>
             <property name="id" value="RightCurlySame"/>
             <property name="tokens"
-             value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
-                    LITERAL_DO"/>
+             value="LITERAL_DO"/>
         </module>
-        -->
         <module name="RightCurly">
             <property name="severity" value="error"/>
             <property name="id" value="RightCurlyAlone"/>
@@ -122,13 +120,14 @@
           <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1]
                                                  or preceding-sibling::*[last()][self::LCURLY]]"/>
         </module>
-        <!--
         <module name="WhitespaceAfter">
+            <property name="severity" value="error"/>
             <property name="tokens"
-             value="COMMA, SEMI, TYPECAST, LITERAL_IF, LITERAL_ELSE,
+             value="COMMA, SEMI, LITERAL_IF, LITERAL_ELSE,
                     LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, DO_WHILE"/>
         </module>
         <module name="WhitespaceAround">
+            <property name="severity" value="error"/>
             <property name="allowEmptyConstructors" value="true"/>
             <property name="allowEmptyLambdas" value="true"/>
             <property name="allowEmptyMethods" value="true"/>
@@ -147,6 +146,7 @@
             <message key="ws.notPreceded"
              value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
+        <!--
         <module name="OneStatementPerLine"/>
         <module name="MultipleVariableDeclarations"/>
         -->
@@ -163,7 +163,7 @@
             <property name="severity" value="error"/>
         </module>
         <module name="ModifierOrder">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
         </module>
         <!--
         <module name="EmptyLineSeparator">
@@ -174,13 +174,13 @@
         </module>
         -->
         <module name="SeparatorWrap">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="id" value="SeparatorWrapDot"/>
             <property name="tokens" value="DOT"/>
             <property name="option" value="nl"/>
         </module>
         <module name="SeparatorWrap">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="id" value="SeparatorWrapComma"/>
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
@@ -266,7 +266,7 @@
             <property name="severity" value="warning"/>
         </module>
         <module name="GenericWhitespace">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <message key="ws.followed"
              value="GenericWhitespace ''{0}'' is followed by whitespace."/>
             <message key="ws.preceded"
@@ -308,19 +308,23 @@
              value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
                     SUPER_CTOR_CALL, ENUM_CONSTANT_DEF"/>
         </module>
+        -->
         <module name="NoWhitespaceBefore">
+            <property name="severity" value="warning"/>
             <property name="tokens"
              value="COMMA, SEMI, POST_INC, POST_DEC, DOT,
                     LABELED_STAT, METHOD_REF"/>
             <property name="allowLineBreaks" value="true"/>
         </module>
         <module name="ParenPad">
+            <property name="severity" value="warning"/>
             <property name="tokens"
              value="ANNOTATION, ANNOTATION_FIELD_DEF, CTOR_CALL, CTOR_DEF, DOT, ENUM_CONSTANT_DEF,
                     EXPR, LITERAL_CATCH, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_NEW,
                     LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_WHILE, METHOD_CALL,
                     METHOD_DEF, QUESTION, RESOURCE_SPECIFICATION, SUPER_CTOR_CALL, LAMBDA"/>
         </module>
+        <!--
         <module name="OperatorWrap">
             <property name="option" value="NL"/>
             <property name="tokens"
@@ -338,7 +342,11 @@
             <property name="allowSamelineMultipleAnnotations" value="true"/>
         </module>
         <module name="NonEmptyAtclauseDescription"/>
-        <module name="InvalidJavadocPosition"/>
+        -->
+        <module name="InvalidJavadocPosition">
+            <property name="severity" value="warning"/>
+        </module>
+        <!--
         <module name="JavadocTagContinuationIndentation"/>
         <module name="SummaryJavadoc">
             <property name="forbiddenSummaryFragments"

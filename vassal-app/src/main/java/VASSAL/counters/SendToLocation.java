@@ -43,6 +43,7 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -138,9 +139,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     xOffset.setFormat(st.nextToken("0"));
     yOffset.setFormat(st.nextToken("0"));
     description = st.nextToken("");
-    destination = st.nextToken(DEST_LOCATION.substring(0,1));
+    destination = st.nextToken(DEST_LOCATION.substring(0, 1));
     if (destination.length() == 0) {
-      destination = DEST_LOCATION.substring(0,1);
+      destination = DEST_LOCATION.substring(0, 1);
     }
     zone.setFormat(st.nextToken(""));
     region.setFormat(st.nextToken(""));
@@ -196,7 +197,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       else {
         Point p = getSendLocation();
         c.setEnabled(getMap() != null && p != null &&
-            (map != getMap() || !p.equals(getPosition())) );
+            (map != getMap() || !p.equals(getPosition())));
       }
     }
     return command;
@@ -207,7 +208,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (getMap() == null) {
       s += "getMap is null";
     }
-    else if ( p == null) {
+    else if (p == null) {
       s += "p is null";
     }
     else {
@@ -217,7 +218,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
            "); map: " + map.getMapName() + ";";
     }
     new Chatter.DisplayText(
-        GameModule.getGameModule().getChatter(),s).execute();
+        GameModule.getGameModule().getChatter(), s).execute();
   }
 
   @Override
@@ -285,15 +286,21 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         switch (destination.charAt(0)) {
         case 'G':
           b = map.getBoardByName(boardName.getText(outer));
-          if (b != null ) {
+          if (b != null) {
             try {
-              dest = b.getGrid().getLocation(gridLocation.getText(outer));
-              if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
+              MapGrid g = b.getGrid(); 
+              if (g != null) { // Board may not have a grid assigned.
+                dest = g.getLocation(gridLocation.getText(outer));
+                if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
+              } 
+              else {
+                reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName());
+              }
             }
             catch (BadCoords e) {
               LogBadGridLocation(dest);
               reportDataError(this, Resources.getString(
-                "Error.not_found", "Grid Location"),map.getMapName());
+                "Error.not_found", "Grid Location"), map.getMapName());
               ; // ignore SendTo request.
             }
           }
@@ -302,7 +309,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           final int xValue = x.getTextAsInt(outer, "Xlocation", this);
           final int yValue = y.getTextAsInt(outer, "YLocation", this);
 
-          dest = new Point(xValue,yValue);
+          dest = new Point(xValue, yValue);
 
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null && dest != null) {
@@ -319,7 +326,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           else {
             Rectangle r = z.getBounds();
             Rectangle r2 = z.getBoard().bounds();
-            dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
+            dest = new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
           }
           break;
 
@@ -377,8 +384,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (parent != null) {
           c = c.append(parent.pieceRemoved(outer));
         }
-       
-      }      
+
+      }
     }
     else if (backCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
@@ -425,19 +432,20 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState,';');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
     String mapId = st.nextToken("");
     if (mapId.length() > 0) {
-      setProperty(BACK_MAP,Map.getMapById(mapId));
+      setProperty(BACK_MAP, Map.getMapById(mapId));
     }
     String x = st.nextToken("");
     String y = st.nextToken("");
-    if (x.length() > 0 && y.length()> 0) {
+    if (x.length() > 0 && y.length() > 0) {
       try {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);
+        reportDataError(this, Resources.getString("Error.non_number_error"),
+          "Back Point=(" + x + "," + y + ")", e);
       }
     }
   }
@@ -523,13 +531,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.key);
+      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
       controls.add(keyInput.getControls());
 
       backNameInput = new StringConfigurer(null, "Send Back Command name:  ", p.backCommandName);
       controls.add(backNameInput.getControls());
 
-      backKeyInput = new NamedHotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
+      backKeyInput = new NamedHotKeyConfigurer(null, "Send Back Keyboard Command:  ", p.backKey);
       controls.add(backKeyInput.getControls());
 
       destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);
@@ -543,7 +551,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       controls.add(destInput.getControls());
 
       mapControls = Box.createHorizontalBox();
@@ -612,7 +621,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         @Override
         public void propertyChange(PropertyChangeEvent arg0) {
           updateVisibility();
-        }});
+        }
+      });
       controls.add(advancedInput.getControls());
 
       advancedControls = Box.createHorizontalBox();

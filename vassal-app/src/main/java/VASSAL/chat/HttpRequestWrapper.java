@@ -72,7 +72,7 @@ public class HttpRequestWrapper {
       for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
-        url += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+        url += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
           url += "&"; //$NON-NLS-1$
         }
@@ -87,7 +87,7 @@ public class HttpRequestWrapper {
   }
 
   public List<String> doPost(Properties p) throws IOException {
-    return doPost("",p); //$NON-NLS-1$
+    return doPost("", p); //$NON-NLS-1$
   }
 
   public List<String> doPost(String url,
@@ -98,7 +98,7 @@ public class HttpRequestWrapper {
       for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
-        content += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+        content += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
           content += "&"; //$NON-NLS-1$
         }

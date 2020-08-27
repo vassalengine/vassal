@@ -18,7 +18,6 @@
 package VASSAL.tools.swing;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;

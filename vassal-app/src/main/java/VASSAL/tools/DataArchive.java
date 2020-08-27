@@ -20,6 +20,7 @@ package VASSAL.tools;
 ////////////////////////////////////////////////////////
 // These imports are used in deprecated methods only. //
 ////////////////////////////////////////////////////////
+import VASSAL.i18n.Resources;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -62,6 +63,7 @@ import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
+import org.apache.xmlgraphics.image.loader.ImageSource;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -73,7 +75,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected List<DataArchive> extensions = new ArrayList<>();
 
 // FIXME: these should go into a cache, like images have
-  private final Map<String,AudioClip> soundCache =
+  private final Map<String, AudioClip> soundCache =
     new HashMap<>();
 
   protected SortedSet<String> localImages = null;
@@ -140,14 +142,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @throws FileNotFoundException if the image file doesn't exist
    * @deprecated Use {@link #getInputStream(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public InputStream getImageInputStream(String fileName)
                                     throws IOException, FileNotFoundException {
-// FIXME: We should give notice that we're going to stop searching for
-// GIFs by appending ".gif" to them. In general, a way of marking obsolete
-// features would be good---something which pops up a dialog alerting the
-// user when a module calls a deprecated method, maybe.
-
+    ProblemDialog.showDeprecated("2020-08-06");
     if (fileName.startsWith("/")) {
       final InputStream in = getClass().getResourceAsStream(fileName);
       if (in != null) return in;
@@ -157,26 +155,20 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     try {
       return getInputStream(imageDir + fileName);
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException ignored) {
     }
-
-////////////////////
-// FIXME: Appending .gif should be considered deprecated behavior.
-//
     try {
       return getInputStream(imageDir + fileName + ".gif");
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException ignored) {
     }
 
     final InputStream in =
       getClass().getResourceAsStream("/" + imageDir + fileName + ".gif");
     if (in != null) return in;
-//
-///////////////////
 
     throw new FileNotFoundException(
-      "\'" + imageDir + fileName + "\' not found in " + getName());
+      "'" + imageDir + fileName + "' not found in " + getName());
   }
 
   /**
@@ -231,12 +223,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     //
 
     throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName()
+      "'" + fileName + "' not found in " + getName()
     );
   }
 
   private InputStream getInputStreamImpl(String fileName)
-                                    throws IOException, FileNotFoundException {
+                                    throws IOException {
     // requested file is in this archive
     if (archive != null && archive.contains(fileName)) {
       return archive.getInputStream(fileName);
@@ -247,7 +239,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       try {
         return ext.getInputStream(fileName);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException ignored) {
         // not found in this extension, try the next
       }
     }
@@ -301,7 +293,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
+      "'" + fileName + "' not found in " + getName());
   }
 
   /**
@@ -313,9 +305,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @throws IOException if some other problem occurs
    * @deprecated Use {@link #getURL(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public URL getImageURL(String fileName) throws IOException,
                                                  FileNotFoundException {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getURL(fileName);
   }
 
@@ -385,7 +378,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * Return the writeable instance of DataArchive, either this or one
    * of its extensions. (At most one archive should be edited at a time.)
    *
-   * @return
+   * @return writer
    */
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
@@ -437,7 +430,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     final String slashname = name.replace('.', '/');
-    byte[] data = null;
+    byte[] data;
 
     try (InputStream stream = getInputStream(slashname + ".class")) {
       data = IOUtils.toByteArray(stream);
@@ -455,9 +448,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         null,
         null,
         cs,
-        "Incompatible Custom Code",
-        "The Custom Code In This Module Should Be Recompiled",
-        "This module contains custom Java code (" + name + ") which was not compiled to be Java 11 compatible. As a result, this module will not run on all versions of Java which VASSAL itself supports.\n\nPlease check whether there is an updated version of this module. If not, please contact the maintainer of this module and request that it be fixed."
+        Resources.getString("Dialogs.incompatible.title"),
+        Resources.getString("Dialogs.incompatible.heading"),
+        Resources.getString("Dialogs.incompatible.message", name) + "\n\n"
+          + Resources.getString("Dialogs.check_for_updated_module")
       );
     }
 
@@ -468,19 +462,51 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 // All methods deprecated below this point.
 /////////////////////////////////////////////////////////////////////
 
-  @Deprecated public static final String SOUNDS_DIR = SOUND_DIR;
-  @Deprecated protected String soundsDir = SOUND_DIR;
+  @Deprecated(since = "2020-08-06", forRemoval = true) public static final String SOUNDS_DIR = SOUND_DIR;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected String soundsDir = SOUND_DIR;
+
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  private final Map<String, ImageSource> imageSources =
+    new HashMap<>();
+
+  /**
+   * Add an ImageSource under the given name, but only if no source is
+   * yet registered under this name.
+   *
+   * @param name name
+   * @param src source
+   * @return true if the ImageSource was added, false if it existed already
+   * @deprecated
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public boolean addImageSource(String name, ImageSource src) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    if (!imageSources.containsKey(name)) {
+      imageSources.put(name, src);
+      localImages = null;
+      return true;
+    }
+    return false;
+  }
+
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void removeImageSource(String name) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    imageSources.remove(name);
+    localImages = null;
+  }
 
   /**
    * Get the size of an image without loading and decoding it.
    *
    * @param name filename of the image
    * @return the size of the image
-   * @deprecated Use {@link ImageUtils.getImageSize} or
-   *    {@link SVGImageUtils.getImageSize} instead.
+   * @deprecated Use {@link ImageUtils#getImageSize(String, InputStream)} or
+   *    {@link SVGImageUtils#getImageSize(String, InputStream)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Dimension getImageSize(String name) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     if (name.toLowerCase().endsWith(".svg")) {
       return SVGImageUtils.getImageSize(name, getImageInputStream(name));
     }
@@ -495,11 +521,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @param name the name of the image file
    * @return the <code>Image</code> contained in the image file
    * @throws IOException if there is a problem reading the image file
-   * @deprecated Use {@link ImageUtils.getImage} or
-   *    {@link SVGImageUtils.getImage} instead.
+   * @deprecated Use {@link ImageUtils#getImage(String, InputStream)}  or
+   *    {@link SVGImageUtils#getImageSize(String, InputStream)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public BufferedImage getImage(String name) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     if (name.toLowerCase().endsWith(".svg")) {
       return new SVGRenderer(getURL(name),
                              getImageInputStream(name)).render();
@@ -509,10 +536,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
-  @Deprecated protected String[] imageNames;
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected String[] imageNames;
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected boolean isNameCacheStale() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return true;
   }
 
@@ -521,31 +549,41 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * and its extensions
    * @deprecated Use {@link #getImageNameSet()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   protected SortedSet<String> setOfImageNames() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getImageNameSet();
   }
 
 // FIXME: hook these up to ImageOp methods
-  @Deprecated
-  public void unCacheImage(String file) { }
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void unCacheImage(@SuppressWarnings("unused") String file) {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
-  @Deprecated
-  public void unCacheImage(Image im) { }
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void unCacheImage(@SuppressWarnings("unused") Image im) {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
-  @Deprecated
-  public void clearTransformedImageCache() { }
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void clearTransformedImageCache() {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
-  @Deprecated
-  public void clearScaledImageCache() { }
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public void clearScaledImageCache() {
+    ProblemDialog.showDeprecated("2020-08-06");
+  }
 
   /**
    * Find an image from the archive
    * Once an image is found, cache it in our HashMap.
    * @deprecated Use {@link ImageOp}s instead.
    */
-  @Deprecated
-  public Image getCachedImage(String name) throws IOException {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Image getCachedImage(String name) {
+    ProblemDialog.showDeprecated("2020-08-06");
     // An ugly hack, but nothing should be using this method anyway.
     return Op.load(name).getImage();
   }
@@ -559,8 +597,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @param theta the angle of rotation (in degrees) about the Image center
    * @deprecated Use {@link RotateScaleOp} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image getTransformedImage(Image base, double scale, double theta) {
+    ProblemDialog.showDeprecated("2020-08-06");
     // An ugly hack, but nothing should be using this method anyway.
     return Op.rotateScale(Op.load(
       ImageUtils.toBufferedImage(base)), theta, scale).getImage();
@@ -568,62 +607,64 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * @deprecated Use {@link RotateScaleOp} instead.
-   * @param base
-   * @param scale
-   * @param theta
-   * @param forceSmoothing
-   * @return
+   * @param base base
+   * @param scale scale
+   * @param theta theta
+   * @param forceSmoothing forceSmoothing
+   * @return transformed image
    */
-  @Deprecated
-  public Image getTransformedImage(Image base, double scale, double theta,
-                                   boolean forceSmoothing) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Image getTransformedImage(Image base, double scale, double theta, @SuppressWarnings("unused") boolean forceSmoothing) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getTransformedImage(base, scale, theta);
   }
 
   /**
    * @deprecated Use {@link ScaleOp} instead.
    * The image will be retrieved from cache if available, cached otherwise
-   * @param base
-   * @param scale
-   * @param reversed
+   * @param base base
+   * @param scale scale
+   * @param reversed reversed
    * @param forceSmoothing If true, force smoothing.
    *  This usually yields better results, but can be slow for large images
-   * @return
+   * @return Scaled image
    */
-  @Deprecated
-  public Image getScaledImage(Image base, double scale, boolean reversed,
-                              boolean forceSmoothing) {
-    return getTransformedImage(base, scale,
-                               reversed ? 180.0 : 0.0);
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Image getScaledImage(Image base, double scale, boolean reversed, @SuppressWarnings("unused") boolean forceSmoothing) {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return getTransformedImage(base, scale, reversed ? 180.0 : 0.0);
   }
 
   /**
    * Return a scaled instance of the image.
    * The image will be retrieved from cache if available, cached otherwise
-   * @param base
-   * @param scale
-   * @return
+   * @param base base
+   * @param scale scale
+   * @return Scaled image
    * @deprecated Use {@link ScaleOp} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image getScaledImage(Image base, double scale) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getTransformedImage(base, scale, 0.0, true);
   }
 
   /**
    * @deprecated Use {@link #getImage} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Image findImage(File zip, String file) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getImage(getFileStream(zip, file));
   }
 
   /**
    * @deprecated Use {@link #getImage} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Image findImage(File dir, String zip, String file)
       throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     /*
      ** Looks for entry "file" in ZipFile "zip" in directory "dir"
      ** If no such zipfile, look for "file" in "dir"
@@ -644,9 +685,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /**
    * @deprecated Use {@link #getFileStream(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static InputStream getFileStream(File zip, String file)
       throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     try {
       final ZipFile z = new ZipFile(zip);
       return z.getInputStream(z.getEntry(file));
@@ -660,8 +702,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /**
    * @deprecated Use {@link #getFileStream(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static InputStream getFileStream(File dir, String zipName, String file) {
+    ProblemDialog.showDeprecated("2020-08-06");
     try {
       if ((new File(dir, zipName)).exists()) {
         final ZipFile zip = new ZipFile(new File(dir, zipName));
@@ -681,53 +724,59 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    *
    * @deprecated Use {@link #getInputStream(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public InputStream getFileStream(String fileName) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getInputStream(fileName);
   }
 
-  /** Use {@link ImageUtils.getImage(InputStream)} instead. */
-  @Deprecated
+  /** Use {@link ImageUtils#getImage(String, InputStream)} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Image getImage(InputStream in) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     return ImageUtils.getImage("", in);
   }
 
-  /** @deprecated Use {@link getURL()} instead. */
-  @Deprecated
+  /** @deprecated Use {@link #getURL()} instead. */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getArchiveURL() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
   }
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link IOUtils.toBytesArray(InputStream)} instead.
+   * @deprecated Use {@link IOUtils#toByteArray(InputStream)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static byte[] getBytes(InputStream in) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     return IOUtils.toByteArray(in);
   }
 
   /**
    * Place the names of the image files stored in this DataArchive into
    * the argument Collection
-   * @param l
-   * @deprecated Use {@link #listImageNames()} instead.
+   * @param l l
+   * @deprecated Use {@link #getImageNameSet()} )} instead.
    */
-  @Deprecated
   @SuppressWarnings("unchecked")
-  protected void listImageNames(Collection l) {
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  protected void listImageNames(@SuppressWarnings("rawtypes") Collection l) {
+    ProblemDialog.showDeprecated("2020-08-06");
     l.addAll(setOfImageNames());
   }
 
   /**
    *
-   * @param im
+   * @param im image
    * @return the boundaries of this image,
    * where (0,0) is the center of the image
-   * @deprecated Use {@link ImageUtils.getBounds(BufferedImage)} instead.
+   * @deprecated Use {@link ImageUtils#getBounds(BufferedImage)}  instead.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Rectangle getImageBounds(Image im) {
+    ProblemDialog.showDeprecated("2020-08-06");
     ImageIcon icon = new ImageIcon(im);
     return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2,
                           icon.getIconWidth(), icon.getIconHeight());
@@ -736,8 +785,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /**
    * @deprecated Don't use this. We've switched to Lanczos scaling.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image improvedScaling(Image img, int width, int height) {
+    ProblemDialog.showDeprecated("2020-08-06");
     ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),

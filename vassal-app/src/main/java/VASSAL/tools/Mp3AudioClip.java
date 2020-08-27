@@ -22,16 +22,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.AudioClip;
-import VASSAL.tools.io.IOUtils;
 
 public class Mp3AudioClip implements AudioClip {
+
+  private static final Logger log = LoggerFactory.getLogger(Mp3AudioClip.class);
 
   protected URL url = null;
   protected String name = null;
@@ -51,7 +54,7 @@ public class Mp3AudioClip implements AudioClip {
           return GameModule.getGameModule().getDataArchive().getInputStream(name);
         }
         catch (FileNotFoundException e) {
-          ErrorDialog.dataError(new BadDataReport(
+          ErrorDialog.dataWarning(new BadDataReport(
             Resources.getString("Error.not_found", name), "", e));
         }
       }
@@ -77,7 +80,14 @@ public class Mp3AudioClip implements AudioClip {
       if (player == null) {
         // close the stream if player ctor fails
         // otherwise, keep it open for the thread to close
-        IOUtils.closeQuietly(stream);
+        if (stream != null) {
+          try {
+            stream.close();
+          }
+          catch (IOException e) {
+            log.error("Error while closing stream", e);
+          }
+        }
       }
     }
 
@@ -106,7 +116,7 @@ public class Mp3AudioClip implements AudioClip {
           player.play();
         }
         catch (JavaLayerException | IOException e) {
-          ErrorDialog.dataError(new BadDataReport(
+          ErrorDialog.dataWarning(new BadDataReport(
             "Error reading sound file", name, e
           ));
         }

@@ -47,7 +47,7 @@ public class CgiServerStatus implements ServerStatus {
   public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
   public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
 
-  private static final Map<String,Long> timeRanges = new HashMap<>();
+  private static final Map<String, Long> timeRanges = new HashMap<>();
 
   private static final String[] times = new String[]{
     Resources.getString(LAST_DAY),
@@ -66,7 +66,7 @@ public class CgiServerStatus implements ServerStatus {
 
   @Override
   public ServerStatus.ModuleSummary[] getStatus() {
-    final HashMap<String,ServerStatus.ModuleSummary> entries =
+    final HashMap<String, ServerStatus.ModuleSummary> entries =
       new HashMap<>();
     try {
       for (String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
@@ -108,7 +108,7 @@ public class CgiServerStatus implements ServerStatus {
     return times;
   }
 
-  private SortedMap<Long,List<String[]>> records = new TreeMap<>();
+  private SortedMap<Long, List<String[]>> records = new TreeMap<>();
   private List<Range<Long>> requests = new ArrayList<>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
@@ -169,7 +169,7 @@ public class CgiServerStatus implements ServerStatus {
     // For large numbers of intervals, use an interval tree instead.
     for (int i = 0; i < requests.size(); i++) {
       final Range<Long> a = requests.get(i);
-      for (int j = i+1; j < requests.size(); j++) {
+      for (int j = i + 1; j < requests.size(); j++) {
         final Range<Long> b = requests.get(j);
         if (a.isOverlappedBy(b)) {
           final long al = a.getMinimum();
@@ -185,7 +185,7 @@ public class CgiServerStatus implements ServerStatus {
     }
 
     // pull what we need from the records
-    final HashMap<String,ServerStatus.ModuleSummary> entries =
+    final HashMap<String, ServerStatus.ModuleSummary> entries =
       new HashMap<>();
 
     for (List<String[]> l : records.subMap(req.getMinimum(),
@@ -210,7 +210,7 @@ public class CgiServerStatus implements ServerStatus {
   }
 
   private ServerStatus.ModuleSummary[] sortEntriesByModuleName(
-      Map<String,ServerStatus.ModuleSummary> entries) {
+      Map<String, ServerStatus.ModuleSummary> entries) {
 
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ModuleSummary[0]);

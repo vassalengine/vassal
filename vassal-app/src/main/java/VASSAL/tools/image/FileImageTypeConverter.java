@@ -138,7 +138,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     final int w = src.getWidth();
     final int h = src.getHeight();
 
-    final ByteBuffer bb = ByteBuffer.allocate(4*w);
+    final ByteBuffer bb = ByteBuffer.allocate(4 * w);
     final int[] row = new int[w];
 
     for (int y = 0; y < h; ++y) {
@@ -157,7 +157,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     final int w = dst.getWidth();
     final int h = dst.getHeight();
 
-    final byte[] bytes = new byte[4*w];
+    final byte[] bytes = new byte[4 * w];
     final ByteBuffer bb = ByteBuffer.wrap(bytes);
 
     final int[] row = new int[w];

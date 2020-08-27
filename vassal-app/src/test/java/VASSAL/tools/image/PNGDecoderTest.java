@@ -19,7 +19,6 @@
 package VASSAL.tools.image;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;

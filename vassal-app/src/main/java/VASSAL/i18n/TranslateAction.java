@@ -39,7 +39,7 @@ public class TranslateAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Map<Configurable,TranslateWindow> openWindows =
+  protected static Map<Configurable, TranslateWindow> openWindows =
     new HashMap<>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
@@ -63,7 +63,7 @@ public class TranslateAction extends AbstractAction {
           openWindows.remove(target);
         }
       });
-      openWindows.put(target,w);
+      openWindows.put(target, w);
       w.setVisible(true);
     }
     w.toFront();

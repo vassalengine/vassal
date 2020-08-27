@@ -17,9 +17,10 @@
  */
 package VASSAL.chat;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ServerConnection;
+import VASSAL.tools.ProblemDialog;
 
 /**
  * A window for private messages between the user and another player;
@@ -27,12 +28,20 @@ import VASSAL.build.module.ServerConnection;
 public class PrivateChatter extends Chatter {
   private static final long serialVersionUID = 1L;
 
-  private ChatServerConnection client;
-  private Player other;
+  private final ChatServerConnection client;
+  private final Player other;
 
   public PrivateChatter(Player other, ChatServerConnection client) {
     this.other = other;
     this.client = client;
+  }
+
+  /** @deprecated Use {@link GlobalOptions#getInstance()#getPlayerId} */
+  @Override
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public String getHandle() {
+    ProblemDialog.showDeprecated("2020-08-06");
+    return GlobalOptions.getInstance().getPlayerId();
   }
 
   @Override

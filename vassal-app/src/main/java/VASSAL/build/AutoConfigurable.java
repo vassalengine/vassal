@@ -73,7 +73,7 @@ public interface AutoConfigurable extends Configurable {
    */
   public VisibilityCondition getAttributeVisibility(String name);
 
-  public static class Util {
+  public class Util {
     public static void buildAttributes(Element e, AutoConfigurable parent) {
       if (e != null) {
         NamedNodeMap n = e.getAttributes();

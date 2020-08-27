@@ -17,8 +17,6 @@
  */
 package VASSAL.chat.jabber;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -36,13 +34,17 @@ public class JabberClientFactory extends ChatServerFactory {
   private static final Logger logger =
     LoggerFactory.getLogger(JabberClientFactory.class);
 
-  public static final String JABBER_SERVER_TYPE = "jabber"; //$NON-NLS-1$
+
+  public static final String JABBER_TYPE = "jabber"; //$NON-NLS-1$
   public static final String JABBER_PWD = "jabberPassword"; //$NON-NLS-1$
   public static final String JABBER_LOGIN = "jabberLogin"; //$NON-NLS-1$
   public static final String JABBER_PORT = "jabberPort"; //$NON-NLS-1$
   public static final String JABBER_HOST = "jabberHost"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_PORT = "5222"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_HOST = "localhost"; //$NON-NLS-1$
+
+  @Deprecated(since = "2020-08-17", forRemoval = true)
+  public static final String JABBER_SERVER_TYPE = JABBER_TYPE;
 
   @Override
   public ChatServerConnection buildServer(Properties serverConfig) {
@@ -55,15 +57,12 @@ public class JabberClientFactory extends ChatServerFactory {
     catch (NumberFormatException e) {
       e.printStackTrace();
     }
-    ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN),serverConfig.getProperty(JABBER_PWD));
+    ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN), serverConfig.getProperty(JABBER_PWD));
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        final String mess = (String) evt.getNewValue();
-        GameModule.getGameModule().warn(mess);
-        logger.error("", mess);
-      }
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
+      final String mess = (String) e.getNewValue();
+      GameModule.getGameModule().warn(mess);
+      logger.error("", mess);
     });
     client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return client;

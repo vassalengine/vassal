@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -55,6 +54,7 @@ import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
+import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
 import VASSAL.counters.Obscurable;
@@ -90,244 +90,78 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   private static final Logger logger =
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
-  private Map<String,BasicPieceFactory> basicFactories =
-    new HashMap<>();
-  private Map<String,DecoratorFactory> decoratorFactories =
-    new HashMap<>();
+  public interface DecoratorFactory {
+    Decorator createDecorator(String type, GamePiece inner);
+  }
+
+  public interface BasicPieceFactory {
+    GamePiece createBasicPiece(String type);
+  }
+
+  private final Map<String, BasicPieceFactory> basicFactories = Map.ofEntries(
+    Map.entry(Stack.TYPE, type -> new Stack()),
+    Map.entry(BasicPiece.ID, BasicPiece::new),
+    Map.entry(Deck.ID, type -> new Deck(GameModule.getGameModule(), type))
+  );
+
+  private final BasicPieceFactory defaultBasicPieceFactory = type -> null;
+
+  private final Map<String, DecoratorFactory> decoratorFactories = Map.ofEntries(
+    Map.entry(Immobilized.ID, Immobilized::new),
+    Map.entry(Embellishment.ID, (type, inner) -> {
+      final Embellishment e = new Embellishment(type, inner);
+      if (e.getVersion() == Embellishment.BASE_VERSION) {
+        return new Embellishment0(type, inner);
+      }
+      return e;
+    }),
+    Map.entry(Embellishment.OLD_ID, Embellishment::new),
+    Map.entry(Hideable.ID, Hideable::new),
+    Map.entry(Obscurable.ID, Obscurable::new),
+    Map.entry(Labeler.ID, Labeler::new),
+    Map.entry(TableInfo.ID, TableInfo::new),
+    Map.entry(PropertySheet.ID, PropertySheet::new),
+    Map.entry(FreeRotator.ID, FreeRotator::new),
+    Map.entry(Pivot.ID, Pivot::new),
+    Map.entry(NonRectangular.ID, NonRectangular::new),
+    Map.entry(Marker.ID, Marker::new),
+    Map.entry(Restricted.ID, Restricted::new),
+    Map.entry(PlaceMarker.ID, PlaceMarker::new),
+    Map.entry(Replace.ID, Replace::new),
+    Map.entry(ReportState.ID, ReportState::new),
+    Map.entry(MovementMarkable.ID, MovementMarkable::new),
+    Map.entry(Footprint.ID, Footprint::new),
+    Map.entry(ReturnToDeck.ID, ReturnToDeck::new),
+    Map.entry(SendToLocation.ID, SendToLocation::new),
+    Map.entry(UsePrototype.ID, UsePrototype::new),
+    Map.entry(Clone.ID, Clone::new),
+    Map.entry(Delete.ID, Delete::new),
+    Map.entry(SubMenu.ID, SubMenu::new),
+    Map.entry(MenuSeparator.ID, MenuSeparator::new),
+    Map.entry(Translate.ID, Translate::new),
+    Map.entry(AreaOfEffect.ID, AreaOfEffect::new),
+    Map.entry(CounterGlobalKeyCommand.ID, CounterGlobalKeyCommand::new),
+    Map.entry(TriggerAction.ID, TriggerAction::new),
+    Map.entry(DynamicProperty.ID, DynamicProperty::new),
+    Map.entry(CalculatedProperty.ID, CalculatedProperty::new),
+    Map.entry(SetGlobalProperty.ID, SetGlobalProperty::new),
+    Map.entry(RestrictCommands.ID, RestrictCommands::new),
+    Map.entry(PlaySound.ID, PlaySound::new),
+    Map.entry(ActionButton.ID, ActionButton::new),
+    Map.entry(GlobalHotKey.ID, GlobalHotKey::new)
+  );
+
+  private final DecoratorFactory defaultDecoratorFactory = (type, inner) -> {
+    System.err.println("Unknown type " + type);
+    return new Marker(Marker.ID, inner);
+  };
 
   public BasicCommandEncoder() {
-    basicFactories.put(Stack.TYPE, new BasicPieceFactory() {
-      @Override
-      public GamePiece createBasicPiece(String type) {
-        return new Stack();
-      }
-    });
-    basicFactories.put(BasicPiece.ID, new BasicPieceFactory() {
-      @Override
-      public GamePiece createBasicPiece(String type) {
-        return new BasicPiece(type);
-      }
-    });
-    basicFactories.put(Deck.ID, new BasicPieceFactory() {
-      @Override
-      public GamePiece createBasicPiece(String type) {
-        return new Deck(GameModule.getGameModule(), type);
-      }
-    });
-    decoratorFactories.put(Immobilized.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Immobilized(inner, type);
-      }
-    });
-    decoratorFactories.put(Embellishment.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        final Embellishment e = new Embellishment(type, inner);
-        if (e.getVersion() == Embellishment.BASE_VERSION) {
-          return new Embellishment0(type, inner);
-        }
-        return e;
-      }
-    });
-    decoratorFactories.put(Embellishment.OLD_ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Embellishment(type, inner);
-      }
-    });
-    decoratorFactories.put(Hideable.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Hideable(type, inner);
-      }
-    });
-    decoratorFactories.put(Obscurable.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Obscurable(type, inner);
-      }
-    });
-    decoratorFactories.put(Labeler.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Labeler(type, inner);
-      }
-    });
-    decoratorFactories.put(TableInfo.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new TableInfo(type, inner);
-      }
-    });
-    decoratorFactories.put(PropertySheet.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new PropertySheet(type, inner);
-      }
-    });
-    decoratorFactories.put(FreeRotator.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new FreeRotator(type, inner);
-      }
-    });
-    decoratorFactories.put(Pivot.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Pivot(type, inner);
-      }
-    });
-    decoratorFactories.put(NonRectangular.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new NonRectangular(type, inner);
-      }
-    });
-    decoratorFactories.put(Marker.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Marker(type, inner);
-      }
-    });
-    decoratorFactories.put(Restricted.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Restricted(type, inner);
-      }
-    });
-    decoratorFactories.put(PlaceMarker.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new PlaceMarker(type, inner);
-      }
-    });
-    decoratorFactories.put(Replace.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Replace(type, inner);
-      }
-    });
-    decoratorFactories.put(ReportState.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new ReportState(type, inner);
-      }
-    });
-    decoratorFactories.put(MovementMarkable.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new MovementMarkable(type, inner);
-      }
-    });
-    decoratorFactories.put(Footprint.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Footprint(type, inner);
-      }
-    });
-    decoratorFactories.put(ReturnToDeck.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new ReturnToDeck(type, inner);
-      }
-    });
-    decoratorFactories.put(SendToLocation.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new SendToLocation(type, inner);
-      }
-    });
-    decoratorFactories.put(UsePrototype.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new UsePrototype(type, inner);
-      }
-    });
-    decoratorFactories.put(Clone.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Clone(type, inner);
-      }
-    });
-    decoratorFactories.put(Delete.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Delete(type, inner);
-      }
-    });
-    decoratorFactories.put(SubMenu.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new SubMenu(type, inner);
-      }
-    });
-    decoratorFactories.put(Translate.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new Translate(type, inner);
-      }
-    });
-    decoratorFactories.put(AreaOfEffect.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new AreaOfEffect(type, inner);
-      }
-    });
-    decoratorFactories.put(CounterGlobalKeyCommand.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new CounterGlobalKeyCommand(type, inner);
-      }
-    });
-    decoratorFactories.put(TriggerAction.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new TriggerAction(type, inner);
-      }
-    });
-    decoratorFactories.put(DynamicProperty.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new DynamicProperty(type, inner);
-      }
-    });
-    decoratorFactories.put(CalculatedProperty.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new CalculatedProperty(type, inner);
-      }
-    });
-    decoratorFactories.put(SetGlobalProperty.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new SetGlobalProperty(type, inner);
-      }
-    });
-    decoratorFactories.put(RestrictCommands.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new RestrictCommands(type, inner);
-      }
-    });
-    decoratorFactories.put(PlaySound.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new PlaySound(type, inner);
-      }
-    });
-    decoratorFactories.put(ActionButton.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new ActionButton(type, inner);
-      }
-    });
-    decoratorFactories.put(GlobalHotKey.ID, new DecoratorFactory() {
-      @Override
-      public Decorator createDecorator(String type, GamePiece inner) {
-        return new GlobalHotKey(type, inner);
-      }
-    });
+  }
+
+  private String typePrefix(String type) {
+    final String prefix = type.substring(0, type.indexOf(';') + 1);
+    return prefix.isEmpty() ? type : prefix;
   }
 
   /**
@@ -343,20 +177,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @see Decorator
    */
   public Decorator createDecorator(String type, GamePiece inner) {
-    Decorator d = null;
-    String prefix = type.substring(0,type.indexOf(';')+1);
-    if (prefix.length() == 0) {
-      prefix = type;
-    }
-    DecoratorFactory f = decoratorFactories.get(prefix);
-    if (f != null) {
-      d = f.createDecorator(type, inner);
-    }
-    else {
-      System.err.println("Unknown type "+type); //$NON-NLS-1$
-      d = new Marker(Marker.ID,inner);
-    }
-    return d;
+    return decoratorFactories.getOrDefault(
+      typePrefix(type), defaultDecoratorFactory
+    ).createDecorator(type, inner);
   }
 
   /**
@@ -367,16 +190,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    *          value from its {@link GamePiece#getType} method
    */
   protected GamePiece createBasic(String type) {
-    GamePiece p = null;
-    String prefix = type.substring(0,type.indexOf(';')+1);
-    if (prefix.length() == 0) {
-      prefix = type;
-    }
-    BasicPieceFactory f = basicFactories.get(prefix);
-    if (f != null) {
-      p = f.createBasicPiece(type);
-    }
-    return p;
+    return basicFactories.getOrDefault(
+      typePrefix(type), defaultBasicPieceFactory
+    ).createBasicPiece(type);
   }
 
   /**
@@ -532,13 +348,5 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     else {
       return null;
     }
-  }
-
-  public static interface DecoratorFactory {
-    Decorator createDecorator(String type, GamePiece inner);
-  }
-
-  public static interface BasicPieceFactory {
-    GamePiece createBasicPiece(String type);
   }
 }

@@ -90,8 +90,9 @@ public class ArchiveWriter extends DataArchive {
     this.archive = archive;
   }
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public ArchiveWriter(ZipFile archive) {
+    ProblemDialog.showDeprecated("2020-08-06");
     archiveName = archive.getName();
     try {
       this.archive = new ZipArchive(archiveName);
@@ -112,8 +113,8 @@ public class ArchiveWriter extends DataArchive {
    */
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
-    if (name.toLowerCase().endsWith(".svg")) {
-      List<String> exrefs = null;
+    if (name.toLowerCase().endsWith(".svg")) { //$NON-NLS-1$//
+      List<String> exrefs;
       try {
         exrefs = SVGImageUtils.getExternalReferences(path);
       }
@@ -125,7 +126,7 @@ public class ArchiveWriter extends DataArchive {
       for (String s : exrefs) {
         final File f = new File(s);
 
-        byte[] buf = null;
+        byte[] buf;
         try {
           buf = SVGImageUtils.relativizeExternalReferences(s);
         }
@@ -155,8 +156,9 @@ public class ArchiveWriter extends DataArchive {
     addFile(path, soundDir + fileName);
   }
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isImageAdded(String name) {
+    ProblemDialog.showDeprecated("2020-08-06");
     try {
       return archive.contains(imageDir + name);
     }
@@ -240,13 +242,13 @@ public class ArchiveWriter extends DataArchive {
 
   public void saveAs(boolean notifyModuleManager) throws IOException {
     final FileChooser fc = FileChooser.createFileChooser(
-      GameModule.getGameModule().getFrame(),
+      GameModule.getGameModule().getPlayerWindow(),
       (DirectoryConfigurer) Prefs.getGlobalPrefs()
                                  .getOption(Prefs.MODULES_DIR_KEY));
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
     final String filename = fc.getSelectedFile().getPath();
 
-    if (filename != archive.getName()) {
+    if (!filename.equals(archive.getName())) {
       // Copy the current state to the new archive.
       final FileArchive tmp = archive;
 
@@ -275,13 +277,15 @@ public class ArchiveWriter extends DataArchive {
    * initialized with a null name, prompt the user to select a new file
    * into which to write archive.
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void write() throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     write(false);
   }
 
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public void write(boolean notifyModuleManager) throws IOException {
+    ProblemDialog.showDeprecated("2020-08-06");
     save(notifyModuleManager);
   }
 }

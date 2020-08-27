@@ -52,7 +52,7 @@ public class Restricted extends Decorator implements EditablePiece {
   public static final String ID = "restrict;";
   private String[] side;
   private boolean restrictByPlayer;
-  private String owningPlayer="";
+  private String owningPlayer = "";
   private boolean restrictMovement = true;
   private static PlayerRoster.SideChangeListener handleRetirement;
 
@@ -82,7 +82,7 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     side = st.nextStringArray(0);
     restrictByPlayer = st.nextBoolean(false);
     restrictMovement = st.nextBoolean(true);
@@ -231,7 +231,7 @@ public class Restricted extends Decorator implements EditablePiece {
     private Box box;
 
     public Ed(Restricted r) {
-      byPlayer = new BooleanConfigurer(null,"Also belongs to initially-placing player?",r.restrictByPlayer);
+      byPlayer = new BooleanConfigurer(null, "Also belongs to initially-placing player?", r.restrictByPlayer);
       config = new StringArrayConfigurer(null, "Belongs to side", r.side);
       movementConfig = new BooleanConfigurer(null, "Prevent non-owning players from moving piece?", r.restrictMovement);
       box = Box.createVerticalBox();
@@ -269,7 +269,7 @@ public class Restricted extends Decorator implements EditablePiece {
       if (newSide == null) {
         PieceVisitorDispatcher d = new PieceVisitorDispatcher(this);
         Command c = new NullCommand();
-        for(Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
+        for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
           for (GamePiece piece : m.getPieces()) {
             c = c.append((Command)d.accept(piece));
           }

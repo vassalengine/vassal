@@ -17,6 +17,7 @@
  */
 package VASSAL.chat;
 
+import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class SimpleRoom implements Room {
   private String name;
-  private List<Player> players = new ArrayList<>();
+  private final List<Player> players = new ArrayList<>();
 
   public SimpleRoom() {
   }
@@ -105,7 +106,7 @@ public class SimpleRoom implements Room {
 
   public boolean equals(Object o) {
     if (o instanceof SimpleRoom) {
-      return name == null ? false : name.equals(((SimpleRoom) o).name);
+      return name != null && name.equals(((SimpleRoom) o).name);
     }
     else {
       return false;
@@ -113,8 +114,9 @@ public class SimpleRoom implements Room {
   }
 
   /** @deprecated Use {@link #getPlayerList()} instead. */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public Iterator<Player> getPlayers() {
+    ProblemDialog.showDeprecated("2020-08-06");
     return players.iterator();
   }
 

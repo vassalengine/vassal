@@ -135,7 +135,8 @@ public class MovementReporter {
 
 
   protected boolean shouldMarkMoved(MoveSummary summary) {
-    String option = Map.getMapById(summary.getNewMapId()).getAttributeValueString(Map.MARK_MOVED);
+    Map mappy = Map.getMapById(summary.getNewMapId());
+    String option = (mappy == null) ? null : mappy.getAttributeValueString(Map.MARK_MOVED);
     if (option == null) {
       option = GlobalOptions.getInstance().getAttributeValueString(GlobalOptions.MARK_MOVED);
     }

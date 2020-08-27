@@ -93,14 +93,14 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
       tf.setText(keyToString());
       tf.addKeyListener(this);
       p.add(new JLabel(getName()));
       p.add(tf);
 
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
-      keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width,keyName.getPreferredSize().height));
+      keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
       keyName.addKeyListener(new KeyListener() {
         @Override
         public void keyReleased(KeyEvent e) {

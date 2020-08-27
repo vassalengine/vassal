@@ -62,7 +62,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   public static final String ID = "return;";
   protected String deckId;
   protected String returnCommand;
-  protected String selectDeckPrompt="Select destination";
+  protected String selectDeckPrompt = "Select destination";
   protected NamedKeyStroke returnKey;
   protected DrawPile deck;
 
@@ -126,7 +126,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         return null;
       final Map preMap = getMap();
       final Point prePos = getPosition();
-      comm = setOldProperties();
+      comm = setOldProperties(this);
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
       // Apply Auto-move key if the piece has moved
       Map m = pile.getMap();
@@ -170,7 +170,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   private DrawPile promptForDrawPile() {
-    final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
+    final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -281,7 +281,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       menuName = new StringConfigurer(null, "Menu Text:  ", p.returnCommand);
       controls.add(menuName.getControls());
-      menuKey = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.returnKey);
+      menuKey = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.returnKey);
       deckId = p.deckId;
       controls.add(menuKey.getControls());
       JButton select = new JButton("Select Deck");
@@ -303,7 +303,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       box.add(select);
       box.add(tf);
       controls.add(box);
-      promptText = new StringConfigurer(null,"Prompt for destination deck:  ",p.selectDeckPrompt);
+      promptText = new StringConfigurer(null, "Prompt for destination deck:  ", p.selectDeckPrompt);
       prompt = new JCheckBox("Choose destination deck at game time?");
       controls.add(prompt);
       controls.add(promptText.getControls());

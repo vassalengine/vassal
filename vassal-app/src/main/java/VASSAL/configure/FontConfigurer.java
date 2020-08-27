@@ -76,7 +76,7 @@ public class FontConfigurer extends Configurer {
         family.addItem(element);
       }
       family.setSelectedItem(value == null ? "SansSerif" : ((Font) value).getFamily());
-      family.setMaximumSize(new Dimension(family.getMaximumSize().width,family.getPreferredSize().height));
+      family.setMaximumSize(new Dimension(family.getMaximumSize().width, family.getPreferredSize().height));
       p.add(family);
 
       size = new JComboBox<>();
@@ -86,7 +86,7 @@ public class FontConfigurer extends Configurer {
       size.setSelectedItem(
         value == null ? sizes[sizes.length / 2] : ((Font) value).getSize()
       );
-      size.setMaximumSize(new Dimension(size.getMaximumSize().width,size.getPreferredSize().height));
+      size.setMaximumSize(new Dimension(size.getMaximumSize().width, size.getPreferredSize().height));
       p.add(size);
 
       ItemListener l = new ItemListener() {

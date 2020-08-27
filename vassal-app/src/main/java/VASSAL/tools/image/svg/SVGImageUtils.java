@@ -26,16 +26,24 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.UnitProcessor;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;
@@ -43,6 +51,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
 
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
@@ -54,20 +64,24 @@ import VASSAL.tools.image.ImageNotFoundException;
  * @since 3.1.0
  */
 public class SVGImageUtils {
-  // NB: SAXSVGDocumentFactory isn't thread-safe, we have to synchronize on it.
-  protected static final SAXSVGDocumentFactory factory =
-    new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
-
   private SVGImageUtils() { }
 
-  /**
-   * Returns the default dimensions of the SVG image.
-   *
-   * @return the image dimensions
-   * @throws IOException if the image cannot be read
-   */
-  public static Dimension getImageSize(InputStream in) throws IOException {
-    return getImageSize("", in);
+  // NB: SAXSVGDocumentFactory isn't thread-safe, we have to synchronize on it.
+  private static final SAXSVGDocumentFactory FACTORY =
+    new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
+
+  public static SVGDocument getDocument(String file, InputStream in) throws IOException {
+    try (in) {
+      // We synchronize on FACTORY becuase it does internal caching
+      // of the Documents it produces. This ensures that a Document is
+      // being modified on one thread only.
+      synchronized (FACTORY) {
+        return FACTORY.createSVGDocument(file, in);
+      }
+    }
+    catch (DOMException e) {
+      throw new IOException(e);
+    }
   }
 
   /**
@@ -78,35 +92,108 @@ public class SVGImageUtils {
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
-  public static Dimension getImageSize(String name, InputStream in)
-                                                          throws IOException {
-    // get the SVG
-    final Document doc;
-    try (in) {
-      synchronized (factory) {
-        doc = factory.createDocument(null, in);
-      }
+  public static Dimension getImageSize(String file, InputStream in) throws IOException {
+    try {
+      return getImageSize(getDocument(file, in));
     }
     catch (FileNotFoundException e) {
-      throw new ImageNotFoundException(name, e);
+      throw new ImageNotFoundException(file, e);
     }
     catch (DOMException | IOException e) {
-      throw new ImageIOException(name, e);
+      throw new ImageIOException(file, e);
+    }
+  }
+
+  public static Dimension getImageSize(SVGDocument doc) throws IOException {
+    final SVGSVGElement root = doc.getRootElement();
+    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
+    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
+    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
+
+    final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
+    final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
+
+    float w = -1.0f;
+    float h = -1.0f;
+    float[] vb = null;
+
+    // try to parse the width
+    if (!ws.isEmpty()) {
+      try {
+        w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
+      }
+      catch (BridgeException e) {
+        // the width was invalid
+        throw new IOException(e);
+      }
     }
 
-    // get the default image width and height
-    final Element root = doc.getDocumentElement();
-    try {
-      final int width = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
-      final int height = (int) (Float.parseFloat(
-        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
+    // try to parse the height
+    if (!hs.isEmpty()) {
+      try {
+        h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
+      }
+      catch (BridgeException e) {
+        // the height was invalid
+        throw new IOException(e);
+      }
+    }
 
-      return new Dimension(width, height);
+    // try to parse the viewBox
+    if (!vbs.isEmpty()) {
+      try {
+        vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
+      }
+      catch (BridgeException e) {
+        // the viewBox was invalid
+        throw new IOException(e);
+      }
     }
-    catch (NumberFormatException e) {
-      throw new ImageIOException(name, e);
+
+    if (w < 0.0f || h < 0.0f) {
+      if (!vbs.isEmpty()) {
+        // the viewBox array will be null if it had 0 height or width
+        if (vb != null) {
+          // we have a nonempty viewBox
+          if (w < 0.0f) {
+            // no width given; use the width of the viewBox
+            w = vb[2];
+          }
+
+          if (h < 0.0f) {
+            // no height given; use the height of the viewBox
+            h = vb[3];
+          }
+        }
+      }
+      else {
+        // no viewBox
+        if (h >= 0.0f) {
+          // height but no width; make it square
+          w = h;
+        }
+        else if (w >= 0.0f) {
+          // width but no height; make it square
+          h = w;
+        }
+        else {
+          // no dimensions specified
+          w = h = 0;
+        }
+      }
     }
+
+    return new Dimension((int)(w + 0.5f), (int)(h + 0.5f));
+  }
+
+  /**
+   * Returns the default dimensions of the SVG image.
+   *
+   * @return the image dimensions
+   * @throws IOException if the image cannot be read
+   */
+  public static Dimension getImageSize(InputStream in) throws IOException {
+    return getImageSize("", in);
   }
 
   /**
@@ -138,8 +225,8 @@ public class SVGImageUtils {
 
     Document doc = null;
     try {
-      synchronized (factory) {
-        doc = factory.createDocument(here.toString());
+      synchronized (FACTORY) {
+        doc = FACTORY.createDocument(here.toString());
       }
     }
     catch (DOMException e) {
@@ -183,7 +270,8 @@ public class SVGImageUtils {
     // SVGDOMImplementation adds unwanted attributes to SVG elements
     final SAXDocumentFactory fac = new SAXDocumentFactory(
       new GenericDOMImplementation(),
-      XMLResourceDescriptor.getXMLParserClassName());
+      XMLResourceDescriptor.getXMLParserClassName()
+    );
 
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
     final StringWriter sw = new StringWriter();
@@ -198,7 +286,7 @@ public class SVGImageUtils {
     }
 
     sw.flush();
-    return sw.toString().getBytes();
+    return sw.toString().getBytes(StandardCharsets.UTF_8);
   }
 
   protected static void relativizeElement(Element e) {
