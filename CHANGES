@@ -1,5 +1,9 @@
 3.5.0-beta1 - ???
 
+3.4.0 - ???
+
+* 13217: Editor: Additional fix for cut-and-paste
+
 3.4.0-beta1 - 26 August 2020
 
 * 13325: Specify encoding for String conversion to and from bytes
