@@ -201,16 +201,16 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     se.append(s == null ? "" : s);
     s = ColorConfigurer.colorToString(textFg);
     se.append(s == null ? "" : s)
-      .append(String.valueOf(verticalPos))
-      .append(String.valueOf(verticalOffset))
-      .append(String.valueOf(horizontalPos))
-      .append(String.valueOf(horizontalOffset))
-      .append(String.valueOf(verticalJust))
-      .append(String.valueOf(horizontalJust))
+      .append(verticalPos)
+      .append(verticalOffset)
+      .append(horizontalPos)
+      .append(horizontalOffset)
+      .append(verticalJust)
+      .append(horizontalJust)
       .append(nameFormat.getFormat())
       .append(font.getFamily())
       .append(font.getStyle())
-      .append(String.valueOf(rotateDegrees))
+      .append(rotateDegrees)
       .append(propertyName)
       .append(description);
     return ID + se.getValue();
