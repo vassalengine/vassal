@@ -271,20 +271,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
-  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, int, int, Color, Color)} instead. **/
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
-    ProblemDialog.showDeprecated("2020-08-27");
-    LabelUtils.drawLabel(g, text, x, y, hAlign, vAlign, fgColor, bgColor);
-  }
-
-  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, Font, int, int, Color, Color, Color)} instead. **/
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    ProblemDialog.showDeprecated("2020-08-27");
-    LabelUtils.drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor);
-  }
-
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     updateCachedImage();
@@ -881,5 +867,19 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public String getComponentName() {
     return getDescription();
+  }
+
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, int, int, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
+  public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, hAlign, vAlign, fgColor, bgColor);
+  }
+
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, Font, int, int, Color, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor);
   }
 }
