@@ -256,8 +256,35 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         }
       } 
       else if (s.startsWith("-")) {
-        style = "sys";
-        html_allowed = true;
+        if (s.startsWith("- |") || s.startsWith("-|")) {
+          style = "msg";
+          s = s.replaceFirst("\\|", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- !") || s.startsWith("-!")) {
+          style = "msg2";
+          s = s.replaceFirst("!", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ?") || s.startsWith("-?")) {
+          style = "msg3";
+          s = s.replaceFirst("\\?", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ~") || s.startsWith("-~")) {
+          style = "msg4";
+          s = s.replaceFirst("~", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- `") || s.startsWith("-`")) {
+          style = "msg5";
+          s = s.replaceFirst("`", "");
+          html_allowed = true;
+        }
+        else {
+          style = "sys";
+          html_allowed = true;
+        }
       } 
       else {
         style = getChatStyle(s);

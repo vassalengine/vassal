@@ -636,9 +636,12 @@ public class GameState implements CommandEncoder {
     if (c != null) {
       c.execute();
     }
-    String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
+
+    String msg;  
     if (loadComments != null && loadComments.length() > 0) {
-      msg += ": " + loadComments;
+      msg = "!" + Resources.getString("GameState.loaded", f.getName()) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
+    } else {
+      msg = Resources.getString("GameState.loaded", f.getName()); //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
   }
@@ -798,9 +801,10 @@ public class GameState implements CommandEncoder {
             loadCommand = get();
 
             if (loadCommand != null) {
-              msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
               if (loadComments != null && loadComments.length() > 0) {
-                msg += ": " + loadComments;
+                msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
+              } else {
+                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
               }
             }
             else {
