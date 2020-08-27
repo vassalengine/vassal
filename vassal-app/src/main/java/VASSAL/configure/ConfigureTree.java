@@ -1102,7 +1102,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       else if (copyCmd.equals(action)) {
         a = buildCopyAction(target);
       }
-      else if (pasteCmd.equals(action) || action.equals(pasteKey.getKeyChar())) {
+      else if (pasteCmd.equals(action) || action.equals(String.valueOf(pasteKey.getKeyChar()))) {
         a = buildPasteAction(target);
       }
       else if (deleteCmd.equals(action)) {

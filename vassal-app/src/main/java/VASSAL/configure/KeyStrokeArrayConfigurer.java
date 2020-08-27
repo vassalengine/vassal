@@ -40,7 +40,7 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of keystrokes
  */
 public class KeyStrokeArrayConfigurer extends Configurer {
-  private List<HotKeyConfigurer> configs = new ArrayList<>();
+  private final List<HotKeyConfigurer> configs = new ArrayList<>();
   private Box controls;
   private JPanel panel;
 
