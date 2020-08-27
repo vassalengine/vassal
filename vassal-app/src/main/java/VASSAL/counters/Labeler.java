@@ -196,11 +196,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(labelKey)
       .append(menuCommand)
-      .append(font.getSize());
-    String s = ColorConfigurer.colorToString(textBg);
-    se.append(s == null ? "" : s);
-    s = ColorConfigurer.colorToString(textFg);
-    se.append(s == null ? "" : s)
+      .append(font.getSize())
+      .append(textBg)
+      .append(textFg)
       .append(verticalPos)
       .append(verticalOffset)
       .append(horizontalPos)
