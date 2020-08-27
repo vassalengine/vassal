@@ -18,8 +18,6 @@
  */
 package VASSAL.build.module.map;
 
-import VASSAL.counters.PieceIterator;
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -72,13 +70,15 @@ import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.Labeler;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
+import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -334,7 +334,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         if (text.length() > 0) {
           int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
           int y = dbounds.y + dbounds.height + 10;
-          drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
+          drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER);
         }
       }
 
@@ -423,7 +423,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     if (report.length() > 0) {
-      drawLabel(g, new Point(x, y), report, Labeler.RIGHT, Labeler.BOTTOM);
+      drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
     }
   }
 
@@ -433,7 +433,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
   protected void drawLabel(Graphics g, Point pt, String label) {
     ProblemDialog.showDeprecated("2020-08-06");
-    drawLabel(g, pt, label, Labeler.RIGHT, Labeler.BOTTOM);
+    drawLabel(g, pt, label, LabelUtils.RIGHT, LabelUtils.BOTTOM);
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
@@ -441,7 +441,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = (Graphics2D) g;
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      Labeler.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }

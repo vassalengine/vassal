@@ -62,11 +62,13 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
@@ -78,13 +80,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
 
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int CENTER = 0;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int RIGHT = 1;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int LEFT = 2;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int TOP = 3;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int BOTTOM = 4;
 
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static int HORIZONTAL_ALIGNMENT = CENTER;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static int VERTICAL_ALIGNMENT = TOP;
 
   private String label = "";
@@ -262,48 +271,18 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
-
-// FIXME: This doesn't belong here. Should be in ImageUtils instead?
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, int, int, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
-    drawLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, hAlign, vAlign, fgColor, bgColor);
   }
 
-// FIXME: This doesn't belong here. Should be in ImageUtils instead?
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, Font, int, int, Color, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    g.setFont(f);
-    final int width = g.getFontMetrics().stringWidth(text + "  ");
-    final int height = g.getFontMetrics().getHeight();
-    int x0 = x;
-    int y0 = y;
-    switch (hAlign) {
-    case CENTER:
-      x0 = x - width / 2;
-      break;
-    case LEFT:
-      x0 = x - width;
-      break;
-    }
-    switch (vAlign) {
-    case CENTER:
-      y0 = y - height / 2;
-      break;
-    case BOTTOM:
-      y0 = y - height;
-      break;
-    }
-    if (bgColor != null) {
-      g.setColor(bgColor);
-      g.fillRect(x0, y0, width, height);
-    }
-    if (borderColor != null) {
-      g.setColor(borderColor);
-      g.drawRect(x0, y0, width, height);
-    }
-    g.setColor(fgColor);
-    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                      RenderingHints.VALUE_ANTIALIAS_ON);
-    g.drawString(" " + text + " ", x0,
-      y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor);
   }
 
   @Override

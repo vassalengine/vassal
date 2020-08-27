@@ -60,6 +60,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
 
 /**
  * Displays a movement trail indicating where a piece has been moved
@@ -491,8 +492,11 @@ public class Footprint extends MovementMarkable {
             y1 = (int)(p.y * zoom);
             final Font font =
               new Font(Font.DIALOG, Font.PLAIN, (int)(circleRadius * 1.4 * zoom));
-            Labeler.drawLabel(g, text, x1, y1, font, Labeler.CENTER,
-                              Labeler.CENTER, lineColor, null, null);
+            LabelUtils.drawLabel(
+              g, text, x1, y1,
+              font, LabelUtils.CENTER, LabelUtils.CENTER,
+              lineColor, null, null
+            );
 
           }
           lastZoom = zoom;
