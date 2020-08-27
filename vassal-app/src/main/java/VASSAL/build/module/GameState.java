@@ -49,6 +49,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -749,21 +750,34 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
+    SaveMetaData metaData = null;
+    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
 // FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
            final OutputStream out = new ObfuscatingOutputStream(zout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
-      (new SaveMetaData()).save(archive);
+
+      metaData.save(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
-    GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
+    String msg = null;
+    if (metaData != null) {
+      String saveComments = metaData.getLocalizedDescription();
+      if (!StringUtils.isEmpty(saveComments)) {
+        msg = "!" + Resources.getString("GameState.game_saved") + ": <b>" + saveComments + "</b>"; //$NON-NLS-1$
+      }
+    }
+    if (msg == null) {
+      msg = Resources.getString("GameState.game_saved"); //$NON-NLS-1$
+    }
+    GameModule.getGameModule().warn(msg);
   }
 
   public void loadGameInBackground(final File f) {
