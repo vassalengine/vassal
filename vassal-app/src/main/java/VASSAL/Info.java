@@ -140,12 +140,13 @@ public final class Info {
 
   /**
    * Bugzilla (and other potential external reporting tools) require onlt the primary numeric portion of
-   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3\
+   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3
    *
    * @return The reportable version number
    */
   public static String getReportableVersion() {
-    return getVersion().contains("-") ?  getVersion().substring(0, getVersion().indexOf('-')) : getVersion();
+    final String v = getVersion();
+    return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
   }
 
   private static final int instanceID;
