@@ -447,7 +447,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           }
           if (d.getPath() != null) {
             markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
-            //slotId = "";
           }
           else {
             markerSlotPath = null;
