@@ -22,10 +22,13 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.Translatable;
 
 /**
- * An object that implements the Configurable interface can, in
- * addition to being built from a configuration XML file, be
+ * An object that implements the Configurable interface, in
+ * addition to being built from a configuration XML file (because
+ * this class ultimately extends {@link Buildable}, can be
  * manipulated by the user directly in the VASSAL module editor via
- * the Configuration window.
+ * the Configuration window. It also extends the {@link Translatable}
+ * interface which provides methods for the getting and setting of
+ * XML attributes and adds i18n translation infrastructure.
  */
 public interface Configurable extends Translatable {
   String NAME_PROPERTY = "name"; //$NON-NLS-1$

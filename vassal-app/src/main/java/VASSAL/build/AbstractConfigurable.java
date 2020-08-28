@@ -29,11 +29,14 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
- * An abstract implementation of the Configurable interface. Takes care of most of the Configurable functionality
+ * An abstract implementation of the {@link Configurable} interface. To make a component which is both buildable from the buildFile (XML)
+ * and whose XML attributes are then editable/configurable with a dialog in the Editor, extend this class. Takes care of most of
+ * the Configurable functionality. Provides the basis for a component to have a configuration dialog in the Editor, allowing various
+ * attributes to be edited, retained, and saved/loaded from the module's buildFile (XML).
  */
 public abstract class AbstractConfigurable extends AbstractBuildable implements AutoConfigurable {
   protected PropertyChangeSupport changeSupport;
-  protected String name; // Language-independent name used for programmatic identification
+  protected String name; // Language-independent name used for programmatic identification (including within Modules by e.g. Traits and module components)
   protected String localizedName; // Locale-sensitive name for on-screen display
   protected Configurer config;
   protected ComponentI18nData myI18nData;
@@ -46,11 +49,18 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     buildComponents.remove(b);
   }
 
+  /**
+   * ConfigureName is used, in particular, by the Editor to track the names of components, and is preferred by {@link VASSAL.tools.UniqueIdManager}.
+   * @return The language-independent name of this component used for programmatic identification (including within Modules by e.g. Traits and module components)
+   */
   @Override
   public String getConfigureName() {
     return name;
   }
 
+  /**
+   * @return The localized name for on-screen display
+   */
   public String getLocalizedConfigureName() {
     return localizedName;
   }
@@ -76,16 +86,17 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   /**
-   * Return an array of Strings describing the attributes of this object. These strings are used as prompts in the
-   * Properties window for this object. The order of descriptions should be the same as the order of names in
-   * {@link AbstractBuildable#getAttributeNames}
+   * @return an array of Strings describing the buildFile (XML) attributes of this component. These strings are used as prompts in the
+   * Properties window for this object, when the component is configured in the Editor. The order of descriptions should
+   * be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
    */
   @Override
   public abstract String[] getAttributeDescriptions();
 
   /**
-   * Return the Class for the attributes of this object. Valid classes are: String, Integer, Double, Boolean, Image,
-   * Color, and KeyStroke
+   * Return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
+   * Color, and KeyStroke, along with any class for which a Configurer exists in VASSAL.configure. The class determines, among other things,
+   * which type of {@link AutoConfigurer} will be used to configure the attribute when the object is configured in the Editor.
    *
    * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
    */
@@ -95,8 +106,8 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   /**
    * By default, all attributes are visible
    *
-   * @param name
-   * @return
+   * @param name Name (key) of one of this component's attributes
+   * @return a {@link VisibilityCondition} for this attribute, or null if attribute should always be visible.
    */
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -104,7 +115,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   /**
-   * Return the i18n data for this component
+   * @return the i18n data for this component
    */
   @Override
   public ComponentI18nData getI18nData() {
@@ -115,7 +126,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   /**
-   * Generate a standard prefix for i18n keys for attributes of this component - Classname.attributeName
+   * @return Generate a standard prefix for i18n keys for attributes of this component - Classname.attributeName
    */
   protected String getI18nPrefix() {
     String key = getClass().getSimpleName();
@@ -126,13 +137,18 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   /**
-   * Over-ride the default attribute translatability. This is called by inidivdual components to force specific
+   * Over-ride the default attribute translatability. This is called by individual components to force specific
    * attributes to be translatable or not translatable
+   * @param attr Attribute name/key
+   * @param b true if translatable, false if not
    */
   protected void setAttributeTranslatable(String attr, boolean b) {
     getI18nData().setAttributeTranslatable(attr, b);
   }
 
+  /**
+   * Sets all attributes untranslatable.
+   */
   protected void setAllAttributesUntranslatable() {
     getI18nData().setAllAttributesUntranslatable();
   }
@@ -162,6 +178,9 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     }
   }
 
+  /**
+   * @return A list of all child components (i.e. subcomponents) of this component that are configurable.
+   */
   @Override
   public Configurable[] getConfigureComponents() {
     final ArrayList<Configurable> l = new ArrayList<>();
@@ -175,6 +194,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
 
   /**
    * The default {@link Configurer} of an {@link AbstractConfigurable} class is an instance of {@link AutoConfigurer}
+   * @return Configurer for this component
    */
   @Override
   public Configurer getConfigurer() {
