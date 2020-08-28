@@ -40,10 +40,10 @@ public final class Info {
   private static final GitProperties gitProperties;
 
   // Do not allow editing of modules with this revision or later
-  private static final String EXPIRY_VERSION = "3.4";  //$NON-NLS-1$
+  private static final String EXPIRY_VERSION = "3.5";  //$NON-NLS-1$
 
   // Warn about editing modules, saves, logs written before this version
-  private static final String UPDATE_VERSION =  "3.2";
+  private static final String UPDATE_VERSION =  "3.4";
 
   private static final File homeDir;
   private static final File tmpDir;
