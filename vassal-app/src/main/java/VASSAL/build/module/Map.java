@@ -2227,31 +2227,31 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /** Ensure that the given region (in map coordinates) is visible */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      final double no_recenter_pct = 0.9;
+      final double noRecenterPct = 0.9;
       boolean bTriggerRecenter = false;
       final Point p = mapToComponent(r.getLocation());
-      final Rectangle r_current = theMap.getVisibleRect();
-      Rectangle r_norecenter = new Rectangle(0, 0);
+      final Rectangle rCurrent = theMap.getVisibleRect();
+      Rectangle rNorecenter = new Rectangle(0, 0);
 
       // If r is already visible decide if unit is close enough to
       // border to justify a recenter
 
       // if r is within a band of  n%width/height of border, trigger recenter
-      r_norecenter.width = (int) round(r_current.width * no_recenter_pct);
-      r_norecenter.height = (int) round(r_current.height * no_recenter_pct);
-      r_norecenter.x = r_current.x + (int) round(r_current.width - r_norecenter.width) / 2;
-      r_norecenter.y = r_current.y + (int) round(r_current.height - r_norecenter.height) / 2;
+      rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);
+      rNorecenter.height = (int) round(rCurrent.height * noRecenterPct);
+      rNorecenter.x = rCurrent.x + (int) round(rCurrent.width - rNorecenter.width) / 2;
+      rNorecenter.y = rCurrent.y + (int) round(rCurrent.height - rNorecenter.height) / 2;
 
-      if (p.x < r_norecenter.x) bTriggerRecenter = true;
-      if (p.x > (r_norecenter.x + r_norecenter.width)) bTriggerRecenter = true;
-      if (p.y < r_norecenter.y) bTriggerRecenter = true;
-      if (p.y > (r_norecenter.y + r_norecenter.height)) bTriggerRecenter = true;
+      if (p.x < rNorecenter.x) bTriggerRecenter = true;
+      if (p.x > (rNorecenter.x + rNorecenter.width)) bTriggerRecenter = true;
+      if (p.y < rNorecenter.y) bTriggerRecenter = true;
+      if (p.y > (rNorecenter.y + rNorecenter.height)) bTriggerRecenter = true;
 
       if (bTriggerRecenter == true) {
-        r.x = p.x - r_current.width / 2;
-        r.y = p.y - r_current.height / 2;
-        r.width = r_current.width;
-        r.height = r_current.height;
+        r.x = p.x - rCurrent.width / 2;
+        r.y = p.y - rCurrent.height / 2;
+        r.width = rCurrent.width;
+        r.height = rCurrent.height;
 
         final Dimension d = getPreferredSize();
         if (r.x + r.width > d.width) r.x = d.width - r.width;
