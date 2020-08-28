@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.DoubleConsumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -278,6 +279,52 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  private void updateCachedOpForZoomWindows(double zoom) {
+    if (zoom == lastZoom && lastCachedOp != null) {
+      return;
+    }
+
+    float fsize = (float)(font.getSize() * zoom);
+
+    // Windows renders some characters (e.g. "4") very poorly at 8pt. To
+    // mitigate that, we upscale, render, then downscale when the font
+    // would be 8pt.
+    if (Math.round(fsize) == 8.0f) {
+      final Font zfont = font.deriveFont(((float)(3 * font.getSize() * zoom)));
+      lastCachedOp = Op.scale(new LabelOp(lastCachedLabel, zfont, textFg, textBg), 1.0 / 3.0);
+    }
+    else if (zoom == 1.0) {
+      lastCachedOp = baseOp;
+    }
+    else {
+      final Font zfont = font.deriveFont(fsize);
+      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+    }
+
+    lastZoom = zoom;
+  }
+
+  private void updateCachedOpForZoomNotWindows(double zoom) {
+    if (zoom == lastZoom && lastCachedOp != null) {
+      return;
+    }
+
+    if (zoom == 1.0) {
+      lastCachedOp = baseOp;
+    }
+    else {
+      float fsize = (float)(font.getSize() * zoom);
+      final Font zfont = font.deriveFont(fsize);
+      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+    }
+
+    lastZoom = zoom;
+  }
+
+  private final DoubleConsumer updateCachedOpForZoom =
+    SystemUtils.IS_OS_WINDOWS ? this::updateCachedOpForZoomWindows
+                              : this::updateCachedOpForZoomNotWindows;
+
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
@@ -287,25 +334,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return;
     }
 
-    if (zoom != lastZoom || lastCachedOp == null) {
-      float fsize = (float)(font.getSize() * zoom);
-
-      if (SystemUtils.IS_OS_WINDOWS && Math.round(fsize) == 8.0f) {
-        final Font zfont = font.deriveFont(((float)(2 * font.getSize() * zoom)));
-        lastCachedOp = Op.scale(new LabelOp(lastCachedLabel, zfont, textFg, textBg), 0.5);
-      }
-      else {
-        if (zoom == 1.0) {
-          lastCachedOp = baseOp;
-        }
-        else {
-          final Font zfont = font.deriveFont(fsize);
-          lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
-        }
-      }
-
-      lastZoom = zoom;
-    }
+    updateCachedOpForZoom.accept(zoom);
 
     final Point p = getLabelPosition();
     final int labelX = x + (int) (zoom * p.x);
