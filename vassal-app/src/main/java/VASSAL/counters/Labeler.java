@@ -569,7 +569,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(new Rectangle(getLabelPosition(), baseOp.getSize()));
+    r.add(new Rectangle(
+      getLabelPosition(),
+      baseOp != null ? baseOp.getSize() : new Dimension()
+    ));
     return r;
   }
 
@@ -590,7 +593,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return innerShape;
     }
 
-    final Rectangle r = new Rectangle(getLabelPosition(), baseOp.getSize());
+    final Rectangle r = new Rectangle(
+      getLabelPosition(),
+      baseOp != null ? baseOp.getSize() : new Dimension()
+    );
 
     // If the label is completely enclosed in the current counter shape,
     // then we can just return the current shape
