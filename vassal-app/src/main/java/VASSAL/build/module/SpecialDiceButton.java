@@ -91,7 +91,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected Color bgColor;
   protected ResultsIcon resultsIcon = new ResultsIcon();
   protected FormattedString format = new FormattedString();
-  protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   protected String windowTitleResultFormat = "$" + NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this); //$NON-NLS-1$
