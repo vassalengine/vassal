@@ -68,6 +68,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
   public static final String PROMPT_STRING = "promptString"; //$NON-NLS-1$
   public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
+  public static final String CENTER_ON_MOVE_SENSITIVITY = "centerOnMoveSensitivity"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
@@ -214,6 +215,11 @@ public class GlobalOptions extends AbstractConfigurable {
     
     BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
+
+    //CC// center_on_move_border_proximity_pct (is the pct of distance from border to center of window that triggers a recenter
+    final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
+      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10 ); //$NON-NLS-1$
+    prefs.addOption(pctRecenterOn);
        
     validator = new SingleChildInstance(gm, getClass());
   }
