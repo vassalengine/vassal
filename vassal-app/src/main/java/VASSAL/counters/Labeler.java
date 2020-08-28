@@ -69,7 +69,9 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.LabelUtils;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
+import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
@@ -108,6 +110,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   private static final String BAD_PIECE_NAME = "PieceName";
   private static final String LABEL = "label";
 
+  private double lastZoom = -1.0;
+  private ImageOp lastCachedOp;
+  private ImageOp baseOp;
+
+  @Deprecated
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   private char verticalJust = 'b';
@@ -238,7 +245,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // Can cause further looping so that the infinite loop report
       // never finishes before a StackOverflow occurs
       //
-      if (! RecursionLimiter.isReportingInfiniteLoop()) {
+      if (!RecursionLimiter.isReportingInfiniteLoop()) {
         nameFormat.setProperty(LABEL, getLabel());
       }
       try {
@@ -274,7 +281,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     updateCachedImage();
     piece.draw(g, x, y, obs, zoom);
 
-// FIXME: We should be drawing the text at the right size, not scaling it!
     final Point p = getLabelPosition();
     final int labelX = x + (int) (zoom * p.x);
     final int labelY = y + (int) (zoom * p.y);
@@ -289,7 +295,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       g2d.transform(newXForm);
     }
 
-    imagePainter.draw(g, labelX, labelY, zoom, obs);
+    if (zoom != lastZoom || lastCachedOp == null) {
+      final Font zfont = font.deriveFont(((float)(font.getSize() * zoom)));
+      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+      lastZoom = zoom;
+    }
+
+    g.drawImage(lastCachedOp.getImage(), labelX, labelY, obs);
 
     if (rotateDegrees != 0) {
       g2d.setTransform(saveXForm);
@@ -299,16 +311,14 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected void updateCachedImage() {
     final String label = getLocalizedLabel();
     if (label != null && !label.equals(lastCachedLabel)) {
-      imagePainter.setSource(null);
+      baseOp = lastCachedOp = null;
       lastCachedLabel = null;
       position = null;
     }
 
-    if (imagePainter.getSource() == null &&
-        label != null && label.length() > 0) {
+    if (baseOp == null && label != null && label.length() > 0) {
       lastCachedLabel = label;
-      imagePainter.setSource(
-        new LabelOp(lastCachedLabel, font, textFg, textBg));
+      baseOp = new LabelOp(lastCachedLabel, font, textFg, textBg);
     }
   }
 
@@ -325,7 +335,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     int y = verticalOffset;
 
     updateCachedImage();  // ensure that the LabelOp is set
-    final Dimension lblSize = imagePainter.getImageSize();
+    final Dimension lblSize = baseOp.getSize();
     final Rectangle selBnds = piece.getShape().getBounds();
 
     switch (verticalPos) {
@@ -388,11 +398,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     labelFormat.setFormat(label);
 
     if (getMap() != null && label != null && label.length() > 0) {
-      imagePainter.setSource(
-        new LabelOp(getLocalizedLabel(), font, textFg, textBg));
+      baseOp = new LabelOp(getLocalizedLabel(), font, textFg, textBg);
     }
     else {
-      imagePainter.setSource(null);
+      baseOp = null;
     }
   }
 
@@ -444,6 +453,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       );
 
       final Graphics2D g = im.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -538,7 +548,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(new Rectangle(getLabelPosition(), imagePainter.getImageSize()));
+    r.add(new Rectangle(getLabelPosition(), baseOp.getSize()));
     return r;
   }
 
@@ -559,7 +569,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return innerShape;
     }
 
-    final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
+    final Rectangle r = new Rectangle(getLabelPosition(), baseOp.getSize());
 
     // If the label is completely enclosed in the current counter shape,
     // then we can just return the current shape
