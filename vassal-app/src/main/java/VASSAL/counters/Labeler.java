@@ -47,6 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -72,6 +73,7 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
@@ -286,13 +288,22 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
 
     if (zoom != lastZoom || lastCachedOp == null) {
-      if (zoom == 1.0) {
-        lastCachedOp = baseOp;
+      float fsize = (float)(font.getSize() * zoom);
+
+      if (SystemUtils.IS_OS_WINDOWS && Math.round(fsize) == 8.0f) {
+        final Font zfont = font.deriveFont(((float)(2 * font.getSize() * zoom)));
+        lastCachedOp = Op.scale(new LabelOp(lastCachedLabel, zfont, textFg, textBg), 0.5);
       }
       else {
-        final Font zfont = font.deriveFont(((float)(font.getSize() * zoom)));
-        lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+        if (zoom == 1.0) {
+          lastCachedOp = baseOp;
+        }
+        else {
+          final Font zfont = font.deriveFont(fsize);
+          lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+        }
       }
+
       lastZoom = zoom;
     }
 
