@@ -111,14 +111,6 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return validValues;
   }
 
-//  public void setValidValues(String[] s) {
-//    validValues = s;
-//    if (box == null) {
-//      getControls();
-//    }
-//    box.setModel(new DefaultComboBoxModel<>(validValues));
-//  }
-
   /**
    * Set a value into the configurer
    * If the value is one of the list of allowable values, then set the

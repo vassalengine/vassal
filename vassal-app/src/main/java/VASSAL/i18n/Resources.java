@@ -46,7 +46,7 @@ public class Resources {
 
   // Note that the String VASSAL should NEVER be translated.
   // FIXME Replace raw "VASSAL" string with Resources.VASSAL in other code
-  public static final String VASSAL = "VASSAL"; //$NON-NLS-1$
+  public static final String VASSAL = "General.VASSAL"; //$NON-NLS-1$
 
   protected static final String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL"; //$NON-NLS-1$
   protected static final String EDITOR_BUNDLE = "VASSAL.i18n.Editor"; //$NON-NLS-1$
@@ -375,7 +375,7 @@ public class Resources {
    *
    * @author Brent Easton
    */
-  public static class VassalPropertyClassLoader extends ClassLoader {
+  public class VassalPropertyClassLoader extends ClassLoader {
     @Override
     public URL getResource(String name) {
       URL url = getAResource(name);
