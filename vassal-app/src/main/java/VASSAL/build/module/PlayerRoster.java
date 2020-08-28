@@ -18,13 +18,12 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,12 +81,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   private boolean pickedSide = false;
 
   public PlayerRoster() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    };
+    ActionListener al = e -> launch();
 
     retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, BUTTON_KEYSTROKE, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
@@ -245,27 +239,33 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return;
     }
 
-    final String oldSide = getMySide();
-
     String newSide;
     newSide = promptForSide();
-    if (newSide == null) {
+    if ((newSide == null) || newSide.equals(mySide)) {
       return;
     }
 
-    remove(GameModule.getUserId());
+    final GameModule gm = GameModule.getGameModule();
 
     final PlayerInfo me = new PlayerInfo(
       GameModule.getUserId(),
       GlobalOptions.getInstance().getPlayerId(),
       newSide
     );
-    final Add a = new Add(this, me.playerId, me.playerName, me.side);
+
+    Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", me.playerName, mySide, newSide));
+    c.execute();
+
+    remove(GameModule.getUserId());
+
+    Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
-    GameModule.getGameModule().getServer().sendToOthers(a);
+
+    c = c.append(a);
+    gm.getServer().sendToOthers(c);
 
     newSide = getMySide();
-    fireSideChange(oldSide, newSide);
+    fireSideChange(mySide, newSide);
   }
 
   protected void fireSideChange(String oldSide, String newSide) {
@@ -579,51 +579,28 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[0])); //$NON-NLS-1$
-      sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          sides.clear();
-          sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
-        }
+      sidesConfig.addPropertyChangeListener(evt -> {
+        sides.clear();
+        sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
       });
       controls.add(sidesConfig.getControls());
 
       textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
-      textConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString());
-        }
-      });
+      textConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString()));
       controls.add(textConfig.getControls());
 
       tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
-      tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
-        }
-      });
+      tooltipConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString()));
       controls.add(tooltipConfig.getControls());
 
       iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
-      iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString());
-        }
-      });
+      iconConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString()));
       controls.add(iconConfig.getControls());
 
       keyConfig = (NamedHotKeyConfigurer)retireButton.getHotkeyConfigurer();
       keyConfig.setName(Resources.getString("Editor.PlayerRoster.retire_button_keystroke"));
-      keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString());
-        }
-      });
+      keyConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString()));
       controls.add(keyConfig.getControls());
     }
 
@@ -691,9 +668,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       untranslatedSides = sides.toArray(new String[0]);
       String[] s = StringArrayConfigurer.stringToArray((String) value);
       sides = new ArrayList<>(s.length);
-      for (String item : s) {
-        sides.add(item);
-      }
+      Collections.addAll(sides, s);
     }
     else {
       retireButton.setAttribute(key, value);
