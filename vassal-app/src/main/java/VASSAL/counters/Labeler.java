@@ -296,8 +296,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
 
     if (zoom != lastZoom || lastCachedOp == null) {
-      final Font zfont = font.deriveFont(((float)(font.getSize() * zoom)));
-      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+      if (zoom == 1.0) {
+        lastCachedOp = baseOp;
+      }
+      else {
+        final Font zfont = font.deriveFont(((float)(font.getSize() * zoom)));
+        lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+      }
       lastZoom = zoom;
     }
 
@@ -319,6 +324,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     if (baseOp == null && label != null && label.length() > 0) {
       lastCachedLabel = label;
       baseOp = new LabelOp(lastCachedLabel, font, textFg, textBg);
+      lastCachedOp = null;
     }
   }
 
