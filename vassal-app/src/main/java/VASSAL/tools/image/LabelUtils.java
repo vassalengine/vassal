@@ -23,6 +23,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import VASSAL.tools.swing.SwingUtils;
+
 public class LabelUtils {
   private LabelUtils() {}
 
@@ -37,6 +39,10 @@ public class LabelUtils {
   }
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
+    ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
+    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                      RenderingHints.VALUE_ANTIALIAS_ON);
+
     g.setFont(f);
     final int width = g.getFontMetrics().stringWidth(text + "  ");
     final int height = g.getFontMetrics().getHeight();
@@ -72,8 +78,6 @@ public class LabelUtils {
     }
 
     g.setColor(fgColor);
-    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                      RenderingHints.VALUE_ANTIALIAS_ON);
     g.drawString(" " + text + " ", x0,
       y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
