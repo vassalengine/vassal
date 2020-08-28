@@ -48,8 +48,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 
 /**
- * This class holds static convenience methods for building {@link Buildable}
- * objects.
+ * This class holds static convenience methods for building {@link Buildable} objects.
  */
 public abstract class Builder {
 
@@ -145,6 +144,7 @@ public abstract class Builder {
 
   /**
    * Read an XML document from an InputStream
+   * @return the XML document
    */
   public static Document createDocument(InputStream in)
                                         throws IOException {
@@ -165,6 +165,7 @@ public abstract class Builder {
 
   /**
    * Create a new XML document
+   * @return the Document
    */
   public static Document createNewDocument() {
     try {
@@ -180,6 +181,8 @@ public abstract class Builder {
 
   /**
    * Write an XML document to a Writer
+   * @param doc Document to be written
+   * @param writer target XML Writer
    */
   public static void writeDocument(Document doc, Writer writer)
                                                           throws IOException {
@@ -202,7 +205,7 @@ public abstract class Builder {
   }
 
   /**
-   * Return the decoded text contents of an Element node
+   * @return the decoded text contents of an Element node
    */
   public static String getText(Element e) {
     final StringBuilder buffer = new StringBuilder();

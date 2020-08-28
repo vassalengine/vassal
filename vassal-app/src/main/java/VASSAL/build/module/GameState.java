@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -87,8 +88,14 @@ import VASSAL.tools.swing.Dialogs;
 
 
 /**
- * The GameState represents the state of the game currently being played.
- * Only one game can be open at once.
+ * The GameState contains methods to track and read/write the complete enumerated game state of the game
+ * currently being played. Its main methods deal with saving/loading games and starting/ending games: see
+ * {@link #saveGameAs()}, {@link #loadGame()}, {@link #setup(boolean)}. In each case, appropriate calls
+ * are made to designated methods in all relevant GameComponents. Can also be queried if a game is in progress
+ * {@link #isGameStarted()} and if the game state has been modified since the last save {@link #isModified()}.
+ *
+ * Only one game can be open at once in a single Player, or in a single Editor/Player pair.
+ *
  * @see GameModule#getGameState
  */
 public class GameState implements CommandEncoder {
@@ -751,7 +758,8 @@ public class GameState implements CommandEncoder {
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+           final BufferedOutputStream bout = new BufferedOutputStream(zout);
+           final OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
       (new SaveMetaData()).save(archive);
