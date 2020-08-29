@@ -243,7 +243,7 @@ public class ArchiveWriter extends DataArchive {
   }
 
   /**
-   * Saves the archive, prompting for a name only if none has ever been provide.
+   * Saves the archive, prompting for a name only if none has ever been provided.
    * @throws IOException IOException
    */
   public void save() throws IOException {
@@ -251,7 +251,7 @@ public class ArchiveWriter extends DataArchive {
   }
 
   /**
-   * Saves the archive, prompting for a name only if none has ever been provide.
+   * Saves the archive, prompting for a name only if none has ever been provided.
    * @param notifyModuleManager If true, notifies Module Manager that the save has occurred
    * @throws IOException IOException
    */
@@ -299,12 +299,7 @@ public class ArchiveWriter extends DataArchive {
     String filename = fc.getSelectedFile().getPath();
 
     if (!StringUtils.isEmpty(defaultExtension) && (filename.lastIndexOf('.') < 0)) {
-      if (defaultExtension.indexOf('.') >= 0) {
-        filename = filename + defaultExtension;
-      }
-      else {
-        filename = filename + "." + defaultExtension;
-      }
+      filename = filename + defaultExtension;
       if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), "Overwrite " + filename + "?", "File Exists", JOptionPane.YES_NO_OPTION)) {
         return;
       }
