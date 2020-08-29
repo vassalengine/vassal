@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.DoubleConsumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,6 +48,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -62,12 +64,17 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
@@ -78,13 +85,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
 
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int CENTER = 0;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int RIGHT = 1;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int LEFT = 2;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int TOP = 3;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static final int BOTTOM = 4;
 
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static int HORIZONTAL_ALIGNMENT = CENTER;
+  @Deprecated(since = "2020-08-27", forRemoval = true)
   public static int VERTICAL_ALIGNMENT = TOP;
 
   private String label = "";
@@ -99,6 +113,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   private static final String BAD_PIECE_NAME = "PieceName";
   private static final String LABEL = "label";
 
+  private double lastZoom = -1.0;
+  private ImageOp lastCachedOp;
+  private ImageOp baseOp;
+
+  @Deprecated
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   private char verticalJust = 'b';
@@ -187,21 +206,19 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(labelKey)
       .append(menuCommand)
-      .append(font.getSize());
-    String s = ColorConfigurer.colorToString(textBg);
-    se.append(s == null ? "" : s);
-    s = ColorConfigurer.colorToString(textFg);
-    se.append(s == null ? "" : s)
-      .append(String.valueOf(verticalPos))
-      .append(String.valueOf(verticalOffset))
-      .append(String.valueOf(horizontalPos))
-      .append(String.valueOf(horizontalOffset))
-      .append(String.valueOf(verticalJust))
-      .append(String.valueOf(horizontalJust))
+      .append(font.getSize())
+      .append(textBg)
+      .append(textFg)
+      .append(verticalPos)
+      .append(verticalOffset)
+      .append(horizontalPos)
+      .append(horizontalOffset)
+      .append(verticalJust)
+      .append(horizontalJust)
       .append(nameFormat.getFormat())
       .append(font.getFamily())
       .append(font.getStyle())
-      .append(String.valueOf(rotateDegrees))
+      .append(rotateDegrees)
       .append(propertyName)
       .append(description);
     return ID + se.getValue();
@@ -231,7 +248,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // Can cause further looping so that the infinite loop report
       // never finishes before a StackOverflow occurs
       //
-      if (! RecursionLimiter.isReportingInfiniteLoop()) {
+      if (!RecursionLimiter.isReportingInfiniteLoop()) {
         nameFormat.setProperty(LABEL, getLabel());
       }
       try {
@@ -262,56 +279,63 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
   }
 
+  private void updateCachedOpForZoomWindows(double zoom) {
+    if (zoom == lastZoom && lastCachedOp != null) {
+      return;
+    }
 
-// FIXME: This doesn't belong here. Should be in ImageUtils instead?
-  public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
-    drawLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
+    float fsize = (float)(font.getSize() * zoom);
+
+    // Windows renders some characters (e.g. "4") very poorly at 8pt. To
+    // mitigate that, we upscale, render, then downscale when the font
+    // would be 8pt.
+    if (Math.round(fsize) == 8.0f) {
+      final Font zfont = font.deriveFont(((float)(3 * font.getSize() * zoom)));
+      lastCachedOp = Op.scale(new LabelOp(lastCachedLabel, zfont, textFg, textBg), 1.0 / 3.0);
+    }
+    else if (zoom == 1.0) {
+      lastCachedOp = baseOp;
+    }
+    else {
+      final Font zfont = font.deriveFont(fsize);
+      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
+    }
+
+    lastZoom = zoom;
   }
 
-// FIXME: This doesn't belong here. Should be in ImageUtils instead?
-  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    g.setFont(f);
-    final int width = g.getFontMetrics().stringWidth(text + "  ");
-    final int height = g.getFontMetrics().getHeight();
-    int x0 = x;
-    int y0 = y;
-    switch (hAlign) {
-    case CENTER:
-      x0 = x - width / 2;
-      break;
-    case LEFT:
-      x0 = x - width;
-      break;
+  private void updateCachedOpForZoomNotWindows(double zoom) {
+    if (zoom == lastZoom && lastCachedOp != null) {
+      return;
     }
-    switch (vAlign) {
-    case CENTER:
-      y0 = y - height / 2;
-      break;
-    case BOTTOM:
-      y0 = y - height;
-      break;
+
+    if (zoom == 1.0) {
+      lastCachedOp = baseOp;
     }
-    if (bgColor != null) {
-      g.setColor(bgColor);
-      g.fillRect(x0, y0, width, height);
+    else {
+      float fsize = (float)(font.getSize() * zoom);
+      final Font zfont = font.deriveFont(fsize);
+      lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
     }
-    if (borderColor != null) {
-      g.setColor(borderColor);
-      g.drawRect(x0, y0, width, height);
-    }
-    g.setColor(fgColor);
-    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                      RenderingHints.VALUE_ANTIALIAS_ON);
-    g.drawString(" " + text + " ", x0,
-      y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
+
+    lastZoom = zoom;
   }
+
+  private final DoubleConsumer updateCachedOpForZoom =
+    SystemUtils.IS_OS_WINDOWS ? this::updateCachedOpForZoomWindows
+                              : this::updateCachedOpForZoomNotWindows;
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    updateCachedImage();
     piece.draw(g, x, y, obs, zoom);
 
-// FIXME: We should be drawing the text at the right size, not scaling it!
+    updateCachedImage();
+    if (lastCachedLabel == null) {
+      return;
+    }
+
+    updateCachedOpForZoom.accept(zoom);
+
     final Point p = getLabelPosition();
     final int labelX = x + (int) (zoom * p.x);
     final int labelY = y + (int) (zoom * p.y);
@@ -326,7 +350,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       g2d.transform(newXForm);
     }
 
-    imagePainter.draw(g, labelX, labelY, zoom, obs);
+    g.drawImage(lastCachedOp.getImage(), labelX, labelY, obs);
 
     if (rotateDegrees != 0) {
       g2d.setTransform(saveXForm);
@@ -334,18 +358,21 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   protected void updateCachedImage() {
-    final String label = getLocalizedLabel();
-    if (label != null && !label.equals(lastCachedLabel)) {
-      imagePainter.setSource(null);
-      lastCachedLabel = null;
-      position = null;
+    final String ll = getLocalizedLabel();
+    if (ll == null || ll.isEmpty()) {
+      if (lastCachedLabel != null) {
+        // label has changed to be empty
+        position = null;
+        lastCachedLabel = null;
+        baseOp = lastCachedOp = null;
+      }
     }
-
-    if (imagePainter.getSource() == null &&
-        label != null && label.length() > 0) {
-      lastCachedLabel = label;
-      imagePainter.setSource(
-        new LabelOp(lastCachedLabel, font, textFg, textBg));
+    else if (ll != null && !ll.equals(lastCachedLabel)) {
+      // label has chagned, is nonempty
+      position = null;
+      lastCachedLabel = ll;
+      baseOp = new LabelOp(lastCachedLabel, font, textFg, textBg);
+      lastCachedOp = null;
     }
   }
 
@@ -361,8 +388,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     int x = horizontalOffset;
     int y = verticalOffset;
 
-    updateCachedImage();  // ensure that the LabelOp is set
-    final Dimension lblSize = imagePainter.getImageSize();
+    updateCachedImage();
+    final Dimension lblSize = baseOp != null ? baseOp.getSize() : new Dimension();
     final Rectangle selBnds = piece.getShape().getBounds();
 
     switch (verticalPos) {
@@ -410,8 +437,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public void setLabel(String s) {
     if (s == null) s = "";
 
-    position = null;  // clear position cache
-
     int index = s.indexOf("$" + propertyName + "$");
     while (index >= 0) {
       s = s.substring(0, index) +
@@ -424,13 +449,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     labelFormat.setProperty(BasicPiece.PIECE_NAME, piece.getName());
     labelFormat.setFormat(label);
 
-    if (getMap() != null && label != null && label.length() > 0) {
-      imagePainter.setSource(
-        new LabelOp(getLocalizedLabel(), font, textFg, textBg));
-    }
-    else {
-      imagePainter.setSource(null);
-    }
+    // clear cached values
+    position = null;
+    lastCachedLabel = null;
+    baseOp = lastCachedOp = null;
   }
 
   public void setBackground(Color textBg) {
@@ -468,7 +490,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     @Override
     public BufferedImage eval() throws Exception {
       // determine whether we are HTML and fix our size
-      final JLabel label = buildDimensions();
+      final JLabel l = buildDimensions();
 
       // draw nothing if our size is zero
       if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
@@ -481,6 +503,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       );
 
       final Graphics2D g = im.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -492,8 +515,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       // paint the foreground
       if (fg != null) {
-        if (label != null) {
-          label.paint(g);
+        if (l != null) {
+          l.paint(g);
         }
         else {
           g.setColor(fg);
@@ -511,17 +534,17 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private JLabel buildDimensions() {
       // Build and return a JLabel if we need to render HTML,
       // then determine the dimensions of the label.
-      final JLabel label;
+      final JLabel l;
 
       if (BasicHTML.isHTMLString(txt)) {
-        label = new JLabel(txt);
-        label.setForeground(fg);
-        label.setFont(font);
-        size = label.getPreferredSize();
-        label.setSize(size);
+        l = new JLabel(txt);
+        l.setForeground(fg);
+        l.setFont(font);
+        size = l.getPreferredSize();
+        l.setSize(size);
       }
       else {
-        label = null;
+        l = null;
 
         final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
         final FontMetrics fm = g.getFontMetrics(font);
@@ -529,7 +552,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         g.dispose();
       }
 
-      return label;
+      return l;
     }
 
     @Override
@@ -575,7 +598,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(new Rectangle(getLabelPosition(), imagePainter.getImageSize()));
+    r.add(new Rectangle(
+      getLabelPosition(),
+      baseOp != null ? baseOp.getSize() : new Dimension()
+    ));
     return r;
   }
 
@@ -590,31 +616,33 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public Shape getShape() {
     Shape innerShape = piece.getShape();
 
-    // If the label has a Control key, then the image of the label is NOT included in the selectable area of the
-    // counter
-    if (! labelKey.isNull()) {
+    // If the label has a Control key, then the image of the label is NOT
+    // included in the selectable area of the counter
+    if (!labelKey.isNull()) {
       return innerShape;
     }
-    else {
-      final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
 
-      // If the label is completely enclosed in the current counter shape, then we can just return
-      // the current shape
-      if (innerShape.contains(r.x, r.y, r.width, r.height)) {
-        return innerShape;
-      }
-      else {
-        final Area a = new Area(innerShape);
+    final Rectangle r = new Rectangle(
+      getLabelPosition(),
+      baseOp != null ? baseOp.getSize() : new Dimension()
+    );
 
-        // Cache the Area object generated. Only recreate if the label position or size has changed
-        if (!r.equals(lastRect)) {
-          lastShape = new Area(r);
-          lastRect = new Rectangle(r);
-        }
-        a.add(lastShape);
-        return a;
-      }
+    // If the label is completely enclosed in the current counter shape,
+    // then we can just return the current shape
+    if (innerShape.contains(r.x, r.y, r.width, r.height)) {
+      return innerShape;
     }
+
+    final Area a = new Area(innerShape);
+
+    // Cache the Area object generated. Only recreate if the label position
+    // or size has changed
+    if (!r.equals(lastRect)) {
+      lastShape = new Area(r);
+      lastRect = new Rectangle(r);
+    }
+    a.add(lastShape);
+    return a;
   }
 
   @Override
@@ -902,5 +930,19 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public String getComponentName() {
     return getDescription();
+  }
+
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, int, int, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
+  public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, hAlign, vAlign, fgColor, bgColor);
+  }
+
+  /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, Font, int, int, Color, Color, Color)} instead. **/
+  @Deprecated(since = "2020-08-27", forRemoval = true)
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
+    ProblemDialog.showDeprecated("2020-08-27");
+    LabelUtils.drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor);
   }
 }

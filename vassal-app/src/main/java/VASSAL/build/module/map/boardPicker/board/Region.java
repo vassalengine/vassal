@@ -30,8 +30,8 @@ import javax.swing.JComponent;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.counters.Labeler;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.image.LabelUtils;
 
 
 public class Region extends AbstractConfigurable {
@@ -260,8 +260,11 @@ public class Region extends AbstractConfigurable {
 
     g.setColor(saveColor);
 
-    Labeler.drawLabel(g, getLocalizedConfigureName(), posX, posY + labelOffset, f, Labeler.CENTER,
-                      Labeler.TOP, fg, bg, fg);
+    LabelUtils.drawLabel(
+      g, getLocalizedConfigureName(),
+      posX, posY + labelOffset, f, LabelUtils.CENTER,
+      LabelUtils.TOP, fg, bg, fg
+    );
     g.setClip(oldClip);
 
     // Calculate and store the selection rectangle
