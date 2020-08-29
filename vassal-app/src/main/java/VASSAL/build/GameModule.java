@@ -361,7 +361,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return The "type name" for this kind of component, i.e. the part appearing [In Brackets] in the Editor's {@link ConfigureTree}.
+   * Gets the generic name for this type of class across all instances of it. Appears
+   * in the Editor window in [..] as e.g. [Map], [Prototype], etc.
+   * @return The generic name for this kind of component, i.e. the part appearing [In Brackets] in the Editor's {@link ConfigureTree}.
    */
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GameModule.component_type");  //$NON-NLS-1$
