@@ -72,6 +72,9 @@ import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
 
+/**
+ * BasicModule holds the
+ */
 public class BasicModule extends GameModule {
   private static final Logger log =
     LoggerFactory.getLogger(BasicModule.class);

@@ -115,9 +115,7 @@ import VASSAL.tools.version.VersionUtils;
  * the root of the {@link Buildable} containment hierarchy, although
  * {@link BasicModule} actually stands in as the root node in the Editor's
  * {@link ConfigureTree} and contains the root node's own encoder and
- * a certain amount of its build logic, in order to allow the root node
- * to be easily configured in the Editor without fully building/activating
- * the module.
+ * a certain amount of its build logic.
  *
  * Components which are added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
@@ -742,6 +740,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Dispatches our inbound {@link Command} traffic -- incoming player commands ready to be executed.
    * Unlike everybody else's decode method, the GameModule's method invokes each of its registered {@link CommandEncoder}s in turn
    * until one of them is able to deserialize the command from a String into a {@link Command} object ready to be executed.
+   *
+   * Note: if you are looking for the GameModule's "own" decoder, see {@link BasicModule}
    */
   @Override
   public Command decode(String command) {
@@ -765,6 +765,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method invokes each
    * of its registered {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object
    * into an ascii-compatible String ready to be send to other players' clients.
+   *
+   * Note: if you are looking for the GameModule's "own" encoder, see {@link BasicModule}
    */
   @Override
   public String encode(Command c) {
