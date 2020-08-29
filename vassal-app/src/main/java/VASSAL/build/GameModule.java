@@ -338,7 +338,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    *
-   * A valid verson format is "w.x.y[bz]", where
+   * A valid version format is "w.x.y[bz]", where
    * 'w','x','y', and 'z' are integers.
    * @return a negative number if <code>v2</code> is a later version
    * the <code>v1</code>, a positive number if an earlier version,
@@ -368,7 +368,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Since we aren't expecting to be {@link #addTo}'ed to a parent, we likewise don't need to do much about being removeFrom'ed one.
+   * Since we aren't expecting to be {@link #addTo}'ed to a parent, we likewise don't need to do much about being "removeFrom'ed" one.
    * @param parent Notional "parent" of this GameModule
    */
   @Override
@@ -1278,7 +1278,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Gets the value of a module level global property -- this includes identification information for the
    * local player as well as the contents of any Global Property objects defined at module level in the Module.
-   * @key identifies the global property to be returned
+   * @param key identifies the global property to be returned
    * @return value of designated global property
    */
   @Override
@@ -1300,7 +1300,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
    * "global variables" of a VASSAL Module, as they are accessible by any component at any time.
-   * @name identifies the Global Property whose value should be returned
+   * @param name identifies the Global Property whose value should be returned
    * @return value of designated global property
    */
   @Override
