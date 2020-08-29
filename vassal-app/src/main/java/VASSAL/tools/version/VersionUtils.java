@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import VASSAL.Info;
@@ -88,6 +90,18 @@ public class VersionUtils {
   public static Boolean isUpdateable(String runningVersion) throws IOException {
     final String update = update(runningVersion);
     return !update.equals(runningVersion);
+  }
+
+  public static String nextMinorVersion(String v) {
+    final ArtifactVersion av = new DefaultArtifactVersion(v);
+    return String.valueOf(av.getMajorVersion()) + '.' +
+      (av.getMinorVersion() + 1);
+  }
+
+  public static String truncateToMinorVersion(String v) {
+    final ArtifactVersion av = new DefaultArtifactVersion(v);
+    return String.valueOf(av.getMajorVersion()) + '.' +
+      av.getMinorVersion();
   }
 
   public static void main(String[] args) throws IOException {

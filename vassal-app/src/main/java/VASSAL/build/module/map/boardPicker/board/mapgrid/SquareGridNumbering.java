@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -14,14 +13,6 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
- */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 24, 2002
- * Time: 10:31:09 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
@@ -40,7 +31,7 @@ import javax.swing.JPanel;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
-import VASSAL.counters.Labeler;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class SquareGridNumbering extends RegularGridNumbering {
@@ -169,12 +160,11 @@ public class SquareGridNumbering extends RegularGridNumbering {
         }
 
         centerPoint = offsetLabelCenter(newX, newY, scale);
-        Labeler.drawLabel(g, getName(printRow, printColumn),
-                          centerPoint.x,
-                          centerPoint.y,
-                          f,
-                          Labeler.CENTER,
-                          Labeler.TOP, color, null, null);
+        LabelUtils.drawLabel(
+          g, getName(printRow, printColumn),
+          centerPoint.x, centerPoint.y,
+          f, LabelUtils.CENTER, LabelUtils.TOP, color, null, null
+        );
       }
     }
     if (rotateTextDegrees != 0) {
