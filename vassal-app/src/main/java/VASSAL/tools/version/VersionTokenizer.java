@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
  * @author Joel Uckelman
  * @see VersionFormatException
  */
-@Deprecated(since = "2020-08-06", forRemoval = true)
+@Deprecated(since = "2020-08-28", forRemoval = true)
 public interface VersionTokenizer {
   /**
    * Returns <code>true</code> if the version <code>String</code> is
