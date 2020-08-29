@@ -2227,7 +2227,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /** Ensure that the given region (in map coordinates) is visible */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      final double noRecenterPct = 0.9;
       boolean bTriggerRecenter = false;
       final Point p = mapToComponent(r.getLocation());
       final Rectangle rCurrent = theMap.getVisibleRect();
@@ -2235,6 +2234,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
       // If r is already visible decide if unit is close enough to
       // border to justify a recenter
+
+      // Close enough means a strip of the window along the edges whose
+      // width is a % of the edge to center of the window
+
+      // The % is defined in GlobalOptions.CENTER_ON_MOVE_SENSITIVITY
+      final double noRecenterPct = (100 - GlobalOptions.getInstance().centerOnOpponentsMoveSensitivity())/100;
 
       // if r is within a band of  n%width/height of border, trigger recenter
       rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);

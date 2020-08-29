@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.lang.*;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -504,7 +505,20 @@ public class GlobalOptions extends AbstractConfigurable {
   public boolean centerOnOpponentsMove() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
   }
-  
+
+  public double centerOnOpponentsMoveSensitivity() {
+    Integer intSensitivity = (int) GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE_SENSITIVITY);
+    double sensitivity;
+    sensitivity = intSensitivity.doubleValue();
+    if (sensitivity > 100) {
+      sensitivity = 100;
+    }
+    if (sensitivity < 0) {
+      sensitivity = 0;
+    }
+    return sensitivity;
+  }
+
   public String chatterHTMLSetting() {
     return chatterHTMLSupport;
   }
