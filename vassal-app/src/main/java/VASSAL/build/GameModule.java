@@ -17,6 +17,7 @@
  */
 package VASSAL.build;
 
+import VASSAL.configure.AutoConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.FileDialog;
 import java.awt.event.WindowAdapter;
@@ -121,7 +122,7 @@ import VASSAL.tools.version.VersionUtils;
  * Components which are added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * <p>It is a singleton, and contains access points for many other classes,
+ * <p>It is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs}.</p>
  */
@@ -163,20 +164,20 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @deprecated use {@link #getPlayerWindow()} and {@link PlayerWindow#getControlPanel()} instead.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected JPanel controlPanel = frame.getControlPanel();
+  protected JPanel controlPanel = frame.getControlPanel(); // Will hold the main module toolbar
 
-  protected GameState theState;
-  protected DataArchive archive;
-  protected Prefs preferences;
-  protected Logger logger;
-  protected Chatter chat;
-  protected Random RNG = new SecureRandom();
-  protected ServerConnection server;
+  protected GameState theState;                    // Reads/writes full game state; starts/stops gameplay.
+  protected DataArchive archive;                   // Our "zip" archive with a .vmod file extension
+  protected Prefs preferences;                     // The user preferences
+  protected Logger logger;                         // For creating .vlog log files (playbacks) of PBEM games
+  protected Chatter chat;                          // The Chat Log window
+  protected Random RNG = new SecureRandom();       // Random number generator
+  protected ServerConnection server;               // Server object for online games
 
-  protected ImageTileSource tcache;
+  protected ImageTileSource tcache;                // Manages the tiling of large map images
 
-  protected WizardSupport wizardSupport;
-  protected PropertyChangeSupport idChangeSupport;
+  protected WizardSupport wizardSupport;           // For the startup Wizard
+  protected PropertyChangeSupport idChangeSupport; // This manages the changing of player names in online connections
 
   protected List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   protected List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
@@ -197,7 +198,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected GpIdSupport gpidSupport = null;
   protected Long crc = null;
 
-  private static String oldDragThreshold; //
+  private static String oldDragThreshold; // for putting the DragThreshold back after our session
 
   /**
    * @return the top-level frame of the controls window
@@ -210,14 +211,25 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return frame;
   }
 
+  /**
+   * "Player" in this context meaning the VASSAL Player, i.e. the main module window, as opposed to any
+   * individual player meaning participant-in-a-boardgame.
+   * @return The main window for the module
+   */
   public PlayerWindow getPlayerWindow() {
     return frame;
   }
 
+  /**
+   * Sets the proper name for module window's title bar
+   */
   public void initFrameTitle() {
     frame.setTitle(getLocalizedGameName());
   }
 
+  /**
+   * @return Our wizard
+   */
   public WizardSupport getWizardSupport() {
     if (wizardSupport == null) {
       wizardSupport = new WizardSupport();
@@ -225,6 +237,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return wizardSupport;
   }
 
+  /**
+   * Constructor for a GameModule.
+   * @param archive The .vmod (or .tmp) archive to associate
+   */
   protected GameModule(DataArchive archive) {
     this.archive = archive;
 
@@ -247,10 +263,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Initialize the module
+   * Initialize the module from the XML buildFile
+   * @throws IOException IOException
    */
   protected abstract void build() throws IOException;
 
+  /**
+   * Sets a buildFile (XML) attribute value for this component.
+   * @param name the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   *              <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> can also be an instance of
+   */
   @Override
   public void setAttribute(String name, Object value) {
     if (MODULE_NAME.equals(name)) {
@@ -286,6 +309,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @param name the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @return a String representation of the attribute with the given name. When initializing a module, this String value will be passed to {@link #setAttribute}
+   */
   @Override
   public String getAttributeValueString(String name) {
     if (MODULE_NAME.equals(name)) {
@@ -325,23 +352,44 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return VersionUtils.compareVersions(v1, v2);
   }
 
+  /**
+   * Game Module is normally at the root of the hierarchy, so it doesn't expect to get added to anything.
+   * @param b Notional "parent" of this GameModule
+   */
   @Override
   public void addTo(Buildable b) {
   }
 
+  /**
+   * @return The "type name" for this kind of component, i.e. the part appearing [In Brackets] in the Editor's {@link ConfigureTree}.
+   */
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GameModule.component_type");  //$NON-NLS-1$
   }
 
+  /**
+   * Since we aren't expecting to be {@link #addTo}'ed to a parent, we likewise don't need to do much about being removeFrom'ed one.
+   * @param parent Notional "parent" of this GameModule
+   */
   @Override
   public void removeFrom(Buildable parent) {
   }
 
+  /**
+   * @return a HelpFile describing how to use and configure this component
+   */
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm");  //$NON-NLS-1$
   }
 
+  /**
+   * Lists all the buildFile (XML) attribute names for this component.
+   * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
+   * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
+   * @return a list of all buildFile (XML) attribute names for this component
+   * @see AbstractBuildable
+   */
   @Override
   public String[] getAttributeNames() {
     return new String[]{
@@ -353,6 +401,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  /**
+   * @return an array of Strings describing the buildFile (XML) attributes of this component. These strings are used as prompts in the
+   * Properties window for this object, when the component is configured in the Editor. The order of descriptions should
+   * be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
+   * @see AbstractConfigurable
+   */
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
@@ -362,6 +416,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  /**
+   * @return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
+   * Color, and KeyStroke, along with any class for which a Configurer exists in VASSAL.configure. The class determines, among other things,
+   * which type of {@link AutoConfigurer} will be used to configure the attribute when the object is configured in the Editor.
+   *
+   * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
+   * @see AbstractConfigurable
+   */
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
@@ -371,6 +433,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     };
   }
 
+  /**
+   * List of subcomponents which can be added to a GameModule.
+   *
+   * @return a list of valid sub-component Classes.  If a Class
+   * appears in this list, then instances of that class may be added
+   * to this component from the Editor's {@link ConfigureTree} window by
+   * right-clicking on the component and selecting the appropriate "Add"
+   * option.
+   * @see Configurable
+   */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
@@ -402,6 +474,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Components that wish to fire hotkey events when they have the
    * focus should register themselves using this method.  These events will be
    * forwarded to all listeners that have registered themselves with {@link #addKeyStrokeListener}
+   * @param src KeyStrokeSource Component that wants to register as a source for hotkey events
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
     keyStrokeSources.add(src);
@@ -416,6 +489,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Objects that react to hotkey events should register themselves
    * using this method.  Any component that has been registered with {@link #addKeyStrokeSource}
    * will forward hotkey events to listeners registered with this method.
+   *
+   * @param l KeystrokeListener to add
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
     keyStrokeListeners.add(l);
@@ -445,6 +520,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * Invokes a {@link NamedKeyStroke} to all of our listeners.
+   * @param stroke NamedKeyStroke to invoke
+   */
   public void fireKeyStroke(NamedKeyStroke stroke) {
     if (stroke == null || stroke.isNull()) {
       return;
@@ -465,10 +544,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return gameName;
   }
 
+  /**
+   * @return the localized/translated game name for this module
+   */
   public String getLocalizedGameName() {
     return localizedGameName == null ? gameName : localizedGameName;
   }
 
+  /**
+   * @return the version number for this module
+   */
   public String getGameVersion() {
     return moduleVersion;
   }
@@ -480,10 +565,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
+  /**
+   * Currently used to listen for changes to player names
+   * @param l propertyChangeListener to add
+   */
   public void addIdChangeListener(PropertyChangeListener l) {
     idChangeSupport.addPropertyChangeListener(l);
   }
 
+  /**
+   * Currently used to listen for changes to player names
+   * @param l propertyChangeListener to remove
+   */
   public void removeIdChangeListener(PropertyChangeListener l) {
     idChangeSupport.removePropertyChangeListener(l);
   }
@@ -509,8 +602,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * This method adds a {@link CommandEncoder} to the list of objects
-   * that will attempt to decode/encode a command
+   * GameModule holds the master list of CommandEncoders, and invokes them as appropriate when commands are sent and
+   * received. This method adds a {@link CommandEncoder} to the list of objects that will attempt to decode/encode a command.
    *
    * @see #decode
    * @see #encode
@@ -523,7 +616,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * This method removes a {@link CommandEncoder} from the list of objects
    * that will attempt to decode/encode a command
    *
-   *
+   * @see #addCommandEncoder
    * @see #decode
    * @see #encode
    */
@@ -534,7 +627,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Central location to create any type of GamePiece from within VASSAL
    *
-   * @param type Type for Piece
+   * @param type String definition of the piece
    * @return Created Piece
    */
   public GamePiece createPiece(String type) {
@@ -549,6 +642,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return null;
   }
 
+  /**
+   * Central location to create any type of GamePiece Trait (Decorator) from within VASSAL
+   *
+   * @param type String definition of the Trait (Decorator)
+   * @return Created Piece
+   */
   public GamePiece createPiece(String type, GamePiece inner) {
     for (CommandEncoder commandEncoder : commandEncoders) {
       if (commandEncoder instanceof BasicCommandEncoder) {
@@ -564,6 +663,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Display the given text in the control window's status line.
    * Save the messages for later if the Chatter has not been initialised yet
+   * @param s message to display in Chat Log
    */
   public void warn(String s) {
     if (chat == null) {
@@ -583,15 +683,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the object responsible for logging commands to a logfile
+   * @return the object responsible for logging commands to a .vlog logfile to support PBEM play
    */
   public Logger getLogger() {
     return logger;
   }
 
   /**
-   * Set the object that displays chat text. Display any warning
-   * messages deferred during earlier initialisation
+   * Allows the Chat Log window to register itself to the Module. When a Chat Log is first
+   * registered, display any warning messages deferred during earlier initialisation
+   *
+   * @param c The Chat Log window we want to use
    */
   public void setChatter(Chatter c) {
     chat = c;
@@ -613,11 +715,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the object that displays chat text
+   * @return the registered Chat Log for the Module Window (window that displays chat text)
    */
   public Chatter getChatter() {
     return chat;
   }
+
 
   public void setPrefs(Prefs p) {
     preferences = p;
@@ -634,8 +737,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Uses the registered  {@link CommandEncoder}s
-   * to decode a String into a {@link Command}.
+   * Dispatches our inbound {@link Command} traffic -- incoming player commands ready to be executed.
+   * Unlike everybody else's decode method, the GameModule's method invokes each of its registered {@link CommandEncoder}s in turn
+   * until one of them is able to deserialize the command from a String into a {@link Command} object ready to be executed.
    */
   @Override
   public Command decode(String command) {
@@ -655,7 +759,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Uses the registered {@link CommandEncoder}s to encode a {@link Command} into a String object
+   * Dispatches our outbound {@link Command} traffic -- outgoing player commands to be sent to other players' clients via
+   * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method invokes each
+   * of its registered {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object
+   * into an ascii-compatible String ready to be send to other players' clients.
    */
   @Override
   public String encode(Command c) {
@@ -710,6 +817,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
+   * Provides access to the Game Module's toolbar.
    * @return the JToolBar of the command window
    */
   @Override
@@ -822,8 +930,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Encode the {@link Command}, send it to the server and write it
-   * to a logfile (if any is open)
+   * When the local player has taken any action that would change the game state (or otherwise needs to be sent to
+   * any other players' clients), the action should be encapsulated into a {@link Command} and sent here. This method
+   * encodes the {@link Command}, sends it to the server (if we're online) and write it to a .vlog PBEM logfile (if
+   * any is open). It thus drives both formats of multiplayer game through a common interface.
+   * @param c The {@link Command} to be sent and logged.
    *
    * @see #encode
    */
@@ -868,6 +979,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    * Restart logging and return any outstanding commands
+   * @return any outstanding {@link Command} (can contain multiple chained commands)
    */
   public Command resumeLogging() {
     Command c;
@@ -905,14 +1017,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the object reponsible for sending messages to the server
+   * @return the object responsible for sending messages to the server
    */
   public ServerConnection getServer() {
     return server;
   }
 
   /**
-   * Set the singleton GameModule and invoke {@link #build} on it.
+   * Loads a module object into the player window.
+   *
+   * Registers a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a> GameModule
+   * and invokes {@link Buildable#build} on it to build it from the XML buildFile. This will have the effect of
+   * invoking {@link Buildable#build} on all of the module's subcomponents as well, effectively building our whole
+   * component hierarchy from the XML.
    */
   public static void init(GameModule module) throws IOException {
     if (theModule != null) {
@@ -957,7 +1074,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Unload the module
    */
   public static void unload() {
-
     // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
     if (oldDragThreshold != null) {
       System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);
@@ -973,30 +1089,53 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
-  // Saved the current buildString for comparison when we try and quit.
+  /**
+   * Save the current buildString for comparison when we try and quit.
+   */
   public void updateLastSave() {
     lastSavedConfiguration = buildString();
   }
 
+  /**
+   * Allocates the next available GamePiece ID and returns it.
+   * @return an available GpID
+   * @see GpIdSupport
+   */
   @Override
   public String generateGpId() {
     return String.valueOf(nextGpId++);
   }
 
+  /**
+   * @return the next available GpId (GamePiece ID) (but doesn't allocate it -- for that see {@link #generateGpId})
+   * @see GpIdSupport
+   */
   @Override
   public int getNextGpId() {
     return nextGpId;
   }
 
+  /**
+   * Sets the next available GamePiece ID
+   * @param id new value for nextGpId.
+   * @see GpIdSupport
+   */
   @Override
   public void setNextGpId(int id) {
     nextGpId = id;
   }
 
+  /**
+   * Registers a GamePiece ID support object for us to manage a namespace for unique GamePiece objects.
+   * @param s GamePiece ID object
+   */
   public void setGpIdSupport(GpIdSupport s) {
     gpidSupport = s;
   }
 
+  /**
+   * @return Our registered Game Piece ID namespace service provider.
+   */
   public GpIdSupport getGpIdSupport() {
     return gpidSupport;
   }
@@ -1004,6 +1143,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Check every PieceSlot and PlaceMarker trait for duplicate,
    * illegal or Missing GamePiece id's and update them if necessary
+   * @see GpIdSupport
    */
   protected void checkGpIds() {
     final GpIdChecker checker = new GpIdChecker(this);
@@ -1020,19 +1160,28 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the object which stores data for the module
+   * VASSAL modules are stored in ".vmod" files, which are actually simple ".zip" files with
+   * a unique extension.
+   * @return the object which stores data for the module -- our .vmod Zip file.
    */
   public DataArchive getDataArchive() {
     return archive;
   }
 
   /**
+   * VASSAL modules are stored in ".vmod" files, which are actually simple ".zip" files with
+   * a unique extension.
+   *
    * If the module is being edited, return the writeable archive for the module
+   * @return the writer for our .vmod Zip file
    */
   public ArchiveWriter getArchiveWriter() {
     return archive.getWriter();
   }
 
+  /**
+   * @return the object that provides tiling and caching services for tiling large map images.
+   */
   public ImageTileSource getImageTileSource() {
     if (tcache == null) {
       // FIXME: There's no guarantee that getGameName() and getGameVersion()
@@ -1058,7 +1207,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the singleton instance of GameModule
+   * @return the <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a> instance of GameModule
    */
   public static GameModule getGameModule() {
     return theModule;
@@ -1072,17 +1221,24 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return theState;
   }
 
+  /**
+   * If the module is being edited, write the module data after prompting for a new filename.
+   */
   public void saveAs() {
     save(true);
   }
 
   /**
-   * If the module is being edited, write the module data
+   * If the module is being edited, write the module data to the current filename
    */
   public void save() {
     save(false);
   }
 
+  /**
+   * If the module is being edited, write the module data
+   * @param saveAs true to force display of a {@link FileChooser} to offer a new choice of filenames
+   */
   protected void save(boolean saveAs) {
     vassalVersionCreated = Info.getVersion();
 
@@ -1110,6 +1266,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @return an XML element that can be used to {@link Buildable#build} the module object.
+   */
   protected String buildString() {
     org.w3c.dom.Document doc = Builder.createNewDocument();
     doc.appendChild(getBuildElement(doc));
@@ -1117,7 +1276,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Return values of Global properties
+   * Gets the value of a module level global property -- this includes identification information for the
+   * local player as well as the contents of any Global Property objects defined at module level in the Module.
+   * @key identifies the global property to be returned
+   * @return value of designated global property
    */
   @Override
   public Object getProperty(Object key) {
@@ -1135,17 +1297,34 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return p == null ? null : p.getPropertyValue();
   }
 
+  /**
+   * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
+   * "global variables" of a VASSAL Module, as they are accessible by any component at any time.
+   * @name identifies the Global Property whose value should be returned
+   * @return value of designated global property
+   */
   @Override
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
 
+  /**
+   * Adds a new mutable (changeable) "Global Property" to the Module. Module level Global Properties serve as the
+   * "global variables" of a VASSAL Module, as they are accessible by any component at any time.
+   * @param key Name for the new Global Property
+   * @param p Starting property value
+   */
   @Override
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
   }
 
+  /**
+   * Removes a mutable property from the Global Properties list.
+   * @param key Name of the Global Property
+   * @return the removed property, for some reason.
+   */
   @Override
   public MutableProperty removeMutableProperty(String key) {
     MutableProperty p = propsContainer.removeMutableProperty(key);
@@ -1155,11 +1334,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return p;
   }
 
+  /**
+   * @return Identifies the ID/level for mutable properties stored here in the Module.
+   */
   @Override
   public String getMutablePropertiesContainerId() {
-    return "Module";
+    return "Module"; //NON-NLS-$1
   }
 
+  /**
+   * @param key Name of the property to get the value of
+   * @return Localized/translated name of the named property, if one is available, otherwise returns the non-localized name
+   */
   @Override
   public Object getLocalizedProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
@@ -1171,6 +1357,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @return a cumulative CRC from all of our files
+   */
   public long getCrc() {
     if (crc == null) {
       crc = buildCrc();
@@ -1178,6 +1367,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return crc;
   }
 
+  /**
+   * @return a cumulative CRC from all of our files
+   */
   protected Long buildCrc() {
     final List<File> files = new ArrayList<>();
     if (getDataArchive().getArchive() != null) {
@@ -1199,6 +1391,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  /**
+   * @return the object containing the internationalization/localization information for this component
+   */
   @Override
   public ComponentI18nData getI18nData() {
     ComponentI18nData myI18nData = super.getI18nData();
@@ -1216,6 +1411,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
                                               .orElse(null);
   }
 
+  /**
+   * Adds listener for players changing sides
+   * @param l new SideChangeListener
+   */
   public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
     PlayerRoster r = getPlayerRoster();
     if (r != null) {

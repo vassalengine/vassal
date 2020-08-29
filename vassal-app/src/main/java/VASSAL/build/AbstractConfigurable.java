@@ -94,7 +94,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   public abstract String[] getAttributeDescriptions();
 
   /**
-   * Return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
+   * @return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
    * Color, and KeyStroke, along with any class for which a Configurer exists in VASSAL.configure. The class determines, among other things,
    * which type of {@link AutoConfigurer} will be used to configure the attribute when the object is configured in the Editor.
    *
