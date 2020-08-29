@@ -2,6 +2,7 @@
 
 * 13332: Improved save game write time
 * 13217: Editor: Additional fix for cut-and-paste
+* 13134: Some characters in Text Labels render poorly at 8pt on Windows in 3.3+
 
 3.4.0-beta1 - 26 August 2020
 
