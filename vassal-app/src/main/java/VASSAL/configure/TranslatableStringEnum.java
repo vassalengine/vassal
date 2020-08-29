@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,12 +18,13 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 
 /**
- * Wrapper class for an enumerated type.  If an AutoConfigurable object lists an attribute of type StringEnum.class,
- * the AutoConfigurer class will build a StringEnumConfigurer as that attribute's editor.
+ * Wrapper class for an enumerated type.  If an AutoConfigurable object lists an attribute of type TranslatableStringEnum.class,
+ * the AutoConfigurer class will build a TranslatingStringEnumConfigurer as that attribute's editor.
  * The AutoConfigurable object should return a sub-class of StringEnum with a no-arg constructor
  */
-public abstract class StringEnum {
-  public StringEnum() {
+public abstract class TranslatableStringEnum extends StringEnum {
+  public TranslatableStringEnum() {
+    super();
   }
-  public abstract String[] getValidValues(AutoConfigurable target);
+  public abstract String[] getI18nKeys(AutoConfigurable target);
 }

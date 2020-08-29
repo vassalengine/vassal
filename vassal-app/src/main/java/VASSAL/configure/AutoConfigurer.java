@@ -139,6 +139,22 @@ public class AutoConfigurer extends Configurer
     else if (PropertyExpression.class.isAssignableFrom(type)) {
       config = new PropertyExpressionConfigurer(key, prompt);
     }
+    else if (TranslatableStringEnum.class.isAssignableFrom(type)) {
+      TranslatableStringEnum se = null;
+      try {
+        se = (TranslatableStringEnum) type.getConstructor().newInstance();
+      }
+      catch (Throwable t) {
+        ReflectionUtils.handleNewInstanceFailure(t, type);
+        config = new StringConfigurer(key, prompt);
+      }
+
+      if (se != null) {
+        final String[] validValues = se.getValidValues(target);
+        final String[] i18nKeys = se.getI18nKeys(target);
+        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys);
+      }
+    }
     else if (StringEnum.class.isAssignableFrom(type)) {
       StringEnum se = null;
       try {
