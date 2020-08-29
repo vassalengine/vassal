@@ -438,8 +438,6 @@ public class Flare extends AbstractConfigurable
 
     // translate the click location for current zoom
     final Point p = map.mapToDrawing(clickPoint, os_scale);
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
 
     // draw a circle around the selected point
     g2d.setColor(color);
@@ -650,13 +648,14 @@ public class Flare extends AbstractConfigurable
     }
 
     public String[] getI18nKeys(AutoConfigurable target) {
+      boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
         FLARE_ALT_LOCAL,
-        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
         FLARE_ALT_SHIFT_LOCAL,
-        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_SHIFT_COMMAND_LOCAL : FLARE_CTRL_SHIFT_LOCAL,
-        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
-        SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_SHIFT_COMMAND_LOCAL : FLARE_CTRL_SHIFT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
+        SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
       };
     }
   }
