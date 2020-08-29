@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.lang.*;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -221,7 +220,7 @@ public class GlobalOptions extends AbstractConfigurable {
     final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
       Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10 ); //$NON-NLS-1$
     prefs.addOption(pctRecenterOn);
-       
+
     validator = new SingleChildInstance(gm, getClass());
   }
 

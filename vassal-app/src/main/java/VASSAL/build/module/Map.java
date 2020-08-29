@@ -2239,7 +2239,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // width is a % of the edge to center of the window
 
       // The % is defined in GlobalOptions.CENTER_ON_MOVE_SENSITIVITY
-      final double noRecenterPct = (100 - GlobalOptions.getInstance().centerOnOpponentsMoveSensitivity())/100;
+      final double noRecenterPct = (100 - GlobalOptions.getInstance().centerOnOpponentsMoveSensitivity()) / 100;
 
       // if r is within a band of  n%width/height of border, trigger recenter
       rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);
