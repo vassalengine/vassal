@@ -33,6 +33,7 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
@@ -586,9 +587,23 @@ public class Flare extends AbstractConfigurable
   /**
    * A configurer for different combinations of modifier key
    */
-  public static class FlareKeyConfig extends StringEnum {
+  public static class FlareKeyConfig extends TranslatableStringEnum {
     @Override
+
+
+
     public String[] getValidValues(AutoConfigurable target) {
+      return new String[] {
+        FLARE_ALT,
+        FLARE_CTRL,
+        FLARE_ALT_SHIFT,
+        FLARE_CTRL_SHIFT,
+        FLARE_CTRL_ALT,
+        FLARE_CTRL_ALT_SHIFT
+      };
+    }
+
+    public String[] getI18nKeys(AutoConfigurable target) {
       return new String[] {
         FLARE_ALT_LOCAL,
         SystemUtils.IS_OS_MAC_OSX && !GlobalOptions.getInstance().getPrefMacLegacy() ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
