@@ -20,6 +20,8 @@ package VASSAL.build.module;
 import java.awt.Point;
 import java.util.Map;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.tools.ErrorDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,7 @@ import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
 import VASSAL.counters.Obscurable;
+import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.Pivot;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.PlaySound;
@@ -78,26 +81,62 @@ import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A {@link CommandEncoder} that handles the basic commands: {@link AddPiece},
- * {@link RemovePiece}, {@link ChangePiece}, {@link MovePiece}. If a module
- * defines custom {@link GamePiece} classes, then this class may be overriden
- * and imported into the module. Subclasses should override the
- * {@link #createDecorator} method or, less often, the {@link #createBasic} or
- * {@link #createPiece} methods to allow instantiation of the custom
- * {@link GamePiece} classes.
+ * {@see <a href="http://google.com">http://google.com</a>}
+ * Although it is the {@link CommandEncoder} which handles the basic commands: {@link AddPiece},
+ * {@link RemovePiece}, {@link ChangePiece}, {@link MovePiece}, this class is most commonly needed by
+ * module designers who want to make custom "Traits" for game pieces because it contains {@link #createDecorator},
+ * the {@link DecoratorFactory} for Traits, which are usually internally referred to as Decorators because they
+ * are implemented using the <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>.
+ * If a module is to add its own custom game pieces, it will need to override the {@link #createDecorator} method, and
+ * use this pattern to create any custom Traits:
+ * <pre>
+ *   package MyCustomClasses; // Your package name here
+ *   public class MyCustomCommandEncoder extends BasicCommandEncoder {
+ *     public Decorator createDecorator(String type, GamePiece inner) {
+ *       if (type.startsWith(MyCustomClass.ID)) {
+ *         return new MyCustomClass(type, inner);
+ *       }
+ *       //... more custom traits, possibly
+ *
+ *       // Now allow BasicCommandEncoder to run so that "normal" Traits process
+ *       return super.createDecorator(type, inner);
+ *     }
+ *   }
+ * </pre>
+ * Then in the buildFile (XML) for the module, the VASSAL.build.module.BasicCommandEncoder entry is replaced
+ * with an entry for (in the example above): <code>MyCustomClasses.MyCustomCommandEncoder</code>
+ * The class files are placed in a <code>MyCustomClasses</code> (package name) folder in the Zip structure of the VMOD file, and
+ * At that point the new trait can be imported into a piece as <code>MyCustomClasses.MyCustomClass</code> (package name followed by
+ * class name).
+ *
+ * Less often, the {@link #createBasic} or {@link #createPiece} methods could be overridden to allow instantiation of
+ * custom {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
   private static final Logger logger =
     LoggerFactory.getLogger(BasicCommandEncoder.class);
 
+  /**
+   * Factory interface for Decorators
+   *
+   * See: <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>, <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
+   */
   public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
 
+  /**
+   * Factory interface for BasicPieces.
+   * See: <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
+   */
   public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }
 
+  /**
+   * Factories for the three Basic Piece types that can be created:
+   * Stack, BasicPiece, and Deck.
+   */
   private final Map<String, BasicPieceFactory> basicFactories = Map.ofEntries(
     Map.entry(Stack.TYPE, type -> new Stack()),
     Map.entry(BasicPiece.ID, BasicPiece::new),
@@ -106,6 +145,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
   private final BasicPieceFactory defaultBasicPieceFactory = type -> null;
 
+  /**
+   * Factories for all of the standard Trait (aka "Decorator") types. If a new standard Trait
+   * is to be added to *VASSAL* it must be added here (as opposed to adding a Custom Class trait,
+   * which is added per the documentation in {@link BasicCommandEncoder}'s main Javadoc entry).
+   */
   private final Map<String, DecoratorFactory> decoratorFactories = Map.ofEntries(
     Map.entry(Immobilized.ID, Immobilized::new),
     Map.entry(Embellishment.ID, (type, inner) -> {
@@ -151,30 +195,42 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(GlobalHotKey.ID, GlobalHotKey::new)
   );
 
+  /**
+   * Fallthrough factory to catch unknown types.
+   */
   private final DecoratorFactory defaultDecoratorFactory = (type, inner) -> {
-    System.err.println("Unknown type " + type);
+    ErrorDialog.dataWarning(new BadDataReport("Unknown type " + type + " not found in BasicCommandEncoder's list of traits and basic pieces.", ""));
     return new Marker(Marker.ID, inner);
   };
 
+  /**
+   * Why do I exist? No one knows!
+   */
   public BasicCommandEncoder() {
   }
 
+  /**
+   * Parses out the command prefix for a type definition
+   * @param type a type definition string
+   * @return the command prefix for the type definition
+   */
   private String typePrefix(String type) {
     final String prefix = type.substring(0, type.indexOf(';') + 1);
     return prefix.isEmpty() ? type : prefix;
   }
 
   /**
-   * Creates a {@link Decorator} instance
+   * Creates a {@link Decorator} instance - a {@link GamePiece} "Trait". Modules which wish to provide their own custom
+   * classes should subclass BasicCommandEncoder and override this class. The override should check for and parse any
+   * definitions that match desired custom Traits(Decorators), and then use super to call this method for any unmatched
+   * definitions. Further documentation on creating custom traits appears in BasicCommandEncoder's own javadoc entry, or
+   * alternatively at the top of BasicCommandEncoder.java.
    *
-   * @param type
-   *          the type of the Decorator to be created. Once created, the
-   *          Decorator should return this value from its
-   *          {@link Decorator#myGetType} method.
-   *
-   * @param inner
-   *          the inner piece of the Decorator
-   * @see Decorator
+   * @param type the type of the Decorator ("Trait") to be created. Once created, the Decorator should
+   *             return this value from its {@link Decorator#myGetType} method.
+   * @param inner the inner trait/piece of the Decorator (the "innermost" member of a game piece will be a {@link BasicPiece}; each
+   *              successive Trait in the trait list presented in a piece's {@link PieceDefiner} dialog represents a sep "outward").
+   * @see Decorator, <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>
    */
   public Decorator createDecorator(String type, GamePiece inner) {
     return decoratorFactories.getOrDefault(
@@ -183,11 +239,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   }
 
   /**
-   * Create a GamePiece instance that is not a Decorator
+   * Create a {@link GamePiece} instance that is not a Decorator ("Trait"). In other words a {@link BasicPiece}, a {@link Stack}, or a {@link Deck}.
    *
-   * @param type
-   *          the type of the GamePiece. The created piece should return this
-   *          value from its {@link GamePiece#getType} method
+   * @param type the type of the GamePiece. The created piece should return this value from its {@link GamePiece#getType} method.
    */
   protected GamePiece createBasic(String type) {
     return basicFactories.getOrDefault(
@@ -197,10 +251,12 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
   /**
    * Creates a GamePiece instance from the given type information. Determines
-   * from the type whether the represented piece is a {@link Decorator} or not
+   * from the type whether the represented piece is a {@link Decorator} ("Trait") or not
    * and forwards to {@link #createDecorator} or {@link #createBasic}. This
    * method should generally not need to be overridden. Instead, override
-   * createDecorator or createBasic
+   * {@link #createDecorator} or {@link #createBasic}
+   *
+   * @param type definition string of the piece or trait to be created.
    */
   public GamePiece createPiece(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, '\t');
@@ -210,8 +266,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
       if (inner == null) {
-        GameModule.getGameModule().getChatter().send("Invalid piece type - see Error Log for details"); //$NON-NLS-1$
-        logger.warn("Could not create piece with type " + innerType);
+        ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + innerType, type));
         inner = new BasicPiece();
       }
       Decorator d = createDecorator(type, inner);
@@ -222,20 +277,36 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
   }
 
+  /**
+   * Build a BasicCommandEncoder from the XML buildFile. See {@link Builder}
+   * @param e the XML element containing the object data
+   */
   @Override
   public void build(org.w3c.dom.Element e) {
     Builder.build(e, this);
   }
 
+  /**
+   * Adds this BasicCommandEncoder to its parent, which should be the {@link GameModule}.
+   * @param parent the {@link GameModule}
+   */
   @Override
   public void addTo(Buildable parent) {
     ((GameModule) parent).addCommandEncoder(this);
   }
 
+  /**
+   * Adds a buildable subcomponent. BasicCommandEncoder doesn't normally have subcomponents, so this is empty.
+   * @param b the buildable subcomponent
+   */
   @Override
   public void add(Buildable b) {
   }
 
+  /**
+   * @return an XML element from which this component can be built
+   * @param doc An XML document
+   */
   @Override
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return doc.createElement(getClass().getName());
@@ -247,6 +318,12 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   public static final String CHANGE = "D" + PARAM_SEPARATOR; //$NON-NLS-1$
   public static final String MOVE = "M" + PARAM_SEPARATOR; //$NON-NLS-1$
 
+  /**
+   * Deserializes a string into a Basic Piece command (Add, Remove, Change, Move, and... Play Audio Clip!), readying it for execution.
+   * @param command string form of the command
+   * @return Command object for command.
+   * @see CommandEncoder
+   */
   @Override
   public Command decode(String command) {
     if (command.length() == 0) {
@@ -306,14 +383,31 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
   }
 
+  /**
+   * Safely wraps a string-which-might-be-null
+   * @param s String value, or null
+   * @return The string passed, or the string "null" if value was null
+   */
   private String wrapNull(String s) {
     return s == null ? "null" : s; //$NON-NLS-1$
   }
 
+  /**
+   * Unwraps a String where the string "null" represents a null value
+   * @param s String to be unwrapped
+   * @return null if string was "null", otherwise the string passed.
+   */
   private String unwrapNull(String s) {
     return "null".equals(s) ? null : s; //$NON-NLS-1$
   }
 
+  /**
+   * Serializes a Basic Piece command (Add, Remove, Change, Move, and ... Play Audio Clip!) into a String,
+   * readying it for transmission to other clients.
+   * @param c Command to be serialized
+   * @return String form of the command
+   * @see CommandEncoder
+   */
   @Override
   public String encode(Command c) {
     SequenceEncoder se = new SequenceEncoder(PARAM_SEPARATOR);
@@ -334,8 +428,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
     else if (c instanceof MovePiece) {
       MovePiece mp = (MovePiece) c;
-      se.append(mp.getId()).append(wrapNull(mp.getNewMapId())).append(mp.getNewPosition().x + "").append(mp.getNewPosition().y + "").append( //$NON-NLS-1$ //$NON-NLS-2$
-          wrapNull(mp.getNewUnderneathId())).append(wrapNull(mp.getOldMapId())).append(mp.getOldPosition().x + "").append(mp.getOldPosition().y + "").append( //$NON-NLS-1$ //$NON-NLS-2$
+      se.append(mp.getId()).append(wrapNull(mp.getNewMapId())).append(mp.getNewPosition().x + "").append(mp.getNewPosition().y + "").append(//$NON-NLS-1$ //$NON-NLS-2$
+          wrapNull(mp.getNewUnderneathId())).append(wrapNull(mp.getOldMapId())).append(mp.getOldPosition().x + "").append(mp.getOldPosition().y + "").append(//$NON-NLS-1$ //$NON-NLS-2$
           wrapNull(mp.getOldUnderneathId())).append(mp.getPlayerId());
       return MOVE + se.getValue();
     }
