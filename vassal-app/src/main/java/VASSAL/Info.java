@@ -39,12 +39,6 @@ import VASSAL.tools.version.VersionUtils;
 public final class Info {
   private static final GitProperties gitProperties;
 
-  // Do not allow editing of modules with this revision or later
-  private static final String EXPIRY_VERSION = "3.5";  //$NON-NLS-1$
-
-  // Warn about editing modules, saves, logs written before this version
-  private static final String UPDATE_VERSION =  "3.4";
-
   private static final File homeDir;
   private static final File tmpDir;
 
@@ -195,11 +189,11 @@ public final class Info {
   }
 
   public static boolean isModuleTooNew(String version) {
-    return VersionUtils.compareVersions(version, EXPIRY_VERSION) >= 0;
+    return VersionUtils.compareVersions(version, VersionUtils.nextMinorVersion(getVersion())) >= 0;
   }
 
   public static boolean hasOldFormat(String version) {
-    return VersionUtils.compareVersions(version, UPDATE_VERSION) < 0;
+    return VersionUtils.compareVersions(version, VersionUtils.truncateToMinorVersion(getVersion())) < 0;
   }
 
   /**

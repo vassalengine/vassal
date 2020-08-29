@@ -27,6 +27,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.Collection;
 
+@Deprecated(since = "2020-08-06", forRemoval = true)
 @RunWith(Parameterized.class)
 public class VassalVersionTokenizerTest {
 

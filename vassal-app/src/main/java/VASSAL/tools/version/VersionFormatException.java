@@ -25,6 +25,7 @@ package VASSAL.tools.version;
  * @author Joel Uckelman
  * @see VersionTokenizer
  */
+@Deprecated(since = "2020-08-06", forRemoval = true)
 public class VersionFormatException extends Exception {
   private static final long serialVersionUID = 1L;
 
