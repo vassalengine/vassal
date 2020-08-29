@@ -349,6 +349,9 @@ public class Flare extends AbstractConfigurable
 
   private volatile float animfrac;
 
+  /**
+   * Repaint only the necessary area
+   */
   private void repaintArea() {
     map.repaint(new Rectangle(
             (int)(clickPoint.x - circleSize / 2.0 - 2 * STROKE * os_scale),
@@ -369,12 +372,19 @@ public class Flare extends AbstractConfigurable
       repaintArea();
     }
 
+    /**
+     * Animator tells us when to update the image.
+     * @param fraction Animator lets us know how far we are through our cycle
+     */
     @Override
     public void timingEvent(float fraction) {
       animfrac = fraction;
       repaintArea();
     }
 
+    /**
+     * Animator tells us we're done.
+     */
     @Override
     public void end() {
       active = false;
@@ -444,12 +454,16 @@ public class Flare extends AbstractConfigurable
     );
   }
 
+  /**
+   * Flare is always drawn above counters
+   * @return true
+   */
   public boolean drawAboveCounters() {
     return true;
   }
 
   /**
-   * Encodes Flare commands into string form.
+   * Serializes Flare commands into string form.
    * @param c Command
    * @return String version of Flare Command, or null if not a Flare Command.
    */
@@ -461,7 +475,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * Decodes string command info into a Flare Command.
+   * Deserializes string command info into a Flare Command.
    * @param s String for a Flare Command
    * @return Flare Command object
    */
@@ -482,6 +496,9 @@ public class Flare extends AbstractConfigurable
     return new Class[0];
   }
 
+  /**
+   * @param e MouseEvent
+   */
   public void mouseClicked(final MouseEvent e) {
   }
 
@@ -550,35 +567,66 @@ public class Flare extends AbstractConfigurable
     startAnimation(true);
   }
 
+  /**
+   * @param e MouseEvent
+   */
   public void mouseReleased(final MouseEvent e) {
   }
 
+  /**
+   * @param e MouseEvent
+   */
   public void mouseEntered(final MouseEvent e) {
   }
 
+  /**
+   * @param e MouseEvent
+   */
   public void mouseExited(final MouseEvent e) {
   }
 
+  /**
+   * @param e MouseEvent
+   */
   public void setup(final boolean gameStarting) {
   }
 
+  /**
+   * @return Theoretically returns the command to "restore" this from a saved game or when adding a new player, but of
+   * course Flare doesn't need to be "restored", so null.
+   */
   public Command getRestoreCommand() {
     return null;
   }
 
+  /**
+   * Record our clicked point on the map
+   * @param p - point where player clicked and where flare should be shown
+   */
   public void setClickPoint(final Point p) {
     clickPoint = p;
   }
 
+  /**
+   * @return point where player clicked and where flare should be shown
+   */
   public Point getClickPoint() {
     return clickPoint;
   }
 
+  /**
+   * Sets our unique ID (among Flares), so that multiple Flares don't inadvertently start each other when we
+   * send commands to other clients.
+   * @param id Sets our unique ID
+   */
   @Override
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * @return unique ID of this flare, for purposes of distinguishing between Flare commands
+   */
   @Override
   public String getId() {
     return id;
@@ -589,8 +637,6 @@ public class Flare extends AbstractConfigurable
    */
   public static class FlareKeyConfig extends TranslatableStringEnum {
     @Override
-
-
 
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {
