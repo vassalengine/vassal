@@ -45,7 +45,7 @@ public class EditModuleAction extends LoadModuleAction {
 
   @Override
   protected void loadModule(File f) throws IOException {
-    GameModule.init(new BasicModule(new ArchiveWriter(new ZipArchive(f))));
+    GameModule.init(new BasicModule(new ArchiveWriter(new ZipArchive(f), ".vmod")));
 
 // FIXME: really hide the MM?
 //    ModuleManagerWindow.getInstance().setVisible(false);

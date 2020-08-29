@@ -37,7 +37,7 @@ public class CreateModuleAction extends GameModuleAction {
 
   @Override
   public void performAction(ActionEvent e) throws IOException {
-    GameModule.init(new BasicModule(new ArchiveWriter((String) null)));
+    GameModule.init(new BasicModule(new ArchiveWriter((String) null, ".vmod")));
     JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setVisible(true);
     ModuleEditorWindow w = new ModuleEditorWindow(GameModule.getGameModule());
