@@ -653,10 +653,9 @@ public class StackMetrics extends AbstractConfigurable {
           }
           else {
             fixedParent = createStack(fixed, true);
-            if (fixedParent.getMap() != null) {
-              comm = comm.append(fixedParent.getMap().placeAt(
-                fixedParent, fixedParent.getPosition()));
-            }
+            fixedParent.setMap(fixed.getMap());
+            comm = comm.append(fixedParent.getMap().placeAt(
+              fixedParent, fixedParent.getPosition()));
             index = 1;
           }
         }
