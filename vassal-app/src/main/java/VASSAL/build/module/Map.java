@@ -121,6 +121,8 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.GlobalProperties;
@@ -148,6 +150,7 @@ import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.DragBuffer;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceFinder;
@@ -173,11 +176,23 @@ import VASSAL.tools.swing.SwingUtils;
 
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
- * a Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
- * supported in a single game, with dragging between windows allowed.
+ * the map's {@link Board}(s) and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple
+ * map windows are supported in a single game, with dragging between windows allowed.
  *
- * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
- * contained in the <code>VASSAL.build.module.map</code> package
+ * To a map's {@link Board} subcomponent(s), various forms of grid can be added: ({@link ZonedGrid} (aka Multi-zone Grid),
+ * {@link HexGrid}, {@link SquareGrid} (aka Rectangular Grid), and {@link RegionGrid} (aka Irregular Grid). These can be used
+ * to determine where pieces are allowed to move, and also for filling properties (e.g. LocationName, CurrentZone, CurrentBoard,
+ * CurrentMap) to allow the module to keep track of pieces and react to their movements.
+ *
+ * A Map may contain many different {@link Buildable} subcomponents. Components which are addable <i>uniquely</i> to a Map are
+ * contained in the <code>VASSAL.build.module.map</code> package. Some of the most common Map subcomponents include
+ * {@link Zoomer} for Zoom Capability, {@link CounterDetailViewer} aka Mouse-over Stack Viewer, {@link HidePiecesButton},
+ * and {@link SelectionHighlighters}.
+ *
+ * Map also contain several critical subcomponents which are automatically added and are not configurable at the module level.
+ * These include {@link PieceMover} which handles dragging and dropping of pieces, {@link KeyBufferer} which tracks which pieces
+ * are currently "selected" and forwards key commands to them, {@link MenuDisplayer} which listens for "right clicks" and provides
+ * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
     UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
@@ -186,7 +201,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String mapName = ""; //$NON-NLS-1$
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
-  protected JPanel theMap;
+  protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
@@ -253,17 +268,25 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setFloatable(false);
   }
 
-
+  /**
+   * @return Map's main visual interface swing component (its JPanel)
+   */
   public Component getComponent() {
     return theMap;
   }
 
-
-  // Global Change Reporting control
+  /**
+   * Global Change Reporting control - used by Global Key Commands (see {@link GlobalCommand}) to
+   * temporarily disable reporting while they run, if their "Suppress individual reports" option is selected.
+   * @param b true to turn global change reporting on, false to turn it off.
+   */
   public static void setChangeReportingEnabled(boolean b) {
     changeReportingEnabled = b;
   }
 
+  /**
+   * @return true if change reporting is currently enabled, false if it is presently being suppressed by a Global Key Command.
+   */
   public static boolean isChangeReportingEnabled() {
     return changeReportingEnabled;
   }
@@ -292,7 +315,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MOVE_KEY = "moveKey"; //$NON-NLS-1$
   public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits"; //$NON-NLS-1$
 
-
+  /**
+   * Sets a buildFile (XML) attribute value for this component.
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   *              <code>key</code>. Since Map extends {@link AbstractConfigurable}, then <code>value</code> can also be an instance of
+   *              the corresponding Class listed in {@link #getAttributeTypes}.
+   */
   @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
@@ -418,6 +447,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return a String representation of the XML buildFile attribute with the given name. When initializing a module,
+   * this String value will loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
+   * checking the current value of an attribute.
+   *
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   */
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
@@ -492,6 +528,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * Builds the map's component hierarchy from a given XML element, or a null one is given initializes
+   * a brand new default "new map" hierarchy.
+   * @param e XML element to build from, or null to build the default hierarchy for a brand new Map
+   */
   @Override
   public void build(Element e) {
     ActionListener al = e1 -> {
@@ -538,13 +579,20 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     setup(false);
   }
 
+  /**
+   * Adds a child component to this map. Used by {@link #build} to create "default components" for a new map object
+   * @param b {@link Buildable} component to add
+   */
   private void addChild(Buildable b) {
     add(b);
     b.addTo(this);
   }
 
   /**
-   * Every map must include a {@link BoardPicker} as one of its build components
+   * Every map must include a single {@link BoardPicker} as one of its build components. This will contain
+   * the map's {@link Board} (or Boards), which will in turn contain any grids, zones, and location
+   * information.
+   * @param picker BoardPicker to register to the map. This method unregisters any previous BoardPicker.
    */
   public void setBoardPicker(BoardPicker picker) {
     if (this.picker != null) {
@@ -560,9 +608,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Every map must include a {@link BoardPicker} as one of its build components
-   *
-   * @return the BoardPicker for this map
+   * Every map must include a {@link BoardPicker} as one of its build components. This contains
+   * the map's {@link Board} (or Boards), which will in turn contain any grids, zones, and location
+   * information.
+   * @return the BoardPicker for this map (if none exist, this method will add one and return it)
    */
   public BoardPicker getBoardPicker() {
     if (picker == null) {
@@ -575,31 +624,41 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * A map may include a {@link Zoomer} as one of its build components
+   * A map may include a single {@link Zoomer} as one of its build components. This adds zoom in/out capability to the map.
+   * @param z {@link Zoomer} to register
    */
   public void setZoomer(Zoomer z) {
     zoom = z;
   }
 
   /**
-   * A map may include a {@link Zoomer} as one of its build components
-   *
-   * @return the Zoomer for this map
+   * A map may include a {@link Zoomer} as one of its build components. This adds zoom in/out capability to the map.
+   * @return the Zoomer for this map, if one is registered, or null if none.
    */
   public Zoomer getZoomer() {
     return zoom;
   }
 
   /**
-   * Every map must include a {@link StackMetrics} as one of its build components, which governs the stacking behavior
-   * of GamePieces on the map
+   * If the map has a {@link Zoomer} (see {@link #setZoomer}), then returns the Zoomer's current zoom factor. If no
+   * Zoomer exists, returns 1.0 as the zoom factor.
+   * @return the current zoom factor for the map
+   */
+  public double getZoom() {
+    return zoom == null ? 1.0 : zoom.getZoomFactor();
+  }
+
+  /**
+   * Every map must include a single {@link StackMetrics} as one of its build components, which governs the stacking behavior
+   * of GamePieces on the map.
+   * @param sm {@link StackMetrics} component to register
    */
   public void setStackMetrics(StackMetrics sm) {
     metrics = sm;
   }
 
   /**
-   * Every map must include a {@link StackMetrics} as one of its build
+   * Every map must include a single {@link StackMetrics} object as one of its build
    * components, which governs the stacking behavior of GamePieces on the map
    *
    * @return the StackMetrics for this map
@@ -615,14 +674,18 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * @return the current zoom factor for the map
+   * Every map must include a single {@link PieceMover} component as one of its build
+   * components, which handles drag-and-drop behavior for the map.
+   * @param mover {@link PieceMover} component to register
    */
-  public double getZoom() {
-    return zoom == null ? 1.0 : zoom.getZoomFactor();
+  public void setPieceMover(PieceMover mover) {
+    pieceMover = mover;
   }
 
+
   /**
-   * @return the toolbar for this map's window
+   * Every map window has a toolbar, and this method returns swing toolbar component for this map.
+   * @return the swing toolbar component ({@link JToolBar} for this map's window.
    */
   @Override
   public JToolBar getToolBar() {
@@ -630,26 +693,27 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Add a {@link Drawable} component to this map
-   *
+   * Registers a {@link Drawable} component to this map. Components can implement the {@link Drawable} interface (and register
+   * themselves here) if they have a graphical component that should be drawn whenever the Map is drawn. Standard examples
+   * include {@link CounterDetailViewer}s (aka Mouse-over Stack Viewers), {@link GlobalMap}s (aka Overview Maps), {@link LOS_Thread}s,
+   * {@link MapShader}s, and the {@link KeyBufferer} (to show which pieces are selected).
    */
   public void addDrawComponent(Drawable theComponent) {
     drawComponents.add(theComponent);
   }
 
   /**
-   * Remove a {@link Drawable} component from this map
-   *
+   * Unregister a {@link Drawable} component from this map
    */
   public void removeDrawComponent(Drawable theComponent) {
     drawComponents.remove(theComponent);
   }
 
   /**
-   * Expects to be added to a {@link GameModule}. Determines a unique id for
-   * this Map. Registers itself as {@link KeyStrokeSource}. Registers itself
-   * as a {@link GameComponent}. Registers itself as a drop target and drag
-   * source.
+   * Registers this Map as a child of another buildable component, usually the {@link GameModule}. Determines a unique id for
+   * this Map. Registers itself as {@link KeyStrokeSource}. Registers itself as a {@link GameComponent}. Registers itself as
+   * a drop target and drag source. If the map is to be removed or otherwise shutdown, it can be deregistered, reversing this
+   * process, by {@link #removeFrom}
    *
    * @see #getId
    * @see DragBuffer
@@ -729,10 +793,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     );
   }
 
-  public void setPieceMover(PieceMover mover) {
-    pieceMover = mover;
-  }
-
+  /**
+   * Unregisters this Map from its {@link Buildable} parent (usually a {@link GameModule}), reversing
+   * the process of {@link #addTo}.
+   * @param b parent {@link Buildable} to deregister from
+   */
   @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getGameState().removeGameComponent(this);
@@ -749,6 +814,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     PlayerRoster.removeSideChangeListener(this);
   }
 
+  /**
+   * Takes action when the local player has switched sides. Because Map implements {@link PlayerRoster.SideChangeListener},
+   * this method will automatically be called whenever the local player switches sides.
+   * @param oldSide side the local player is switching away from
+   * @param newSide side the local player is switching to
+   */
   @Override
   public void sideChanged(String oldSide, String newSide) {
     repaint();
@@ -757,6 +828,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Set the boards for this map. Each map may contain more than one
    * {@link Board}.
+   * @param c Collection of Boards to be used.
    */
   public synchronized void setBoards(Collection<Board> c) {
     boards.clear();
@@ -778,12 +850,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     setBoards(Collections.list(boardList));
   }
 
-  @Override
-  public Command getRestoreCommand() {
-    return null;
-  }
-
   /**
+   * Since a map can have multiple boards in use at once (laid out above and beside each other), this
+   * method accepts a {@link Point} in the map's coordinate space and will return the {@link Board} which
+   * contains that point, or null if none.
    * @return the {@link Board} on this map containing the argument point
    */
   public Board findBoard(Point p) {
@@ -795,7 +865,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   *
+   * If the given point in the map's coordinate space is within a {@link Zone} on a board with a
+   * {@link ZonedGrid} (aka Multi-zoned Grid), returns the Zone. Otherwise returns null.
    * @return the {@link Zone} on this map containing the argument point
    */
   public Zone findZone(Point p) {
@@ -815,7 +886,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Search on all boards for a Zone with the given name
    * @param name Zone Name
-   * @return Located zone
+   * @return Located zone, or null if not found
    */
   public Zone findZone(String name) {
     for (Board b : boards) {
@@ -830,9 +901,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Search on all boards for a Region with the given name
+   * Search on all boards for a Region (location on an Irregular Grid) with the given name
    * @param name Region name
-   * @return Located region
+   * @return Located region, or null if none
    */
   public Region findRegion(String name) {
     for (Board b : boards) {
@@ -847,10 +918,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Return the board with the given name
-   *
+   * Searches our list of boards for one with the given name
    * @param name Board Name
-   * @return null if no such board found
+   * @return located board, or null if no such board found
    */
   public Board getBoardByName(String name) {
     if (name != null) {
@@ -863,6 +933,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return null;
   }
 
+  /**
+   * @return Dimension for map window's "preferred size"
+   */
   public Dimension getPreferredSize() {
     final Dimension size = mapSize();
     size.width *= getZoom();
@@ -941,7 +1014,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * The buffer of empty space around the boards in the Map window,
+   * @return The buffer of empty space around the boards in the Map window,
    * in component coordinates at 100% zoom
    */
   public Dimension getEdgeBuffer() {
@@ -987,14 +1060,32 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return mapToComponent(r);
   }
 
+  /**
+   * Scales an integer value to a zoom factor
+   * @param c value to be scaled
+   * @param zoom zoom factor
+   * @return scaled value result
+   */
   protected int scale(int c, double zoom) {
     return (int)(c * zoom);
   }
 
+  /**
+   * Scales a point to a zoom factor
+   * @param p point to be scaled
+   * @param zoom zoom factor
+   * @return scaled point result
+   */
   protected Point scale(Point p, double zoom) {
     return new Point((int)(p.x * zoom), (int)(p.y * zoom));
   }
 
+  /**
+   * Scales a Rectangle to a zoom factor
+   * @param r Rectangle to be zoomed
+   * @param zoom zoom factor
+   * @return scaled Rectangle result
+   */
   protected Rectangle scale(Rectangle r, double zoom) {
     return new Rectangle(
       (int)(r.x * zoom),
@@ -1004,18 +1095,67 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     );
   }
 
+  /**
+   * Converts an integer value from the Map's coordinate system to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor. Although Drawing coordinates may <i>sometimes</i> have the traditional 1-to-1 relationship with component
+   * coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
+   *           (see {@link StackMetrics#draw}.
+   *
+   * @param c value to scale
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled value
+   */
   public int mapToDrawing(int c, double os_scale) {
     return scale(c, getZoom() * os_scale);
   }
 
+  /**
+   * Converts a point from the Map's coordinate system to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors). Drawing coordinates may sometimes
+   * have the traditional 1-to-1 relationship with component coordinates, but on HiDPI monitors it will not.
+   *
+   * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
+   *           (see {@link StackMetrics#draw}.
+   *
+   * @param p point to scale
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled point
+   */
   public Point mapToDrawing(Point p, double os_scale) {
     return scale(p, getZoom() * os_scale);
   }
 
+  /**
+   * Converts a rectangle from the Map's coordinate system to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors). Drawing coordinates may sometimes
+   * have the traditional 1-to-1 relationship with component coordinates, but on HiDPI monitors it will not.
+   *
+   * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
+   *           (see {@link StackMetrics#draw}.
+   *
+   * @param r rectangle to scale
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled rectangle
+   */
   public Rectangle mapToDrawing(Rectangle r, double os_scale) {
     return scale(r, getZoom() * os_scale);
   }
 
+
+  /**
+   * Converts an integer value from the Map's coordinate system to Component coordinates used for interactions between
+   * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
+   * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
+   *           (see {@link StackMetrics#draw}.
+   *
+   * @param c value to scale
+   * @return scaled value
+   */
   public int mapToComponent(int c) {
     return scale(c, getZoom());
   }
@@ -1118,12 +1258,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @SuppressWarnings("unused")
   public boolean isVisibleToAll() {
-    if (this instanceof PrivateMap) {
-      if (!getAttributeValueString(PrivateMap.VISIBLE).equals("true")) { //$NON-NLS-1$
-        return false;
-      }
-    }
-    return true;
+    return !(this instanceof PrivateMap) || getAttributeValueString(PrivateMap.VISIBLE).equals("true"); //$NON-NLS-1$
   }
 
   /**
@@ -1642,7 +1777,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   public void drawDrawable(Graphics g, boolean aboveCounters) {
     for (Drawable drawable : drawComponents) {
-      if (!(aboveCounters ^ drawable.drawAboveCounters())) {
+      if (aboveCounters == drawable.drawAboveCounters()) {
         drawable.draw(g, this);
       }
     }
@@ -2043,6 +2178,17 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     launchButton.setVisible(useLaunchButton);
   }
 
+  /**
+   * As a {@link GameComponent}, Map does not have any action inherently needing to be taken for "restoring" itself for load/save and
+   * network play purposes (the locations of pieces, etc, are stored in the pieces). Map's interest in GameComponent is entirely for
+   * game start/stop purposes (see {@link #setup}, above)
+   * @return null since no restore command needed.
+   */
+  @Override
+  public Command getRestoreCommand() {
+    return null;
+  }
+
   public void appendToTitle(String s) {
     if (mainWindowDock == null) {
       Component c = theMap.getTopLevelAncestor();
@@ -2271,9 +2417,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         if (r.x + r.width > d.width) r.x = d.width - r.width;
         if (r.y + r.height > d.height) r.y = d.height - r.height;
 
-        theMap.scrollRectToVisible(r);
-      }
+      theMap.scrollRectToVisible(r);
     }
+  }
   }
 
   /**
@@ -2599,7 +2745,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Make a best gues for a unique identifier for the target. Use
+   * Make a best guess for a unique identifier for the target. Use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName} if non-null, otherwise use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId}
    *
