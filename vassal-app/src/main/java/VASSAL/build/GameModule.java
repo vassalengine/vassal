@@ -20,6 +20,7 @@ package VASSAL.build;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.FileDialog;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
@@ -40,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.SequenceEncoder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -137,6 +139,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
   public static final String BUILDFILE = "buildFile";
+
+  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   private static GameModule theModule;
 
@@ -737,48 +741,88 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Dispatches our inbound {@link Command} traffic -- incoming player commands ready to be executed.
-   * Unlike everybody else's decode method, the GameModule's method invokes each of its registered {@link CommandEncoder}s in turn
+   * Decodes our inbound {@link Command} traffic -- incoming player commands ready to be executed.
+   * Unlike everybody else's decode method, the GameModule's method first pulls apart strings of multiple
+   * commands into singles. It then invokes each of its registered {@link CommandEncoder}s in turn
    * until one of them is able to deserialize the command from a String into a {@link Command} object ready to be executed.
-   *
-   * Note: if you are looking for the GameModule's "own" decoder, see {@link BasicModule}
    */
   @Override
   public Command decode(String command) {
     if (command == null) {
       return null;
     }
-    else {
-      Command c = null;
-      for (int i = 0; i < commandEncoders.length && c == null; ++i) {
-        c = commandEncoders[i].decode(command);
-      }
-      if (c == null) {
-        System.err.println("Failed to decode " + command); //$NON-NLS-1$
-      }
-      return c;
+    Command c = null;
+    final SequenceEncoder.Decoder st =
+      new SequenceEncoder.Decoder(command, COMMAND_SEPARATOR);
+    String first = st.nextToken();
+    if (command.equals(first)) {
+      c = decodeSubCommand(first);
     }
+    else {
+      Command next = null;
+      c = decode(first);
+      while (st.hasMoreTokens()) {
+        next = decode(st.nextToken());
+        c = c == null ? next : c.append(next);
+      }
+    }
+    return c;
   }
 
   /**
-   * Dispatches our outbound {@link Command} traffic -- outgoing player commands to be sent to other players' clients via
-   * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method invokes each
-   * of its registered {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object
-   * into an ascii-compatible String ready to be send to other players' clients.
-   *
-   * Note: if you are looking for the GameModule's "own" encoder, see {@link BasicModule}
+   * Deserializes a single anonymous subcommand String into a {@link Command}, by invoking #decode from each of our registered
+   * command encoders in turn until one of them is able to successfully recognize and deserialize the command.
+   * @param subCommand A single command, to be deserialized
+   * @return a {@link Command} object for this command, ready to be executed.
+   */
+  private Command decodeSubCommand(String subCommand) {
+    Command c = null;
+    for (int i = 0; i < commandEncoders.length && c == null; ++i) {
+      c = commandEncoders[i].decode(subCommand);
+    }
+    return c;
+  }
+
+  /**
+   * Encodes our outbound {@link Command} traffic -- outgoing player commands to be sent to other players' clients via
+   * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method accepts Command
+   * trees containing multiple appended commands. It goes through them in order and for each command invokes each of its registered
+   * {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object into an ascii-compatible
+   * String ready to be sent to other players' clients. It does this for each of the subcommands in the list, and the results for
+   * all are returned as a single String.
    */
   @Override
   public String encode(Command c) {
     if (c == null) {
       return null;
     }
+    String s = encodeSubCommand(c);
+    String s2;
+    Command[] sub = c.getSubCommands();
+    if (sub.length > 0) {
+      SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
+      for (Command command : sub) {
+        s2 = encode(command);
+        if (s2 != null) {
+          se.append(s2);
+        }
+      }
+      s = se.getValue();
+    }
+    return s;
+  }
+
+  /**
+   * Serializes a single anonymous {@link Command} object into an ascii-compatible string, by invoking #encode on
+   * from each of our registered {@link CommandEncoder}s in turn until one of them is successfully able to recognize
+   * and serialize the Command.
+   * @param c A Command object containing a single Command of any type.
+   * @return ascii-friendly String form of the command, ready to be sent to other players' clients.
+   */
+  private String encodeSubCommand(Command c) {
     String s = null;
     for (int i = 0; i < commandEncoders.length && s == null; ++i) {
       s = commandEncoders[i].encode(c);
-    }
-    if (s == null) {
-      System.err.println("Failed to encode " + c); //$NON-NLS-1$
     }
     return s;
   }

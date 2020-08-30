@@ -18,9 +18,6 @@
 package VASSAL.launch;
 
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -59,7 +56,6 @@ import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
-import VASSAL.command.Command;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -69,14 +65,12 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
   private static final Logger log =
     LoggerFactory.getLogger(BasicModule.class);
 
-  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
   protected GameRefresher gameRefresher;
 
@@ -161,26 +155,11 @@ public class BasicModule extends GameModule {
   protected void initIdentityPreferences() {
     idChangeSupport = new PropertyChangeSupport(this);
     StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
-    fullName.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        idChangeSupport.firePropertyChange(evt);
-      }
-    });
+    fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
-    profile.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        idChangeSupport.firePropertyChange(evt);
-      }
-    });
+    profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    user.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        GameModule.setUserId((String) evt.getNewValue());
-      }
-    });
+    user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
@@ -215,65 +194,7 @@ public class BasicModule extends GameModule {
     addCommandEncoder(theState);
   }
 
-  @Override
-  public Command decode(String command) {
-    if (command == null) {
-      return null;
-    }
-    Command c = null;
-    final SequenceEncoder.Decoder st =
-      new SequenceEncoder.Decoder(command, COMMAND_SEPARATOR);
-    String first = st.nextToken();
-    if (command.equals(first)) {
-      c = decodeSubCommand(first);
-    }
-    else {
-      Command next = null;
-      c = decode(first);
-      while (st.hasMoreTokens()) {
-        next = decode(st.nextToken());
-        c = c == null ? next : c.append(next);
-      }
-    }
-    return c;
-  }
 
-  private Command decodeSubCommand(String subCommand) {
-    Command c = null;
-    for (int i = 0; i < commandEncoders.length && c == null; ++i) {
-      c = commandEncoders[i].decode(subCommand);
-    }
-    return c;
-  }
-
-  @Override
-  public String encode(Command c) {
-    if (c == null) {
-      return null;
-    }
-    String s = encodeSubCommand(c);
-    String s2;
-    Command[] sub = c.getSubCommands();
-    if (sub.length > 0) {
-      SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
-      for (Command command : sub) {
-        s2 = encode(command);
-        if (s2 != null) {
-          se.append(s2);
-        }
-      }
-      s = se.getValue();
-    }
-    return s;
-  }
-
-  private String encodeSubCommand(Command c) {
-    String s = null;
-    for (int i = 0; i < commandEncoders.length && s == null; ++i) {
-      s = commandEncoders[i].encode(c);
-    }
-    return s;
-  }
 
   protected void buildDefaultComponents() {
     addComponent(BasicCommandEncoder.class);
