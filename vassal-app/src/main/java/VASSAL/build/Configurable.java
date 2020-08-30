@@ -19,6 +19,7 @@ package VASSAL.build;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.i18n.Translatable;
 
 /**
@@ -38,7 +39,6 @@ public interface Configurable extends Translatable {
    */
   public void removeFrom(Buildable parent);
 
-
   /**
    * Remove a child component
    */
@@ -50,8 +50,7 @@ public interface Configurable extends Translatable {
   public String getConfigureName();
 
   /**
-   * @return a HelpFilte describing how to use and configure
-   * this component
+   * @return a HelpFile describing how to use and configure    * this component
    */
   public HelpFile getHelpFile();
 
@@ -62,15 +61,17 @@ public interface Configurable extends Translatable {
   public Configurable[] getConfigureComponents();
 
   /**
-   * Return a {@link Configurer} object which can be used to set the
+   * @return a {@link Configurer} object which can be used to set the
    * attributes of this object
    */
   public Configurer getConfigurer();
 
   /**
-   * Return a list of valid sub-component Classes.  If a Class
+   * @return a list of valid sub-component Classes.  If a Class
    * appears in this list, then instances of that class may be added
-   * to this component from the Configuration Window.
+   * to this component from the Editor's {@link ConfigureTree} window by
+   * right-clicking on the component and selecting the appropriate "Add"
+   * option.
    */
   public Class[] getAllowableConfigureComponents();
 

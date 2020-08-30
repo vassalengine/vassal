@@ -193,7 +193,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * Returns an enumeration of Buildable objects which are the direct children
+   * @return an enumeration of Buildable objects which are the direct children
    * of this object in the Buildable containment hierarchy. The
    * {@link #getBuildElement} method uses these objects to construct the XML
    * element from which this object can be built.
@@ -207,7 +207,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * Returns a Collection of Buildable objects which are the direct children
+   * @return a Collection of Buildable objects which are the direct children
    * of this object in the Buildable containment hierarchy. The
    * {@link #getBuildElement} method uses these objects to construct the XML
    * element from which this object can be built.
