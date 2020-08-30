@@ -81,7 +81,6 @@ import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * {@see <a href="http://google.com">http://google.com</a>}
  * Although it is the {@link CommandEncoder} which handles the basic commands: {@link AddPiece},
  * {@link RemovePiece}, {@link ChangePiece}, {@link MovePiece}, this class is most commonly needed by
  * module designers who want to make custom "Traits" for game pieces because it contains {@link #createDecorator},
@@ -202,12 +201,6 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     ErrorDialog.dataWarning(new BadDataReport("Unknown type " + type + " not found in BasicCommandEncoder's list of traits and basic pieces.", ""));
     return new Marker(Marker.ID, inner);
   };
-
-  /**
-   * Why do I exist? No one knows!
-   */
-  public BasicCommandEncoder() {
-  }
 
   /**
    * Parses out the command prefix for a type definition
