@@ -506,13 +506,11 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public double centerOnOpponentsMoveSensitivity() {
-    Integer intSensitivity = (int) GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE_SENSITIVITY);
-    double sensitivity;
-    sensitivity = intSensitivity.doubleValue();
+    int sensitivity = (Integer) GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE_SENSITIVITY);
     if (sensitivity > 100) {
       sensitivity = 100;
     }
-    if (sensitivity < 0) {
+    else if (sensitivity < 0) {
       sensitivity = 0;
     }
     return sensitivity;
