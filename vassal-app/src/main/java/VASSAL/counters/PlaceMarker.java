@@ -188,24 +188,40 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
         !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
         m.getPieceCollection().canMerge(outer, marker)) {
-      final Stack parent = getParent();
       GamePiece target = outer;
       int index = -1;
-      switch (placement) {
-      case ABOVE:
-        target = outer;
-        break;
-      case BELOW:
-        index = parent == null ? 0 : parent.indexOf(outer);
-        break;
-      case STACK_BOTTOM:
-        index = 0;
-        break;
-      case STACK_TOP:
-        target = parent == null ? outer : parent;
+      Stack parent = getParent();
+
+      if (parent == null) {
+        // we're not in a stack now, but we will be _after_ the merge
+        if (placement == STACK_BOTTOM || placement == BELOW) {
+          index = 0;
+        }
       }
+      else {
+        // we're in a stack already
+        switch (placement) {
+        case STACK_TOP:
+          target = parent;
+          break;
+        case STACK_BOTTOM:
+          index = 0;
+          break;
+        case ABOVE:
+          break;
+        case BELOW:
+          index = parent.indexOf(outer);
+        }
+      }
+
       c = m.getStackMetrics().merge(target, marker);
+
       if (index >= 0) {
+        // we need to adjust the marker's position in the Stack
+        if (parent == null) {
+          // get the newly formed Stack if there hadn't been one before
+          parent = target.getParent();
+        }
         final ChangeTracker ct = new ChangeTracker(parent);
         parent.insert(marker, index);
         c = c.append(ct.getChangeCommand());
