@@ -624,18 +624,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     public Object visitDeck(Deck d) {
       //CC// Display top n pieces of the deck instead of top piece
 
-      //if (foundPieceAt == null) {
-      //  GamePiece top = d.topPiece();
-      //  if (top != null &&
-      //      !Boolean.TRUE.equals(top.getProperty(Properties.OBSCURED_TO_ME))) {
-      //    Rectangle r = (Rectangle) d.getShape();
-      //    r.x += d.getPosition().x;
-      //    r.y += d.getPosition().y;
-      //    if (r.contains(pt)) {
-      //      apply(top);
-      //    }
-      //  }
-
       if (foundPieceAt == null) {
         // Get the top piece in deck
         GamePiece p = d.topPiece();
@@ -893,7 +881,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.show_deck"), //$NON-NLS-1$
-      Resources.getString("Editor.MouseOverStackViewer.show_deck_depth"), //$NON-NLS-1$
+       Resources.getString("Editor.MouseOverStackViewer.show_deck_depth"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
       };
   }
