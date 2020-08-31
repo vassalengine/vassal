@@ -1614,6 +1614,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
+   * stack, if any, otherwise forwarded to all LocalMouseListeners
+   * @param e MouseEvent from system
+   *
+   * @see #pushMouseListener
+   * @see #popMouseListener
+   * @see #addLocalMouseListener
+  */
   @Override
   public void mousePressed(MouseEvent e) {
     // Deselect any counters on the last Map with focus
