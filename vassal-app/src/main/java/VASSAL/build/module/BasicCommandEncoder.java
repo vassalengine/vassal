@@ -406,7 +406,12 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     SequenceEncoder se = new SequenceEncoder(PARAM_SEPARATOR);
     if (c instanceof AddPiece) {
       AddPiece a = (AddPiece) c;
-      return ADD + se.append(wrapNull(a.getTarget().getId())).append(a.getTarget().getType()).append(a.getState()).getValue();
+      return ADD +
+        se
+          .append(wrapNull(a.getTarget().getId()))
+          .append(a.getTarget().getType())
+          .append(a.getState())
+          .getValue();
     }
     else if (c instanceof RemovePiece) {
       return REMOVE + ((RemovePiece) c).getId();
@@ -421,9 +426,17 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
     else if (c instanceof MovePiece) {
       MovePiece mp = (MovePiece) c;
-      se.append(mp.getId()).append(wrapNull(mp.getNewMapId())).append(mp.getNewPosition().x + "").append(mp.getNewPosition().y + "").append(//$NON-NLS-1$ //$NON-NLS-2$
-          wrapNull(mp.getNewUnderneathId())).append(wrapNull(mp.getOldMapId())).append(mp.getOldPosition().x + "").append(mp.getOldPosition().y + "").append(//$NON-NLS-1$ //$NON-NLS-2$
-          wrapNull(mp.getOldUnderneathId())).append(mp.getPlayerId());
+      se
+        .append(mp.getId())
+        .append(wrapNull(mp.getNewMapId()))
+        .append(mp.getNewPosition().x)
+        .append(mp.getNewPosition().y)
+        .append(wrapNull(mp.getNewUnderneathId()))
+        .append(wrapNull(mp.getOldMapId()))
+        .append(mp.getOldPosition().x)
+        .append(mp.getOldPosition().y)
+        .append(wrapNull(mp.getOldUnderneathId()))
+        .append(mp.getPlayerId());
       return MOVE + se.getValue();
     }
     else if (c instanceof NullCommand) {

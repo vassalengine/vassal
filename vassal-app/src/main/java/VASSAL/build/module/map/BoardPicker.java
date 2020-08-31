@@ -702,60 +702,60 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID) ||
-        command.startsWith(map.getConfigureName() + ID)) {
-      ArrayList<Board> bds = new ArrayList<>();
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      st.nextToken();
-      while (st.hasMoreTokens()) {
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
-        String name = st2.nextToken();
-        boolean reversed = false;
-        if (st2.hasMoreTokens()) {
-          reversed = "rev".equals(st2.nextToken()); //$NON-NLS-1$
-        }
-        Point p = new Point(st.nextInt(0), st.nextInt(0));
-        Board b = getBoard(name);
-        if (b != null) {
-          if (bds.contains(b)) {
-            b = b.copy();
-          }
-          b.setReversed(reversed);
-          b.relativePosition().move(p.x, p.y);
-          bds.add(b);
-        }
-      }
-      return new SetBoards(this, bds);
-    }
-    else {
+    if (!command.startsWith(map.getId() + ID) &&
+      !command.startsWith(map.getConfigureName() + ID)) {
       return null;
     }
+
+    List<Board> bds = new ArrayList<>();
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    st.nextToken();
+    while (st.hasMoreTokens()) {
+      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
+      String name = st2.nextToken();
+      boolean reversed = false;
+      if (st2.hasMoreTokens()) {
+        reversed = "rev".equals(st2.nextToken()); //$NON-NLS-1$
+      }
+      Point p = new Point(st.nextInt(0), st.nextInt(0));
+      Board b = getBoard(name);
+      if (b != null) {
+        if (bds.contains(b)) {
+          b = b.copy();
+        }
+        b.setReversed(reversed);
+        b.relativePosition().move(p.x, p.y);
+        bds.add(b);
+      }
+    }
+    return new SetBoards(this, bds);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
-      final SequenceEncoder se =
-        new SequenceEncoder(map.getIdentifier() + ID, '\t');
-      final List<Board> bds = ((SetBoards) c).boards;
-      if (bds != null) {
-        for (Board b : bds) {
-          if (b.getName() != null) {
-            final SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
-            if (b.isReversed()) {
-              se2.append("rev"); //$NON-NLS-1$
-            }
-            se.append(se2.getValue())
-              .append(b.relativePosition().x)
-              .append(b.relativePosition().y);
-          }
-        }
-      }
-      return se.getValue();
-    }
-    else {
+    if (!(c instanceof SetBoards) || map == null || ((SetBoards) c).target != this) {
       return null;
     }
+
+    final SequenceEncoder se =
+      new SequenceEncoder(map.getIdentifier() + ID, '\t');
+    final List<Board> bds = ((SetBoards) c).boards;
+    if (bds == null) {
+      return se.getValue();
+    }
+
+    for (Board b : bds) {
+      if (b.getName() != null) {
+        final SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
+        if (b.isReversed()) {
+          se2.append("rev"); //$NON-NLS-1$
+        }
+        se.append(se2.getValue())
+          .append(b.relativePosition().x)
+          .append(b.relativePosition().y);
+      }
+    }
+    return se.getValue();
   }
 
   public static class SetBoards extends Command {

@@ -239,22 +239,23 @@ public class TextClient {
   }
 
   public static class Encoder implements CommandEncoder {
+
+    private static final String SERIALIZATION_PREFIX = "CHAT"; //$NON-NLS-1$
+
     @Override
     public Command decode(String command) {
-      Command c = null;
-      if (command.startsWith("CHAT")) { //$NON-NLS-1$
-        c = new ShowText(command.substring(4));
+      if (!command.startsWith(SERIALIZATION_PREFIX)) {
+        return null;
       }
-      return c;
+      return new ShowText(command.substring(SERIALIZATION_PREFIX.length()));
     }
 
     @Override
     public String encode(Command c) {
-      String s = null;
-      if (c instanceof ShowText) {
-        return "CHAT" + ((ShowText)c).getMessage(); //$NON-NLS-1$
+      if (!(c instanceof ShowText)) {
+        return null;
       }
-      return s;
+      return SERIALIZATION_PREFIX + ((ShowText)c).getMessage();
     }
 
 

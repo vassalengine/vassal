@@ -235,20 +235,23 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public Command decode(String command) {
-    Command comm = null;
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, ';');
     String prefix = sd.nextToken("");
-    if (prefix.equals(COMMAND_PREFIX)) {
-      String propertyId = sd.nextToken("");
-      String newValue = sd.nextToken("");
-      String containerId = sd.nextToken("");
-      if (propertyId.equals(getPropertyId())) {
-        if (containerId.length() == 0 || containerId.equals(parentContainer.getMutablePropertiesContainerId())) {
-          comm = new SetGlobalProperty(this, property.getPropertyValue(), newValue);
-        }
-      }
+    if (!prefix.equals(COMMAND_PREFIX)) {
+      return null;
     }
-    return comm;
+    String propertyId = sd.nextToken("");
+    if (!propertyId.equals(getPropertyId())) {
+      return null;
+    }
+
+    String newValue = sd.nextToken("");
+    String containerId = sd.nextToken("");
+    if (containerId.length() != 0 && !containerId.equals(parentContainer.getMutablePropertiesContainerId())) {
+      return null;
+    }
+
+    return new SetGlobalProperty(this, property.getPropertyValue(), newValue);
   }
 
   /**
@@ -265,20 +268,25 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof SetGlobalProperty) {
-      final SetGlobalProperty sgp = (SetGlobalProperty) c;
-      if (sgp.getTargetName().equals(getPropertyId())) {
-        if (getContainerId().equals(sgp.getProperty().getContainerId())) {
-          SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
-          se.append(getPropertyId());
-          se.append(sgp.newValue);
-          se.append(getContainerId());
-          s = se.getValue();
-        }
-      }
+    if (!(c instanceof SetGlobalProperty)) {
+      return null;
     }
-    return s;
+
+    final SetGlobalProperty sgp = (SetGlobalProperty) c;
+    if (!sgp.getTargetName().equals(getPropertyId())) {
+      return null;
+    }
+
+    if (!getContainerId().equals(sgp.getProperty().getContainerId())) {
+      return null;
+    }
+
+    SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
+    se
+      .append(getPropertyId())
+      .append(sgp.newValue)
+      .append(getContainerId());
+    return se.getValue();
   }
   /**
    * Command to pass a new Global property value to other players or into the logfile.

@@ -556,17 +556,15 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   @Override
   public String encode(Command c) {
-    if (c instanceof ShowResults) {
-      final ShowResults c2 = (ShowResults) c;
-      final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
-      for (int i = 0; i < c2.rolls.length; ++i) {
-        se.append(c2.rolls[i] + ""); //$NON-NLS-1$
-      }
-      return SHOW_RESULTS_COMMAND + se.getValue();
-    }
-    else {
+    if (!(c instanceof ShowResults)) {
       return null;
     }
+    final ShowResults c2 = (ShowResults) c;
+    final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
+    for (int i = 0; i < c2.rolls.length; ++i) {
+      se.append(c2.rolls[i] + ""); //$NON-NLS-1$
+    }
+    return SHOW_RESULTS_COMMAND + se.getValue();
   }
 
   @Override
@@ -581,21 +579,19 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       st = new SequenceEncoder.Decoder(s, '\t');
       st.nextToken();
     }
-    if (st != null) {
-      final ArrayList<String> l = new ArrayList<>();
-      while (st.hasMoreTokens()) {
-        l.add(st.nextToken());
-      }
-      final int[] results = new int[l.size()];
-      int i = 0;
-      for (String n : l) {
-        results[i++] = Integer.parseInt(n);
-      }
-      return new ShowResults(this, results);
-    }
-    else {
+    if (st == null) {
       return null;
     }
+    final List<String> l = new ArrayList<>();
+    while (st.hasMoreTokens()) {
+      l.add(st.nextToken());
+    }
+    final int[] results = new int[l.size()];
+    int i = 0;
+    for (String n : l) {
+      results[i++] = Integer.parseInt(n);
+    }
+    return new ShowResults(this, results);
   }
   /**
    * Command for displaying the results of a roll of the dice

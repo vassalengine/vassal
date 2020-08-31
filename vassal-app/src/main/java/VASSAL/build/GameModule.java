@@ -748,16 +748,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     if (command == null) {
       return null;
     }
-    else {
-      Command c = null;
-      for (int i = 0; i < commandEncoders.length && c == null; ++i) {
-        c = commandEncoders[i].decode(command);
-      }
-      if (c == null) {
-        System.err.println("Failed to decode " + command); //$NON-NLS-1$
-      }
-      return c;
+
+    Command c = null;
+    for (int i = 0; i < commandEncoders.length && c == null; ++i) {
+      c = commandEncoders[i].decode(command);
     }
+    if (c == null) {
+      System.err.println("Failed to decode " + command); //$NON-NLS-1$
+    }
+    return c;
   }
 
   /**

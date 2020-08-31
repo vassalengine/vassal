@@ -220,15 +220,15 @@ public class BasicModule extends GameModule {
     if (command == null) {
       return null;
     }
-    Command c = null;
     final SequenceEncoder.Decoder st =
       new SequenceEncoder.Decoder(command, COMMAND_SEPARATOR);
     String first = st.nextToken();
+    Command c;
     if (command.equals(first)) {
       c = decodeSubCommand(first);
     }
     else {
-      Command next = null;
+      Command next;
       c = decode(first);
       while (st.hasMoreTokens()) {
         next = decode(st.nextToken());

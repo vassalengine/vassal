@@ -33,24 +33,25 @@ public class InviteEncoder implements CommandEncoder {
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith(COMMAND_PREFIX)) {
-      String[] info = s.split("\\t"); //$NON-NLS-1$
-      if (info.length == 4) {
-        return new InviteCommand(info[1], info[2], info[3], client);
-      }
+    if (!s.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return null;
+
+    String[] info = s.split("\\t"); //$NON-NLS-1$
+    if (info.length != 4) {
+      return null;
+    }
+
+    return new InviteCommand(info[1], info[2], info[3], client);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof InviteCommand) {
-      InviteCommand cmd = (InviteCommand) c;
-      return COMMAND_PREFIX + cmd.getPlayer() + "\t" + cmd.getPlayerId() + "\t" + cmd.getRoom(); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    else {
+    if (!(c instanceof InviteCommand)) {
       return null;
     }
+    InviteCommand cmd = (InviteCommand) c;
+    return COMMAND_PREFIX + cmd.getPlayer() + "\t" + cmd.getPlayerId() + "\t" + cmd.getRoom(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 }

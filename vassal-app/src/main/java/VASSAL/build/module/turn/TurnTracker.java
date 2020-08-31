@@ -702,26 +702,24 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   @Override
   public Command decode(String command) {
-    Command comm = null;
-    if (command.startsWith(COMMAND_PREFIX + getId())) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
-      sd.nextToken(""); //$NON-NLS-1$
-      comm = new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
+    if (!command.startsWith(COMMAND_PREFIX + getId())) {
+      return null;
     }
-    return comm;
+    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    sd.nextToken(""); //$NON-NLS-1$
+    return new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof SetTurn) {
-      SetTurn com = (SetTurn) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(COMMAND_PREFIX + com.getTurn().getId());
-      se.append(com.newState);
-      return se.getValue();
+    if (!(c instanceof SetTurn)) {
+      return null;
     }
-    return s;
+    SetTurn com = (SetTurn) c;
+    SequenceEncoder se = new SequenceEncoder('\t');
+    se.append(COMMAND_PREFIX + com.getTurn().getId());
+    se.append(com.newState);
+    return se.getValue();
   }
 
   @Override
