@@ -1151,7 +1151,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
    * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
-   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * Examples: activating a popup menu at a piece's location on a map (see MenuDisplayer#maybePopup). Drag and
    * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
    *
    * @param c value in Map coordinate system to scale
@@ -1166,7 +1166,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
    * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
-   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * Examples: activating a popup menu at a piece's location on a map (see MenuDisplayer#maybePopup). Drag and
    * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
    *
    * @param p Point in Map coordinates to scale
@@ -1181,7 +1181,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
    * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
-   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * Examples: activating a popup menu at a piece's location on a map (see MenuDisplayer#maybePopup). Drag and
    * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
    *
    * @param r Rectangle in Map coordinates to scale
@@ -1248,7 +1248,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * with component coordinates, on HiDPI monitors it will not.
    *
    * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
-   * {@link CounterDetailViewer#getDisplayablePieces}.
+   * CounterDetailViewer#getDisplayablePieces.
    *
    * @param c value in Component coordinates to scale
    * @return scaled value in Map coordinates
@@ -1263,7 +1263,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * with component coordinates, on HiDPI monitors it will not.
    *
    * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
-   * {@link CounterDetailViewer#getDisplayablePieces}.
+   * CounterDetailViewer#getDisplayablePieces.
    *
    * @param p Point in Component coordinates to scale
    * @return scaled Point in Map coordinates
@@ -1278,7 +1278,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * with component coordinates, on HiDPI monitors it will not.
    *
    * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
-   * {@link CounterDetailViewer#getDisplayablePieces}.
+   * CounterDetailViewer#getDisplayablePieces.
    *
    * @param r Rectangle in Component coordinates to scale
    * @return scaled Rectangle in Map coordinates
@@ -1595,10 +1595,18 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   public static Map activeMap = null;
 
+  /**
+   * Marks an ActiveMap for certain drag and drop operations, so that the map can be repainted when the operation is
+   * complete.
+   * @param m Map to be considered active.
+   */
   public static void setActiveMap(Map m) {
     activeMap = m;
   }
 
+  /**
+   * Repaints the current ActiveMap (see {@link #setActiveMap}) and unmarks it.
+   */
   public static void clearActiveMap() {
     if (activeMap != null) {
       activeMap.repaint();
@@ -1609,6 +1617,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
    * stack, if any, otherwise forwarded to all LocalMouseListeners
+   * @param e MouseEvent from system
    *
    * @see #pushMouseListener
    * @see #popMouseListener
@@ -1645,9 +1654,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Mouse events are first translated into map coordinates.
-   * Then the event is forwarded to the top MouseListener in the
-   * stack, if any, otherwise forwarded to all LocalMouseListeners.
+   * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
+   * stack, if any, otherwise forwarded to all LocalMouseListeners
+   * @param e MouseEvent from system
    *
    * @see #pushMouseListener
    * @see #popMouseListener
@@ -1712,25 +1721,40 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     this.dragGestureListener = dragGestureListener;
   }
 
+  /**
+   * @return current dragGestureListener that handles normal drag events (assuming no MouseListeners are on the stack)
+   * @see #pushMouseListener
+   */
   public DragGestureListener getDragGestureListener() {
     return dragGestureListener;
   }
 
+  /**
+   * @param dtde DropTargetDragEvent
+   */
   @Override
   public void dragEnter(DropTargetDragEvent dtde) {
   }
 
+  /**
+   * Handles scrolling when dragging an gamepiece to the edge of the window
+   * @param dtde DropTargetDragEvent
+   */
   @Override
   public void dragOver(DropTargetDragEvent dtde) {
     scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
   }
 
+  /**
+   * @param dtde DropTargetDragEvent
+   */
   @Override
   public void dropActionChanged(DropTargetDragEvent dtde) {
   }
 
   /*
    * Cancel final scroll and repaint map
+   * @param dtde DropTargetDragEvent
    */
   @Override
   public void dragExit(DropTargetEvent dte) {
@@ -1738,6 +1762,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     repaint();
   }
 
+  /**
+   * We put the "drop" in drag-n-drop!
+   * @param dtde DropTargetDragEvent
+   */
   @Override
   public void drop(DropTargetDropEvent dtde) {
     if (dtde.getDropTargetContext().getComponent() == theMap) {
@@ -1761,6 +1789,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Mouse motion events are not forwarded to LocalMouseListeners or to listeners on the stack
+   * @param e MouseEvent from system
    */
   @Override
   public void mouseMoved(MouseEvent e) {
@@ -1771,6 +1800,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * listeners on the stack.
    *
    * The map scrolls when dragging the mouse near the edge.
+   * @param e MouseEvent from system
    */
   @Override
   public void mouseDragged(MouseEvent e) {
@@ -1835,7 +1865,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     dx /= 2;
     dy /= 2;
 
-
     // start autoscrolling if we have a nonzero scroll vector
     if (sx != 0 || sy != 0) {
       if (!scroller.isRunning()) {
@@ -1855,6 +1884,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
       private long t0;
 
+      /**
+       * Continue to scroll the map as animator instructs us
+       * @param fraction not used
+       */
       @Override
       public void timingEvent(float fraction) {
         // Constant velocity along each axis, 0.5px/ms
@@ -1877,6 +1910,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         if (sx == 0 && sy == 0) scroller.stop();
       }
 
+      /**
+       * Get ready to scroll
+       */
       @Override
       public void begin() {
         t0 = System.currentTimeMillis();
@@ -1884,15 +1920,37 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   );
 
+  /**
+   * Repaints the map. Accepts parameter about whether to clear the display first.
+   * @param cf true if display should be cleared before drawing the map
+   */
   public void repaint(boolean cf) {
     clearFirst = cf;
     theMap.repaint();
   }
 
+  /**
+   * Repaints the map.
+   */
+  public void repaint() {
+    theMap.repaint();
+  }
+
+  /**
+   * Paints a specific region of the map, denoted by a Rectangle.
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   */
   public void paintRegion(Graphics g, Rectangle visibleRect) {
     paintRegion(g, visibleRect, theMap);
   }
 
+  /**
+   * Paints a specific region of the map, denoted by a Rectangle.
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   * @param c observer component
+   */
   public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
     clearMapBorder(g); // To avoid ghost pieces around the edge
     drawBoardsInRegion(g, visibleRect, c);
@@ -1901,6 +1959,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     drawDrawable(g, true);
   }
 
+  /**
+   * For each Board overlapping the given region, update the appropriate section of the board image.
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   * @param c observer component
+   */
   public void drawBoardsInRegion(Graphics g,
                                  Rectangle visibleRect,
                                  Component c) {
@@ -1912,14 +1976,21 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * For each Board overlapping the given region, update the appropriate section of the board image.
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   */
   public void drawBoardsInRegion(Graphics g, Rectangle visibleRect) {
     drawBoardsInRegion(g, visibleRect, theMap);
   }
 
-  public void repaint() {
-    theMap.repaint();
-  }
-
+  /**
+   * Draws all pieces visible in a rectangular area of the map
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   * @param c observer component
+   */
   public void drawPiecesInRegion(Graphics g,
                                  Rectangle visibleRect,
                                  Component c) {
@@ -1957,10 +2028,21 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     g2d.setComposite(oldComposite);
   }
 
+  /**
+   * Draws all pieces visible in a rectangular area of the map
+   * @param g Graphics object where map should be painted
+   * @param visibleRect region of map to repaint
+   */
   public void drawPiecesInRegion(Graphics g, Rectangle visibleRect) {
     drawPiecesInRegion(g, visibleRect, theMap);
   }
 
+  /**
+   * Draws the map pieces at a given offset
+   * @param g Target graphics object
+   * @param xOffset x offset
+   * @param yOffset y offset
+   */
   public void drawPieces(Graphics g, int xOffset, int yOffset) {
     if (hideCounters) {
       return;
@@ -1981,6 +2063,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     g2d.setComposite(oldComposite);
   }
 
+  /**
+   * Draws all of our "Drawable" components. Standard examples include {@link CounterDetailViewer}s (aka Mouse-over Stack Viewers),
+   * {@link GlobalMap}s (aka Overview Maps), {@link LOS_Thread}s, {@link MapShader}s, and the {@link KeyBufferer} (to show which
+   * pieces are selected).
+   * @param g target graphics object
+   * @param aboveCounters true means we should draw only the drawables that go above the counters; false means we should draw only the ones that go below
+   */
   public void drawDrawable(Graphics g, boolean aboveCounters) {
     for (Drawable drawable : drawComponents) {
       if (aboveCounters == drawable.drawAboveCounters()) {
