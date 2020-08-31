@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13354: Add a chatter message when starting to write a logfile
 * 13353: Use native file chooser on Linux
 * 13326: Saving a module will default to .vmod, an extension to .vext
 * 13323: Player switching sides now reported in Chat Log
