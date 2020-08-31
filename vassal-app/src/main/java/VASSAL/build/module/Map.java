@@ -1104,9 +1104,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
    *           (see {@link StackMetrics#draw}.
    *
-   * @param c value to scale
+   * @param c value in Map coordinate space to be scaled
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
-   * @return scaled value
+   * @return scaled value in Drawing coordinate space
    */
   public int mapToDrawing(int c, double os_scale) {
     return scale(c, getZoom() * os_scale);
@@ -1114,15 +1114,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Converts a point from the Map's coordinate system to Drawing coordinates for rendering. Takes into
-   * account the operating system's scale factor (needed to deal with HiDPI monitors). Drawing coordinates may sometimes
-   * have the traditional 1-to-1 relationship with component coordinates, but on HiDPI monitors it will not.
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor. Although Drawing coordinates may <i>sometimes</i> have the traditional 1-to-1 relationship with component
+   * coordinates, on HiDPI monitors it will not.
    *
    * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
    *           (see {@link StackMetrics#draw}.
    *
-   * @param p point to scale
+   * @param p point in Map coordinates to be scaled
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
-   * @return scaled point
+   * @return scaled point in Drawing coordinates
    */
   public Point mapToDrawing(Point p, double os_scale) {
     return scale(p, getZoom() * os_scale);
@@ -1130,98 +1131,253 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Converts a rectangle from the Map's coordinate system to Drawing coordinates for rendering. Takes into
-   * account the operating system's scale factor (needed to deal with HiDPI monitors). Drawing coordinates may sometimes
-   * have the traditional 1-to-1 relationship with component coordinates, but on HiDPI monitors it will not.
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor. Although Drawing coordinates may <i>sometimes</i> have the traditional 1-to-1 relationship with component
+   * coordinates, on HiDPI monitors it will not.
    *
    * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
    *           (see {@link StackMetrics#draw}.
    *
-   * @param r rectangle to scale
+   * @param r rectangle in Map coordinates to be scaled
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
-   * @return scaled rectangle
+   * @return scaled rectangle in Drawing coordinates
    */
   public Rectangle mapToDrawing(Rectangle r, double os_scale) {
     return scale(r, getZoom() * os_scale);
   }
-
 
   /**
    * Converts an integer value from the Map's coordinate system to Component coordinates used for interactions between
    * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
    * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
    *
-   * Examples: Drawing a line between two points on a map (see {@link LOS_Thread#draw}. Drawing a piece on the map
-   *           (see {@link StackMetrics#draw}.
+   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
    *
-   * @param c value to scale
-   * @return scaled value
+   * @param c value in Map coordinate system to scale
+   * @return scaled value in Component coordinate system
    */
   public int mapToComponent(int c) {
     return scale(c, getZoom());
   }
 
+  /**
+   * Converts a Point from the Map's coordinate system to Component coordinates used for interactions between
+   * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
+   * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
+   *
+   * @param p Point in Map coordinates to scale
+   * @return scaled Point in Component coordinates
+   */
   public Point mapToComponent(Point p) {
     return scale(p, getZoom());
   }
 
+  /**
+   * Converts a Rectangle from the Map's coordinate system to Component coordinates used for interactions between
+   * swing components. Basically this scales by the map's zoom factor. Note that although drawing coordinates may
+   * sometimes have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: activating a popup menu at a piece's location on a map (see {@link MenuDisplayer#maybePopup}). Drag and
+   * drop operations (see dragGestureRecognizedPrep in {@link PieceMover}).
+   *
+   * @param r Rectangle in Map coordinates to scale
+   * @return scaled Rectangle in Component coordinates
+   */
   public Rectangle mapToComponent(Rectangle r) {
     return scale(r, getZoom());
   }
 
+  /**
+   * Converts an integer value from Component coordinates system to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for
+   * the difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the
+   * traditional 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: see {@link VASSAL.counters.Footprint#draw} - checking a map component's "visible" clipping rect, and
+   * using it in the context of drawing move trails.
+   *
+   * @param c value in Component coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled value in Drawing coordinate space
+   */
   public int componentToDrawing(int c, double os_scale) {
     return scale(c, os_scale);
   }
 
+  /**
+   * Converts a Point from Component coordinates to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for
+   * the difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the
+   * traditional 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: see {@link VASSAL.counters.Footprint#draw} - checking a map component's "visible" clipping rect, and
+   * using it in the context of drawing move trails.
+   *
+   * @param p Point in Component coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled Point in Drawing coordinate space
+   */
   public Point componentToDrawing(Point p, double os_scale) {
     return scale(p, os_scale);
   }
 
+  /**
+   * Converts a Rectangle from Component coordinates to Drawing coordinates for rendering. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for
+   * the difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the
+   * traditional 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: see {@link VASSAL.counters.Footprint#draw} - checking a map component's "visible" clipping rect, and
+   * using it in the context of drawing move trails.
+   *
+   * @param r Rectangle in Component coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled Rectangle in Drawing coordinate space
+   */
   public Rectangle componentToDrawing(Rectangle r, double os_scale) {
     return scale(r, os_scale);
   }
 
+  /**
+   * Converts an integer value from swing Component coordinates to the Map's coordinate system. Basically this scales by the
+   * inverse of the map's zoom factor. Note that although drawing coordinates may sometimes have the traditional 1-to-1 relationship
+   * with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
+   * {@link CounterDetailViewer#getDisplayablePieces}.
+   *
+   * @param c value in Component coordinates to scale
+   * @return scaled value in Map coordinates
+   */
   public int componentToMap(int c) {
     return scale(c, 1.0 / getZoom());
   }
 
+  /**
+   * Converts a Point from swing Component coordinates to the Map's coordinate system. Basically this scales by the
+   * inverse of the map's zoom factor. Note that although drawing coordinates may sometimes have the traditional 1-to-1 relationship
+   * with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
+   * {@link CounterDetailViewer#getDisplayablePieces}.
+   *
+   * @param p Point in Component coordinates to scale
+   * @return scaled Point in Map coordinates
+   */
   public Point componentToMap(Point p) {
     return scale(p, 1.0 / getZoom());
   }
 
+  /**
+   * Converts a Rectangle from swing Component coordinates to the Map's coordinate system. Basically this scales by the
+   * inverse of the map's zoom factor. Note that although drawing coordinates may sometimes have the traditional 1-to-1 relationship
+   * with component coordinates, on HiDPI monitors it will not.
+   *
+   * Examples: Checking if the mouse is currently overlapping a game piece {@link KeyBufferer#mouseReleased(MouseEvent)},
+   * {@link CounterDetailViewer#getDisplayablePieces}.
+   *
+   * @param r Rectangle in Component coordinates to scale
+   * @return scaled Rectangle in Map coordinates
+   */
   public Rectangle componentToMap(Rectangle r) {
     return scale(r, 1.0 / getZoom());
   }
 
+  /**
+   * Converts an integer value from Drawing coordinates to the Map's coordinate system. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor, scaling by the inverse of both of these scale factors. Although Drawing coordinates may <i>sometimes</i>
+   * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * @param c value in Drawing coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled value in Map coordinates
+   */
   @SuppressWarnings("unused")
   public int drawingToMap(int c, double os_scale) {
     return scale(c, 1.0 / (getZoom() * os_scale));
   }
 
+  /**
+   * Converts a Point from Drawing coordinates to the Map's coordinate system. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor, scaling by the inverse of both of these scale factors. Although Drawing coordinates may <i>sometimes</i>
+   * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * @param p Point in Drawing coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled point in Map coordinates
+   */
   public Point drawingToMap(Point p, double os_scale) {
     return scale(p, 1.0 / (getZoom() * os_scale));
   }
 
+  /**
+   * Converts a Rectangle from Drawing coordinates to the Map's coordinate system. Takes into
+   * account the operating system's scale factor (needed to deal with HiDPI monitors) as well as the Map's zoom
+   * factor, scaling by the inverse of both of these scale factors. Although Drawing coordinates may <i>sometimes</i>
+   * have the traditional 1-to-1 relationship with component coordinates, on HiDPI monitors it will not.
+   *
+   * @param r Rectangle in Drawing coordinate space to be scaled
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled Rectangle in Map coordinates
+   */
   public Rectangle drawingToMap(Rectangle r, double os_scale) {
     return scale(r, 1.0 / (getZoom() * os_scale));
   }
 
+  /**
+   * Converts an integer value from Drawing coordinates to swing Component coordinates. Takes into account the inverse
+   * of the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for the
+   * difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the traditional
+   * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * @param c value in Drawing coordinates
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled value in Component coordinates
+   */
   @SuppressWarnings("unused")
   public int drawingToComponent(int c, double os_scale) {
     return scale(c, 1.0 / os_scale);
   }
 
+  /**
+   * Converts a Point from Drawing coordinates to swing Component coordinates. Takes into account the inverse
+   * of the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for the
+   * difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the traditional
+   * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * @param p Point in Drawing coordinates
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled Point in Component coordinates
+   */
   @SuppressWarnings("unused")
   public Point drawingToComponent(Point p, double os_scale) {
     return scale(p, 1.0 / os_scale);
   }
 
+  /**
+   * Converts a Rectangle from Drawing coordinates to swing Component coordinates. Takes into account the inverse
+   * of the operating system's scale factor (needed to deal with HiDPI monitors), which accounts entirely for the
+   * difference in these two coordinate systems. Although Drawing coordinates may <i>sometimes</i> have the traditional
+   * 1-to-1 relationship with Component coordinates, on HiDPI monitors it will not.
+   *
+   * @param r Rectangle in Drawing coordinates
+   * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
+   * @return scaled Rectangle in Component coordinates
+   */
   @SuppressWarnings("unused")
   public Rectangle drawingToComponent(Rectangle r, double os_scale) {
     return scale(r, 1.0 / os_scale);
   }
 
   /**
-   * @return a String name for the given location on the map
+   * @return a String name for the given location on the map. Checks first for a {@link Deck}, then for a {@link Board} that
+   * is able to provide a name from one of its grids. If no matches, returns "offboard" string.
    *
    * @see Board#locationName
    */
@@ -1239,6 +1395,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return loc;
   }
 
+  /**
+   * @return a translated-if-available String name for the given location on the map. Checks first for a {@link Deck},
+   * then for a {@link Board} that is able to provide a name from one of its grids. If no matches, returns "offboard" string.
+   *
+   * @see Board#locationName
+   */
   public String localizedLocationName(Point p) {
     String loc = getLocalizedDeckNameAt(p);
     if (loc == null) {
@@ -1254,7 +1416,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Is this map visible to all players
+   * Is this map visible to all players?
+   * @return true if this map either (a) isn't a {@link PrivateMap} or (b) does have its visible-to-all flag set
    */
   @SuppressWarnings("unused")
   public boolean isVisibleToAll() {
@@ -1262,7 +1425,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Return the name of the deck whose bounding box contains p
+   * @return the name of the {@link Deck} whose bounding box contains point p
    */
   @SuppressWarnings("unused")
   public String getDeckNameContaining(Point p) {
@@ -1280,10 +1443,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Return the name of the deck whose position is p
+   * Return the name of the {@link Deck} whose position is precisely p
    *
    * @param p Point to look for Deck
-   * @return Name of Deck
+   * @return Name of {@link Deck whose position is precisely p
    */
   public String getDeckNameAt(Point p) {
     String deck = null;
@@ -1298,6 +1461,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return deck;
   }
 
+  /**
+   * Return the localized name of the {@link Deck} whose position is precisely p
+   *
+   * @param p Point to look for Deck
+   * @return Name of {@link Deck whose position is precisely p
+   */
   public String getLocalizedDeckNameAt(Point p) {
     String deck = null;
     if (p != null) {
@@ -1312,21 +1481,40 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Because MouseEvents are received in component coordinates, it is
-   * inconvenient for MouseListeners on the map to have to translate to map
+   * Because MouseEvents are received in Component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to Map
    * coordinates. MouseListeners added with this method will receive mouse
-   * events with points already translated into map coordinates.
+   * events with points already translated into Map coordinates.
    * addLocalMouseListenerFirst inserts the new listener at the start of the
    * chain.
+   * @param l MouseListener to add
    */
   public void addLocalMouseListener(MouseListener l) {
     multicaster = AWTEventMulticaster.add(multicaster, l);
   }
 
+  /**
+   * Because MouseEvents are received in Component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to Map
+   * coordinates. MouseListeners added with this method will receive mouse
+   * events with points already translated into Map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the
+   * chain.
+   * @param l MouseListener to add
+   */
   public void addLocalMouseListenerFirst(MouseListener l) {
     multicaster = AWTEventMulticaster.add(l, multicaster);
   }
 
+  /**
+   * Because MouseEvents are received in Component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to Map
+   * coordinates. MouseListeners added with this method will receive mouse
+   * events with points already translated into Map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the
+   * chain.
+   * @param l MouseListener to add
+   */
   public void removeLocalMouseListener(MouseListener l) {
     multicaster = AWTEventMulticaster.remove(multicaster, l);
   }
@@ -1334,6 +1522,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * MouseListeners on a map may be pushed and popped onto a stack.
    * Only the top listener on the stack receives mouse events.
+   * @param l MouseListener to push onto stack.
    */
   public void pushMouseListener(MouseListener l) {
     mouseListenerStack.add(l);
@@ -1341,21 +1530,37 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * MouseListeners on a map may be pushed and popped onto a stack. Only the top listener on the stack receives mouse
-   * events
+   * events. The pop method removes the most recently pushed mouse listener.
    */
   public void popMouseListener() {
     mouseListenerStack.remove(mouseListenerStack.size() - 1);
   }
 
+  /**
+   * @param e MouseEvent
+   */
   @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  /**
+   * @param e MouseEvent
+   */
   @Override
   public void mouseExited(MouseEvent e) {
   }
 
 
+  /**
+   * Because MouseEvents are received in Component coordinates, it is
+   * inconvenient for MouseListeners on the map to have to translate to Map
+   * coordinates. MouseListeners added with this method will receive mouse
+   * events with points already translated into Map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the
+   * chain.
+   * @param e MouseEvent in Component coordinates
+   * @return MouseEvent translated into Map coordinates
+   */
   public MouseEvent translateEvent(MouseEvent e) {
     // don't write over Java's mouse event
     final MouseEvent mapEvent = new MouseEvent(
@@ -1371,6 +1576,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
    * stack, if any, otherwise forwarded to all LocalMouseListeners
+   * @param e MouseEvent from system
    *
    * @see #pushMouseListener
    * @see #popMouseListener
@@ -1386,14 +1592,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
-  /**
-   * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
-   * stack, if any, otherwise forwarded to all LocalMouseListeners
-   *
-   * @see #pushMouseListener
-   * @see #popMouseListener
-   * @see #addLocalMouseListener
-   */
 
   public static Map activeMap = null;
 
@@ -1408,6 +1606,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
+   * stack, if any, otherwise forwarded to all LocalMouseListeners
+   *
+   * @see #pushMouseListener
+   * @see #popMouseListener
+   * @see #addLocalMouseListener
+  */
   @Override
   public void mousePressed(MouseEvent e) {
     // Deselect any counters on the last Map with focus
