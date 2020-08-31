@@ -13,6 +13,7 @@
 
 3.4.0 - ???
 
+* 13356: Game refresher should not copy marker state
 * 13351: SequenceEncoder.Decoder.copy() should use start offset from parent
 * 13332: Improved save game write time
 * 13329: Don't create new GPIDs for temporary pieceslots
