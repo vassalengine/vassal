@@ -177,7 +177,7 @@ public class GlobalOptions extends AbstractConfigurable {
          new PieceMover.DragHandler()
       ));
 
-      prefs.addOption(bug10295Conf);
+      prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
     }
     
     // Move Fixed Distance trait (Translate) has been substantially re-written.
@@ -188,7 +188,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Boolean.FALSE
       );
     classicMfd.addPropertyChangeListener(evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
-    prefs.addOption(classicMfd);
+    prefs.addOption(Resources.getString("Prefs.compatibility_tab"), classicMfd);
 
     //BR// Drag Threshold
     final IntConfigurer dragThresholdConf = new IntConfigurer(
@@ -211,7 +211,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
     if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC_OSX) {
       // Only need to *display* this preference if we're running on a Mac.
-      prefs.addOption(macLegacyConf);
+      prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
     
     BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$

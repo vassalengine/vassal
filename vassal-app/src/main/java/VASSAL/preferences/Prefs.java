@@ -51,7 +51,7 @@ import VASSAL.tools.ReadErrorDialog;
 public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; // $NON_NLS-1$
-  public static final String DISABLE_D3D = "disableD3d";
+  public static final String DISABLE_D3D = "disableD3d"; // $NON_NLS-1$
 
   private static Prefs globalPrefs;
 
@@ -130,7 +130,7 @@ public class Prefs implements Closeable {
   }
 
   /**
-   * @param key
+   * @param key Pref Key
    * @return the value of the preferences setting stored under key
    */
   public Object getValue(String key) {
@@ -279,7 +279,7 @@ public class Prefs implements Closeable {
         Resources.getString("Prefs.disable_d3d"),
         Boolean.FALSE
       );
-      globalPrefs.addOption(d3dConf);
+      globalPrefs.addOption(Resources.getString("Prefs.compatibility_tab"), d3dConf);
     }
 
     final BooleanConfigurer wizardConf = new BooleanConfigurer(
