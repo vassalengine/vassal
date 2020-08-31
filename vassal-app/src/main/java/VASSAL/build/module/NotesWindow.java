@@ -194,7 +194,7 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

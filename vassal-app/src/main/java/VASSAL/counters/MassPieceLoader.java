@@ -202,7 +202,7 @@ public class MassPieceLoader {
       helpButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.htm");
+          final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.html");
           BrowserSupport.openURL(h.getContents().toString());
         }
       });

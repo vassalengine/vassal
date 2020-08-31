@@ -115,7 +115,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalHotKey.htm");
+    return HelpFile.getReferenceManualPage("GlobalHotKey.html");
   }
 
   @Override

@@ -136,7 +136,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ZonedGrid.html"); //$NON-NLS-1$
   }
 
   @Override

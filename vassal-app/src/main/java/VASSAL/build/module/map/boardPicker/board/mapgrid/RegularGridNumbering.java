@@ -403,7 +403,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GridNumbering.htm");
+    return HelpFile.getReferenceManualPage("GridNumbering.html");
   }
 
   protected String getName(int row, int column) {

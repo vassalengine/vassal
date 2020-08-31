@@ -347,7 +347,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Marker.htm");
+    return HelpFile.getReferenceManualPage("Marker.html");
   }
 
   @Override

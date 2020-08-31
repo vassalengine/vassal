@@ -371,7 +371,7 @@ public class GlobalMap implements AutoConfigurable,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "OverviewWindow");
+    return HelpFile.getReferenceManualPage("Map.html", "OverviewWindow");
   }
 
   @Override

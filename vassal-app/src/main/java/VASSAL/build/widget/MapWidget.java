@@ -38,7 +38,7 @@ public class MapWidget extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "Map");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Map");
   }
 
   @Override

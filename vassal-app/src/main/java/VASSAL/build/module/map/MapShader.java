@@ -864,7 +864,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "MapShading");
+    return HelpFile.getReferenceManualPage("Map.html", "MapShading");
   }
 
   @Override

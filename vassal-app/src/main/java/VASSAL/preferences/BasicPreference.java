@@ -164,7 +164,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalOptions.htm");
+    return HelpFile.getReferenceManualPage("GlobalOptions.html");
   }
 
   @Override

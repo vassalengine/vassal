@@ -77,7 +77,7 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MultiActionButton.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("MultiActionButton.html"); //$NON-NLS-1$
   }
 
   // Implement Loopable

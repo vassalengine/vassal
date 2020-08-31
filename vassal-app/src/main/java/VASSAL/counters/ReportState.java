@@ -274,7 +274,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ReportChanges.htm");
+    return HelpFile.getReferenceManualPage("ReportChanges.html");
   }
 
   @Override

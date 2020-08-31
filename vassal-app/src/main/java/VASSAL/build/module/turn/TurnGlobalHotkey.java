@@ -117,7 +117,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm", "Hotkey"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html", "Hotkey"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void apply() {

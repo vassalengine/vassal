@@ -686,7 +686,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Rotate.htm"); //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("Rotate.html"); //$NON-NLS-1$//
   }
 
   @Override

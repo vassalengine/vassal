@@ -215,7 +215,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

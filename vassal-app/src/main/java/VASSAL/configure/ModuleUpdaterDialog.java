@@ -101,7 +101,7 @@ public class ModuleUpdaterDialog extends JDialog {
     try {
       hf = new HelpFile(null, new File(new File(
         VASSAL.build.module.Documentation.getDocumentationBaseDir(),
-        "ReferenceManual"), "ModuleUpdater.htm"));
+        "ReferenceManual"), "ModuleUpdater.html"));
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);

@@ -402,7 +402,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Translate.htm");
+    return HelpFile.getReferenceManualPage("Translate.html");
   }
 
   @Override

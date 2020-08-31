@@ -1,0 +1,103 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> Properties **#
+
+'''''
+
+=== Properties
+
+[width="100%",cols="34%,33%,33%",]
+|===
+a|
+A Property is like a variable in programming: it has a _value_ which can be referenced by including its _name_ in <<Expression.adoc#top,Expressions>>, <<MessageFormat.adoc#top,Message Formats>> and other similar fields.
+Most types of Property have their values change through the course of the game.
+Some Properties can have their values set by commands provided in Game Pieces themselves; others have their values set by the system and cannot be changed from within the module.
+
+Each Game Piece has its own set of properties (each with a name and a value) that can be used for identification by various components.
+You can add your own new properties to a Game Piece _explicitly_ by adding <<DynamicProperty.adoc#top,Dynamic Property>> traits to create values which can be changed during the course of the game and <<PropertyMarker.adoc#top,Marker>> traits for properties whose values will remain constant.
+System-defined properties are also added _implicitly_ when other traits are added (see below). <<GlobalProperties.adoc#top,Global Properties>> can also be defined for a Zone, a Map or for the entire module.
+If a referenced Property name is not defined in a Game Piece, the VASSAL looks for the value in the Zone containing the piece, then in the Map containing the piece, then in the module.
+
+Properties can be matched using <<Expression.adoc#top,Expressions>> like _name == value_ for an exact match, _name != value_ for a non-match, or _name =~ value_ for a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[regular expression] match.
+For properties that return a numeric value (e.g.
+the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _<=_, _>_, and _>=._  You can combine expressions using && for logical AND and || for a logical OR.
+
+*Components that use properties*
+
+* Any <<MessageFormat.adoc#top,Message Format>> defined in a Game Piece will substitute values for the properties defined on that Game Piece.
+
+* The <<Map.adoc#GlobalKeyCommand,Global Key Command>> component uses properties to determine which pieces will respond to the command.
+* The <<Map.adoc#GamePieceLayers,Game Piece Layers>> component uses properties to determine relative ordering when drawing pieces on the map.
+* The <<TriggerAction.adoc#top,Trigger Action>> trait uses properties to determine when to fire a Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> .
+* The <<Label.adoc#top,Text Label>> trait substitutes properties when setting the text of the label.
+* A <<ZonedGrid.adoc#Zone,Zone>> uses properties to specify a <<ZonedGrid.adoc#ZoneHighlighter,Zone Highlighter>>.
+
+*Properties defined by Game Pieces*
+
+* The <<BasicPiece.adoc#top,Basic Piece>> defines properties related to a piece's name, location, side, and whether it's selected.
+
+* The <<Layer.adoc#Properties,Layer>> trait defines properties related to the state of that Layer.
+* The <<Rotate.adoc#top,Rotate>> trait defines properties related to the current facing of the piece.
+
+* The <<Label.adoc#top,Text Label>> trait returns the value of the label as a property.
+* The <<PropertyMarker.adoc#top,Marker>> trait allows you to define your own static properties.
+* The <<DynamicProperty.adoc#top,Dynamic Property>> trait allows you to define your own changeable properties.
+
+* The <<MarkMoved.adoc#top,Mark When Moved>> trait sets a property when a piece has moved.
+* The <<Mask.adoc#Properties,Mask>> trait sets a property when the piece is masked.
+* The <<Hideable.adoc#top,Invisible>> trait sets a property when the piece is invisible.
+
+* The <<PropertySheet.adoc#top,Property Sheet>> trait exposes a set of user-editable properties.
+
+*Properties defined by other components*
+
+* The <<GlobalProperties.adoc#top,Global Property>> component defines properties for a <<ZonedGrid.adoc#Zone,Zone>>, <<Map.adoc#top,Map>> or the <<GameModule.adoc#top,module>>.
+* The <<GlobalOptions.adoc#top,Global Options>> component allows you to tie property values to preferences settings.
+* The results of a roll by a <<GameModule.adoc#DiceButton,Dice Button>> is exposed as a property
+* A <<Deck.adoc#top,Deck>> component exposes the number of cards remaining as a Map-level property.
+|===
+
+==== Handy Combined List of VASSAL-defined Properties for Game Pieces
+
+|===
+|Property |Trait |Description
+|*BasicName* |<<BasicPiece.adoc#top,Basic Piece>> |The basic name of the piece.
+|*ClickedX* |Basic Piece |Map X-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
+|*ClickedY* |Basic Piece |Map Y-coordinate where player last right-clicked on piece to bring up context menu (or 0 if never).
+|*CurrentBoard* |Basic Piece |Current Board name or "" if not on a map.
+|*CurrentMap* |Basic Piece |Current Map name or "" if not on a map.
+|*CurrentX* |Basic Piece |Current X-coordinate of the piece.
+|*CurrentY* |Basic Piece |Current Y-coordinate of the piece.
+|*CurrentZone* |Basic Piece |Current Zone name if the current map has a <<ZonedGrid.adoc#top,multi-zoned grid>>, or "" if the piece is not in any zone, or not on a map.
+|*DeckName* |Basic Piece |Current Deck name if stacked in a <<Deck.adoc#top,Deck>>, or "" if not in a Deck.
+|*IgnoreGrid* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece ignores the map grid when moving.
+|*Immobile* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot be moved by drag and drop.
+|*Invisible* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to the current player.
+|*InvisibleToOthers* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to other players.
+|*LocationName* |Basic Piece |Name of the piece's current location, as determined by the map's <<ZonedGrid.adoc#Zone,Zone>> (if any) and grid settings.
+|*Moved* |<<MarkMoved.adoc#top,Mark When Moved>> |"true" if this piece has moved since the last time its movement history was cleared.
+|*NoStack* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot stack with other pieces.
+|*Obscured* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from the current player.
+|*ObscuredToOthers* |<<Mask.adoc#top,Mask>> |"true" if this piece is masked from other players.
+|*OldBoard* |Basic Piece |Board name prior to most recent movement.
+|*OldLocationName* |Basic Piece |Location name prior to most recent movement.
+|*OldMap* |Basic Piece |Map name prior to most recent movement.
+|*OldX* |Basic Piece |X coordinate prior to most recent movement.
+|*OldY* |Basic Piece |Y coordinate prior to most recent movement.
+|*OldZone* |Basic Piece |Zone name prior to most recent movement.
+|*PieceName* |Basic Piece |Full piece name including both Basic Name and all additional strings provided by traits.
+|*playerSide* |Basic Piece |Side of the current player (not the side of the piece).
+|*Restricted* |<<RestrictedAccess.adoc#top,Restricted Access>> |"true" if there are restrictions as to who can access this piece.
+|*Selected* |Basic Piece |"true" if the piece is currently selected.
+|*_<property_name>_* |<<PropertySheet.adoc#top,PropertySheet>> |The value of each property on the Property Sheet can be accessed via the property name.
+|*_<layername>__Active* |<<Layer.adoc#top,Layer>> |"true" if the Layer _<layername>_ is currently active.
+|*_<layername>__Image* |<<Layer.adoc#top,Layer>> |The image name of the currently active layer for _Layer_ _<layername>_.
+|*_<layername>__Level* |<<Layer.adoc#top,Layer>> |The level number of the currently active layer for _Layer_ _<layername>_.
+|*_<layername>__Name* |<<Layer.adoc#top,Layer>> |The level name of the currently active layer for _Layer_ _<layername>_.
+|*_<rotatename>__Facing* |<<Rotate.adoc#top,Can Rotate>> |The current facing number (1, 2, etc) for the _Can Rotate_ trait _<rotatename>_.
+|*_<rotatename>__Degrees* |<<Rotate.adoc#top,Can Rotate>> |The current degrees of rotation for the _Can Rotate_ trait _<name>_.
+|_<Property Name>_ |<<Label.adoc#top,Text Label>> |If the "Property Name" field in the trait is filled out, then a property with that name will be filled with the current value of the _Text Label_ trait's Text field.
+|*_<deckname>__numPieces* |<<Deck.adoc#top,Deck>> (Map level property) |Number of pieces/"cards" in the _Deck_ _<deckname>_.
+|*_<deckname>___<expression_name>_* |<<Deck.adoc#top,Deck>> (Map level property) |The number of pieces/"cards" for which the named expression evaluates to true in the _Deck_ _<deckname>_.
+|===

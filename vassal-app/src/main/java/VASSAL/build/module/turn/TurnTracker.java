@@ -525,7 +525,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

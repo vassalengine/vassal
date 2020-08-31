@@ -727,7 +727,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("BasicPiece.htm");
+    return HelpFile.getReferenceManualPage("BasicPiece.html");
   }
 
   @Override

@@ -185,7 +185,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SetGlobalProperty.htm");
+    return HelpFile.getReferenceManualPage("SetGlobalProperty.html");
   }
 
   /*

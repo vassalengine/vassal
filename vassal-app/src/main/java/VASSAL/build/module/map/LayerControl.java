@@ -241,7 +241,7 @@ public class LayerControl extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayers.htm");
+    return HelpFile.getReferenceManualPage("GamePieceLayers.html");
   }
 
   public static String getConfigureTypeName() {

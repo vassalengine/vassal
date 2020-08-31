@@ -172,7 +172,7 @@ public class HelpFile extends AbstractConfigurable {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
+      return new HelpFile(null, new File(dir, "HelpMenu.html"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);

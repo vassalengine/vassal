@@ -266,7 +266,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImage.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GamePieceImage.html"); //$NON-NLS-1$
   }
 
   @Override

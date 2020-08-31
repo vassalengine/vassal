@@ -694,7 +694,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Label.htm");
+    return HelpFile.getReferenceManualPage("Label.html");
   }
 
   @Override

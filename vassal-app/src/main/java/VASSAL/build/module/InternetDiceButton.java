@@ -157,6 +157,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

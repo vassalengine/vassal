@@ -563,7 +563,7 @@ public class DoActionButton extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("DoActionButton.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("DoActionButton.html"); //$NON-NLS-1$
   }
 
   /**
