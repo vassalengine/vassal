@@ -83,7 +83,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
   // Date formatter to save and restore date/times in the save file
   public static final DateFormat INTERNAL_DATE_FORMATTER =
-    new SimpleDateFormat("m/d/yy h:mm a");
+    new SimpleDateFormat("M/d/yy h:mm a");
 
   // Date formatter to display date/time to the player
   public static final DateFormat LOCAL_DATE_FORMATTER =
