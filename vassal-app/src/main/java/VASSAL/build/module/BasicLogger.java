@@ -257,8 +257,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GameModule.getGameModule().sendAndLog(c);
     stepAction.setEnabled(isReplaying());
     if (!isReplaying()) {
-      if (GameModule.REPLAYING_GAME.equals(GameModule.getGameModule().getGameFileMode())) {
-        GameModule.getGameModule().setGameFileMode(GameModule.REPLAYED_GAME);
+      if (GameModule.GameFileMode.REPLAYING_GAME.equals(GameModule.getGameModule().getGameFileMode())) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.REPLAYED_GAME);
       }
     }
     if (!isReplaying()) {
@@ -410,7 +410,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
-    gm.setGameFile(outputFile.getName(), GameModule.LOGGING_GAME);
+    gm.setGameFile(outputFile.getName(), GameModule.GameFileMode.LOGGING_GAME);
     GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_begun"));  //$NON-NLS-1$
     newLogAction.setEnabled(false);
     metadata = new SaveMetaData();
@@ -495,7 +495,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         write();
         GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
         newLogAction.setEnabled(true);
-        GameModule.getGameModule().setGameFileMode(GameModule.LOGGED_GAME);
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.LOGGED_GAME);
         outputFile = null;
       }
       catch (IOException ex) {

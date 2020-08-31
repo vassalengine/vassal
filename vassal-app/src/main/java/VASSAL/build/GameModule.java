@@ -176,13 +176,35 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   // Last type of game save/load for our current game
-  public static final String SAVED_GAME = "saved";
-  public static final String LOADED_GAME = "loaded";
-  public static final String REPLAYED_GAME = "replayed";
-  public static final String REPLAYING_GAME = "replaying";
-  public static final String LOGGING_GAME = "logging";
-  public static final String LOGGED_GAME = "logged";
-  public static final String NEW_GAME = "new";
+  //public static final String SAVED_GAME = "saved";
+  //public static final String LOADED_GAME = "loaded";
+  //public static final String REPLAYED_GAME = "replayed";
+  //public static final String REPLAYING_GAME = "replaying";
+  //public static final String LOGGING_GAME = "logging";
+  //public static final String LOGGED_GAME = "logged";
+  //public static final String NEW_GAME = "new";
+
+  // Last type of game save/load for our current game
+  public enum GameFileMode {
+    SAVED_GAME("saved"),
+    LOADED_GAME("loaded"),
+    REPLAYED_GAME("replayed"),
+    REPLAYING_GAME("replaying"),
+    LOGGING_GAME("logging"),
+    LOGGED_GAME("logged"),
+    NEW_GAME("new");
+
+    private final String prettyName;
+
+    GameFileMode(String prettyName) {
+      this.prettyName = prettyName;
+    }
+
+    @Override
+    public String toString() {
+      return prettyName;
+    }
+  }
 
   private static GameModule theModule;
 
@@ -236,7 +258,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   protected Command pausedCommands;
 
   protected String gameFile     = "";
-  protected String gameFileMode = NEW_GAME;
+  protected GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   /*
    * Store the currently building GpId source. Only meaningful while
@@ -1171,25 +1193,25 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param name Name of the object whose title bar is to be generated
    */
   public String getWindowTitleString (String key, String name) {
-    if (StringUtils.isEmpty(gameFile) || NEW_GAME.equals(gameFileMode)) {
+    if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
-    else if (SAVED_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.SAVED_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_saved", name, gameFile); //NON-NLS-1$
     }
-    else if (LOADED_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.LOADED_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_loaded", name, gameFile); //NON-NLS-1$
     }
-    else if (REPLAYED_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.REPLAYED_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_replayed", name, gameFile); //NON-NLS-1$
     }
-    else if (REPLAYING_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.REPLAYING_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_replaying", name, gameFile); //NON-NLS-1$
     }
-    else if (LOGGING_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.LOGGING_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_logging", name, gameFile); //NON-NLS-1$
     }
-    else if (LOGGED_GAME.equals(gameFileMode)) {
+    else if (GameFileMode.LOGGED_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title_logged", name, gameFile); //NON-NLS-1$
     }
     else {
@@ -1224,7 +1246,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param gameFile Most recent VSAV/VLOG if any
    * @param mode mode of access
    */
-  public void setGameFile (String gameFile, String mode) {
+  public void setGameFile (String gameFile, GameFileMode mode) {
     this.gameFile = gameFile;
     gameFileMode = mode;
     updateTitleBar();
@@ -1242,7 +1264,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * of windows.
    * @param mode mode of access
    */
-  public void setGameFileMode (String mode) {
+  public void setGameFileMode (GameFileMode mode) {
     gameFileMode = mode;
     updateTitleBar();
   }
@@ -1251,7 +1273,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
    * title bars of windows.
    */
-  public String getGameFileMode () {
+  public GameFileMode getGameFileMode () {
     return gameFileMode;
   }
 
