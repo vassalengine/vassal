@@ -334,9 +334,7 @@ public class GameState implements CommandEncoder {
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      if (GameModule.GameFileMode.LOGGING_GAME.equals(g.getGameFileMode())) {
-        g.setGameFileMode(GameModule.GameFileMode.LOGGED_GAME);
-      }
+      g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     }
 
     gameStarted &= this.gameStarting;
