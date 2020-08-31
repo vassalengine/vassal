@@ -155,7 +155,6 @@ public class GpIdChecker {
       try {
         if (extensionsLoaded) {
           goodSlots.put(id, element);
-          System.out.println("Add Id " + id);
         }
         else {
           final int iid = Integer.parseInt(id);
