@@ -18,6 +18,7 @@
 package VASSAL.build.module;
 
 import VASSAL.tools.ProblemDialog;
+import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -178,7 +179,7 @@ import VASSAL.tools.swing.SwingUtils;
  * contained in the <code>VASSAL.build.module.map</code> package
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+  UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -250,8 +251,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
-  
-  
+
+
   public Component getComponent() {
     return theMap;
   }
@@ -662,8 +663,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
-          mouseListenerStack.isEmpty() &&
-          SwingUtils.isDragTrigger(dge)) {
+        mouseListenerStack.isEmpty() &&
+        SwingUtils.isDragTrigger(dge)) {
         dragGestureListener.dragGestureRecognized(dge);
       }
     };
@@ -1520,10 +1521,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
         if ((sx == -1 && vrect.x == 0) ||
-            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
 
         if ((sy == -1 && vrect.y == 0) ||
-            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
 
         // Stop if the scroll vector is zero
         if (sx == 0 && sy == 0) scroller.stop();
@@ -2023,7 +2024,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+            .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2142,7 +2143,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // If no piece at destination and this is a stacking piece, create
       // a new Stack containing the piece
       if (!(p instanceof Stack) &&
-          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+        !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
         final Stack parent = getStackMetrics().createStack(p);
         if (parent != null) {
           c = c.append(placeAt(parent, pt));
@@ -2231,10 +2232,41 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /** Ensure that the given region (in map coordinates) is visible */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
+      boolean bTriggerRecenter = false;
       final Point p = mapToComponent(r.getLocation());
-      r = new Rectangle(p.x, p.y,
-            (int) (getZoom() * r.width), (int) (getZoom() * r.height));
-      theMap.scrollRectToVisible(r);
+      final Rectangle rCurrent = theMap.getVisibleRect();
+      Rectangle rNorecenter = new Rectangle(0, 0);
+
+      // If r is already visible decide if unit is close enough to
+      // border to justify a recenter
+
+      // Close enough means a strip of the window along the edges whose
+      // width is a % of the edge to center of the window
+
+      // The % is defined in GlobalOptions.CENTER_ON_MOVE_SENSITIVITY
+      final double noRecenterPct = (100.0 - GlobalOptions.getInstance().centerOnOpponentsMoveSensitivity()) / 100.0;
+
+      // if r is within a band of  n%width/height of border, trigger recenter
+      rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);
+      rNorecenter.height = (int) round(rCurrent.height * noRecenterPct);
+      rNorecenter.x = rCurrent.x + (int) round(rCurrent.width - rNorecenter.width) / 2;
+      rNorecenter.y = rCurrent.y + (int) round(rCurrent.height - rNorecenter.height) / 2;
+
+      bTriggerRecenter = p.x < rNorecenter.x || p.x > (rNorecenter.x + rNorecenter.width) ||
+        p.y < rNorecenter.y || p.y > (rNorecenter.y + rNorecenter.height);
+
+      if (bTriggerRecenter) {
+        r.x = p.x - rCurrent.width / 2;
+        r.y = p.y - rCurrent.height / 2;
+        r.width = rCurrent.width;
+        r.height = rCurrent.height;
+
+        final Dimension d = getPreferredSize();
+        if (r.x + r.width > d.width) r.x = d.width - r.width;
+        if (r.y + r.height > d.height) r.y = d.height - r.height;
+
+        theMap.scrollRectToVisible(r);
+      }
     }
   }
 
@@ -2667,7 +2699,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+        && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
         return map.getStackMetrics().merge(s, p);
       }
       else {
@@ -2678,8 +2710,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-          && map.getPieceCollection().canMerge(piece, p)) {
+        && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
+        && map.getPieceCollection().canMerge(piece, p)) {
         return map.getStackMetrics().merge(piece, p);
       }
       else {
