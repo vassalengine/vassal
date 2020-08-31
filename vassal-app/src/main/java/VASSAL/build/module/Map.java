@@ -715,7 +715,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     );
 
     g.getPrefs().addOption(
-      Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+      Resources.getString("Prefs.compatibility_tab"), //$NON-NLS-1$
       new BooleanConfigurer(
         MOVING_STACKS_PICKUP_UNITS,
         Resources.getString("Map.moving_stacks_preference"), //$NON-NLS-1$
