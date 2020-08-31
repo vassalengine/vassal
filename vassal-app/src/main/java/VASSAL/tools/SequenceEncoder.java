@@ -223,6 +223,14 @@ public class SequenceEncoder {
       stop = val != null ? val.length() : 0;
     }
 
+    public Decoder(Decoder d) {
+      val = d.val;
+      delim = d.delim;
+
+      start = d.start;
+      stop = d.stop;
+    }
+
     public boolean hasMoreTokens() {
       return val != null;
     }
@@ -309,7 +317,7 @@ public class SequenceEncoder {
     }
 
     public Decoder copy() {
-      return new Decoder(val, delim);
+      return new Decoder(this);
     }
 
     /**
