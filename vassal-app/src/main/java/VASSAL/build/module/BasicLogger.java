@@ -476,13 +476,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return null;
     }
 
-      Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
+    Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
     if (logged == null) {
       return null;
     }
 
-        return new LogCommand(logged, logInput, stepAction);
-      }
+    return new LogCommand(logged, logInput, stepAction);
+  }
 
   protected Action undoAction = new UndoAction();
 
