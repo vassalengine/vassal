@@ -56,7 +56,6 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.FlareCommand;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.FlareFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
@@ -70,7 +69,7 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class Flare extends AbstractConfigurable
         implements CommandEncoder, GameComponent, Drawable, MouseListener, UniqueIdManager.Identifyable {
-  private static final String DELIMITER = "\t"; //$NON-NLS-1$
+  private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
@@ -584,7 +583,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * @param e MouseEvent
+   * @param gameStarting
    */
   public void setup(final boolean gameStarting) {
   }
