@@ -159,7 +159,7 @@ public class GpIdChecker {
         else {
           final int iid = Integer.parseInt(id);
           goodSlots.put(id, element);         // gpid is good.
-          if (iid >= maxId) {
+          if (iid > maxId) {
             maxId = iid;
           }
         }
