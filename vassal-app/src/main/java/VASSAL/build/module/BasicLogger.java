@@ -402,6 +402,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     endLogAction.setEnabled(true);
     gm.appendToTitle(Resources.getString("BasicLogger.logging_to",
                      outputFile.getName()));
+    GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_begun"));  //$NON-NLS-1$
     newLogAction.setEnabled(false);
     metadata = new SaveMetaData();
   }
