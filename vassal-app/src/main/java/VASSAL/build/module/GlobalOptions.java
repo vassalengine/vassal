@@ -220,7 +220,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
     //CC// center_on_move_border_proximity_pct (is the pct of distance from border to center of window that triggers a recenter
     final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
-      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10 ); //$NON-NLS-1$
+      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10); //$NON-NLS-1$
     prefs.addOption(pctRecenterOn);
 
     validator = new SingleChildInstance(gm, getClass());

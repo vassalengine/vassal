@@ -495,9 +495,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void build(Element e) {
     ActionListener al = e1 -> {
-        if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
-          theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
-        }
+      if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
+        theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
+      }
     };
     launchButton = new LaunchButton(Resources.getString("Editor.Map.map"), TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
     launchButton.setEnabled(false);
@@ -667,11 +667,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
 
     final DragGestureListener dgl = dge -> {
-        if (dragGestureListener != null &&
-            mouseListenerStack.isEmpty() &&
-            SwingUtils.isDragTrigger(dge)) {
-          dragGestureListener.dragGestureRecognized(dge);
-        }
+      if (dragGestureListener != null &&
+          mouseListenerStack.isEmpty() &&
+          SwingUtils.isDragTrigger(dge)) {
+        dragGestureListener.dragGestureRecognized(dge);
+      }
     };
 
     DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(
@@ -2270,9 +2270,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         if (r.x + r.width > d.width) r.x = d.width - r.width;
         if (r.y + r.height > d.height) r.y = d.height - r.height;
 
-      theMap.scrollRectToVisible(r);
+        theMap.scrollRectToVisible(r);
+      }
     }
-  }
   }
 
   /**
