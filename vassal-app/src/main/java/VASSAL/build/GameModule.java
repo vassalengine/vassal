@@ -1196,26 +1196,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
-    else if (GameFileMode.SAVED_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_saved", name, gameFile); //NON-NLS-1$
-    }
-    else if (GameFileMode.LOADED_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_loaded", name, gameFile); //NON-NLS-1$
-    }
-    else if (GameFileMode.REPLAYED_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_replayed", name, gameFile); //NON-NLS-1$
-    }
-    else if (GameFileMode.REPLAYING_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_replaying", name, gameFile); //NON-NLS-1$
-    }
-    else if (GameFileMode.LOGGING_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_logging", name, gameFile); //NON-NLS-1$
-    }
-    else if (GameFileMode.LOGGED_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title_logged", name, gameFile); //NON-NLS-1$
-    }
     else {
-      return "**Unknown Game File Mode** - " + gameFile;
+      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile); //NON-NLS-1$
     }
   }
 
@@ -1248,7 +1230,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   public void setGameFile (String gameFile, GameFileMode mode) {
     this.gameFile = gameFile;
-    gameFileMode = mode;
+    setGameFileMode(mode);
     updateTitleBar();
   }
 
@@ -1265,6 +1247,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param mode mode of access
    */
   public void setGameFileMode (GameFileMode mode) {
+    if (mode == null) {
+      throw new NullPointerException();
+    }
     gameFileMode = mode;
     updateTitleBar();
   }
