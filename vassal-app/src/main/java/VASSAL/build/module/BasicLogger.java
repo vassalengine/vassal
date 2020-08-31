@@ -239,6 +239,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     return outputFile != null;
   }
 
+  public boolean isReplaying() {
+    return nextInput < logInput.size();
+  }
+
   @Override
   public Command getRestoreCommand() {
     return null;
@@ -251,8 +255,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final Command c = logInput.get(nextInput++);
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
-    stepAction.setEnabled(nextInput < logInput.size());
-    if (!(nextInput < logInput.size())) {
+    stepAction.setEnabled(isReplaying());
+    if (!isReplaying()) {
+      if (GameModule.REPLAYING_GAME.equals(GameModule.getGameModule().getGameFileMode())) {
+        GameModule.getGameModule().setGameFileMode(GameModule.REPLAYED_GAME);
+      }
+    }
+    if (!isReplaying()) {
       queryNewLogFile(false);
     }
   }
@@ -401,8 +410,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
-    gm.appendToTitle(Resources.getString("BasicLogger.logging_to",
-                     outputFile.getName()));
+    gm.setGameFile(outputFile.getName(), GameModule.LOGGING_GAME);
     GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_begun"));  //$NON-NLS-1$
     newLogAction.setEnabled(false);
     metadata = new SaveMetaData();
@@ -468,13 +476,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return null;
     }
 
-    Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
+      Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
     if (logged == null) {
       return null;
     }
 
-    return new LogCommand(logged, logInput, stepAction);
-  }
+        return new LogCommand(logged, logInput, stepAction);
+      }
 
   protected Action undoAction = new UndoAction();
 
@@ -487,7 +495,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         write();
         GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
         newLogAction.setEnabled(true);
-        GameModule.getGameModule().appendToTitle(null);
+        GameModule.getGameModule().setGameFileMode(GameModule.LOGGED_GAME);
         outputFile = null;
       }
       catch (IOException ex) {

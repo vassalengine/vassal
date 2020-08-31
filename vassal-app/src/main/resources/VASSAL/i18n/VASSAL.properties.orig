@@ -281,9 +281,9 @@ BasicLogger.end_logfile=End Logfile
 BasicLogger.end_logfile.shortcut=E
 BasicLogger.step=Step
 BasicLogger.undo=Undo
-BasicLogger.log_file_comments=Enter File Comments
-BasicLogger.enter_comments=Enter comments describing this save or log file. They will appear when the file is loaded, and in the Module Manager if a save directory is added there.
-BasicLogger.enable_comments=Prompt for log/save file comments 
+BasicLogger.log_file_comments=Log File Comments
+BasicLogger.enter_comments=Enter comments describing this log file
+BasicLogger.enable_comments=Prompt for log file comments
 
 # BasicModule
 BasicModule.version_message=%1$s version %2$s
@@ -618,7 +618,9 @@ Map.map=Map
 Map.offboard=offboard
 Map.mark_unmoved=Mark all pieces on this map as not moved
 Map.window_title=%1$s map
+<<<<<<< HEAD
 Map.main_map=Main Map
+=======
 Map.window_title_saved=%1$s map - most recent save: %2$s
 Map.window_title_loaded=%1$s map - last loaded from: %2$s
 Map.window_title_replaying=%1$s map - REPLAYING from: %2$s
@@ -632,6 +634,7 @@ Map.window_named_title_replaying=%1$s - REPLAYING from: %2$s
 Map.window_named_title_replayed=%1$s - last replayed from: %2$s
 Map.window_named_title_logging=%1$s - currently LOGGING to: %2$s
 Map.window_named_title_logged=%1$s - last logfile written: %2$s
+>>>>>>> df9d1d578... 13352 - Title Bar of module should always show most recent Save/Load/Log
 
 # Module Extension
 ModuleExtension.cannot_remove=Cannot remove Extension

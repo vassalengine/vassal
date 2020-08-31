@@ -334,7 +334,9 @@ public class GameState implements CommandEncoder {
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      g.appendToTitle(null);
+      if (GameModule.LOGGING_GAME.equals(g.getGameFileMode())) {
+        g.setGameFileMode(GameModule.LOGGED_GAME);
+      }
     }
 
     gameStarted &= this.gameStarting;
@@ -459,6 +461,7 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
+        g.setGameFile(f.getName(), GameModule.LOADED_GAME);
         loadGameInBackground(f);
       }
 
@@ -522,6 +525,7 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
+        g.setGameFile(lastSaveFile.getName(), GameModule.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
@@ -552,6 +556,7 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
+        g.setGameFile(saveFile.getName(), GameModule.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
@@ -630,8 +635,8 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
-    GameModule.getGameModule().warn(
-        Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
+    GameModule g = GameModule.getGameModule();
+    g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
       @Override
@@ -644,12 +649,10 @@ public class GameState implements CommandEncoder {
       c.execute();
     }
 
-    String msg;  
+    String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
+    g.setGameFile(f.getName(), ((BasicLogger)g.getLogger()).isReplaying() ? GameModule.REPLAYING_GAME : GameModule.LOADED_GAME);
     if (loadComments != null && loadComments.length() > 0) {
-      msg = "!" + Resources.getString("GameState.loaded", f.getName()) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
-    }
-    else {
-      msg = Resources.getString("GameState.loaded", f.getName()); //$NON-NLS-1$
+      msg = "!" + msg + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
   }
@@ -828,9 +831,11 @@ public class GameState implements CommandEncoder {
               else {
                 msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
               }
+              GameModule.getGameModule().setGameFile(shortName, GameModule.LOADED_GAME);
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
+              GameModule.getGameModule().setGameFileMode(GameModule.NEW_GAME);
             }
           }
           catch (InterruptedException e) {
