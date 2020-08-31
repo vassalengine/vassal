@@ -567,6 +567,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     updateGpId();
   }
 
+  public void setGpidSupport(GpIdSupport s) {
+    gpidSupport = s;
+  }
+
   /**
    * Allocate a new gpid to this PieceSlot, plus to any PlaceMarker or
    * Replace traits.
