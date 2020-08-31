@@ -1,5 +1,6 @@
 3.4.0 - ???
 
+* 13351: SequenceEncoder.Decoder.copy() should use start offset from parent
 * 13332: Improved save game write time
 * 13217: Editor: Additional fix for cut-and-paste
 * 13134: Some characters in Text Labels render poorly at 8pt on Windows in 3.3+
