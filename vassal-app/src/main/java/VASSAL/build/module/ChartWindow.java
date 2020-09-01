@@ -223,6 +223,6 @@ public class ChartWindow extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ChartWindow.html"); //$NON-NLS-1$
   }
 }

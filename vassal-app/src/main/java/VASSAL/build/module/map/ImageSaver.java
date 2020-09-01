@@ -537,7 +537,7 @@ public class ImageSaver extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "ImageCapture");
+    return HelpFile.getReferenceManualPage("Map.html", "ImageCapture");
   }
 
   public static String getConfigureTypeName() {

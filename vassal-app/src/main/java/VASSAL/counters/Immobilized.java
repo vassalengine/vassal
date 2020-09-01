@@ -332,7 +332,7 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("NonStacking.htm");
+    return HelpFile.getReferenceManualPage("NonStacking.html");
   }
 
   @Override

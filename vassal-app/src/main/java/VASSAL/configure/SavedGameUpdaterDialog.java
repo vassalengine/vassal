@@ -153,7 +153,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     try {
       hf = new HelpFile(null, new File(
         new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
-        "SavedGameUpdater.htm"));
+        "SavedGameUpdater.html"));
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);

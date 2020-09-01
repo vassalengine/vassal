@@ -559,22 +559,18 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith("CHAT")) { //$NON-NLS-1$
-      return new DisplayText(this, s.substring(4));
-    } 
-    else {
+    if (!s.startsWith(DisplayText.PREFIX)) {
       return null;
     }
+    return new DisplayText(this, s.substring(DisplayText.PREFIX.length()));
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof DisplayText) {
-      return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$
-    } 
-    else {
+    if (!(c instanceof DisplayText)) {
       return null;
     }
+    return DisplayText.PREFIX + ((DisplayText) c).getMessage();
   }
   
   
@@ -631,6 +627,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * This is a {@link Command} object that, when executed, displays
    * a text message in the Chatter's text area     */
   public static class DisplayText extends Command {
+
+    public static final String PREFIX = "CHAT";  //$NON-NLS-1$
+
     private String msg;
     private final Chatter c;
 

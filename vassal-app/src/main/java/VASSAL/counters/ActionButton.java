@@ -142,7 +142,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ActionButton.htm");
+    return HelpFile.getReferenceManualPage("ActionButton.html");
   }
 
   // Implement Loopable

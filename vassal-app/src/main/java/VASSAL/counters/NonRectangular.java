@@ -156,7 +156,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("NonRectangular.htm");
+    return HelpFile.getReferenceManualPage("NonRectangular.html");
   }
 
   @Override

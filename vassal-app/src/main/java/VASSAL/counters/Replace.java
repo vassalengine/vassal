@@ -79,7 +79,7 @@ public class Replace extends PlaceMarker {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Replace.htm");
+    return HelpFile.getReferenceManualPage("Replace.html");
   }
 
   @Override

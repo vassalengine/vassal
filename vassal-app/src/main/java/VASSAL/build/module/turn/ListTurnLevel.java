@@ -363,7 +363,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm", "List"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html", "List"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

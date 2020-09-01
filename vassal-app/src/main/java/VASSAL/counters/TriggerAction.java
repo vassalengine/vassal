@@ -381,7 +381,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TriggerAction.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("TriggerAction.html"); //$NON-NLS-1$
   }
 
   @Override

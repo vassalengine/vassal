@@ -29,7 +29,8 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class ChangePropertyCommandEncoder implements CommandEncoder {
   protected static final String COMMAND_PREFIX = "MutableProperty\t";
-  private MutablePropertiesContainer container;
+
+  private final MutablePropertiesContainer container;
 
   public ChangePropertyCommandEncoder(MutablePropertiesContainer container) {
     super();
@@ -38,47 +39,55 @@ public class ChangePropertyCommandEncoder implements CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    Command c = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      command = command.substring(COMMAND_PREFIX.length());
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      String key = st.nextToken(null);
-      String oldValue = st.nextToken(null);
-      String newValue = st.nextToken(null);
-      String containerId = st.nextToken("");
-
-      if (key != null) {
-        /*
-         * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
-         * behaviour is to execute the change on the first matching property found in any container
-         */
-        if (containerId.length() == 0 || containerId.equals(container.getMutablePropertiesContainerId())) {
-          MutableProperty p = container.getMutableProperty(key);
-          if (p != null) {
-            c = new ChangePropertyCommand(p, key, oldValue, newValue);
-          }
-        }
-      }
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return c;
+
+    command = command.substring(COMMAND_PREFIX.length());
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    final String key = st.nextToken(null);
+    if (key == null) {
+      return null;
+    }
+
+    final String oldValue = st.nextToken(null);
+    final String newValue = st.nextToken(null);
+    final String containerId = st.nextToken("");
+
+    /*
+     * NB. If there is no containerID in the command, then it is a pre-bug fix command. Legacy
+     * behaviour is to execute the change on the first matching property found in any container
+     */
+    if (containerId.length() != 0 && !containerId.equals(container.getMutablePropertiesContainerId())) {
+      return null;
+    }
+
+    final MutableProperty p = container.getMutableProperty(key);
+    if (p == null) {
+      return null;
+    }
+
+    return new ChangePropertyCommand(p, key, oldValue, newValue);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof ChangePropertyCommand) {
-      final ChangePropertyCommand cpc = (ChangePropertyCommand) c;
-      final String our_cid = container.getMutablePropertiesContainerId();
-      final String their_cid = cpc.getProperty().getParent().getMutablePropertiesContainerId();
-      if (our_cid.equals(their_cid)) {
-        final SequenceEncoder se = new SequenceEncoder('\t');
-        se.append(cpc.getPropertyName())
-          .append(cpc.getOldValue())
-          .append(cpc.getNewValue())
-          .append(our_cid);
-        s = COMMAND_PREFIX + se.getValue();
-      }
+    if (!(c instanceof ChangePropertyCommand)) {
+      return null;
     }
-    return s;
+
+    final ChangePropertyCommand cpc = (ChangePropertyCommand) c;
+    final String our_cid = container.getMutablePropertiesContainerId();
+    final String their_cid = cpc.getProperty().getParent().getMutablePropertiesContainerId();
+    if (!our_cid.equals(their_cid)) {
+      return null;
+    }
+
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    se.append(cpc.getPropertyName())
+      .append(cpc.getOldValue())
+      .append(cpc.getNewValue())
+      .append(our_cid);
+    return COMMAND_PREFIX + se.getValue();
   }
 }

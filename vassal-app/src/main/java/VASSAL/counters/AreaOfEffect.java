@@ -304,7 +304,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("AreaOfEffect.htm");
+    return HelpFile.getReferenceManualPage("AreaOfEffect.html");
   }
 
   @Override

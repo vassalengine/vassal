@@ -83,7 +83,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.htm");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html");
   }
 
   @Override

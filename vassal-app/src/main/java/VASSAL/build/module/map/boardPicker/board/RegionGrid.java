@@ -206,7 +206,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("IrregularGrid.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("IrregularGrid.html"); //$NON-NLS-1$
   }
 
   @Override

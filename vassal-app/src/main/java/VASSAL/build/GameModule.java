@@ -652,7 +652,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm");  //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GameModule.html");  //$NON-NLS-1$
   }
 
   /**

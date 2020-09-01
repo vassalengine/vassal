@@ -19,6 +19,7 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -154,13 +155,12 @@ public class GpIdChecker {
       try {
         if (extensionsLoaded) {
           goodSlots.put(id, element);
-          System.out.println("Add Id " + id);
         }
         else {
           final int iid = Integer.parseInt(id);
           goodSlots.put(id, element);         // gpid is good.
-          if (iid >= maxId) {
-            maxId = iid + 1;
+          if (iid > maxId) {
+            maxId = iid;
           }
         }
       }
@@ -373,7 +373,8 @@ public class GpIdChecker {
           final Decorator decorator = (Decorator) p;
           final String type = decorator.myGetType();
           final String newState = findStateFromType(oldPiece, type, p.getClass());
-          if (newState != null && newState.length() > 0) {
+          // Do not copy the state of Marker traits, we want to see the new value from the new definition
+          if (newState != null && newState.length() > 0 && !(decorator instanceof Marker)) {
             decorator.mySetState(newState);
           }
           p = decorator.getInner();

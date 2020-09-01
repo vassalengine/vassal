@@ -249,7 +249,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "HtmlHelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "HtmlHelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

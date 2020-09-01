@@ -190,9 +190,9 @@ public class Footprint extends MovementMarkable {
     edgePointBuffer = st.nextInt(DEFAULT_EDGE_POINT_BUFFER);
     edgeDisplayBuffer = st.nextInt(DEFAULT_EDGE_DISPLAY_BUFFER);
     lineWidth = st.nextDouble(LINE_WIDTH);
-    trailKeyOn = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK));
-    trailKeyOff = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.ALT_MASK));
-    trailKeyClear = st.nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(DEFAULT_TRAIL_KEY, InputEvent.CTRL_MASK + InputEvent.SHIFT_MASK + InputEvent.ALT_MASK));
+    trailKeyOn = st.nextNamedKeyStroke(null);
+    trailKeyOff = st.nextNamedKeyStroke(null);
+    trailKeyClear = st.nextNamedKeyStroke(null);
 
     commands = null;
     showTrailCommand = null;
@@ -299,7 +299,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MovementTrail.htm"); //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("MovementTrail.html"); //$NON-NLS-1$//
   }
 
   /**

@@ -73,14 +73,15 @@ public abstract class FileChooser {
     FileChooser fc;
     if (SystemUtils.IS_OS_MAC_OSX) {
       // Mac has a good native file dialog
+      System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));
       fc = new NativeFileChooser(parent, prefs, mode);
     }
-    else if (mode == FILES_ONLY && SystemUtils.IS_OS_WINDOWS) {
-      // Window has a good native file dialog, but it doesn't support selecting directories
+    else if (mode == FILES_ONLY) {
+      // Windows/Linux have a good native file dialog, but it doesn't support selecting directories
       fc = new NativeFileChooser(parent, prefs, mode);
     }
     else {
-      // Linux's native dialog is inferior to Swing's
+      // Use Swing's dialog for selecting directories on non-Macs
       fc = new SwingFileChooser(parent, prefs, mode);
     }
     return fc;
@@ -367,8 +368,6 @@ public abstract class FileChooser {
     public int showOpenDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.LOAD);
-      System.setProperty("apple.awt.fileDialogForDirectories",
-                         String.valueOf(mode == DIRECTORIES_ONLY));
       fd.setVisible(true);
 
       final int value;

@@ -96,7 +96,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "Definition"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
