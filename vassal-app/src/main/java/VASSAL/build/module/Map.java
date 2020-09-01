@@ -2078,22 +2078,37 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return Current selection highlighter
+   */
   public Highlighter getHighlighter() {
     return highlighter;
   }
 
+  /**
+   * @param h selection highlighter to set active
+   */
   public void setHighlighter(Highlighter h) {
     highlighter = h;
   }
 
+  /**
+   * @param h selection highlighter to add to our list
+   */
   public void addHighlighter(Highlighter h) {
     highlighters.add(h);
   }
 
+  /**
+   * @param h selection highlighter to remove from our list
+   */
   public void removeHighlighter(Highlighter h) {
     highlighters.remove(h);
   }
 
+  /**
+   * @return an Iterator for all of our highlighters
+   */
   public Iterator<Highlighter> getHighlighters() {
     return highlighters.iterator();
   }
@@ -2115,12 +2130,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return Collections.enumeration(boards);
   }
 
+  /**
+   * @return number of Boards on this map
+   */
   public int getBoardCount() {
     return boards.size();
   }
 
   /**
-   * Returns the boundingBox of a GamePiece accounting for the offset of a piece within its parent stack. Return null if
+   * @return the boundingBox of a GamePiece accounting for the offset of a piece within its parent stack. Return null if
    * this piece is not on the map
    *
    * @see GamePiece#boundingBox
@@ -2148,7 +2166,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Returns the selection bounding box of a GamePiece accounting for the offset of a piece within a stack
+   * @return the selection bounding box of a GamePiece accounting for the offset of a piece within a stack
    *
    * @see GamePiece#getShape
    */
@@ -2168,7 +2186,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Returns the position of a GamePiece accounting for the offset within a parent stack, if any
+   * @return the position of a GamePiece accounting for the offset within a parent stack, if any
    */
   public Point positionOf(GamePiece p) {
     if (p.getMap() != this) {
@@ -2185,25 +2203,39 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * @return an array of all GamePieces on the map. This is a read-only copy.
+   * @return an array of all GamePieces on the map, subject to visibility. This is a read-only copy.
    * Altering the array does not alter the pieces on the map.
    */
   public GamePiece[] getPieces() {
     return pieces.getPieces();
   }
 
+  /**
+   * @return an array of all GamePieces on the map, regardless of visibility.
+   * This is a read-only copy. Altering the array does not alter the pieces on the map.
+   */
   public GamePiece[] getAllPieces() {
     return pieces.getAllPieces();
   }
 
+  /**
+   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control")
+   */
   public void setPieceCollection(PieceCollection pieces) {
     this.pieces = pieces;
   }
 
+  /**
+   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control")
+   */
   public PieceCollection getPieceCollection() {
     return pieces;
   }
 
+  /**
+   * Clears the map border region, if any. If the {@link #clearFirst} flag is set, wipe the map image too.
+   * @param g target graphics object
+   */
   protected void clearMapBorder(Graphics g) {
     final Graphics2D g2d = (Graphics2D) g.create();
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
@@ -2264,6 +2296,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     theMap.revalidate();
   }
 
+  /**
+   * Gets the location of a board in Map space, based on a passed zoom factor
+   * @param b Board to find location
+   * @param zoom zoom factor to use
+   * @return Relative position of the board at given scale
+   */
   protected Point getLocation(Board b, double zoom) {
     Point p;
     if (zoom == 1.0) {
@@ -2277,6 +2315,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return p;
   }
 
+  /**
+   * Finds the location of a board (in Map space) at a particular 
+   * column and row, based on passed zoom factor 
+   * @param column number of board to find
+   * @param row number of board to find
+   * @param zoom zoom factor to use
+   * @return location of the board in Map space
+   */
   protected Point getLocation(int column, int row, double zoom) {
     Point p = new Point();
     for (int x = 0; x < column; ++x) {
@@ -2291,6 +2337,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Draw the boards of the map at the given point and zoom factor onto
    * the given Graphics object
+   * @param g target Graphics object
+   * @param xoffset x offset to draw at
+   * @param yoffset y offset to draw at
+   * @param zoom zoom factor for drawing the boards
+   * @param obs observer Component
    */
   public void drawBoards(Graphics g, int xoffset, int yoffset, double zoom, Component obs) {
     for (Board b : boards) {
@@ -2302,6 +2353,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Repaint the given area, specified in map coordinates
+   * @param r Rectangle specifying region to repaint in map coordinates
    */
   public void repaint(Rectangle r) {
     r.setLocation(mapToComponent(new Point(r.x, r.y)));
@@ -2310,25 +2362,40 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * @param show
-   *          if true, enable drawing of GamePiece. If false, don't draw GamePiece when painting the map
+   * @param show if true, enable drawing of {@link GamePiece}s. If false, don't draw any {@link GamePiece}s when painting the map
    */
   public void setPiecesVisible(boolean show) {
     hideCounters = !show;
   }
 
+  /**
+   * @return true if {@link GamePiece}s should be drawn when painting the map
+   */
   public boolean isPiecesVisible() {
     return !hideCounters && pieceOpacity != 0;
   }
 
+  /**
+   * @return current pieceOpacity for drawing
+   */
   public float getPieceOpacity() {
     return pieceOpacity;
   }
 
+  /**
+   * @param pieceOpacity sets opacity for piece drawing, 0 to 1.0
+   */
   public void setPieceOpacity(float pieceOpacity) {
     this.pieceOpacity = pieceOpacity;
   }
 
+  /**
+   * Gets the value of a map-level global property. If a "Global Property" entry is not found at the map
+   * level, then module-level properties are checked, which includes identification information for the
+   * local player.
+   * @param key identifies the global property to be returned
+   * @return value of designated global property
+   */
   @Override
   public Object getProperty(Object key) {
     Object value;
@@ -2342,6 +2409,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return value;
   }
 
+  /**
+   * Gets the value of map-level global property, or a module-level one if a map-level one is not found.
+   * The localized aspect presently only applies to permanent module-level objects which can be localized (e.g. player sides)
+   * @param key Name of the property to get the value of
+   * @return Localized/translated name of the named property, if one is available, otherwise returns the non-localized name
+   */
   @Override
   public Object getLocalizedProperty(Object key) {
     Object value = null;
@@ -2356,15 +2429,17 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Return the auto-move key. It may be named, so just return
+   * Return the apply-on-move key. It may be named, so just return
    * the allocated KeyStroke.
-   * @return auto move keystroke
+   * @return apply-on-move keystroke
    */
   public KeyStroke getMoveKey() {
     return moveKey == null ? null : moveKey.getKeyStroke();
   }
 
   /**
+   * Creates the top-level window for this map. Could be a JDialog or a JFrame depending on whether we are set to
+   * use a single window or have our own window.
    * @return the top-level window containing this map
    */
   protected Window createParentFrame() {
@@ -2383,6 +2458,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * If this map shows with its own special button, it does not dock into the main window. Likewise if we have
+   * no combined window setting. Otherwise the *first* non-button-launched map we find will be the one we dock.
+   * @return whether this map should dock into the main window
+   */
   public boolean shouldDockIntoMainWindow() {
     // set to show via a button, or no combined window at all, don't dock
     if (useLaunchButton || !GlobalOptions.getInstance().isUseSingleWindow()) {
@@ -2405,6 +2485,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * When a game is started, create a top-level window, if none exists.
    * When a game is ended, remove all boards from the map.
+   * @param show true if a game is starting, false if a game is ending
    *
    * @see GameComponent
    */
@@ -2512,6 +2593,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Use the provided {@link PieceFinder} instance to locate a visible piece at the given location
+   * @param pt Point at which to find visible pieces
+   * @param finder PieceFinder to use
+   * @return a visible piece at the given location, or null if none.
    */
   public GamePiece findPiece(Point pt, PieceFinder finder) {
     GamePiece[] stack = pieces.getPieces();
@@ -2526,7 +2610,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Use the provided {@link PieceFinder} instance to locate any piece at the given location, regardless of whether it
-   * is visible or not
+   * is visible or not.
+   * @param pt Point at which to find pieces
+   * @param finder PieceFinder to use
+   * @return a piece at the given location, regardless of visibility, or null if none.
    */
   public GamePiece findAnyPiece(Point pt, PieceFinder finder) {
     GamePiece[] stack = pieces.getAllPieces();
@@ -2541,6 +2628,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Place a piece at the destination point. If necessary, remove the piece from its parent Stack or Map
+   * @param piece GamePiece to place
+   * @Point pt location to place the piece
    *
    * @return a {@link Command} that reproduces this action
    */
@@ -2562,11 +2651,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Apply the provided {@link PieceVisitorDispatcher} to all pieces on this map. Returns the first non-null
-   * {@link Command} returned by <code>commandFactory</code>
+   * Attempts to apply the provided {@link PieceVisitorDispatcher} to all pieces on this map, until it finds one
+   * that returns a non-null Command.
+   * @return the first non-null {@link Command} returned by <code>commandFactory</code>
    *
-   * @param commandFactory Command Factory
-   *
+   * @param commandFactory The PieceVisitorDispatcher to apply
    */
   public Command apply(PieceVisitorDispatcher commandFactory) {
     GamePiece[] stack = pieces.getPieces();
@@ -2579,7 +2668,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Move a piece to the destination point. If a piece is at the point (i.e. has a location exactly equal to it), merge
-   * with the piece by forwarding to {@link StackMetrics#merge}. Otherwise, place by forwarding to placeAt()
+   * into a {@link Stack} with the piece by forwarding to {@link StackMetrics#merge}. Otherwise, place by forwarding to placeAt()
+   * @param p GamePiece to place/merge
+   * @param pt Point location on the map to place/merge the piece.
+   * @return a {@link Command} that will duplicate this action on other clients
    *
    * @see StackMetrics#merge
    */
@@ -2601,8 +2693,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Adds a GamePiece to this map. Removes the piece from its parent Stack and from its current map, if different from
-   * this map
+   * Adds a GamePiece to this map's list of pieces. Removes the piece from its parent Stack and from its current map, if different from
+   * this map.
+   * @param p Game Piece to add
    */
   public void addPiece(GamePiece p) {
     if (indexOf(p) < 0) {
@@ -2633,6 +2726,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Returns the index of a piece. When painting the map, pieces are drawn in order of index Return -1 if the piece is
    * not on this map
+   * @param s GamePiece to find the index of
+   * @return index of the piece on the map, or -1 if the piece is not on this map
    */
   public int indexOf(GamePiece s) {
     return pieces.indexOf(s);
@@ -2640,6 +2735,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Removes a piece from the map
+   * @param p GamePiece to remove from map
    */
   public void removePiece(GamePiece p) {
     pieces.remove(p);
@@ -2648,6 +2744,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Center the map at given map coordinates within its JScrollPane container
+   * @param p Point to center
    */
   public void centerAt(Point p) {
     centerAt(p, 0, 0);
@@ -2656,6 +2753,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Center the map at the given map coordinates, if the point is not
    * already within (dx,dy) of the center.
+   * @param p point to center
+   * @param dx x tolerance for nearness to center
+   * @param dy y tolerance for nearness to center
    */
   public void centerAt(Point p, int dx, int dy) {
     if (scroll != null) {
