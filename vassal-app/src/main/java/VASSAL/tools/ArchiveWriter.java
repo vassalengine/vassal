@@ -187,14 +187,7 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public void removeImage(String name) {
-    try {
-      archive.remove(imageDir + name);
-    }
-    catch (IOException e) {
-      WriteErrorDialog.error(e, archive.getName());
-    }
-
-    localImages = null;
+    removeFile(imageDir + name);
   }
 
   /**
