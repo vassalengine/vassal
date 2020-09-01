@@ -692,6 +692,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           //BR// "Opens" any new structure we've just created (if it came with children, we immediately see them)
           DefaultMutableTreeNode node = getTreeNode(child);
           if (node.getChildCount() > 0) {
+            expandPath(new TreePath(getTreeNode(c)));
             expandPath(new TreePath((DefaultMutableTreeNode)node));
             expandPath(new TreePath((DefaultMutableTreeNode)node.getChildAt(0)));
           }
