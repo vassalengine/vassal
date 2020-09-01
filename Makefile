@@ -38,7 +38,7 @@ SHELL:=/bin/bash
 
 LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
-DOCDIR:=vassal-doc/target
+DOCDIR:=release-prepare/target/doc
 DISTDIR:=dist
 JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
