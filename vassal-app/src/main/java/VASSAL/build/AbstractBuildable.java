@@ -96,8 +96,9 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   public abstract void setAttribute(String key, Object value);
 
   /**
-   * @return a String representation of the attribute with the given name. When initializing a module, this String value will be passed to
-   * {@link #setAttribute}.
+   * @return a String representation of the XML buildFile attribute with the given name. When initializing a module,
+   * this String value will loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
+   * checking the current value of an attribute.
    *
    * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
    */
