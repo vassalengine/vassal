@@ -17,6 +17,9 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.tools.ProblemDialog;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
@@ -2776,7 +2779,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
-  /** Ensure that the given region (in map coordinates) is visible */
+  /**
+   * Ensure that the given region (in map coordinates) is visible. Uses player preference
+   * to determine how sensitive to be about when to re-center.
+   * @param r Rectangle demarking region to ensure is visible
+   */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
       boolean bTriggerRecenter = false;
@@ -2812,9 +2819,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         if (r.x + r.width > d.width) r.x = d.width - r.width;
         if (r.y + r.height > d.height) r.y = d.height - r.height;
 
-      theMap.scrollRectToVisible(r);
+        theMap.scrollRectToVisible(r);
+      }
     }
-  }
   }
 
   /**
@@ -2830,18 +2837,32 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     theMap.scrollRectToVisible(r);
   }
 
+  /**
+   * Gets the generic name for this type of class across all instances of it. Appears
+   * in the Editor window in [..] as e.g. [Map], [Prototype], etc.
+   * @return The generic name for this kind of component, i.e. the part appearing [In Brackets] in the Editor's {@link ConfigureTree}.
+   */
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Map.component_type"); //$NON-NLS-1$
   }
 
+  /**
+   * @return the name of this map, for internal purposes
+   */
   public String getMapName() {
     return getConfigureName();
   }
 
+  /**
+   * @return the localized name of this map, for display purposes
+   */
   public String getLocalizedMapName() {
     return getLocalizedConfigureName();
   }
 
+  /**
+   * @param s Sets the name of the map.
+   */
   public void setMapName(String s) {
     mapName = s;
     setConfigureName(mapName);
@@ -2850,11 +2871,20 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return a HelpFile describing how to use and configure this component
+   */
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.html"); //$NON-NLS-1$
   }
 
+  /**
+   * @return an array of Strings describing the buildFile (XML) attributes of this component. These strings are used as prompts in the
+   * Properties window for this object, when the component is configured in the Editor. The order of descriptions should
+   * be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
+   * @see AbstractConfigurable
+   */
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
@@ -2882,6 +2912,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     };
   }
 
+  /**
+   * Lists all the buildFile (XML) attribute names for this component.
+   * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
+   * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
+   * @return a list of all buildFile (XML) attribute names for this component
+   * @see AbstractBuildable
+   */
   @Override
   public String[] getAttributeNames() {
     return new String[] {
@@ -2909,6 +2946,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     };
   }
 
+  /**
+   * @return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
+   * Color, and KeyStroke, along with any class for which a Configurer exists in VASSAL.configure. The class determines, among other things,
+   * which type of {@link AutoConfigurer} will be used to configure the attribute when the object is configured in the Editor.
+   *
+   * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
+   * @see AbstractConfigurable
+   */
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
@@ -2942,36 +2987,61 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MAP_NAME = "mapName"; //$NON-NLS-1$
   public static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
   public static final String MESSAGE = "message"; //$NON-NLS-1$
+
+  /**
+   * Autoconfigurer for map's icon used on its launchbutton
+   */
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/map.gif"); //$NON-NLS-1$
     }
   }
+
+  /**
+   * Autoconfigurer for mark-unmoved icon
+   */
   public static class UnmovedIconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/unmoved.gif"); //$NON-NLS-1$
     }
   }
+
+  /**
+   * Report format configurer for "moved within map"
+   */
   public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
     }
   }
+
+
+  /**
+   * Report format configurer for "moved to map"
+   */
   public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
     }
   }
+
+  /**
+   * Report format configurer for "created on map"
+   */
   public static class CreateFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
     }
   }
+
+  /**
+   * Report format configurer for "modified on map"
+   */
   public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -2985,6 +3055,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return "created on map" format string
+   */
   public String getCreateFormat() {
     if (createFormat != null) {
       return createFormat;
@@ -3001,10 +3074,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return "changed on map" format string
+   */
   public String getChangeFormat() {
     return isChangeReportingEnabled() ? changeFormat : "";
   }
 
+  /**
+   * @return "moved to map" format string
+   */
   public String getMoveToFormat() {
     if (moveToFormat != null) {
       return moveToFormat;
@@ -3021,6 +3100,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return "moved within map" format string
+   */
   public String getMoveWithinFormat() {
     if (moveWithinFormat != null) {
       return moveWithinFormat;
@@ -3037,6 +3119,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * List of subcomponents which can be added to a Map.
+   *
+   * @return a list of valid sub-component Classes.  If a Class
+   * appears in this list, then instances of that class may be added
+   * to this component from the Editor's {@link ConfigureTree} window by
+   * right-clicking on the component and selecting the appropriate "Add"
+   * option.
+   * @see Configurable
+   */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
@@ -3044,6 +3136,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class };
   }
 
+  /**
+   * @param name Name (key) of one of this component's attributes
+   * @return Visibility condition for the corresponding component
+   */
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (visibilityCondition == null) {
@@ -3062,21 +3158,40 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * Each Map must have a unique String id
+   *
+   * Sets our unique ID (among Maps), so that e.g. commands sent to different maps don't inadvertently get confused when
+   * we send commands to other clients.
+   * @param id Sets our unique ID
    */
   @Override
   public void setId(String id) {
     mapID = id;
   }
 
+  /**
+   * Each Map must have a unique String id
+   *
+   * @return the id for this map
+   */
+  @Override
+  public String getId() {
+    return mapID;
+  }
+
+  /**
+   * Find the map that corresponds to a known unique id
+   * @param id unique id of the map to find
+   * @return Map object corresponding to that unique id
+   */
   public static Map getMapById(String id) {
     return (Map) idMgr.findInstance(id);
   }
 
   /**
-   * Utility method to return a {@link List} of all map components in the
+   * Utility method to return a {@link List} of all map components (on all maps!) in the
    * module.
    *
-   * @return the list of <code>Map</code>s
+   * @return the list of <code>Map</code>s components
    */
   public static List<Map> getMapList() {
     final GameModule g = GameModule.getGameModule();
@@ -3103,19 +3218,31 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Find a contained Global Variable by name
+   * Find a contained Global Property (variable) by name. Does NOT search at the Module level.
+   * @param name Name of Global Property to find
+   * @return Mutable property corresponding to the name given
    */
   @Override
   public MutableProperty getMutableProperty(String name) {
     return propsContainer.getMutableProperty(name);
   }
 
+  /**
+   * Adds a new Global Property to this map.
+   * @param key Name of the new property
+   * @param p The property object to add
+   */
   @Override
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
   }
 
+  /**
+   * Removes a new Global Property from this map.
+   * @param key Name of the property to be removed
+   * @return the object just removed
+   */
   @Override
   public MutableProperty removeMutableProperty(String key) {
     MutableProperty p = propsContainer.removeMutableProperty(key);
@@ -3125,18 +3252,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return p;
   }
 
+  /**
+   * @return The container ID for map-level Global Properties on this object (just uses the map name)
+   */
   @Override
   public String getMutablePropertiesContainerId() {
     return getMapName();
-  }
-  /**
-   * Each Map must have a unique String id
-   *
-   * @return the id for this map
-   */
-  @Override
-  public String getId() {
-    return mapID;
   }
 
   /**
@@ -3187,11 +3308,18 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     private final JScrollPane base;
 
+    /**
+     * @param target Component we are to lay out
+     * @param base JScrollPane for it
+     */
     public InsetLayout(Container target, JScrollPane base) {
       super(target);
       this.base = base;
     }
 
+    /**
+     * @param target Component to lay out
+     */
     @Override
     public void layoutContainer(Container target) {
       super.layoutContainer(target);
@@ -3217,22 +3345,34 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * Implements default logic for merging pieces at a given location within
-   * a map Returns a {@link Command} that merges the input {@link GamePiece}
-   * with an existing piece at the input position, provided the pieces are
-   * stackable, visible, in the same layer, etc.
+   * Implements default logic for merging pieces (into a {@link Stack} or {@link Deck}}
+   * at a given location within a map Returns a {@link Command} that merges the input
+   * {@link GamePiece} with an existing piece at the input position, provided the pieces
+   * are stackable, visible, in the same layer, etc.
    */
   public static class Merger implements DeckVisitor {
     private final Point pt;
     private final Map map;
     private final GamePiece p;
 
+    /**
+     * Constructor for a Merger. This is passed the map, location, and piece we are going to be merging into something.
+     * @param map
+     * @param pt
+     * @param p
+     */
     public Merger(Map map, Point pt, GamePiece p) {
       this.map = map;
       this.pt = pt;
       this.p = p;
     }
 
+    /**
+     * Returns a command that merges our piece into the specified deck, provided that
+     * the Deck shares the location of our merger point provided in the constructor.
+     * @param d Deck to consider merging into
+     * @return A command to merge our piece into the specified deck, or null if deck isn't in correct position
+     */
     @Override
     public Object visitDeck(Deck d) {
       if (d.getPosition().equals(pt)) {
@@ -3243,6 +3383,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     }
 
+    /**
+     * Returns a command to merge our piece into the specified stack, provided that the stack is in the precise
+     * map location specified, the map allows stacking, our piece allows stacking, and our stack & piece are in the
+     * same layer.
+     * @param s Stack to consider merging with
+     * @return Command to merge into the stack, or null if any of the necessary conditions weren't met
+     */
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
@@ -3254,6 +3401,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
     }
 
+    /**
+     * @returns a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
+     * stack are met. Returns null if the necessary conditions aren't met.
+     * @param piece piece to consider forming a new stack with.
+     */
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
@@ -3268,18 +3420,26 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   /**
-   * The component that represents the map itself
+   * The (JPanel-extending) component that represents the map itself
    */
   public static class View extends JPanel {
     private static final long serialVersionUID = 1L;
 
     protected Map map;
 
+    /**
+     * Create our view
+     * @param m lets us know what Map we represent
+     */
     public View(Map m) {
       setFocusTraversalKeysEnabled(false);
       map = m;
     }
 
+    /**
+     * Draw our graphics to the graphics object
+     * @param g target graphics object
+     */
     @Override
     public void paint(Graphics g) {
       // Don't draw the map until the game is updated.
@@ -3309,17 +3469,25 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       g2d.setTransform(orig_t);
     }
 
+    /**
+     * Update our panel (by painting it)
+     * @param g target graphics object
+     */
     @Override
     public void update(Graphics g) {
       // To avoid flicker, don't clear the display first
       paint(g);
     }
 
+    /**
+     * @return our preferred size will be that of the map.
+     */
     @Override
     public Dimension getPreferredSize() {
       return map.getPreferredSize();
     }
 
+    /** returns the map we're assigned to */
     public Map getMap() {
       return map;
     }
