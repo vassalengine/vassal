@@ -51,7 +51,8 @@ import VASSAL.configure.StringConfigurer;
  * @author Brian Reynolds
  */
 public class Deselect extends Decorator implements TranslatablePiece {
-  public static final String ID = "deselect;";
+  private static final char DELIMITER = '\t'; //$NON-NLS-1$
+  public static final String ID = "deselect" + DELIMITER;
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
@@ -60,7 +61,10 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected Boolean unstack;
 
   public Deselect() {
-    this(ID + "Deselect;K;;false", null);
+    commandName = "Deselect";
+    key = new NamedKeyStroke(KeyStroke.getKeyStroke("K"));
+    description = "";
+    unstack = false;
   }
 
   public Deselect(String type, GamePiece inner) {
@@ -70,7 +74,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
 
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, DELIMITER);
     commandName = st.nextToken();
     key = st.nextNamedKeyStroke('K');
     description = st.nextToken("");
@@ -79,7 +83,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    SequenceEncoder se = new SequenceEncoder(DELIMITER);
     se.append(commandName).append(key).append(description).append(unstack);
     return ID + se.getValue();
   }
@@ -193,7 +197,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     }
 
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      SequenceEncoder se = new SequenceEncoder(DELIMITER);
       se.append(nameInput.getValueString()).append(keyInput.getValueString()).append(descInput.getValueString()).append(unstackInput.getValueString());
       return ID + se.getValue();
     }
