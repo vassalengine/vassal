@@ -17,16 +17,40 @@
  */
 package VASSAL.build;
 
+import VASSAL.build.module.BasicLogger;
+import VASSAL.build.module.GameRefresher;
+import VASSAL.build.module.KeyNamer;
+import VASSAL.build.module.PluginsLoader;
+import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
+import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.chat.AddressBookServerConfigurer;
+import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.DynamicClient;
+import VASSAL.chat.DynamicClientFactory;
+import VASSAL.chat.HybridClient;
+import VASSAL.chat.jabber.JabberClientFactory;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.configure.AutoConfigurer;
+import VASSAL.configure.PasswordConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Language;
+import VASSAL.preferences.PositionOption;
 import VASSAL.tools.ProblemDialog;
 import java.awt.FileDialog;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -40,6 +64,9 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -109,22 +136,26 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.version.VersionUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
- * the root of the {@link Buildable} containment hierarchy, although
- * {@link BasicModule} actually stands in as the root node in the Editor's
- * {@link ConfigureTree} and contains the root node's own encoder and
- * a certain amount of its build logic.
+ * the root of the {@link Buildable} containment hierarchy, and thus also
+ * the root of the Editor's {@link ConfigureTree}. GameModule's implementation
+ * of {@link CommandEncoder} is slightly different, serving as a central dispatch
+ * point for all other CommandEncoders, which register themselves with GameModule.
  *
- * Components which are added directly to the GameModule are contained
+ * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * <p>It is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
- * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
- * and {@link Prefs}.</p>
+ * For legacy reasons, {@link BasicModule} extends {@link GameModule}, but
+ * everything of note has been moved inside of GameModule.
+ *
+ * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
+ * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger}, {@link Chatter}, and {@link Prefs}.</p>
  */
-public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
+public class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(GameModule.class);
 
@@ -137,6 +168,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
   public static final String BUILDFILE = "buildFile";
+
+  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   private static GameModule theModule;
 
@@ -171,18 +204,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Chatter chat;                          // The Chat Log window
   protected Random RNG = new SecureRandom();       // Random number generator
   protected ServerConnection server;               // Server object for online games
+  protected ChatServerControls serverControls;     // Chat server controls
 
   protected ImageTileSource tcache;                // Manages the tiling of large map images
 
   protected WizardSupport wizardSupport;           // For the startup Wizard
   protected PropertyChangeSupport idChangeSupport; // This manages the changing of player names in online connections
 
+  protected GameRefresher gameRefresher;           // Our counter refresher
+
   protected List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   protected List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
   protected List<String> deferredChat = new ArrayList<>();
-
-  protected int nextGpId = 0;
 
   protected boolean loggingPaused = false;
   protected final Object loggingLock = new Object();
@@ -194,9 +228,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * during module/extension load.
    */
   protected GpIdSupport gpidSupport = null;
+  protected int nextGpId = 0;                      // Next GamePiece ID available.
   protected Long crc = null;
 
-  private static String oldDragThreshold; // for putting the DragThreshold back after our session
+  private static String oldDragThreshold;          // for putting the DragThreshold back after our session
 
   /**
    * @return the top-level frame of the controls window
@@ -207,6 +242,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public JFrame getFrame() {
     ProblemDialog.showDeprecated("2020-08-06");
     return frame;
+  }
+
+  /**
+   * @return String identifier for module
+   */
+  @Override
+  public String toString() {
+    return "BasicModule{" +
+      "name='" + name + '\'' +
+      ", moduleVersion='" + moduleVersion + '\'' +
+      '}';
   }
 
   /**
@@ -236,6 +282,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
+   * @return our ChatServerControls.
+   */
+  public ChatServerControls getServerControls() {
+    return serverControls;
+  }
+
+  /*
+   * The module I18n key prefix is null for the top level.
+   */
+  @Override
+  public String getI18nPrefix() {
+    return "";
+  }
+
+  /**
    * Constructor for a GameModule.
    * @param archive The .vmod (or .tmp) archive to associate
    */
@@ -260,11 +321,222 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
 
+
   /**
-   * Initialize the module from the XML buildFile
+   * Builds the module's component hierarchy from the XML buildFile, or if the module file does not
+   * yet exist, builds the default "new module" hierarchy.
+   *
    * @throws IOException IOException
    */
-  protected abstract void build() throws IOException;
+  protected void build() throws IOException {
+    final DataArchive darch = getDataArchive();
+
+    final File f = new File(darch.getName());
+    if (!f.exists() || f.length() == 0) {
+      // new module, no buildFile
+      build(null);
+    }
+    else {
+      // existing module
+      try (InputStream inner = darch.getInputStream(BUILDFILE);
+           BufferedInputStream in = new BufferedInputStream(inner)) {
+        final Document doc = Builder.createDocument(in);
+        build(doc.getDocumentElement());
+      }
+      catch (IOException e) {
+        // FIXME: review error message
+        // FIXME: this should be more specific, to separate the case where
+        // we have failed I/O from when we read ok but have no module
+        throw new IOException(
+          Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
+          e);
+      }
+    }
+
+    MenuManager.getInstance().addAction("Prefs.edit_preferences",
+      getPrefs().getEditor().getEditAction());
+
+    gameRefresher = new GameRefresher(this);
+    gameRefresher.addTo(this);
+    MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
+      gameRefresher.getRefreshAction());
+  }
+
+  /**
+   * Builds the module's component hierarchy from a given XML element, or a null one is given initializes
+   * a brand new default "new module" hierarchy.
+   * @param e XML element to build from, or null to build the default hierarchy
+   */
+  @Override
+  public void build(Element e) {
+    /*
+     * We determine the name of the module at the very beginning, so we
+     * know which preferences to read.
+     */
+    if (e != null) {
+      gameName = e.getAttribute(MODULE_NAME);
+      if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
+        vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
+      }
+    }
+
+    initIdentityPreferences();
+    Prefs.initSharedGlobalPrefs();
+    initGameState();
+    initLogger();
+    initServer();
+    new PluginsLoader().addTo(this);
+    if (e != null) {
+      super.build(e);
+      ensureComponent(GamePieceImageDefinitions.class);
+      ensureComponent(GlobalProperties.class);
+      ensureComponent(Language.class);
+      ensureComponent(BasicCommandEncoder.class);
+      ensureComponent(Documentation.class);
+      ensureComponent(PlayerRoster.class);
+      ensureComponent(GlobalOptions.class);
+      ensureComponent(PrototypesContainer.class);
+      ensureComponent(Chatter.class);
+      ensureComponent(KeyNamer.class);
+    }
+    else {
+      buildDefaultComponents();
+    }
+    initFrame();
+  }
+
+
+  /**
+   * Associates our user identity with the module's preferences.
+   */
+  protected void initIdentityPreferences() {
+    idChangeSupport = new PropertyChangeSupport(this);
+    StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
+    TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
+    StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
+    GameModule.setUserId(user.getValueString());
+  }
+
+
+  /**
+   * Initialize and register our multiplayer server controls
+   */
+  protected void initServer() {
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
+    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
+
+    server = new DynamicClient();
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
+    serverControls = new ChatServerControls();
+    serverControls.addTo(this);
+  }
+
+  /**
+   * Initialize and register our "logger", which allows player commands to be recorded into a .vlog file for PBEM games.
+   */
+  protected void initLogger() {
+    logger = new BasicLogger();
+    ((BasicLogger) logger).build(null);
+    ((BasicLogger) logger).addTo(this);
+  }
+
+  /**
+   * Initialize and register a record of our GameState, which provides methods for saving/loading our entire enumerated game state,
+   * along with controls for "starting" and "ending" gameplay.
+   */
+  protected void initGameState() {
+    theState = new GameState();
+    theState.addTo(this);
+    addCommandEncoder(theState);
+  }
+
+
+  /**
+   * Adds the standard default components for a brand new module.
+   */
+  protected void buildDefaultComponents() {
+    addComponent(BasicCommandEncoder.class);
+    addComponent(Documentation.class);
+    addComponent(PlayerRoster.class);
+    addComponent(GlobalOptions.class);
+    addComponent(Map.class);
+    addComponent(GamePieceImageDefinitions.class);
+    addComponent(GlobalProperties.class);
+    addComponent(PrototypesContainer.class);
+    addComponent(PieceWindow.class);
+    addComponent(Chatter.class);
+    addComponent(KeyNamer.class);
+    addComponent(Language.class);
+  }
+
+  /**
+   * Initializes our actual window frame -- size, title bar. Send a message with our module name and version number
+   * to the chat log, to be displayed there once a Chatter is registered.
+   */
+  protected void initFrame() {
+    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+
+    if (GlobalOptions.getInstance().isUseSingleWindow()) {
+// FIXME: annoying!
+      frame.setLocation(screen.getLocation());
+      frame.setSize(screen.width, screen.height / 3);
+    }
+    else {
+      final String key = "BoundsOfGameModule"; //$NON-NLS-1$
+      final Rectangle r = new Rectangle(0, 0, screen.width, screen.height / 4);
+      getPrefs().addOption(new PositionOption(key, frame, r));
+    }
+
+    final String mess = Resources.getString(
+      "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
+    warn(mess);
+    log.warn(mess);
+    initFrameTitle();
+  }
+
+  /**
+   * Ensures that the module contains at least one component of the specified class.
+   * This is used to protect modules from accidental deletion of necessary (or potentially necessary)
+   * objects for which there is no easy interface provided to restore them (e.g. the PlayerRoster)
+   * @param componentClass a subcomponent class. If the module has no subcomponents of that class, a nice fresh new one is added.
+   */
+  protected void ensureComponent(Class<? extends Buildable> componentClass) {
+    if (getComponentsOf(componentClass).isEmpty()) {
+      addComponent(componentClass);
+    }
+  }
+
+  /**
+   * Adds a subcomponent of the specified class to the module hierarchy. "Build" the
+   * child in its default form, and register it with the module.
+   * @param componentClass a subcomponent class, to be added.
+   */
+  protected void addComponent(Class<? extends Buildable> componentClass) {
+    Buildable child = null;
+    try {
+      child = componentClass.getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ReflectionUtils.handleNewInstanceFailure(t, componentClass);
+    }
+
+    if (child != null) {
+      child.build(null);
+      child.addTo(this);
+      add(child);
+    }
+  }
+
+
 
   /**
    * Sets a buildFile (XML) attribute value for this component.
@@ -737,47 +1009,88 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Dispatches our inbound {@link Command} traffic -- incoming player commands ready to be executed.
-   * Unlike everybody else's decode method, the GameModule's method invokes each of its registered {@link CommandEncoder}s in turn
+   * Decodes our inbound {@link Command} traffic -- incoming player commands ready to be executed.
+   * Unlike everybody else's decode method, the GameModule's method first pulls apart strings of multiple
+   * commands into singles. It then invokes each of its registered {@link CommandEncoder}s in turn
    * until one of them is able to deserialize the command from a String into a {@link Command} object ready to be executed.
-   *
-   * Note: if you are looking for the GameModule's "own" decoder, see {@link BasicModule}
    */
   @Override
   public Command decode(String command) {
     if (command == null) {
       return null;
     }
-
-    Command c = null;
-    for (int i = 0; i < commandEncoders.length && c == null; ++i) {
-      c = commandEncoders[i].decode(command);
+    Command c;
+    final SequenceEncoder.Decoder st =
+      new SequenceEncoder.Decoder(command, COMMAND_SEPARATOR);
+    String first = st.nextToken();
+    if (command.equals(first)) {
+      c = decodeSubCommand(first);
     }
-    if (c == null) {
-      System.err.println("Failed to decode " + command); //$NON-NLS-1$
+    else {
+      Command next;
+      c = decode(first);
+      while (st.hasMoreTokens()) {
+        next = decode(st.nextToken());
+        c = c == null ? next : c.append(next);
+      }
     }
     return c;
   }
 
   /**
-   * Dispatches our outbound {@link Command} traffic -- outgoing player commands to be sent to other players' clients via
-   * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method invokes each
-   * of its registered {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object
-   * into an ascii-compatible String ready to be send to other players' clients.
-   *
-   * Note: if you are looking for the GameModule's "own" encoder, see {@link BasicModule}
+   * Deserializes a single anonymous subcommand String into a {@link Command}, by invoking #decode from each of our registered
+   * command encoders in turn until one of them is able to successfully recognize and deserialize the command.
+   * @param subCommand A single command, to be deserialized
+   * @return a {@link Command} object for this command, ready to be executed.
+   */
+  private Command decodeSubCommand(String subCommand) {
+    Command c = null;
+    for (int i = 0; i < commandEncoders.length && c == null; ++i) {
+      c = commandEncoders[i].decode(subCommand);
+    }
+    return c;
+  }
+
+  /**
+   * Encodes our outbound {@link Command} traffic -- outgoing player commands to be sent to other players' clients via
+   * either online (server) or logfile (PBEM). Unlike everybody else's encode method, the GameModule's method accepts Command
+   * trees containing multiple appended commands. It goes through them in order and for each command invokes each of its registered
+   * {@link CommandEncoder}s in turn until one of them is able to serialize the {@link Command} object into an ascii-compatible
+   * String ready to be sent to other players' clients. It does this for each of the subcommands in the list, and the results for
+   * all are returned as a single String.
    */
   @Override
   public String encode(Command c) {
     if (c == null) {
       return null;
     }
+    String s = encodeSubCommand(c);
+    String s2;
+    Command[] sub = c.getSubCommands();
+    if (sub.length > 0) {
+      SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
+      for (Command command : sub) {
+        s2 = encode(command);
+        if (s2 != null) {
+          se.append(s2);
+        }
+      }
+      s = se.getValue();
+    }
+    return s;
+  }
+
+  /**
+   * Serializes a single anonymous {@link Command} object into an ascii-compatible string, by invoking #encode on
+   * from each of our registered {@link CommandEncoder}s in turn until one of them is successfully able to recognize
+   * and serialize the Command.
+   * @param c A Command object containing a single Command of any type.
+   * @return ascii-friendly String form of the command, ready to be sent to other players' clients.
+   */
+  private String encodeSubCommand(Command c) {
     String s = null;
     for (int i = 0; i < commandEncoders.length && s == null; ++i) {
       s = commandEncoders[i].encode(c);
-    }
-    if (s == null) {
-      System.err.println("Failed to encode " + c); //$NON-NLS-1$
     }
     return s;
   }

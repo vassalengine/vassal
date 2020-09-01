@@ -87,7 +87,6 @@ import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
@@ -153,7 +152,6 @@ public class WizardSupport {
    *
    */
   public void showWelcomeWizard() {
-
     final GameModule g = GameModule.getGameModule();
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
@@ -175,8 +173,7 @@ public class WizardSupport {
       final Map m = (Map) result;
       final Object action = m.get(ACTION_KEY);
       if (PLAY_ONLINE_ACTION.equals(action)) {
-        final ChatServerControls controls =
-          ((BasicModule) g).getServerControls();
+        final ChatServerControls controls = g.getServerControls();
         g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
