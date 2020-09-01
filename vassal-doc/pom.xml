@@ -10,7 +10,6 @@
 
     <artifactId>vassal-doc</artifactId>
     <version>3.5.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
     <build>
         <plugins>
@@ -33,7 +32,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/readme-referencemanual</sourceDirectory>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <backend>html</backend>
                             <preserveDirectories>true</preserveDirectories>
                             <attributes>
@@ -49,7 +48,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/userguide</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/userguide</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/userguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
                                 <pagenums/>
@@ -67,7 +66,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/designerguide</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/designerguide</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/designerguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
                                 <pagenums/>
@@ -75,26 +74,6 @@
                                 <idprefix/>
                                 <idseparator>-</idseparator>
                             </attributes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>
