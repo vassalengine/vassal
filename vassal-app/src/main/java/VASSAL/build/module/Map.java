@@ -799,8 +799,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       MapGrid grid = b.getGrid();
       if (grid instanceof ZonedGrid) {
         Rectangle r = b.bounds();
-        p.translate(-r.x, -r.y);  // Translate to Board co-ords
-        return ((ZonedGrid) grid).findZone(p);
+        Point pos = new Point(p);
+        pos.translate(-r.x, -r.y);  // Translate to Board co-ords
+        return ((ZonedGrid) grid).findZone(pos);
       }
     }
     return null;
