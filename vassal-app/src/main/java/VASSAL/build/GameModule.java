@@ -149,13 +149,13 @@ import org.w3c.dom.Element;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link BasicModule} extends {@link GameModule}'s abstract class, but
+ * For legacy reasons, {@link BasicModule} extends {@link GameModule}, but
  * everything of note has been moved inside of GameModule.
  *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger}, {@link Chatter}, and {@link Prefs}.</p>
  */
-public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
+public class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(GameModule.class);
 
@@ -326,7 +326,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Builds the module's component hierarchy from the XML buildFile, or if the module file does not
    * yet exist, builds the default "new module" hierarchy.
    *
-   * @throws IOException
+   * @throws IOException IOException
    */
   protected void build() throws IOException {
     final DataArchive darch = getDataArchive();
