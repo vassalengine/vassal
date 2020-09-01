@@ -15,12 +15,18 @@
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <vassal.jarlocation>${project.build.directory}${file.separator}lib</vassal.jarlocation>
+        <vassal.doclocation>${project.build.directory}${file.separator}doc</vassal.doclocation>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.vassalengine</groupId>
             <artifactId>vassal-app</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vassalengine</groupId>
+            <artifactId>vassal-doc</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -32,7 +38,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
+                        <id>copy-dependencies-vassal-app</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
@@ -42,6 +48,22 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeArtifactIds>vassal-app</includeArtifactIds>
+                            <includeScope>compile</includeScope>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>unpack-dependencies-vassal-doc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${vassal.doclocation}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeArtifactIds>vassal-doc</includeArtifactIds>
                             <includeScope>compile</includeScope>
                         </configuration>
                     </execution>
