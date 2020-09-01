@@ -50,6 +50,7 @@ import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
+import org.w3c.dom.Element;
 
 /**
  * CHESS CLOCK CONTROLLER for VASSAL.
@@ -140,10 +141,47 @@ public class ChessClockControl extends AbstractConfigurable
     GameModule.getGameModule().addKeyStrokeListener(pauseListener);
   }
 
+
   /**
-   * Registers us with the game module, tool bar, command encoder, etc.
-   * @param parent - Should be the main GameModule, but in any event that's what we add it to
+   * Builds the clock control's component hierarchy from a given XML element, or a null one is given initializes
+   * a brand new default "new clock control" hierarchy.
+   * @param e XML element to build from, or null to build the default hierarchy
    */
+  @Override
+  public void build(Element e) {
+    super.build(e);
+    if (e == null) {
+      // When creating a brand new Chess Clock Control, start with one chess clock for each "non solo" side in the roster.
+      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+      int added = 0;
+      if (r != null) {
+        for (String s : r.sides) {
+          if (!r.isSoloSide(s)) {
+            addChild(new ChessClock(s));
+            added++;
+          }
+        }
+      }
+
+      if (added == 0) {
+        addChild(new ChessClock());
+      }
+    }
+  }
+
+
+  private void addChild(Buildable b) {
+    add(b);
+    b.addTo(this);
+  }
+
+
+
+
+  /**
+     * Registers us with the game module, tool bar, command encoder, etc.
+     * @param parent - Should be the main GameModule, but in any event that's what we add it to
+     */
   public void addTo(Buildable parent) {
     final GameModule gameModule = GameModule.getGameModule();
     gameModule.getToolBar().add(getComponent());

@@ -44,6 +44,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * CHESS CLOCK class for VASSAL.
@@ -66,6 +67,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String SIDE = "side"; //$NON-NLS-1$
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
 
   public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor";
   public static final String TICKING_FONT_COLOR       = "tickingFontColor";
@@ -88,6 +90,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   protected LaunchButton timerButton;  // Button (and display) for this clock
   protected String image;              // Icon for this clock
   protected String side;               // Name of side/player whose time this clock represents
+  protected String buttonText;         // Button text for clock button
   protected long elapsedTime;          // Apparent elapsed time
   protected long verifiedTime;         // Time successfully verified through handshake
   protected boolean clockTicking;      // Is this clock running
@@ -96,11 +99,22 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
   protected boolean instanceIsActive;  // True if this ChessClock has been fully initialized & registered (and not yet shut down)
 
+
+  public ChessClock(String side) {
+    this();
+    this.side       = side;
+    this.buttonText = side;
+    setConfigureName(side);
+    setTimerButton();
+  }
+
+
   public ChessClock() {
     defaultColor = UIManager.getColor ("Panel.background");      // Store our original default background color
     defaultFontColor = UIManager.getColor ("Button.foreground"); // Store our original default font color
 
-    side = "Player";
+    side       = "Player";
+    buttonText = side;
     setConfigureName(side);
 
     image        = "";
@@ -136,7 +150,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     };
 
     // Create our actual timer button
-    timerButton = new LaunchButton("0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
+    timerButton = new LaunchButton(buttonText + " " + "0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
     timerButton.setFont(new Font("SansSerif", Font.BOLD, 12)); //$NON-NLS-1$
     initTimerButton();
   }
@@ -339,13 +353,16 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
+
+  private String getFormattedButtonText() {
+    return (StringUtils.isEmpty(buttonText) ? "" : buttonText + " ");
+  }
+
   /**
    * Updates clock text on the button, based on our configured style
    * @return half second tick-tock pulse on/off
    */
   public boolean setTimerButton() {
-    if (!instanceIsActive) return false;
-
     long time = elapsedTime;
     int days = (int) (time / MILLISECONDS_PER_DAY);
     time %= MILLISECONDS_PER_DAY;
@@ -357,11 +374,24 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     time %= 1000;
     int tenths  = (int) time / 100;
 
-    ChessClockControl c   = ChessClockControl.getInstance();
-    String showingDays    = c.getShowDays();
-    String showingHours   = c.getShowHours();
-    String showingSeconds = c.getShowSeconds();
-    String showingTenths  = c.getShowTenths();
+    String showingDays;
+    String showingHours;
+    String showingSeconds;
+    String showingTenths;
+
+    if (instanceIsActive) {
+      ChessClockControl c = ChessClockControl.getInstance();
+      showingDays = c.getShowDays();
+      showingHours = c.getShowHours();
+      showingSeconds = c.getShowSeconds();
+      showingTenths = c.getShowTenths();
+    }
+    else {
+      showingDays    = ChessClockControl.STYLE_AUTO;
+      showingHours   = ChessClockControl.STYLE_AUTO;
+      showingSeconds = ChessClockControl.STYLE_AUTO;
+      showingTenths  = ChessClockControl.STYLE_AUTO;
+    }
 
     boolean doDays  = (ChessClockControl.STYLE_ALWAYS).equals(showingDays) || ((days > 0) && !((ChessClockControl.STYLE_NEVER).equals(showingDays)));
     boolean doHours = doDays || (ChessClockControl.STYLE_ALWAYS).equals(showingHours) || (((hours > 0) || ((ChessClockControl.STYLE_NEVER).equals(showingTenths))) && !((ChessClockControl.STYLE_NEVER).equals(showingHours)));
@@ -373,36 +403,36 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     if (doDays) {
       if (doTenths) {
-        timerButton.setText(String.format("%d:%02d:%02d:%02d.%d", days, hours, minutes, seconds, tenths));
+        timerButton.setText(String.format("%s%d:%02d:%02d:%02d.%d", getFormattedButtonText(), days, hours, minutes, seconds, tenths));
       }
       else if (doSeconds) {
-        timerButton.setText(String.format("%d:%02d:%02d:%02d", days, hours, minutes, seconds));
+        timerButton.setText(String.format("%s%d:%02d:%02d:%02d", getFormattedButtonText(), days, hours, minutes, seconds));
       }
       else {
-        timerButton.setText(String.format("%dd:%02d:%02d", days, hours, minutes));
+        timerButton.setText(String.format("%s%dd:%02d:%02d", getFormattedButtonText(), days, hours, minutes));
       }
     }
     else {
       hours = hours + days * 24;
       if (doHours) {
         if (doTenths) {
-          timerButton.setText(String.format("%d:%02d:%02d.%d", hours, minutes, seconds, tenths));
+          timerButton.setText(String.format("%s%d:%02d:%02d.%d", getFormattedButtonText(), hours, minutes, seconds, tenths));
         }
         else if (doSeconds) {
-          timerButton.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
+          timerButton.setText(String.format("%s%d:%02d:%02d", getFormattedButtonText(), hours, minutes, seconds));
         }
         else {
-          timerButton.setText(String.format("%d:%02d", hours, minutes));
+          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), hours, minutes));
         }
       }
       else {
         minutes = minutes + hours * 60;
 
         if (doTenths) {
-          timerButton.setText(String.format("%d:%02d.%d", minutes, seconds, tenths));
+          timerButton.setText(String.format("%s%d:%02d.%d", getFormattedButtonText(), minutes, seconds, tenths));
         }
         else {
-          timerButton.setText(String.format("%d:%02d", minutes, seconds));
+          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), minutes, seconds));
         }
       }
     }
@@ -413,8 +443,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public String getName() {
     return side;
   }
-
-  //
 
   /**
    * Registers us with game module, command encoder, and the Chess Clock Control.
@@ -471,7 +499,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { SIDE, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
+    return new String[] { SIDE, BUTTON_TEXT, ICON, TICKING_BACKGROUND_COLOR, TICKING_FONT_COLOR, TOCKING_FONT_COLOR, TOOLTIP };
   }
 
   /**
@@ -479,7 +507,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] { "Player Side for timer: ", "Timer Icon: ", "Ticking Background Color: ", "Ticking Foreground Color: ", "Tocking Foreground Color: ", "Chess Clock Tooltip" };
+    return new String[] { "Player Side for timer: ", "Timer Button Text: ", "Timer Icon: ", "Ticking Background Color: ", "Ticking Foreground Color: ", "Tocking Foreground Color: ", "Chess Clock Tooltip" };
   }
 
   /**
@@ -487,7 +515,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
+    return new Class[] { String.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
   }
 
   /**
@@ -500,6 +528,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     if (SIDE.equals(key)) {
       side = (String)value;
       setConfigureName(side);
+    }
+    else if (BUTTON_TEXT.equals(key)) {
+      buttonText = (String)value;
+      setTimerButton();
     }
     else if (TICKING_BACKGROUND_COLOR.equals(key)) {
       if (value instanceof String) {
@@ -536,6 +568,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public String getAttributeValueString(String key) {
     if (SIDE.equals(key)) {
       return side;
+    }
+    else if (BUTTON_TEXT.equals(key)) {
+      return buttonText;
     }
     else if (TICKING_BACKGROUND_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(tickingBackgroundColor);

@@ -455,6 +455,19 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return sides.size() == allocatedSideCount;
   }
 
+  /**
+   * @param side Name of a side to see if it's a "solo side"
+   * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
+   */
+  public boolean isSoloSide(String side)
+  {
+    return "Solitaire".equals(side) ||
+           "Solo".equals(side)      ||
+           "Moderator".equals(side) ||
+           "Referee".equals(side);
+  }
+
+
   protected String promptForSide() {
     ArrayList<String> availableSides = new ArrayList<>(sides);
     ArrayList<String> alreadyTaken = new ArrayList<>();
@@ -475,10 +488,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
     for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
       String s = sides.get(i);
-      if (!alreadyTaken.contains(s) &&
-          !Resources.getString("PlayerRoster.solitaire").equals(s) &&
-          !Resources.getString("PlayerRoster.solo").equals(s) &&
-          !Resources.getString("PlayerRoster.referee").equals(s)) {
+      if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
         found = true; // Found an available slot that's not our current one and not a "solo" slot.
         break;
       }
