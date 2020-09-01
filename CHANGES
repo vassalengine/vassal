@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13363: buildFile renamed to buildFile.xml
 * 13355: Threshold for centering on opponent's move is now configurable
 * 13354: Add a chatter message when starting to write a logfile
 * 13353: Use native file chooser on Linux
