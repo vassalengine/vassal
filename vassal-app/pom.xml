@@ -235,7 +235,6 @@
                     <consoleOutput>true</consoleOutput>
                     <failOnViolation>true</failOnViolation>
                     <linkXRef>true</linkXRef>
-                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -291,7 +290,6 @@
                     </bottom>
                     <additionalJOption>--allow-script-in-comments</additionalJOption>
                     <doclint>none</doclint>
-                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -311,7 +309,6 @@
                     <threshold>High</threshold>
                     <xmlOutput>true</xmlOutput>
                     <failOnError>false</failOnError>
-                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
