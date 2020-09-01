@@ -60,7 +60,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected Boolean unstack;
 
   public Deselect() {
-    this(ID + Resources.getString("Deselect.Deselect") + ";K;;false", null);
+    this(ID + "Deselect;K;;false", null);
   }
 
   public Deselect(String type, GamePiece inner) {
