@@ -39,6 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -116,7 +118,14 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public void build() {
-    final String fileName = GameModule.BUILDFILE;
+
+    final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
+    final String fileName = (VersionUtils.compareVersions(data.getVassalVersion(), "3.4.999") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE;
+
+    if (!(data instanceof ExtensionMetaData)) {
+      logger.error("Not an extension file {}", fileName, null);
+      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName);
+    }
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
 
@@ -131,8 +140,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         }
       }
       catch (IOException e) {
-        // FIXME: review error message
-        logger.error("Error while creating document from file {}", fileName, e);
+        logger.error("Error while loading XML data from file {}", fileName, e);
         throw new ExtensionsLoader.LoadExtensionException(e);
       }
     }
@@ -415,11 +423,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       final String save = buildString();
       w.addFile(GameModule.BUILDFILE,
                 new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
+      w.removeFile(GameModule.BUILDFILE_OLD);
 
       if (saveAs) w.saveAs(true);
       else w.save(true);
 
       lastSave = save;
+
     }
     else {
       throw new IOException("Read-only extension");

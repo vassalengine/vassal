@@ -198,6 +198,20 @@ public class ArchiveWriter extends DataArchive {
   }
 
   /**
+   * Removes a file in the archive
+   * @param name file in the archive to be removed
+   */
+  public void removeFile(String name) {
+    try {
+      archive.remove (name);
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, archive.getName());
+    }
+  }
+
+
+  /**
    * Copy a file from the user's filesystem to the archive.
    *
    * @param path the full path of the file on the user's filesystem
