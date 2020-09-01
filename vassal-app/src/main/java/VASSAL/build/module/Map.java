@@ -92,6 +92,7 @@ import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DefaultPieceCollection;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.Drawable;
+import VASSAL.build.module.map.Flare;
 import VASSAL.build.module.map.ForwardToChatter;
 import VASSAL.build.module.map.ForwardToKeyBuffer;
 import VASSAL.build.module.map.GlobalMap;
@@ -179,7 +180,7 @@ import VASSAL.tools.swing.SwingUtils;
  * contained in the <code>VASSAL.build.module.map</code> package
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-  UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -519,7 +520,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       addChild(new KeyBufferer());
       addChild(new ImageSaver());
       addChild(new CounterDetailViewer());
-      setMapName("Main Map");
+      addChild(new Flare());
+      setMapName(Resources.getString("Map.main_map"));
     }
     if (getComponentsOf(GlobalProperties.class).isEmpty()) {
       addChild(new GlobalProperties());
@@ -529,6 +531,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     if (getComponentsOf(HighlightLastMoved.class).isEmpty()) {
       addChild(new HighlightLastMoved());
+    }
+    if (getComponentsOf(Flare.class).isEmpty()) {
+      addChild(new Flare());
     }
     setup(false);
   }
@@ -663,8 +668,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
-        mouseListenerStack.isEmpty() &&
-        SwingUtils.isDragTrigger(dge)) {
+          mouseListenerStack.isEmpty() &&
+          SwingUtils.isDragTrigger(dge)) {
         dragGestureListener.dragGestureRecognized(dge);
       }
     };
@@ -1522,10 +1527,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
         if ((sx == -1 && vrect.x == 0) ||
-          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
 
         if ((sy == -1 && vrect.y == 0) ||
-          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
 
         // Stop if the scroll vector is zero
         if (sx == 0 && sy == 0) scroller.stop();
@@ -2025,7 +2030,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-            .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2144,7 +2149,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // If no piece at destination and this is a stacking piece, create
       // a new Stack containing the piece
       if (!(p instanceof Stack) &&
-        !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
         final Stack parent = getStackMetrics().createStack(p);
         if (parent != null) {
           c = c.append(placeAt(parent, pt));
@@ -2495,7 +2500,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
       CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
-      MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
+      MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class };
   }
 
   @Override
@@ -2700,7 +2705,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-        && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
         return map.getStackMetrics().merge(s, p);
       }
       else {
@@ -2711,8 +2716,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-        && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-        && map.getPieceCollection().canMerge(piece, p)) {
+          && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
+          && map.getPieceCollection().canMerge(piece, p)) {
         return map.getStackMetrics().merge(piece, p);
       }
       else {
