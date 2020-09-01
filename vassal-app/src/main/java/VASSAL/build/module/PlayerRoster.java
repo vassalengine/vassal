@@ -215,7 +215,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -327,27 +327,28 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      st.nextToken();
-      return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
-    }
-    else {
+    if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    st.nextToken();
+    return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof Add) {
-      final Add a = (Add) c;
-      final SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(a.id).append(a.name).append(a.side);
-      return COMMAND_PREFIX + se.getValue();
-    }
-    else {
+    if (!(c instanceof Add)) {
       return null;
     }
+
+    final Add a = (Add) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    se
+      .append(a.id)
+      .append(a.name)
+      .append(a.side);
+    return COMMAND_PREFIX + se.getValue();
   }
 
   @Override

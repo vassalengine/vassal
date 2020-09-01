@@ -266,7 +266,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Hideable.htm");
+    return HelpFile.getReferenceManualPage("Hideable.html");
   }
 
   @Override

@@ -896,7 +896,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("Map.html", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

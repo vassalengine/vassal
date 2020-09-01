@@ -45,29 +45,26 @@ public class SoundEncoder implements CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
-      sd.nextToken();
-      final String soundKey = sd.nextToken();
-      final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
-      return new Cmd(soundKey, sender);
-    }
-    else {
+    if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    sd.nextToken();
+    final String soundKey = sd.nextToken();
+    final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
+    return new Cmd(soundKey, sender);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof Cmd) {
-      Cmd cmd = (Cmd) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cmd.soundKey);
-      se.append(playerEncoder.playerToString(cmd.getSender()));
-      s = COMMAND_PREFIX + se.getValue();
+    if (!(c instanceof Cmd)) {
+      return null;
     }
-    return s;
+    Cmd cmd = (Cmd) c;
+    SequenceEncoder se = new SequenceEncoder('\t');
+    se.append(cmd.soundKey);
+    se.append(playerEncoder.playerToString(cmd.getSender()));
+    return COMMAND_PREFIX + se.getValue();
   }
 
   public static class Cmd extends Command {

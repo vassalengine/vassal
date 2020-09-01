@@ -495,7 +495,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm");
+    return HelpFile.getReferenceManualPage("GamePiece.html");
   }
 
   @Override
@@ -565,6 +565,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void updateGpId(GpIdSupport s) {
     gpidSupport = s;
     updateGpId();
+  }
+
+  public void setGpidSupport(GpIdSupport s) {
+    gpidSupport = s;
   }
 
   /**

@@ -184,7 +184,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("RestrictCommands.htm");
+    return HelpFile.getReferenceManualPage("RestrictCommands.html");
   }
 
   @Override

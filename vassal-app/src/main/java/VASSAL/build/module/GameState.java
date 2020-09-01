@@ -726,12 +726,10 @@ public class GameState implements CommandEncoder {
    */
   @Override
   public String encode(Command c) {
-    if (c instanceof SetupCommand) {
-      return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
-    }
-    else {
+    if (!(c instanceof SetupCommand)) {
       return null;
     }
+    return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
   }
 
   /**
@@ -742,12 +740,12 @@ public class GameState implements CommandEncoder {
     if (BEGIN_SAVE.equals(theCommand)) {
       return new SetupCommand(false);
     }
-    else if (END_SAVE.equals(theCommand)) {
+
+    if (END_SAVE.equals(theCommand)) {
       return new SetupCommand(true);
     }
-    else {
-      return null;
-    }
+
+    return null;
   }
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$

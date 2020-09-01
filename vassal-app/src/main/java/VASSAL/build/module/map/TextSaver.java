@@ -169,7 +169,7 @@ public class TextSaver extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "TextCapture");
+    return HelpFile.getReferenceManualPage("Map.html", "TextCapture");
   }
 
   public static String getConfigureTypeName() {

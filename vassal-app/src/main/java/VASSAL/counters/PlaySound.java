@@ -160,7 +160,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PlaySound.htm");
+    return HelpFile.getReferenceManualPage("PlaySound.html");
   }
 
   @Override

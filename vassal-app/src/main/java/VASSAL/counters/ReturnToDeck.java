@@ -259,7 +259,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ReturnToDeck.htm");
+    return HelpFile.getReferenceManualPage("ReturnToDeck.html");
   }
 
   @Override

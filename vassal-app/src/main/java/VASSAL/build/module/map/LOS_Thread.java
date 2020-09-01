@@ -793,7 +793,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "LOS");
+    return HelpFile.getReferenceManualPage("Map.html", "LOS");
   }
 
   @Override
@@ -921,33 +921,34 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public Command decode(String command) {
-    SequenceEncoder.Decoder sd = null;
-    if (command.startsWith(LOS_THREAD_COMMAND + getId())) {
-      sd = new SequenceEncoder.Decoder(command, '\t');
-      sd.nextToken();
-      sd.nextToken();
-      Point anchor = new Point(sd.nextInt(0), sd.nextInt(0));
-      Point arrow = new Point(sd.nextInt(0), sd.nextInt(0));
-      boolean persisting = sd.nextBoolean(false);
-      boolean mirroring = sd.nextBoolean(false);
-      return new LOSCommand(this, anchor, arrow, persisting, mirroring);
+    if (!command.startsWith(LOS_THREAD_COMMAND + getId())) {
+      return null;
     }
-    return null;
+    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    sd.nextToken();
+    sd.nextToken();
+    Point anchor = new Point(sd.nextInt(0), sd.nextInt(0));
+    Point arrow = new Point(sd.nextInt(0), sd.nextInt(0));
+    boolean persisting = sd.nextBoolean(false);
+    boolean mirroring = sd.nextBoolean(false);
+    return new LOSCommand(this, anchor, arrow, persisting, mirroring);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof LOSCommand) {
-      LOSCommand com = (LOSCommand) c;
-      SequenceEncoder se = new SequenceEncoder(com.target.getId(), '\t');
-      se.append(com.newAnchor.x).append(com.newAnchor.y)
-        .append(com.newArrow.x).append(com.newArrow.y)
-        .append(com.newPersisting).append(com.newMirroring);
-      return LOS_THREAD_COMMAND + se.getValue();
-    }
-    else {
+    if (!(c instanceof LOSCommand)) {
       return null;
     }
+    LOSCommand com = (LOSCommand) c;
+    SequenceEncoder se = new SequenceEncoder(com.target.getId(), '\t');
+    se
+      .append(com.newAnchor.x)
+      .append(com.newAnchor.y)
+      .append(com.newArrow.x)
+      .append(com.newArrow.y)
+      .append(com.newPersisting)
+      .append(com.newMirroring);
+    return LOS_THREAD_COMMAND + se.getValue();
   }
 
   public static class LOSCommand extends Command {

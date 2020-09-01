@@ -262,7 +262,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm", "Counter"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html", "Counter"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

@@ -652,7 +652,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm");  //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GameModule.html");  //$NON-NLS-1$
   }
 
   /**

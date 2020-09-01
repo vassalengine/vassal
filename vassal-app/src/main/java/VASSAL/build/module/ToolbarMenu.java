@@ -183,7 +183,7 @@ public class ToolbarMenu extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ToolbarMenu.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ToolbarMenu.html"); //$NON-NLS-1$
   }
 
   public static String getConfigureTypeName() {

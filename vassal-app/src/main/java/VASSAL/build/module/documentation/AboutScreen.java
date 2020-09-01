@@ -218,6 +218,6 @@ public class AboutScreen extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

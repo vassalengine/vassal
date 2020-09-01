@@ -124,7 +124,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("CalculatedProperty.htm");
+    return HelpFile.getReferenceManualPage("CalculatedProperty.html");
   }
 
   @Override

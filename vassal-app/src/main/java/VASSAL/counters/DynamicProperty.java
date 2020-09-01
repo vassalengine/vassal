@@ -275,7 +275,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("DynamicProperty.htm");
+    return HelpFile.getReferenceManualPage("DynamicProperty.html");
   }
 
   @Override

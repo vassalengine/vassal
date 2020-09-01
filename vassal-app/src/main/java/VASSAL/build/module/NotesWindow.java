@@ -194,7 +194,7 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -214,36 +214,34 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public String encode(Command c) {
-    String s = null;
     if (c instanceof SetScenarioNote) {
-      s = SCENARIO_NOTE_COMMAND_PREFIX + ((SetScenarioNote) c).msg;
+      return SCENARIO_NOTE_COMMAND_PREFIX + ((SetScenarioNote) c).msg;
     }
-    else if (c instanceof SetPublicNote) {
-      s = PUBLIC_NOTE_COMMAND_PREFIX + ((SetPublicNote) c).msg;
+
+    if (c instanceof SetPublicNote) {
+      return PUBLIC_NOTE_COMMAND_PREFIX + ((SetPublicNote) c).msg;
     }
-    else {
-      s = privateNotes.encode(c);
-      if (s == null) {
-        s = secretNotes.encode(c);
-      }
+
+    String s = privateNotes.encode(c);
+    if (s == null) {
+      s = secretNotes.encode(c);
     }
     return s;
   }
 
   @Override
   public Command decode(String command) {
-    Command comm;
     if (command.startsWith(SCENARIO_NOTE_COMMAND_PREFIX)) {
-      comm = new SetScenarioNote(command.substring(SCENARIO_NOTE_COMMAND_PREFIX.length()));
+      return new SetScenarioNote(command.substring(SCENARIO_NOTE_COMMAND_PREFIX.length()));
     }
-    else if (command.startsWith(PUBLIC_NOTE_COMMAND_PREFIX)) {
-      comm = new SetPublicNote(command.substring(PUBLIC_NOTE_COMMAND_PREFIX.length()));
+
+    if (command.startsWith(PUBLIC_NOTE_COMMAND_PREFIX)) {
+      return new SetPublicNote(command.substring(PUBLIC_NOTE_COMMAND_PREFIX.length()));
     }
-    else {
-      comm = privateNotes.decode(command);
-      if (comm == null) {
-        comm = secretNotes.decode(command);
-      }
+
+    Command comm = privateNotes.decode(command);
+    if (comm == null) {
+      comm = secretNotes.decode(command);
     }
     return comm;
   }

@@ -695,7 +695,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Board.htm");
+    return HelpFile.getReferenceManualPage("Board.html");
   }
 
   /**

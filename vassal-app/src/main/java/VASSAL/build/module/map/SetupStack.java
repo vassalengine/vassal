@@ -384,7 +384,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SetupStack.htm");
+    return HelpFile.getReferenceManualPage("SetupStack.html");
   }
 
   public static String getConfigureTypeName() {

@@ -146,7 +146,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PieceWindow.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("PieceWindow.html"); //$NON-NLS-1$
   }
 
   @Override

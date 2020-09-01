@@ -1,0 +1,32 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Global Hotkey*#
+
+'''''
+
+=== Global Hotkey
+
+[width="100%",cols="50%,50%",]
+|===
+|This trait adds an action that invokes a Hotkey, i.e., a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for a Toolbar button in the Module window or a Map Window.
+Essentially it allows a piece to activate a function from the Toolbar.
+
+*Menu Text:*  Right-click context menu text.
+If left blank, no context menu item will appear.
+
+*Key Command:*  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate the action.
+
+*Global Hotkey:*  The Hotkey that will be applied to the Toolbar -- in other words the Hotkey assigned to the Toolbar button you wish to activate.
+
+*EXAMPLE:*  A Dice Button component has been added to the Toolbar and assigned the Hotkey F2.
+A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.
+Now, selecting the piece and typing _CTRL+R_ or selecting _Roll Dice_ from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed _F2_ from the keyboard.
++ a|
+image:images/GlobalHotkey.png
+
+When _Ctrl+H_ pressed, send _F2_ to the Toolbar
+
+|===
+
+'''''

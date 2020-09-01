@@ -58,21 +58,20 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    Command c = null;
-    if (command.startsWith(this.command)) {
-      return new MarkGameNotNew(this);
+    if (!command.startsWith(this.command)) {
+      return null;
     }
-    return c;
+    return new MarkGameNotNew(this);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof MarkGameNotNew
-      && ((MarkGameNotNew)c).indicator == this) {
-      s = command;
+    if (!(c instanceof MarkGameNotNew)
+      || ((MarkGameNotNew) c).indicator != this) {
+      return null;
     }
-    return s;
+
+    return command;
   }
 
   public static class MarkGameNotNew extends Command {

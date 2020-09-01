@@ -94,7 +94,7 @@ public class GeneralScript extends AbstractScript
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Script.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Script.html"); //$NON-NLS-1$
   }
 
   @Override
