@@ -114,9 +114,9 @@ public class ChessClockControl extends AbstractConfigurable
 
     ActionListener al = e -> pressControlButton();
 
-    chessClockButton = new LaunchButton("", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
+    chessClockButton = new LaunchButton("Chess Clocks", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
     chessClockButton.setToolTipText("Tooltip Text");
-    chessClockButton.setAttribute(ICON, "chessclock.png");
+    //chessClockButton.setAttribute(ICON, "chessclock.png");
     chessClockButton.addMouseListener(new ChessMouseListener());
 
     // Set up listeners for hotkeys
@@ -212,7 +212,8 @@ public class ChessClockControl extends AbstractConfigurable
   // XML file attributes - next six methods configure them, and handle setting/getting.
 
   /**
-   * @return List of valid subcomponent class types for this component (in our case, individual Chess Clocks!)
+   * @return List of valid subcomponent class types for this component (in our case, individual Chess Clocks!) which
+   * can be added in the Editor.
    */
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { ChessClock.class };
