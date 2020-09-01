@@ -120,7 +120,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void build() {
 
     final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
-    final String fileName = (VersionUtils.compareVersions(data.getVassalVersion(), "3.4.999") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE;
+    final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE;
 
     if (!(data instanceof ExtensionMetaData)) {
       logger.error("Not an extension file {}", fileName, null);

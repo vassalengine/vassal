@@ -342,7 +342,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
     else {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
-      final String properBuildFileName = (VersionUtils.compareVersions(data.getVassalVersion(), "3.4.999") < 0) ? BUILDFILE_OLD : BUILDFILE;
+      final String properBuildFileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? BUILDFILE_OLD : BUILDFILE;
 
       if (!(data instanceof ModuleMetaData)) {
         throw new IOException(

@@ -188,6 +188,7 @@ public class ArchiveWriter extends DataArchive {
 
   public void removeImage(String name) {
     removeFile(imageDir + name);
+    localImages = null;
   }
 
   /**
