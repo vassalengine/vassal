@@ -552,7 +552,8 @@ public class Flare extends AbstractConfigurable
     // Set special properties for our reportFormat to use ($FlareLocation$, $FlareZone$, $FlareMap$)
     reportFormat.setProperty(FLARE_NAME, getAttributeValueString(NAME));
     reportFormat.setProperty(FLARE_LOCATION, map.locationName(clickPoint));
-    final Zone z = map.findZone(clickPoint);
+    Point sacrificialPoint = new Point(clickPoint); // findZone murderously writes back into the point it is passed, so we will pass it a sacrificialPoint rather than our precious one.
+    final Zone z = map.findZone(sacrificialPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
     String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
