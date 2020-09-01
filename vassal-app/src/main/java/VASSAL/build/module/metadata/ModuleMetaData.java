@@ -120,7 +120,7 @@ public class ModuleMetaData extends AbstractMetaData {
 
       ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
       if (data == null) {
-        data = zip.getEntry(GameModule.BUILDFILE);
+        data = zip.getEntry(GameModule.BUILDFILE_OLD);
         if (data == null) return;
 
         handler = new ModuleBuildFileXMLHandler();

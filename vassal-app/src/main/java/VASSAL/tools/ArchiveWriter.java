@@ -187,15 +187,23 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public void removeImage(String name) {
+    removeFile(imageDir + name);
+    localImages = null;
+  }
+
+  /**
+   * Removes a file in the archive
+   * @param name file in the archive to be removed
+   */
+  public void removeFile(String name) {
     try {
-      archive.remove(imageDir + name);
+      archive.remove (name);
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());
     }
-
-    localImages = null;
   }
+
 
   /**
    * Copy a file from the user's filesystem to the archive.
