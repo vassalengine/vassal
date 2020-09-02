@@ -141,6 +141,12 @@ public class ChessClockControl extends AbstractConfigurable
     GameModule.getGameModule().addKeyStrokeListener(pauseListener);
   }
 
+  /**
+   * @return Our list of chessclocks
+   */
+  public Set<ChessClock> getChessClocks() {
+    return chessclocks;
+  }
 
   /**
    * Builds the clock control's component hierarchy from a given XML element, or a null one is given initializes
@@ -389,7 +395,13 @@ public class ChessClockControl extends AbstractConfigurable
    * @return First ChessClockControl in our module
    */
   public static ChessClockControl getInstance() {
-    return GameModule.getGameModule().getAllDescendantComponentsOf(ChessClockControl.class).get(0);
+    GameModule gm = GameModule.getGameModule();
+    if (gm.getAllDescendantComponentsOf(ChessClockControl.class).size() > 0) {
+      return gm.getAllDescendantComponentsOf(ChessClockControl.class).get(0);
+    }
+    else {
+      return null;
+    }
   }
 
   /**

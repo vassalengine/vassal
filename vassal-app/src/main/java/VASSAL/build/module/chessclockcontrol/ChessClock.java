@@ -21,6 +21,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -32,6 +34,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ChessClockControl;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -41,10 +44,12 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * CHESS CLOCK class for VASSAL.
@@ -58,11 +63,11 @@ import org.apache.commons.lang3.StringUtils;
  *
  */
 public class ChessClock extends AbstractConfigurable implements CommandEncoder, GameComponent, ActionListener {
-
   private static final int MILLISECONDS_PER_MINUTE = 1000 * 60;
   private static final int MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * 60;
   private static final int MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * 24;
-  public static final String COMMAND_PREFIX = "CLOCK:"; //$NON-NLS-1$
+  public static final char DELIMITER = '\t';
+  public static final String COMMAND_PREFIX = "CLOCK" + DELIMITER; //$NON-NLS-1$
 
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String SIDE = "side"; //$NON-NLS-1$
@@ -76,6 +81,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and therefore clocks)
   public static final String REFEREE   = "Referee";
   public static final String SOLO      = "Solo";
+
+  public static final String GENERIC   = "Player";
 
   private static Color defaultColor;       // Stores default look-and-feel colors for buttons
   private static Color defaultFontColor;
@@ -113,8 +120,32 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     defaultColor = UIManager.getColor ("Panel.background");      // Store our original default background color
     defaultFontColor = UIManager.getColor ("Button.foreground"); // Store our original default font color
 
-    side       = "Player";
+    side       = GENERIC;
     buttonText = side;
+
+    // In case we're adding these on the fly, let's see if we can find a "decent" player side to "be",
+    // in other words one that hasn't been assigned to any clock yet. This is a little bit tongue-in-cheek,
+    // but it's intended to be heuristic not perfect, and doesn't have to be perfect.
+    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    ChessClockControl ctrl = ChessClockControl.getInstance();
+    if ((r != null) && (ctrl != null)) {
+      for (String s : r.getSides()) {
+        boolean okay = true;
+        for (ChessClock c : ctrl.getChessClocks()) {
+          if (c.getSide().equals(s)) {
+            okay = false;
+            break;
+          }
+        }
+        if (!okay) {
+          continue;
+        }
+        side       = s;
+        buttonText = s;
+        break;
+      }
+    }
+
     setConfigureName(side);
 
     image        = "";
@@ -153,6 +184,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     timerButton = new LaunchButton(buttonText + " " + "0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
     timerButton.setFont(new Font("SansSerif", Font.BOLD, 12)); //$NON-NLS-1$
     initTimerButton();
+  }
+
+
+  public String getSide() {
+    return side;
   }
 
   public boolean isTicking() {
@@ -515,7 +551,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { String.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
+    return new Class[] { PlayerSidesConfig.class, String.class, IconConfig.class, ColorConfig.class, ColorConfig2.class, ColorConfig3.class, String.class };
   }
 
   /**
@@ -612,7 +648,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   public Command decode(final String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, ':');
+      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
       decoder.nextToken();
       final String who = decoder.nextToken();
       final String name = decoder.nextToken();
@@ -637,7 +673,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public String encode(final Command c) {
     if (c instanceof UpdateTimerCommand) {
       final UpdateTimerCommand comm = (UpdateTimerCommand) c;
-      final SequenceEncoder encoder = new SequenceEncoder(':');
+      final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
       encoder.append(comm.who);
       encoder.append(comm.name);
       encoder.append(comm.elapsed);
@@ -702,6 +738,37 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   }
 
   // These autoconfigurers allow the attributes to be edited in the editor, using intuitive controls instead of just a fill-in-the-blank field.
+
+  /**
+   * PlayerSidesConfig makes a dropdown of all the player sides
+   */
+  public static class PlayerSidesConfig extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      ArrayList<String> sides = new ArrayList<String>();
+      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+      for (String s : r.getSides()) {
+        sides.add(s);
+      }
+      if (r.getSides().size() == 0) {
+        sides.add(GENERIC);
+      }
+      return sides.toArray(new String[0]);
+    }
+
+    public String[] getI18nKeys(AutoConfigurable target) {
+      ArrayList<String> sides = new ArrayList<String>();
+      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+      for (String s : r.getSides()) {
+        sides.add(r.translateSide(s));
+      }
+      if (r.getSides().size() == 0) {
+        sides.add(GENERIC);
+      }
+      return sides.toArray(new String[0]);
+    }
+  }
+
 
   /**
    * Autoconfigurer for the icon for this timer. Lets user pick an icon.

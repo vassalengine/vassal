@@ -310,6 +310,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return players.toArray(new PlayerInfo[0]);
   }
 
+  public ArrayList<String> getSides() {
+    return (ArrayList)sides;
+  }
+
   public void add(String playerId, String playerName, String side) {
     PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
@@ -459,8 +463,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * @param side Name of a side to see if it's a "solo side"
    * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
    */
-  public boolean isSoloSide(String side)
-  {
+  public boolean isSoloSide(String side) {
     return "Solitaire".equals(side) ||
            "Solo".equals(side)      ||
            "Moderator".equals(side) ||
@@ -692,7 +695,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return StringArrayConfigurer.arrayToString(s);
   }
 
-  protected String untranslateSide(String side) {
+  public String untranslateSide(String side) {
     if (translatedObserver.equals(side)) {
       return OBSERVER;
     }
@@ -706,7 +709,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return side;
   }
 
-  protected String translateSide(String side) {
+  public String translateSide(String side) {
     if (OBSERVER.equals(side)) {
       return translatedObserver;
     }
