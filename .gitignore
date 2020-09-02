@@ -3,6 +3,7 @@
 # packaging
 dist/dmg/
 dist/jdks/
+dist/launch4j/
 
 # generated files
 jdoc/
