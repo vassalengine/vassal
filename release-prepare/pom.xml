@@ -48,7 +48,7 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <includeArtifactIds>vassal-app</includeArtifactIds>
+                            <excludeArtifactIds>vassal-doc</excludeArtifactIds>
                             <includeScope>compile</includeScope>
                         </configuration>
                     </execution>
