@@ -39,6 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -61,7 +62,7 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
- * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
+ * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
  */
 public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
@@ -129,18 +130,28 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * @{link #srcOp}.
    */
   @Deprecated
-  protected Image image;
-  protected String imageName;
-  private String commonName;
+  protected Image image;           // BasicPiece's own image
+  protected String imageName;      // BasicPiece imagename
+  private String commonName;       // BasicPiece's name for the piece (aka "BasicName" property in Vassal Module)
 
   public BasicPiece() {
     this(ID + ";;;;");
   }
 
+  /** creates a BasicPiece by passing complete type information
+   * @param type serialized type information (data about the piece which does not
+   * change during the course of a game) ready to be processed by a {@link SequenceEncoder.Decoder} */
   public BasicPiece(String type) {
     mySetType(type);
   }
 
+  /** Sets the information for this piece.  See {@link Decorator#myGetType}
+   *  @param type a serialized configuration string to
+   *              set the "type information" of this piece, which is
+   *              information that doesn't change during the course of
+   *              a single game (e.g. Image Files, Context Menu strings,
+   *              etc). Typically ready to be processed e.g. by
+   *              SequenceEncoder.decode() */
   @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -153,6 +164,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     commands = null;
   }
 
+  /** @return The "type information" of a piece or trait is information
+   * that does not change during the course of a game. Image file
+   * names, context menu strings, etc., all should be reflected
+   * in the type. The type information is returned serialized string
+   * form, ready to be decoded by a SequenceEncoder#decode.
+   * @see BasicCommandEncoder */
   @Override
   public String getType() {
     final SequenceEncoder se =
@@ -162,6 +179,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
                   .append(commonName).getValue();
   }
 
+  /** @param map Each GamePiece belongs to a single {@link Map} */
   @Override
   public void setMap(Map map) {
     if (map != this.map) {
@@ -170,11 +188,26 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /** @return Each GamePiece belongs to a single {@link Map} */
   @Override
   public Map getMap() {
     return getParent() == null ? map : getParent().getMap();
   }
 
+  /**
+   * Properties can be associated with a piece -- many may be game-specific, but others
+   * are standard, such as the LocationName property exposed by BasicPiece -- and can
+   * be read through this interface. The properties may or may not need to be encoded in
+   * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
+   * Traits, {@link DynamicProperty} Traits, and so forth. Furthermore they include the values
+   * of any visible "Global Property" in a Vassal module, whether at the module level, map
+   * level, or zone level.
+   *
+   * <br><br>When using this interface a piece's own properties are preferred to those of
+   * "Global Properties", and those in turn are searched Zone-first then Map, then Module.
+   * @param key String key of property to be returned
+   * @return Object containing new value of the specified property
+   */
   @Override
   public Object getProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
@@ -184,8 +217,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         return getPublicProperty(key);
   }
 
-  /*
-   * Properties visible in a masked unit
+  /**
+   * Properties visible in a masked (see {@link Obscurable}) piece, even when the piece is masked.
+   * @param key String key of property to be returned.
    */
   public Object getPublicProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
