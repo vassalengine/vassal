@@ -21,8 +21,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.event.DocumentListener;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+
+import net.miginfocom.swing.MigLayout;
 
 import VASSAL.i18n.Resources;
 
@@ -37,33 +38,24 @@ public class ToggleablePasswordFieldPanel {
   private boolean passwordVisible = false;
 
   public ToggleablePasswordFieldPanel(String label, String initialPassword) {
-    panel = new JPanel(new BorderLayout());
-    panel.add(new JLabel(label), BorderLayout.WEST);
+    panel = new JPanel(new MigLayout("ins 0", "[]rel[][]"));
+
+    final JLabel passwordLabel = new JLabel(label);
+    panel.add(passwordLabel);
 
     passwordField = new JPasswordField(12);
     passwordField.setEchoChar(ECHO_CHAR);
-    passwordField.setMaximumSize(new Dimension(
-      (int) passwordField.getMaximumSize().getWidth(),
-      FIELD_HEIGHT
-    ));
     passwordField.setText(initialPassword);
-    panel.add(passwordField, BorderLayout.CENTER);
+    passwordLabel.setLabelFor(passwordField);
+
+    panel.add(passwordField, "pushx, growx");
 
     final JButton toggleButton = new JButton(Resources.getString("GlobalOptions.toggle_password_visibility")); //$NON-NLS-1$
     toggleButton.addActionListener(e -> {
-      if (passwordVisible) {
-        passwordField.setEchoChar(ECHO_CHAR);
-        passwordVisible = false;
-      }
-      else {
-        passwordField.setEchoChar((char)0);
-        passwordVisible = true;
-      }
+      passwordVisible = !passwordVisible;
+      passwordField.setEchoChar(passwordVisible ? ECHO_CHAR : (char) 0);
     });
-    panel.add(toggleButton, BorderLayout.EAST);
-    panel.setMaximumSize(new Dimension(
-      (int) (passwordField.getMaximumSize().getWidth() + toggleButton.getMaximumSize().getWidth()),
-      FIELD_HEIGHT));
+    panel.add(toggleButton);
   }
 
   public JPanel getPanel() {
