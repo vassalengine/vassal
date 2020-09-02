@@ -786,6 +786,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       )
     );
 
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+    g.getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+      new IntConfigurer(
+        PREFERRED_SCROLL_ZONE,
+        Resources.getString("Map.scroll_zone_preference"), //$NON-NLS-1$
+        SCROLL_ZONE
+      )
+    );
+
     g.getPrefs().addOption(
       Resources.getString("Prefs.compatibility_tab"), //$NON-NLS-1$
       new BooleanConfigurer(
@@ -1822,7 +1832,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
   /** The width of the hot zone for triggering autoscrolling. */
-  public static final int SCROLL_ZONE = 30;
+  public static final int SCROLL_ZONE = 60;
+  public static final String PREFERRED_SCROLL_ZONE = "PreferredScrollZone"; //$NON-NLS-1$
 
   /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
   protected int sx;
