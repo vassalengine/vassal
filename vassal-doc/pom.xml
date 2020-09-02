@@ -66,6 +66,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/designerguide</sourceDirectory>
+                            <sourceDocumentName>designerguide.adoc</sourceDocumentName>
                             <outputDirectory>${project.build.outputDirectory}/designerguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
