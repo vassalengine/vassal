@@ -69,6 +69,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
   public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
+
+  public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks)
+  public static final String REFEREE   = "Referee";
+  public static final String SOLO      = "Solo";
+  public static final String MODERATOR = "Moderator";
+
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -463,11 +469,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * @param side Name of a side to see if it's a "solo side"
    * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
    */
-  public boolean isSoloSide(String side) {
-    return "Solitaire".equals(side) ||
-           "Solo".equals(side)      ||
-           "Moderator".equals(side) ||
-           "Referee".equals(side);
+  public static boolean isSoloSide(String side) {
+    return SOLITAIRE.equals(side) ||
+           SOLO.equals(side)      ||
+           MODERATOR.equals(side) ||
+           REFEREE.equals(side);
   }
 
 

@@ -45,6 +45,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.LaunchButton;
@@ -82,6 +83,8 @@ public class ChessClockControl extends AbstractConfigurable
 
   protected String id;
 
+  public static final char DELIMITER = '\t';
+
   public static final String NAME = "name";
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
@@ -100,12 +103,12 @@ public class ChessClockControl extends AbstractConfigurable
   public static final String STYLE_AUTO   = "Auto";
   public static final String STYLE_NEVER  = "Never";
 
-  public static final String CHESSMENU_PAUSE = "Pause All Clocks";
-  public static final String CHESSMENU_SHOW  = "Show Chess Clocks";
-  public static final String CHESSMENU_HIDE  = "Hide Chess Clocks";
-  public static final String CHESSMENU_NEXT  = "Start Next Clock";
+  public static final String CHESSMENU_PAUSE = Resources.getString("ChessClock.pause");
+  public static final String CHESSMENU_SHOW  = Resources.getString("ChessClock.show");
+  public static final String CHESSMENU_HIDE  = Resources.getString("ChessClock.hide");
+  public static final String CHESSMENU_NEXT  = Resources.getString("ChessClock.next");
 
-  public static final String COMMAND_PREFIX = "CLOCKCONTROL:"; //NON-NLS-1$
+  public static final String COMMAND_PREFIX = "CLOCKCONTROL" + DELIMITER; //NON-NLS-1$
 
   public ChessClockControl() {
     setConfigureName("Chess Clock Control");
@@ -117,7 +120,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     chessClockButton = new LaunchButton("Chess Clocks", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
     chessClockButton.setToolTipText("Tooltip Text");
-    //chessClockButton.setAttribute(ICON, "chessclock.png");
+    //chessClockButton.setAttribute(ICON, "chessclock.png"); //BR// I have a decent royalty-free icon, but need to figure out vassal-wide licensing ... or just leave it open for module designer?
     chessClockButton.addMouseListener(new ChessMouseListener());
 
     // Set up listeners for hotkeys
@@ -180,9 +183,6 @@ public class ChessClockControl extends AbstractConfigurable
     add(b);
     b.addTo(this);
   }
-
-
-
 
   /**
      * Registers us with the game module, tool bar, command encoder, etc.
@@ -249,9 +249,8 @@ public class ChessClockControl extends AbstractConfigurable
    * @return Component type name, which appears in [..] in Editor window
    */
   public static String getConfigureTypeName() {
-    return "Chess Clock Control";
+    return Resources.getString("Editor.ChessClock.chess_clock_control");
   }
-
 
   // XML file attributes - next six methods configure them, and handle setting/getting.
 
@@ -277,9 +276,19 @@ public class ChessClockControl extends AbstractConfigurable
    */
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] { "Name: ", "Button Image: ", "Button Text: ", "Tooltip Text: ",
-      "Show Clocks Hotkey: ", "Start Next Clock Hotkey: ", "Pause All Clocks Hotkey: ", "Show Tenths of Seconds: ", "Show Seconds: ",
-      "Show Hours: ", "Show Days: " };
+    return new String[] {
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.button_icon_label"),
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.tooltip_text_label"),
+      Resources.getString("Editor.ChessClock.show_clocks_hotkey"),
+      Resources.getString("Editor.ChessClock.start_next_clock_hotkey"),
+      Resources.getString("Editor.ChessClock.pause_all_clocks_hotkey"),
+      Resources.getString("Editor.ChessClock.show_tenths_of_seconds"),
+      Resources.getString("Editor.ChessClock.show_seconds"),
+      Resources.getString("Editor.ChessClock.show_hours"),
+      Resources.getString("Editor.ChessClock.show_minutes")
+    } ;
   }
 
   /**
@@ -437,7 +446,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public int getClocksTicking() {
     int running = 0;
-    if (instanceIsActive) {
+    if (instanceIsActive && (getInstance() != null)) {
       for (ChessClock c : getInstance().chessclocks) {
         if (c.isTicking()) {
           running++;
@@ -452,7 +461,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public Command stopAllClocks() {
     Command command = new NullCommand();
-    if (instanceIsActive) {
+    if (instanceIsActive && getInstance() != null) {
       for (ChessClock c : getInstance().chessclocks) {
         if (!c.isTicking()) {
           continue;
@@ -516,7 +525,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public void hideClocks() {
     chessClocksVisible = false;
-    if (instanceIsActive) {
+    if (instanceIsActive && (getInstance() != null)) {
       for (ChessClock c : getInstance().chessclocks) {
         c.hideClock();
       }
@@ -528,7 +537,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public void showClocks() {
     chessClocksVisible = true;
-    if (instanceIsActive) {
+    if (instanceIsActive && (getInstance() != null)) {
       for (ChessClock c : getInstance().chessclocks) {
         c.showClock();
       }
@@ -539,7 +548,7 @@ public class ChessClockControl extends AbstractConfigurable
    * Update all clocks (when our time-display format changes)
    */
   public void updateAllClocks() {
-    if (instanceIsActive) {
+    if (instanceIsActive && (getInstance() != null)) {
       for (ChessClock c : getInstance().chessclocks) {
         c.setTimerButton();
       }
@@ -640,7 +649,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public Command decode(final String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, ':');
+      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
       decoder.nextToken();
       final boolean showing = decoder.nextBoolean(false);
       final boolean online  = decoder.nextBoolean(false);
@@ -659,7 +668,7 @@ public class ChessClockControl extends AbstractConfigurable
   public String encode(final Command c) {
     if (c instanceof UpdateClockControlCommand) {
       final UpdateClockControlCommand comm = (UpdateClockControlCommand) c;
-      final SequenceEncoder encoder = new SequenceEncoder(':');
+      final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
       encoder.append(comm.showing);
       encoder.append(comm.online);
       return COMMAND_PREFIX + encoder.getValue();

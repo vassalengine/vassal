@@ -22,7 +22,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -34,7 +33,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ChessClockControl;
 import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -45,21 +43,23 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 /**
  * CHESS CLOCK class for VASSAL.
  *
- * The ChessClock class itself implements a single timer, which is added as a button to the Module toolbar. Clicking the button starts and stops the clock, which we attempt to keep (roughly) in sync across multiple players' computers. A pair (or more, or I suppose only one) of them are then added to {@link ChessClockControl}.
+ * The ChessClock class itself implements a single timer, which is added as a button to the Module toolbar.
+ * Clicking the button starts and stops the clock, which we attempt to keep (roughly) in sync across multiple
+ * players' computers. A pair (or more, or I suppose only one) of them are then added to {@link ChessClockControl}.
  *
  * @author Brian Reynolds and Michael Kiefte
  *
  * Class originally created by Michael Kiefte for Twilight Struggle, including handshaking for verification of time totals between online
- * machines. Made more generically configurable, and ChessClockControl added, by Brian Reynolds.
+ * machines. Made more generically configurable, ChessClockControl added, and integrated into standard VASSAL, by Brian Reynolds.
  *
  */
 public class ChessClock extends AbstractConfigurable implements CommandEncoder, GameComponent, ActionListener {
@@ -77,10 +77,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor";
   public static final String TICKING_FONT_COLOR       = "tickingFontColor";
   public static final String TOCKING_FONT_COLOR       = "tockingFontColor";
-
-  public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and therefore clocks)
-  public static final String REFEREE   = "Referee";
-  public static final String SOLO      = "Solo";
 
   public static final String GENERIC   = "Player";
 
@@ -125,7 +121,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     // In case we're adding these on the fly, let's see if we can find a "decent" player side to "be",
     // in other words one that hasn't been assigned to any clock yet. This is a little bit tongue-in-cheek,
-    // but it's intended to be heuristic not perfect, and doesn't have to be perfect.
+    // but it's intended to be heuristic not perfect, and doesn't have to be perfect. So there.
     PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     ChessClockControl ctrl = ChessClockControl.getInstance();
     if ((r != null) && (ctrl != null)) {
@@ -165,7 +161,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     // Action listener for clicking on the clock
     ActionListener al = e -> {
       Command command = new NullCommand();
-      if (ChessClockControl.getInstance().getClocksTicking() > 0) {
+      ChessClockControl ccc = ChessClockControl.getInstance();
+      if ((ccc != null) && ccc.getClocksTicking() > 0) {
         command = command.append(ChessClockControl.getInstance().startNextClock());
       }
       else {
@@ -186,27 +183,41 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     initTimerButton();
   }
 
-
+  /**
+   * @return side this clock is assigned to
+   */
   public String getSide() {
     return side;
   }
 
+  /**
+   * @return true if this clock is running
+   */
   public boolean isTicking() {
     return clockTicking;
   }
 
+  /**
+   * @return elapsed time from local perspective
+   */
   public long getElapsed() {
     return elapsedTime;
   }
 
+  /**
+   * @return elapsed time verified by handshake (or fiat, depending on situation)
+   */
   public long getVerified() {
     return verifiedTime;
   }
 
+  /**
+   * @param name side to check if a referee
+   * @return True if passed side is a referee
+   */
   protected static boolean isReferee(String name) {
-    return SOLITAIRE.equals(name) || REFEREE.equals(name) || SOLO.equals(name);
+    return PlayerRoster.isSoloSide(name);
   }
-
 
   /**
    *  Make sure the static millisecond timer is actually running (unless it hasn't even been initialized yet)
@@ -217,7 +228,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
   /**
    *  Defines the Command by which information about this clock is communicated between machines (and to/from save and log files)
    */
@@ -226,8 +236,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     private final String name; // name = whose timer is being reported
     private final long elapsed; // Elapsed time from our point of view
     private final long verified; // Verified time (both clients have agreed)
-    private final boolean ticking; // BR// Timer currently ticking?
-    private final boolean restore; // BR// Restoring save?
+    private final boolean ticking; //BR// Timer currently ticking?
+    private final boolean restore; //BR// Restoring save?
 
     /**
      * @param who who is doing the reporting; which player side
@@ -260,11 +270,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       }
       startTimer();
       if (GameModule.getGameModule().getServer().isConnected()) {
-        ChessClockControl.getInstance().setOnline(true);
+        ChessClockControl ccc = ChessClockControl.getInstance();
+        if (ccc != null) ccc.setOnline(true);
       }
 
       // This part is mostly so that "testing" the chess clocks when game not yet going feels responsive. Also gives referee control access to clocks.
-      boolean noChecks = GameModule.getGameModule().getGameState().isGameStarted() || isReferee(who) || !ChessClockControl.getInstance().isOnline();
+      boolean noChecks = GameModule.getGameModule().getGameState().isGameStarted() || isReferee(who) || ((ChessClockControl.getInstance() != null) && !ChessClockControl.getInstance().isOnline());
 
       if (who.equals(me) || noChecks) {
         // my computer reporting back: restore
@@ -305,7 +316,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       updateTimerColor();
 
       if (clockTicking || (restore && (elapsedTime > 0))) {
-        ChessClockControl.getInstance().showClocks();
+        ChessClockControl ccc = ChessClockControl.getInstance();
+        if (ccc != null) ccc.showClocks();
       }
     }
 
@@ -319,7 +331,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       return false;
     }
   }
-
 
   /**
    * Updates the color of this chess clock's button/display.
@@ -364,7 +375,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     timerButton.setVisible(true);
   }
 
-
   /**
    * Updates the clock display for this clock
    * (1) Checks new elapsed value from millisecond timer.
@@ -389,7 +399,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
+  /**
+   * @return Clock button text (if any) formatted to be ready to be prepended to time clock string
+   */
   private String getFormattedButtonText() {
     return (StringUtils.isEmpty(buttonText) ? "" : buttonText + " ");
   }
@@ -415,8 +427,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     String showingSeconds;
     String showingTenths;
 
-    if (instanceIsActive) {
-      ChessClockControl c = ChessClockControl.getInstance();
+    ChessClockControl c = ChessClockControl.getInstance();
+    if ((c != null) && instanceIsActive) {
       showingDays = c.getShowDays();
       showingHours = c.getShowHours();
       showingSeconds = c.getShowSeconds();
@@ -529,7 +541,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-
   /**
    * @return Key names for our attributes from the buildFile (XML) definition.
    */
@@ -543,7 +554,15 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] { "Player Side for timer: ", "Timer Button Text: ", "Timer Icon: ", "Ticking Background Color: ", "Ticking Foreground Color: ", "Tocking Foreground Color: ", "Chess Clock Tooltip" };
+    return new String[] {
+      Resources.getString("Editor.ChessClock.player_side_for_timer"),
+      Resources.getString("Editor.ChessClock.timer_button_text"),
+      Resources.getString("Editor.ChessClock.timer_icon"),
+      Resources.getString("Editor.ChessClock.ticking_background_color"),
+      Resources.getString("Editor.ChessClock.ticking_foreground_color"),
+      Resources.getString("Editor.ChessClock.tocking_foreground_color"),
+      Resources.getString("Editor.ChessClock.chess_clock_tooltip")
+    };
   }
 
   /**
@@ -633,9 +652,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @return Configure Tree name for component. Appears in [..] in module editor.
    */
   public static String getConfigureTypeName() {
-    return "Chess Clock";
+    return Resources.getString("Editor.ChessClock.chess_clock");
   }
 
+  /**
+   * @return Array of subcomponent types that can be added to this component
+   */
   @SuppressWarnings("rawtypes")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
@@ -745,11 +767,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static class PlayerSidesConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      ArrayList<String> sides = new ArrayList<String>();
       PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-      for (String s : r.getSides()) {
-        sides.add(s);
-      }
+      ArrayList<String> sides = new ArrayList<>(r.getSides());
       if (r.getSides().size() == 0) {
         sides.add(GENERIC);
       }
@@ -757,7 +776,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
 
     public String[] getI18nKeys(AutoConfigurable target) {
-      ArrayList<String> sides = new ArrayList<String>();
+      ArrayList<String> sides = new ArrayList<>();
       PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
       for (String s : r.getSides()) {
         sides.add(r.translateSide(s));
@@ -768,7 +787,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       return sides.toArray(new String[0]);
     }
   }
-
 
   /**
    * Autoconfigurer for the icon for this timer. Lets user pick an icon.
