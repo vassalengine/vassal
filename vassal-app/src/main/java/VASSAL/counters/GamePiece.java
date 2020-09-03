@@ -162,7 +162,7 @@ public interface GamePiece extends PropertySource {
   public String getType();
 
   /**
-   * @return The "state information" is information that can change during
+   * @return The "state information" is game state information that can change during
    * the course of a game. State information is saved when the game
    * is saved and is transferred between players on the server.  For
    * example, the relative order of pieces in a stack is state
@@ -172,7 +172,7 @@ public interface GamePiece extends PropertySource {
   /**
    * @param newState New state information serialized in string form, ready
    * to be passed to a SequenceEncoder#decode. The "state information" is
-   * information that can change during the course of a game. State information
+   * game state information that can change during the course of a game. State information
    * is saved when the game is saved and is transferred between players on the
    * server. For example, the relative order of pieces in a stack is state
    * information, but whether the stack is expanded is not. */
