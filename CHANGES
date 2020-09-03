@@ -1,4 +1,4 @@
-3.4.0 - ???
+3.4.0 - 3 September 2020
 
 * 13358: Prevent units in Zones setting OldLocationName incorrectly
 * 13356: Game refresher should not copy marker state
