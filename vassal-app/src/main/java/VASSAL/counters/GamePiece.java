@@ -183,12 +183,12 @@ public interface GamePiece extends PropertySource {
    * are standard, such as the LocationName property exposed by BasicPiece -- and can
    * be set through this interface. The properties may or may not need to be encoded in
    * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
-   * Traits, {@link DynamicProperty} Traits, and so forth. Furthermore they include the values
-   * of any visible "Global Property" in a Vassal module, whether at the module level, map
-   * level, or zone level.
+   * Traits, {@link DynamicProperty} Traits, and so forth.
    *
-   * <br><br>When using this interface a piece's own properties are preferred to those of
-   * "Global Properties", and those in turn are searched Zone-first then Map, then Module.
+   * <br><br><b>NOTE:</b> Properties outside the piece, however, CANNOT be set by this
+   * method (e.g. Global Properties), even though they can be read by {@link #getProperty} --
+   * in this the two methods are not perfect mirrors.
+   *
    * @param key String key of property to be changed
    * @param val Object containing new value of the property
    */
@@ -201,10 +201,16 @@ public interface GamePiece extends PropertySource {
    * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
    * Traits, {@link DynamicProperty} Traits, and so forth. Furthermore they include the values
    * of any visible "Global Property" in a Vassal module, whether at the module level, map
-   * level, or zone level.
+   * level, or zone level -- but these "higher level" properties, coming from "outside the piece",
+   * CANNOT be written to by the {@link #setProperty} method even though they can be read by
+   * this method -- in this sense the two methods are NOT perfect mirrors.
    *
    * <br><br>When using this interface a piece's own properties are preferred to those of
    * "Global Properties", and those in turn are searched Zone-first then Map, then Module.
+   *
+   * This method implements the {@link PropertySource} interface, which allows Global Properties
+   * to be read by other types of object than GamePieces.
+   *
    * @param key String key of property to be returned
    * @return Object containing new value of the specified property
    */
