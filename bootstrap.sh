@@ -51,7 +51,7 @@ popd
 mkdir -p "$L4JDIR"
 pushd "$L4JDIR"
 
-wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/3.12/launch4j-3.12-linux.tgz
+wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/3.12/launch4j-3.12-linux-x64.tgz
 tar -xvf launch4j-3.12-linux-x64.tgz
 
 popd
