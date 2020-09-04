@@ -186,10 +186,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @param s            - chat message
    * @param style        - current style name (contains information that might be useful)
    * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
+   * @return true        - if was accepted as a console command
    */
   @SuppressWarnings("unused")
-  public void consoleHook(String s, String style, boolean html_allowed) {
-    
+  public boolean consoleHook(String s, String style, boolean html_allowed) {
+    return false;
   }
   
 
