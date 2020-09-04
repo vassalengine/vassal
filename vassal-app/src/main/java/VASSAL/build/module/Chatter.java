@@ -160,7 +160,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
   
 
-  private String formatChat(String text) {
+  protected String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
     return String.format("&lt;%s&gt; - %s", id.isEmpty() ? "(" + getAnonymousUserName() + ")" : id, text); //HTML-friendly angle brackets //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
