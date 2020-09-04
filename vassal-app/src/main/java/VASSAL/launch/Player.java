@@ -183,11 +183,11 @@ public class Player extends Launcher {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      // don't permit loading of VASL saved with 3.2 or earlier
+      // don't permit loading of VASL saved before 3.4
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
-        if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+        if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
           if ("VASL".equals(md.getName())) {
             ErrorDialog.show(
               "Error.VASL_too_old",

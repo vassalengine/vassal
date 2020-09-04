@@ -17,10 +17,6 @@
  */
 package VASSAL;
 
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.version.VassalVersionTokenizer;
-import VASSAL.tools.version.VersionFormatException;
-import VASSAL.tools.version.VersionTokenizer;
 import java.awt.Component;
 import java.awt.GraphicsConfiguration;
 import java.awt.Insets;
@@ -28,9 +24,13 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
-import VASSAL.tools.version.GitProperties;
 import org.apache.commons.lang3.SystemUtils;
 
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.version.GitProperties;
+import VASSAL.tools.version.VassalVersionTokenizer;
+import VASSAL.tools.version.VersionFormatException;
+import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
 
 /**

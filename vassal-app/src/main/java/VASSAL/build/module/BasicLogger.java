@@ -65,6 +65,7 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.version.VersionUtils;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
@@ -371,7 +372,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
             Resources.getString(
               "Warning.log_will_be_updated_message",
               file.getPath(),
-              "3.2"
+              VersionUtils.truncateToMinorVersion(Info.getVersion())
             ),
             JOptionPane.WARNING_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION

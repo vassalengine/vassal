@@ -219,10 +219,10 @@ public class Editor extends Launcher {
           return;
         }
 
-        // don't permit loading of VASL saved with 3.2 or earlier
+        // don't permit loading of VASL saved before 3.4
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
-          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
             if ("VASL".equals(md.getName())) {
               ErrorDialog.show(
                 "Error.VASL_too_old",
@@ -242,11 +242,12 @@ public class Editor extends Launcher {
 
         // warn user if editing this module would update it to our version
         if (Info.hasOldFormat(vv)) {
+          final String version = Info.getVersion();
           WarningDialog.show(
             "Warning.module_will_be_updated",
             lr.module.getPath(),
-            Info.getVersion(),
-            "3.2"
+            version,
+            VersionUtils.truncateToMinorVersion(version)
           );
         }
       }

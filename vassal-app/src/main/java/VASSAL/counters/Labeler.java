@@ -289,12 +289,18 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     // Windows renders some characters (e.g. "4") very poorly at 8pt. To
     // mitigate that, we upscale, render, then downscale when the font
     // would be 8pt.
-    if (Math.round(fsize) == 8.0f) {
+
+    final boolean isHTML = BasicHTML.isHTMLString(lastCachedLabel);
+
+    if (!isHTML && Math.round(fsize) == 8.0f) {
       final Font zfont = font.deriveFont(((float)(3 * font.getSize() * zoom)));
       lastCachedOp = Op.scale(new LabelOp(lastCachedLabel, zfont, textFg, textBg), 1.0 / 3.0);
     }
     else if (zoom == 1.0) {
       lastCachedOp = baseOp;
+    }
+    else if (isHTML) {
+      lastCachedOp = Op.scale(baseOp, zoom);
     }
     else {
       final Font zfont = font.deriveFont(fsize);
@@ -311,6 +317,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
     if (zoom == 1.0) {
       lastCachedOp = baseOp;
+    }
+    else if (BasicHTML.isHTMLString(lastCachedLabel)) {
+      lastCachedOp = Op.scale(baseOp, zoom);
     }
     else {
       float fsize = (float)(font.getSize() * zoom);
@@ -371,7 +380,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       // label has chagned, is nonempty
       position = null;
       lastCachedLabel = ll;
-      baseOp = new LabelOp(lastCachedLabel, font, textFg, textBg);
+
+      if (BasicHTML.isHTMLString(lastCachedLabel)) {
+        baseOp = new HTMLLabelOp(lastCachedLabel, font, textFg, textBg);
+      }
+      else {
+        baseOp = new LabelOp(lastCachedLabel, font, textFg, textBg);
+      }
       lastCachedOp = null;
     }
   }
@@ -464,11 +479,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   protected static class LabelOp extends AbstractTileOpImpl {
-    private final String txt;
-    private final Font font;
-    private final Color fg;
-    private final Color bg;
-    private final int hash;
+    protected final String txt;
+    protected final Font font;
+    protected final Color fg;
+    protected final Color bg;
+    protected final int hash;
 
     public LabelOp(String txt, Font font, Color fg, Color bg) {
       this.txt = txt;
@@ -485,6 +500,88 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     @Override
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
+    }
+
+    @Override
+    public BufferedImage eval() throws Exception {
+      // fix our size
+      buildDimensions();
+
+      // draw nothing if our size is zero
+      if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
+
+      // prepare the target image
+      final BufferedImage im = ImageUtils.createCompatibleImage(
+        size.width,
+        size.height,
+        bg == null || bg.getTransparency() != Color.OPAQUE
+      );
+
+      final Graphics2D g = im.createGraphics();
+      g.addRenderingHints(SwingUtils.FONT_HINTS);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+
+      // paint the background
+      if (bg != null) {
+        g.setColor(bg);
+        g.fillRect(0, 0, size.width, size.height);
+      }
+
+      // paint the foreground
+      if (fg != null) {
+        g.setColor(fg);
+        g.setFont(font);
+
+        final FontMetrics fm = g.getFontMetrics(font);
+        g.drawString(txt, 0, size.height - fm.getDescent());
+      }
+
+      g.dispose();
+      return im;
+    }
+
+    protected JLabel buildDimensions() {
+      final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
+      final FontMetrics fm = g.getFontMetrics(font);
+      size = new Dimension(fm.stringWidth(txt), fm.getHeight());
+      g.dispose();
+      return null;
+    }
+
+    @Override
+    protected void fixSize() {
+      if ((size = getSizeFromCache()) == null) {
+        buildDimensions();
+
+        // ensure that our area is nonempty
+        if (size.width <= 0 || size.height <= 0) {
+          size.width = size.height = 1;
+        }
+      }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof LabelOp)) return false;
+
+      final LabelOp lop = (LabelOp) o;
+      return (txt == null ? lop.txt == null : txt.equals(lop.txt)) &&
+             (font == null ? lop.font == null : font.equals(lop.font)) &&
+             (fg == null ? lop.fg == null : fg.equals(lop.fg)) &&
+             (bg == null ? lop.bg == null : bg.equals(lop.bg));
+    }
+
+    @Override
+    public int hashCode() {
+      return hash;
+    }
+  }
+
+  protected static class HTMLLabelOp extends LabelOp {
+    public HTMLLabelOp(String txt, Font font, Color fg, Color bg) {
+      super(txt, font, fg, bg);
     }
 
     @Override
@@ -515,73 +612,21 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       // paint the foreground
       if (fg != null) {
-        if (l != null) {
-          l.paint(g);
-        }
-        else {
-          g.setColor(fg);
-          g.setFont(font);
-
-          final FontMetrics fm = g.getFontMetrics(font);
-          g.drawString(txt, 0, size.height - fm.getDescent());
-        }
+        l.paint(g);
       }
 
       g.dispose();
       return im;
     }
 
-    private JLabel buildDimensions() {
-      // Build and return a JLabel if we need to render HTML,
-      // then determine the dimensions of the label.
-      final JLabel l;
-
-      if (BasicHTML.isHTMLString(txt)) {
-        l = new JLabel(txt);
-        l.setForeground(fg);
-        l.setFont(font);
-        size = l.getPreferredSize();
-        l.setSize(size);
-      }
-      else {
-        l = null;
-
-        final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
-        final FontMetrics fm = g.getFontMetrics(font);
-        size = new Dimension(fm.stringWidth(txt), fm.getHeight());
-        g.dispose();
-      }
-
+    protected JLabel buildDimensions() {
+      // Build a JLabel to render HTML
+      final JLabel l = new JLabel(txt);
+      l.setForeground(fg);
+      l.setFont(font);
+      size = l.getPreferredSize();
+      l.setSize(size);
       return l;
-    }
-
-    @Override
-    protected void fixSize() {
-      if ((size = getSizeFromCache()) == null) {
-        buildDimensions();
-
-        // ensure that our area is nonempty
-        if (size.width <= 0 || size.height <= 0) {
-          size.width = size.height = 1;
-        }
-      }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (!(o instanceof LabelOp)) return false;
-
-      final LabelOp lop = (LabelOp) o;
-      return (txt == null ? lop.txt == null : txt.equals(lop.txt)) &&
-             (font == null ? lop.font == null : font.equals(lop.font)) &&
-             (fg == null ? lop.fg == null : fg.equals(lop.fg)) &&
-             (bg == null ? lop.bg == null : bg.equals(lop.bg));
-    }
-
-    @Override
-    public int hashCode() {
-      return hash;
     }
   }
 
