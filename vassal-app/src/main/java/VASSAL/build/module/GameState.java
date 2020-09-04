@@ -85,7 +85,7 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
-
+import VASSAL.tools.version.VersionUtils;
 
 /**
  * The GameState contains methods to track and read/write the complete enumerated game state of the game
@@ -500,7 +500,7 @@ public class GameState implements CommandEncoder {
             Resources.getString(
               "Warning.save_will_be_updated_message",
               f.getPath(),
-              "3.2"
+              VersionUtils.truncateToMinorVersion(Info.getVersion())
             ),
               JOptionPane.WARNING_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION) != JOptionPane.CANCEL_OPTION;
