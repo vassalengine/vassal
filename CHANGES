@@ -15,6 +15,8 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
+3.4.1 - ???
+
 3.4.0 - 4 September 2020
 
 * 13371: Render text labels directly at the required size rather than
