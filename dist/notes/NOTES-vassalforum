@@ -94,6 +94,7 @@ Bug fixes
 
 Other improvements
 
+* 13371: Render text labels directly at the required size rather than rendering at 100% and scaling
 * 13332: Improved save game write time
 * 13325: Specify encoding for String conversion to and from bytes
 * 13301: Don't rewrite save state when we already have it

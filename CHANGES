@@ -1,5 +1,7 @@
-3.4.0 - 3 September 2020
+3.4.0 - 4 September 2020
 
+* 13371: Render text labels directly at the required size rather than
+    rendering at 100% and scaling
 * 13358: Prevent units in Zones setting OldLocationName incorrectly
 * 13356: Game refresher should not copy marker state
 * 13351: SequenceEncoder.Decoder.copy() should use start offset from parent

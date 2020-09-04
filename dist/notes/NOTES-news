@@ -95,6 +95,7 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
 
 <h3>Other improvements</h3>
 <ul>
+<li>13371: Render text labels directly at the required size rather than rendering at 100% and scaling</li>
 <li>13332: Improved save game write time</li>
 <li>13325: Specify encoding for String conversion to and from bytes</li>
 <li>13301: Don't rewrite save state when we already have it</li>
