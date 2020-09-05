@@ -470,10 +470,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
    */
   public static boolean isSoloSide(String side) {
-    return SOLITAIRE.equals(side) ||
-           SOLO.equals(side)      ||
-           MODERATOR.equals(side) ||
-           REFEREE.equals(side);
+    return Resources.getString("PlayerRoster.solitaire").equals(side) ||
+           Resources.getString("PlayerRoster.solo").equals(side) ||
+           Resources.getString("PlayerRoster.moderator").equals(side) ||
+           Resources.getString("PlayerRoster.referee").equals(side);
   }
 
 
