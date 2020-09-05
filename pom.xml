@@ -49,6 +49,14 @@
         <gitVersion>${project.version}</gitVersion>
     </properties>
 
+    <repositories>
+        <!-- for clirr plugin -->
+        <repository>
+            <id>vassal-releases</id>
+            <url>http://www.vassalengine.org/maven/</url>
+        </repository>
+    </repositories>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -104,6 +112,11 @@
                     <groupId>org.asciidoctor</groupId>
                     <artifactId>asciidoctor-maven-plugin</artifactId>
                     <version>2.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>clirr-maven-plugin</artifactId>
+                    <version>2.8</version>
                 </plugin>
             </plugins>
         </pluginManagement>

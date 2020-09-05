@@ -319,6 +319,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <configuration>
+                    <ignoredDifferencesFile>src/test/resources/clirr-ignored-differences.xml</ignoredDifferencesFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check-no-fork</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
