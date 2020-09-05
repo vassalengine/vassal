@@ -87,6 +87,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
   protected Color systemMsg, myChat, otherChat;
+  protected boolean needUpdate;
 
   protected JTextArea conversation;    // Backward compatibility for overridden classes. Needs something to suppress.
 
@@ -324,7 +325,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
     }
-    conversationPane.update(conversationPane.getGraphics()); // Force graphics to update
+
+    // Force graphics to update, but only once they're in the mood.
+    needUpdate = true;
+    SwingUtilities.invokeLater(() -> {
+      if (needUpdate) {
+        conversationPane.update(conversationPane.getGraphics());
+        needUpdate = false;
+      }
+    });
+
     consoleHook(s, style, html_allowed);             
   }
 
