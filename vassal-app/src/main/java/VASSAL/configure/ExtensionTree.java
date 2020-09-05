@@ -49,13 +49,16 @@ public class ExtensionTree extends ConfigureTree {
 
   private ModuleExtension extension;
 
-  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention, EditorWindow editorWindow) {
+  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extension, EditorWindow editorWindow) {
     super(root, helpWindow, editorWindow);
-    this.extension = extention;
+    this.extension = extension;
     setCellRenderer(new ExtensionRenderer());
   }
 
   private boolean isEditable(DefaultMutableTreeNode node) {
+    if (extension == null) {
+      return false;
+    }
     if (node != null) {
       for (ExtensionElement el :
            extension.getComponentsOf(ExtensionElement.class)) {
