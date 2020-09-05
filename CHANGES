@@ -1,5 +1,7 @@
 3.4.1 - ???
 
+* 13374: NPE in ExtensionTree.isEditable()
+
 3.4.0 - 4 September 2020
 
 * 13371: Render text labels directly at the required size rather than
