@@ -139,7 +139,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         rotator.setAngle(oldAngle - angle);
         double newAngle = rotator.getAngle();
         if (getMap() != null) {
-          c = setOldProperties(this);
+          c = putOldProperties(this);
           Point pos = getPosition();
           pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
           GamePiece outer = Decorator.getOutermost(this);
@@ -165,7 +165,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         }
       }
       else if (getMap() != null) {
-        setOldProperties(this);
+        c = putOldProperties(this);
         final double oldAngle = rotator.getAngleInRadians();
         Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
         AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
@@ -177,7 +177,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     }
     // Apply map auto-move key
     if (c != null && getMap() != null && getMap().getMoveKey() != null) {
-      c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
+      c = c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
     }
     return c;
   }
