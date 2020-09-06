@@ -1,5 +1,6 @@
 3.4.1 - ???
 
+* 13389:  Chatter flickers when updated
 * 13376: NoSuchMethodError due to change of setOldProperties() signature
 * 13374: NPE in ExtensionTree.isEditable()
 
