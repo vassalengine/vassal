@@ -36,13 +36,16 @@ import bsh.NameSpace;
  */
 public class BeanShell {
 
-  private static BeanShell instance = new BeanShell();
+  public static final String TRUE = "true"; // NON-NLS
+  public static final String FALSE = "false"; // NON-NLS
+
+  private static final BeanShell instance = new BeanShell();
 
   public static BeanShell getInstance() {
     return instance;
   }
 
-  protected static final String INIT_SCRIPT = "/VASSAL/script/init_script.bsh";
+  protected static final String INIT_SCRIPT = "/VASSAL/script/init_script.bsh"; // NON-NLS
 
   /*
    * An interpreter for adding script methods to the global NameSpace
@@ -93,7 +96,7 @@ public class BeanShell {
   /**
    * Execute a Script named in a component DoAction or trait DoAction.
    * Action Scripts take no parameters and return no value.
-   * @param script
+   * @param scriptName Script name
    */
   public void executeActionScript(String scriptName) {
     try {
@@ -117,18 +120,22 @@ public class BeanShell {
   /**
    * Convert a String value into a wrapped primitive object if possible.
    *
-   * @param value
+   * @param value Value to wrap
    * @return wrapped value
    */
   public static Object wrap (String value) {
     if (value == null) {
       return "";
     }
-    else if ("true".equals(value)) {
+    else if (TRUE.equals(value)) {
       return Boolean.TRUE;
     }
-    else if ("false".equals(value)) {
+    else if (FALSE.equals(value)) {
       return Boolean.FALSE;
+    }
+    // Treat apparent numeric literals as Strings
+    else if ("dDfFlL".indexOf(value.charAt(value.length() - 1)) >= 0) { // NON-NLS
+      return value;
     }
     else {
       try {

@@ -17,6 +17,7 @@
  */
 package VASSAL.script.expression;
 
+import VASSAL.script.BeanShell;
 import java.util.Map;
 
 import VASSAL.build.BadDataReport;
@@ -96,7 +97,7 @@ public class BeanShellExpression extends Expression {
       catch (ExpressionException e) {
         ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e));
       }
-      return "true".equals(result);
+      return BeanShell.TRUE.equals(result);
     };
   }
 
@@ -126,7 +127,7 @@ public class BeanShellExpression extends Expression {
     }
 
     // If not a Java variable, wrap it in GetProperty()
-    return ok ? prop : "GetProperty(\"" + prop + "\")";
+    return ok ? prop : "GetProperty(\"" + prop + "\")"; // NON-NLS
   }
 
   public static boolean isBeanShellExpression(String expr) {
