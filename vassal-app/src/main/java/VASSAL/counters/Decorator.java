@@ -446,9 +446,24 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Set the Oldxxxx properties related to movement
+   * This call has been replaced by {@link #putOldProperties(GamePiece)}
+   * Any changes to Oldxxxx properties MUST be recorded in Commands.
+   *
    * @param p Piece to set properties on
    */
-  public static Command setOldProperties(GamePiece p) {
+  @Deprecated(since = "20200906", forRemoval = true)
+  public static void setOldProperties(GamePiece p) {
+    ProblemDialog.showDeprecated("20200906");
+    putOldProperties(p);
+  }
+
+  /**
+   * Set the Oldxxxx properties related to movement
+   *
+   * @param p Piece to set properties on
+   * @return Command encoding the property values
+   */
+  public static Command putOldProperties(GamePiece p) {
 
     // Not all GamePieces will have persistent properties
     if (!(p instanceof PersistentPropertyContainer)) {
@@ -492,9 +507,9 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * Use {@link #setOldProperties(GamePiece)
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Command setOldProperties() {
+  public void setOldProperties() {
     ProblemDialog.showDeprecated("2020-08-06");
-    return setOldProperties(this);
+    putOldProperties(this);
   }
 
   /**

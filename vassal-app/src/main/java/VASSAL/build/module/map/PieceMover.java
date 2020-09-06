@@ -457,11 +457,11 @@ public class PieceMover extends AbstractBuildable
     Command comm = new NullCommand();
     if (p instanceof Stack) {
       for (GamePiece gamePiece : ((Stack) p).asList()) {
-        comm = comm.append(Decorator.setOldProperties(gamePiece));
+        comm = comm.append(Decorator.putOldProperties(gamePiece));
       }
     }
     else {
-      comm = comm.append(Decorator.setOldProperties(p));
+      comm = comm.append(Decorator.putOldProperties(p));
     }
     return comm;
 
