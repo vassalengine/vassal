@@ -1,8 +1,9 @@
-3.4.1 - ???
+3.4.1 - 8 September 2020
 
-* 13389:  Chatter flickers when updated
+* 13389: Chatter flickers when updated
 * 13376: NoSuchMethodError due to change of setOldProperties() signature
 * 13374: NPE in ExtensionTree.isEditable()
+* 13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 
 3.4.0 - 4 September 2020
 
