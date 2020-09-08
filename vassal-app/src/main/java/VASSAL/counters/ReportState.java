@@ -33,6 +33,9 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -447,5 +450,31 @@ public class ReportState extends Decorator implements TranslatablePiece {
       return getProperty(key);
     }
 
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    Collections.addAll(l, keys);
+    return l;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    ArrayList<String> l = new ArrayList<>();
+
+    if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
+      Collections.addAll(l, cycleReportFormat);
+    }
+    else {
+      l.add(reportFormat);
+    }
+    return l;
   }
 }

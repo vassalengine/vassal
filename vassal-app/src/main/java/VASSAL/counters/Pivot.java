@@ -26,6 +26,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -297,5 +299,25 @@ public class Pivot extends Decorator implements TranslatablePiece {
           .append(angle.getValueString());
       return ID + se.getValue();
     }
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(key);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(command);
+    return l;
   }
 }

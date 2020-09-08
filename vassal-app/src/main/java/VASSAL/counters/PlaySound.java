@@ -22,6 +22,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -211,5 +213,25 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(stroke);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(menuText);
+    return l;
   }
 }

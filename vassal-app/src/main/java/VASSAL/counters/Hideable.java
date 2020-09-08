@@ -363,4 +363,23 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(hideKey);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(command);
+    return l;
+  }
 }

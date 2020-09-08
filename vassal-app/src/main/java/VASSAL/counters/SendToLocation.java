@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -119,7 +120,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected FormattedString region = new FormattedString("");
   protected PropertyExpression propertyFilter = new PropertyExpression("");
   private Map map;
- // private Point dest;
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;;", null);
@@ -346,8 +346,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
           else {
             Rectangle r2 = r.getBoard().bounds();
-            dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
-          }
+              dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+            }
           break;
         }
       }
@@ -555,7 +555,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           newDestInput.setValue(destOption);
         }
       }
-      newDestInput.addPropertyChangeListener(arg0 -> updateVisibility());
+      destInput.addPropertyChangeListener(arg0 -> updateVisibility());
       controls.add(newDestInput.getControls());
 
       mapControls = Box.createHorizontalBox();
@@ -564,7 +564,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       JButton select = new JButton(Resources.getString("Editor.select"));
       select.addActionListener(e -> selectMap());
       mapControls.add(select);
-      JButton clear = new JButton(Resources.getString("Editor.clear"));
+      JButton clear = new JButton(esources.getString("Editor.clear")));
       clear.addActionListener(e -> clearMap());
       mapControls.add(clear);
       controls.add(mapControls);
@@ -708,5 +708,59 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
+  }
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+
+    if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+      l.add(propertyFilter.getExpression());
+    }
+    else {
+      l.add(mapId.getFormat());
+      switch (destination.charAt(0)) {
+      case 'G':
+        l.add(boardName.getFormat());
+        l.add(gridLocation.getFormat());
+        break;
+      case 'L':
+        l.add(boardName.getFormat());
+        l.add(x.getFormat());
+        l.add(y.getFormat());
+        break;
+      case 'Z':
+        l.add(zone.getFormat());
+        break;
+      case 'R':
+        l.add(region.getFormat());
+        break;
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(key);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(commandName);
+    return l;
   }
 }

@@ -21,6 +21,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
@@ -255,5 +257,15 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   @Override
   public String getComponentTypeName() {
     return getDescription();
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(prototypeName);
+    return l;
   }
 }

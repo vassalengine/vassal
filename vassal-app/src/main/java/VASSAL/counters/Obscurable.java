@@ -764,4 +764,37 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return controls;
     }
   }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(keyCommand);
+    l.add(peekKey);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(hideCommand);
+    l.add(peekCommand);
+    return l;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(maskName);
+    return l;
+  }
+
 }

@@ -383,14 +383,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           box.add(select);
           JButton ok = new JButton(Resources.getString(Resources.OK));
           ok.addActionListener(e1 -> {
-            int index = select.getSelectedIndex();
-            if (currentIndex != index) {
-              Configurable parent = getParent(targetNode);
-              if (remove(parent, target)) {
-                insert(parent, target, index);
+              int index = select.getSelectedIndex();
+              if (currentIndex != index) {
+                Configurable parent = getParent(targetNode);
+                if (remove(parent, target)) {
+                  insert(parent, target, index);
+                }
               }
-            }
-            d.dispose();
+              d.dispose();
           });
           d.add(box);
           d.add(ok);
@@ -543,15 +543,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (child != null) {
           try {
             child.build(null);
-            final Configurable c = target;
             if (child.getConfigurer() != null) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID11 = 1L;
 
                 @Override
                 public void save() {
                   super.save();
-                  insert(c, child, getTreeNode(c).getChildCount());
+                  insert(target, child, getTreeNode(target).getChildCount());
                 }
 
                 @Override
@@ -562,7 +561,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               w.setVisible(true);
             }
             else {
-              insert(c, child, getTreeNode(c).getChildCount());
+              insert(target, child, getTreeNode(target).getChildCount());
             }
           }
           // FIXME: review error message
@@ -573,7 +572,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
     };
-    return a;
   }
 
 
@@ -651,11 +649,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ((PieceSlot) child).updateGpId(GameModule.getGameModule());
           }
 
-          final Configurable c = target;
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID11 = 1L;
 
                 @Override
                 public void save() {
@@ -664,7 +661,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
                 @Override
                 public void cancel() {
-                  ConfigureTree.this.remove(c, child);
+                  ConfigureTree.this.remove(target, child);
                   dispose();
                 }
               };
@@ -672,12 +669,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
           else {
-            insert(c, child, getTreeNode(c).getChildCount());
+            insert(target, child, getTreeNode(target).getChildCount());
           }
         }
       }
     };
-    return action;
   }
 
   protected Action buildHelpAction(final Configurable target) {
@@ -1427,9 +1423,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       d.add(searchSettings2Box);
 
       final JButton find = new JButton(Resources.getString("Editor.search_next"));
-      find.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+      find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
             new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), traits.isSelected(), expressions.isSelected(), keys.isSelected());
 
@@ -1455,7 +1449,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
             // Find first match
             DefaultMutableTreeNode node = findNode(searchParameters.getSearchString());
-            
+
             // Assuming *something* matched, scroll to it and show any "trait hits"
             if (node != null) {
               TreePath path = new TreePath(node.getPath());
@@ -1467,7 +1461,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               chat (Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
             }
           }
-        }
       });
 
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
@@ -1492,8 +1485,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       // Esc Key cancels
       KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-      int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
-      d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, w);
+      d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
       
       search.requestFocus(); // Start w/ focus in search string field
 
@@ -1663,15 +1655,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
           
           if (searchParameters.isMatchExpressions()) {
-            ArrayList<String> expList = trait.getExpressionList();
+            ArrayList<String> expList = (ArrayList<String>)trait.getExpressionList();
             //            
           }          
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
       } while (p != null);                  
-      
-      return;
     }
   
 

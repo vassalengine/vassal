@@ -64,8 +64,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
@@ -364,234 +362,225 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
 
-    if (launch.matches(stroke)) {
-      if (frame == null) {
-        m_fields = new ArrayList<>();
-        VASSAL.build.module.Map map = piece.getMap();
-        Frame parent = null;
-        if (map != null && map.getView() != null) {
-          Container topWin = map.getView().getTopLevelAncestor();
-          if (topWin instanceof JFrame) {
-            parent = (Frame) topWin;
+    if (!launch.matches(stroke)) {
+      return null;
+    }
+
+    if (frame == null) {
+      m_fields = new ArrayList<>();
+      VASSAL.build.module.Map map = piece.getMap();
+      Frame parent = null;
+      if (map != null && map.getView() != null) {
+        Container topWin = map.getView().getTopLevelAncestor();
+        if (topWin instanceof JFrame) {
+          parent = (Frame) topWin;
+        }
+      }
+      else {
+        parent = GameModule.getGameModule().getPlayerWindow();
+      }
+
+      frame = new PropertySheetDialog(parent);
+
+      JPanel pane = new JPanel();
+      JScrollPane scroll =
+        new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                              JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      frame.add(scroll);
+
+      // set up Apply button
+      if (commitStyle == COMMIT_ON_APPLY) {
+        applyButton = new JButton("Apply");
+
+        applyButton.addActionListener(event -> {
+          if (applyButton != null) {
+            applyButton.setEnabled(false);
+          }
+          updateStateFromFields();
+        });
+
+        applyButton.setMnemonic(java.awt.event.KeyEvent.VK_A); // respond to Alt+A
+        applyButton.setEnabled(false);
+      }
+
+      // ... enable APPLY button when field changes
+      DocumentListener changeListener = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          update();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          update();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+          update();
+        }
+
+        public void update() {
+          if (isUpdating) {
+            return;
+          }
+
+          switch (commitStyle) {
+          case COMMIT_IMMEDIATELY:
+            // queue commit operation because it could do something
+            // unsafe in a an event update
+            SwingUtilities.invokeLater(() -> updateStateFromFields());
+            break;
+          case COMMIT_ON_APPLY:
+            applyButton.setEnabled(true);
+            break;
+          case COMMIT_ON_CLOSE:
+            break;
+          default:
+            throw new IllegalStateException();
           }
         }
-        else {
-          parent = GameModule.getGameModule().getPlayerWindow();
+      };
+
+      pane.setLayout(new GridBagLayout());
+      GridBagConstraints c = new GridBagConstraints();
+      c.fill = GridBagConstraints.BOTH;
+      c.insets = new Insets(1, 3, 1, 3);
+      c.gridx = 0;
+      c.gridy = 0;
+      SequenceEncoder.Decoder defDecoder =
+        new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
+      SequenceEncoder.Decoder stateDecoder =
+        new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
+
+      while (defDecoder.hasMoreTokens()) {
+        String code = defDecoder.nextToken();
+        if (code.length() == 0) {
+          break;
         }
-
-        frame = new PropertySheetDialog(parent);
-
-        JPanel pane = new JPanel();
-        JScrollPane scroll =
-          new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        frame.add(scroll);
-
-        // set up Apply button
-        if (commitStyle == COMMIT_ON_APPLY) {
-          applyButton = new JButton("Apply");
-
-          applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-              if (applyButton != null) {
-                applyButton.setEnabled(false);
-              }
-              updateStateFromFields();
-            }
-          });
-
-          applyButton.setMnemonic(java.awt.event.KeyEvent.VK_A); // respond to Alt+A
-          applyButton.setEnabled(false);
+        int type = code.charAt(0) - '0';
+        String name = code.substring(1);
+        JComponent field;
+        switch (type) {
+        case TEXT_FIELD:
+          field = new JTextField(stateDecoder.nextToken(""));
+          ((JTextComponent) field).getDocument()
+                                  .addDocumentListener(changeListener);
+          ((JTextField) field).addActionListener(frame);
+          m_fields.add(field);
+          break;
+        case TEXT_AREA:
+          field = new JTextArea(
+            stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
+          ((JTextComponent) field).getDocument()
+                                  .addDocumentListener(changeListener);
+          m_fields.add(field);
+          field = new ScrollPane(field);
+          break;
+        case TICKS:
+        case TICKS_VAL:
+        case TICKS_MAX:
+        case TICKS_VALMAX:
+          field = new TickPanel(stateDecoder.nextToken(""), type);
+          ((TickPanel) field).addDocumentListener(changeListener);
+          ((TickPanel) field).addActionListener(frame);
+          if (backgroundColor != null)
+            field.setBackground(backgroundColor);
+          m_fields.add(field);
+          break;
+        case SPINNER:
+          JSpinner spinner = new JSpinner();
+          JTextField textField =
+            ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+          textField.setText(stateDecoder.nextToken(""));
+          textField.getDocument().addDocumentListener(changeListener);
+          m_fields.add(textField);
+          field = spinner;
+          break;
+        case LABEL_ONLY:
+        default :
+          stateDecoder.nextToken("");
+          field = null;
+          m_fields.add(field);
+          break;
         }
+        c.gridwidth = type == TEXT_AREA || type == LABEL_ONLY ? 2 : 1;
 
-        // ... enable APPLY button when field changes
-        DocumentListener changeListener = new DocumentListener() {
-          @Override
-          public void insertUpdate(DocumentEvent e) {
-            update();
-          }
-
-          @Override
-          public void removeUpdate(DocumentEvent e) {
-            update();
-          }
-
-          @Override
-          public void changedUpdate(DocumentEvent e) {
-            update();
-          }
-
-          public void update() {
-            if (isUpdating) {
-              return;
-            }
-
-            switch (commitStyle) {
-            case COMMIT_IMMEDIATELY:
-              // queue commit operation because it could do something
-              // unsafe in a an event update
-              SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                  updateStateFromFields();
-                }
-              });
-              break;
-            case COMMIT_ON_APPLY:
-              applyButton.setEnabled(true);
-              break;
-            case COMMIT_ON_CLOSE:
-              break;
-            default:
-              throw new IllegalStateException();
-            }
-          }
-        };
-
-        pane.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(1, 3, 1, 3);
-        c.gridx = 0;
-        c.gridy = 0;
-        SequenceEncoder.Decoder defDecoder =
-          new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
-        SequenceEncoder.Decoder stateDecoder =
-          new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
-
-        while (defDecoder.hasMoreTokens()) {
-          String code = defDecoder.nextToken();
-          if (code.length() == 0) {
-            break;
-          }
-          int type = code.charAt(0) - '0';
-          String name = code.substring(1);
-          JComponent field;
-          switch (type) {
-          case TEXT_FIELD:
-            field = new JTextField(stateDecoder.nextToken(""));
-            ((JTextComponent) field).getDocument()
-                                    .addDocumentListener(changeListener);
-            ((JTextField) field).addActionListener(frame);
-            m_fields.add(field);
-            break;
-          case TEXT_AREA:
-            field = new JTextArea(
-              stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
-            ((JTextComponent) field).getDocument()
-                                    .addDocumentListener(changeListener);
-            m_fields.add(field);
-            field = new ScrollPane(field);
-            break;
-          case TICKS:
-          case TICKS_VAL:
-          case TICKS_MAX:
-          case TICKS_VALMAX:
-            field = new TickPanel(stateDecoder.nextToken(""), type);
-            ((TickPanel) field).addDocumentListener(changeListener);
-            ((TickPanel) field).addActionListener(frame);
-            if (backgroundColor != null)
-              field.setBackground(backgroundColor);
-            m_fields.add(field);
-            break;
-          case SPINNER:
-            JSpinner spinner = new JSpinner();
-            JTextField textField =
-              ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-            textField.setText(stateDecoder.nextToken(""));
-            textField.getDocument().addDocumentListener(changeListener);
-            m_fields.add(textField);
-            field = spinner;
-            break;
-          case LABEL_ONLY:
-          default :
-            stateDecoder.nextToken("");
-            field = null;
-            m_fields.add(field);
-            break;
-          }
-          c.gridwidth = type == TEXT_AREA || type == LABEL_ONLY ? 2 : 1;
-
-          if (!name.equals("")) {
-            c.gridx = 0;
-            c.weighty = 0.0;
-            c.weightx = c.gridwidth == 2 ? 1.0 : 0.0;
-            pane.add(new JLabel(getTranslation(name)), c);
-            if (c.gridwidth == 2) {
-              ++c.gridy;
-            }
-          }
-
-          if (field != null) {
-            c.weightx = 1.0;
-            c.weighty = type == TEXT_AREA ? 1.0 : 0.0;
-            c.gridx = type == TEXT_AREA ? 0 : 1;
-            pane.add(field, c);
+        if (!name.equals("")) {
+          c.gridx = 0;
+          c.weighty = 0.0;
+          c.weightx = c.gridwidth == 2 ? 1.0 : 0.0;
+          pane.add(new JLabel(getTranslation(name)), c);
+          if (c.gridwidth == 2) {
             ++c.gridy;
           }
         }
 
-        if (backgroundColor != null) {
-          pane.setBackground(backgroundColor);
+        if (field != null) {
+          c.weightx = 1.0;
+          c.weighty = type == TEXT_AREA ? 1.0 : 0.0;
+          c.gridx = type == TEXT_AREA ? 0 : 1;
+          pane.add(field, c);
+          ++c.gridy;
         }
-
-        if (commitStyle == COMMIT_ON_APPLY) {
-          // setup Close button
-          JButton closeButton = new JButton("Close");
-          closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
-
-          closeButton.addActionListener(e -> {
-            updateStateFromFields();
-            frame.setVisible(false);
-          });
-
-          c.gridwidth = 1;
-          c.weighty = 0.0;
-          c.anchor = GridBagConstraints.SOUTHEAST;
-          c.gridwidth = 2; // use the whole row
-          c.gridx = 0;
-          c.weightx = 0.0;
-
-          JPanel buttonRow = new JPanel();
-          buttonRow.add(applyButton);
-          buttonRow.add(closeButton);
-          if (backgroundColor != null) {
-            applyButton.setBackground(backgroundColor);
-            closeButton.setBackground(backgroundColor);
-            buttonRow.setBackground(backgroundColor);
-          }
-          pane.add(buttonRow, c);
-        }
-
-        // move window
-        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
-        if (getMap() != null) {
-          p = getMap().getView().getLocationOnScreen();
-          Point p2 = getMap().mapToComponent(getPosition());
-          p.translate(p2.x, p2.y);
-        }
-        frame.setLocation(p.x, p.y);
-
-        // watch for window closing - save state
-        frame.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowClosing(WindowEvent evt) {
-            updateStateFromFields();
-          }
-        });
-        frame.pack();
       }
 
-      // Name window and make it visible
-      frame.setTitle(getLocalizedName());
-      oldState = Decorator.getOutermost(this).getState();
-      frame.setVisible(true);
-      return null;
+      if (backgroundColor != null) {
+        pane.setBackground(backgroundColor);
+      }
+
+      if (commitStyle == COMMIT_ON_APPLY) {
+        // setup Close button
+        JButton closeButton = new JButton("Close");
+        closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
+
+        closeButton.addActionListener(e -> {
+          updateStateFromFields();
+          frame.setVisible(false);
+        });
+
+        c.gridwidth = 1;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.SOUTHEAST;
+        c.gridwidth = 2; // use the whole row
+        c.gridx = 0;
+        c.weightx = 0.0;
+
+        JPanel buttonRow = new JPanel();
+        buttonRow.add(applyButton);
+        buttonRow.add(closeButton);
+        if (backgroundColor != null) {
+          applyButton.setBackground(backgroundColor);
+          closeButton.setBackground(backgroundColor);
+          buttonRow.setBackground(backgroundColor);
+        }
+        pane.add(buttonRow, c);
+      }
+
+      // move window
+      Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
+      if (getMap() != null) {
+        p = getMap().getView().getLocationOnScreen();
+        Point p2 = getMap().mapToComponent(getPosition());
+        p.translate(p2.x, p2.y);
+      }
+      frame.setLocation(p.x, p.y);
+
+      // watch for window closing - save state
+      frame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent evt) {
+          updateStateFromFields();
+        }
+      });
+      frame.pack();
     }
-    else {
-      return null;
-    }
+
+    // Name window and make it visible
+    frame.setTitle(getLocalizedName());
+    oldState = Decorator.getOutermost(this).getState();
+    frame.setVisible(true);
+    return null;
   }
 
   @Override
@@ -680,20 +669,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         button.setBackground(value);
         button.setText("sample");
       }
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          JButton button = (JButton) event.getSource();
-          Color value = button.getBackground();
-          Color newColor = JColorChooser.showDialog(PropertyPanel.this, "Choose background color or CANCEL to use default color scheme", value);
-          if (newColor != null) {
-            button.setBackground(newColor);
-            button.setText("sample");
-          }
-          else {
-            button.setBackground(PropertyPanel.this.getBackground());
-            button.setText("Default");
-          }
+      button.addActionListener(event -> {
+        JButton button1 = (JButton) event.getSource();
+        Color value1 = button1.getBackground();
+        Color newColor = JColorChooser.showDialog(PropertyPanel.this, "Choose background color or CANCEL to use default color scheme", value1);
+        if (newColor != null) {
+          button1.setBackground(newColor);
+          button1.setText("sample");
+        }
+        else {
+          button1.setBackground(PropertyPanel.this.getBackground());
+          button1.setText("Default");
         }
       });
       ++c.gridx;
@@ -701,7 +687,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return button;
     }
 
-    public JComboBox addComboBox(String name, String[] values, int initialRow) {
+    public JComboBox<String> addComboBox(String name, String[] values, int initialRow) {
       JComboBox<String> comboBox = new JComboBox<>(values);
       comboBox.setEditable(false);
       comboBox.setSelectedIndex(initialRow);
@@ -784,32 +770,29 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       // add button
       JButton addButton = new JButton("Insert Row");
       buttonPanel.add(addButton);
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+      addButton.addActionListener(e -> {
 
-          if (table.isEditing()) {
-            table.getCellEditor().stopCellEditing();
-          }
+        if (table.isEditing()) {
+          table.getCellEditor().stopCellEditing();
+        }
 
-          ListSelectionModel selection = table.getSelectionModel();
-          int iSelection;
-          if (selection.isSelectionEmpty()) {
-            tableModel.addRow(defaultValues);
-            iSelection = tableModel.getRowCount() - 1;
-          }
-          else {
-            iSelection = selection.getMaxSelectionIndex();
-            tableModel.insertRow(iSelection, defaultValues);
-          }
-          tableModel.fireTableDataChanged(); // BING BING BING
-          selection.setSelectionInterval(iSelection, iSelection);
-          table.grabFocus();
-          table.editCellAt(iSelection, 0);
-          Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
-          if (comp instanceof JComponent) {
-            ((JComponent) comp).grabFocus();
-          }
+        ListSelectionModel selection = table.getSelectionModel();
+        int iSelection;
+        if (selection.isSelectionEmpty()) {
+          tableModel.addRow(defaultValues);
+          iSelection = tableModel.getRowCount() - 1;
+        }
+        else {
+          iSelection = selection.getMaxSelectionIndex();
+          tableModel.insertRow(iSelection, defaultValues);
+        }
+        tableModel.fireTableDataChanged(); // BING BING BING
+        selection.setSelectionInterval(iSelection, iSelection);
+        table.grabFocus();
+        table.editCellAt(iSelection, 0);
+        Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
+        if (comp instanceof JComponent) {
+          ((JComponent) comp).grabFocus();
         }
       });
 
@@ -817,33 +800,27 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       final JButton deleteButton = new JButton("Delete Row");
       deleteButton.setEnabled(false);
       buttonPanel.add(deleteButton);
-      deleteButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+      deleteButton.addActionListener(e -> {
 
-          if (table.isEditing()) {
-            table.getCellEditor().stopCellEditing();
-          }
-
-          ListSelectionModel selection = table.getSelectionModel();
-          for (int i = selection.getMaxSelectionIndex(); i >= selection.getMinSelectionIndex(); --i) {
-            if (selection.isSelectedIndex(i)) {
-              tableModel.removeRow(i);
-            }
-          }
-          tableModel.fireTableDataChanged(); // BING BING BING
+        if (table.isEditing()) {
+          table.getCellEditor().stopCellEditing();
         }
+
+        ListSelectionModel selection = table.getSelectionModel();
+        for (int i = selection.getMaxSelectionIndex(); i >= selection.getMinSelectionIndex(); --i) {
+          if (selection.isSelectedIndex(i)) {
+            tableModel.removeRow(i);
+          }
+        }
+        tableModel.fireTableDataChanged(); // BING BING BING
       });
 
       // Ask to be notified of selection changes.
-      table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-          //Ignore extra messages.
-          if (!event.getValueIsAdjusting()) {
-            ListSelectionModel lsm = (ListSelectionModel) event.getSource();
-            deleteButton.setEnabled(!lsm.isSelectionEmpty());
-          }
+      table.getSelectionModel().addListSelectionListener(event -> {
+        //Ignore extra messages.
+        if (!event.getValueIsAdjusting()) {
+          ListSelectionModel lsm = (ListSelectionModel) event.getSource();
+          deleteButton.setEnabled(!lsm.isSelectionEmpty());
         }
       });
 
@@ -1466,5 +1443,24 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         storeValues();
       }
     }
+  }
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(launchKeyStroke);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(menuName);
+    return l;
   }
 }

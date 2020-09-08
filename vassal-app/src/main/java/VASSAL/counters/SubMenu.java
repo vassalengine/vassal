@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -181,5 +182,15 @@ public class SubMenu extends Decorator implements TranslatablePiece {
       se.append(nameConfig.getValueString()).append(commandsConfig.getValueString());
       return ID + se.getValue();
     }
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(subMenu);
+    return l;
   }
 }

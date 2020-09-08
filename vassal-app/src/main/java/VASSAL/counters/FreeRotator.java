@@ -484,7 +484,7 @@ public class FreeRotator extends Decorator
       }
       else {
         // we are set rotate, set angleIndex to a number between 0 and
-        // validAngles.lenth
+        // validAngles.length
         angleIndex = rand.nextInt(validAngles.length);
       }
       c = tracker.getChangeCommand();
@@ -840,4 +840,32 @@ public class FreeRotator extends Decorator
       return "0";
     }
   }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    l.add(setAngleKey);
+    l.add(rotateCWKey);
+    l.add(rotateCCWKey);
+    l.add(rotateRNDKey);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(setAngleText);
+    l.add(rotateCWText);
+    l.add(rotateCCWText);
+    l.add(rotateRNDText);
+    return l;
+  }
 }
+
+
