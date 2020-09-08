@@ -548,17 +548,39 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
-  public ArrayList<String> getExpressionList() {
+  public List<String> getExpressionList() {
     return null; 
-  }  
-    
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  public List<String> getFormattedStringList() {
+    return null;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  public List<String> getMenuTextList() {
+    return null;
+  }
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
-  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return null;
   }
-  
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  public List<String> getPropertyList() {
+    return null;
+  }
+
+
 
   /** @return the configurer for this trait - the dialog which allows the editing the piece's type information. Default
    * configurer is a {@link SimplePieceEditor}, but many traits will want to provide custom versions. */

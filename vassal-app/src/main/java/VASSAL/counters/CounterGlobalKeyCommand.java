@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -172,23 +173,44 @@ public class CounterGlobalKeyCommand extends Decorator
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
   @Override
-  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
     ArrayList<NamedKeyStroke> l = new ArrayList<>();
     l.add(key);
     l.add(globalKey);
     return l;
   }
-  
-  
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(commandName);
+    return l;
+  }
+
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
-  public ArrayList<String> getExpressionList() {
+  @Override
+  public List<String> getExpressionList() {
     ArrayList<String> l = new ArrayList<>();
     l.add(propertiesFilter.getExpression());
     return l; 
-  }  
-  
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    ArrayList<String> l = new ArrayList<>();
+    if (globalCommand != null) {
+      l.add(globalCommand.getReportFormat());
+    }
+    return l;
+  }
 
   @Override
   public PieceEditor getEditor() {

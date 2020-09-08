@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.Box;
@@ -99,12 +100,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-    if (getMap() != null) {
+    if (getMap() != null) { // Do not allow button pushes if piece is not on a map
       pusher.register(getMap());
-    }
-    else {
-      // Do not allow button pushes if piece is not on a map
-      // pusher.register(obs, Decorator.getOutermost(this), x, y);
     }
   }
 
@@ -133,7 +130,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
   @Override
-  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
     ArrayList<NamedKeyStroke> l = new ArrayList<>();
     l.add(stroke);
     return l;
@@ -259,9 +256,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
      * that are not Masked or Hidden
      *
      * @param p
-     * @param x
-     * @param y
-     * @param Offset
      *          A function to determine the offset of the target piece. This
      *          callback is done for efficiency reasons, since computing the
      *          offset may be expensive (as in the case of a piece in an

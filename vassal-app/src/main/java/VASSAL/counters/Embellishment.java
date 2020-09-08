@@ -866,6 +866,79 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return translation;
   }
 
+  /////
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+    if (followProperty) {
+      l.add(followPropertyExpression.getExpression());
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    ArrayList<String> l = new ArrayList<>();
+    if (followProperty) {
+      l.add(propertyName);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    if (!alwaysActive) {
+      l.add(activateKeyStroke);
+    }
+    if (!followProperty) {
+      l.add(increaseKeyStroke);
+      l.add(decreaseKeyStroke);
+      l.add(resetKey);
+      l.add(rndKey);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    if (!alwaysActive) {
+      l.add(activateCommand);
+    }
+    if (!followProperty) {
+      l.add(upCommand);
+      l.add(downCommand);
+      l.add(resetCommand);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    ArrayList<String> l = new ArrayList<>();
+    if (!followProperty) {
+      l.add(resetLevel.getFormat());
+    }
+    return l;
+  }
+
+
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Layer.html");

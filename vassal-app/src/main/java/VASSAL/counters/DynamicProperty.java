@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +29,10 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
+import VASSAL.build.module.properties.IncrementProperty;
+import VASSAL.build.module.properties.PropertySetter;
+import VASSAL.script.expression.Expression;
 import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.GameModule;
@@ -273,6 +276,82 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return s;
   }
 
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    for (DynamicKeyCommand dkc : keyCommands) {
+      l.add(dkc.getNamedKeyStroke());
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(value); // We'll treat the at-start value of the property as a quasi-expression
+
+    for (DynamicKeyCommand dkc : keyCommands) {
+      PropertyChanger propChanger = dkc.getPropChanger();
+      if (propChanger == null) {
+        continue;
+      }
+
+      if (propChanger instanceof IncrementProperty) {
+        l.add(((IncrementProperty)propChanger).getIncrement());
+      }
+      else if (propChanger instanceof PropertySetter) {
+        l.add(((PropertySetter)propChanger).getRawValue());
+      }
+      else if (propChanger instanceof PropertyPrompt) {
+        PropertyPrompt pp = (PropertyPrompt)propChanger;
+        l.add(pp.getPrompt());
+        if (pp instanceof EnumeratedPropertyPrompt) {
+          Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
+          for (Expression e : ve) {
+            if (e == null) {
+              continue;
+            }
+            l.add(e.getExpression());
+          }
+        }
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    for (DynamicKeyCommand dkc : keyCommands) {
+      if (StringUtils.isEmpty(dkc.getName())) {
+        continue;
+      }
+      l.add(dkc.getName());
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(key);
+    return l;
+  }
+
+
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("DynamicProperty.html");
@@ -350,15 +429,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       };
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          boolean isNumeric = numericConfig.booleanValue();
-          minConfig.getControls().setVisible(isNumeric);
-          maxConfig.getControls().setVisible(isNumeric);
-          wrapConfig.getControls().setVisible(isNumeric);
-          keyCommandListConfig.repack();
-        }
+      PropertyChangeListener l = evt -> {
+        boolean isNumeric = numericConfig.booleanValue();
+        minConfig.getControls().setVisible(isNumeric);
+        maxConfig.getControls().setVisible(isNumeric);
+        wrapConfig.getControls().setVisible(isNumeric);
+        keyCommandListConfig.repack();
       };
       controls = Box.createVerticalBox();
       nameConfig = new StringConfigurer(null, "Name:  ", m.getKey());
@@ -422,6 +498,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     public DynamicKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, PropertyChanger propChanger) {
       super(name, key, target, i18nPiece);
       this.propChanger = propChanger;
+    }
+
+    public PropertyChanger getPropChanger() {
+      return propChanger;
     }
   }
 

@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.counters.ActionButton;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Font;
@@ -1599,9 +1600,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               }
             }
           }
-          
+
           if (searchParameters.isMatchExpressions()) {
-            //
+
+          }
+
+          if (searchParameters.isMatchKeys()) {
+
           }
         }
         protoskip = false;

@@ -34,6 +34,10 @@ public class PropertyPrompt implements PropertyChanger {
     this.promptText = prompt;
   }
 
+  public Constraints getConstraints() {
+    return constraints;
+  }
+
   @Override
   public String getNewValue(String oldValue) {
     String newValue;

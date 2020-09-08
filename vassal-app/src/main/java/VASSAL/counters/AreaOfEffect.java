@@ -36,6 +36,7 @@ import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -188,9 +189,19 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
   @Override
-  public ArrayList<NamedKeyStroke> getNamedKeyStrokeList() {
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
     ArrayList<NamedKeyStroke> l = new ArrayList<>();
     l.add(activateKey);
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(activateCommand);
     return l;
   }
 

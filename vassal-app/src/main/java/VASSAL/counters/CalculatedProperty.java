@@ -144,12 +144,23 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
-  public ArrayList<String> getExpressionList() {
+  @Override
+  public List<String> getExpressionList() {
     ArrayList<String> l = new ArrayList<>();
     l.add(getExpression());
     return l; 
-  }  
- 
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    ArrayList<String> l = new ArrayList<>();
+    l.add(name);
+    return null;
+  }
+
 
   /**
    * Return the value of this trait's property.
