@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
