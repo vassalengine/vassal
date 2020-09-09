@@ -78,7 +78,6 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
-import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
