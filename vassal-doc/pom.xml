@@ -55,10 +55,7 @@
                             <outputDirectory>${project.build.outputDirectory}/userguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
-                                <pagenums/>
-                                <toc/>
-                                <idprefix/>
-                                <idseparator>-</idseparator>
+                                <project-version>${project.version}</project-version>
                             </attributes>
                         </configuration>
                     </execution>
@@ -74,10 +71,7 @@
                             <outputDirectory>${project.build.outputDirectory}/designerguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
-                                <pagenums/>
-                                <toc/>
-                                <idprefix/>
-                                <idseparator>-</idseparator>
+                                <project-version>${project.version}</project-version>
                             </attributes>
                         </configuration>
                     </execution>
