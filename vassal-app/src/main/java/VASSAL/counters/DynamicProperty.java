@@ -282,7 +282,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    List<NamedKeyStroke> l = new ArrayList<>();
     for (DynamicKeyCommand dkc : keyCommands) {
       l.add(dkc.getNamedKeyStroke());
     }
@@ -294,7 +294,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     l.add(value); // We'll treat the at-start value of the property as a quasi-expression
 
     for (DynamicKeyCommand dkc : keyCommands) {
@@ -331,7 +331,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     for (DynamicKeyCommand dkc : keyCommands) {
       if (StringUtils.isEmpty(dkc.getName())) {
         continue;
@@ -346,9 +346,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(key);
-    return l;
+    return Arrays.asList(key);
   }
 
 

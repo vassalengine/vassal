@@ -264,8 +264,6 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(prototypeName);
-    return l;
+    return List.of(prototypeName);
   }
 }

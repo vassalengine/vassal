@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -556,10 +557,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(key);
-    l.add(afterBurnerKey);
-    return l;
+    return Arrays.asList(key, afterBurnerKey);
   }
 
   /**
@@ -567,8 +565,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(command.getName());
-    return l;
+    return List.of(command.getName());
   }
 }

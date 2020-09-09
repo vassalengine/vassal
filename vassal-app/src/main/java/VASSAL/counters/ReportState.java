@@ -457,7 +457,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    List<NamedKeyStroke> l = new ArrayList<>();
     Collections.addAll(l, keys);
     return l;
   }
@@ -467,7 +467,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getFormattedStringList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
 
     if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
       Collections.addAll(l, cycleReportFormat);

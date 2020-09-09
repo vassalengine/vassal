@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -220,9 +221,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(stroke);
-    return l;
+    return Arrays.asList(stroke);
   }
 
   /**
@@ -230,8 +229,6 @@ public class PlaySound extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(menuText);
-    return l;
+    return List.of(menuText);
   }
 }

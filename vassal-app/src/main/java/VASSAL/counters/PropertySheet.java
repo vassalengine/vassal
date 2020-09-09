@@ -40,6 +40,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1449,9 +1450,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(launchKeyStroke);
-    return l;
+    return Arrays.asList(launchKeyStroke);
   }
 
   /**
@@ -1459,8 +1458,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(menuName);
-    return l;
+    return List.of(menuName);
   }
 }

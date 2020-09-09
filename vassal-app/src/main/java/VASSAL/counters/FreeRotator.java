@@ -36,6 +36,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -846,12 +847,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(setAngleKey);
-    l.add(rotateCWKey);
-    l.add(rotateCCWKey);
-    l.add(rotateRNDKey);
-    return l;
+    return Arrays.asList(setAngleKey, rotateCWKey, rotateCCWKey, rotateRNDKey);
   }
 
   /**
@@ -859,12 +855,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(setAngleText);
-    l.add(rotateCWText);
-    l.add(rotateCCWText);
-    l.add(rotateRNDText);
-    return l;
+    return List.of(setAngleText, rotateCWText, rotateCCWText, rotateRNDText);
   }
 }
 

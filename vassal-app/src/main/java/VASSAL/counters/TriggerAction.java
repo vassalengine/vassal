@@ -649,7 +649,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     l.add(propertyMatch.getExpression());
     if (loop) {
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
@@ -671,11 +671,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
     if (loop && LoopControl.LOOP_COUNTED.equals(loopType)) {
-      l.add(indexProperty);
+      return List.of(indexProperty);
     }
-    return l;
+    return null;
   }
 
   /**
@@ -683,7 +682,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    List<NamedKeyStroke> l = new ArrayList<>();
     l.add(key);
     Collections.addAll(l, watchKeys);
     Collections.addAll(l, actionKeys);
@@ -699,8 +698,6 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(command);
-    return l;
+    return List.of(command);
   }
 }

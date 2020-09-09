@@ -1665,8 +1665,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (p instanceof Decorator) {
             Decorator d = (Decorator) p;
-          if (searchParameters.isMatchExpressions()) {
-              ArrayList<String> exps = (ArrayList<String>) d.getExpressionList();
+            if (searchParameters.isMatchExpressions()) {
+              List<String> exps = d.getExpressionList();
               if (exps != null) {
                 for (String s : exps) {
                   if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1677,7 +1677,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
 
             if (searchParameters.isMatchProperties()) {
-              ArrayList<String> props = (ArrayList<String>) d.getPropertyList();
+              List<String> props = d.getPropertyList();
               if (props != null) {
                 for (String s : props) {
                   if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1685,10 +1685,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   }
                 }
               }
-          }
+            }
 
-          if (searchParameters.isMatchKeys()) {
-              ArrayList<NamedKeyStroke> keys = (ArrayList<NamedKeyStroke>) d.getNamedKeyStrokeList();
+            if (searchParameters.isMatchKeys()) {
+              List<NamedKeyStroke> keys = d.getNamedKeyStrokeList();
               if (keys != null) {
                 for (NamedKeyStroke k : keys) {
                   if (k != null) {
@@ -1702,7 +1702,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
 
             if (searchParameters.isMatchMenus()) {
-              ArrayList<String> menus = (ArrayList<String>) d.getMenuTextList();
+              List<String> menus = d.getMenuTextList();
               if (menus != null) {
                 for (String s : menus) {
                   if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1713,7 +1713,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
 
             if (searchParameters.isMatchMessages()) {
-              ArrayList<String> msgs = (ArrayList<String>) d.getFormattedStringList();
+              List<String> msgs = d.getFormattedStringList();
               if (msgs != null) {
                 for (String s : msgs) {
                   if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1814,7 +1814,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (searchParameters.isMatchExpressions()) {
-            ArrayList<String> exps = (ArrayList<String>) d.getExpressionList();
+            List<String> exps = d.getExpressionList();
             if (exps != null) {
               for (String s : exps) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1826,7 +1826,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (searchParameters.isMatchProperties()) {
-            ArrayList<String> props = (ArrayList<String>) d.getPropertyList();
+            List<String> props = d.getPropertyList();
             if (props != null) {
               for (String s : props) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1838,7 +1838,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (searchParameters.isMatchKeys()) {
-            ArrayList<NamedKeyStroke> keys = (ArrayList<NamedKeyStroke>) d.getNamedKeyStrokeList();
+            List<NamedKeyStroke> keys = d.getNamedKeyStrokeList();
             if (keys != null) {
               for (NamedKeyStroke k : keys) {
                 if (k != null) {
@@ -1853,7 +1853,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (searchParameters.isMatchMenus()) {
-            ArrayList<String> menus = (ArrayList<String>) d.getMenuTextList();
+            List<String> menus = d.getMenuTextList();
             if (menus != null) {
               for (String s : menus) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
@@ -1865,7 +1865,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (searchParameters.isMatchMessages()) {
-            ArrayList<String> msgs = (ArrayList<String>) d.getFormattedStringList();
+            List<String> msgs = d.getFormattedStringList();
             if (msgs != null) {
               for (String s : msgs) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {

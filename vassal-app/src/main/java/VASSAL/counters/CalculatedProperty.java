@@ -146,9 +146,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(getExpression());
-    return l; 
+    return List.of(getExpression());
   }
 
   /**
@@ -156,9 +154,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(name);
-    return null;
+    return List.of(name);
   }
 
 

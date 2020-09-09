@@ -32,6 +32,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleConsumer;
@@ -996,9 +997,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(propertyName);
-    return l;
+    return List.of(propertyName);
   }
 
   /**
@@ -1006,9 +1005,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(labelKey);
-    return l;
+    return Arrays.asList(labelKey);
   }
 
   /**
@@ -1016,9 +1013,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(menuCommand);
-    return l;
+    return List.of(menuCommand);
   }
 
   /**
@@ -1026,12 +1021,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getFormattedStringList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(label);
-    l.add(nameFormat.getFormat());
-    l.add(labelFormat.getFormat());
-    return l;
+    return List.of(label, nameFormat.getFormat(), labelFormat.getFormat());
   }
-
-
 }

@@ -272,9 +272,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(propertyMatch.getExpression());
-    return l;
+    return List.of(propertyMatch.getExpression());
   }
 
   /**
@@ -282,7 +280,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    List<NamedKeyStroke> l = new ArrayList<>();
     Collections.addAll(l, watchKeys);
     return l;
   }

@@ -27,6 +27,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -306,9 +307,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(key);
-    return l;
+    return Arrays.asList(key);
   }
 
   /**
@@ -316,8 +315,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(command);
-    return l;
+    return List.of(command);
   }
 }

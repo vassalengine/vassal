@@ -866,17 +866,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return translation;
   }
 
-  /////
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
     if (followProperty) {
-      l.add(propertyName); // It's sort of a property but more like an expression
+      return List.of(propertyName);
     }
-    return l;
+    return null;
   }
 
   /**
@@ -884,7 +882,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    List<NamedKeyStroke> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateKeyStroke);
     }
@@ -902,7 +900,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateCommand);
     }
@@ -919,13 +917,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getFormattedStringList() {
-    ArrayList<String> l = new ArrayList<>();
     if (!followProperty) {
-      l.add(resetLevel.getFormat());
+      return List.of(resetLevel.getFormat());
     }
-    return l;
+    return null;
   }
-
 
   @Override
   public HelpFile getHelpFile() {

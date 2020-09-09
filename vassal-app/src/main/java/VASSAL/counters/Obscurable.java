@@ -29,6 +29,7 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -770,10 +771,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(keyCommand);
-    l.add(peekKey);
-    return l;
+    return Arrays.asList(keyCommand, peekKey);
   }
 
   /**
@@ -781,10 +779,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(hideCommand);
-    l.add(peekCommand);
-    return l;
+    return List.of(hideCommand, peekCommand);
   }
 
   /**
@@ -792,9 +787,6 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getFormattedStringList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(maskName);
-    return l;
+    return List.of(maskName);
   }
-
 }

@@ -26,6 +26,7 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -347,9 +348,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(deckId);
-    return l;
+    return List.of(deckId);
   }
 
   /**
@@ -357,9 +356,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(returnKey);
-    return l;
+    return Arrays.asList(returnKey);
   }
 
   /**
@@ -367,9 +364,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(returnCommand);
-    return l;
+    return List.of(returnCommand);
   }
 
   /**
@@ -377,8 +372,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getFormattedStringList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(selectDeckPrompt);
-    return l;
+    return List.of(selectDeckPrompt);
   }
 }

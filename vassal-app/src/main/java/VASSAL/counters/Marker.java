@@ -238,7 +238,7 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     Collections.addAll(l, values);
     return l;
   }
@@ -248,7 +248,7 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     Collections.addAll(l, keys);
     return l;
   }

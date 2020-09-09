@@ -35,6 +35,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -231,12 +232,7 @@ public class Footprint extends MovementMarkable {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(trailKey);
-    l.add(trailKeyOn);
-    l.add(trailKeyOff);
-    l.add(trailKeyClear);
-    return l;
+    return Arrays.asList(trailKey, trailKeyOn, trailKeyOff, trailKeyClear);
   }
 
   /**
@@ -244,9 +240,7 @@ public class Footprint extends MovementMarkable {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(menuCommand);
-    return l;
+    return List.of(menuCommand);
   }
 
   @Override

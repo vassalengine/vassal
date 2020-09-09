@@ -36,6 +36,7 @@ import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -84,7 +85,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected int radius;
   protected boolean alwaysActive;
   protected boolean active;
-  protected String activateCommand;
+  protected String activateCommand = "";
   protected NamedKeyStroke activateKey;
   protected KeyCommand[] commands;
   protected String mapShaderName;
@@ -190,9 +191,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(activateKey);
-    return l;
+    return Arrays.asList(activateKey);
   }
 
   /**
@@ -200,9 +199,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(activateCommand);
-    return l;
+    return List.of(activateCommand);
   }
 
 

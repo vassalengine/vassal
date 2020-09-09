@@ -189,8 +189,6 @@ public class SubMenu extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(subMenu);
-    return l;
+    return List.of(subMenu);
   }
 }
