@@ -48,7 +48,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
 
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;

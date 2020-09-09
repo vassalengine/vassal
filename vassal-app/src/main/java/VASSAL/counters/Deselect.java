@@ -1,4 +1,3 @@
-
 /*
  *
  * Copyright (c) 2020 by VassalEngine.org, Brian Reynolds
@@ -32,7 +31,6 @@ import javax.swing.KeyStroke;
 import java.util.ArrayList;
 import java.util.List;
 
-import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
