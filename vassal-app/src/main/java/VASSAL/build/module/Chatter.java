@@ -326,6 +326,20 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       ErrorDialog.bug(ble);
     }
 
+    // Force graphics to update, but only once they're in a good mood.
+    // Doing the update ever time a line was added was causing "flickering" of the chatter when a big long string of commands
+    // was getting executed. So now each time we add a line of text we issue an invokeLater() (even though we are already on the EDT,
+    // but in this case the point is to be AFTER all the global-key-command processing that's currently going on). And so as soon as
+    // the UI thread "frees up", it will update the Chatter "exactly once" (the needUpdate semaphore guarantees that we just sweep all
+    // the updates into one).
+    needUpdate = true;
+    SwingUtilities.invokeLater(() -> {
+      if (needUpdate) {
+        conversationPane.update(conversationPane.getGraphics());
+        needUpdate = false;
+      }
+    });
+
     consoleHook(s, style, html_allowed);
   }
 
