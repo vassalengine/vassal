@@ -874,19 +874,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public List<String> getExpressionList() {
     ArrayList<String> l = new ArrayList<>();
     if (followProperty) {
-      l.add(followPropertyExpression.getExpression());
-    }
-    return l;
-  }
-
-  /**
-   * @return a list of any Property Names referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<String> getPropertyList() {
-    ArrayList<String> l = new ArrayList<>();
-    if (followProperty) {
-      l.add(propertyName);
+      l.add(propertyName); // It's sort of a property but more like an expression
     }
     return l;
   }
