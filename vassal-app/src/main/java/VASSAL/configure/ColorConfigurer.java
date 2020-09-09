@@ -90,10 +90,20 @@ public class ColorConfigurer extends Configurer {
   }
 
   public static String colorToString(Color c) {
-    return c == null ? null :
-        c.getRed() + ","
+    if (c == null) {
+      return null;
+    }
+    else if (c.getTransparency() == c.OPAQUE) {
+      return c.getRed() + ","
         + c.getGreen() + ","
         + c.getBlue();
+    }
+    else {
+      return c.getRed() + ","
+        + c.getGreen() + ","
+        + c.getBlue() + ","
+        + c.getAlpha();
+    }
   }
 
   public static Color stringToColor(String s) {
@@ -107,9 +117,17 @@ public class ColorConfigurer extends Configurer {
       }
       else {
         final StringTokenizer st = new StringTokenizer(s, ",");
-        return new Color(Integer.parseInt(st.nextToken()),
-                         Integer.parseInt(st.nextToken()),
-                         Integer.parseInt(st.nextToken()));
+        if (st.countTokens() > 3) { // has alpha value
+          return new Color(Integer.parseInt(st.nextToken()),
+                           Integer.parseInt(st.nextToken()),
+                           Integer.parseInt(st.nextToken()),
+                           Integer.parseInt(st.nextToken()));
+        }
+        else { // no alpha
+          return new Color(Integer.parseInt(st.nextToken()),
+                           Integer.parseInt(st.nextToken()),
+                           Integer.parseInt(st.nextToken()));
+        }
       }
     }
     catch (NumberFormatException e) {
