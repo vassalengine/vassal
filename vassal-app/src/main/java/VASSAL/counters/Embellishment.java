@@ -29,6 +29,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Box;
@@ -874,7 +875,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (followProperty) {
       return List.of(propertyName);
     }
-    return null;
+    return Collections.emptyList()
   }
 
   /**
@@ -920,7 +921,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (!followProperty) {
       return List.of(resetLevel.getFormat());
     }
-    return null;
+    return Collections.emptyList()
   }
 
   @Override

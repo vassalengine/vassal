@@ -34,6 +34,7 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -457,9 +458,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
-    Collections.addAll(l, keys);
-    return l;
+    return Arrays.asList(keys);
   }
 
   /**

@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -549,35 +550,35 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
   public List<String> getExpressionList() {
-    return null; 
+    return Collections.emptyList();
   }
 
   /**
    * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
    */
   public List<String> getFormattedStringList() {
-    return null;
+    return Collections.emptyList();
   }
 
   /**
    * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
    */
   public List<String> getMenuTextList() {
-    return null;
+    return Collections.emptyList();
   }
 
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return null;
+    return Collections.emptyList();
   }
 
   /**
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
   public List<String> getPropertyList() {
-    return null;
+    return Collections.emptyList();
   }
 
 

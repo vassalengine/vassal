@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.sql.Array;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -201,7 +202,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (globalCommand != null) {
       return List.of(globalCommand.getReportFormat());
     }
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

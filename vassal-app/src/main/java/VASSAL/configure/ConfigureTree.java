@@ -629,7 +629,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    AbstractAction action = new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -653,7 +653,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID11 = 1L;
+                private static final long serialVersionUID = 1L;
 
                 @Override
                 public void save() {
@@ -1602,7 +1602,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return
         searchNodes
           .stream()
-          .limit(bookmark)
+          .limit(bookmark + 1)
           .filter(nodeMatchesSearchString)
           .findFirst()
           .orElse(null);
