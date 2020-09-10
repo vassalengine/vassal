@@ -146,8 +146,8 @@ public class LabelUtils {
     j.setSize(size);
 
     Dimension size2 = new Dimension();
-    size2.width  = size.width + textPad*2;
-    size2.height = size.height + textPad*2;
+    size2.width  = size.width + textPad * 2;
+    size2.height = size.height + textPad * 2;
 
     g.setFont(f);
     int x0 = x;
