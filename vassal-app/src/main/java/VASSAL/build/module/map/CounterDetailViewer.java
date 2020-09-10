@@ -300,7 +300,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // If desired to center over the mouse location
     if (centerAll) {
-      dbounds.x -= dbounds.width/2;
+      dbounds.x -= dbounds.width / 2;
     }
 
     // Save this box for possible centering of text box later
@@ -382,7 +382,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // So text-under-counters won't draw directly on top of mouse position.
     if (isTextUnderCounters()) {
-      bounds.y -= (fontSize + 2 + extraTextPadding*2);
+      bounds.y -= (fontSize + 2 + extraTextPadding * 2);
     }
 
     // User-specified additional offset
