@@ -104,6 +104,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public static final String DESCRIPTION = "description";
   public static final String CENTER_TEXT = "centerText";
+  public static final String VERTICAL_OFFSET = "verticalOffset";
   public static final String SHOW_TEXT = "showtext";
   public static final String ENABLE_HTML = "enableHTML";
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle";
@@ -155,6 +156,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showTextSingleDeprecated = false;
   protected boolean enableHTML = false;
   protected boolean centerText = false;
+  protected int verticalOffset = 0;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean showOverlap = false;
@@ -374,8 +376,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // So text-under-counters won't draw directly on top of mouse position.
     if (isTextUnderCounters()) {
-      bounds.height -= (fontSize + 2);
+      bounds.y -= (fontSize + 2);
     }
+
+    bounds.y -= verticalOffset;
   }
 
   protected Rectangle getBounds(GamePiece piece) {
@@ -855,6 +859,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       DRAW_PIECES_AT_ZOOM,
       GRAPH_SINGLE_DEPRECATED,
       BORDER_WIDTH,
+      VERTICAL_OFFSET,
       SHOW_TEXT,
       ENABLE_HTML,
       CENTER_TEXT,
@@ -878,36 +883,37 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-       Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
-       Resources.getString("Editor.description_label"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
-       Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
-       Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.include_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.listed_layers"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
-      };
+      Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
+      Resources.getString("Editor.description_label"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
+      Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.vertical_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
+      Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.include_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.listed_layers"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
+    };
   }
 
   @Override
@@ -924,6 +930,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Double.class,
       Boolean.class,
+      Integer.class,
       Integer.class,
       Boolean.class,
       Boolean.class,
@@ -1031,6 +1038,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         centerText = (Boolean) value;
+      }
+    }
+    else if (VERTICAL_OFFSET.equals(name)) {
+      if (value instanceof String) {
+        verticalOffset = Integer.valueOf((String)value);
+      }
+      else {
+        verticalOffset = (Integer) value;
       }
     }
     else if (HOTKEY.equals(name)) {
@@ -1208,6 +1223,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (CENTER_TEXT.equals(name)) {
       return String.valueOf(centerText);
     }
+    else if (VERTICAL_OFFSET.equals(name)) {
+      return String.valueOf(verticalOffset);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1298,7 +1316,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
+    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name)) {
       return () -> drawPieces;
     }
     else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT).contains(name)) {
