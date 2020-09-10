@@ -24,7 +24,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
-import java.sql.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
