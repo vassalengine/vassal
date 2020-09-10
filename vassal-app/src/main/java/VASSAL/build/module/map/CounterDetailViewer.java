@@ -103,6 +103,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String HOTKEY = "hotkey";
 
   public static final String DESCRIPTION = "description";
+  public static final String CENTER_TEXT = "centerText";
   public static final String SHOW_TEXT = "showtext";
   public static final String ENABLE_HTML = "enableHTML";
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle";
@@ -153,6 +154,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean showText = false;
   protected boolean showTextSingleDeprecated = false;
   protected boolean enableHTML = false;
+  protected boolean centerText = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean showOverlap = false;
@@ -175,6 +177,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
   protected Rectangle bounds = new Rectangle();
+  protected Rectangle lastPieceBounds = new Rectangle();
   protected boolean mouseInView = true;
   protected List<GamePiece> displayablePieces = null;
 
@@ -292,6 +295,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (dbounds.y < minY)
       dbounds.y = minY;
 
+    // Save this box for possible centering of text box later
+    lastPieceBounds.x = dbounds.x;
+    lastPieceBounds.y = dbounds.y;
+    lastPieceBounds.width = dbounds.width;
+    lastPieceBounds.height = dbounds.height;
+
     if (bgColor != null) {
       g.setColor(bgColor);
       g.fillRect(dbounds.x, dbounds.y, dbounds.width, dbounds.height);
@@ -362,6 +371,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     bounds.width += borderWidth;
     bounds.y -= bounds.height;
+
+    // So text-under-counters won't draw directly on top of mouse position.
+    if (isTextUnderCounters()) {
+      bounds.height -= (fontSize + 2);
+    }
   }
 
   protected Rectangle getBounds(GamePiece piece) {
@@ -416,18 +430,25 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
       report = emptyHexReportFormat.getLocalizedText();
-      x -= g.getFontMetrics().stringWidth(report) / 2;
+      if (report.length() > 0) {
+        x -= g.getFontMetrics().stringWidth(report) / 2;
+        drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+      }
     }
     else {
       GamePiece topPiece = displayablePieces.get(0);
       String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
-      x += borderWidth * os_scale * pieces.size() + 2;
-    }
-
-    if (report.length() > 0) {
-      drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+      if (report.length() > 0) {
+        if (centerText) {
+          x = lastPieceBounds.x + lastPieceBounds.width / 2;
+        }
+        else {
+          x += borderWidth * os_scale * pieces.size() + 2;
+        }
+        drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);
+      }
     }
   }
 
@@ -836,6 +857,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       BORDER_WIDTH,
       SHOW_TEXT,
       ENABLE_HTML,
+      CENTER_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -870,6 +892,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
+       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
        Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
@@ -902,6 +925,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Double.class,
       Boolean.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Boolean.class,
@@ -999,6 +1023,14 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         enableHTML = (Boolean) value;
+      }
+    }
+    else if (CENTER_TEXT.equals(name)) {
+      if (value instanceof String) {
+        centerText = "true".equals(value);;
+      }
+      else {
+        centerText = (Boolean) value;
       }
     }
     else if (HOTKEY.equals(name)) {
@@ -1173,6 +1205,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (ENABLE_HTML.equals(name)) {
       return String.valueOf(enableHTML);
     }
+    else if (CENTER_TEXT.equals(name)) {
+      return String.valueOf(centerText);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1266,7 +1301,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
       return () -> drawPieces;
     }
-    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML).contains(name)) {
+    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT).contains(name)) {
       return () -> showText;
     }
     else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY, DESCRIPTION).contains(name)) {
