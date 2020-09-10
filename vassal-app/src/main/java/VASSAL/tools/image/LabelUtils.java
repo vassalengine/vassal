@@ -29,7 +29,6 @@ import java.awt.image.BufferedImage;
 import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 public class LabelUtils {
   private LabelUtils() {
@@ -101,47 +100,81 @@ public class LabelUtils {
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
 
+    // "Quick Colors"
+    String baseString = text;
+    String style = "";
+    if (text.startsWith("|")) {
+      style = "msgcolor";
+      baseString = baseString.replaceFirst("\\|", "");
+    }
+    else if (text.startsWith("!")) {
+      style = "msg2color";
+      baseString = baseString.replaceFirst("!", "");
+    }
+    else if (text.startsWith("?")) {
+      style = "msg3color";
+      baseString = baseString.replaceFirst("\\?", "");
+    }
+    else if (text.startsWith("~")) {
+      style = "msg4color";
+      baseString = baseString.replaceFirst("~", "");
+    }
+    else if (text.startsWith("`")) {
+      style = "msg5color";
+      baseString = baseString.replaceFirst("`", "");
+    }
+
+    // If user already put <html> tags in, don't re-wrap.
+    boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6)));
+
+    // HTML Niceties - Rather than make the user type a bunch of repetitive stuff, by default we wrap these up nicely.
+    String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : "");
+
+    // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
+    JLabel j = new JLabel(htmlString);
+    j.setForeground(fgColor);
+    j.setFont(f);
+    Dimension size = j.getPreferredSize();
+    j.setSize(size);
+
     g.setFont(f);
-    final int width = g.getFontMetrics().stringWidth(text + "  ");
-    final int height = g.getFontMetrics().getHeight();
     int x0 = x;
     int y0 = y;
 
     switch (hAlign) {
     case CENTER:
-      x0 = x - width / 2;
+      x0 = x - size.width / 2;
       break;
     case LEFT:
-      x0 = x - width;
+      x0 = x - size.width;
       break;
     }
 
     switch (vAlign) {
     case CENTER:
-      y0 = y - height / 2;
+      y0 = y - size.height / 2;
       break;
     case BOTTOM:
-      y0 = y - height;
+      y0 = y - size.height;
       break;
     }
 
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(x0, y0, width, height);
+      g.fillRect(x0, y0, size.width, size.height);
     }
 
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(x0, y0, width, height);
+      g.drawRect(x0, y0, size.width, size.height);
     }
 
     g.setColor(fgColor);
 
-    // prepare the target image
     final BufferedImage im = ImageUtils.createCompatibleImage(
-      width,
-      height,
-      bgColor == null || bgColor.getTransparency() != Color.OPAQUE
+      size.width,
+      size.height,
+      true
     );
 
     final Graphics2D gTemp = im.createGraphics();
@@ -149,17 +182,8 @@ public class LabelUtils {
     gTemp.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
 
-    JLabel j = new JLabel(" " + text + " ");
-    j.setForeground(fgColor);
-    j.setFont(f);
-    Dimension size = j.getPreferredSize();
-    j.setSize(size);
-
     j.paint(gTemp);
 
     g.drawImage(im, x0, y0, comp);
-    //g.drawString(" " + text + " ", x0,
-    //  y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
-
 }

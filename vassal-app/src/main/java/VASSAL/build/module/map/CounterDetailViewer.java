@@ -102,7 +102,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String MINIMUM_DISPLAYABLE = "minDisplayPieces";
   public static final String HOTKEY = "hotkey";
 
+  public static final String DESCRIPTION = "description";
   public static final String SHOW_TEXT = "showtext";
+  public static final String ENABLE_HTML = "enableHTML";
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle";
   public static final String ZOOM_LEVEL = "zoomlevel";
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom";
@@ -142,6 +144,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean textVisible = false;
   protected MouseEvent currentMousePosition;
 
+  protected String desc = "";
   protected int minimumDisplayablePieces = 2;
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected boolean alwaysShowLoc = false;
@@ -149,6 +152,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean drawSingleDeprecated = false;
   protected boolean showText = false;
   protected boolean showTextSingleDeprecated = false;
+  protected boolean enableHTML = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean showOverlap = false;
@@ -428,7 +432,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   /**
-   * @deprecated Use {{@link #drawLabel(Graphics, Point, String)}}
+   * @deprecated Use {{@link #drawLabel(Graphics, Point, String, int, int)}}
    */
   @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
   protected void drawLabel(Graphics g, Point pt, String label) {
@@ -442,7 +446,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent());
+      if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) {
+        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent());
+      }
+      else {
+        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -814,6 +823,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public String[] getAttributeNames() {
     return new String[] {
       VERSION,
+      DESCRIPTION,
       DELAY,
       HOTKEY,
       BG_COLOR,
@@ -825,6 +835,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       GRAPH_SINGLE_DEPRECATED,
       BORDER_WIDTH,
       SHOW_TEXT,
+      ENABLE_HTML,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -846,6 +857,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public String[] getAttributeDescriptions() {
     return new String[] {
        Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
+       Resources.getString("Editor.description_label"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
@@ -857,6 +869,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
        Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
        Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
+       Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
        Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
        Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
@@ -878,6 +891,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
       String.class,
+      String.class,
       Integer.class,
       KeyStroke.class,
       Color.class,
@@ -888,6 +902,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Double.class,
       Boolean.class,
       Integer.class,
+      Boolean.class,
       Boolean.class,
       Boolean.class,
       Integer.class,
@@ -975,6 +990,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         delay = (Integer) value;
       }
     }
+    else if (DESCRIPTION.equals(name)) {
+      desc = (String)value;
+    }
+    else if (ENABLE_HTML.equals(name)) {
+      if (value instanceof String) {
+        enableHTML = "true".equals(value);;
+      }
+      else {
+        enableHTML = (Boolean) value;
+      }
+    }
     else if (HOTKEY.equals(name)) {
       if (value instanceof String) {
         hotkey = HotKeyConfigurer.decode((String)value);
@@ -1006,7 +1032,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       else if (value instanceof String) {
         showText = "true".equals(value);
       }
-
     }
     else if (SHOW_TEXT_SINGLE_DEPRECATED.equals(name)) {
       if (value instanceof Boolean) {
@@ -1142,6 +1167,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (DELAY.equals(name)) {
       return String.valueOf(delay);
     }
+    else if (DESCRIPTION.equals(name)) {
+      return desc;
+    }
+    else if (ENABLE_HTML.equals(name)) {
+      return String.valueOf(enableHTML);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1219,6 +1250,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else
       return null;
+  }
+
+  @Override
+  public String getConfigureName() {
+    return desc; //$NON-NLS-1$
   }
 
   public static String getConfigureTypeName() {
