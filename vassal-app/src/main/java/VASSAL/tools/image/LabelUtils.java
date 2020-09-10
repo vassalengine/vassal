@@ -46,13 +46,18 @@ public class LabelUtils {
   }
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
+    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0);
+  }
+
+
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int textPad) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                       RenderingHints.VALUE_ANTIALIAS_ON);
 
     g.setFont(f);
-    final int width = g.getFontMetrics().stringWidth(text + "  ");
-    final int height = g.getFontMetrics().getHeight();
+    final int width = g.getFontMetrics().stringWidth(text + "  ") + textPad * 2;
+    final int height = g.getFontMetrics().getHeight() + textPad * 2;
     int x0 = x;
     int y0 = y;
 
@@ -85,8 +90,8 @@ public class LabelUtils {
     }
 
     g.setColor(fgColor);
-    g.drawString(" " + text + " ", x0,
-      y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
+    g.drawString(" " + text + " ", x0 + textPad,
+      y0 + textPad + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
 
@@ -94,8 +99,11 @@ public class LabelUtils {
     drawHTMLLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null, comp);
   }
 
-
   public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp) {
+    drawHTMLLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, comp, 0);
+  }
+
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int textPad) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -137,36 +145,40 @@ public class LabelUtils {
     Dimension size = j.getPreferredSize();
     j.setSize(size);
 
+    Dimension size2 = new Dimension();
+    size2.width  = size.width + textPad*2;
+    size2.height = size.height + textPad*2;
+
     g.setFont(f);
     int x0 = x;
     int y0 = y;
 
     switch (hAlign) {
     case CENTER:
-      x0 = x - size.width / 2;
+      x0 = x - size2.width / 2;
       break;
     case LEFT:
-      x0 = x - size.width;
+      x0 = x - size2.width;
       break;
     }
 
     switch (vAlign) {
     case CENTER:
-      y0 = y - size.height / 2;
+      y0 = y - size2.height / 2;
       break;
     case BOTTOM:
-      y0 = y - size.height;
+      y0 = y - size2.height;
       break;
     }
 
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(x0, y0, size.width, size.height);
+      g.fillRect(x0, y0, size2.width, size2.height);
     }
 
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(x0, y0, size.width, size.height);
+      g.drawRect(x0, y0, size2.width, size2.height);
     }
 
     g.setColor(fgColor);
@@ -184,6 +196,22 @@ public class LabelUtils {
 
     j.paint(gTemp);
 
-    g.drawImage(im, x0, y0, comp);
+    if (textPad <= 0) {
+      g.drawImage(im, x0, y0, comp);
+    }
+    else {
+      final BufferedImage im2 = ImageUtils.createCompatibleImage(
+        size2.width,
+        size2.height,
+        true
+      );
+      final Graphics2D gTemp2 = im2.createGraphics();
+      gTemp2.addRenderingHints(SwingUtils.FONT_HINTS);
+      gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+
+      gTemp2.drawImage(im, textPad, textPad, null);
+      g.drawImage(im2, x0, y0, comp);
+    }
   }
 }
