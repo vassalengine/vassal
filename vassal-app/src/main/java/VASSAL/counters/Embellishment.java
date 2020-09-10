@@ -875,7 +875,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (followProperty) {
       return List.of(propertyName);
     }
-    return Collections.emptyList()
+    return Collections.emptyList();
   }
 
   /**
@@ -921,7 +921,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (!followProperty) {
       return List.of(resetLevel.getFormat());
     }
-    return Collections.emptyList()
+    return Collections.emptyList();
   }
 
   @Override
