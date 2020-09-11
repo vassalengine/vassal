@@ -106,6 +106,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String CENTER_TEXT = "centerText";
   public static final String CENTER_ALL  = "centerAll";
   public static final String VERTICAL_OFFSET = "verticalOffset";
+  public static final String VERTICAL_TOP_TEXT = "verticalTopText";
+  public static final String STRETCH_WIDTH_SUMMARY = "stretchWidthSummary";
   public static final String SHOW_TEXT = "showtext";
   public static final String ENABLE_HTML = "enableHTML";
   public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle";
@@ -160,6 +162,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean centerAll  = false;
   protected boolean centerText = false;
   protected int verticalOffset = 0;
+  protected int verticalTopText = 5;
+  protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
   protected boolean showOverlap = false;
@@ -426,7 +430,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     String report;
     int x = (int)((bounds.x - bounds.width) * os_scale);
-    int y = (int)((bounds.y - 5) * os_scale);
+    int y = (int)((bounds.y - verticalTopText) * os_scale);
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
@@ -457,11 +461,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (report.length() > 0) {
         if (centerText) {
           x = lastPieceBounds.x + lastPieceBounds.width / 2;
-          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);
+          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM, stretchWidthSummary ? lastPieceBounds.width : 0, stretchWidthSummary ? 1 : 0);
         }
         else {
           x += borderWidth * os_scale * pieces.size() + 2;
-          drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+          drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM, stretchWidthSummary ? lastPieceBounds.width : 0, stretchWidthSummary ? 1 : 0);
         }
       }
     }
@@ -477,16 +481,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
+    drawLabel(g, pt, label, hAlign, vAlign, 0, 0);
+  }
+
+  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int minWidth, int extraBorder) {
     if (label != null) {
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) {
-        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent(), extraTextPadding);
+        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent(), extraTextPadding, minWidth, extraBorder);
       }
       else {
-        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, extraTextPadding);
+        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, extraTextPadding, minWidth, extraBorder);
       }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
@@ -876,6 +884,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       ENABLE_HTML,
       CENTER_TEXT,
       EXTRA_TEXT_PADDING,
+      VERTICAL_TOP_TEXT,
+      STRETCH_WIDTH_SUMMARY,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -914,6 +924,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
       Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
@@ -952,6 +964,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Integer.class,
+      Integer.class,
+      Boolean.class,
       Boolean.class,
       Integer.class,
       ReportFormatConfig.class,
@@ -1079,6 +1093,22 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
       else {
         verticalOffset = (Integer) value;
+      }
+    }
+    else if (VERTICAL_TOP_TEXT.equals(name)) {
+      if (value instanceof String) {
+        verticalTopText = Integer.valueOf((String)value);
+      }
+      else {
+        verticalTopText = (Integer) value;
+      }
+    }
+    else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
+      if (value instanceof Boolean) {
+        stretchWidthSummary = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        stretchWidthSummary = "true".equals(value);
       }
     }
     else if (HOTKEY.equals(name)) {
@@ -1265,6 +1295,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (VERTICAL_OFFSET.equals(name)) {
       return String.valueOf(verticalOffset);
     }
+    else if (VERTICAL_TOP_TEXT.equals(name)) {
+      return String.valueOf(verticalTopText);
+    }
+    else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
+      return String.valueOf(stretchWidthSummary);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1358,7 +1394,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name)) {
       return () -> drawPieces;
     }
-    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING).contains(name)) {
+    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
     }
     else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY, DESCRIPTION, CENTER_ALL).contains(name)) {
