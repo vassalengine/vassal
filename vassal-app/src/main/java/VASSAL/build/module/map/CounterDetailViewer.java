@@ -457,7 +457,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (report.length() > 0) {
         if (centerText) {
           x = lastPieceBounds.x + lastPieceBounds.width / 2;
-          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);        }
+          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);
+        }
         else {
           x += borderWidth * os_scale * pieces.size() + 2;
           drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
