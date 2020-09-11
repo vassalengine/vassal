@@ -293,6 +293,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     visibleRect.width *= os_scale;
     visibleRect.height *= os_scale;
 
+    int origX = dbounds.x;
+
     dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
     dbounds.x = Math.max(dbounds.x, visibleRect.x);
     dbounds.y = Math.min(dbounds.y, visibleRect.y + visibleRect.height - dbounds.height) - (isTextUnderCounters() ? 15 : 0);
@@ -300,7 +302,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // If desired to center over the mouse location
     if (centerAll) {
-      dbounds.x -= dbounds.width / 2;
+      dbounds.x -= Math.max(0, dbounds.width / 2 - Math.abs(origX - dbounds.x)); // account for how much we were impacted by edge of window
     }
 
     // Save this box for possible centering of text box later
@@ -345,7 +347,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         comp,
         graphicsZoom * os_scale
       );
-
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
       g.setClip(oldClip);
@@ -353,7 +354,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (isTextUnderCounters()) {
         String text = counterReportFormat.getLocalizedText(piece);
         if (text.length() > 0) {
-          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
+          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
           int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
           drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER);
         }
@@ -456,11 +457,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (report.length() > 0) {
         if (centerText) {
           x = lastPieceBounds.x + lastPieceBounds.width / 2;
-        }
+          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);        }
         else {
           x += borderWidth * os_scale * pieces.size() + 2;
+          drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
         }
-        drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM);
       }
     }
   }
