@@ -51,7 +51,6 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SplitPane;
 
 /**
  * A window from which players can create new {@link GamePiece}s by
@@ -227,9 +226,10 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     if (!hidden) {
       String key = PositionOption.key + getConfigureName();
       if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
-        mainWindowDock = GameModule.getGameModule().getPlayerWindow().splitControlPanel(
+        mainWindowDock = ComponentSplitter.split(
+          GameModule.getGameModule().getControlPanel(),
           root,
-          SplitPane.HIDE_LEFT,
+          ComponentSplitter.SplitPane.HIDE_LEFT,
           false
         );
       }
