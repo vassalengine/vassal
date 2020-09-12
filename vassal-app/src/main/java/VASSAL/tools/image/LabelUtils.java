@@ -96,7 +96,7 @@ public class LabelUtils {
         x0 = x;
         break;
       }
-      xBox = (minWidth > 0) ? x : x0;
+      xBox = ((minWidth > 0) && (width2 > width)) ? x : x0;
     }
 
     switch (vAlign) {
@@ -232,7 +232,7 @@ public class LabelUtils {
         x0 = x;
         break;
       }
-      xBox = (minWidth > 0) ? x : x0;
+      xBox = ((minWidth > 0) && (size3.width > size2.width)) ? x : x0;
     }
 
     switch (vAlign) {
