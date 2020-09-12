@@ -557,12 +557,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     PieceEditor ed;
 
     private Ed(Frame owner, final EditablePiece p) {
-      super(owner, MessageFormat.format(Resources.getString("Editor.PieceDefiner.properties"), p.getDescription()), true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
       initialize(p);
     }
 
     private Ed(Dialog owner, final EditablePiece p) {
-      super(owner, MessageFormat.format(Resources.getString("Editor.PieceDefiner.properties"), p.getDescription()), true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
       initialize(p);
     }
 

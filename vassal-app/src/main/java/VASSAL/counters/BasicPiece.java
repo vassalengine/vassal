@@ -519,10 +519,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
           final String loc = getMap().locationName(outer.getPosition());
           String s;
           if (loc != null) {
-            s = MessageFormat.format(Resources.getString("BasicPiece.clone_report_1"), name, loc);
+            s = Resources.getString("BasicPiece.clone_report_1", name, loc);
           }
           else {
-            s = MessageFormat.format(Resources.getString("BasicPiece.clone_report_2"), name);
+            s = Resources.getString("BasicPiece.clone_report_2", name);
           }
           final Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
           report.execute();
@@ -537,10 +537,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         final String loc = getMap().locationName(outer.getPosition());
         String s;
         if (loc != null) {
-          s = MessageFormat.format(Resources.getString("BasicPiece.delete_report_1"), name, loc);
+          s = Resources.getString("BasicPiece.delete_report_1", name, loc);
         }
         else {
-          s = MessageFormat.format(Resources.getString("BasicPiece.delete_report_2"), name);
+          s = Resources.getString("BasicPiece.delete_report_2", name);
         }
         final Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
         comm = comm.append(report);
