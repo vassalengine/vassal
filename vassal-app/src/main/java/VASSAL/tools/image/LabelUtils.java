@@ -46,31 +46,57 @@ public class LabelUtils {
   }
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0);
+    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0, 0);
   }
 
 
-  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int centerWidth, int textPad, int minWidth, int extraBorder) {
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int objectWidth, int indent, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                       RenderingHints.VALUE_ANTIALIAS_ON);
 
     g.setFont(f);
-    int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder*2 + ((extraBorder > 0) ? 1 : 0);
+    int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder;
     final int height = g.getFontMetrics().getHeight() + textPad*2 + extraBorder*2;
 
-    int width2 = Math.max(width, minWidth + extraBorder*2);
+    int width2 = Math.max(width, minWidth + extraBorder);
+
+    x -= extraBorder;
+    y -= extraBorder;
 
     int x0 = x;
     int y0 = y;
+    int xBox;
 
-    switch (hAlign) {
-    case CENTER:
-      x0 = x + width2/2 - width/2; //x - width / 2;
-      break;
-    case LEFT:
-      x0 = x - width;
-      break;
+    // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
+    // If objectWidth is > 0, then x is the left side of a master object with a precise width we are to draw within.
+    if (objectWidth <= 0) {
+      switch (hAlign) {
+      case CENTER:
+        x0 = x - width / 2;
+        break;
+      case LEFT:
+        x0 = x - width;
+        break;
+      case RIGHT:
+        x0 = x;
+        break;
+      }
+      xBox = x0;
+    }
+    else {
+      switch (hAlign) {
+      case CENTER:
+        x0 = x + objectWidth/2 - width / 2;
+        break;
+      case LEFT:
+        x0 = x + objectWidth;
+        break;
+      case RIGHT:
+        x0 = x;
+        break;
+      }
+      xBox = (minWidth > 0) ? x : x0;
     }
 
     switch (vAlign) {
@@ -84,16 +110,16 @@ public class LabelUtils {
 
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(x0, y0, width2, height);
+      g.fillRect(xBox, y0, width2, height);
     }
 
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(x0, y0, width2, height);
+      g.drawRect(xBox, y0, width2, height);
 
       if (extraBorder > 0) {
         Dimension size4 = new Dimension(width2, height);
-        int x1 = x0;
+        int x1 = xBox;
         int y1 = y0;
         for (int extra = 0; extra < extraBorder; extra++) {
           x1 += 1;
@@ -106,12 +132,17 @@ public class LabelUtils {
     }
 
     g.setColor(fgColor);
-    g.drawString(" " + text + " ", x0 + textPad + extraBorder,
+    g.drawString(" " + text + " ", x0 + indent + textPad + extraBorder,
       y0 + textPad + extraBorder + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
+
+    //if (objectWidth > 0) {
+    //  g.setColor(Color.MAGENTA);
+    //  g.drawRect(x, y, objectWidth, 10);
+    //}
   }
 
 
-  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int centerWidth, int textPad, int minWidth, int extraBorder) {
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int indent, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -153,27 +184,55 @@ public class LabelUtils {
     Dimension size = j.getPreferredSize();
     j.setSize(size);
 
+    x -= extraBorder;
+    y -= extraBorder;
+
     // Dimensions including extra text padding and extra border.
     Dimension size2 = new Dimension();
-    size2.width  = size.width + textPad*2 + extraBorder*2 + ((extraBorder > 0) ? 1 : 0);
+    size2.width  = size.width + textPad*2 + extraBorder;
     size2.height = size.height + textPad*2 + extraBorder*2;
 
-    // Dimensions also including any forced-stretch of width
+    // Dimensions also including any forced-stretch of width. This will be the outer bounds of the box we draw.
     Dimension size3 = new Dimension();
-    size3.width   = Math.max(size2.width, minWidth + extraBorder*2);
+    size3.width   = Math.max(size2.width, minWidth + extraBorder);
     size3.height  = size2.height;
 
     g.setFont(f);
     int x0 = x;
     int y0 = y;
+    int xBox;
 
-    switch (hAlign) {
-    case CENTER:
-      x0 = x + size3.width/2 - size.width/2; //x - size2.width / 2;
-      break;
-    case LEFT:
-      x0 = x - size2.width;
-      break;
+    // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
+    // If objectWidth is > 0, then x is the left side of a master object with a precise width we are to draw within.
+    if (objectWidth <= 0) {
+      switch (hAlign) {
+      case CENTER:
+        x0 = x - size2.width / 2;
+        break;
+      case LEFT:
+        x0 = x - size2.width;
+        indent = indent * -1;
+        break;
+      case RIGHT:
+        x0 = x;
+        break;
+      }
+      xBox = x0;
+    }
+    else {
+      switch (hAlign) {
+      case CENTER:
+        x0 = x + objectWidth/2 - size2.width / 2;
+        break;
+      case LEFT:
+        x0 = x + objectWidth - size2.width;
+        indent = indent * -1;
+        break;
+      case RIGHT:
+        x0 = x;
+        break;
+      }
+      xBox = (minWidth > 0) ? x : x0;
     }
 
     switch (vAlign) {
@@ -187,16 +246,16 @@ public class LabelUtils {
 
     if (bgColor != null) {
       g.setColor(bgColor);
-      g.fillRect(x0, y0, size3.width, size3.height);
+      g.fillRect(xBox, y0, size3.width, size3.height);
     }
 
     if (borderColor != null) {
       g.setColor(borderColor);
-      g.drawRect(x0, y0, size3.width, size3.height);
+      g.drawRect(xBox, y0, size3.width, size3.height);
 
       if (extraBorder > 0) {
         Dimension size4 = new Dimension(size3);
-        int x1 = x0;
+        int x1 = xBox;
         int y1 = y0;
         for (int extra = 0; extra < extraBorder; extra++) {
           x1 += 1;
@@ -224,7 +283,7 @@ public class LabelUtils {
     j.paint(gTemp);
 
     if ((textPad <= 0) && (extraBorder <= 0)) {
-      g.drawImage(im, x0, y0, comp);
+      g.drawImage(im, x0 + indent, y0, comp);
     }
     else {
       final BufferedImage im2 = ImageUtils.createCompatibleImage(
@@ -237,8 +296,13 @@ public class LabelUtils {
       gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
 
-      gTemp2.drawImage(im, textPad + extraBorder, textPad + extraBorder, null);
+      gTemp2.drawImage(im, textPad + extraBorder + indent, textPad + extraBorder, null);
       g.drawImage(im2, x0, y0, comp);
     }
+
+    //if (objectWidth > 0) {
+    //  g.setColor(Color.MAGENTA);
+    //  g.drawRect(x, y, objectWidth, 10);
+    //}
   }
 }
