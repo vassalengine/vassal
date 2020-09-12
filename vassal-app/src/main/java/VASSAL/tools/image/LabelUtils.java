@@ -46,11 +46,11 @@ public class LabelUtils {
   }
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0, 0);
+    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0);
   }
 
 
-  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int objectWidth, int indent, int textPad, int minWidth, int extraBorder) {
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int objectWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -132,17 +132,12 @@ public class LabelUtils {
     }
 
     g.setColor(fgColor);
-    g.drawString(" " + text + " ", x0 + indent + textPad + extraBorder,
+    g.drawString(" " + text + " ", x0 + textPad + extraBorder,
       y0 + textPad + extraBorder + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
-
-    //if (objectWidth > 0) {
-    //  g.setColor(Color.MAGENTA);
-    //  g.drawRect(x, y, objectWidth, 10);
-    //}
   }
 
 
-  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int indent, int textPad, int minWidth, int extraBorder) {
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -211,7 +206,6 @@ public class LabelUtils {
         break;
       case LEFT:
         x0 = x - size2.width;
-        indent = indent * -1;
         break;
       case RIGHT:
         x0 = x;
@@ -226,7 +220,6 @@ public class LabelUtils {
         break;
       case LEFT:
         x0 = x + objectWidth - size2.width;
-        indent = indent * -1;
         break;
       case RIGHT:
         x0 = x;
@@ -283,7 +276,7 @@ public class LabelUtils {
     j.paint(gTemp);
 
     if ((textPad <= 0) && (extraBorder <= 0)) {
-      g.drawImage(im, x0 + indent, y0, comp);
+      g.drawImage(im, x0, y0, comp);
     }
     else {
       final BufferedImage im2 = ImageUtils.createCompatibleImage(
@@ -296,13 +289,8 @@ public class LabelUtils {
       gTemp2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
 
-      gTemp2.drawImage(im, textPad + extraBorder + indent, textPad + extraBorder, null);
+      gTemp2.drawImage(im, textPad + extraBorder, textPad + extraBorder, null);
       g.drawImage(im2, x0, y0, comp);
     }
-
-    //if (objectWidth > 0) {
-    //  g.setColor(Color.MAGENTA);
-    //  g.drawRect(x, y, objectWidth, 10);
-    //}
   }
 }

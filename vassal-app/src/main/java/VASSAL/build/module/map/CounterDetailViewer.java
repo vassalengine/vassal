@@ -462,24 +462,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
       if (report.length() > 0) {
-        if (centerText) {
-          //x = (int)(bounds.x * os_scale);
-          x = (lastPieceBounds.x - 1);
-          drawLabel(g, new Point(x, y), report, LabelUtils.CENTER, LabelUtils.BOTTOM,
-                    lastPieceBounds.width + 2,
-                    0,
-                    stretchWidthSummary ? lastPieceBounds.width + 2 : 0,
-                    stretchWidthSummary ? 1 : 0);
-        }
-        else {
-          //x += borderWidth * os_scale * pieces.size() + 2;
-          x = (lastPieceBounds.x - 1);
-          drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM,
-                    lastPieceBounds.width + 2,
-                    0, //((int)(borderWidth * os_scale)) + 2,
-                    stretchWidthSummary ? lastPieceBounds.width + 2 : 0,
-                    stretchWidthSummary ? 1 : 0);
-        }
+        x = (lastPieceBounds.x - 1);
+        drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+                  lastPieceBounds.width + 2,
+                  stretchWidthSummary ? lastPieceBounds.width + 2 : 0,
+                  stretchWidthSummary ? 1 : 0);
       }
     }
   }
@@ -494,20 +481,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
-    drawLabel(g, pt, label, hAlign, vAlign, 0, 0, 0, 0);
+    drawLabel(g, pt, label, hAlign, vAlign, 0, 0, 0);
   }
 
-  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int indent, int minWidth, int extraBorder) {
+  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder) {
     if (label != null) {
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) {
-        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent(), objectWidth, indent, extraTextPadding, minWidth, extraBorder);
+        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
       else {
-        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, objectWidth, indent, extraTextPadding, minWidth, extraBorder);
+        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor, objectWidth, extraTextPadding, minWidth, extraBorder);
       }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
