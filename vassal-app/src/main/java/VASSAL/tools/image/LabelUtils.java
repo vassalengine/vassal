@@ -41,15 +41,53 @@ public class LabelUtils {
   public static final int TOP = 3;
   public static final int BOTTOM = 4;
 
+  /**
+   * Draw a non-HTML text label with appropriate alignment & foreground/background color
+   * @param g Graphics Object
+   * @param text text to draw
+   * @param x x location
+   * @param y y location
+   * @param hAlign Horizontal alignment (LEFT, RIGHT, or CENTER)
+   * @param vAlign Vertical alignment (TOP, BOTTOM, or CENTER)
+   * @param fgColor Foreground Color
+   * @param bgColor Background Color
+   */
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
     drawLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
   }
 
+  /**
+   * Draw a non-HTML text label with appropriate alignment & foreground/background color, plus a border box
+   * @param g Graphics Object
+   * @param text text to draw
+   * @param x x location
+   * @param y y location
+   * @param hAlign Horizontal alignment (LEFT, RIGHT, or CENTER)
+   * @param vAlign Vertical alignment (TOP, BOTTOM, or CENTER)
+   * @param fgColor Foreground Color
+   * @param bgColor Background Color
+   * @param borderColor Box color around border
+   */
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
     drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0);
   }
 
-
+  /**
+   * Draw a non-HTML text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters
+   * @param g Graphics Object
+   * @param text text to draw
+   * @param x x location
+   * @param y y location
+   * @param hAlign Horizontal alignment (LEFT, RIGHT, or CENTER)
+   * @param vAlign Vertical alignment (TOP, BOTTOM, or CENTER)
+   * @param fgColor Foreground Color
+   * @param bgColor Background Color
+   * @param borderColor Box color around border
+   * @param objectWidth 0 for default, or width of an optional "master object" inside of which the label is being drawn (allows better alignment options)
+   * @param textPad 0 for default, or extra padding around text in all 4 directions
+   * @param minWidth 0 for default, or minimum width of text box
+   * @param extraBorder 0 for default, or number of pixels of extra thickness of border box
+   */
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int objectWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -137,6 +175,24 @@ public class LabelUtils {
   }
 
 
+  /**
+   * Draw an HTML-compliant text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters.
+   * Supports "Quick Colors".
+   * @param g Graphics Object
+   * @param text text to draw
+   * @param x x location
+   * @param y y location
+   * @param hAlign Horizontal alignment (LEFT, RIGHT, or CENTER)
+   * @param vAlign Vertical alignment (TOP, BOTTOM, or CENTER)
+   * @param fgColor Foreground Color
+   * @param bgColor Background Color
+   * @param borderColor Box color around border
+   * @param comp Component we are drawing on
+   * @param objectWidth 0 for default, or width of an optional "master object" inside of which the label is being drawn (allows better alignment options)
+   * @param textPad 0 for default, or extra padding around text in all 4 directions
+   * @param minWidth 0 for default, or minimum width of text box
+   * @param extraBorder 0 for default, or number of pixels of extra thickness of border box
+   */
   public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int objectWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -237,11 +293,13 @@ public class LabelUtils {
       break;
     }
 
+    // Draws our background color
     if (bgColor != null) {
       g.setColor(bgColor);
       g.fillRect(xBox, y0, size3.width, size3.height);
     }
 
+    // Draws our border
     if (borderColor != null) {
       g.setColor(borderColor);
       g.drawRect(xBox, y0, size3.width, size3.height);
@@ -275,6 +333,8 @@ public class LabelUtils {
 
     j.paint(gTemp);
 
+    // If no extra padding or border was specified, we can draw the label directly. Otherwise we need an extra
+    // layer of indirection "lest our JLabel wriggle from our grasp"
     if ((textPad <= 0) && (extraBorder <= 0)) {
       g.drawImage(im, x0, y0, comp);
     }

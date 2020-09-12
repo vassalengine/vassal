@@ -301,6 +301,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     int origX = dbounds.x;
 
+    // Account for edges of window, stuff like that
     dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
     dbounds.x = Math.max(dbounds.x, visibleRect.x);
     dbounds.y = Math.min(dbounds.y, visibleRect.y + visibleRect.height - dbounds.height) - (isTextUnderCounters() ? 15 : 0);
@@ -311,7 +312,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       dbounds.x -= Math.max(0, dbounds.width / 2 - Math.abs(origX - dbounds.x)); // account for how much we were impacted by edge of window
     }
 
-    // Save this box for possible centering of text box later
+    // Save this box for possible centering of text box later. This is our "actual combined viewer box" for the pieces.
     lastPieceBounds.x = dbounds.x;
     lastPieceBounds.y = dbounds.y;
     lastPieceBounds.width = dbounds.width;
@@ -358,10 +359,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
       g.setClip(oldClip);
 
+      // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
         String text = counterReportFormat.getLocalizedText(piece);
         int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
+          // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
               drawLabel(g, new Point(lastPieceBounds.x - 1, y), " ", LabelUtils.CENTER, LabelUtils.CENTER,
@@ -370,9 +373,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
                 1,
                 false);
             }
-            y -= 1;
+            y -= 1; // Because the text just looks better in the combine-o-rama box this way.
           }
 
+          // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
           int x = dbounds.x  - (int) (pieceBounds.x * graphicsZoom * os_scale)  + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
           drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
           anyUnderText = true;
@@ -433,13 +437,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawText(g, pt, comp, a);
   }
 
-  protected void drawText(Graphics g, @SuppressWarnings("unused") Point pt, @SuppressWarnings("unused") JComponent comp, List<GamePiece> pieces) {
-    /*
-     * Label with the location If the counter viewer is being displayed, then
-     * place the location name just above the left hand end of the counters. If
-     * no counter viewer (i.e. single piece or expanded stack), then place the
-     * location name above the centre of the first piece in the stack.
-     */
+  /**
+   * Label with the location If the counter viewer is being displayed, then
+   * place the location name just above the left hand end of the counters. If
+   * no counter viewer (i.e. single piece or expanded stack), then place the
+   * location name above the centre of the first piece in the stack.
+   * @param g - graphics element
+   * @param pt - UNUSED IN THESE LATTER DAYS
+   * @param comp - UNUSED IN THESE LATTER DAYS
+   * @param pieces - UNUSED IN THESE LATTER DAYS
+   */
+  protected void drawText(Graphics g, @SuppressWarnings("unused") Point pt, @SuppressWarnings("unused") JComponent comp, @SuppressWarnings("unused")List<GamePiece> pieces) {
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
@@ -477,11 +485,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
       if (report.length() > 0) {
-        x = (lastPieceBounds.x - 1);
+        x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
         drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
-                  lastPieceBounds.width + 2,
-                  stretchWidthSummary ? lastPieceBounds.width + 2 : 0,
-                  stretchWidthSummary ? 1 : 0,
+                  lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
+                  stretchWidthSummary ? lastPieceBounds.width + 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
+                  stretchWidthSummary ? 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
                   false);
       }
     }
@@ -500,12 +508,26 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawLabel(g, pt, label, hAlign, vAlign, 0, 0, 0, false);
   }
 
+  /**
+   * Next, we go to this intermediate method, which deals with a couple of things (like deciding whether we're drawing in
+   * HTML mode or not) and then calls the LabelUtils to do the Hard Work.
+   * @param g our graphics object
+   * @param pt Point for drawing label, based on hAlign/Valign. (but if objectWidth > 0 then the "x" part identifies the left part of our master object)
+   * @param label Text we shall draw
+   * @param hAlign Horizontal alignment (left, right, center)
+   * @param vAlign Vertical alignment (top, bottom, center)
+   * @param objectWidth 0 for default, or optional width of master object we are to draw text label within
+   * @param minWidth 0 for default, or minimum width of text label
+   * @param extraBorder 0 for default, or number of extra pixels of border (expands size of label drawn)
+   * @param skipBox If true, ONLY draws the text, with no box or background (for filling in existing combine-o-rama boxes)
+   */
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
     if (label != null) {
       Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+      // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
       if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) {
         LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, (skipBox ? null : bgColor), (skipBox ? null : labelFgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
