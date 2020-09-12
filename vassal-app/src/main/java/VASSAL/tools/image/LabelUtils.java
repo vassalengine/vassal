@@ -46,17 +46,17 @@ public class LabelUtils {
   }
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
-    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0);
+    drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor, 0, 0, 0, 0);
   }
 
 
-  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int textPad, int minWidth, int extraBorder) {
+  public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, int centerWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                       RenderingHints.VALUE_ANTIALIAS_ON);
 
     g.setFont(f);
-    int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder*2;
+    int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder*2 + ((extraBorder > 0) ? 1 : 0);
     final int height = g.getFontMetrics().getHeight() + textPad*2 + extraBorder*2;
 
     int width2 = Math.max(width, minWidth + extraBorder*2);
@@ -66,7 +66,7 @@ public class LabelUtils {
 
     switch (hAlign) {
     case CENTER:
-      x0 = x - width / 2;
+      x0 = x + width2/2 - width/2; //x - width / 2;
       break;
     case LEFT:
       x0 = x - width;
@@ -111,7 +111,7 @@ public class LabelUtils {
   }
 
 
-  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int textPad, int minWidth, int extraBorder) {
+  public static void drawHTMLLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, Component comp, int centerWidth, int textPad, int minWidth, int extraBorder) {
     ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
     ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
       RenderingHints.VALUE_ANTIALIAS_ON);
@@ -153,10 +153,12 @@ public class LabelUtils {
     Dimension size = j.getPreferredSize();
     j.setSize(size);
 
+    // Dimensions including extra text padding and extra border.
     Dimension size2 = new Dimension();
-    size2.width  = size.width + textPad*2 + extraBorder*2;
+    size2.width  = size.width + textPad*2 + extraBorder*2 + ((extraBorder > 0) ? 1 : 0);
     size2.height = size.height + textPad*2 + extraBorder*2;
 
+    // Dimensions also including any forced-stretch of width
     Dimension size3 = new Dimension();
     size3.width   = Math.max(size2.width, minWidth + extraBorder*2);
     size3.height  = size2.height;
@@ -167,7 +169,7 @@ public class LabelUtils {
 
     switch (hAlign) {
     case CENTER:
-      x0 = x - size2.width / 2;
+      x0 = x + size3.width/2 - size.width/2; //x - size2.width / 2;
       break;
     case LEFT:
       x0 = x - size2.width;
