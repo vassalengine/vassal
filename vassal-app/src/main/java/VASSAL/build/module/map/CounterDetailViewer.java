@@ -883,9 +883,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_TEXT,
       ENABLE_HTML,
       CENTER_TEXT,
+      STRETCH_WIDTH_SUMMARY,
       EXTRA_TEXT_PADDING,
       VERTICAL_TOP_TEXT,
-      STRETCH_WIDTH_SUMMARY,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -923,9 +923,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
-      Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
       Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
@@ -963,9 +963,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Boolean.class,
-      Integer.class,
-      Integer.class,
       Boolean.class,
+      Integer.class,
+      Integer.class,
       Boolean.class,
       Integer.class,
       ReportFormatConfig.class,
