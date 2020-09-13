@@ -17,6 +17,7 @@
  */
 package VASSAL.preferences;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -44,6 +45,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.BrowserSupport;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -78,6 +81,18 @@ public class PrefsEditor {
         }
       });
 
+      // Help button looks up help in Preferences.html, by tab-name
+      final JButton help = new JButton(Resources.getString(Resources.HELP));
+      help.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          int index = optionsTab.getSelectedIndex();
+          String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top";
+          HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName);
+          BrowserSupport.openURL(helpFile.getContents().toString());
+        }
+      });
+
       final JButton ok = new JButton(Resources.getString(Resources.OK));
       ok.addActionListener(new ActionListener() {
         @Override
@@ -96,6 +111,8 @@ public class PrefsEditor {
 
       dialog.setLayout(new MigLayout("insets dialog"));
       dialog.add(optionsTab, "push, grow, wrap unrelated");
+
+      dialog.add(help, "tag help, split");
       dialog.add(ok, "tag ok, split");
       dialog.add(cancel, "tag cancel");
     }

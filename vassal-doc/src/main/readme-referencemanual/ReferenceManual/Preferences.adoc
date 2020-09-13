@@ -1,0 +1,49 @@
+== VASSAL Reference Manual
+[#top]
+
+<<index.adoc#toc,Home>> > [.small]#*Preferences*#
+
+'''''
+
+=== Preferences
+The VASSAL Preferences dialog allows you to configure VASSAL for your system and to personalize its preference options to suit your needs.
+
+The number of tabs displayed will depend on the module you are using at the time (for example a module without
+a <<TurnTracker.html#top,Turn Tracker>> won't display a Turn Tracker tab). You will find the preferences sorted under the following tabs:
+
+* <<#General,*General*>> - Common preferences.
+* <<#Compatibility,*Compatibility*>> - Platform-specific troubleshooting and very old modules.
+* <<#Personal,*Personal*>> - Your username and password for multiplayer games.
+* <<#Sounds,*Sounds*>> - Sound file mappings.
+* <<#Server,*Server*>> - Which server to connect to for online play.
+* <<#Chat Window,*Chat Window*>> - Fonts and colors for the <<ChatLog.html#top,Chat Log>>
+* <<#Turn Counter,*Turn Counter*>> - <<TurnTracker.html#top,Turn Tracker>> display configuration.
+
+==== General
+
+[width="100%",cols="50%,50%",]
+
+blah blah blah
+
+==== Compatibility
+
+x
+
+==== Personal
+
+x
+
+==== Sounds
+x
+
+==== Server
+x
+
+
+==== Chat Window
+x
+
+==== Turn Counter
+
+|===
+
