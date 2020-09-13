@@ -20,22 +20,23 @@ It is passed from the Makefile during the release process.
 [NOTE]
 Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
 
-. clean
-. validate
+. *clean*: deletes everything in `/target`
+. *validate*
 * checkstyle
-. generate-resources
+. *generate-resources*
 * asciidoctor
-. compile
-. test
+. *compile*: compiles code and copies resources to `/target/classes`
+. *test*: runs unit tests
 * spotbugs
 * clirr
-. package
+- Travis runs up to here
+. *package*: creates build artifacts (.jar files) in `/target`
 * javadoc
-* source (creates source code jar)
-. verify
-. install
-. site
-. deploy
+* source: creates source code jar
+. *verify*: not used
+. *install*: copies build artifacts into local maven repository
+. *site*: not used
+. *deploy*: copies build artifacts and maven meta files to `/snapshots` or `/releases`
 
 ==== Maven plugins
 
