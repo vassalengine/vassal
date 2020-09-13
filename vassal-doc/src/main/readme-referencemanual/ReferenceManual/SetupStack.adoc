@@ -15,7 +15,7 @@ To add an _At-Start Stack_, navigate to the entry for your Map in the Editor, ri
 Then, right click on the _[At-Start Stack]_ component entry created at the bottom of your Map's list of sub-components, and select _Add Single Piece_ to add a piece to the stack.
 You can add as many pieces as you wish to each At-Start Stack.
 
-image:images/AtStartStack.png
+image:images/AtStartStack.png[]
 
 *Name:*  The name is not used during game play.
 It exists simply for identification and organization in the module editor.
@@ -33,7 +33,7 @@ If this stack belongs to a Board, the position is relative to the Board's positi
 *Reposition Stack:*  Click this button to use the graphical interface to reposition the stack on the board.
 The image of one of the pieces in the stack, if defined, will be used to help you visualize and adjust the stack's starting position.
 
-image:images/UseGridLocation.png image:images/AtStartStackExample.png
+image:images/UseGridLocation.png[] image:images/AtStartStackExample.png[]
 
 *Location:*   The location of the stack as a descriptive location label as returned by <<GridNumbering.adoc#top,Grid Numbering>>, or the name of a <<IrregularGrid.adoc#top,Region>> in the case of an <<IrregularGrid.adoc#top,Irregular Grid>>. The grid numbering system must provide enough information to define a specific location on the map (for example, $gridLocation$). However, if a zone in a <<ZonedGrid.adoc#top,Multi-Zone Grid>> does not specify a grid, the center of the zone will be selected.
 

@@ -18,8 +18,6 @@ This allows you to hide menu separators as desired when there are fewer options 
 The keystroke can be shared with another trait, or you can provide a unique one.
 <<NamedKeyCommands.adoc#top,Named Key Commands>> can also be used so as not to waste traditional keystrokes.
 
-image:images/MenuSeparator.png
-
-image:images/MenuSeparator2.png
-
+image:images/MenuSeparator.png[]
+image:images/MenuSeparator2.png[]
 *SEE ALSO:*  <<SubMenu.adoc#top,Sub-Menu>>, <<RestrictCommands.adoc#top,Restrict Commands>>

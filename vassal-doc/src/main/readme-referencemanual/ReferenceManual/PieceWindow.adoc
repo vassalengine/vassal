@@ -37,9 +37,9 @@ For example, the window may contain a tabbed pane with two entries, called "Info
 Every component in the Toolbar should end with a Single Piece.
 Since a typical game has many pieces that differ in only minor ways, you may find it convenient to clone Single Pieces.
 Also, the order of the pieces can be changed by dragging them within the configuration tree.
-|image:images/PieceWindow.png
+|image:images/PieceWindow.png[]
 
-image:images/PaletteExample.png +
+image:images/PaletteExample.png[] +
 |===
 
 '''''
@@ -67,9 +67,9 @@ A scroll list in which each entry corresponds to a subcomponent.
 The name of the entry will be the name of the subcomponent.
 An image scale can be applied to the images drawn pieces in the list.
 
-image:images/ListWidget.png
+image:images/ListWidget.png[]
 
-image:images/ListExample.png
+image:images/ListExample.png[]
 
 ==== Tabbed Pane
 
@@ -87,8 +87,8 @@ Otherwise, the subcomponents will appear in a single row, or a single column if 
 An image scale can be applied to the images drawn for pieces shown on the panel.
 
 |
-image:images/PanelWidget.png
+image:images/PanelWidget.png[]
 
-image:images/PanelWidget2.png
+image:images/PanelWidget2.png[]
 |===
 

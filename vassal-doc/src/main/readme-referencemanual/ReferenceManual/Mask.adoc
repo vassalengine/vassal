@@ -58,6 +58,6 @@ When a player types Ctrl+F, that card will be known only to him (as though held 
 
 This trait sets the <<Properties.adoc#top,Property>> _ObscuredToOthers=true_ when the piece is masked.
 
-image:images/Mask.png
+image:images/Mask.png[]
 
-image:images/Mask2.png
+image:images/Mask2.png[]

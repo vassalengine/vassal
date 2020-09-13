@@ -37,5 +37,5 @@ The Module version of saved games field will list the earlier module version num
 It is recommended to back up the files first.
 . Hit Update games to overwrite the files.
 
-|image:images/SavedGameUpdater.png
+|image:images/SavedGameUpdater.png[]
 |===

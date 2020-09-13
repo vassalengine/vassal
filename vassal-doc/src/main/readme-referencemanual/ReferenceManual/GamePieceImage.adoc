@@ -25,7 +25,7 @@ The Items panel shows the configurable items that make up your image layout.
 Click on an item to display the configurable options for that item in the bottom display panel.
 There is a different display panel for each type of item.
 
-|image:images/imagedefn.png
+|image:images/imagedefn.png[]
 |===
 
 ==== Symbol Item Configuration
@@ -67,7 +67,7 @@ There is a different display panel for each type of item.
 *Text Color:* Select the color to use to draw the text.
 
 *Background Color:* Select the color to use to draw a box behind the text.
-|image:images/textboxinstance.png
+|image:images/textboxinstance.png[]
 |===
 
 ==== Image Item Configuration
@@ -81,5 +81,5 @@ Import an image to draw at the position specified in the layout.
 |*Foreground Color:* Select the fill color for the shape.
 
 *Background Color:* Select the color for the shape's outline.
-|image:images/ShapeItemInstance.png
+|image:images/ShapeItemInstance.png[]
 |===

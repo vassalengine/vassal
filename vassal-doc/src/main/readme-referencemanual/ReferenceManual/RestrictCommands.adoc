@@ -25,4 +25,4 @@ The corresponding right-click context menu item(s), if any, will be hidden or gr
 _Example:_ A piece may remove certain commands based on where it is on the map by matching the <<BasicPiece.adoc#top,CurrentZone>> property.
 A piece with a <<Layer.adoc#Properties,Layer>> specifying a damage level may disable commands based on the Level property of that Layer.
 
-image:images/RestrictCommands.png
+image:images/RestrictCommands.png[]

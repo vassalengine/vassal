@@ -23,5 +23,5 @@ You can select a specific Sound file using the _Select_ button, or you can load 
 *Send sound to other players?*  If selected, then the sound will be echoed to other players when playing live or reading from a logfile.
 Otherwise, the sound is only audible to the player who invoked the command.
 
-|image:images/PlaySound.png
+|image:images/PlaySound.png[]
 |===

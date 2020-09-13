@@ -7,7 +7,7 @@
 
 === Prototype (Trait)
 
-image:images/UsePrototype.png
+image:images/UsePrototype.png[]
 
 The Prototype trait allows a piece to share a set of common traits with other pieces.
 The traits themselves are defined elsewhere in a <<Prototypes.adoc#top,Prototype Definition>> in the _[Global Piece Prototype Definitions]_ section of your module.

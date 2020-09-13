@@ -22,6 +22,6 @@ To initialize the values in the table, select the piece in the <<PieceWindow.ado
 *Number of columns:*  The number of columns of data in the spreadsheet.
 
 As of the present version of Vassal, the values in the spreadsheet are _not_ exposed as properties that can be accessed by other traits.
-|image:images/Spreadsheet.png +
-image:images/Spreadsheet2.png
+|image:images/Spreadsheet.png[] +
+image:images/Spreadsheet2.png[]
 |===

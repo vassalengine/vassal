@@ -27,5 +27,5 @@ This allows module designers to chain several actions together to create sophist
 Earlier versions of Vassal supported _only_ traditional Key Commands (i.e.
 actual keystrokes), and so every aspect of a trait of any piece potentially needing to be activated had to be assigned its own keystroke.
 This quickly made the keyboard seem very crowded for designers of sophisticated modules! So the Named Key Command was introduced to allow modules more breathing room to create useful traits and commands.
-|image:images/CounterGlobalKeyCommand.png  +
+|image:images/CounterGlobalKeyCommand.png[]  +
 |===

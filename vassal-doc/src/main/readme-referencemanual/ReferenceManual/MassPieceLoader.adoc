@@ -13,7 +13,7 @@ All Game Pieces created will use the same Piece template, but will have differen
 Images can be loaded into multiple levels within each Layer trait.
 A modified version of the Layer trait is used which defines how image names are matched and loaded into each level.
 
-image:images/MassPieceLoader.png
+image:images/MassPieceLoader.png[]
 
 *The processing works as follows:*
 
@@ -50,7 +50,7 @@ You can modify this field to give each piece a non-standard name.
 
 ==== Piece Template
 
-image:images/MassPieceLoader-2.png
+image:images/MassPieceLoader-2.png[]
 
 The Piece Template used to create each piece looks like the standard <<GamePiece.adoc#top,Piece Window>> used to define Prototypes.
 You can add any traits to the template except for the <<BasicPiece.adoc#top,Basic Piece>> , this is created for you automatically.
@@ -59,7 +59,7 @@ The Layer trait included in the Mass Piece Definer is a modified version that al
 
 ==== Modified Layer Trait
 
-image:images/MassPieceLoader-3.png
+image:images/MassPieceLoader-3.png[]
 
 The Modified Layer trait is the same as a standard Layer trait except for the way the image for each level is defined.
 Instead of an Image Picker to select any image, you define how the image name you want to load is related to the base image that defines the piece.

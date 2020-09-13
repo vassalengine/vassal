@@ -7,7 +7,7 @@
 
 === Toolbar
 
-image:images/Toolbar.png
+image:images/Toolbar.png[]
 
 The <<Toolbar.adoc#top,Toolbar>> of the main <<GameModule.adoc#top,Module>> window contains buttons for basic functions such as <<#Undo,Undo>>, <<#StepForward,Step Forward>>, and <<#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<Chartwindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
@@ -62,11 +62,11 @@ If the button is given either button text or a button icon, it will appear on th
 in a "hotseat" game), become an observer, and/or select a side they want to play.
 
 a|
-image:images/GlobalOptions.png
+image:images/GlobalOptions.png[]
 
 Global Options (Undo, Step Forward, and Server Controls buttons)
 
-image:images/PlayerSides.png
+image:images/PlayerSides.png[]
 
 Retire or Switch Sides, in <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>>
 
@@ -92,7 +92,7 @@ Or, a single Game Piece Palette can have any number of tabs and sub-panels.
 <<PieceWindow.adoc#top,See full article for details.>>
 
 a|
-image:images/PaletteExample.png
+image:images/PaletteExample.png[]
 
 A <<PieceWindow.adoc#top,Game Piece Palette>> With Markers
 
@@ -112,7 +112,7 @@ The main difference between a Player Hand and a <<PrivateWindow.adoc#top,Private
 <<PlayerHand.adoc#top,See full article for details.>>
 
 a|
-image:images/PlayerHandExample.png
+image:images/PlayerHandExample.png[]
 
 A <<PlayerHand.adoc#top,Player Hand>> window (at small zoom).
 
@@ -132,7 +132,7 @@ Private Windows are often used for secret reinforcement pools.
 <<PrivateWindow.adoc#top,See full article for details.>>
 
 a|
-image:images/PrivateMapExample.png
+image:images/PrivateMapExample.png[]
 
 <<PrivateWindow.adoc#top,Player Windows>> can be used for secret reinforcement pools.
 
@@ -156,20 +156,19 @@ A <<SpecialDiceButton.adoc#top,Symbolic Dice Button>> places a button on the Too
 [width="100%",cols="34%,^33%,^33%",]
 |===
 | a|
-image:images/SpecialDiceExample1.png
+image:images/SpecialDiceExample1.png[]
 
 Symbolic Die Face
 
 a|
-image:images/SpecialDiceExample2.png
+image:images/SpecialDiceExample2.png[]
 
 Symbolic Die Face
 
 |===
 
 a|
-image:images/SpecialDiceButton.png
-
+image:images/SpecialDiceButton.png[]
 Configuring a Symbolic Dice Button
 
 |===
@@ -184,8 +183,7 @@ A plain <<GameModule.adoc#DiceButton,Dice Button>> can roll multiple dice of mul
 <<GameModule.adoc#DiceButton,See full article for details.>>
 
 a|
-image:images/DiceButton.png
-
+image:images/DiceButton.png[]
 <<GameModule.adoc#DiceButton,Dice Button>> configuration
 
 |===
@@ -201,8 +199,7 @@ It can also be used to define dice with irregular numerical values, such as a si
 If the values are numerical check the _Faces have numeric values_ box, which enables the _Report Total_ and _Add to each die_ options.
 
 a|
-image:images/RandomTextButton.png
-
+image:images/RandomTextButton.png[]
 <<GameModule.adoc#RandomTextButton,Random Text Button>> configuration
 
 |===
@@ -287,8 +284,7 @@ This button is configured by adding it to a <<Map.adoc#top,Map Window>>. If it i
 <<Map.adoc#HidePieces,See full article for details.>>
 
 a|
-image:images/HidePieces.png
-
+image:images/HidePieces.png[]
 Hide Pieces configuration
 
 |===
@@ -304,8 +300,7 @@ hide the fort markers while leaving the troops visible). This button is configur
 <<GamePieceLayers.adoc#top,See the Game Piece Layers article for more details.>>
 
 a|
-image:images/GamePieceLayerControl.png
-
+image:images/GamePieceLayerControl.png[]
 A <<GamePieceLayers.adoc#GamePieceLayerControl,Game Piece Layer Control>> to hide all the Trenches on a map.
 
 |===
@@ -321,8 +316,7 @@ If one is configured for the Main Map, it will appear on the Toolbar for the Mod
 <<Map.adoc#MarkUnmoved,See the Map Window article for more details.>>
 
 a|
-image:images/ClearMoveHistory.png
-
+image:images/ClearMoveHistory.png[]
 The <<Map.adoc#MarkUnmoved,Mark Unmoved Button>> subsection of a <<Map.adoc#top,Map>> properties dialog.
 
 |===
@@ -344,8 +338,7 @@ If configured as a subcomponent of the <<GameModule.adoc#top,Module>> itself, it
 <<Map.adoc#GlobalKeyCommand,See full article for details.>>
 
 a|
-image:images/GlobalKeyCommand.png
-
+image:images/GlobalKeyCommand.png[]
 Configuring a Global Key Command
 
 |===
@@ -361,8 +354,7 @@ When the button is clicked, or receives its Hotkey, it can display a message to 
 <<DoActionButton.adoc#top,See full article for details.>>
 
 a|
-image:images/DoActionButtonShort.png
-
+image:images/DoActionButtonShort.png[]
 Action Buttons send hotkeys, play sounds, and/or print messages
 
 |===
