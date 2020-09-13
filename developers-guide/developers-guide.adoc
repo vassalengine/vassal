@@ -1,0 +1,189 @@
+= Developer's guide
+:toc: left
+:toclevels: 4
+:icons: font
+:rootdir: ../
+
+== Build system
+
+=== Maven
+
+==== Build parameters
+
+===== Version number
+
+The internal version number (the one that is shown in the about screen) is set by the maven parameter `gitVersion` and defaults to the maven version number.
+It is passed from the Makefile during the release process.
+
+==== Build lifecycle
+
+[NOTE]
+Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
+
+. clean
+. validate
+* checkstyle
+. generate-resources
+* asciidoctor
+. compile
+. test
+* spotbugs
+* clirr
+. package
+* javadoc
+* source (creates source code jar)
+. verify
+. install
+. site
+. deploy
+
+==== Maven plugins
+
+===== Checkstyle
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html[checkstyle:check] in *validate* phase
+====
+
+* Maven plugin version and checkstyle version in link:{rootdir}pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}pom.xml[lines=79..89]
+----
+
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}/vassal-app/pom.xml[lines=227..248]
+----
+
+* Checkstyle configuration in link:{rootdir}vassal-app/src/test/resources/checkstyle-checks.xml[]
+* Exceptions from checks in link:{rootdir}vassal-app/src/test/resources/checkstyle-suppressions.xml[]
+
+===== Source
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-source-plugin/jar-no-fork-mojo.html[source:jar-no-fork] in *package* phase
+====
+
+
+===== Javadoc
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-javadoc-plugin/jar-mojo.html[javadoc:jar] in *package* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}pom.xml[lines=102..105]
+----
+
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}/vassal-app/pom.xml[lines=276..302]
+----
+
+===== Spotbugs
+
+[NOTE]
+====
+Runs goal link:https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html[spotbugs:check] in *test* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}pom.xml[lines=106..110]
+----
+
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}/vassal-app/pom.xml[lines=303..321]
+----
+
+* Spotbugs include filter configuration in link:{rootdir}vassal-app/src/test/resources/spotbugs-include-filter.xml[]
+
+===== Clirr
+
+[NOTE]
+====
+Runs goal link:https://www.mojohaus.org/clirr-maven-plugin/check-no-fork-mojo.html[clirr:check-no-fork] in *test* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}pom.xml[lines=116..120]
+----
+
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
+
+[source,xml]
+----
+include::{rootdir}/vassal-app/pom.xml[lines=322..336]
+----
+
+* Configuration of ignores in link:{rootdir}vassal-app/src/test/resources/clirr-ignored-differences.xml[]
+
+==== Maven parameters
+.Skipping build steps
+|===
+|Plugin|Skip parameter
+
+|Main (Skip code compilation)
+|`-Dmaven.main.skip=true`
+
+|Surefire (Unit tests)
+|`-DskipTests=true`
+
+|Checkstyle
+|`-Dcheckstyle.skip=true`
+
+|Spotbugs
+|`-Dspotbugs.skip=true`
+
+|Javadoc
+|`-Dmaven.javadoc.skip=true`
+
+|Asciidoctor
+|`-Dasciidoctor.skip=true`
+
+|Clirr
+|`-Dclirr.skip=true`
+
+|===
+
+===== Examples
+* Compile only, build jar in `vassal-app/target`, skip tests, checkstyle, spotbugs, javadoc, asciidoctor, clirr:
+[source]
+----
+mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip=true -Dclirr.skip=true
+----
+
+* Run AsciiDoctor only:
+[source]
+----
+mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
+----
+
+=== make
+
+== Release checklist
+
+* [ ] do this
+* [ ] do that
+* [ ] ???
+* [ ] profit
