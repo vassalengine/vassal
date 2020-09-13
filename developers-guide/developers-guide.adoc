@@ -90,7 +90,7 @@ include::{rootdir}pom.xml[lines=102..105]
 
 [source,xml]
 ----
-include::{rootdir}/vassal-app/pom.xml[lines=276..302]
+include::{rootdir}vassal-app/pom.xml[lines=276..302]
 ----
 
 ===== Spotbugs
@@ -111,7 +111,7 @@ include::{rootdir}pom.xml[lines=106..110]
 
 [source,xml]
 ----
-include::{rootdir}/vassal-app/pom.xml[lines=303..321]
+include::{rootdir}vassal-app/pom.xml[lines=303..321]
 ----
 
 * Spotbugs include filter configuration in link:{rootdir}vassal-app/src/test/resources/spotbugs-include-filter.xml[]
@@ -134,7 +134,7 @@ include::{rootdir}pom.xml[lines=116..120]
 
 [source,xml]
 ----
-include::{rootdir}/vassal-app/pom.xml[lines=322..336]
+include::{rootdir}vassal-app/pom.xml[lines=322..336]
 ----
 
 * Configuration of ignores in link:{rootdir}vassal-app/src/test/resources/clirr-ignored-differences.xml[]
