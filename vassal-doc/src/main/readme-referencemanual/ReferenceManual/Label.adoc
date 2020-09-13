@@ -16,11 +16,12 @@ The text of the label can be fixed or specifiable by a player at game time.
 
 . Check if the entered label is a Beanshell expression, then evaluate it as such.
 . Check if the entered label can be interpreted as is an integer. This is the case if the label only contains digits.	
-. Check if the entered label is a NonBeanshell expression (defined by a string enclosed between $ characters). This allows <<Properties.adoc#top,Properties>> of the piece can be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>
+. Check if the entered label is a $$ Variable Substitution (defined by a string enclosed between $ characters). This allows <<Properties.adoc#top,Properties>> of the piece to be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>
 . If no check is true the entered string is displayed.
 
 A know limitation of the evaluation order above is that if you enter a sequence of digits starting with 0s, these will be removed when the string is evaluated as interger.
-A workaround to this is to enter the same string via a Beanshell expression. For example to display a sequence of 3 zeroes as label text you can use {"000"}.
+A workaround to this is to enter the same string via a Beanshell expression. For example to display a sequence of 3 zeroes as label text you can use *{"000"}*.
+Note that the Beanshell expressions should be preferred to $$ Variable Substitutions. The latter are only available for historical reasons.
 
 By enclosing the text within tags, you can use simple HTML format to specify various colors, fonts and sizes.
 
