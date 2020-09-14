@@ -991,12 +991,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  /**
-   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JComponent getControlPanel() {
-    ProblemDialog.showDeprecated("2020-08-06");
     return controlPanel;
   }
 
