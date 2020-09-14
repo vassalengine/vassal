@@ -1,5 +1,6 @@
 3.4.2 - ???
 
+* 13409: Two units in same hex do not stack when hex overlaps two boards
 * 13405: Piece window appears beside main map and chat pane instead of just
   the chat pane
 * 13398: Fix piece drag so that pieces can be moved a few pixels
