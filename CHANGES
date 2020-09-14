@@ -1,3 +1,11 @@
+3.4.2 - ???
+
+* 13405: Piece window appears beside main map and chat pane instead of just
+  the chat pane
+* 13398: Fix piece drag so that pieces can be moved a few pixels
+* 13394: Prevent BeanShell from interpreting 1D, 1F, 1L as numbers
+* 13279: Pivot was auto-reporting moves when auto-reporting is turned off
+
 3.4.1 - 8 September 2020
 
 * 13389: Chatter flickers when updated
