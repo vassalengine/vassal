@@ -200,6 +200,7 @@ public class PieceMover extends AbstractBuildable
         if (this.map.getStackMetrics().isStackingEnabled() &&
             this.map.getPieceCollection().canMerge(dragging, s) &&
             !DragBuffer.getBuffer().contains(s) &&
+            !DragBuffer.getBuffer().containsAllMembers(s) &&  //BR// Don't merge back into a stack we are in the act of emptying
             s.topPiece() != null) {
           if (this.map.isLocationRestricted(pt) && !s.isExpanded()) {
             if (s.getPosition().equals(this.map.snapTo(pt))) {
@@ -590,6 +591,12 @@ public class PieceMover extends AbstractBuildable
           final Stack parent = map.getStackMetrics().createStack(dragging);
           if (parent != null) {
             comm = comm.append(map.placeAt(parent, p));
+
+            //BR// We've made a new stack, so put it on the list of merge targets, in case more pieces land here too
+            mergeCandidates = new ArrayList<>();
+            mergeCandidates.add(dragging);
+            mergeCandidates.add(parent);
+            mergeTargets.put(p, mergeCandidates);
           }
         }
       }
