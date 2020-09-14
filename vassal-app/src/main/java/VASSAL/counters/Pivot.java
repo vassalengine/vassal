@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.command.ChangeTracker;
@@ -152,11 +153,13 @@ public class Pivot extends Decorator implements TranslatablePiece {
           getMap().placeOrMerge(outer, pos);
           c = c.append(moveTracker.getMoveCommand());
           MovementReporter r = new MovementReporter(c);
-          Command reportCommand = r.getReportCommand();
-          if (reportCommand != null) {
-            reportCommand.execute();
+          if (GlobalOptions.getInstance().autoReportEnabled()) {
+            Command reportCommand = r.getReportCommand();
+            if (reportCommand != null) {
+              reportCommand.execute();
+            }
+            c = c.append(reportCommand);
           }
-          c = c.append(reportCommand);
           c = c.append(r.markMovedPieces());
           getMap().ensureVisible(getMap().selectionBoundsOf(outer));
         }
