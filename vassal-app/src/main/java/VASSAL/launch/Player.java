@@ -132,7 +132,7 @@ public class Player extends Launcher {
   }
 
   protected GameModule createModule(DataArchive archive) {
-    return new BasicModule(archive);
+    return new GameModule(archive);
   }
 
   /**
