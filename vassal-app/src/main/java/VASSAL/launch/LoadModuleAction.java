@@ -79,7 +79,7 @@ public class LoadModuleAction extends GameModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
-    GameModule.init(new BasicModule(new DataArchive(f.getPath())));
+    GameModule.init(new GameModule(new DataArchive(f.getPath())));
     Localization.getInstance().translate();
     final GameModule m = GameModule.getGameModule();
     new ExtensionsLoader().addTo(m);

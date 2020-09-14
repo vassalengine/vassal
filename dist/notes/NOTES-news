@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
 </p>
 
 <h2>IMPORTANT</h2>
@@ -11,11 +11,20 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-other.zip'  target='_new'>Other</a></li>
+</ul>
+
+<h2>Changes since 3.3.2</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13389: Chatter flickers when updated</li>
+<li>13376: NoSuchMethodError due to change of setOldProperties() signature</li>
+<li>13374: NPE in ExtensionTree.isEditable()</li>
+<li>13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()</li>
 </ul>
 
 <h2>Changes since 3.3.2</h2>
@@ -115,7 +124,7 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
 </ul>
 
 <p>
-See the <a href="http://www.vassalengine.org/wiki/VASSAL_3.4.0_Release_Notes">Release Notes</a> for descriptions of the changes in 3.4.0.
+See the <a href="http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes">Release Notes</a> for descriptions of the changes in 3.4.
 </p>
 
 <h2>Minimum Requirements</h2>

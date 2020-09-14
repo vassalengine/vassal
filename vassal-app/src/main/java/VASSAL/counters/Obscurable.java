@@ -28,8 +28,6 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.geom.Area;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 

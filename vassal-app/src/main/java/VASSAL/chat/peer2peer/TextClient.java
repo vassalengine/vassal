@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import VASSAL.chat.ChatServerConnection;
-import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;

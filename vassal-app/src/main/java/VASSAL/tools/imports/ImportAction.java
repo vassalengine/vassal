@@ -31,7 +31,6 @@ import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.ImportMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.preferences.Prefs;
@@ -47,15 +46,11 @@ import VASSAL.tools.imports.adc2.SymbolSet;
 
 /**
  * Action for importing foreign modules into VASSAL.
+ * To add more capabilities, see the static fields DESCRIPTIONS, EXTENSIONS, and IMPORTERS.
  *
  * @author Michael Kiefte
  * @since 3.1.0
  */
-
-/*
- * To add more capabilities, see the static fields DESCRIPTIONS, EXTENSIONS, and IMPORTERS.
- */
-
 public final class ImportAction extends EditModuleAction {
 
   private static final long serialVersionUID = 1L;
@@ -168,7 +163,7 @@ public final class ImportAction extends EditModuleAction {
       throw new FileFormatException("Unrecognized file format");
     }
 
-    final GameModule module = new BasicModule(new ArchiveWriter((String) null));
+    final GameModule module = new GameModule(new ArchiveWriter((String) null));
     GameModule.init(module);
 
     final Importer imp;

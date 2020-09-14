@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.4.0 Released[/b][/size]
+[size=200][b]VASSAL 3.4.1 Released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
 
 [size=150][b]IMPORTANT[/b][/size]
 
@@ -12,11 +12,20 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.0.
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.0/VASSAL-3.4.0-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-other.zip]Other[/url]
+
+[size=150][b]Changes since 3.4.0[/b][/size]
+
+Bug fixes
+
+* 13389: Chatter flickers when updated
+* 13376: NoSuchMethodError due to change of setOldProperties() signature
+* 13374: NPE in ExtensionTree.isEditable()
+* 13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 
 [size=150][b]Changes since 3.3.2[/b][/size]
 
@@ -112,7 +121,7 @@ Other improvements
 * 13100: Replace Beanshell If function in Expression Builder with inline If ?:
 *  3042: Improved Retire/Resign/Switch Sides button flow
 
-See the [url=http://www.vassalengine.org/wiki/VASSAL_3.4.0_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.4.0.
+See the [url=http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.4.
 
 [size=150][b]Minimum Requirements[/b][/size]
 

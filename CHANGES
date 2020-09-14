@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13404: Use better color picker on Linux
 * 13363: buildFile renamed to buildFile.xml
 * 13355: Threshold for centering on opponent's move is now configurable
 * 13354: Add a chatter message when starting to write a logfile
@@ -7,6 +8,7 @@
 * 13336: Incorrect date format in SecretNotesController
 * 13326: Saving a module will default to .vmod, an extension to .vext
 * 13323: Player switching sides now reported in Chat Log
+* 13307: Background transparency in Text Labels not working
 * 13297: Ability to Deselect a piece with a Key Command (also remove it from
     its stack)
 * 13296: Flare feature for map
@@ -15,7 +17,12 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
-3.4.1 - ???
+3.4.1 - 8 September 2020
+
+* 13389: Chatter flickers when updated
+* 13376: NoSuchMethodError due to change of setOldProperties() signature
+* 13374: NPE in ExtensionTree.isEditable()
+* 13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 
 3.4.0 - 4 September 2020
 

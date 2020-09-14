@@ -44,10 +44,20 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${project.basedir}</main.basedir>
+        <version.java.build>11</version.java.build>
+        <version.java.target>11</version.java.target>
 
         <!-- this is a default that will be overridden on the command line with -DgitVersion= -->
         <gitVersion>${project.version}</gitVersion>
     </properties>
+
+    <repositories>
+        <!-- for clirr plugin -->
+        <repository>
+            <id>vassal-releases</id>
+            <url>http://www.vassalengine.org/maven/</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
@@ -55,6 +65,10 @@
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -69,13 +83,25 @@
                     <version>3.1.0</version>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.9.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.1.1</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>8.36</version>
+                            <version>8.36.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -104,6 +130,11 @@
                     <groupId>org.asciidoctor</groupId>
                     <artifactId>asciidoctor-maven-plugin</artifactId>
                     <version>2.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>clirr-maven-plugin</artifactId>
+                    <version>2.8</version>
                 </plugin>
             </plugins>
         </pluginManagement>

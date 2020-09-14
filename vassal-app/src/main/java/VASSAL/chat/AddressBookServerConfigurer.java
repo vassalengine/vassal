@@ -18,7 +18,6 @@
 package VASSAL.chat;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

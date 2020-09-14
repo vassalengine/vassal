@@ -85,13 +85,13 @@ public class Editor extends Launcher {
       msg = new AbstractLaunchAction.NotifyNewModuleOk(lr);
       break;
     case EDIT_EXT:
-      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       GameModule.getGameModule().getPlayerWindow().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
       msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case NEW_EXT:
-      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       final JFrame f = GameModule.getGameModule().getPlayerWindow();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
