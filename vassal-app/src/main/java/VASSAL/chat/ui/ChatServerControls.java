@@ -61,7 +61,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 
-import VASSAL.tools.swing.SplitPane;
 import net.miginfocom.swing.MigLayout;
 
 public class ChatServerControls extends AbstractBuildable {
@@ -76,11 +75,6 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton launch;
   protected ChatServerConnection client;
   protected JPanel controlPanel;
-
-  /**
-   * @deprecated type will change to {@link SplitPane}
-   */
-  @Deprecated
   protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;
@@ -236,9 +230,10 @@ public class ChatServerControls extends AbstractBuildable {
   public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
-        splitter = GameModule.getGameModule().getPlayerWindow().splitControlPanel(
+        splitter = ComponentSplitter.split(
+          GameModule.getGameModule().getControlPanel(),
           controlPanel,
-          SplitPane.HIDE_RIGHT,
+          ComponentSplitter.SplitPane.HIDE_RIGHT,
           false
         );
         splitter.revalidate();

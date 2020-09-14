@@ -119,7 +119,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
@@ -150,7 +149,7 @@ public class ModuleManagerWindow extends JFrame {
 
   private final CardLayout modulePanelLayout;
   private final JPanel moduleView;
-  private final SplitPane serverStatusView;
+  private ComponentSplitter.SplitPane serverStatusView;
 
   private MyTreeNode rootNode;
   private MyTree tree;
@@ -420,10 +419,10 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    serverStatusView = ComponentSplitter.splitAsNewSplitPane(
+    serverStatusView = ComponentSplitter.split(
       moduleControls,
       serverStatusControls,
-      SplitPane.HIDE_RIGHT,
+      ComponentSplitter.SplitPane.HIDE_RIGHT,
       false
     );
     serverStatusView.revalidate();
