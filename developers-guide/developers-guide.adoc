@@ -8,13 +8,6 @@
 
 === Maven
 
-==== Build parameters
-
-===== Version number
-
-The internal version number (the one that is shown in the about screen) is set by the maven parameter `gitVersion` and defaults to the maven version number.
-It is passed from the Makefile during the release process.
-
 ==== Build lifecycle
 
 [NOTE]
@@ -139,7 +132,44 @@ include::{rootdir}vassal-app/pom.xml[lines=322..336]
 
 * Configuration of ignores in link:{rootdir}vassal-app/src/test/resources/clirr-ignored-differences.xml[]
 
-==== Maven parameters
+===== Asciidoc
+
+[NOTE]
+====
+Runs goal link:https://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor:process-asciidoc] in *generate-resources* phase
+====
+
+Asciidoc documentation:
+
+- https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+- https://asciidoctor.org/docs/user-manual/
+
+The asciidoctor plugin runs once for each of the following:
+
+. convert Reference Manual files to HTML
+. convert Userguide to PDF
+. convert Designer's Guide to PDF
+
+[]
+* Maven plugin version in link:{rootdir}pom.xml[]:
+[source,xml]
+----
+include::{rootdir}pom.xml[lines=111..115]
+----
+
+* Maven plugin configuration in link:{rootdir}vassal-doc/pom.xml[]
+
+==== Build parameters
+
+===== Version number
+
+The internal version number (the one shown in the about screen) is set by the maven parameter `gitVersion` and defaults to the maven version number.
+It is passed from the Makefile during the release process.
+
+===== Skip parameters
+
+Each build step can be skipped by passing certain parameters.
+
 .Skipping build steps
 |===
 |Plugin|Skip parameter
@@ -167,7 +197,7 @@ include::{rootdir}vassal-app/pom.xml[lines=322..336]
 
 |===
 
-===== Examples
+====== Examples
 * Compile only, build jar in `vassal-app/target`, skip tests, checkstyle, spotbugs, javadoc, asciidoctor, clirr:
 [source]
 ----
@@ -180,7 +210,38 @@ mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -
 mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
 ----
 
+==== Configuration of dependent projects
+
+The project's public maven repository can be found at http://www.vassalengine.org/maven/
+
+[source,xml]
+.Example configuration for dependent projects:
+----
+<project>
+  <dependencies>
+    <dependency>
+      <groupId>org.vassalengine</groupId>
+      <artifactId>vassal-app</artifactId>
+      <version>3.4.1</version> <!--1-->
+      </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>vassal-releases</id>
+      <url>http://www.vassalengine.org/maven/</url>
+    </repository>
+  </repositories>
+</project>
+----
+<1> Use desired Vassal version here
+
 === make
+
+.List of available make targets:
+[source,makefile]
+----
+include::{rootdir}Makefile[lines=258]
+----
 
 == Release checklist
 
