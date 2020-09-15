@@ -326,6 +326,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       ErrorDialog.bug(ble);
     }
 
+    conversationPane.repaint();
+
     consoleHook(s, style, html_allowed);
   }
 
