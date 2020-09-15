@@ -754,7 +754,8 @@ public class GameState implements CommandEncoder {
 
   public void saveGame(File f) throws IOException {
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-// FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
+    // FIXME: It is extremely inefficient to produce the save string. It would
+    // be faster to write directly to the output stream instead.
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
