@@ -416,7 +416,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
-          p = PieceCloner.getInstance().clonePiece(p);
+          // Add a PieceWrapper to the new Piece
+          p = PieceCloner.getInstance().cloneAndWrapPiece(p);
           GameModule.getGameModule().getGameState().addPiece(p);
           s.add(p);
         } 

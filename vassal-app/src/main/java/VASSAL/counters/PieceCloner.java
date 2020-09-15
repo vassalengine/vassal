@@ -38,6 +38,17 @@ public class PieceCloner {
 
   /**
    * Create a new instance that is a clone of the given piece.
+   * Add a PieceWrapper if the generated piece does not already have one
+   *
+   * @return the new instance
+   */
+  public GamePiece cloneAndWrapPiece(GamePiece piece) {
+    final GamePiece clone = clonePiece(piece);
+    return clone instanceof PieceWrapper ? clone : new PieceWrapper(clone);
+  }
+
+  /**
+   * Create a new instance that is a clone of the given piece.
    *
    * @return the new instance
    */

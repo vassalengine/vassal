@@ -22,7 +22,9 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.map.HighlightLastMoved;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceWrapper;
 import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
 
 /**
  * This Command adds a {@link GamePiece} to a game.  Its undo
@@ -49,8 +51,15 @@ public class AddPiece extends Command {
   @Override
   protected void executeCommand() {
     if (target != null) {
-      GameModule.getGameModule().getGameState().addPiece(target);
-      target.setState(state);
+      // Wrap the target before adding to the GameState, if it is a single piece and not already wrapped
+      if (target instanceof PieceWrapper || target instanceof Stack) {
+        GameModule.getGameModule().getGameState().addPiece(target);
+        target.setState(state);
+      }
+      else {
+        target = new PieceWrapper(target, state);
+        GameModule.getGameModule().getGameState().addPiece(target);
+      }
       if (target.getMap() != null) {
         HighlightLastMoved.setLastMoved(target);
         if (GlobalOptions.getInstance().centerOnOpponentsMove()
