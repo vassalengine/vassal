@@ -992,6 +992,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     snap.translate(-r.x, -r.y);
     snap = b.snapTo(snap);
     snap.translate(r.x, r.y);
+
+    //CC bugfix13409
+    // If we snapped to a point outside the board b, call sanpTo again with the board we landed into
+    final Board bSnappedTo = findBoard(snap);
+    if (bSnappedTo != null && !b.equals(bSnappedTo)) {
+      final Rectangle rSnappedTo = bSnappedTo.bounds();
+      snap.translate(-rSnappedTo.x, -rSnappedTo.y);
+      snap = bSnappedTo.snapTo(snap);
+      snap.translate(rSnappedTo.x, rSnappedTo.y);
+    }
     // RFE 882378
     // If we have snapped to a point 1 pixel off the edge of the map, move
     // back

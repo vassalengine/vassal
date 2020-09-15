@@ -326,6 +326,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       ErrorDialog.bug(ble);
     }
 
+    conversationPane.repaint();
+
     consoleHook(s, style, html_allowed);
   }
 
@@ -546,12 +548,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     
-    // Put up the HTML Enable/Disable checkbox if we're supposed to have it.
-    if (GlobalOptions.PROMPT.equals(GlobalOptions.getInstance().chatterHTMLSetting())) {
-      BooleanConfigurer config2 = new BooleanConfigurer(GlobalOptions.CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-      globalPrefs.addOption(Resources.getString("Chatter.chat_window"), config2);        
-    }
-
     makeStyleSheet(myFont);
   }
 

@@ -275,6 +275,13 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  public static class PromptOnOff extends StringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{ALWAYS, NEVER};
+    }
+  }
+
   public static class PlayerIdFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -329,7 +336,7 @@ public class GlobalOptions extends AbstractConfigurable {
       null,
       Prompt.class,
       PlayerIdFormatConfig.class,
-      Prompt.class
+      PromptOnOff.class
     };
   }
 
@@ -420,6 +427,9 @@ public class GlobalOptions extends AbstractConfigurable {
       return promptString;
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
+      if (PROMPT.equals(chatterHTMLSupport)) {
+        return NEVER; //BR// So peeps with the old/bad "preference" option will get a safe result.
+      }
       return chatterHTMLSupport;
     }
     else if (AUTO_REPORT.equals(key)) {
@@ -474,10 +484,6 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       chatterHTMLSupport = (String) value;
-      if (PROMPT.equals(chatterHTMLSupport)) {
-        BooleanConfigurer config = new BooleanConfigurer(CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(Resources.getString("Chatter.chat_window"), config);        
-      }
     }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
@@ -549,7 +555,7 @@ public class GlobalOptions extends AbstractConfigurable {
     if (ALWAYS.equals(attValue)) {
       return true;
     }
-    else if (NEVER.equals(attValue)) {
+    else if (NEVER.equals(attValue) || CHATTER_HTML_SUPPORT.equals(prefsPrompt)) {
       return false;
     }
     else {
