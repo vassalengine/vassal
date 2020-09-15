@@ -596,17 +596,21 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     Chatter chatter = GameModule.getGameModule().getChatter();
     chatter.send(msg);
   }
-  
+
 
   /**
    * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
    * using this method
    */
   public void keyCommand(KeyStroke e) {
+
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
-        && !Character.isISOControl(e.getKeyChar())) {
+      && !Character.isISOControl(e.getKeyChar())) {
+      if (!((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) == 0))  {
+        return;  // This catches occasional Alt+Key events that should not be forwarded to Chatter
+      }
       input.setText(input.getText() + e.getKeyChar());
-    } 
+    }
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ENTER:
