@@ -11,7 +11,7 @@
 |===
 |When added to a <<Map.adoc#top,Map>>, this component allows a player to "send up a flare" at any location on the map in order to attract other players' attention. The flare is sent by clicking on the desired location while holding down a designated modifier key (or set of them). Flares can be used both in online games (where they are sent to other players connected to the server), and in PBEM games (where they are shown to players who replay the log file).
 
-A <<Flare.adoc#top,Flare>> component is automatically added every map, starting in VASSAL 3.5. Additional flares can be added if desired.
+A <<Flare.adoc#top,Flare>> component is automatically added to every map, starting in VASSAL 3.5. Additional flares can be added if desired.
 
 To add a Flare component to a map, navigate to the appropriate _[Map]_ component in the Editor.
 Right click on the <<Map.adoc#top,Map>> component and select _Add Flare_.
