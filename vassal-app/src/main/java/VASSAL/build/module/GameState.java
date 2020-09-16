@@ -296,7 +296,7 @@ public class GameState implements CommandEncoder {
   /**
    * @return a save command if we've pre-generated one. For BasicLogger.setup() to use instead of creating it a second time from scratch.
    */
-  public Command getCachedSave {
+  public Command getCachedSave() {
     return (cachedSaveCommand == null) ? getRestoreCommand() : cachedSaveCommand;
   }
 
@@ -523,7 +523,7 @@ public class GameState implements CommandEncoder {
 
   /** Saves the game to an existing file, or prompts for a new one. */
   public void saveGame() {
-    final GameModule g = GameModule.getGameModule();
+    //final GameModule g = GameModule.getGameModule();
 
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
@@ -929,9 +929,8 @@ public class GameState implements CommandEncoder {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
-            final Command c = GameModule.getGameModule().decode(
+            return GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8));
-            return c;
           }
         }
       }
