@@ -71,7 +71,7 @@ public class GlobalCommand {
     }
 
     public String toTranslatedString() {
-      return "GlobalKeyCommand.target_" + name;
+      return "Editor.GlobalKeyCommand.target_" + name;
     }
   }
 
@@ -209,27 +209,44 @@ public class GlobalCommand {
         GamePiece[] p = map.getPieces();
         for (GamePiece gamePiece : p) {
 
-          // These basic filters are much faster than equivalent filters in the Beanshell expression
-          switch (targetType) {
-          case ZONE:
-            if (!targetZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
-              continue;
+
+          // These basic filters are hopefully(?) faster than equivalent filters in the Beanshell expression
+          // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
+          if ((targetType == GlobalCommandTarget.ZONE) || (targetType == GlobalCommandTarget.REGION)) {
+            GamePiece pp;
+            if (gamePiece instanceof Stack) {
+              Stack s;
+              s = (Stack) gamePiece;
+              pp = s.topPiece();
+              if (pp == null) {
+                continue;
+              }
             }
-            break;
-          case REGION:
-            if (!targetRegion.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
-              continue;
+            else {
+              pp = gamePiece;
             }
-            break;
-          case XY:
-            if (!targetBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+            switch (targetType) {
+            case ZONE:
+              if (!targetZone.equals((String) pp.getProperty(BasicPiece.CURRENT_ZONE))) {
+                continue;
+              }
+              break;
+            case REGION:
+              if (!targetRegion.equals((String) pp.getProperty(BasicPiece.LOCATION_NAME))) {
+                continue;
+              }
+              break;
+            }
+          }
+
+          if (targetType == GlobalCommandTarget.XY) {
+            if (!targetBoard.equals((String)gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
               continue;
             }
             Point pt = new Point (gamePiece.getPosition());
             if ((targetX != pt.getX()) || (targetY != pt.getY())) {
               continue;
             }
-            break;
           }
 
           dispatcher.accept(gamePiece);
