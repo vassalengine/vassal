@@ -31,6 +31,8 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
+import java.awt.Point;
+
 /**
  * Applies a given keyboard command to all counters on a map
  */
@@ -41,6 +43,38 @@ public class GlobalCommand {
   protected FormattedString reportFormat = new FormattedString();
   protected Loopable owner;
   protected PropertySource source;
+  protected GlobalCommandTarget targetType = GlobalCommandTarget.GAME;
+  protected String targetMap = "";
+  protected String targetBoard = "";
+  protected String targetZone = "";
+  protected String targetRegion = "";
+  protected String targetGrid = "";
+  protected int targetX = 0;
+  protected int targetY = 0;
+
+  public enum GlobalCommandTarget {
+    GAME("game"),
+    MAP("map"),
+    ZONE("zone"),
+    REGION("region"),
+    XY("xy");
+
+    private final String name;
+
+    GlobalCommandTarget(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+
+    public String toTranslatedString() {
+      return "GlobalKeyCommand.target_" + name;
+    }
+  }
+
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -83,18 +117,76 @@ public class GlobalCommand {
     this.reportSingle = reportSingle;
   }
 
+  public void setTargetType (GlobalCommandTarget targetType) {
+    this.targetType = targetType;
+  }
+
+  public GlobalCommandTarget getTargetType () {
+    return targetType;
+  }
+
+  public void setTargetX (int targetX) {
+    this.targetX = targetX;
+  }
+
+  public void setTargetY (int targetY) {
+    this.targetY = targetY;
+  }
+
+  public int getTargetX () {
+    return targetX;
+  }
+
+  public int getTargetY () {
+    return targetY;
+  }
+
+  public void setTargetMap (String targetMap) {
+    this.targetMap = targetMap;
+  }
+
+  public String getTargetMap () {
+    return targetMap;
+  }
+
+  public void setTargetBoard (String targetBoard) {
+    this.targetBoard = targetBoard;
+  }
+
+  public String getTargetBoard () {
+    return targetBoard;
+  }
+
+  public void setTargetZone (String targetZone) {
+    this.targetZone = targetZone;
+  }
+
+  public String getTargetZone () {
+    return targetZone;
+  }
+
+  public void setTargetRegion (String targetRegion) {
+    this.targetRegion = targetRegion;
+  }
+
+  public String getTargetRegion () {
+    return targetRegion;
+  }
+
+
   public Command apply(Map m, PieceFilter filter) {
     return apply(new Map[]{m}, filter);
   }
   /**
    * Apply the key command to all pieces that pass the given filter on all the given maps
    *
-   * @param m
-   * @param filter
+   * @param m list of maps
+   * @param filter beanshell filter
    * @return a the corresponding {@link Command}
    */
   public Command apply(Map[] m, PieceFilter filter) {
     Command c = new NullCommand();
+
     try {
       if (reportSingle) {
         Map.setChangeReportingEnabled(false);
@@ -106,11 +198,40 @@ public class GlobalCommand {
           GameModule.getGameModule().getChatter(), "*" + reportText);
         c.execute();
       }
+
       for (Map map : m) {
+        if ((targetType != GlobalCommandTarget.GAME) && !targetMap.isEmpty() && !targetMap.equals(map.getConfigureName())) {
+          continue;
+        }
+
         Visitor visitor = new Visitor(c, filter, keyStroke);
         DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
         GamePiece[] p = map.getPieces();
         for (GamePiece gamePiece : p) {
+
+          // These basic filters are much faster than equivalent filters in the Beanshell expression
+          switch (targetType) {
+          case ZONE:
+            if (!targetZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
+              continue;
+            }
+            break;
+          case REGION:
+            if (!targetRegion.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
+              continue;
+            }
+            break;
+          case XY:
+            if (!targetBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+              continue;
+            }
+            Point pt = new Point (gamePiece.getPosition());
+            if ((targetX != pt.getX()) || (targetY != pt.getY())) {
+              continue;
+            }
+            break;
+          }
+
           dispatcher.accept(gamePiece);
         }
         visitor.getTracker().repaint();
@@ -146,7 +267,6 @@ public class GlobalCommand {
 
     @Override
     public Object visitDeck(Deck d) {
-      Object target = null;
       if (getSelectFromDeck() != 0) {
         
         // selectFromDeck = -1 means process all cards in Deck
@@ -161,7 +281,7 @@ public class GlobalCommand {
           apply(it.nextPiece(), true);
         }
       }
-      return target;
+      return null;
     }
 
     @Override
@@ -213,8 +333,7 @@ public class GlobalCommand {
   }
 
   /**
-   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
-   * @param selectFromDeck
+   * @param selectFromDeck Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
    */
   public void setSelectFromDeck(int selectFromDeck) {
     this.selectFromDeck = selectFromDeck;
@@ -257,6 +376,24 @@ public class GlobalCommand {
       return false;
     if (selectFromDeck != other.selectFromDeck)
       return false;
+
+    // Match any specific targeting information, depending on the targeting type. targetType must always match.
+    if (targetType != other.targetType) {
+      return false;
+    }
+    if ((targetType != GlobalCommandTarget.GAME) && !targetMap.equals(other.targetMap)) {
+      return false;
+    }
+    if ((targetType == GlobalCommandTarget.ZONE) && !targetZone.equals(other.targetZone)) {
+      return false;
+    }
+    if ((targetType == GlobalCommandTarget.REGION) && !targetRegion.equals(other.targetRegion)) {
+      return false;
+    }
+    if ((targetType == GlobalCommandTarget.XY) && (!targetBoard.equals(other.targetBoard) || ((targetX != other.targetX) || (targetY != other.targetY)))) {
+      return false;
+    }
+
     return true;
   }
 
