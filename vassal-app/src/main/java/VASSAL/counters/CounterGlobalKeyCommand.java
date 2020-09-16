@@ -24,28 +24,32 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -54,8 +58,8 @@ import VASSAL.tools.SequenceEncoder;
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
  */
 public class CounterGlobalKeyCommand extends Decorator
-  implements TranslatablePiece,
-  RecursionLimiter.Loopable {
+                                     implements TranslatablePiece,
+                                                RecursionLimiter.Loopable {
   public static final String ID = "globalkey;"; // NON-NLS
   protected KeyCommand[] command;
   protected String commandName;
@@ -69,6 +73,14 @@ public class CounterGlobalKeyCommand extends Decorator
   protected String rangeProperty = "";
   private KeyCommand myCommand;
   protected String description;
+  protected GlobalCommand.GlobalCommandTarget targetType = GlobalCommand.GlobalCommandTarget.GAME;
+  protected FormattedString targetMap = new FormattedString("");
+  protected FormattedString targetBoard = new FormattedString("");
+  protected FormattedString targetZone = new FormattedString("");
+  protected FormattedString targetRegion = new FormattedString("");
+  protected int targetX = 0;
+  protected int targetY = 0;
+
 
   public CounterGlobalKeyCommand() {
     this(ID, null);
@@ -95,6 +107,22 @@ public class CounterGlobalKeyCommand extends Decorator
     rangeProperty = st.nextToken("");
     description = st.nextToken("");
     globalCommand.setSelectFromDeck(st.nextInt(-1));
+
+    String typeToken = st.nextToken(GlobalCommand.GlobalCommandTarget.GAME.toString());
+    targetType = GlobalCommand.GlobalCommandTarget.GAME;
+    for (GlobalCommand.GlobalCommandTarget t : GlobalCommand.GlobalCommandTarget.values()) {
+      if (typeToken.equals(t.toString())) {
+        targetType = t;
+        break;
+      }
+    }
+    targetMap.setFormat(st.nextToken(""));
+    targetBoard.setFormat(st.nextToken(""));
+    targetZone.setFormat(st.nextToken(""));
+    targetRegion.setFormat(st.nextToken(""));
+    targetX = st.nextInt(0);
+    targetY = st.nextInt(0);
+
     command = null;
   }
 
@@ -102,16 +130,24 @@ public class CounterGlobalKeyCommand extends Decorator
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
-      .append(key)
-      .append(globalKey)
-      .append(propertiesFilter.getExpression())
-      .append(restrictRange)
-      .append(range)
-      .append(globalCommand.isReportSingle())
+        .append(key)
+        .append(globalKey)
+        .append(propertiesFilter.getExpression())
+        .append(restrictRange)
+        .append(range)
+        .append(globalCommand.isReportSingle())
       .append(fixedRange)
       .append(rangeProperty)
       .append(description)
-      .append(globalCommand.getSelectFromDeck());
+      .append(globalCommand.getSelectFromDeck())
+      .append(targetType.toString())
+      .append(targetMap.getFormat())
+      .append(targetBoard.getFormat())
+      .append(targetZone.getFormat())
+      .append(targetRegion.getFormat())
+      .append(targetX)
+      .append(targetY);
+
     return ID + se.getValue();
   }
 
@@ -239,6 +275,11 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
+    String matchMap;
+    String matchBoard;
+    String matchZone;
+    String matchRegion;
+
     for (Map m : Map.getMapList()) {
       c = c.append(globalCommand.apply(m, filter));
     }
@@ -250,6 +291,27 @@ public class CounterGlobalKeyCommand extends Decorator
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.menu_command")));
   }
+
+  public static final String[] TARGET_OPTIONS = Arrays.stream(GlobalCommand.GlobalCommandTarget.values())
+    .map(Enum::toString)
+    .toArray(String[]::new);
+
+  public static final String[] TARGET_OPTIONS_KEYS = Arrays.stream(GlobalCommand.GlobalCommandTarget.values())
+    .map(GlobalCommand.GlobalCommandTarget::toTranslatedString)
+    .toArray(String[]::new);
+
+
+  public static class TargetOption extends TranslatableStringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return TARGET_OPTIONS;
+    }
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return TARGET_OPTIONS_KEYS;
+    }
+  }
+
 
   @Override
   public boolean testEquals(Object o) {
@@ -268,7 +330,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (! Objects.equals(description, trait.description)) return false;
     return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
   }
-  
+
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected NamedHotKeyConfigurer keyInput;
@@ -286,6 +348,25 @@ public class CounterGlobalKeyCommand extends Decorator
     protected StringConfigurer descInput;
     protected JPanel controls;
     protected TraitConfigPanel traitPanel;
+
+    protected TranslatingStringEnumConfigurer targetConfig;
+    protected FormattedStringConfigurer targetMapConfig;
+    protected FormattedStringConfigurer targetBoardConfig;
+    protected FormattedStringConfigurer targetZoneConfig;
+    protected FormattedStringConfigurer targetRegionConfig;
+    protected IntConfigurer targetXConfig;
+    protected IntConfigurer targetYConfig;
+
+    /**
+     * A configurer for our reportFormat, which includes the unique $FlareLocation$, $FlareZone$, $FlareMap$ properties as
+     * well as $PlayerName$ and $PlayerSide$ in the "Insert" pulldown.
+     */
+    //public static class ReportFormatConfig implements TranslatableConfigurerFactory {
+    //  @Override
+    //  public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+    //    return new FlareFormattedStringConfigurer(key, name, new String[0]);
+    //  }
+   // }
 
     public Ed(CounterGlobalKeyCommand p) {
 
@@ -313,11 +394,22 @@ public class CounterGlobalKeyCommand extends Decorator
       nameInput = new StringConfigurer(p.commandName);
       traitPanel.add("Editor.menu_command", nameInput);
 
-      keyInput = new NamedHotKeyConfigurer(p.key);
-      traitPanel.add("Editor.keyboard_command", keyInput);
+      targetConfig = new TranslatingStringEnumConfigurer(null, "Restrict Matches To:  ", TARGET_OPTIONS, TARGET_OPTIONS_KEYS);
+      targetConfig.setValue(p.targetType);
+      controls.add(targetConfig.getControls());
 
-      globalKey = new NamedHotKeyConfigurer(p.globalKey);
-      traitPanel.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
+      targetMapConfig = new FormattedExpressionConfigurer(null, "Restrict to Map:  ", p.targetMap.getFormat(), p);
+      controls.add(targetMapConfig.getControls());
+      targetBoardConfig = new FormattedExpressionConfigurer(null, "Restrict to Board:  ", p.targetBoard.getFormat(), p);
+      controls.add(targetBoardConfig.getControls());
+      targetZoneConfig = new FormattedExpressionConfigurer(null, "Restrict to Zone:  ", p.targetZone.getFormat(), p);
+      controls.add(targetZoneConfig.getControls());
+      targetRegionConfig = new FormattedExpressionConfigurer(null, "Restrict to Region:  ", p.targetRegion.getFormat(), p);
+      controls.add(targetRegionConfig.getControls());
+      targetXConfig = new IntConfigurer(null, "Restrict to X location:  ", p.targetX);
+      controls.add(targetXConfig.getControls());
+      targetYConfig = new IntConfigurer(null, "Restrict to Y location:  ", p.targetY);
+      controls.add(targetYConfig.getControls());
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
@@ -358,12 +450,12 @@ public class CounterGlobalKeyCommand extends Decorator
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
-        .append(keyInput.getValueString())
-        .append(globalKey.getValueString())
-        .append(propertyMatch.getValueString())
-        .append(restrictRange.getValueString())
-        .append(range.getValueString())
-        .append(suppress.booleanValue())
+          .append(keyInput.getValueString())
+          .append(globalKey.getValueString())
+          .append(propertyMatch.getValueString())
+          .append(restrictRange.getValueString())
+          .append(range.getValueString())
+          .append(suppress.booleanValue())
         .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
