@@ -105,7 +105,7 @@ $(LIBDIR)/Vengine.jar: version-set
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
