@@ -17,6 +17,7 @@ package VASSAL.configure;
 import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -45,6 +46,20 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     super(key, name, validValues);
     this.validValues = validValues;
     this.i18nKeys = i18nKeys;
+  }
+
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys) {
+    this (key, name, validValues.toArray(new String[0]), i18nKeys.toArray(new String[0]));
+  }
+
+  public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, String initialValue) {
+    this (key, name, validValues, i18nKeys);
+    setValue(initialValue);
+  }
+
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys, String initialValue) {
+    this (key, name, validValues, i18nKeys);
+    setValue(initialValue);
   }
 
   @Override
