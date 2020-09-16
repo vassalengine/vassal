@@ -242,12 +242,10 @@ public class Editor extends Launcher {
 
         // warn user if editing this module would update it to our version
         if (Info.hasOldFormat(vv)) {
-          final String version = Info.getVersion();
           WarningDialog.show(
             "Warning.module_will_be_updated",
-            lr.module.getPath(),
-            version,
-            VersionUtils.truncateToMinorVersion(version)
+            lr.module.getName(),
+            VersionUtils.truncateToMinorVersion(Info.getVersion())
           );
         }
       }
