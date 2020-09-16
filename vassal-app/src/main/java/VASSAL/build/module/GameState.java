@@ -106,6 +106,7 @@ public class GameState implements CommandEncoder {
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame;
   protected String lastSave;
+  protected Command cachedSaveCommand;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
@@ -293,6 +294,13 @@ public class GameState implements CommandEncoder {
   //
 
   /**
+   * @return a save command if we've pre-generated one. For BasicLogger.setup() to use instead of creating it a second time from scratch.
+   */
+  public Command getCachedSave {
+    return (cachedSaveCommand == null) ? getRestoreCommand() : cachedSaveCommand;
+  }
+
+  /**
    * Start/end a game.  Prompt to save if the game state has been
    * modified since last save.  Invoke {@link GameComponent#setup}
    * on all registered {@link GameComponent} objects.
@@ -336,14 +344,17 @@ public class GameState implements CommandEncoder {
       g.appendToTitle(null);
     }
 
+    cachedSaveCommand = gameStarting ? getRestoreCommand() : null;
+
     gameStarted &= this.gameStarting;
     for (GameComponent gc : gameComponents) {
       gc.setup(this.gameStarting);
     }
 
     gameStarted |= this.gameStarting;
-    lastSave = gameStarting ? saveString() : null;
+    lastSave = gameStarting ? GameModule.getGameModule().encode(cachedSaveCommand) : null;
     lastSaveFile = null;
+    cachedSaveCommand = null;
 
     if (gameStarted) {
       adjustSplitter();
