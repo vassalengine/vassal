@@ -30,21 +30,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -275,10 +272,30 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-    String matchMap;
-    String matchBoard;
-    String matchZone;
-    String matchRegion;
+    globalCommand.setTargetType(targetType);
+
+    switch (targetType) {
+    case MAP:
+      globalCommand.setTargetMap(targetMap.getText(this));
+      break;
+
+    case ZONE:
+      globalCommand.setTargetMap(targetMap.getText(this));
+      globalCommand.setTargetZone(targetZone.getText(this));
+      break;
+
+    case REGION:
+      globalCommand.setTargetMap(targetMap.getText(this));
+      globalCommand.setTargetRegion(targetRegion.getText(this));
+      break;
+
+    case XY:
+      globalCommand.setTargetMap(targetMap.getText(this));
+      globalCommand.setTargetBoard(targetBoard.getText(this));
+      globalCommand.setTargetX(targetX);
+      globalCommand.setTargetY(targetY);
+      break;
+    }
 
     for (Map m : Map.getMapList()) {
       c = c.append(globalCommand.apply(m, filter));
@@ -350,10 +367,10 @@ public class CounterGlobalKeyCommand extends Decorator
     protected TraitConfigPanel traitPanel;
 
     protected TranslatingStringEnumConfigurer targetConfig;
-    protected FormattedStringConfigurer targetMapConfig;
-    protected FormattedStringConfigurer targetBoardConfig;
-    protected FormattedStringConfigurer targetZoneConfig;
-    protected FormattedStringConfigurer targetRegionConfig;
+    protected GamePieceFormattedStringConfigurer targetMapConfig;
+    protected GamePieceFormattedStringConfigurer targetBoardConfig;
+    protected GamePieceFormattedStringConfigurer targetZoneConfig;
+    protected GamePieceFormattedStringConfigurer targetRegionConfig;
     protected IntConfigurer targetXConfig;
     protected IntConfigurer targetYConfig;
 
@@ -372,14 +389,14 @@ public class CounterGlobalKeyCommand extends Decorator
 
       PropertyChangeListener pl = evt -> {
 
-        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+          boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+          boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
-        range.getControls().setVisible(isRange && isFixed);
+          range.getControls().setVisible(isRange && isFixed);
         rangeLabel.setVisible(isRange && isFixed);
-        fixedRange.getControls().setVisible(isRange);
+          fixedRange.getControls().setVisible(isRange);
         fixedRangeLabel.setVisible(isRange);
-        rangeProperty.getControls().setVisible(isRange && !isFixed);
+          rangeProperty.getControls().setVisible(isRange && !isFixed);
         rangePropertyLabel.setVisible(isRange && !isFixed);
 
         repack(range);
@@ -395,17 +412,26 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add("Editor.menu_command", nameInput);
 
       targetConfig = new TranslatingStringEnumConfigurer(null, "Restrict Matches To:  ", TARGET_OPTIONS, TARGET_OPTIONS_KEYS);
-      targetConfig.setValue(p.targetType);
+      targetConfig.setValue(p.targetType.toString());
+      targetConfig.addPropertyChangeListener(e -> updateVisibility());
       controls.add(targetConfig.getControls());
 
-      targetMapConfig = new FormattedExpressionConfigurer(null, "Restrict to Map:  ", p.targetMap.getFormat(), p);
+      targetMapConfig = new GamePieceFormattedStringConfigurer(null, "Restrict to Map:  "); //, p.targetMap.getFormat(), p);
+      targetMapConfig.setValue(p.targetMap.getFormat());
       controls.add(targetMapConfig.getControls());
-      targetBoardConfig = new FormattedExpressionConfigurer(null, "Restrict to Board:  ", p.targetBoard.getFormat(), p);
+
+      targetBoardConfig = new GamePieceFormattedStringConfigurer(null, "Restrict to Board:  "); //, p.targetBoard.getFormat(), p);
+      targetBoardConfig.setValue(p.targetBoard.getFormat());
       controls.add(targetBoardConfig.getControls());
-      targetZoneConfig = new FormattedExpressionConfigurer(null, "Restrict to Zone:  ", p.targetZone.getFormat(), p);
+
+      targetZoneConfig = new GamePieceFormattedStringConfigurer(null, "Restrict to Zone:  "); //, p.targetZone.getFormat(), p);
+      targetZoneConfig.setValue(p.targetZone.getFormat());
       controls.add(targetZoneConfig.getControls());
-      targetRegionConfig = new FormattedExpressionConfigurer(null, "Restrict to Region:  ", p.targetRegion.getFormat(), p);
+
+      targetRegionConfig = new GamePieceFormattedStringConfigurer(null, "Restrict to Region:  "); //, p.targetRegion.getFormat(), p);
+      targetRegionConfig.setValue(p.targetRegion.getFormat());
       controls.add(targetRegionConfig.getControls());
+
       targetXConfig = new IntConfigurer(null, "Restrict to X location:  ", p.targetX);
       controls.add(targetXConfig.getControls());
       targetYConfig = new IntConfigurer(null, "Restrict to Y location:  ", p.targetY);
@@ -438,7 +464,24 @@ public class CounterGlobalKeyCommand extends Decorator
       suppress = new BooleanConfigurer(p.globalCommand.isReportSingle());
       traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress", suppress);
 
+      updateVisibility();
+
       pl.propertyChange(null);
+    }
+
+    public void updateVisibility () {
+      String value = targetConfig.getValueString();
+      targetMapConfig.getControls().setVisible(!GlobalCommand.GlobalCommandTarget.GAME.toString().equals(value));
+      targetBoardConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.toString().equals(value));
+      targetZoneConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.ZONE.toString().equals(value));
+      targetRegionConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.REGION.toString().equals(value));
+      targetXConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.toString().equals(value));
+      targetYConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.toString().equals(value));
+
+      Window w = SwingUtilities.getWindowAncestor(controls);
+      if (w != null) {
+        w.pack();
+      }
     }
 
     @Override
@@ -459,7 +502,14 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
-        .append(deckPolicy.getIntValue());
+        .append(deckPolicy.getIntValue())
+        .append(targetConfig.getValueString())
+        .append(targetMapConfig.getValueString())
+        .append(targetBoardConfig.getValueString())
+        .append(targetZoneConfig.getValueString())
+        .append(targetRegionConfig.getValueString())
+        .append(targetXConfig.getValueString())
+        .append(targetYConfig.getValueString());
       return ID + se.getValue();
     }
 
