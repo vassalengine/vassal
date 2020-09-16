@@ -32,6 +32,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
+import java.util.Arrays;
 
 /**
  * Applies a given keyboard command to all counters on a map
@@ -52,12 +53,15 @@ public class GlobalCommand {
   protected int targetX = 0;
   protected int targetY = 0;
 
+  /**
+   * Levels of pre-filtering of piece location for Global Key Commands.
+   */
   public enum GlobalCommandTarget {
-    GAME("game"),
-    MAP("map"),
-    ZONE("zone"),
-    REGION("region"),
-    XY("xy");
+    GAME("game"),        //NON-NLS
+    MAP("map"),          //NON-NLS
+    ZONE("zone"),        //NON-NLS
+    REGION("region"),    //NON-NLS
+    XY("xy");            //NON-NLS
 
     private final String name;
 
@@ -71,7 +75,19 @@ public class GlobalCommand {
     }
 
     public String toTranslatedString() {
-      return "Editor.GlobalKeyCommand.target_" + name;
+      return "Editor.GlobalKeyCommand.target_" + name;  //NON-NLS
+    }
+
+    public static String[] getKeys() {
+      return Arrays.stream(values())
+        .map(Enum::toString)
+        .toArray(String[]::new);
+    }
+
+    public static String[] geti18nKeys() {
+      return Arrays.stream(values())
+        .map(GlobalCommandTarget::toTranslatedString)
+        .toArray(String[]::new);
     }
   }
 
@@ -195,7 +211,7 @@ public class GlobalCommand {
       String reportText = reportFormat.getLocalizedText(source);
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(
-          GameModule.getGameModule().getChatter(), "*" + reportText);
+          GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
         c.execute();
       }
 
@@ -413,5 +429,4 @@ public class GlobalCommand {
 
     return true;
   }
-
 }
