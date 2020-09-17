@@ -1,3 +1,8 @@
+3.4.3 - ???
+
+* 13404: Use better color picker on Linux
+* 13307: Background transparency in Text Labels not working
+
 3.4.2 - 17 September 2020
 
 * 13425: Legacy property match expressions no longer evaluated == or !=
