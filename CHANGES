@@ -1,6 +1,5 @@
 3.5.0-beta1 - ???
 
-* 13404: Use better color picker on Linux
 * 13363: buildFile renamed to buildFile.xml
 * 13355: Threshold for centering on opponent's move is now configurable
 * 13354: Add a chatter message when starting to write a logfile
@@ -8,7 +7,6 @@
 * 13336: Incorrect date format in SecretNotesController
 * 13326: Saving a module will default to .vmod, an extension to .vext
 * 13323: Player switching sides now reported in Chat Log
-* 13307: Background transparency in Text Labels not working
 * 13297: Ability to Deselect a piece with a Key Command (also remove it from
     its stack)
 * 13296: Flare feature for map
@@ -16,6 +14,11 @@
 * 13098: Move Compatibility related preferences on the General tab to a new
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
+
+3.4.3 - ???
+
+* 13404: Use better color picker on Linux
+* 13307: Background transparency in Text Labels not working
 
 3.4.2 - 17 September 2020
 
