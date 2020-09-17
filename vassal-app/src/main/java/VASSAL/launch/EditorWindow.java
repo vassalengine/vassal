@@ -355,7 +355,7 @@ public abstract class EditorWindow extends JFrame {
 
   void setModuleName (String name) {
     if (isTempFile(name)) {
-      moduleName = "Creating New Module";
+      moduleName = Resources.getString("Resources.ModuleEditor.creating_new_module");
     }
     else {
       moduleName = name;
@@ -365,7 +365,7 @@ public abstract class EditorWindow extends JFrame {
 
   void setExtensionName (String name) {
     if (isTempFile(name)) {
-      extensionName = "Creating New Extension";
+      extensionName = Resources.getString("Resources.ExtensionEditor.creating_new_extension");
     }
     else {
       extensionName = name;

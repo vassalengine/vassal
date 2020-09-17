@@ -69,12 +69,12 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   public String getEditorType() {
-    return "Module";
+    return Resources.getString("Editor.ModuleEditor.component_type");
   }
 
   @Override
   public void updateWindowTitle() {
-    String title = "VASSAL Module Editor";
+    String title = Resources.getString("Editor.ModuleEditor.editor_name");
 
     if (!StringUtils.isEmpty(moduleName)) {
       title = title + " - " + moduleName;

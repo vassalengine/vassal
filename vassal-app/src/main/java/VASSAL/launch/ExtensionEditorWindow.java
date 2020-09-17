@@ -23,6 +23,7 @@ import javax.swing.JDialog;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ExtensionTree;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.lang3.StringUtils;
@@ -65,17 +66,17 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   public String getEditorType() {
-    return "Extension";
+    return Resources.getString("Editor.ExtensionEditor.component_type");
   }
 
   @Override
   public void updateWindowTitle() {
-    String title = "VASSAL Extension Editor";
+    String title = Resources.getString("Editor.ExtensionEditor.editor_name");
 
     if (!StringUtils.isEmpty(extensionName)) {
-      title = title + " - " + extensionName;
+      title = title + " - " + extensionName; //NON-NLS
       if (!StringUtils.isEmpty(moduleName)) {
-        title = title + " (extends " + moduleName + ")";
+        title = title + Resources.getString("Editor.ExtensionEditor.extends_what_module", moduleName);
       }
     }
 
