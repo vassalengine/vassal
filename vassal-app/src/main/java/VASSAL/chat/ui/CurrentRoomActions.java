@@ -28,6 +28,7 @@ import VASSAL.chat.SimplePlayer;
  */
 
 /** Interface for user interactions with players in the current room */
+@FunctionalInterface
 public interface CurrentRoomActions {
   JPopupMenu buildPopupForPlayer(SimplePlayer p, JTree tree);
 }

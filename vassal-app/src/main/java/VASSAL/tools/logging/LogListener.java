@@ -18,6 +18,7 @@
 
 package VASSAL.tools.logging;
 
+@FunctionalInterface
 @Deprecated
 public interface LogListener {
   void handle(LogEntry e);

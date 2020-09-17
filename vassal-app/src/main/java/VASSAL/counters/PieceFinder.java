@@ -26,6 +26,7 @@ import VASSAL.build.module.Map;
 /**
  * This interface defines selection criteria for finding a GamePiece in a Map
  */
+@FunctionalInterface
 public interface PieceFinder {
   /** Return the argument GamePiece (or one of its children if a Stack) found at the given point on the given Map */
   public GamePiece select(Map map, GamePiece piece, Point pt);

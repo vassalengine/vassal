@@ -23,6 +23,7 @@ package VASSAL.counters;
  * their state.  The <code>merge</code> method applies the diff between an "old" and a "new"
  * state to the current state of the piece.
  */
+@FunctionalInterface
 public interface StateMergeable {
   /**
    * Compute the difference between <code>newState</code> and <code>oldState</code>

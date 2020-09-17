@@ -53,6 +53,7 @@ public class PropertyPrompt implements PropertyChanger {
     return promptText;
   }
 
+  @FunctionalInterface
   public interface DialogParent {
     Component getComponent();
   }
