@@ -77,7 +77,6 @@ import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.jdesktop.animation.timing.Animator;
@@ -2583,12 +2582,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return;
     }
     Component c = theMap.getTopLevelAncestor();
-      if (c instanceof JFrame) {
-        ((JFrame) c).setTitle(getDefaultWindowTitle());
-      }
-      if (c instanceof JDialog) {
-        ((JDialog) c).setTitle(getDefaultWindowTitle());
-      }
+    if (c instanceof JFrame) {
+      ((JFrame) c).setTitle(getDefaultWindowTitle());
+    }
+    if (c instanceof JDialog) {
+      ((JDialog) c).setTitle(getDefaultWindowTitle());
     }
   }
 
