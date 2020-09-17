@@ -290,7 +290,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     KeyBuffer.getBuffer().clear();
     DragBuffer.getBuffer().clear();
-    GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
+    // Add a PieceWrapper to any pieces created using this PieceSlot
+    GamePiece newPiece = PieceCloner.getInstance().cloneAndWrapPiece(getPiece());
     newPiece.setProperty(Properties.PIECE_ID, getGpId());
     DragBuffer.getBuffer().add(newPiece);
   }

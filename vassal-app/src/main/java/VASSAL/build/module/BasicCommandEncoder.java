@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.counters.PieceWrapper;
 import java.awt.Point;
 import java.util.Map;
 
@@ -159,6 +160,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       }
       return e;
     }),
+    Map.entry(PieceWrapper.ID, PieceWrapper::new),
     Map.entry(Embellishment.OLD_ID, Embellishment::new),
     Map.entry(Hideable.ID, Hideable::new),
     Map.entry(Obscurable.ID, Obscurable::new),
@@ -407,13 +409,30 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   public String encode(Command c) {
     SequenceEncoder se = new SequenceEncoder(PARAM_SEPARATOR);
     if (c instanceof AddPiece) {
-      AddPiece a = (AddPiece) c;
-      return ADD +
-        se
-          .append(wrapNull(a.getTarget().getId()))
-          .append(a.getTarget().getType())
-          .append(a.getState())
-          .getValue();
+
+      final AddPiece a = (AddPiece) c;
+
+      // Strip a PieceWrapper if it exists by encoding the wrapped piece
+      if (a.getTarget() instanceof PieceWrapper) {
+        // AddPiece stores they piece and its state separately, so apply the state to the wrapper
+        // before encoding the inner
+        final PieceWrapper wrapper = (PieceWrapper) a.getTarget();
+        wrapper.setState(a.getState());
+        return ADD +
+          se
+            .append(wrapNull(wrapper.getId()))
+            .append(wrapper.getInner().getType())
+            .append(wrapper.getInner().getState())
+            .getValue();
+      }
+      else {
+        return ADD +
+          se
+            .append(wrapNull(a.getTarget().getId()))
+            .append(a.getTarget().getType())
+            .append(a.getState())
+            .getValue();
+      }
     }
     else if (c instanceof RemovePiece) {
       return REMOVE + ((RemovePiece) c).getId();
