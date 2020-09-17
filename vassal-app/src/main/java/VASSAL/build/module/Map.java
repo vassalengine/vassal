@@ -2577,6 +2577,20 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return null;
   }
 
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
+  public void appendToTitle(String s) {
+    // replaced by updateTitleBar()
+  }
+
+
+  /**
+   * Updates the title bar of the current window
+   */
   public void updateTitleBar() {
     if (mainWindowDock != null) {
       return;
@@ -2590,6 +2604,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   }
 
+  /**
+   * @return The correct current default window title
+   */
   protected String getDefaultWindowTitle() {
     if (getLocalizedMapName().length() > 0) {
       return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName()); //$NON-NLS-1$
