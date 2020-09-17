@@ -160,6 +160,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
         setup(true);
       }
@@ -174,6 +175,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
       }
     };
@@ -275,6 +277,7 @@ public class GameState implements CommandEncoder {
    * <em>NOTE: This method is not for use in custom code.</em>
    */
   public void setup(boolean gameStarting, boolean gameUpdating) {
+    GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     this.gameUpdating = gameUpdating;
     setup(gameStarting);
   }
@@ -334,7 +337,6 @@ public class GameState implements CommandEncoder {
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     }
 
     gameStarted &= this.gameStarting;
