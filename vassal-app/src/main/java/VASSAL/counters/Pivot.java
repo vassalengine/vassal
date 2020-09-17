@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.command.ChangeTracker;
@@ -79,7 +80,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Pivot.htm");
+    return HelpFile.getReferenceManualPage("Pivot.html");
   }
 
   @Override
@@ -139,7 +140,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         rotator.setAngle(oldAngle - angle);
         double newAngle = rotator.getAngle();
         if (getMap() != null) {
-          c = setOldProperties(this);
+          c = putOldProperties(this);
           Point pos = getPosition();
           pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
           GamePiece outer = Decorator.getOutermost(this);
@@ -152,11 +153,13 @@ public class Pivot extends Decorator implements TranslatablePiece {
           getMap().placeOrMerge(outer, pos);
           c = c.append(moveTracker.getMoveCommand());
           MovementReporter r = new MovementReporter(c);
-          Command reportCommand = r.getReportCommand();
-          if (reportCommand != null) {
-            reportCommand.execute();
+          if (GlobalOptions.getInstance().autoReportEnabled()) {
+            Command reportCommand = r.getReportCommand();
+            if (reportCommand != null) {
+              reportCommand.execute();
+            }
+            c = c.append(reportCommand);
           }
-          c = c.append(reportCommand);
           c = c.append(r.markMovedPieces());
           getMap().ensureVisible(getMap().selectionBoundsOf(outer));
         }
@@ -165,7 +168,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         }
       }
       else if (getMap() != null) {
-        setOldProperties(this);
+        c = putOldProperties(this);
         final double oldAngle = rotator.getAngleInRadians();
         Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
         AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
@@ -177,7 +180,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     }
     // Apply map auto-move key
     if (c != null && getMap() != null && getMap().getMoveKey() != null) {
-      c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
+      c = c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
     }
     return c;
   }

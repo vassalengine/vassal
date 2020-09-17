@@ -18,7 +18,6 @@
  */
 package VASSAL.build.widget;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,8 +39,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.apache.batik.ext.swing.Resources;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -49,10 +46,8 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.MenuDisplayer;
 import VASSAL.build.module.map.PieceMover.AbstractDragHandler;
 import VASSAL.command.AddPiece;
@@ -495,7 +490,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm");
+    return HelpFile.getReferenceManualPage("GamePiece.html");
   }
 
   @Override
@@ -565,6 +560,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void updateGpId(GpIdSupport s) {
     gpidSupport = s;
     updateGpId();
+  }
+
+  public void setGpidSupport(GpIdSupport s) {
+    gpidSupport = s;
   }
 
   /**

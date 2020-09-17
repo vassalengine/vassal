@@ -125,7 +125,7 @@ public class SpecialDieFace extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

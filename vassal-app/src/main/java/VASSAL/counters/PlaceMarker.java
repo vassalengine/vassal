@@ -188,24 +188,40 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
         !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
         m.getPieceCollection().canMerge(outer, marker)) {
-      final Stack parent = getParent();
       GamePiece target = outer;
       int index = -1;
-      switch (placement) {
-      case ABOVE:
-        target = outer;
-        break;
-      case BELOW:
-        index = parent == null ? 0 : parent.indexOf(outer);
-        break;
-      case STACK_BOTTOM:
-        index = 0;
-        break;
-      case STACK_TOP:
-        target = parent == null ? outer : parent;
+      Stack parent = getParent();
+
+      if (parent == null) {
+        // we're not in a stack now, but we will be _after_ the merge
+        if (placement == STACK_BOTTOM || placement == BELOW) {
+          index = 0;
+        }
       }
+      else {
+        // we're in a stack already
+        switch (placement) {
+        case STACK_TOP:
+          target = parent;
+          break;
+        case STACK_BOTTOM:
+          index = 0;
+          break;
+        case ABOVE:
+          break;
+        case BELOW:
+          index = parent.indexOf(outer);
+        }
+      }
+
       c = m.getStackMetrics().merge(target, marker);
+
       if (index >= 0) {
+        // we need to adjust the marker's position in the Stack
+        if (parent == null) {
+          // get the newly formed Stack if there hadn't been one before
+          parent = target.getParent();
+        }
         final ChangeTracker ct = new ChangeTracker(parent);
         parent.insert(marker, index);
         c = c.append(ct.getChangeCommand());
@@ -252,7 +268,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   /**
    * The marker, with prototypes fully expanded
    *
-   * @return
+   * @return new Marker
    */
   public GamePiece createMarker() {
     GamePiece piece = createBaseMarker();
@@ -270,7 +286,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   /**
    * The marker, with prototypes unexpanded
    *
-   * @return
+   * @return New Base Marker
    */
   public GamePiece createBaseMarker() {
     if (markerSpec == null) {
@@ -331,7 +347,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Marker.htm");
+    return HelpFile.getReferenceManualPage("Marker.html");
   }
 
   @Override
@@ -419,7 +435,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
-      pieceInput.updateGpId(piece.gpidSupport);
+      pieceInput.setGpidSupport(piece.gpidSupport);
       pieceInput.setGpId(piece.getGpId());
       markerSlotPath = piece.markerSpec;
       p = new JPanel();
@@ -437,21 +453,17 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         }
       });
       b.add(defineButton);
-      selectButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
-          d.setVisible(true);
-          if (d.getTarget() instanceof PieceSlot) {
-            pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
-          }
-          if (d.getPath() != null) {
-            markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
-            slotId = "";
-          }
-          else {
-            markerSlotPath = null;
-          }
+      selectButton.addActionListener(e -> {
+        ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
+        d.setVisible(true);
+        if (d.getTarget() instanceof PieceSlot) {
+          pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
+        }
+        if (d.getPath() != null) {
+          markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
+        }
+        else {
+          markerSlotPath = null;
         }
       });
       b.add(selectButton);
@@ -465,12 +477,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       if (aboveConfig != null) {
         aboveConfig.setValue(piece.above);
         p.add(aboveConfig.getControls());
-        ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
-          }
-        });
+        ((JCheckBox) matchRotationConfig.getControls()).addActionListener(e -> aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected()));
         aboveConfig.getControls().setVisible(piece.matchRotation);
       }
       placementConfig = new JComboBox<>(new String[]{"On top of stack", "On bottom of stack", "Above this piece", "Below this piece"});

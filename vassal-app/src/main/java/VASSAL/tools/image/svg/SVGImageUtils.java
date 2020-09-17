@@ -35,7 +35,6 @@ import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.UnitProcessor;
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.dom.GenericDOMImplementation;

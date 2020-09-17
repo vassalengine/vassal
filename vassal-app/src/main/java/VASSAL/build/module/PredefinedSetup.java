@@ -259,7 +259,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public boolean isMenu() {

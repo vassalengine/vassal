@@ -442,7 +442,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent e) {
         if (cutData != null) {
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
-          if (!cutData.isNodeAncestor(targetNode)) {
+          if (targetNode.isNodeAncestor(cutData)) {
             chat (Resources.getString("Editor.cant_cut_ancestor_to_child"));
             return;
           }
@@ -1102,7 +1102,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       else if (copyCmd.equals(action)) {
         a = buildCopyAction(target);
       }
-      else if (pasteCmd.equals(action) || action.equals(pasteKey.getKeyChar())) {
+      else if (pasteCmd.equals(action) || action.equals(String.valueOf(pasteKey.getKeyChar()))) {
         a = buildPasteAction(target);
       }
       else if (deleteCmd.equals(action)) {

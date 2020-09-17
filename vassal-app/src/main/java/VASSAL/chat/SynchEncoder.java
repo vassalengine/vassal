@@ -35,24 +35,20 @@ public class SynchEncoder implements CommandEncoder {
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith(COMMAND_PREFIX)) {
-      Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
-      return new SynchCommand(p, client);
-    }
-    else {
+    if (!s.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+    Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
+    return new SynchCommand(p, client);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof SynchCommand) {
-      SynchCommand cmd = (SynchCommand) c;
-      return COMMAND_PREFIX + playerEncoder.playerToString(cmd.getPlayer());
-    }
-    else {
+    if (!(c instanceof SynchCommand)) {
       return null;
     }
+    SynchCommand cmd = (SynchCommand) c;
+    return COMMAND_PREFIX + playerEncoder.playerToString(cmd.getPlayer());
   }
 
 }

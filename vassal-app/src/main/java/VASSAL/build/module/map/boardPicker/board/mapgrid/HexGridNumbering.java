@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
-import VASSAL.counters.Labeler;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
@@ -181,10 +181,10 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     Font f = new Font("Dialog", Font.PLAIN, size);
     Point p = new Point();
-    int alignment = Labeler.TOP;
+    int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
     if (grid.isSideways() || rotateTextDegrees != 0) {
-      alignment = Labeler.CENTER;
+      alignment = LabelUtils.CENTER;
       offset = 0;
     }
 
@@ -211,12 +211,11 @@ public class HexGridNumbering extends RegularGridNumbering {
         gridp.y = (int) Math.round(gridp.y / scale);
 
         centerPoint = offsetLabelCenter(p, scale);
-        Labeler.drawLabel(g2d, getName(getRow(gridp), getColumn(gridp)),
-                          centerPoint.x,
-                          centerPoint.y,
-                          f,
-                          Labeler.CENTER,
-                          alignment, color, null, null);
+        LabelUtils.drawLabel(
+          g2d, getName(getRow(gridp), getColumn(gridp)),
+          centerPoint.x, centerPoint.y,
+          f, LabelUtils.CENTER, alignment, color, null, null
+        );
 
         p.setLocation((int) Math.round(x + deltaX), (int) Math.round(y + deltaY / 2) + offset);
         gridp = new Point(p.x, p.y - offset);
@@ -229,12 +228,11 @@ public class HexGridNumbering extends RegularGridNumbering {
         gridp.y = (int) Math.round(gridp.y / scale);
 
         centerPoint = offsetLabelCenter(p, scale);
-        Labeler.drawLabel(g2d, getName(getRow(gridp), getColumn(gridp)),
-                          centerPoint.x,
-                          centerPoint.y,
-                          f,
-                          Labeler.CENTER,
-                          alignment, color, null, null);
+        LabelUtils.drawLabel(
+          g2d, getName(getRow(gridp), getColumn(gridp)),
+          centerPoint.x, centerPoint.y,
+          f, LabelUtils.CENTER, alignment, color, null, null
+        );
       }
     }
     if (rotateTextDegrees != 0) {

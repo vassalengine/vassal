@@ -85,13 +85,13 @@ public class Editor extends Launcher {
       msg = new AbstractLaunchAction.NotifyNewModuleOk(lr);
       break;
     case EDIT_EXT:
-      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       GameModule.getGameModule().getPlayerWindow().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
       msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case NEW_EXT:
-      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       final JFrame f = GameModule.getGameModule().getPlayerWindow();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
@@ -219,10 +219,10 @@ public class Editor extends Launcher {
           return;
         }
 
-        // don't permit loading of VASL saved with 3.2 or earlier
+        // don't permit loading of VASL saved before 3.4
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
-          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.3.0") < 0) {
+          if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
             if ("VASL".equals(md.getName())) {
               ErrorDialog.show(
                 "Error.VASL_too_old",
@@ -244,9 +244,8 @@ public class Editor extends Launcher {
         if (Info.hasOldFormat(vv)) {
           WarningDialog.show(
             "Warning.module_will_be_updated",
-            lr.module.getPath(),
-            Info.getVersion(),
-            "3.2"
+            lr.module.getName(),
+            VersionUtils.truncateToMinorVersion(Info.getVersion())
           );
         }
       }

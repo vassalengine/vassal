@@ -46,7 +46,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
 import VASSAL.i18n.Resources;
@@ -87,6 +86,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   protected Color gameMsg, gameMsg2, gameMsg3, gameMsg4, gameMsg5;
   protected Color systemMsg, myChat, otherChat;
+  protected boolean needUpdate;
 
   protected JTextArea conversation;    // Backward compatibility for overridden classes. Needs something to suppress.
 
@@ -160,7 +160,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
   
 
-  private String formatChat(String text) {
+  protected String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
     return String.format("&lt;%s&gt; - %s", id.isEmpty() ? "(" + getAnonymousUserName() + ")" : id, text); //HTML-friendly angle brackets //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
@@ -186,10 +186,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @param s            - chat message
    * @param style        - current style name (contains information that might be useful)
    * @param html_allowed - flag if html_processing is enabled for this message (allows console to apply security considerations)
+   * @return true        - if was accepted as a console command
    */
   @SuppressWarnings("unused")
-  public void consoleHook(String s, String style, boolean html_allowed) {
-    
+  public boolean consoleHook(String s, String style, boolean html_allowed) {
+    return false;
   }
   
 
@@ -350,8 +351,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
     }
-    conversationPane.update(conversationPane.getGraphics()); // Force graphics to update
-    consoleHook(s, style, html_allowed);             
+
+    conversationPane.repaint();
+
+    consoleHook(s, style, html_allowed);
   }
 
   /**
@@ -571,12 +574,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     
-    // Put up the HTML Enable/Disable checkbox if we're supposed to have it.
-    if (GlobalOptions.PROMPT.equals(GlobalOptions.getInstance().chatterHTMLSetting())) {
-      BooleanConfigurer config2 = new BooleanConfigurer(GlobalOptions.CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-      globalPrefs.addOption(Resources.getString("Chatter.chat_window"), config2);        
-    }
-
     makeStyleSheet(myFont);
   }
 
@@ -586,22 +583,18 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith("CHAT")) { //$NON-NLS-1$
-      return new DisplayText(this, s.substring(4));
-    } 
-    else {
+    if (!s.startsWith(DisplayText.PREFIX)) {
       return null;
     }
+    return new DisplayText(this, s.substring(DisplayText.PREFIX.length()));
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof DisplayText) {
-      return "CHAT" + ((VASSAL.build.module.Chatter.DisplayText) c).getMessage(); //$NON-NLS-1$
-    } 
-    else {
+    if (!(c instanceof DisplayText)) {
       return null;
     }
+    return DisplayText.PREFIX + ((DisplayText) c).getMessage();
   }
   
   
@@ -625,17 +618,21 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     Chatter chatter = GameModule.getGameModule().getChatter();
     chatter.send(msg);
   }
-  
+
 
   /**
    * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
    * using this method
    */
   public void keyCommand(KeyStroke e) {
+
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
-        && !Character.isISOControl(e.getKeyChar())) {
+      && !Character.isISOControl(e.getKeyChar())) {
+      if (!((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) == 0))  {
+        return;  // This catches occasional Alt+Key events that should not be forwarded to Chatter
+      }
       input.setText(input.getText() + e.getKeyChar());
-    } 
+    }
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ENTER:
@@ -658,6 +655,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * This is a {@link Command} object that, when executed, displays
    * a text message in the Chatter's text area     */
   public static class DisplayText extends Command {
+
+    public static final String PREFIX = "CHAT";  //$NON-NLS-1$
+
     private String msg;
     private final Chatter c;
 

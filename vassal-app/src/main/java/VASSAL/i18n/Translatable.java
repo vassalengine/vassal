@@ -17,17 +17,33 @@
  */
 package VASSAL.i18n;
 
+import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 
 /**
- * Components that have any translatable fields, or have any Translatable
- * children, must implement Translatable
+ * Defines VASSAL's standard interface for getting and setting XML (buildFile) attributes,
+ * as well as attendant i18n translatable field infrastructure.
+ * Components which have any translatable fields, or have any Translatable
+ * children, must implement Translatable.
  */
-
 public interface Translatable extends Buildable {
+  ComponentI18nData getI18nData();
 
-  public ComponentI18nData getI18nData();
-  public String getAttributeValueString(String attr);
-  public void setAttribute(String attr, Object value);
+  /**
+   * @return a String representation of the attribute with the given name. When initializing a module, this String value will be passed to
+   * {@link #setAttribute}.
+   *
+   * @param key the name of the attribute. If the implementing class extends {@link AbstractConfigurable}, will be one of those listed in {@link AbstractConfigurable#getAttributeNames}.
+   */
+  String getAttributeValueString(String key);
 
+  /**
+   * Sets a buildFile (XML) attribute value for this component.
+   *
+   * @param key the name of the attribute. If the implementing class extends {@link AbstractConfigurable}, will be one of those listed in {@link AbstractConfigurable#getAttributeNames}.
+   * @param value If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   *              <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> can also be an instance of
+   *              the corresponding Class listed in {@link AbstractConfigurable#getAttributeTypes}
+   */
+  void setAttribute(String key, Object value);
 }

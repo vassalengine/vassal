@@ -65,7 +65,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SubMenu.htm");
+    return HelpFile.getReferenceManualPage("SubMenu.html");
   }
 
   @Override

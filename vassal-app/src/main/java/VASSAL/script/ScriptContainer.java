@@ -95,7 +95,7 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Script.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Script.html"); //$NON-NLS-1$
   }
 
   @Override

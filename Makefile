@@ -38,7 +38,7 @@ SHELL:=/bin/bash
 
 LIBDIR:=release-prepare/target/lib
 TMPDIR:=tmp
-DOCDIR:=vassal-doc/target
+DOCDIR:=release-prepare/target/doc
 DISTDIR:=dist
 JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
@@ -46,8 +46,9 @@ JDOCDIR:=jdoc
 # numeric part of the version only
 VNUM:=3.5.0
 
-MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+#MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta1
+MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -79,7 +80,7 @@ JLINK:=$(JAVAPATH)/jlink
 DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 
 NSIS:=makensis
-LAUNCH4J:=~/java/launch4j/launch4j
+LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
 
 SKIPS:=
 
@@ -104,7 +105,7 @@ $(LIBDIR)/Vengine.jar: version-set
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	$(JDEPS) --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png

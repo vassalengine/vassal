@@ -10,7 +10,10 @@
 
     <artifactId>vassal-doc</artifactId>
     <version>3.5.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+
+    <properties>
+        <main.basedir>${project.basedir}${file.separator}..</main.basedir>
+    </properties>
 
     <build>
         <plugins>
@@ -26,6 +29,22 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <id>output-readme-referencemanual</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>src/main/readme-referencemanual</sourceDirectory>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <backend>html</backend>
+                            <preserveDirectories>true</preserveDirectories>
+                            <attributes>
+                                <filetype>htm</filetype>
+                            </attributes>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>output-userguide</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -33,7 +52,7 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/userguide</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/userguide</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/userguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
                                 <pagenums/>
@@ -51,7 +70,8 @@
                         </goals>
                         <configuration>
                             <sourceDirectory>src/main/designerguide</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/designerguide</outputDirectory>
+                            <sourceDocumentName>designerguide.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.outputDirectory}/designerguide</outputDirectory>
                             <backend>pdf</backend>
                             <attributes>
                                 <pagenums/>
@@ -59,26 +79,6 @@
                                 <idprefix/>
                                 <idseparator>-</idseparator>
                             </attributes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>

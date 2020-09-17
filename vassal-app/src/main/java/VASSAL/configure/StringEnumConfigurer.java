@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -15,23 +14,10 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 20, 2002
- * Time: 3:52:36 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -64,13 +50,10 @@ public class StringEnumConfigurer extends Configurer {
       else if (validValues.length > 0) {
         box.setSelectedIndex(0);
       }
-      box.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          noUpdate = true;
-          setValue(box.getSelectedItem());
-          noUpdate = false;
-        }
+      box.addActionListener(e -> {
+        noUpdate = true;
+        setValue(box.getSelectedItem());
+        noUpdate = false;
       });
       panel.add(box);
     }
@@ -130,13 +113,8 @@ public class StringEnumConfigurer extends Configurer {
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"});
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getPropertyName() + " = " + evt.getNewValue());
-      }
-    });
+    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
+    c.addPropertyChangeListener(evt -> System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()));
     f.add(c.getControls());
     f.pack();
     f.setVisible(true);

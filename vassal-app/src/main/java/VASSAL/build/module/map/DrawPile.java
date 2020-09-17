@@ -785,7 +785,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Deck.htm");
+    return HelpFile.getReferenceManualPage("Deck.html");
   }
 
   public static String getConfigureTypeName() {

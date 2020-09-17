@@ -284,7 +284,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "HidePieces");
+    return HelpFile.getReferenceManualPage("Map.html", "HidePieces");
   }
 
   @Override

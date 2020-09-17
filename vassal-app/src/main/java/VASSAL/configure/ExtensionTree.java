@@ -21,7 +21,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -29,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -49,13 +47,16 @@ public class ExtensionTree extends ConfigureTree {
 
   private ModuleExtension extension;
 
-  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention, EditorWindow editorWindow) {
+  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extension, EditorWindow editorWindow) {
     super(root, helpWindow, editorWindow);
-    this.extension = extention;
+    this.extension = extension;
     setCellRenderer(new ExtensionRenderer());
   }
 
   private boolean isEditable(DefaultMutableTreeNode node) {
+    if (extension == null) {
+      return false;
+    }
     if (node != null) {
       for (ExtensionElement el :
            extension.getComponentsOf(ExtensionElement.class)) {
@@ -369,16 +370,6 @@ public class ExtensionTree extends ConfigureTree {
       a = super.buildEditPiecesAction(target);
     }
     return a;
-  }
-
-  @Override
-  public void mousePressed(MouseEvent e) {
-    TreePath path = getPathForLocation(e.getX(), e.getY());
-    if (path != null) {
-      if (isEditable((DefaultMutableTreeNode) path.getLastPathComponent())) {
-        super.mousePressed(e);
-      }
-    }
   }
 
   @Override

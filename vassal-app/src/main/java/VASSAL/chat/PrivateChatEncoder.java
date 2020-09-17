@@ -37,29 +37,26 @@ public class PrivateChatEncoder implements CommandEncoder {
 
   @Override
   public String encode(Command c) {
-    if (c instanceof PrivMsgCommand) {
-      PrivMsgCommand cmd = (PrivMsgCommand) c;
-      SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, '/');
-      se.append(playerEncoder.playerToString(cmd.getSender()));
-      se.append(cmd.getMessage());
-      return se.getValue();
-    }
-    else {
+    if (!(c instanceof PrivMsgCommand)) {
       return null;
     }
+    PrivMsgCommand cmd = (PrivMsgCommand) c;
+    SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, '/');
+    se
+      .append(playerEncoder.playerToString(cmd.getSender()))
+      .append(cmd.getMessage());
+    return se.getValue();
   }
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '/');
-      st.nextToken();
-      Player sender = playerEncoder.stringToPlayer(st.nextToken());
-      return new PrivMsgCommand(pChatMgr, sender, st.nextToken());
-    }
-    else {
+    if (!s.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '/');
+    st.nextToken();
+    Player sender = playerEncoder.stringToPlayer(st.nextToken());
+    return new PrivMsgCommand(pChatMgr, sender, st.nextToken());
   }
 
 }

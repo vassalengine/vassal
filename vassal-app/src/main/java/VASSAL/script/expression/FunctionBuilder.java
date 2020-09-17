@@ -96,7 +96,7 @@ public class FunctionBuilder extends JDialog {
     buttonBox.add(cancelButton);
 
     JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
+    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.html").getContents().toString()));
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "span 2,align center,growx,wrap");

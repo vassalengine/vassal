@@ -112,7 +112,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Prototypes.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Prototypes.html"); //$NON-NLS-1$
   }
 
   @Override

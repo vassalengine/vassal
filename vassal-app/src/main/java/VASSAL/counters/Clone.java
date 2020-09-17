@@ -152,7 +152,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm", "Clone");
+    return HelpFile.getReferenceManualPage("GamePiece.html", "Clone");
   }
 
   @Override

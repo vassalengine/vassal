@@ -2438,7 +2438,7 @@ public class ADC2Module extends Importer {
     dice.setAttribute(DiceButton.PROMPT_ALWAYS, Boolean.TRUE);
     dice.setAttribute(DiceButton.TOOLTIP, "Roll the dice");
     dice.setAttribute(DiceButton.BUTTON_TEXT, "Roll");
-    dice.setAttribute(DiceButton.REPORT_FORMAT, "** $name$ $nDice$d$nSides$ (+$plus$ each) = $result$ *** <$playerName$>");
+    dice.setAttribute(DiceButton.REPORT_FORMAT, "** $name$ $nDice$d$nSides$ (+$plus$ each) = $result$ *** &lt;$playerName$&gt;");
   }
 
   protected void configureMouseOverStackViewer(GameModule gameModule) {

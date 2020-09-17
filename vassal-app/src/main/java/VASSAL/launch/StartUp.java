@@ -93,6 +93,17 @@ public class StartUp {
               | InstantiationException | IllegalAccessException e) {
               ErrorDialog.bug(e);
             }
+
+            // The GTK LaF has a color picker which lacks the ability to
+            // select transparency. We can override that and it doesn't
+            // look too goofy.
+            if ("com.sun.java.swing.plaf.gtk.GTKLookAndFeel".equals(
+              UIManager.getLookAndFeel().getClass().getName())) {
+              UIManager.put(
+                "ColorChooserUI",
+                "javax.swing.plaf.basic.BasicColorChooserUI"
+              );
+            }
           }
 
           // Ensure consistent behavior in NOT consuming "mousePressed" events

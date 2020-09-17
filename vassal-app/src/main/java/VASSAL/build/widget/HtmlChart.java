@@ -157,7 +157,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "HtmlChart");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "HtmlChart");
   }
 
   @Override

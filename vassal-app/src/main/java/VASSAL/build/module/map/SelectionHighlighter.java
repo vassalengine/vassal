@@ -250,7 +250,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "SelectionHighlighter");
+    return HelpFile.getReferenceManualPage("Map.html", "SelectionHighlighter");
   }
 
   @Override

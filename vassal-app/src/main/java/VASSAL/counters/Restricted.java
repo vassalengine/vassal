@@ -76,7 +76,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("RestrictedAccess.htm");
+    return HelpFile.getReferenceManualPage("RestrictedAccess.html");
   }
 
   @Override

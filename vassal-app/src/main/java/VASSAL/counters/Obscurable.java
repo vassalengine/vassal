@@ -28,8 +28,6 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.geom.Area;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -567,8 +565,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Mask.htm");
-  } //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("Mask.html"); //$NON-NLS-1$//
+  }
 
   @Override
   public PieceEditor getEditor() {

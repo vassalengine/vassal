@@ -72,12 +72,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private static final long serialVersionUID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(ExpressionInterpreter.class);
 
-  protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh";
-  protected static final String THIS = "_interp";
-  protected static final String SOURCE = "_source";
-  protected static final String MAGIC1 = "_xyzzy";
-  protected static final String MAGIC2 = "_plugh";
-  protected static final String MAGIC3 = "_plover";
+  protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh"; // NON-NLS
+  protected static final String THIS = "_interp"; // NON-NLS
+  protected static final String SOURCE = "_source"; // NON-NLS
+  protected static final String MAGIC1 = "_xyzzy"; // NON-NLS
+  protected static final String MAGIC2 = "_plugh"; // NON-NLS
+  protected static final String MAGIC3 = "_plover"; // NON-NLS
 
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
@@ -149,7 +149,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Create the Expression level namespace as a child of the
     // top level namespace
-    expressionNameSpace = new NameSpace(topLevelNameSpace, "expression");
+    expressionNameSpace = new NameSpace(topLevelNameSpace, "expression"); // NON-NLS
 
     // Get a list of any variables used in the expression. These are
     // property names that will need to be evaluated at expression
@@ -173,9 +173,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           if (argList.length() > 0) {
             argList.append(',');
           }
-          argList.append("String ").append(variable);
+          argList.append("String ").append(variable); // NON-NLS
         }
-        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}");
+        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}"); // NON-NLS
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -195,14 +195,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * methods available to expressions.
    */
   protected void initialiseStatic() {
-    topLevelNameSpace = new NameSpace(null, getClassManager(), "topLevel");
+    topLevelNameSpace = new NameSpace(null, getClassManager(), "topLevel"); // NON-NLS
     setNameSpace(topLevelNameSpace);
     getNameSpace().importClass("VASSAL.build.module.properties.PropertySource");
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
 
     // Read the Expression initialisation script into the top level namespace
     URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini);
+    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // NON-NLS
 
     try (InputStream is = ini.openStream();
          InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -211,12 +211,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         eval(in);
       }
       catch (EvalError e) {
-        logger.error("Error trying to read init script: " + ini);
+        logger.error("Error trying to read init script: " + ini); // NON-NLS
         WarningDialog.show(e, "");
       }
     }
     catch (IOException e) {
-      logger.error("Error trying to read init script: " + ini);
+      logger.error("Error trying to read init script: " + ini); // NON-NLS
       WarningDialog.show(e, "");
     }
   }
@@ -269,10 +269,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (value == null) {
           setVar(var, "");
         }
-        else if ("true".equals(value)) {
+        else if (BeanShell.TRUE.equals(value)) {
           setVar(var, true);
         }
-        else if ("false".equals(value)) {
+        else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
         else {
@@ -280,12 +280,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             setVar(var, Integer.parseInt(value));
           }
           catch (NumberFormatException e) {
-            try {
-              setVar(var, Float.parseFloat(value));
-            }
-            catch (NumberFormatException e1) {
-              setVar(var, value);
-            }
+            setVar(var, value);
           }
         }
       }
@@ -343,10 +338,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (value == null) {
       return "";
     }
-    else if ("true".equals(value)) {
+    else if (BeanShell.TRUE.equals(value)) {
       return Boolean.TRUE;
     }
-    else if ("false".equals(value)) {
+    else if (BeanShell.FALSE.equals(value)) {
       return Boolean.FALSE;
     }
     else {
@@ -488,8 +483,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
 
   public Object random(Object source, Object minString, Object maxString) {
-    final int min = parseInt(source, "Random", minString, 1);
-    int max = parseInt(source, "Random", maxString, 1);
+    final int min = parseInt(source, "Random", minString, 1); // NON-NLS
+    int max = parseInt(source, "Random", maxString, 1); // NON-NLS
     if (max < min) {
       max = min;
     }
@@ -501,7 +496,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object isRandom(Object source, Object percentString) {
-    int percent = parseInt(source, "IsRandom", percentString, 50);
+    int percent = parseInt(source, "IsRandom", percentString, 50); // NON-NLS
     if (percent < 0)
       percent = 0;
     if (percent > 100)
