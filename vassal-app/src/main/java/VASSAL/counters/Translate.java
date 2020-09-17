@@ -241,7 +241,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     // Set the Old... properties
-    Command c = setOldProperties(this);
+    Command c = putOldProperties(this);
 
     // Move the piece
     final GamePiece outer = Decorator.getOutermost(gp);
@@ -273,7 +273,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (mover == null) {
       mover = new MoveExecuter();
       mover.setKeyEvent(stroke);
-      mover.setAdditionalCommand(setOldProperties(this));
+      mover.setAdditionalCommand(putOldProperties(this));
       SwingUtilities.invokeLater(mover);
     }
     GamePiece target = findTarget(stroke);
@@ -402,7 +402,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Translate.htm");
+    return HelpFile.getReferenceManualPage("Translate.html");
   }
 
   @Override

@@ -17,10 +17,6 @@
  */
 package VASSAL;
 
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.version.VassalVersionTokenizer;
-import VASSAL.tools.version.VersionFormatException;
-import VASSAL.tools.version.VersionTokenizer;
 import java.awt.Component;
 import java.awt.GraphicsConfiguration;
 import java.awt.Insets;
@@ -28,9 +24,13 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
-import VASSAL.tools.version.GitProperties;
 import org.apache.commons.lang3.SystemUtils;
 
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.version.GitProperties;
+import VASSAL.tools.version.VassalVersionTokenizer;
+import VASSAL.tools.version.VersionFormatException;
+import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -38,12 +38,6 @@ import VASSAL.tools.version.VersionUtils;
  */
 public final class Info {
   private static final GitProperties gitProperties;
-
-  // Do not allow editing of modules with this revision or later
-  private static final String EXPIRY_VERSION = "3.4";  //$NON-NLS-1$
-
-  // Warn about editing modules, saves, logs written before this version
-  private static final String UPDATE_VERSION =  "3.2";
 
   private static final File homeDir;
   private static final File tmpDir;
@@ -140,12 +134,13 @@ public final class Info {
 
   /**
    * Bugzilla (and other potential external reporting tools) require onlt the primary numeric portion of
-   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3\
+   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3
    *
    * @return The reportable version number
    */
   public static String getReportableVersion() {
-    return getVersion().contains("-") ?  getVersion().substring(0, getVersion().indexOf('-')) : getVersion();
+    final String v = getVersion();
+    return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
   }
 
   private static final int instanceID;
@@ -194,11 +189,11 @@ public final class Info {
   }
 
   public static boolean isModuleTooNew(String version) {
-    return VersionUtils.compareVersions(version, EXPIRY_VERSION) >= 0;
+    return VersionUtils.compareVersions(version, VersionUtils.nextMinorVersion(getVersion())) >= 0;
   }
 
   public static boolean hasOldFormat(String version) {
-    return VersionUtils.compareVersions(version, UPDATE_VERSION) < 0;
+    return VersionUtils.compareVersions(version, VersionUtils.truncateToMinorVersion(getVersion())) < 0;
   }
 
   /**

@@ -148,7 +148,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.html"); //$NON-NLS-1$
   }
 
   @Override

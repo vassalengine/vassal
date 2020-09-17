@@ -229,7 +229,7 @@ public abstract class EditorWindow extends JFrame {
     mm.addAction("create_module_updater", createUpdater);
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));
     } 
     catch (MalformedURLException e) {
@@ -237,7 +237,7 @@ public abstract class EditorWindow extends JFrame {
     }
 
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction("Editor.ModuleEditor.using_the_editor", url, null));
     } 
     catch (MalformedURLException e) {
@@ -255,7 +255,7 @@ public abstract class EditorWindow extends JFrame {
 
 
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
     } 
     catch (MalformedURLException e) {
@@ -263,7 +263,7 @@ public abstract class EditorWindow extends JFrame {
     }
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction("Editor.ModuleEditor.map_components", url, null));
     } 
     catch (MalformedURLException e) {
@@ -271,7 +271,7 @@ public abstract class EditorWindow extends JFrame {
     }
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction("Editor.ModuleEditor.toolbar_help", url, null));
     } 
     catch (MalformedURLException e) {
@@ -281,7 +281,7 @@ public abstract class EditorWindow extends JFrame {
 
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction("Editor.ModuleEditor.game_pieces_and_traits", url, null));
     } 
@@ -291,7 +291,7 @@ public abstract class EditorWindow extends JFrame {
     
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction("Editor.ModuleEditor.expressions", url, null));
     } 
@@ -301,7 +301,7 @@ public abstract class EditorWindow extends JFrame {
     
     
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.html").toURI()
           .toURL();
       
       //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.      

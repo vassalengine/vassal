@@ -23,23 +23,33 @@ import java.util.ListIterator;
 
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.build.module.GameComponent;
 
 /**
- * Command is an abstract class that does something. Any action that takes
- * place during a game should be encapsulated in a Command object. When
- * performing actions during a game, corresponding Commands will be logged
- * in the current logfile and/or sent to other players on the server.
+ * A Command represents an action that needs to be transmitted from one client to another - any action that could
+ * change the game state of a multiplayer game should be encapsulated in a Command object. When performing actions
+ * during the game, corresponding Commands will be logged in the correct logfile and/or sent to other players through
+ * the server.
  *
- * Commands can be strung together into compound commands with the
- * {@link #append} method.
+ * {@link CommandEncoder}s then serialise ({@link CommandEncoder#encode}) and deserialise ({@link CommandEncoder#decode})
+ * Commands to and from an ascii based representation. Commands are encoded by the generated client prior to being sent
+ * across network or saved in a log or save file. Commands are decoded by the receiving client on receipt from the network
+ * or on reading from a log or save file. Save game creation is a special case where every {@link GameComponent} is asked to
+ * generate a Command that when executed will cause itself to be recreated in its present state.
  *
- * @see CommandEncoder
+ * The {@link #execute} method implements the execution of the command and is called by the receiving client
+ * after building the Command using <code>decode</code>. The <code>execute</code> method is sometimes called on the generating client but does
+ * not need to be if the Command is being created to encapsulate something that has already happened on the generating client.
+ *
+ * Commands can be strung together into compound commands with the {@link #append} method. Although Commands can be linked into
+ * compound commands this way, each {@link CommandEncoder} need only handle single (not compound) commands.
  */
 public abstract class Command {
   private LinkedList<Command> seq = new LinkedList<>();
   private Command undo;
 
-  public Command() {}
+  public Command() {
+  }
 
   public Command[] getSubCommands() {
     return seq.toArray(new Command[0]);

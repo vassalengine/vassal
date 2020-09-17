@@ -71,7 +71,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
@@ -80,7 +79,6 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.NewGameIndicator;
@@ -384,7 +382,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SetupStack.htm");
+    return HelpFile.getReferenceManualPage("SetupStack.html");
   }
 
   public static String getConfigureTypeName() {

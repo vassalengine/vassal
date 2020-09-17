@@ -182,7 +182,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalKeyCommand.htm");
+    return HelpFile.getReferenceManualPage("GlobalKeyCommand.html");
   }
 
   public Command apply() {

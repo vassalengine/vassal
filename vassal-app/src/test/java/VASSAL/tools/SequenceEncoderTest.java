@@ -254,4 +254,45 @@ public class SequenceEncoderTest {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(q, ',');
     assertEquals("12345", sd.nextToken());
   }
+
+  @Test
+  public void testDecoderCopyFromStart() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append(1).append("blah blah blah,,,").append((String) null).append(42);
+
+    final SequenceEncoder.Decoder sd1 =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    final SequenceEncoder.Decoder sd2 = sd1.copy();
+
+    assertEquals(sd1.nextInt(-1), sd2.nextInt(-2));
+    assertEquals(sd1.nextToken("x"), sd2.nextToken("y"));
+    assertEquals(sd1.nextToken("x"), sd2.nextToken("y"));
+    assertEquals(sd1.nextInt(-1), sd2.nextInt(-2));
+    assertFalse(sd1.hasNext());
+    assertFalse(sd2.hasNext());
+  }
+
+  @Test
+  public void testDecoderCopyFromMiddle() {
+    final char delim = ',';
+
+    final SequenceEncoder se = new SequenceEncoder(delim);
+    se.append(1).append("blah blah blah,,,").append((String) null).append(42);
+
+    final SequenceEncoder.Decoder sd1 =
+      new SequenceEncoder.Decoder(se.getValue(), delim);
+
+    sd1.nextToken();
+    sd1.nextToken();
+
+    final SequenceEncoder.Decoder sd2 = sd1.copy();
+
+    assertEquals(sd1.nextToken("x"), sd2.nextToken("y"));
+    assertEquals(sd1.nextInt(-1), sd2.nextInt(-2));
+    assertFalse(sd1.hasNext());
+    assertFalse(sd2.hasNext());
+  }
 }

@@ -26,7 +26,7 @@ package VASSAL.build;
  * allocated a unique number in a series maintained for each top level
  * component.
  *
- * Each GampePiece generated is tied to it's originating PieceSlot by the
+ * Each GamePiece generated is tied to it's originating PieceSlot by the
  * NameSpace Id and the PieceSlot Id.
  */
 public interface GpIdSupport {
@@ -36,12 +36,12 @@ public interface GpIdSupport {
    *
    * @return PieceSlot Id
    */
-  public String generateGpId();
+  String generateGpId();
 
   /**
    * Accessors to check and update the next GpId if necessary.
    */
-  public int getNextGpId();
-  public void setNextGpId(int id);
+  int getNextGpId();
+  void setNextGpId(int id);
 
 }

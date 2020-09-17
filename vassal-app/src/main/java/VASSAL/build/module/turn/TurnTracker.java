@@ -128,8 +128,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected FormattedString turnFormat = new FormattedString(String.join(LEVEL, "$", "1$ $", "2$ $", "3$ $", "4$")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-  protected FormattedString reportFormat = new FormattedString("* <$" + GlobalOptions.PLAYER_ID //$NON-NLS-1$
-      + "$> Turn Updated from $" + OLD_TURN + "$ to $" + NEW_TURN + "$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  protected FormattedString reportFormat = new FormattedString("* &lt;$" + GlobalOptions.PLAYER_ID //$NON-NLS-1$
+      + "$&gt; Turn Updated from $" + OLD_TURN + "$ to $" + NEW_TURN + "$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
   protected TurnWindow turnWindow;
   protected TurnWidget turnWidget;
@@ -525,7 +525,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -702,26 +702,24 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   @Override
   public Command decode(String command) {
-    Command comm = null;
-    if (command.startsWith(COMMAND_PREFIX + getId())) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
-      sd.nextToken(""); //$NON-NLS-1$
-      comm = new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
+    if (!command.startsWith(COMMAND_PREFIX + getId())) {
+      return null;
     }
-    return comm;
+    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    sd.nextToken(""); //$NON-NLS-1$
+    return new SetTurn(sd.nextToken(""), this); //$NON-NLS-1$
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof SetTurn) {
-      SetTurn com = (SetTurn) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(COMMAND_PREFIX + com.getTurn().getId());
-      se.append(com.newState);
-      return se.getValue();
+    if (!(c instanceof SetTurn)) {
+      return null;
     }
-    return s;
+    SetTurn com = (SetTurn) c;
+    SequenceEncoder se = new SequenceEncoder('\t');
+    se.append(COMMAND_PREFIX + com.getTurn().getId());
+    se.append(com.newState);
+    return se.getValue();
   }
 
   @Override

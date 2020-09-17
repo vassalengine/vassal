@@ -4,6 +4,7 @@
 # Configuration
 #
 DMGDIR=dist/dmg
+L4JDIR=dist/launch4j
 
 JDKVER=14
 JDKDIR=dist/jdks
@@ -41,6 +42,17 @@ for i in mac,x64 windows,x64 windows,x32 ; do
     fi
   fi
 done
+
+popd
+
+#
+# Download and unpack launch4j
+#
+mkdir -p "$L4JDIR"
+pushd "$L4JDIR"
+
+wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/3.12/launch4j-3.12-linux-x64.tgz
+tar -xvf launch4j-3.12-linux-x64.tgz
 
 popd
 

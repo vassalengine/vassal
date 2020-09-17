@@ -518,7 +518,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "StackingOptions");
+    return HelpFile.getReferenceManualPage("Map.html", "StackingOptions");
   }
 
   @Override
@@ -653,7 +653,7 @@ public class StackMetrics extends AbstractConfigurable {
           }
           else {
             fixedParent = createStack(fixed, true);
-            comm = comm.append(fixedParent.getMap().placeAt(
+            comm = comm.append(fixed.getMap().placeAt(
               fixedParent, fixedParent.getPosition()));
             index = 1;
           }

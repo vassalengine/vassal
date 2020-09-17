@@ -65,6 +65,7 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.version.VersionUtils;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
@@ -371,7 +372,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
             Resources.getString(
               "Warning.log_will_be_updated_message",
               file.getPath(),
-              "3.2"
+              VersionUtils.truncateToMinorVersion(Info.getVersion())
             ),
             JOptionPane.WARNING_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION
@@ -402,6 +403,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     endLogAction.setEnabled(true);
     gm.appendToTitle(Resources.getString("BasicLogger.logging_to",
                      outputFile.getName()));
+    GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_begun"));  //$NON-NLS-1$
     newLogAction.setEnabled(false);
     metadata = new SaveMetaData();
   }
@@ -454,23 +456,24 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   @Override
   public String encode(Command c) {
-    if (c instanceof LogCommand) {
-      return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
-    }
-    else {
+    if (!(c instanceof LogCommand)) {
       return null;
     }
+    return LOG + GameModule.getGameModule().encode(((LogCommand) c).getLoggedCommand());
   }
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(LOG)) {
-      Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
-      if (logged != null) {
-        return new LogCommand(logged, logInput, stepAction);
-      }
+    if (!command.startsWith(LOG)) {
+      return null;
     }
-    return null;
+
+    Command logged = GameModule.getGameModule().decode(command.substring(LOG.length()));
+    if (logged == null) {
+      return null;
+    }
+
+    return new LogCommand(logged, logInput, stepAction);
   }
 
   protected Action undoAction = new UndoAction();

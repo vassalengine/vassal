@@ -34,9 +34,10 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
- * Abstract implementation of the Buildable interface To make a Buildable
- * component, extend this class. You'll need to implement the methods and
- * specify the Buildable attributes of this class, and the build process is
+ * Abstract implementation of the {@link Buildable} interface. To make a Buildable component, in other words a component
+ * which can be read from the XML buildFile along with a set of attributes, extend this class -- or more likely
+ * {@link AbstractConfigurable} if the component is also to be editable/configurable in the Editor window.
+ * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource {
@@ -74,34 +75,32 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * @return a list of all attribute names for this component
+   * Lists all the buildFile (XML) attribute names for this component.
+   * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
+   * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
+   * @return a list of all buildFile (XML) attribute names for this component
    */
   public abstract String[] getAttributeNames();
 
   /**
-   * Sets an attribute value for this component. The <code>key</code>
-   * parameter will be one of those listed in {@link #getAttributeNames}. If
-   * the <code>value</code> parameter is a String, it will be the value
-   * returned by {@link #getAttributeValueString} for the same
-   * <code>key</code>. If the implementing class extends
-   * {@link AbstractConfigurable}, then <code>value</code> will be an
-   * instance of the corresponding Class listed in
-   * {@link AbstractConfigurable#getAttributeTypes}
+   * Sets a buildFile (XML) attribute value for this component. The <code>key</code> parameter will be one of those listed in {@link #getAttributeNames}.
+   * If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   * <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> will be an instance of
+   * the corresponding Class listed in {@link AbstractConfigurable#getAttributeTypes}
    *
-   * @param key
-   *            the name of the attribute. Will be one of those listed in
-   *            {@link #getAttributeNames}
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   *              <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> can also be an instance of
+   *              the corresponding Class listed in {@link AbstractConfigurable#getAttributeTypes}
    */
   public abstract void setAttribute(String key, Object value);
 
   /**
-   * Return a String representation of the attribute with the given name. When
-   * initializing a module, this String value will be passed to
-   * {@link #setAttribute}.
+   * @return a String representation of the XML buildFile attribute with the given name. When initializing a module,
+   * this String value will loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
+   * checking the current value of an attribute.
    *
-   * @param key
-   *            the name of the attribute. Will be one of those listed in
-   *            {@link #getAttributeNames}
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
    */
   public abstract String getAttributeValueString(String key);
 
@@ -147,7 +146,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * components that are instances of the given class
    *
    * @param target Target class
-   * @return Results
+   * @return {@link List} of all components that are instances of the given class
    */
   public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
     ArrayList<T> l = new ArrayList<>();
@@ -195,7 +194,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * Returns an enumeration of Buildable objects which are the direct children
+   * @return an enumeration of Buildable objects which are the direct children
    * of this object in the Buildable containment hierarchy. The
    * {@link #getBuildElement} method uses these objects to construct the XML
    * element from which this object can be built.
@@ -209,7 +208,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * Returns a Collection of Buildable objects which are the direct children
+   * @return a Collection of Buildable objects which are the direct children
    * of this object in the Buildable containment hierarchy. The
    * {@link #getBuildElement} method uses these objects to construct the XML
    * element from which this object can be built.
@@ -231,7 +230,8 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * Default implementation of PropertyNameSource - No properties exposed
+   * Override this method to provide a list of properties to be exposed for use by expressions in the module.
+   * @return Default implementation of PropertyNameSource - No properties exposed
    */
   @Override
   public List<String> getPropertyNames() {

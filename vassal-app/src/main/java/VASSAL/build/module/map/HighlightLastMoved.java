@@ -224,7 +224,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "LastMoveHighlighter");
+    return HelpFile.getReferenceManualPage("Map.html", "LastMoveHighlighter");
   }
 
   public static String getConfigureTypeName() {

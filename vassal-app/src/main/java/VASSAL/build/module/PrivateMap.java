@@ -276,7 +276,7 @@ public class PrivateMap extends Map {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PrivateWindow.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("PrivateWindow.html"); //$NON-NLS-1$
   }
 
   @Override

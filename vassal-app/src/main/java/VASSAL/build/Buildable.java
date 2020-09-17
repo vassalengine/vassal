@@ -21,10 +21,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A Buildable instance can be initialized from a configuration file.
- * The configuration file is an XML file in which each XML element
- * represents an object.  The Buildable objects are built into an
- * containment hierarchy that mirrors the XML structure.
+ * A Buildable is an object which can be initialized from an XML configuration file
+ * (e.g. <code>"buildFile"</code>) in which each XML element represents an component object. The Buildable
+ * objects are built into a component hierarchy that mirrors the XML structure. Many Buildables
+ * in a vassal module are also {@link Configurable}, so that their attributes can be configured
+ * in the Editor. SEE ALSO: {@link AbstractBuildable}, {@link AbstractConfigurable}
  */
 public interface Buildable {
   /**
@@ -34,11 +35,9 @@ public interface Buildable {
   public void build(Element e);
 
   /**
-   * Adds this component to its parent.
-   * In order to make Buildable objects extensible, the child
-   * is reponsible for adding itself to the parent.  That way,
-   * Buildable subcomponents can be defined in an extension package
-   * without needing to modify the containing class.
+   * Adds this component to its parent. In order to make Buildable objects extensible, the child
+   * is reponsible for adding itself to the parent. That way, Buildable subcomponents can be defined
+   * in an extension package without needing to modify the containing class.
    */
   public void addTo(Buildable parent);
 
@@ -49,8 +48,7 @@ public interface Buildable {
   public void add(Buildable child);
 
   /**
-   * @return an XML element from which
-   * this component can be built
+   * @return an XML element from which this component can be built
    */
   public Element getBuildElement(Document doc);
 }

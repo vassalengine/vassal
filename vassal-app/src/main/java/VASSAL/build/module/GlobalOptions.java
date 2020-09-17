@@ -68,6 +68,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
   public static final String PROMPT_STRING = "promptString"; //$NON-NLS-1$
   public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
+  public static final String CENTER_ON_MOVE_SENSITIVITY = "centerOnMoveSensitivity"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
@@ -177,7 +178,7 @@ public class GlobalOptions extends AbstractConfigurable {
          new PieceMover.DragHandler()
       ));
 
-      prefs.addOption(bug10295Conf);
+      prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
     }
     
     // Move Fixed Distance trait (Translate) has been substantially re-written.
@@ -188,7 +189,7 @@ public class GlobalOptions extends AbstractConfigurable {
         Boolean.FALSE
       );
     classicMfd.addPropertyChangeListener(evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
-    prefs.addOption(classicMfd);
+    prefs.addOption(Resources.getString("Prefs.compatibility_tab"), classicMfd);
 
     //BR// Drag Threshold
     final IntConfigurer dragThresholdConf = new IntConfigurer(
@@ -211,12 +212,17 @@ public class GlobalOptions extends AbstractConfigurable {
 
     if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC_OSX) {
       // Only need to *display* this preference if we're running on a Mac.
-      prefs.addOption(macLegacyConf);
+      prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
     
     BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
-       
+
+    //CC// center_on_move_border_proximity_pct (is the pct of distance from border to center of window that triggers a recenter
+    final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
+      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10); //$NON-NLS-1$
+    prefs.addOption(pctRecenterOn);
+
     validator = new SingleChildInstance(gm, getClass());
   }
 
@@ -251,6 +257,11 @@ public class GlobalOptions extends AbstractConfigurable {
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
+  
+  
+  public boolean getPrefMacLegacy() {
+    return macLegacy;
+  }
  
 
   public static String getConfigureTypeName() {
@@ -261,6 +272,13 @@ public class GlobalOptions extends AbstractConfigurable {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, NEVER, PROMPT};
+    }
+  }
+
+  public static class PromptOnOff extends StringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{ALWAYS, NEVER};
     }
   }
 
@@ -318,7 +336,7 @@ public class GlobalOptions extends AbstractConfigurable {
       null,
       Prompt.class,
       PlayerIdFormatConfig.class,
-      Prompt.class
+      PromptOnOff.class
     };
   }
 
@@ -409,6 +427,9 @@ public class GlobalOptions extends AbstractConfigurable {
       return promptString;
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
+      if (PROMPT.equals(chatterHTMLSupport)) {
+        return NEVER; //BR// So peeps with the old/bad "preference" option will get a safe result.
+      }
       return chatterHTMLSupport;
     }
     else if (AUTO_REPORT.equals(key)) {
@@ -434,7 +455,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalOptions.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GlobalOptions.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -463,10 +484,6 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       chatterHTMLSupport = (String) value;
-      if (PROMPT.equals(chatterHTMLSupport)) {
-        BooleanConfigurer config = new BooleanConfigurer(CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(Resources.getString("Chatter.chat_window"), config);        
-      }
     }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
@@ -500,7 +517,18 @@ public class GlobalOptions extends AbstractConfigurable {
   public boolean centerOnOpponentsMove() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
   }
-  
+
+  public double centerOnOpponentsMoveSensitivity() {
+    int sensitivity = (Integer) GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE_SENSITIVITY);
+    if (sensitivity > 100) {
+      sensitivity = 100;
+    }
+    else if (sensitivity < 0) {
+      sensitivity = 0;
+    }
+    return sensitivity;
+  }
+
   public String chatterHTMLSetting() {
     return chatterHTMLSupport;
   }
@@ -527,7 +555,7 @@ public class GlobalOptions extends AbstractConfigurable {
     if (ALWAYS.equals(attValue)) {
       return true;
     }
-    else if (NEVER.equals(attValue)) {
+    else if (NEVER.equals(attValue) || CHATTER_HTML_SUPPORT.equals(prefsPrompt)) {
       return false;
     }
     else {

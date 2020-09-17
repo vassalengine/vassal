@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -84,11 +85,17 @@ import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
-
+import VASSAL.tools.version.VersionUtils;
 
 /**
- * The GameState represents the state of the game currently being played.
- * Only one game can be open at once.
+ * The GameState contains methods to track and read/write the complete enumerated game state of the game
+ * currently being played. Its main methods deal with saving/loading games and starting/ending games: see
+ * {@link #saveGameAs()}, {@link #loadGame()}, {@link #setup(boolean)}. In each case, appropriate calls
+ * are made to designated methods in all relevant GameComponents. Can also be queried if a game is in progress
+ * {@link #isGameStarted()} and if the game state has been modified since the last save {@link #isModified()}.
+ *
+ * Only one game can be open at once in a single Player, or in a single Editor/Player pair.
+ *
  * @see GameModule#getGameState
  */
 public class GameState implements CommandEncoder {
@@ -493,7 +500,7 @@ public class GameState implements CommandEncoder {
             Resources.getString(
               "Warning.save_will_be_updated_message",
               f.getPath(),
-              "3.2"
+              VersionUtils.truncateToMinorVersion(Info.getVersion())
             ),
               JOptionPane.WARNING_MESSAGE,
             JOptionPane.OK_CANCEL_OPTION) != JOptionPane.CANCEL_OPTION;
@@ -723,12 +730,10 @@ public class GameState implements CommandEncoder {
    */
   @Override
   public String encode(Command c) {
-    if (c instanceof SetupCommand) {
-      return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
-    }
-    else {
+    if (!(c instanceof SetupCommand)) {
       return null;
     }
+    return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
   }
 
   /**
@@ -739,25 +744,29 @@ public class GameState implements CommandEncoder {
     if (BEGIN_SAVE.equals(theCommand)) {
       return new SetupCommand(false);
     }
-    else if (END_SAVE.equals(theCommand)) {
+
+    if (END_SAVE.equals(theCommand)) {
       return new SetupCommand(true);
     }
-    else {
-      return null;
-    }
+
+    return null;
   }
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
+    
     SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
-// FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
-    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+    // FIXME: It is extremely inefficient to produce the save string. It would
+    // be faster to write directly to the output stream instead.
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write    
+    
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final OutputStream out = new ObfuscatingOutputStream(zout)) {
+           final BufferedOutputStream bout = new BufferedOutputStream(zout);
+           final OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
 

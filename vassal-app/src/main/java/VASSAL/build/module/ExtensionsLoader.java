@@ -154,24 +154,24 @@ public class ExtensionsLoader implements CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    Command c = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
-      c = new ModuleExtension.RegCmd(st.nextToken(), st.nextToken());
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return c;
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    return new ModuleExtension.RegCmd(st.nextToken(), st.nextToken());
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof ModuleExtension.RegCmd) {
-      ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cmd.getName()).append(cmd.getVersion());
-      s = COMMAND_PREFIX + se.getValue();
+    if (!(c instanceof ModuleExtension.RegCmd)) {
+      return null;
     }
-    return s;
+    ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
+    SequenceEncoder se = new SequenceEncoder('\t');
+    se
+      .append(cmd.getName())
+      .append(cmd.getVersion());
+    return COMMAND_PREFIX + se.getValue();
   }
 
   public static class LoadExtensionException extends RuntimeException {

@@ -1,0 +1,58 @@
+<differences>
+    <!--
+        documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
+    -->
+    <difference>
+        <className>VASSAL/launch/BasicModule</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>BasicModule is never referenced by custom code</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/BasicModule</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>BasicModule is never referenced by custom code</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ComponentSplitter</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Reverted to how it was in 3.3</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ComponentSplitter$SplitPane</className>
+        <differenceType>5001</differenceType>
+        <to>**</to>
+        <justification>Reverted to how it was in 3.3</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/swing/InternalSplitPane</className>
+        <differenceType>8001</differenceType>
+        <justification>Reverted to how it was in 3.3</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/swing/SplitPane</className>
+        <differenceType>8001</differenceType>
+        <justification>Reverted to how it was in 3.3</justification>
+    </difference>
+
+    <difference>
+        <!-- It is okay to add classes to the set of superclasses -->
+        <className>**</className>
+        <differenceType>5000</differenceType>
+        <to>**</to>
+    </difference>
+    <difference>
+        <!-- It is okay to add methods to an interface-->
+        <className>**</className>
+        <differenceType>7012</differenceType>
+        <method>*</method>
+    </difference>
+    <difference>
+        <!-- It is okay to add abstract methods to an abstract class -->
+        <className>**</className>
+        <differenceType>7013</differenceType>
+        <method>*</method>
+    </difference>
+</differences>

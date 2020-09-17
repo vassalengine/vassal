@@ -201,8 +201,16 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       drawUnderneathWhenSelected = st.nextBoolean(false);
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);
+
       imageName = st.nextStringArray(0);
       commonName = st.nextStringArray(imageName.length);
+      if (commonName.length == 1 && imageName.length == 0) {
+        // This happens if imageName contains a single empty string, since
+        // the sequence language can't distinguish that from a zero-length
+        // array.
+        imageName = new String[]{""};
+      }
+
       loopLevels = st.nextBoolean(true);
       name = st.nextToken("");
 
@@ -860,7 +868,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Layer.htm");
+    return HelpFile.getReferenceManualPage("Layer.html");
   }
 
   @Override

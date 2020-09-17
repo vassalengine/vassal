@@ -235,7 +235,7 @@ public class Tutorial extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**

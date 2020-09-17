@@ -39,7 +39,6 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.launch.BasicModule;
 import VASSAL.tools.ErrorDialog;
 
 /**
@@ -135,10 +134,10 @@ public class PropertiesWindow extends JDialog {
   }
 
   public void cancel() {
-    if (target instanceof BasicModule) { // Modules we don't want to do the full scary rebuild, just put the text fields back.
-      target.setAttribute(GameModule.MODULE_NAME,    originalState.getAttribute(BasicModule.MODULE_NAME));
-      target.setAttribute(GameModule.MODULE_VERSION, originalState.getAttribute(BasicModule.MODULE_VERSION));
-      target.setAttribute(GameModule.DESCRIPTION,    originalState.getAttribute(BasicModule.DESCRIPTION));
+    if (target instanceof GameModule) { // Modules we don't want to do the full scary rebuild, just put the text fields back.
+      target.setAttribute(GameModule.MODULE_NAME,    originalState.getAttribute(GameModule.MODULE_NAME));
+      target.setAttribute(GameModule.MODULE_VERSION, originalState.getAttribute(GameModule.MODULE_VERSION));
+      target.setAttribute(GameModule.DESCRIPTION,    originalState.getAttribute(GameModule.DESCRIPTION));
     }
     else {
       target.build(originalState);
