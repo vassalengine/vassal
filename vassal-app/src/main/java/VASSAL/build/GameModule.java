@@ -1221,6 +1221,15 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
+  public void appendToTitle(String s) {
+    // replaced by updateTitleBar()
+  }
+  
 
   /**
    * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
