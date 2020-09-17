@@ -375,16 +375,6 @@ public class ExtensionTree extends ConfigureTree {
   }
 
   @Override
-  public void mousePressed(MouseEvent e) {
-    TreePath path = getPathForLocation(e.getX(), e.getY());
-    if (path != null) {
-      if (isEditable((DefaultMutableTreeNode) path.getLastPathComponent())) {
-        super.mousePressed(e);
-      }
-    }
-  }
-
-  @Override
   protected boolean isValidParent(Configurable parent, Configurable child) {
     return super.isValidParent(parent, child) && isEditable(parent);
   }

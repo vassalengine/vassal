@@ -17,6 +17,7 @@
 
 3.4.3 - ???
 
+* 13427: Cannot add or edit items when editing an Extension on Linux or Macs
 * 13404: Use better color picker on Linux
 * 13307: Background transparency in Text Labels not working
 
