@@ -581,7 +581,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       if (p.getHelpFile() != null) {
         b = new JButton("Help");
-        b.addActionListener(evt -> p.getHelpFile().showWindow(Ed.this));
+        b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
         add(b, "tag help");
       }
 
