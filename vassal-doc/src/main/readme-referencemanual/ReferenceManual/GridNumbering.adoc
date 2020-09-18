@@ -47,10 +47,8 @@ By default, text is center-justified at the top of the cell.
 *Odd-numbered rows numbered higher:*  For hex grids only.
 If checked, then the first number of staggered columns on the grid will be one greater than non-staggered columns.
 
-|image:images/GridNumbering2.png
-
-image:images/GridNumbering.png
-
+|image:images/GridNumbering2.png[]
+image:images/GridNumbering.png[]
 
 |===
 

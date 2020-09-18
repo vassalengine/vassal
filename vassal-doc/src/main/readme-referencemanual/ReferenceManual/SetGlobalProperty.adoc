@@ -9,7 +9,7 @@
 
 This trait allows a <<GamePiece.adoc#top,Game Piece>> to change the value of a <<GlobalProperties.adoc#top,Global Property>>.
 
-image:images/SetGlobalProperty.png
+image:images/SetGlobalProperty.png[]
 
 *Description:*  A brief description of this trait for reference in the editor (not used during play).
 

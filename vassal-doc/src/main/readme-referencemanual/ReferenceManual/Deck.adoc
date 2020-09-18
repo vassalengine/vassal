@@ -148,7 +148,7 @@ Also give your cards a Marker trait named _value_ with the numeric value of the 
 Then, you can refer to the counts with the map-level properties of _<deckname>_red_, _<deckname>_black_, and _<deckname>_facecards_.
 The total number of cards currently in the deck can be referenced by the map-level property of _<deckname>_numPieces_.
 
-|image:images/Deck.png
+|image:images/Deck.png[]
 
 |===
 
@@ -170,6 +170,6 @@ A Card is identical to a Game Piece, but is initialized with a <<Mask.adoc#top,M
 Global Key Commands can be added to a Deck and will appear in the right-click context menu of the Deck.
 The resulting Global Key Command will be applied _only_ to pieces contained in the Deck.
 
-|image:images/DeckAdd.png +
+|image:images/DeckAdd.png[] +
 |===
 

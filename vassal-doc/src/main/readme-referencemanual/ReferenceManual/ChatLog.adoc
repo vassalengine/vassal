@@ -11,7 +11,7 @@ The _Chat Log_ appears at the top of the main Module window.
 It serves both to allow players to "chat" with each other by typing text into the blank at the bottom, but can also serve as a useful _log_ of events that occur during the game, such as piece moves and dice rolls.
 A good chat log records the details of the game's history for the players, and becomes a resource for them to answer questions like "which unit took that hit last turn", or "how did the victory points marker get to 9?"
 
-VASSAL's chat log offers many opportunities for you to create a useful log stream for your players, including *bold*, _italics_, *colored text*, and even  image:images/ChatLogDice.png dice images inserted directly into the chat log.
+VASSAL's chat log offers many opportunities for you to create a useful log stream for your players, including *bold*, _italics_, *colored text*, and even  image:images/ChatLogDice.png[] dice images inserted directly into the chat log.
 A well-designed chat log can make "important events" stand out from routine events -- notice in the example at right how changes in Victory Points are being announced in *Bold Bright Text* while game events are shown in _Italicized green text with *1* or *2* highlights._ This makes them stand out from the standard black text of more routine events.
 This article will help you design your own chat log reporting so that you can get the most out of this feature.
 
@@ -43,8 +43,7 @@ _EXAMPLE:_ If a <<ReportChanges.adoc#top,Report Action>> trait's message said _H
 |"`" |back apostrophe |defaults to purple text
 |===
 
-image:images/ChatLog.png
-
+image:images/ChatLog.png[]
 Chat Log with HTML Enabled
 
 ==== HTML in Chat Log

@@ -31,7 +31,7 @@ If it is useful for most pieces to snap to legal locations, but for certain type
 
 *Edit Grid:*  Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map.
 
-|image:images/HexGrid.png
+|image:images/HexGrid.png[]
 
 |===
 
@@ -46,4 +46,4 @@ Used to assign names to hexes on the grid, useful for automatically reporting mo
 To add Grid Numbering to a Hex Grid, it is necessary to first add the Hex Grid: in the Editor's configuration window, navigate to the _[Board]_, _[Multi-Zoned Grid]_, or _[Zone]_ to which you want to add it, right+click on the component, and select _Add Hex Grid_.
 Then right click on the _[Hex Grid]_ entry in the Editor and select _Add Grid Numbering_ (see diagram at right).
 
-image:images/GridNumAdd.png
+image:images/GridNumAdd.png[]

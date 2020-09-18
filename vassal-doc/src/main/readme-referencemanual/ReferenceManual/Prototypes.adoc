@@ -32,7 +32,7 @@ All pieces in a Game Piece Palette, At Start Stack, or Deck will reset when a pr
 If you want your pieces in the palette to start in a certain state, then you can edit the traits that appear in this prototype by right-clicking in the area below the name.
 You may need to resize the window to expose that area.
 
-|image:images/PrototypeComponent.png
+|image:images/PrototypeComponent.png[]
 
 *SEE ALSO:*  <<UsePrototype.adoc#top,Prototype (Trait)>>
 
@@ -52,8 +52,8 @@ All of these Game Pieces will thenceforth function as if they had all of the exa
 The dialog for defining a prototype is just the same as for defining a Game Piece, but with a name and without the innermost Basic Piece.
 Prototypes may contain other prototypes.
 
-image:images/PrototypeDefinition.png
+image:images/PrototypeDefinition.png[]
 
-image:images/PrototypeDefinition2.png
+image:images/PrototypeDefinition2.png[]
 
 *SEE ALSO:*  <<UsePrototype.adoc#top,Prototype (Trait)>>

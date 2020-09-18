@@ -68,9 +68,9 @@ An empty list makes the button visible to all players.
 
 a|
 
-image:images/Inventory.png
+image:images/Inventory.png[]
 
-image:images/InventoryWindow.png
+image:images/InventoryWindow.png[]
 
 |===
 

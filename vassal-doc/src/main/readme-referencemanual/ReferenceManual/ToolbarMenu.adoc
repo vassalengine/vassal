@@ -27,8 +27,8 @@ _Remove_  To remove a button to the list, select it from the list to the right a
 
 _Insert_  To insert a button into the middle of the list, type its exact _Button Text_ into the form, select the point you want to insert it from the list at right, and then click the _Insert_ button.
 
-image:images/ToolbarMenuExample.png
+image:images/ToolbarMenuExample.png[]
 
 Example of a Toolbar Menu with a submenu.
 
-image:images/ToolbarMenu.png
+image:images/ToolbarMenu.png[]

@@ -1,11 +1,18 @@
+= Vassal User Guide
+//// default asciidoc attributes
 :doctype: book
-
-image:_images/image1.png[image,width=816,height=1054]
-
-= Vassal 3.3 User Guide
+:idprefix:
+:imagesdir: _images
 :toc: macro
+:sectlinks:
+//// asciidoc pdf attributes
+:pdf-version: 1.7
+//// :compress: //// needs ghostscript
+:front-cover-image: image:image1.png[image,width=816,height=1054]
+:media: screen
+:optimize: screen
 
-Version 1.1, {docdate}
+Version {project-version}, {docdate}
 
 Credits
 
@@ -21,95 +28,173 @@ _Vassal_ designed by Rodney Kinney
 
 Thanks to Soft-bug for the screen images.
 
-<<<
-
 toc::[]
-
-<<<
 
 == Overview
 
-Vassal is a free, open-source engine for playing board games by computer. Vassal supports many types of games, including war games, hobby games, card games, miniatures games, and even board-based role-playing games. You can play live on the Vassal Server or a peer-to-peer connection, play by email, or play offline in hotseat or solitaire modes. There are currently several hundred Vassal game modules available for free, and more are being created all the time.
+Vassal is a free, open-source engine for playing board games by computer.
+Vassal supports many types of games, including war games, hobby games, card games, miniatures games, and even board-based role-playing games.
+You can play live on the Vassal Server or a peer-to-peer connection, play by email, or play offline in hotseat or solitaire modes.
+There are currently several hundred Vassal game modules available for free, and more are being created all the time.
 
-Vassal is supported on Windows, Mac OS X, Linux, and other platforms. Thanks to Vassal's Java architecture, players on different platforms can play each other without regard to operating system.
+Vassal is supported on Windows, Mac OS X, Linux, and other platforms.
+Thanks to Vassal's Java architecture, players on different platforms can play each other without regard to operating system.
 
-Vassal was originally created in 1999 by Rodney Kinney. The name _Vassal_ comes from its original incarnation as a tool to play online games of the classic _Advanced Squad Leader,_ and was originally called _Virtual Advanced Squad Leader_, or _VASL_. Vassal now extends play to much wider range of games.
+Vassal was originally created in 1999 by Rodney Kinney.
+The name _Vassal_ comes from its original incarnation as a tool to play online games of the classic _Advanced Squad Leader,_ and was originally called _Virtual Advanced Squad Leader_, or _VASL_.
+Vassal now extends play to much wider range of games.
 
-This _Vassal 3.1 User’s Guide_ explains general play procedures: how to download and install Vassal, launch games, connect with other players and use the Vassal controls. It does not include any instructions for the use or play of specific modules.
+This _Vassal User’s Guide_ explains general play procedures: how to download and install Vassal, launch games, connect with other players and use the Vassal controls.
+It does not include any instructions for the use or play of specific modules.
 
-For information on designing and editing modules, consult the _Vassal 3.1 Module Designers’ Guide_.
+For information on designing and editing modules, consult the _Vassal Module Designers’ Guide_.
 
-== Getting Vassal
+=== Getting Vassal
 
-The latest version of Vassal is version 3.1, released in February 2009.
+The latest version of Vassal is version {project-version}, released on {docdate}.
 
-=== System Requirements
+==== System Requirements
 
-To run Vassal 3.1, you will need Java version 1.5.0_08 or later (also known as Java 5, update 8) installed on your system. Java 1.6 is recommended where available. Java comes installed on many operating systems. In addition, Java is freely available for download at [.underline]#www.java.com.#
+Vassal {project-version} is supported on the following platforms:
 
-Vassal 3.1 is supported on the following platforms:
-
-* _Windows:_ Windows 98 or ME (for Java 1.5); Windows 2000, XP, 2003, 2008 Server, and Vista (for Java 1.5 or 1.6).
+* _Windows:_ Windows 7, 8 and 10.
 * _Mac OS X:_ Version 10.4 or later (Tiger).
 * _Linux:_ Any distribution.
-* _Other platforms_: Vassal 3.1 is supported on any platform which has a suitable version of Java installed. For example, Vassal could be installed on a memory stick and be used on multiple platforms.
+* _Other platforms_: Vassal {project-version} is supported on any platform which has a suitable version of Java installed. For example, Vassal could be installed on a memory stick and be used on multiple platforms.
 
-=== Downloading Vassal
+==== Downloading Vassal
 
-You can freely download Vassal 3.1 from the http://www.vassalengine.org/community/index.php?option=com_downloads&Itemid=26[[.underline]#Vassal web site#] (www.vassalengine.org). Vassal installation files are available for Windows, Mac OS X, Linux, as well as other platforms which support Java. Select the correct download for your platform.
+You can freely download Vassal {project-version} from the https://github.com/vassalengine/vassal/releases/tag/{project-version}[[.underline]#Vassal GitHub project#] (https://github.com/vassalengine/).
+Vassal installation files are available for Windows, Mac OS X, Linux, as well as other platforms which support Java.
+Select the correct download for your platform.
 
-* _Windows:_ VASSAL-3.1.x-windows.exe
-* _Mac OS X:_ VASSAL-3.1.x-macosx.dmg
-* _Linux:_ VASSAL-3.1.x-linux.tar.bz2
-* _Other platforms:_ VASSAL-3.1.x-other.zip
+* _Windows 32bit:_ VASSAL-{project-version}-windows-32.exe
+* _Windows 64bit:_ VASSAL-{project-version}-windows-64.exe
+* _Mac OS X:_ VASSAL-{project-version}-macosx.dmg
+* _Linux:_ VASSAL-{project-version}-linux.tar.bz2
+* _Other platforms:_ VASSAL-{project-version}-other.zip
 
-_Note:_ The “x” in 3.1.x represents the micro version number of the particular Vassal download file, which changes as Vassal updates are released. For example, the Windows installer for Vassal 3.1.9 is named VASSAL-3.1.9-windows.exe.
-
-== Installation
+=== Installation
 
 The installation procedure for Vassal depends on your platform.
 
 To install on Windows:
 
-. Double-click VASSAL-3.1.x-windows.exe.
+. Double-click VASSAL-{project-version}-windows.exe.
 . Follow the prompts to install the application.
 
 To install on Mac OS X:
 
-. Double-click VASSAL-3.1.x-macosx.dmg.
-. Drag the Vassal 3.1 icon to your *Applications* folder.
+. Double-click VASSAL-{project-version}-macosx.dmg.
+. Drag the Vassal {project-version} icon to your *Applications* folder.
 
 To install on Linux:
 
-. From the command line, type tar xjvf VASSAL-3.1.x-linux.tar.bz2.
+. From the command line, type `tar xjvf VASSAL-{project-version}-linux.tar.bz2`.
 
 To install on other platforms:
 
-. Unzip VASSAL-3.1.x-other.zip.
+. Unzip VASSAL-{project-version}-other.zip.
 
-== Vassal Components
+=== Vassal Components
 
-The Vassal 3.1 installer includes three components:
+The Vassal {project-version} installer includes three components:
 
-* The Module Manager is used to organize and maintain your Vassal modules. The *Module Library* displays an alphabetical list of modules you have opened, including their version numbers, and a brief description of each. It can also show any associated files, including extensions, saved games, and log files. Click the arrow-shaped icon next to each module name to expand the listing and view the module's associated files.
-* The Vassal Player runs game modules. When a module is loaded, it is displayed in a window labeled with the module’s name, plus the word _controls_. For example, a game named World War II would be shown in a window labeled _World War II controls. _
-* The Editor enables the creation and editing of Vassal modules and extensions. The Editor is discussed fully in the _Vassal 3.1 Module Designer’s Guide._
+* The Module Manager is used to organize and maintain your Vassal modules.
+The *Module Library* displays an alphabetical list of modules you have opened, including their version numbers, and a brief description of each.
+It can also show any associated files, including extensions, saved games, and log files.
+Click the arrow-shaped icon next to each module name to expand the listing and view the module's associated files.
+* The Vassal Player runs game modules.
+When a module is loaded, it is displayed in a window labeled with the module’s name, plus the word _controls_.
+For example, a game named World War II would be shown in a window labeled _World War II controls.
+* The Editor enables the creation and editing of Vassal modules and extensions.
+The Editor is discussed fully in the _Vassal Module Designer’s Guide_.
 
 Separate from these components are the module files themselves, and extension files that provide additional game play options for individual modules.
 
-== Game Modules
+=== Game Modules
 
-Once you have downloaded and installed Vassal, you can add modules for the games you wish to play. There are several hundred game modules located at [.underline]#www.vassalengine.org/modules#. Individual creators have provided these modules for you to play free of charge.
+Once you have downloaded and installed Vassal, you can add modules for the games you wish to play.
+There are several hundred game modules located at [.underline]#www.vassalengine.org/modules#. Individual creators have provided these modules for you to play free of charge.
 
-In addition, many board game publishers offer official Vassal modules to support their games, either freely or for a small cost. A publisher may impose restrictions on the use of these modules. Consult the publisher’s web sites for details.
+In addition, many board game publishers offer official Vassal modules to support their games, either freely or for a small cost.
+A publisher may impose restrictions on the use of these modules.
+Consult the publisher’s web sites for details.
 
-A Vassal 3.1 module file usually has the suffix .vmod, although some older modules may have a suffix of .mod or .zip.
+A Vassal {project-version} module file usually has the suffix .vmod, although some older modules may have a suffix of .mod or .zip.
 
-=== Installing Modules
+==== Installing Modules
 
 Modules do not require any installation and are not specific to any operating system.
 
-Modules made for older versions of Vassal are usually compatible with Vassal 3.1, although they may be missing some graphics or functionality available in Vassal 3.1.
+Modules made for older versions of Vassal are usually compatible with Vassal {project-version}, although they may be missing some graphics or functionality available in Vassal {project-version}.
+
+=== Troubleshooting Common Problems
+
+==== Nothing Happens When I Open Vassal
+Are you running some antivirus software?
+We've had some reports of AV software swiping files VASSAL needs to run.
+
+In particular, please check the jre\bin directory under the directory in which VASSAL is installed.
+Do you see files called javaw and java there?
+(Or, if your file browser isn't hiding extensions for known file types, javaw.exe and java.exe?)
+If those files are missing it means that your anti-virus software has blocked or quarantined the bundled Java JVM that VASSAL uses to run.
+Open your Anti-Virus program and white list those files.
+
+Beginning with VASSAL 3.3.0, Java is "bundled" with VASSAL on Windows and Mac (not on Linux).
+This means that on those platforms it no longer matters what version of VASSAL you have installed - indeed you don't have to separately install Java any more on Windows and Mac.
+However, some antivirus software does not trust the Java JVM executables which we provide.
+Thus it must be told to allow them.
+
+==== (Windows) "Tearing" on maps, Corrupted Graphics, or Map Not Fully Updating
+If you run on Microsoft Windows and your map is not updating correctly (e.g. "tearing" or not fully updating), go to Vassal's preferences and check the box for Disable DirectX D3D Pipeline.
+
+image:map-tearing-example.png[image,width=600,height=253] +
+*Map Tearing Example*
+
+Some combinations of video drivers and versions of Java don't work well together.
+If you have rendering problems with Direct3D turned on and they go away when you turn it off, then you have one of those bad combinations.
+This preference (and potential problem) exists only on Windows machines.
+
+image:map-tearing-fix.png[image,width=556,height=166] +
+*Fix for Map Tearing*
+
+==== (All Platforms) "Tearing" on maps, Corrupted Graphics, or Map Not Fully Updating
+If you are having tearing on maps, and are not running on Windows (or if you have already tried the Windows-specific solution above):
+
+After the first time you run one of these builds, there will be a file called `vassal.vmoptions` in VASSAL's config directory where you can add VM flags for the Player, one per line.
+
+* Linux: `~/.VASSAL/vassal.vmoptions`
+* Mac OS X: `~/Library/Application Support/VASSAL/vassal.vmoptions`
+* Windows: `C:\Users\<username>\AppData\Roaming\VASSAL\vassal.vmoptions`
+
+Try these two lines, in order, one at a time:
+
+[source]
+-----
+-Dsun.java2d.opengl=true
+-Dsun.java2d.opengl=false
+-----
+
+==== (Mac) "VASSAL cannot be opened because the developer cannot be verified. MacOS cannot verify that this app is free from malware."
+If you have the current or a recent version of MacOS, Gatekeeper is probably active--MacOS will block VASSAL from running on the first attempt (because this isn't what Apple considers a code-signed app).
+
+image:mac-gatekeeper-example.png[image,width=600,height=281] +
+*Example of Mac Gatekeeper blocking VASSAL (Click Okay)*
+
+You'll have to go into _*System Preferences -> Security & Privacy*_ to allow it to run.
+This only needs to be done once.
+
+image:mac-gatekeeper-step1.png[image,width=600,height=345] +
+*Step 1: System Preferences -> Security & Privacy*
+
+image:mac-gatekeeper-step2.png[image,width=600,height=515] +
+*Step 2: Unlock (if needed) and click Open Anyway*
+
+image:mac-gatekeeper-step3.png[image,width=600,height=281] +
+*Step 3: Click Open*
+
+Alternatively you can open a Finder window, type VASSAL into the search field, and double click on your new VASSAL install to open it for the first time - this will give you an "are you sure?" type dialog, and once you are past that then you will be able to open VASSAL normally in the future.
 
 == Game Play
 
@@ -121,46 +206,57 @@ You can play games with Vassal in a number of ways:
 * Offline, by hotseat, with other players in your location.
 * Solitaire, where you play all sides.
 
-It is important to remember that Vassal does not include any computer opponents, and in general, does not enforce any game rules. Players are expected to know and follow the rules of a particular game, just as they would if were playing at a tabletop, in person. Vassal is a simply a medium that allows players to interact in order to play their favorite games.
+It is important to remember that Vassal does not include any computer opponents, and in general, does not enforce any game rules.
+Players are expected to know and follow the rules of a particular game, just as they would if were playing at a tabletop, in person.
+Vassal is a simply a medium that allows players to interact in order to play their favorite games.
 
-However, many modules will perform some game functions automatically, such as marking moved or fired units, sorting or totaling dice rolls, or reshuffling decks of cards. These automated functions help streamline and speed game play.
+However, many modules will perform some game functions automatically, such as marking moved or fired units, sorting or totaling dice rolls, or reshuffling decks of cards.
+These automated functions help streamline and speed game play.
 
-== Launching Vassal
+=== Launching Vassal
 
 To launch Vassal,
 
 . Double-click the Vassal icon. The Module Manager starts.
 
-image:_images/image2.jpeg[image,width=663,height=149]
+image:image2.jpeg[image,width=663,height=149]
 
 *Figure 1: The Module Manager window, showing the Module Library and Server Status panes*
 
 Alternatively,if a module has .vmod as a suffix, on both Windows and Mac OS X, you can double-click a module to launch Vassal.
 
-=== The Module Manager
+==== The Module Manager
 
-The Module Manager is a Vassal component that allows you to manage all of your game modules. Your available modules are listed in the *Module Library* pane.
+The Module Manager is a Vassal component that allows you to manage all of your game modules.
+Your available modules are listed in the *Module Library* pane.
 
 When you first launch Vassal after installation, the Module Library will be empty.
 
 *To add a module to your Module Library for the first time,*
 
 . Click *File > Open Module.*
-. Browse to the location of your module and click *Open*. The Module will launch and will appear in the Module Library from now on.
+. Browse to the location of your module and click *Open*.
+The Module will launch and will appear in the Module Library from now on.
 
 The Module Manager can run any number of modules at once, although depending on your system's RAM, you may suffer a performance impact if too many are open at the same time.
 
-=== The Welcome Wizard
+==== The Welcome Wizard
 
-The Welcome Wizard, which launches when you first open a module, walks you through the steps needed to start a game. The Wizard includes prompts for configuring your username and password, selecting your play mode, picking a setup or game board, and choosing a side to play.
+The Welcome Wizard, which launches when you first open a module, walks you through the steps needed to start a game.
+The Wizard includes prompts for configuring your username and password, selecting your play mode, picking a setup or game board, and choosing a side to play.
 
-Depending on how the module is configured, you may not see some of the steps listed here in the actual Wizard. For example, in a module with a single board assigned, you would not be prompted to select a board, and that step would be skipped.
+Depending on how the module is configured, you may not see some of the steps listed here in the actual Wizard.
+For example, in a module with a single board assigned, you would not be prompted to select a board, and that step would be skipped.
 
 To launch the Welcome Wizard,
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
-. *User Name and Password:* The first time each module is launched, you are prompted for a name and password. Under *Enter your name*, type the name you will use in the game. Then, enter a password and type in the password confirmation. Click *Next.* +
-image:_images/image3.jpeg[image,width=484,height=303] +
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
+. *User Name and Password:* The first time each module is launched, you are prompted for a name and password.
+Under *Enter your name*, type the name you will use in the game.
+Then, enter a password and type in the password confirmation.
+Click *Next.* +
+image:image3.jpeg[image,width=484,height=303] +
 *Figure 2: The Welcome Wizard opens and prompts for a personal password*
 . *Select Play Mode:* Under *Select play mode*, select one of the following:
 [loweralpha]
@@ -172,89 +268,117 @@ image:_images/image3.jpeg[image,width=484,height=303] +
 . Click *Next*.
 . *Select Setup or Board:* Do one of the following:
 [loweralpha]
-.. If prompted to a select a setup, under *Select Setup*, pick a game setup from the drop-down list. (A setup represents a preset game scenario, usually with maps and pieces already placed in starting positions.)
-.. If prompted to select a board, under *Select Boards,* choose a game board or an initial board tile from the drop-down list. A board is built in rows and columns. Click *Add Row* to build the board down, and or *Add Column* to build a board to the right. In each case, select a tile from the drop-down list to fill in the row or column. Continue adding row and columns until the board is complete.
+.. If prompted to a select a setup, under *Select Setup*, pick a game setup from the drop-down list.
+(A setup represents a preset game scenario, usually with maps and pieces already placed in starting positions.)
+.. If prompted to select a board, under *Select Boards,* choose a game board or an initial board tile from the drop-down list.
+A board is built in rows and columns.
+Click *Add Row* to build the board down, and or *Add Column* to build a board to the right.
+In each case, select a tile from the drop-down list to fill in the row or column.
+Continue adding row and columns until the board is complete.
 
 [start=6]
 . Click *Next*.
 . *Choose Side:* If prompted to select a side, under *Choose Side*, select a side from the drop-down list. +
-image:_images/image4.jpeg[image,width=238,height=55] +
+image:image4.jpeg[image,width=238,height=55] +
 *Figure 3: Selecting an initial side*
-. Click *Finish*. You may now begin a game.
+. Click *Finish*.
+You may now begin a game.
 
 You can turn the wizard off by deselecting *Preferences > General > Show wizard at startup.*
 
-==== About Passwords
+===== About Passwords
+
 ====
 You may use any alphanumeric string for your password.
 
-However, the side you play in a game is locked to you using your Vassal password. In addition, for email games, game logs are encrypted using a combination of username and password. As a result, each player's password must be unique.
+However, the side you play in a game is locked to you using your Vassal password.
+In addition, for email games, game logs are encrypted using a combination of username and password.
+As a result, each player's password must be unique.
 
-When picking a password, take care to select a password that no other players in the game are likely to use. Do not use a default password, nor should you use a common phrase that may used by others, such as a variation of the module name.
+When picking a password, take care to select a password that no other players in the game are likely to use.
+Do not use a default password, nor should you use a common phrase that may used by others, such as a variation of the module name.
 
-You can set your password under *Preferences > Personal.*
+You can set your password under *Preferences > Personal*.
 ====
 
-== Playing on the Vassal Server
+=== Playing on the Vassal Server
 
-Most Vassal games are played in real time on the Vassal Server. You can start a new game on the Server, or you can join an existing game.
+Most Vassal games are played in real time on the Vassal Server.
+You can start a new game on the Server, or you can join an existing game.
 
-*Rooms:* Server games are played in “rooms”, where each room represents a different group of players running the same module. A room is named by the player who starts it. Rooms can be locked for privacy and players can be ejected from a room by the player who started it. Players in the same room can communicate using the Chat window.
+*Rooms:* Server games are played in “rooms”, where each room represents a different group of players running the same module.
+A room is named by the player who starts it.
+Rooms can be locked for privacy and players can be ejected from a room by the player who started it.
+Players in the same room can communicate using the Chat window.
 
-The Main Room is where players are placed who are running a particular module, but not joined to any particular room. You cannot play in the Main Room—you must join a room in order to play a game.
+The Main Room is where players are placed who are running a particular module, but not joined to any particular room.
+You cannot play in the Main Room—you must join a room in order to play a game.
 
 To start a game on the Server,
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Look for a game online*, and then follow the other Wizard steps as the module requires.
-. Click *Finish*. Upon connection, the chat window will display _Welcome to the Vassal Server_, the name and version number of your selected module, and any extensions loaded.
-. In the module window, click the *Connect* button in the Toolbar. The *Active Games* window opens.
+. Click *Finish*.
+Upon connection, the chat window will display _Welcome to the Vassal Server_, the name and version number of your selected module, and any extensions loaded.
+. In the module window, click the *Connect* button in the Toolbar.
+The *Active Games* window opens.
 . In the *Active Games* window, in *New Game*, type the name of the game you want to start (for example, _Monday Night Battle._)
-. You are moved from the Main Room into the game room you just named. Other players can now join this new room.
+. You are moved from the Main Room into the game room you just named.
+Other players can now join this new room.
 
-image:_images/image5.jpeg[image,width=400,height=128] +
+image:image5.jpeg[image,width=400,height=128] +
 *Figure 4: The Active Games window, showing a room called "My Game" with 1 current player.*
 
 To join a game on the Server,
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Look for a game online*, and then follow the other Wizard steps as the module requires.
 . On the Toolbar, click *Connect*.
-. On the right side of the screen, the *Active Games* window opens. The *Active Games* window displays the Main Room for the module, which is the default location for all players who are not currently in a game, and any active game rooms under that. Only rooms running the current module are displayed. The number of players is displayed in parentheses.
+. On the right side of the screen, the *Active Games* window opens.
+The *Active Games* window displays the Main Room for the module, which is the default location for all players who are not currently in a game, and any active game rooms under that.
+Only rooms running the current module are displayed.
+The number of players is displayed in parentheses.
 . Double-click the name of the game room you wish to join.
-. If prompted, enter the password for the room. (This password is generally different from your Vassal password.)
-. Right-click on the name of a player who has already begun a new game, then click *Synchronize*. You and the selected player will be synchronized and the game play can begin.
+. If prompted, enter the password for the room.
+(This password is generally different from your Vassal password.)
+. Right-click on the name of a player who has already begun a new game, then click *Synchronize*.
+You and the selected player will be synchronized and the game play can begin.
 
-=== Synchronization
+==== Synchronization
 
-Players in a Server game must be _synchronized_ in order to see each other’s moves and interact. Players should pick a single player to synchronize with, such as the player who initiated the game. This will make sure that everyone’s game position is consistent.
+Players in a Server game must be _synchronized_ in order to see each other’s moves and interact.
+Players should pick a single player to synchronize with, such as the player who initiated the game.
+This will make sure that everyone’s game position is consistent.
 
 When you synchronize, any side selection, piece movement and map selections you have performed will be reset and replaced with the game information of the player you synchronized to.
 
-=== Checking the Server Status
+==== Checking the Server Status
 
-In Module Manager, you can check the Server status for current games. (This is the same status information as displayed on the Vassalengine.org home page.)
+In Module Manager, you can check the Server status for current games.
+(This is the same status information as displayed on the Vassalengine.org home page.)
 
 To check Server status in Module Manager,
 
 . Click *Tools > Server Status.*
 . The *Server Status* window displays all current games played on the Server, as well as games played in the past 24 hours, past week and past month.
 
-image:_images/image6.jpeg[image,width=267,height=376] +
+image:image6.jpeg[image,width=267,height=376] +
 *Figure 5: The Server Status window, showing all current games and the number of players*
 
-=== Server Management
+==== Server Management
 
 Once connected to the Server, you can perform a variety of tasks related to your connection.
 
-==== Showing a Profile
+===== Showing a Profile
 
 A player’s profile includes name, IP address, game version and other useful information.
 
-==== Inviting Other Players
+===== Inviting Other Players
 
 To invite another player running the module to a game, right-click a player’s name and select *Invite Player.*
 
-==== Sending a Private Message
+===== Sending a Private Message
 
 You can send private messages to other players connected to the Server who are running the same module.
 
@@ -262,9 +386,10 @@ To send a player a private message,
 
 . In the *Active Games* window, find the player you wish to send a private message to.
 . Right-click on the player's name and choose *Send Private Msg.*
-. Type your message in the popup window and press *Enter*. The recipient will see this message in a private window.
+. Type your message in the popup window and press *Enter*.
+The recipient will see this message in a private window.
 
-==== Sending or Viewing a Public Message
+===== Sending or Viewing a Public Message
 
 You can send a public message to other players connected to the Server who are running the same module, using a message board.
 
@@ -273,11 +398,12 @@ To send a public message,
 . In the Server controls, click *Message Composer.*
 . In the *Message Composer* window, enter the text of your public message.
 . Type your message in the popup window and press *Send*.
-. To view a public message, click *Message Board*. The public messages are displayed.
+. To view a public message, click *Message Board*.
+The public messages are displayed.
 
 If players are in the same room, they can also use the Chat window to communicate.
 
-==== Setting Your Status
+===== Setting Your Status
 
 You can set your status for other players to see: either _Looking for Game_ or _Away from Keyboard._
 
@@ -288,16 +414,17 @@ To set your status,
 * Click *!* to set your status to *Looking for Game.*
 * Click *X* to set your status to *Away from Keyboard.*
 
-==== Sending a Wake-Up
+===== Sending a Wake-Up
 
 You can send a wake-up sound to a player who has been idle or unresponsive.
 
 To send a player a wake-up,
 
 . In the *Active Games* window, find the player you wish to wake up.
-. Right-click on the player's name and choose *Send Wake-Up.* The selected player’s computer will play the Wake-Up sound.
+. Right-click on the player's name and choose *Send Wake-Up.*
+The selected player’s computer will play the Wake-Up sound.
 
-==== Checking the Server Status
+===== Checking the Server Status
 
 You can check the Server status for current games.
 
@@ -306,29 +433,33 @@ To check Server status,
 . In the Server Controls, click *Server Status.*
 . The *Server Status* window displays all current games played on the Server, as well as games played in the past 24 hours, past week and past month.
 
-==== Disconnecting from the Server
+===== Disconnecting from the Server
 
 To disconnect from the Server,
 
 . In the Server controls, click *Disconnect.*
 
-=== Room Management
+==== Room Management
 
 If you have started a room, you can perform a number of management tasks, including locking a room and ejecting players from it.
 
-==== Locking a Room
+===== Locking a Room
 
-You can lock a room to make it private. Players will need a password to enter a locked room. (Note that a room password is different from a player’s personal password, which is used to log in to Vassal itself.)
+You can lock a room to make it private.
+Players will need a password to enter a locked room.
+(Note that a room password is different from a player’s personal password, which is used to log in to Vassal itself.)
 
 *To lock a room,*
 
 . In the *Active Games* window, right-click the name of the room you are in.
 . Select *Lock Room.*
-. Enter a password for the locked room. To enter the room, players will need to submit this password. You may wish to distribute this password by private message, instant messenger, or email.
+. Enter a password for the locked room.
+To enter the room, players will need to submit this password.
+You may wish to distribute this password by private message, instant messenger, or email.
 
 You can assign a new password to a locked room by unlocking and then relocking the room.
 
-==== Ejecting a Player
+===== Ejecting a Player
 
 If you’ve started a room, you can eject players from it if desired.
 
@@ -338,15 +469,20 @@ To eject a player from your game,
 . Select *Kick.* The player is ejected from your room and moved to the Main Room.
 . You may wish to lock your room (or relock an already-locked room) with a new password in order to keep the ejected player from reentering the room.
 
-== Playing Peer-to-Peer
+=== Playing Peer-to-Peer
 
-With a _peer-to-peer_ connection, you connect directly to another player's computer without connecting to the Vassal Server. In effect, each player's becomes a private server. You may wish to play peer-to-peer if you want a private game, or if the Vassal Server is unavailable.
+With a _peer-to-peer_ connection, you connect directly to another player's computer without connecting to the Vassal Server.
+In effect, each player's becomes a private server.
+You may wish to play peer-to-peer if you want a private game, or if the Vassal Server is unavailable.
 
-_Note:_ If you connect to the Internet through a router or firewall, you may need to configure your device to allow direct connections to your system. Consult your device's documentation for instructions.
+_Note:_ If you connect to the Internet through a router or firewall, you may need to configure your device to allow direct connections to your system.
+Consult your device's documentation for instructions.
 
-=== Resetting Your Default Connection
+==== Resetting Your Default Connection
 
-By default, Vassal is configured to connect to the Vassal Server for network games. The first time each player connects by peer-to-peer, this setting will need to be reset. You will need to reset it again if you wish to connect to the Vassal Server in the future.
+By default, Vassal is configured to connect to the Vassal Server for network games.
+The first time each player connects by peer-to-peer, this setting will need to be reset.
+You will need to reset it again if you wish to connect to the Vassal Server in the future.
 
 To reset your default connection for peer-to-peer,
 
@@ -354,115 +490,163 @@ To reset your default connection for peer-to-peer,
 . Click *File > Preferences,* and then click *Server* (on Mac OS X, click Application *> Preferences > Server*).
 . Choose *Direct peer-to-peer*, then click *OK*.
 
-=== Launching a Game
+==== Launching a Game
 
-After all players have reset their default connections, they can participate in a peer-to-peer game. One player can start and the others can join the game started by the first player.
+After all players have reset their default connections, they can participate in a peer-to-peer game.
+One player can start and the others can join the game started by the first player.
 
-In order to connect to peer-to-peer, you will need to use the IP (Internet Protocol) address of each player in the game. Vassal can determine and display your IP address for you.
+In order to connect to peer-to-peer, you will need to use the IP (Internet Protocol) address of each player in the game.
+Vassal can determine and display your IP address for you.
 
 To start a peer-to-peer game,
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Look for a game online*, and then follow the other Wizard steps as the module requires.
-. Click *Finish*. Your module now loads.
+. Click *Finish*.
+Your module now loads.
 . Click the *Connect* button.
 . In the Server controls, click *Invite Players.*
-. In the *Direct Connection* dialog, enter another player's IP address and port number and click *Invite*. Then, continue this process for each of the other players. +
-image:_images/image7.jpeg[image,width=352,height=95] +
+. In the *Direct Connection* dialog, enter another player's IP address and port number and click *Invite*.
+Then, continue this process for each of the other players. +
+image:image7.jpeg[image,width=352,height=95] +
 *Figure 6: The Direct Connection dialog, where you can enter IP addresses of other players*
-. In the module window, click the *Connect* button in the Toolbar. The *Active Games* window opens.
-. In the *Active Games* window, in *New Game*, type the name of the game you want to start (for example, _Battle Royale._) You are moved from the Main Room into the new, named game room. Other players can now join this new room.
+. In the module window, click the *Connect* button in the Toolbar.
+The *Active Games* window opens.
+. In the *Active Games* window, in *New Game*, type the name of the game you want to start (for example, _Battle Royale._).
+You are moved from the Main Room into the new, named game room.
+Other players can now join this new room.
 
 To join a peer-to-peer game,
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, choose *Look for a game online* and follow the other steps as the module requires.
-. Click *Finish*. Your module now loads.
+. Click *Finish*.
+Your module now loads.
 . Click the *Connect* button.
 . In the Server controls, click *Invite Players.*
 . In the Toolbar, click *Connect*.
-. In the Server controls, click *Invite Players.* The *Direct Connect* dialog displays your IP address. You should supply this to the starting player (by email, instant messenger, or other means) so you can be invited to the game.
+. In the Server controls, click *Invite Players*.
+The *Direct Connect* dialog displays your IP address.
+You should supply this to the starting player (by email, instant messenger, or other means) so you can be invited to the game.
 . When you receive an invitation from the starting player, click *Accept*.
-. On the right side of the screen, the *Active Games* window opens. The *Active Games* window displays the Main Room for the module, which is the default location for all players who are not currently in a game, and any active game rooms under that. Only the rooms running the current module are displayed.
+. On the right side of the screen, the *Active Games* window opens.
+The *Active Games* window displays the Main Room for the module, which is the default location for all players who are not currently in a game, and any active game rooms under that.
+Only the rooms running the current module are displayed.
 . Double-click the name of the game room you wish to join.
 . If prompted, enter the password for the room.
-. Right-click on the name of the player who invited you, then click *Synchronize*. You and that player will be synchronized and game play can begin.
+. Right-click on the name of the player who invited you, then click *Synchronize*.
+You and that player will be synchronized and game play can begin.
 
-==== Synchronization
+===== Synchronization
 
-Players in a peer-to-peer game must be _synchronized_ in order to see each other’s moves and interact. Players should pick a single player to synchronize with, such as the player who initiated the game. This will make sure that everyone’s game position is consistent.
+Players in a peer-to-peer game must be _synchronized_ in order to see each other’s moves and interact.
+Players should pick a single player to synchronize with, such as the player who initiated the game.
+This will make sure that everyone’s game position is consistent.
 
 When you synchronize, any side selection, piece movement and map selections you have performed will be reset and replaced with the game information of the player you synchronized to.
 
-== Playing by Email
+=== Playing by Email
 
-Vassal games can be played by email, by exchanging log files of player moves. You can review the logs in Vassal to see the moves made by your opponents, and then log your own move and send it to your opponents.
+Vassal games can be played by email, by exchanging log files of player moves.
+You can review the logs in Vassal to see the moves made by your opponents, and then log your own move and send it to your opponents.
 
 To play by email,
 
 A. Starting an email game:
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Start a new game offline*, and then follow the other Wizard steps as the module requires.
-. Click *Finish*. Your module now loads.
+. Click *Finish*.
+Your module now loads.
 . On the *File* menu, click *Begin Logfile.*
-. Execute your turn as usual. Vassal records your moves and chat to an encrypted log.
+. Execute your turn as usual.
+Vassal records your moves and chat to an encrypted log.
 . When your turn is complete, click *File > End Logfile.*
 . Name and save the log file.
-. Email the log file to your opponent as an attachment, using your computer’s email client. (Vassal log files have the suffix .vlog.)
+. Email the log file to your opponent as an attachment, using your computer’s email client.
+(Vassal log files have the suffix .vlog.)
 B. Reviewing an opponent’s email log:
 . When you receive your opponent’s email, save the attached log file to your system.
 . Launch Vassal and then the module you are playing.
 . In the Welcome Wizard, under *Select play mode,* choose *Load a Saved Game.*
 . Under *Load Saved Game*, click *Select* and browse to the log file.
-. Click *Next*. If this is your first turn, you may be prompted for additional Wizard steps. Follow the other steps as required. Otherwise, skip to step 6.
-. On the Toolbar, click the *Step Through Logfile* button, to review your opponent’s moves. Each click of *Step Through Logfile* performs one move.
-. When complete, you are prompted to start a new log file. Click *Yes*.
+. Click *Next*.
+If this is your first turn, you may be prompted for additional Wizard steps.
+Follow the other steps as required.
+Otherwise, skip to step 6.
+. On the Toolbar, click the *Step Through Logfile* button, to review your opponent’s moves.
+Each click of *Step Through Logfile* performs one move.
+. When complete, you are prompted to start a new log file.
+Click *Yes*.
 . Name and choose a location for the log file.
-. In the *Comments* window, enter any comments you wish about the log file. This comment will be displayed in the Module Manager.
-. Take your turn as usual. Vassal logs your moves and chat as you make them.
+. In the *Comments* window, enter any comments you wish about the log file.
+This comment will be displayed in the Module Manager.
+. Take your turn as usual.
+Vassal logs your moves and chat as you make them.
 . When done, click *File > End Logfile.* The logfile is saved.
 . Email the log file to your opponent as an attachment.
 . Each player repeats these steps until complete.
 
-*Email Play with More Than 2 Players:* If your email game includes 3 or more players, then you will need to repeat steps 1-6 above for each player’s log as you receive it. Play back the logs in turn order, exiting the module and restarting it after each log completes.
+*Email Play with More Than 2 Players:* If your email game includes 3 or more players, then you will need to repeat steps 1-6 above for each player’s log as you receive it.
+Play back the logs in turn order, exiting the module and restarting it after each log completes.
 
-=== About Game Logs
+==== About Game Logs
 
-Game log files contain encrypted records of all piece movement and other steps performed by a particular player. When playing by email, players should always exchange game logs (.vlog files), rather than saved games (.vsav files), because logs contain a step-by-step record of player moves, but saved games only contain a snapshot of the current game state.
+Game log files contain encrypted records of all piece movement and other steps performed by a particular player.
+When playing by email, players should always exchange game logs (.vlog files), rather than saved games (.vsav files), because logs contain a step-by-step record of player moves, but saved games only contain a snapshot of the current game state.
 
-Game logs are encrypted using each player’s password. As a result, all players in an email game must have unique Vassal passwords. When playing by email, make sure your Vassal password is uniquely chosen. Do not use a common phrase likely to be duplicated by other players, such as a variation of the game name. You can set your password in *Preferences > Personal.*
+Game logs are encrypted using each player’s password.
+As a result, all players in an email game must have unique Vassal passwords.When playing by email, make sure your Vassal password is uniquely chosen.
+Do not use a common phrase likely to be duplicated by other players, such as a variation of the game name.
+You can set your password in *Preferences > Personal.*
 
-You can save your game logs to a Saved Game folder, which can be displayed in Module Manager with the module for easy organization. See _Adding a Saved Game Folder_ for more information.
+You can save your game logs to a Saved Game folder, which can be displayed in Module Manager with the module for easy organization.
+See _Adding a Saved Game Folder_ for more information.
 
-== Playing Offline
+=== Playing Offline
 
-You can play a Vassal module offline; for example, if you are playing ‘hotseat’ with another player. (In hotseat play, two or more players play at a single computer, swapping their seat as they take turns.)
+You can play a Vassal module offline; for example, if you are playing ‘hotseat’ with another player.
+(In hotseat play, two or more players play at a single computer, swapping their seat as they take turns.)
 
 To play offline:
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Start a new game offline*, and then follow the other Wizard steps as the module requires.
-. Click *Finish*. Your module now loads.
+. Click *Finish*.
+Your module now loads.
 . Take your turn.
-. If sides are defined for the module, click *Retire*. You are prompted to quit your side and join the game again as another side.
+. If sides are defined for the module, click *Retire*.
+You are prompted to quit your side and join the game again as another side.
 . The next player selects another side and takes a turn, then clicks *Retire*.
 . Repeat step 6 until complete.
 
-== Playing Solitaire
+=== Playing Solitaire
 
-You can play Vassal games offline, in solitaire mode. Note, however, that Vassal does not include any computer opponents. You must play all the sides in a solitaire game.
+You can play Vassal games offline, in solitaire mode.
+Note, however, that Vassal does not include any computer opponents.
+You must play all the sides in a solitaire game.
 
 To play solitaire:
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Start a new game offline*, and then follow the other Wizard steps as the module requires.
-. Click *Finish*. Your module now loads.
+. Click *Finish*.
+Your module now loads.
 . Take the first turn of the side you joined the game as.
-. Click *Retire*. You are prompted to quit your side and join the game again as another side. (Not all modules define sides. If there are no sides defined, then you will not need to retire after each turn. In addition, some modules have a special Solitaire side that can control the pieces of all sides in the game. If so, you will not need to click *Retire* either.
+. Click *Retire*.
+You are prompted to quit your side and join the game again as another side.
+(Not all modules define sides.
+If there are no sides defined, then you will not need to retire after each turn.
+In addition, some modules have a special Solitaire side that can control the pieces of all sides in the game.
+If so, you will not need to click *Retire* either.
 . Select another side and take a turn.
 . Repeat steps 5-6 until complete.
 
-== Saving a Game
+=== Saving a Game
 
 You can save in-progress Vassal games for play later.
 
@@ -470,190 +654,278 @@ To save a game,
 
 . Click *File > Save Game*
 . Browse to the location where you wish to save the game file.
-. Name the saved game file. (By default, saved games have the suffix .vsav.)
+. Name the saved game file.
+(By default, saved games have the suffix .vsav.)
 . Click *Save*.
 
-=== Playing a Saved Game
+==== Playing a Saved Game
 
 To play a saved game,
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play. The Welcome Wizard opens.
+. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode*, choose *Load a saved game.*
 . Under *Load Saved Game*, click *Select* and browse to the saved game.
-. Click *Finish*. Your module now loads the saved game.
+. Click *Finish*.
+Your module now loads the saved game.
 
-If playing in real time, you should start a room on the Server as usual, or connect peer-to-peer. Players should synchronize to the player who initiated the game.
+If playing in real time, you should start a room on the Server as usual, or connect peer-to-peer.
+Players should synchronize to the player who initiated the game.
 
-==== Adding a Saved Game Folder
+===== Adding a Saved Game Folder
 
-You can add a Saved Game folder to Module Manager. Saved games in this folder will be added to the module listing in your Module Library, where you can track and manage them.
+You can add a Saved Game folder to Module Manager.
+Saved games in this folder will be added to the module listing in your Module Library, where you can track and manage them.
 
 To add a Saved Game folder,
 
 . In Module Manager, right-click the module for which you wish to create a saved game folder.
 . Choose Add Saved Game Folder.
-. Browse to the folder you wish to add, and click *OK*. Files with the suffix .vsav will be displayed under the module listing.
+. Browse to the folder you wish to add, and click *OK*.
+Files with the suffix .vsav will be displayed under the module listing.
 
 == Using Vassal
 
-Vassal is highly customizable. Different modules can have specialized controls and custom functions, and can look very different from one another. As a result, a complete description of each Vassal module is not possible here. However, all Vassal modules follow the same general guidelines.
+Vassal is highly customizable.Different modules can have specialized controls and custom functions, and can look very different from one another.
+As a result, a complete description of each Vassal module is not possible here.
+However, all Vassal modules follow the same general guidelines.
 
-== The Toolbar
+=== The Toolbar
 
 The Vassal window presents a Toolbar at the top that contains controls for major game functions in the form of
-clickable buttons. Sometimes, the buttons include drop-down menus with additional options. +
-image:_images/image8.jpeg[image,width=701,height=77] +
+clickable buttons.
+Sometimes, the buttons include drop-down menus with additional options. +
+image:image8.jpeg[image,width=701,height=77] +
 *Figure 7: A typical toolbar*
 
 Although the exact layout, button appearance, and sometimes button names, will vary from module to module, the Toolbar in most games follows the same general arrangement:
 
-The left side of the Toolbar always contains the standard Vassal controls. From left to right, these 4 buttons are:
+The left side of the Toolbar always contains the standard Vassal controls.
+From left to right, these 4 buttons are:
 
-* *Undo:* This button reverses the last action taken by anyone in the game. Click multiple times to undo multiple actions.
-* *Step through Log:* This button allows you to step through an email log to recap an opponent’s moves. For more information, see <<Playing by Email>>.
+* *Undo:* This button reverses the last action taken by anyone in the game.
+Click multiple times to undo multiple actions.
+* *Step through Log:* This button allows you to step through an email log to recap an opponent’s moves.
+For more information, see <<Playing by Email>>.
 * *Connect:* The *Connect* button launches the Server controls and *Active Games* window, which you use to connect to a Server-based or peer-to-peer game.
-* *Retire:* The *Retire* button lets you to choose a new side to play. (Since not all games have defined sides, this button may have no use in some games.)
+* *Retire:* The *Retire* button lets you to choose a new side to play.
+(Since not all games have defined sides, this button may have no use in some games.)
 
-The middle of the Toolbar contains the main module controls. The exact controls vary from module to module, and largely depend on the game rules and game play requirements. Typically, this is where you will find the game pieces palette, die roller buttons, and game charts. In addition, a module may have other buttons and menus; for example, buttons to open new mapboard windows, advance the current game turn, or reveal all hidden pieces. You should check your module's toolbar for details.
+The middle of the Toolbar contains the main module controls.
+The exact controls vary from module to module, and largely depend on the game rules and game play requirements.
+Typically, this is where you will find the game pieces palette, die roller buttons, and game charts.
+In addition, a module may have other buttons and menus; for example, buttons to open new mapboard windows, advance the current game turn, or reveal all hidden pieces.
+You should check your module's toolbar for details.
 
-The right side of the Toolbar contains controls specific to your module’s main board. These controls will only affect pieces on the main mapboard. Some of these controls can include:
+The right side of the Toolbar contains controls specific to your module’s main board.
+These controls will only affect pieces on the main mapboard.
+Some of these controls can include:
 
 * *Zoom In, Zoom Out, Zoom Select:* These controls rescale the main mapboard.
 * *Image Capture:* This button creates a screen capture (in PNG format) of the map window.
-* *Mark as Moved:* Click this button to mark any units that you moved this turn. This is helpful in games with many pieces to track.
-* *Line of Sight (LOS) Thread:* This button is used to draw a line between two pieces on the map to determine line of sight between them. In addition, some LOS threads measure distance in game units. Click on one unit on the board, then drag the thread to a target, and the distance between them is displayed.
+* *Mark as Moved:* Click this button to mark any units that you moved this turn.
+This is helpful in games with many pieces to track.
+* *Line of Sight (LOS) Thread:* This button is used to draw a line between two pieces on the map to determine line of sight between them.
+In addition, some LOS threads measure distance in game units.
+Click on one unit on the board, then drag the thread to a target, and the distance between them is displayed.
 
-Toolbar buttons can be assigned _hotkeys_. Pressing the hotkey combination on your keyboard will work exactly as if you clicked the button with the mouse cursor.
+Toolbar buttons can be assigned _hotkeys_.
+Pressing the hotkey combination on your keyboard will work exactly as if you clicked the button with the mouse cursor.
 
-Toolbar buttons usually include tooltips that briefly explain each button’s function. Hold your cursor over the button to view a tooltip. Hotkeys are displayed in brackets. For example, a button that simulates the roll of two six-sided dice has a tooltip _Rolls 2d6 [Ctrl+F5]._ This indicates that Ctrl+F5 is the hotkey for the dice button; you would hold down the Ctrl and F5 keys together to use the button.
+Toolbar buttons usually include tooltips that briefly explain each button’s function.
+Hold your cursor over the button to view a tooltip.
+Hotkeys are displayed in brackets.
+For example, a button that simulates the roll of two six-sided dice has a tooltip _Rolls 2d6 [Ctrl+F5]._ This indicates that Ctrl+F5 is the hotkey for the dice button; you would hold down the Ctrl and F5 keys together to use the button.
 
-== The Chat Window
+=== The Chat Window
 
-The Chat window is located below the Toolbar. Messages typed in it will be displayed to all other players in the current game.
+The Chat window is located below the Toolbar.
+Messages typed in it will be displayed to all other players in the current game.
 
 A module may also present game messages in the chat window, such as the results of die rolls, reports on piece movement, turn updates, or other useful information.
 
-== The Main Map
+=== The Main Map
 
-The main map, located below the Chat Window, is where the majority of game play takes place. Actions taken using Toolbar buttons generally apply to pieces on the main map.
+The main map, located below the Chat Window, is where the majority of game play takes place.
+Actions taken using Toolbar buttons generally apply to pieces on the main map.
 
-Some maps include grids, which can be marked in hexes, squares or irregular zones. Depending on the game, the grids may be clearly visible on the map, or may be invisible. If a map includes a grid, then pieces will usually be restricted to movement on the grid, and distances between pieces will be measured in grid units, such as a number of hexes.
+Some maps include grids, which can be marked in hexes, squares or irregular zones.
+Depending on the game, the grids may be clearly visible on the map, or may be invisible.
+If a map includes a grid, then pieces will usually be restricted to movement on the grid, and distances between pieces will be measured in grid units, such as a number of hexes.
 
-=== Additional Map Windows
+==== Additional Map Windows
 
-Some games have multiple map windows. These map windows may display additional game maps used in playing the game, and can contain their own controls similar to those in the main map, such as a set of *Zoom* controls.
+Some games have multiple map windows.
+These map windows may display additional game maps used in playing the game, and can contain their own controls similar to those in the main map, such as a set of *Zoom* controls.
 
-In some games, these additional map windows may used for other purposes, such as for storing card decks or reinforcement units. A game may also include private windows where players can keep items that belong to them, such as additional units, a hand of cards, or sums of game money.
+In some games, these additional map windows may used for other purposes, such as for storing card decks or reinforcement units.
+A game may also include private windows where players can keep items that belong to them, such as additional units, a hand of cards, or sums of game money.
 
 In order to select pieces in a map window, the map window must be selected first.
 
-== Resizing Controls
+=== Resizing Controls
 
-You can resize many windows, such as the chat window, in relation to the main map. Click and drag the border between two windows to resize them. Other windows are also resizable by clicking and dragging, such as the divider between the pieces palette and the chat window, or the size of individual map windows.
+You can resize many windows, such as the chat window, in relation to the main map.
+Click and drag the border between two windows to resize them.
+Other windows are also resizable by clicking and dragging, such as the divider between the pieces palette and the chat window, or the size of individual map windows.
 
-Typically, each map window will also have a set of zoom controls, usually resembling a magnifying glass, which allows you to rescale the map in a window. This is helpful when you want to get a closer look at a game board, or display an overall view of a strategic situation. Note that only the map graphic rescales; the window size on your screen is unaffected.
+Typically, each map window will also have a set of zoom controls, usually resembling a magnifying glass, which allows you to rescale the map in a window.
+This is helpful when you want to get a closer look at a game board, or display an overall view of a strategic situation.
+Note that only the map graphic rescales; the window size on your screen is unaffected.
 
-== Game Pieces
+=== Game Pieces
 
-Most modules have at least one _pieces_ _palette_, accessible from the Toolbar, which allows access to game pieces. (Game pieces are also called _counters, tokens,_ or _units_.) The palette is usually divided into tabs, sorted by side or function; for example, in a World War II game, one tab might include all Allied units, another tab include all German units, and a third tab could include game markers that could be used by both sides. To move a piece to the game board, drag it from the palette into place.
+Most modules have at least one _pieces_ _palette_, accessible from the Toolbar, which allows access to game pieces.
+(Game pieces are also called _counters, tokens,_ or _units_.)
+The palette is usually divided into tabs, sorted by side or function; for example, in a World War II game, one tab might include all Allied units, another tab include all German units, and a third tab could include game markers that could be used by both sides.
+To move a piece to the game board, drag it from the palette into place.
 
-Game pieces drawn from a palette are infinite and never run out. However, some games deliberately limit the number of pieces in the game (such as a _Monopoly_ box, which has a set number of houses and hotels). In these cases, the Vassal module will usually have a finite number of pieces in a separate window, not a palette, from which you can draw. In such games, when these pieces are depleted, there are usually no more available.
+Game pieces drawn from a palette are infinite and never run out.
+However, some games deliberately limit the number of pieces in the game (such as a _Monopoly_ box, which has a set number of houses and hotels).
+In these cases, the Vassal module will usually have a finite number of pieces in a separate window, not a palette, from which you can draw.
+In such games, when these pieces are depleted, there are usually no more available.
 
-=== Selecting Pieces
+==== Selecting Pieces
 
-To select a piece, select the map window it is located on, and then click the piece with your mouse cursor. A selected piece displays a border to spotlight it.
+To select a piece, select the map window it is located on, and then click the piece with your mouse cursor.
+A selected piece displays a border to spotlight it.
 
 You can select multiple pieces by holding the mouse button down and dragging a box around the desired pieces with your mouse cursor.
 
-Alternatively, you can select individual pieces from a group by shift-clicking each desired piece with your mouse. You can also deselect pieces from a group by holding down the ALT (or, on Mac OS X, the Option key) while clicking on the pieces to be removed from selection.
+Alternatively, you can select individual pieces from a group by shift-clicking each desired piece with your mouse.
+You can also deselect pieces from a group by holding down the ALT (or, on Mac OS X, the Option key) while clicking on the pieces to be removed from selection.
 
-=== Command Menus
+==== Command Menus
 
 Most pieces in a Vassal game are interactive: by right-clicking on a piece, you display a command menu that lists commands specific to that piece.
 
-Different pieces may have different command menus, depending on their function in the game. The module designer chooses menu items based on the game rules. Check each module for the exact command menu items for a given counter.
+Different pieces may have different command menus, depending on their function in the game.
+The module designer chooses menu items based on the game rules.
+Check each module for the exact command menu items for a given counter.
 
-For example, to reflect damage done to a tank during combat, a tank counter can have a full-strength version and a damaged version. When the tank takes damage during combat, a player would right-click on the piece and choose *Damage* from the menu. This displays the damaged version of the tank, with reduced combat strength. In the same game, a Mine counter only has a single choice on its command menu: *Explode*. This action is selected when the mine is detonated and removes the piece from the board
+For example, to reflect damage done to a tank during combat, a tank counter can have a full-strength version and a damaged version.
+When the tank takes damage during combat, a player would right-click on the piece and choose *Damage* from the menu.
+This displays the damaged version of the tank, with reduced combat strength.
+In the same game, a Mine counter only has a single choice on its command menu: *Explode*.
+This action is selected when the mine is detonated and removes the piece from the board
 
-Use of the command menu will vary from module to module. In some modules, all piece control, even movement, is performed by right-clicking and choosing a command. In some, the right-click menu is more modest and contains only a few simple commands, such as to clone or delete the piece.
+Use of the command menu will vary from module to module.
+In some modules, all piece control, even movement, is performed by right-clicking and choosing a command.
+In some, the right-click menu is more modest and contains only a few simple commands, such as to clone or delete the piece.
 
-image:_images/image9.png[image,width=198,height=160] +
+image:image9.png[image,width=198,height=160] +
 *Figure 8: A sample command menu, showing 4 commands and associated hotkeys*
 
-*Hotkeys:* Each command menu item is assigned a hotkey combination, which appears next to the command menu item. Pressing the combined hotkeys simultaneously on your keyboard will work exactly as if you clicked the menu item with the mouse cursor. For example, if a command is listed as *Hide CTRL H,* when the piece is selected, pressing Ctrl+H will hide the piece.
+*Hotkeys:* Each command menu item is assigned a hotkey combination, which appears next to the command menu item.
+Pressing the combined hotkeys simultaneously on your keyboard will work exactly as if you clicked the menu item with the mouse cursor.
+For example, if a command is listed as *Hide CTRL H,* when the piece is selected, pressing Ctrl+H will hide the piece.
 
-If all the pieces in a group share a command (and a hotkey), you can select the group, right-click to see their command menu, and perform commands on all of the pieces in the group at once. For example, if all pieces in a selected group had the command *Delete CTRL X* , then you could delete all the pieces at once by selecting them all and choosing the *Delete* command.
+If all the pieces in a group share a command (and a hotkey), you can select the group, right-click to see their command menu, and perform commands on all of the pieces in the group at once.
+For example, if all pieces in a selected group had the command *Delete CTRL X* , then you could delete all the pieces at once by selecting them all and choosing the *Delete* command.
 
-=== Moving Pieces
+==== Moving Pieces
 
-In most modules, pieces are moved by dragging and dropping them to new places on the map with the mouse cursor. You can drag pieces between map windows as well.
+In most modules, pieces are moved by dragging and dropping them to new places on the map with the mouse cursor.
+You can drag pieces between map windows as well.
 
-However, some modules include functions to move pieces using the command menu, in place of dragging and dropping. For example, a piece can include a command to move a fixed distance, such as one square to the left or right, or to move to a new location in the game, such as a discard pile. In these cases, it is generally preferred to use the command menu than to simply drag and drop pieces. Check the module for a list of such commands, if any.
+However, some modules include functions to move pieces using the command menu, in place of dragging and dropping.
+For example, a piece can include a command to move a fixed distance, such as one square to the left or right, or to move to a new location in the game, such as a discard pile.
+In these cases, it is generally preferred to use the command menu than to simply drag and drop pieces.
+Check the module for a list of such commands, if any.
 
-=== Stacking
+==== Stacking
 
-In many games, especially war games, you can form a __stack__ by piling pieces on top of each other, then double-clicking the pile. A stack can be selected and moved like an individual piece.
+In many games, especially war games, you can form a __stack__ by piling pieces on top of each other, then double-clicking the pile.
+A stack can be selected and moved like an individual piece.
 
 Most Vassal modules include a stack viewer. Hold your mouse cursor over the stack and the component pieces in the stack will be displayed, left to right.
 
-image:_images/image10.jpeg[image,width=353,height=122] +
+image:image10.jpeg[image,width=353,height=122] +
 *Figure 9: The stack viewer, displaying the contents of a stack of pieces*
 
 If you select a stack, and the selected pieces share a command (and the same hotkey), you can right-click to see the shared commands, and select one to perform on all of the pieces in the stack at once.
 
-To unstack pieces, double-click on a stack and the stack will expand, accordion-style. You can then select and manipulate the individual pieces in the stack, to drag them away, use their command menus, or otherwise act on them. In addition, you can use the arrow keys to move individually selected pieces up and down in the stack.
+To unstack pieces, double-click on a stack and the stack will expand, accordion-style.
+You can then select and manipulate the individual pieces in the stack, to drag them away, use their command menus, or otherwise act on them.
+In addition, you can use the arrow keys to move individually selected pieces up and down in the stack.
 
 Restack the pieces by double-clicking on the expanded stack.
 
-In some modules, stacking for some or all pieces is disabled. These pieces will never be included in stacks.
+In some modules, stacking for some or all pieces is disabled.
+These pieces will never be included in stacks.
 
-== Sides
+=== Sides
 
-Many games have defined _sides_. Being on a particular side usually restricts the pieces that you can control, which windows you can open, and sometimes which pieces are visible to you. You select a side at the start of a game or scenario, and can change your side using the *Retire* button.
+Many games have defined _sides_.
+Being on a particular side usually restricts the pieces that you can control, which windows you can open, and sometimes which pieces are visible to you.
+You select a side at the start of a game or scenario, and can change your side using the *Retire* button.
 
-Depending on the game, modules may accommodate one, two or many players. The number of sides in a game is determined by the game itself.
+Depending on the game, modules may accommodate one, two or many players.
+The number of sides in a game is determined by the game itself.
 
-For example, in a module called _World War II_, there are six sides: the US, UK, Germany, Italy, Japan, and the Soviet Union. For the most part, players can only move and execute commands on pieces belonging to their own sides. However, the German player may move and command Italian pieces as if they were German. In addition, there is a set of markers (to mark mines, smoke and grenades) that can be used universally by all sides.
+For example, in a module called _World War II_, there are six sides: the US, UK, Germany, Italy, Japan, and the Soviet Union.
+For the most part, players can only move and execute commands on pieces belonging to their own sides.
+However, the German player may move and command Italian pieces as if they were German.
+In addition, there is a set of markers (to mark mines, smoke and grenades) that can be used universally by all sides.
 
-*Password:* Sides are locked to players using each player’s login password. As a result, you should make sure your login password is uniquely chosen. Do not use the default password, or a phrase that others are likely to use, such as a variation of the module name.
+*Password:* Sides are locked to players using each player’s login password.
+As a result, you should make sure your login password is uniquely chosen.
+Do not use the default password, or a phrase that others are likely to use, such as a variation of the module name.
 
 No other player may join a side until the player to whom the side is currently locked unlocks it by clicking *Retire*.
 
-*Observer:* In addition to any predefined sides, modules include a special side called _Observer_. Joining a game as an observer is a good way to watch a game in progress without actually competing. An observer can still chat and view gameplay but may not be able to access certain game functions.
+*Observer:* In addition to any predefined sides, modules include a special side called _Observer_.
+Joining a game as an observer is a good way to watch a game in progress without actually competing.
+An observer can still chat and view gameplay but may not be able to access certain game functions.
 
-== Setups
+=== Setups
 
-Many games include scenarios where different maps and pieces may be used to simulate different situations. For example, a World War II game could have a scenario for the Battle of the Bulge and another for the Battle of Midway. Each is played using the same module and rules, but would use different maps and forces.
+Many games include scenarios where different maps and pieces may be used to simulate different situations.
+For example, a World War II game could have a scenario for the Battle of the Bulge and another for the Battle of Midway.
+Each is played using the same module and rules, but would use different maps and forces.
 
-In Vassal, scenarios are represented by _setups_, which are preset configurations of maps and pieces. The module designer configures the appropriate maps and forces in place when designing the module.
+In Vassal, scenarios are represented by _setups_, which are preset configurations of maps and pieces.
+The module designer configures the appropriate maps and forces in place when designing the module.
 
-In some modules, you may be asked to choose a setup upon launch, which will load the setup file automatically. The game will begin with the correct maps (and, usually, units) already in their starting positions.
+In some modules, you may be asked to choose a setup upon launch, which will load the setup file automatically.
+The game will begin with the correct maps (and, usually, units) already in their starting positions.
 
-== Cards
+=== Cards
 
-In games that include cards, you draw cards by dragging them from a deck to their destination. Some modules have separate, private windows that can be used to keep cards players have drawn, like a player hand.
+In games that include cards, you draw cards by dragging them from a deck to their destination.
+Some modules have separate, private windows that can be used to keep cards players have drawn, like a player hand.
 
-Check the command menu for a list of specific card options. For example, in some games, used cards are deleted from the game, and in others, used cards are sent to a discard pile for possible later use.
+Check the command menu for a list of specific card options.
+For example, in some games, used cards are deleted from the game, and in others, used cards are sent to a discard pile for possible later use.
 
-Like real cards, cards in a module usually have two sides, a front and back. You can usually reveal the front of a card by using a command on the command menu. This is called _unmasking_ a card.
+Like real cards, cards in a module usually have two sides, a front and back.
+You can usually reveal the front of a card by using a command on the command menu.
+This is called _unmasking_ a card.
 
-A card that can be unmasked usually includes a *Peek* command. When you click *Peek*, only you can see the card at which you are peeking. This is helpful if you need a quick reminder of the card face, but don’t wish to reveal the card to others. As soon as you click away from a card that you are peeking at, the card will revert to its face-down state. (Note that if you _unmask_ the card, then _everyone_ can see it. Use *Peek* to keep your card secret until you are ready to reveal it.)
+A card that can be unmasked usually includes a *Peek* command.
+When you click *Peek*, only you can see the card at which you are peeking.
+This is helpful if you need a quick reminder of the card face, but don’t wish to reveal the card to others.
+As soon as you click away from a card that you are peeking at, the card will revert to its face-down state.
+(Note that if you _unmask_ the card, then _everyone_ can see it.
+Use *Peek* to keep your card secret until you are ready to reveal it.)
 
-In addition, some card decks include additional features that allow you to act on the entire deck, to select specific cards, shuffle the deck, or perform other functions. You perform these functions, if any, by right-clicking on the card deck.
+In addition, some card decks include additional features that allow you to act on the entire deck, to select specific cards, shuffle the deck, or perform other functions.
+You perform these functions, if any, by right-clicking on the card deck.
 
-== The Help Menu
+=== The Help Menu
 
-The Help menu can be configured by the module designer to show a variety of useful information, including help files, rules, game charts, or notes on module usage. Click *Help* to determine your module's exact help menu layout.
+The Help menu can be configured by the module designer to show a variety of useful information, including help files, rules, game charts, or notes on module usage.
+Click *Help* to determine your module's exact help menu layout.
 
 Typically, the menu will also include an *About* window to show the version number of the Vassal engine and your current module, which can be useful for troubleshooting.
 
-== Preferences
+=== Preferences
 
 You can set a variety of preferences for your Vassal game, both in the Module Manager and the Vassal Player, to customize your Vassal experience.
 
 Some preferences require a restart of Vassal in order to take effect.
 
-=== Module Manager Preferences
+==== Module Manager Preferences
 
 Module Manager Preferences affect the appearance and behavior of the Module Manager and for all modules launched.
 
@@ -662,17 +934,18 @@ To set your preferences in the Module Manager,
 . In the Module Manager, on the *File* menu (or, on Mac OS X, the Application menu), click *Preferences*.
 . Set your preferences as desired, and then click *OK*.
 
-==== General Preferences
+===== General Preferences
 
-* *Language:* Specifies a language in which to display the Module Manager interface. You must restart Vassal for the language display to change.
+* *Language:* Specifies a language in which to display the Module Manager interface.
+You must restart Vassal for the language display to change.
 * *Show Wizard at Startup?* If selected, when you launch a module, the login wizard will be displayed.
 
-==== Importer Preferences
+===== Importer Preferences
 
 * *JVM Initial Heap Size (in MB):* Initial heap size of the Java Virtual Machine in megabytes.
 * *JVM Maximum Heap Size (in MB):* Maximum heap size of the Java Virtual Machine, in megabytes.
 
-=== Player Preferences
+==== Player Preferences
 
 Vassal Player preferences affect the appearance and behavior of the current module.
 
@@ -682,50 +955,62 @@ To set your preferences in the Vassal Player,
 . On the *File* menu (or, on Mac OS X, the Application menu), click *Preferences*.
 . Set your preferences as desired, and then click *OK*.
 
-==== General
+===== General
 
-* *Language:* Specifies a language in which to display modules. Only generic menu items are translated. Command menus and text strings appear in their original language unless the module specifically includes the translation.
-* *Prefer Memory-Mapped files for Large Images?* When checked, large images are decoded and written to memory-mapped files, rather than being stored in RAM. Initial loading of large images will be slower, but significantly less RAM will be used. This can be helpful for low-RAM systems.
+* *Language:* Specifies a language in which to display modules.
+Only generic menu items are translated.
+Command menus and text strings appear in their original language unless the module specifically includes the translation.
+* *Prefer Memory-Mapped files for Large Images?* When checked, large images are decoded and written to memory-mapped files, rather than being stored in RAM.
+Initial loading of large images will be slower, but significantly less RAM will be used.
+This can be helpful for low-RAM systems.
 * *High-quality Scaling:* Toggles between using the slower, high-quality Lanczos3 scaler, and the faster, low-quality bilinear scaler for scaling images.
-* *Show Wizard at Startup?* If selected, when you launch the module, the Welcome Wizard will be displayed. If the Wizard is not displayed, you are simply prompted for username and password upon launch.
+* *Show Wizard at Startup?* If selected, when you launch the module, the Welcome Wizard will be displayed.
+If the Wizard is not displayed, you are simply prompted for username and password upon launch.
 * *Ask to Start Logging Before a Replay?* If yes, before you replay an email log, you will be prompted whether or not you wish to start logging.
 * *Ask to Ensure Logging After a Replay?* If yes, after you replay an email log, you will be prompted whether or not you wish to begin your own log.
-* *Prompt for Log File Comments?* If yes, you will be prompted to add comments to an email log. The comments will be visible in the Module Manager.
-* *Use Combined Application Window?* If enabled, all game windows (such as maps) will open in a single Vassal application. If disabled, all windows will open separately, allowing you to move or resize them on your screen.
+* *Prompt for Log File Comments?* If yes, you will be prompted to add comments to an email log.
+The comments will be visible in the Module Manager.
+* *Use Combined Application Window?* If enabled, all game windows (such as maps) will open in a single Vassal application.
+If disabled, all windows will open separately, allowing you to move or resize them on your screen.
 * *JVM initial heap in MB:* Initial heap size of the Java Virtual Machine, in megabytes.
 * *JVM maximum heap in MB:* Maximum heap size of the Java Virtual Machine, in megabytes.
 * *Scroll Increment (pixels):* If *Use Arrow Keys to Scroll* is selected, scroll increment determines the number of pixels scrolled with each key press.
 * *Use Arrow Keys to Scroll?* If selected, allows you to use the keyboard arrow keys to scroll inside a window.
-* *Disable automatic stack display - use configured control key?* If selected and the module has a stack viewer enabled, the stack viewer will not be displayed on mouseover. Instead, you must use the stack viewer hotkey defined in the module itself.
+* *Disable automatic stack display - use configured control key?* If selected and the module has a stack viewer enabled, the stack viewer will not be displayed on mouseover.
+Instead, you must use the stack viewer hotkey defined in the module itself.
 * *Delay before automatic stack display (ms):* Delay, in milliseconds, before a stack viewer displays the contents of a stack.
 * *Delay scrolling when dragging at map edge (ms):* Scrolling delay, in milliseconds, when you have scrolled to a map edge.
 * *Moving stacks should pick up non-moving pieces:* If selected, a moving stack that moves over other pieces will add those pieces to the stack as it is moved.
 
-==== Personal
+===== Personal
 
 Personal preferences allow you to set (or reset), your display name and login password.
 
 In addition, in *Personal Info*, you can enter a brief description of yourself that will be displayed when others view your Profile.
 
-==== Server
+===== Server
 
-Select whether your default connection will be to the Vassal Server, or a peer-to-peer connection. If you are currently connected, you must disconnect before resetting this preference.
+Select whether your default connection will be to the Vassal Server, or a peer-to-peer connection.
+If you are currently connected, you must disconnect before resetting this preference.
 
-==== Chat Window
+===== Chat Window
 
 These preferences control the appearance (font, font size and color) of your chat window.
 
-==== Turn Counter
+===== Turn Counter
 
 These settings control the appearance of a module’s Turn counters.
 
-==== Sounds
+===== Sounds
 
-The Sounds preference allows you to specify a sound file to play when you are sent a Wake-Up. You can keep the default sound, select a different sound file, or play the selected file.
+The Sounds preference allows you to specify a sound file to play when you are sent a Wake-Up.
+You can keep the default sound, select a different sound file, or play the selected file.
 
-== Updating Vassal
+=== Updating Vassal
 
-Vassal is updated regularly with improvements, bug fixes, and other updates. New updates are made available for download at vassalengine.org. You can determine if there is an update available by clicking *Help > Check for Updates.* Vassal also automatically checks for application updates if the last check was more than 10 days ago.
+Vassal is updated regularly with improvements, bug fixes, and other updates.
+New updates are made available for download at vassalengine.org.
+You can determine if there is an update available by clicking *Help > Check for Updates.* Vassal also automatically checks for application updates if the last check was more than 10 days ago.
 
 *Updating Modules:* Check the module’s page on Vassalengine.org for the latest version of a module or its extensions.
 
@@ -733,72 +1018,108 @@ Vassal is updated regularly with improvements, bug fixes, and other updates. New
 
 This section lists a variety of ways to enhance your Vassal experience.
 
-== Module Extensions
+=== Module Extensions
 
-Many modules have _extensions_, which are add-on files that provide additional game play options. For example, an extension could include additional battle maps or optional units not included in the regular game. Generally, an extension is associated with a specific module and is not useable with other modules.
+Many modules have _extensions_, which are add-on files that provide additional game play options.
+For example, an extension could include additional battle maps or optional units not included in the regular game.
+Generally, an extension is associated with a specific module and is not useable with other modules.
 
-Like modules, extensions are not specific to any operating system. A module extension for Vassal 3.1 usually has the suffix .vext, although some older extensions have the suffix .mdx or even .zip.
+Like modules, extensions are not specific to any operating system.
+A module extension for Vassal {project-version} usually has the suffix .vext, although some older extensions have the suffix .mdx or even .zip.
 
-=== Activating and Deactivating Extensions
+==== Activating and Deactivating Extensions
 
-Extensions need to be _activated_ in order to be loaded with a module. Once activated, an extension will automatically load whenever you launch the base module.
+Extensions need to be _activated_ in order to be loaded with a module.
+Once activated, an extension will automatically load whenever you launch the base module.
 
 To activate an extension:
 
 . In Module Manager, right-click on the module that the extension is for, and select *Add Extension.*
-. Browse to the extension file and click *Open*. The extension is now listed in the Module Manager under the name of the module. A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located. When Vassal loads the module, any extensions in this directory are also loaded. (For example, for the module WorldWarII, upon activating the extension IwoJima.vext, the extension is placed in the directory WorldWarII_ext.)
+. Browse to the extension file and click *Open*.
+The extension is now listed in the Module Manager under the name of the module.
+A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located.
+When Vassal loads the module, any extensions in this directory are also loaded.
+(For example, for the module WorldWarII, upon activating the extension IwoJima.vext, the extension is placed in the directory WorldWarII_ext.)
 
 You can _deactivate_ an extension if you do not wish it to be loaded with the base module.
 
 To deactivate an extension,
 
-. In Module Manager, double-click the name of the module. The module list expands.
-. Right-click on the extension and choose *Deactivate Extension.* The extension is deactivated. (The actual extension file is moved to a subdirectory called _inactive_.)
+. In Module Manager, double-click the name of the module.
+The module list expands.
+. Right-click on the extension and choose *Deactivate Extension.* The extension is deactivated.
+(The actual extension file is moved to a subdirectory called _inactive_.)
 . You can reactivate an inactive extension later by selecting the extension in Module Manager, right-clicking, and choosing *Activate Extension*.
 
-== Helpful Applications
+=== Helpful Applications
 
 There are many helpful third-party applications that can enhance your Vassal play experience.
 
 * An email client that allows you to send attachments is required for playing games by email.
-* Voice chat applications may be helpful when playing Vassal live. Skype, Ventrilo or Teamspeak are all effective and free, but other solutions may be appropriate for your players.
+* Voice chat applications may be helpful when playing Vassal live.
+Skype, Ventrilo or Teamspeak are all effective and free, but other solutions may be appropriate for your players.
 
-== Finding Opponents
+=== Finding Opponents
 
 If you’re looking for opponents, you have several options:
 
 * You can launch the Module Manager, select a module, connect to the Server, and set your status to _Looking for Game._
-* Vassalengine.org has a Java applet that will display all currently running games on the Vassal Server. On the Vassalengine.org site, click *See who’s playing live right now* to view all current games. If you see your game being played currently, you can launch the module, log in to the Server, and use private or public messaging to contact a potential opponent. You can also view games played on the Server in the past 24 hours, the past week, and the past month. (In addition, you can view this information using the Module Manager under *Tools > Server Status.)*
-* Vassalengine.org maintains an Opponents Wanted forum, where you can search for opponents for your game. You should specify the game or games you want to play, whether you would like to play real time or by email, and your time zone. Visit http://www.vassalengine.org/forums[[.underline]#www.vassalengine.org/forums#] for more information.
+* Vassalengine.org has a Java applet that will display all currently running games on the Vassal Server.
+On the Vassalengine.org site, click *See who’s playing live right now* to view all current games.
+If you see your game being played currently, you can launch the module, log in to the Server, and use private or public messaging to contact a potential opponent.
+You can also view games played on the Server in the past 24 hours, the past week, and the past month.
+(In addition, you can view this information using the Module Manager under *Tools > Server Status.)*
+* Vassalengine.org maintains an Opponents Wanted forum, where you can search for opponents for your game.
+You should specify the game or games you want to play, whether you would like to play real time or by email, and your time zone.
+Visit http://www.vassalengine.org/forums[[.underline]#www.vassalengine.org/forums#] for more information.
 * In addition, gaming sites like BoardGameGeek.com, Wargamer.com, and ComsimWorld.com maintain Vassal opponent lists.
 
-== The Vassal Community
+=== The Vassal Community
 
-There’s a lively Vassal community available to you on the Vassalengine.org forums. The friendly community members are glad to help support you in your Vassal games. We invite you to come and say hello! You can discuss games, ask technical issues or questions regarding Vassal, find opponents, contact module designers, and get module design tips.
+There’s a lively Vassal community available to you on the Vassalengine.org forums.
+The friendly community members are glad to help support you in your Vassal games.
+We invite you to come and say hello! You can discuss games, ask technical issues or questions regarding Vassal, find opponents, contact module designers, and get module design tips.
 
-== Frequently Asked Questions
+=== Frequently Asked Questions
 
 [qanda]
 My opponent claims he’s moving pieces around on the board, but I don’t see anything moving. Why not?::
-You may be out of synch with the other player. First, make sure you are connected to the Server. In the *Active Games* window, right-click on your opponent’s name and select *Synchronize*. Your opponent should see a message stating _‘Sending game info…’_ You will be logged into the game again and synchronized with your opponent's movements. +
+You may be out of synch with the other player.
+First, make sure you are connected to the Server.
+In the *Active Games* window, right-click on your opponent’s name and select *Synchronize*.
+Your opponent should see a message stating _‘Sending game info…’_ You will be logged into the game again and synchronized with your opponent's movements. +
 In a multiplayer game, all participants in a game need to be synched, so for consistency, it’s a good idea to pick one player, such as the person who initiated the game, and have everyone synch to that player. +
 Synching is required for both Server and peer-to-peer games.
 
 I want to play a game that was originally produced by SPI, Games Workshop, Avalanche Press, or Sabertooth Games. Why don’t you have any modules for these games?::
-These publishers, or the current holders of their copyrights, have asked specifically that Vassalengine.org neither host nor distribute modules based on their games. Vassalengine.org always complies with such requests from copyright holders. Users who disagree with a copyright holder’s policies are encouraged to discuss the issue with the copyright holder.
+These publishers, or the current holders of their copyrights, have asked specifically that Vassalengine.org neither host nor distribute modules based on their games.
+Vassalengine.org always complies with such requests from copyright holders.
+Users who disagree with a copyright holder’s policies are encouraged to discuss the issue with the copyright holder.
 
 Can I log a discussion in the chat window?::
-At this point, direct logging of the chat window is not possible. However, you can copy and paste text from the chat window into any text editor and then save it.
+At this point, direct logging of the chat window is not possible.
+However, you can copy and paste text from the chat window into any text editor and then save it.
 
 I downloaded a module, but when I go to run it, it keeps unzipping and the game won’t launch.::
-This may be an issue with the module package. A module is actually a ZIP file, a compressed file containing all the necessary components for a particular game. Modules generally have the suffix .vmod (for example, game.vmod.) However, some older modules use the suffix .mod or even .zip. +
-*File Associations:* On Windows and Mac OS X with proper file associations, double-clicking on a .vmod file will launch Vassal. Consult your system's documentation for instructions on how to set your file associations to associate .vmod files with Vassal.
-* On some systems, the suffix .mod is sometimes associated with MP3 play lists or MPEG files. Double-clicking on a .mod file may launch your MP3 player or similar application. You may simply change a file’s suffix from .mod or .zip to .vmod and then should be able to launch it in Vassal. +
+This may be an issue with the module package.
+A module is actually a ZIP file, a compressed file containing all the necessary components for a particular game.
+Modules generally have the suffix .vmod (for example, game.vmod.) However, some older modules use the suffix .mod or even .zip. +
+*File Associations:* On Windows and Mac OS X with proper file associations, double-clicking on a .vmod file will launch Vassal.
+Consult your system's documentation for instructions on how to set your file associations to associate .vmod files with Vassal.
+* On some systems, the suffix .mod is sometimes associated with MP3 play lists or MPEG files.
+Double-clicking on a .mod file may launch your MP3 player or similar application.
+You may simply change a file’s suffix from .mod or .zip to .vmod and then should be able to launch it in Vassal. +
 *Zipped Files:* The issue may be with a compressed file or your system’s compression utility.
-* To save file size, some large or older modules are packaged inside a ZIP file and use .zip as a suffix. If so, you will need to unzip the ZIP file before launch, using a decompression utility like WinZip. Inside, you should find the module file, with a suffix of .vmod.
-* On Mac OS X, the Archive Utility may decompress a zipped file and then decompress any zipped files inside the first ZIP file. You may wish to use a compression utility like StuffIt Expander when handling ZIP files.
-* If after unzipping, you find a file labeled BuildFile, a folder labeled Images, and a group of associated files, then the ZIP file itself is the module. There is no need to unzip it. Launch the module using Module Manager by clicking *File > Open Module* and browse to the module file. +
+* To save file size, some large or older modules are packaged inside a ZIP file and use .zip as a suffix.
+If so, you will need to unzip the ZIP file before launch, using a decompression utility like WinZip.
+Inside, you should find the module file, with a suffix of .vmod.
+* On Mac OS X, the Archive Utility may decompress a zipped file and then decompress any zipped files inside the first ZIP file.
+You may wish to use a compression utility like StuffIt Expander when handling ZIP files.
+* If after unzipping, you find a file labeled BuildFile, a folder labeled Images, and a group of associated files, then the ZIP file itself is the module.
+There is no need to unzip it.
+Launch the module using Module Manager by clicking *File > Open Module* and browse to the module file. +
 *Module Manager:* Instead of double-clicking on a downloaded file, try launching the downloaded module from within Module Manager (pick *File > Open Module*).
 
 How do I make or edit a module?::
-The _Vassal 3.1 Designers’ Guide_ gives complete procedures on how to design your own module. There are nearly 400 games that have been converted for Vassal already, and many more in progress, so you may want to check the module list on Vassalengine.org before attempting to create a new one.
+The _Vassal Designers’ Guide_ gives complete procedures on how to design your own module.
+There are nearly 400 games that have been converted for Vassal already, and many more in progress, so you may want to check the module list on Vassalengine.org before attempting to create a new one.

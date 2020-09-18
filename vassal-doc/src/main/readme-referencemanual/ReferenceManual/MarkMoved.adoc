@@ -34,5 +34,5 @@ This _Moved_ property can be toggled back to _false_ with the configured key com
 * Clearing the piece's move history with this trait (e.g.
 using the menu item or Key Command) will also clear the <<MovementTrail.adoc#top,Move Trails>> for the piece, if any.
 
-|image:images/MarkMoved.png +
+|image:images/MarkMoved.png[] +
 |===

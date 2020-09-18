@@ -69,8 +69,7 @@ the name of this Map.
 *Key Command to apply to all units ending movement on this map:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
 This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png
 
-image:images/Map2.png
-|===
+image:images/Map2.png[]|===
 
 '''''
 
@@ -114,8 +113,7 @@ It contains <<Board.adoc#top,Board>> components and defines the dialog that is u
 When a default has been set, the dialog will not be shown to players when a new game is begun.
 Instead, the game will always be started with the boards you select.
 If you click this button and then clear the boards, then dialog will again be shown at the start of each game.
-|image:images/BoardPicker.png
-|===
+|image:images/BoardPicker.png[]|===
 
 [#StackingOptions]
 ==== Stacking Options
@@ -125,7 +123,7 @@ It may not be removed.
 
 [cols=",",]
 |===
-|image:images/StackingOptions.png + |*Disable stacking:*  If checked, then pieces will never form stacks in this window
+|image:images/StackingOptions.png[]+ |*Disable stacking:*  If checked, then pieces will never form stacks in this window
 
 *Horizontal Separation when expanded:*  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
 
@@ -154,8 +152,7 @@ A player may click on the Overview window to center the Map Window at the point 
 The scale of the overview window relative to the map window can be specified in the "Scale Factor" property.
 You may also specify the color of the rectangle indicating the area visible in the main Map Window.
 
-image:images/OverviewWindow.png
-
+image:images/OverviewWindow.png[]
 [#LOS]
 ==== Line of Sight Thread
 

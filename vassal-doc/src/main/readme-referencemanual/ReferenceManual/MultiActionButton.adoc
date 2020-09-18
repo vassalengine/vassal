@@ -35,5 +35,5 @@ A Multi-Action Button can be used to combine both actions into a single Toolbar 
 Some Game Pieces are defined with a <<TriggerAction.adoc#top,Trigger Action>> trait that compares the level of a <<Layer.adoc#top,Layer>> (representing armor) with the _Damage_ property and deletes the piece if the level is below the _Damage_ value.
 A <<GlobalKeyCommand.adoc#top,Global Key Command>> invokes the Trigger Action.
 A Multi-Action Button is defined that invokes the Dice Button followed by the Global Key Command, resulting in the automatic deletion of any units with armor less than the random amount of damage.
-|image:images/MultiActionButton.png +
+|image:images/MultiActionButton.png[] +
 |===

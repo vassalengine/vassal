@@ -47,7 +47,7 @@ For example weapons that track 100+ rounds of ammo.
 . *Tick Marks with Value & Max* - As Tick marks, but both _current value_ and _maximum_ values are editable.
 . *Spinner* - A numeric property that includes increment and decrement buttons.
 
-|image:images/PropertySheet.png +
+|image:images/PropertySheet.png[] +
 |===
 
 '''''
@@ -56,13 +56,13 @@ For example weapons that track 100+ rounds of ammo.
 
 Here's an example of using PropertySheets to maintain character fighting stats, demonstrating the Tick Marks, Text, Spinner, and Multi-line text types:
 
-image:images/property_sheet_map.png
+image:images/property_sheet_map.png[]
 
 ==== Using Tick Marks
 
 [cols=",,",]
 |===
-|image:images/propertysheet-edit2.png |image:images/propertysheet-edit4.png |image:images/propertysheet-edit5.png
+|image:images/propertysheet-edit2.png[] |image:images/propertysheet-edit4.png[] |image:images/propertysheet-edit5.png[]
 |===
 
 Tick Mark property types have a value and a maximum.
