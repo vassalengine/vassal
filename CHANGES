@@ -1,10 +1,13 @@
 3.5.0-beta1 - ???
 
+* 13432: MouseOverStackViewer can show > 1 piece of a deck
+* 13414: "Help" button (and help information) added to Preferences dialog
 * 13363: buildFile renamed to buildFile.xml
 * 13355: Threshold for centering on opponent's move is now configurable
 * 13354: Add a chatter message when starting to write a logfile
 * 13353: Use native file chooser on Linux
 * 13336: Incorrect date format in SecretNotesController
+* 13333: Better handling of logfile/savefile comments
 * 13326: Saving a module will default to .vmod, an extension to .vext
 * 13323: Player switching sides now reported in Chat Log
 * 13297: Ability to Deselect a piece with a Key Command (also remove it from
