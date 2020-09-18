@@ -14,28 +14,6 @@
         <method>*</method>
         <justification>BasicModule is never referenced by custom code</justification>
     </difference>
-    <difference>
-        <className>VASSAL/tools/ComponentSplitter</className>
-        <differenceType>7002</differenceType>
-        <method>*</method>
-        <justification>Reverted to how it was in 3.3</justification>
-    </difference>
-    <difference>
-        <className>VASSAL/tools/ComponentSplitter$SplitPane</className>
-        <differenceType>5001</differenceType>
-        <to>**</to>
-        <justification>Reverted to how it was in 3.3</justification>
-    </difference>
-    <difference>
-        <className>VASSAL/tools/swing/InternalSplitPane</className>
-        <differenceType>8001</differenceType>
-        <justification>Reverted to how it was in 3.3</justification>
-    </difference>
-    <difference>
-        <className>VASSAL/tools/swing/SplitPane</className>
-        <differenceType>8001</differenceType>
-        <justification>Reverted to how it was in 3.3</justification>
-    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->
