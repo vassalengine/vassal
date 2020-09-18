@@ -144,6 +144,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action translateAction;
   protected Action helpAction;
 
+  protected JDialog searchDialog;
+  protected JTextField searchField;
+
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
 
@@ -221,6 +224,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (chatter != null) {
       chatter.show("- " + text);
     }
+  }
+
+
+  protected JDialog getSearchDialog() {
+    return searchDialog;
+  }
+
+  protected void setSearchDialog(JDialog searchDialog) {
+    this.searchDialog = searchDialog;
+  }
+
+  protected JTextField getSearchField() {
+    return searchField;
+  }
+
+  protected void setSearchField(JTextField searchField) {
+    this.searchField = searchField;
   }
 
 
@@ -535,7 +555,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildImportAction(final Configurable target) {
-    Action a = new AbstractAction(Resources.getString("Editor.ConfigureTree.add_imported_class")) {
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_imported_class")) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -546,7 +566,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             child.build(null);
             if (child.getConfigurer() != null) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
-                private static final long serialVersionUID11 = 1L;
+                private static final long serialVersionUID = 1L;
 
                 @Override
                 public void save() {
@@ -1403,7 +1423,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (prefs != null) {
         prefs.setValue(SEARCH_STRING, searchString);
         prefs.setValue(MATCH_CASE, matchCase);
-        prefs.setValue(MATCH_NAMES, matchNames);      
+        prefs.setValue(MATCH_NAMES,       matchNames);
         prefs.setValue(MATCH_TYPES, matchTypes);
         prefs.setValue(MATCH_TRAITS,      matchTraits);
         prefs.setValue(MATCH_EXPRESSIONS, matchExpressions);
@@ -1437,7 +1457,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     @Override
     public int hashCode() {
-      return Objects.hash(getSearchString(), isMatchCase(), isMatchNames(), isMatchTypes());
+      return Objects.hash(getSearchString(), isMatchCase(), isMatchNames(), isMatchTypes(),
+                          isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
+                          isMatchMenus(), isMatchMessages());
     }
   }
 
@@ -1462,18 +1484,28 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), true);
+
+      JDialog d = configureTree.getSearchDialog();
+      JTextField search;
+      if (d != null) {
+        search = configureTree.getSearchField();
+      }
+      else {
+        d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
+        configureTree.setSearchDialog(d);
+
       d.setTitle(configureTree.getSearchCmd());
 
       final JLabel searchLabel = new JLabel("String to find: ");
-      final JTextField search = new JTextField(searchParameters.getSearchString(), 32);
+        search = new JTextField(searchParameters.getSearchString(), 32);
+        configureTree.setSearchField(search);
       search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
       searchLabel.setLabelFor(search);
 
       final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
       final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
       final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
-      
+
       final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
       final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
       final JCheckBox properties = new JCheckBox(Resources.getString("Editor.search_properties"), searchParameters.isMatchProperties());
@@ -1497,14 +1529,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
           searchParameters.setMatchNames(true);
           names.setSelected(true);
-          ConfigureTree.chat (Resources.getString("Editor.search_all_off"));
+            ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
         }
 
         if (!searchParameters.getSearchString().isEmpty()) {
           if (anyChanges) {
             // Unless we're just continuing to the next match in an existing search, compute & display hit count
             int matches = getNumMatches(searchParameters.getSearchString());
-            chat (matches + " " + Resources.getString("Editor.search_count") + searchParameters.getSearchString());
+              chat(matches + " " + Resources.getString("Editor.search_count") + searchParameters.getSearchString());
           }
 
           // Find first match
@@ -1518,13 +1550,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             showTraitHitList(node, searchParameters.getSearchString());
           }
           else {
-            chat (Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
+              chat(Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
           }
         }
       });
 
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-      cancel.addActionListener(e1 -> d.dispose());
+        cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
       d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
 
@@ -1555,13 +1587,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       // Esc Key cancels
       KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-      d.getRootPane().registerKeyboardAction(ee -> d.dispose(), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
-      
+        d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
+      }
+
       search.requestFocus(); // Start w/ focus in search string field
 
+      if (!d.isVisible()) {
       d.pack();
       d.setLocationRelativeTo(d.getParent());
       d.setVisible(true);
+    }
     }
 
     /**
@@ -1633,7 +1668,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       if (searchParameters.isMatchTypes()) {
         String className = getConfigureName(c.getClass());
-        return className != null && checkString(className, searchString);
+        if ((className != null) && checkString(className, searchString)) {
+          return true;
+        }
       }
      
       // From here down we are only searching inside piece & prototype definitions
@@ -1733,17 +1770,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
     /**
-     * Tracks how we are progressing through searching a trait, and whether we need to display headers
+     * Tracks how we are progressing through searching a piece and its traits, and whether we need to display headers
      */
     class TraitProgress {
       public boolean pieceShown = false;
       public boolean traitShown = false;
 
       /**
-       * @param shown whether we have shown the trait header yet
+       * When we're starting a new trait within the piece, clear the traitShown flag.
        */
-      void setTraitShown (boolean shown) {
-        traitShown = shown;
+      void startNewTrait() {
+        traitShown = false;
       }
 
       /**
@@ -1773,7 +1810,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         
     /**
-     * Displays a list of Trait information from this node that matches our search parameters.
+     * If this node contains a Game Piece of some kind, displays a list of Trait information from the piece that
+     * matches our search parameters.
      * @param node - any node of our module tree
      * @param searchString - our search string
      */
@@ -1788,24 +1826,27 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
-        protoskip = false;
+        protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
       } 
       else if (c instanceof PrototypeDefinition) {
         p = ((PrototypeDefinition)c).getPiece();
-        protoskip = true;
+        protoskip = true; // This is a prototype definition, so we will ignore the BasicPiece entry
       } 
       else {
         return; // If no piece to look at, we're done
       }
 
       String matchString = "<b><u>Matches for " + name + ": </u></b>";
-      
+
+      // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
+      // the same order they're listed in the PieceDefiner window.
+
       p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.      
       do {
         if (!protoskip && (p instanceof EditablePiece) && (p instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
           String desc = ((EditablePiece) p).getDescription();
           Decorator d = (Decorator)p;
-          progress.setTraitShown(false);
+          progress.startNewTrait();    // A new trait, so reset our "trait progress".
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, searchString)) {
