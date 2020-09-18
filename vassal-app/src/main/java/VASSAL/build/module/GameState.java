@@ -516,8 +516,6 @@ public class GameState implements CommandEncoder {
 
   /** Saves the game to an existing file, or prompts for a new one. */
   public void saveGame() {
-    //final GameModule g = GameModule.getGameModule();
-
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
         return;
@@ -525,14 +523,10 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
-        g.setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
+        GameModule.getGameModule().setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
     else {
@@ -560,10 +554,6 @@ public class GameState implements CommandEncoder {
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
   }
@@ -648,7 +638,7 @@ public class GameState implements CommandEncoder {
     if (c != null) {
       c.execute();
     }
-    g.setGameFile(f.getName(), ((BasicLogger)g.getLogger()).isReplaying() ? GameModule.GameFileMode.REPLAYING_GAME : GameModule.GameFileModeLOADED_GAME);
+    g.setGameFile(f.getName(), ((BasicLogger)g.getLogger()).isReplaying() ? GameModule.GameFileMode.REPLAYING_GAME : GameModule.GameFileMode.LOADED_GAME);
     String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
     if (loadComments != null && loadComments.length() > 0) {
       msg = "!" + msg + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
