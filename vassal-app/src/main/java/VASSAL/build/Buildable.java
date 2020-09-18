@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  */
 public interface Buildable {
   /**
-   * Build the object from the XML data
+   * Build the object from the XML representation of the Buildable
    * @param e the XML element containing the object data
    */
   public void build(Element e);

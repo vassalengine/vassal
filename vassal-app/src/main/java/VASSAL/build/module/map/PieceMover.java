@@ -96,7 +96,7 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
- * This is a MouseListener that moves pieces onto a Map window. Handles dragging and dropping of
+ * This is a MouseListener that moves pieces onto or within a Map window. Handles dragging and dropping of
  * both individual pieces, stacks, and groups of pieces/stacks. It is a subcomponent of Map.
  */
 public class PieceMover extends AbstractBuildable

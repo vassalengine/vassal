@@ -101,9 +101,10 @@ public interface GamePiece extends PropertySource {
   /**
    * @return The shape of the piece from the user's viewpoint. This defines the area
    * in which the user must click to select or move the piece, for example.
-   * Like {@link #boundingBox}, it assumes the position is (0,0) and must be translated
-   * to the actual location where the piece is being drawn. For most ordinary pieces, the
-   * shape returned here will simply be equivalent to the bounding box, but see {@link NonRectangular}.
+   * Like {@link #boundingBox}, it assumes the position is (0,0) -- which to be clear is
+   * normally aligned with the CENTER of the piece image -- and must be translated to the
+   * actual location where the piece is being drawn. For most ordinary pieces, the shape
+   * returned here will simply be equivalent to the bounding box, but see {@link NonRectangular}.
    */
   public Shape getShape();
 

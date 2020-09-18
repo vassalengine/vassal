@@ -20,7 +20,6 @@ package VASSAL.counters;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Point;
@@ -51,14 +50,13 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it. The
- * "innermost" piece of a Trait/Decorator stack will be a BasicPiece -- but note that although BasicPiece does implement GamePiece, it is NOT
- * a Decorator like traits are, and must be handled differently. Since Traits (Decorators) implement the {@link GamePiece} interface, they are
- * "given a look at" any method call to GamePiece, and may act on it and/or pass it "inward" toward the next Decorator in the stack, eventually
- * arriving at the BasicPiece. This is the reason for the VASSAL situation wherein only traits lower (more outward) in the list of traits are
- * able to affect/control/hide/restrict/etc traits that are higher (more inward, nearer the BasicPiece) in the list -- because the outer traits
- * receive the GamePiece method calls first, and thus have the opportunity to intercept or modify them if appropriate before passing them inward.
- * So a full logical GamePiece (the thing you see on the board), may consist of many Decorator instances (one for each trait) wrapped around the
- * BasicPiece.
+ * "innermost" piece of a Trait/Decorator stack will be a BasicPiece. Since Traits (Decorators) implement the {@link GamePiece} interface,
+ * they are "given a look at" any method call to GamePiece, and may act on it and/or pass it "inward" toward the next Decorator in the stack,
+ * eventually arriving at the BasicPiece. This is the reason for the VASSAL situation wherein only traits lower (more outward) in the list
+ * of traits are able to affect/control/hide/restrict/etc traits that are higher (more inward, nearer the BasicPiece) in the list -- because
+ * the outer traits receive the GamePiece method calls first, and thus have the opportunity to intercept or modify them if appropriate before
+ * passing them inward. So a full logical GamePiece (the thing you see on the board), may consist of many Decorator instances (one for each
+ * trait) wrapped around the BasicPiece.
  */
 public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
@@ -208,11 +206,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
    * Traits, {@link DynamicProperty} Traits, and so forth.
    *
-   * <br><br><b>NOTE:</b> Not all properties maintained by traits can be "set" by setProperty, even
-   * though they can be read by getProperty -- they may be "read only" for instance. You will need
-   * to check the code for individual traits to see what they support in this regard.
-   *
-   * <br><br><b>NOTE:</b> Properties outside the piece CANNOT be set by this
+   * <br><br><b>NOTE:</b> Properties outside the piece, however, CANNOT be set by this
    * method (e.g. Global Properties), even though they can be read by {@link #getProperty} --
    * in this the two methods are not perfect mirrors.
    *
@@ -451,10 +445,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * The response of this trait alone to the given KeyStroke or the virtual keystroke of a {@link VASSAL.tools.NamedKeyStroke}.
-   * NamedKeyStrokes are allocated a unique internal KeyStroke when they are first used in a module, and that KeyStroke is passed
-   * up and down the decorator stack to represent them (see {@link NamedKeyStroke#getKeyStroke()}).
-   * @param stroke KeyStroke to apply (to apply a Named Keystroke send {@link NamedKeyStroke#getKeyStroke()}
+   * The response of this trait alone to the given KeyStroke or {@link VASSAL.tools.NamedKeyStroke}.
+   * @param stroke KeyStroke to apply (note that although they are passed as {@link KeyStroke} objects, they may be {@link VASSAL.tools.NamedKeyStroke} objects)
    * @return Generated Command to reproduce any changes just made to to the game state, or null if no effect
    * @see #keyEvent
    */
@@ -644,6 +636,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
+<<<<<<< HEAD
    * Set the Oldxxxx properties related to movement
    * This call has been replaced by {@link #putOldProperties(GamePiece)}
    * Any changes to Oldxxxx properties MUST be recorded in Commands.
@@ -657,8 +650,11 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * * Set the Oldxxxx properties related to movement (e.g. OldLocationName, OldZone, OldBoard, OldMap, OldX, OldY)
+   * Set the Oldxxxx properties related to movement
    *
+=======
+   * Set the Oldxxxx properties related to movement (e.g. OldLocationName, OldZone, OldBoard, OldMap, OldX, OldY)
+>>>>>>> 27e5e8336... Decorator
    * @param p Piece to set properties on
    * @return Command encoding the property values
    */

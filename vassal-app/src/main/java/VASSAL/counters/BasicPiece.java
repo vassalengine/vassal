@@ -64,6 +64,9 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
  * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
+ *
+ * Note like traits, BasicPiece implements GamePiece (via TranslatablePiece), but UNLIKE traits it is NOT a
+ * Decorator, and thus must be treated specially.
  */
 public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
@@ -143,7 +146,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     mySetType(type);
   }
 
-  /** Sets the information for this piece.  See {@link Decorator#myGetType}
+  /** Sets the type information for this piece.  See {@link Decorator#myGetType}
    *  @param type a serialized configuration string to
    *              set the "type information" of this piece, which is
    *              information that doesn't change during the course of
@@ -196,12 +199,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * Properties can be associated with a piece -- many may be game-specific, but others
    * are standard, such as the LocationName property exposed by BasicPiece -- and can
    * be read through this interface. The properties may or may not need to be encoded in
-   * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
-   * Traits, {@link DynamicProperty} Traits, and so forth. Furthermore they include the values
-   * of any visible "Global Property" in a Vassal module, whether at the module level, map
-   * level, or zone level.
+   * the piece's {@link #getState} method.
    *
-   * <br><br>When using this interface a piece's own properties are preferred to those of
+   * A request to getProperty() that reaches the BasicPiece will have already checked for
+   * such a property key being available from any outer Decorator/Trait in the stack. Upon
+   * reaching BasicPiece, the search hierarchy for a matching property now becomes:
+   *
+   * (1) Specific named properties supported by BasicPiece. These include BASIC_NAME,
+   * PIECE_NAME, LOCATION_NAME, CURRENT_MAP, CURRENT_BOARD, CURRENT_ZONE, CURRENT_X,
+   * CURRENT_Y.
+   * (2) "Scratchpad" properties - see {@link #setProperty} for full details, but these are
+   * highly temporary properties intended to remain valid only during the execution of a
+   * single key command.
+   * (3) Persistent properties - see {@link #setPersistentProperty} for full details, but
+   * they are stored in the piece and "game state robust" - saved during save/load, and
+   * propagated to other players' clients in a multiplayer game.
+   * (4) The values of any visible "Global Property" in a Vassal module, checking the Zone
+   * level first, then the map level, and finally the module level.
+   *
+   * <br><br>Thus, when using this interface a piece's own properties are preferred to those of
    * "Global Properties", and those in turn are searched Zone-first then Map, then Module.
    * @param key String key of property to be returned
    * @return Object containing new value of the specified property
@@ -403,22 +419,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * Properties can be associated with a piece -- many may be game-specific, but others
    * are standard, such as the LocationName property exposed by BasicPiece -- and can
    * be set through this interface. The properties may or may not need to be encoded in
-   * the piece's {@link #getState} method. Properties include the value of e.g. {@link Marker}
-   * Traits, {@link DynamicProperty} Traits, and so forth.
+   * the piece's {@link #getState} method.
    *
-   * <br><br><b>NOTE:</b> Properties outside the piece, however, CANNOT be set by this
-   * method (e.g. Global Properties), even though they can be read by {@link #getProperty} --
-   * in this the two methods are not perfect mirrors. This method ALSO does not set
-   * persistent properties (they can only be set by an explicit call to  {@link #setPersistentProperty}).
+   * A setProperty() call which reaches BasicPiece will already have passed through all of the outer
+   * Decorator/Traits on the way in without finding one able to match the property.
+   *
+   * <br><br><b>NOTE:</b> Properties outside the piece CANNOT be set by this  method (e.g. Global
+   * Properties), even though they can be read by {@link #getProperty} -- in this the two methods are
+   * not perfect mirrors. This method ALSO does not set persistent properties (they can only be set
+   * by an explicit call to  {@link #setPersistentProperty}).
    *
    * <br><br>BasicPiece <i>does</i>, however contain a "scratchpad" for temporary properties, and for
-   * any call to this method that does not match a known property, a scratchpad property will be set.
-   * Scratchpad properties are NOT saved when the game is saved, and NO arrangement is made to pass their
-   * values to other players' machines. Thus they should only be used internally for highly temporary
-   * values during the execution of a single key command. Their one other use is to store the piece's
-   * Unique ID -- and although this value is obviously used over periods of time much longer than a
-   * single key command, this is possible because the value is immutable and is refreshed to the same
-   * value whenever the piece is re-created e.g. when loading a save.
+   * any call to this method that does not match a known property (which is, currently, ANY call which
+   * reaches this method here in BasicPiece), a scratchpad property will be set. Scratchpad properties
+   * are NOT saved when the game is saved, and NO arrangement is made to pass their values to other
+   * players' machines. Thus they should only be used internally for highly temporary values during the
+   * execution of a single key command. Their one other use is to store the piece's Unique ID -- and
+   * although this value is obviously used over periods of time much longer than a single key command,
+   * this is possible because the value is immutable and is refreshed to the same  value whenever the
+   * piece is re-created e.g. when loading a save.
    *
    * @param key String key of property to be changed
    * @param val Object containing new value of the property
@@ -610,8 +629,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
 
   /**
    * @return the Shape of this piece, for purposes of selecting it by clicking on it with the mouse. In the case
-   * of BasicPiece, this is equivalent to the boundingBox of the BasicPiece image, if one exists. For pieces that
-   * need a non-rectangular click volume, add a {@link NonRectangular} trait.
+   * of BasicPiece, this is equivalent to the boundingBox of the BasicPiece image, if one exists. Note that the
+   * shape should be defined in reference to the piece's location, which is ordinarily the center of the basic
+   * image.
+   *
+   * <br><br>For pieces that need a non-rectangular click volume, add a {@link NonRectangular} trait.
    */
   @Override
   public Shape getShape() {
@@ -882,7 +904,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * Each GamePiece must have a unique String identifier
+   * Each GamePiece must have a unique String identifier. These are managed by VASSAL internally and should never
+   * be changed by custom code.
    * @return unique ID for this piece
    * @see GameState#getNewPieceId
    */
@@ -892,7 +915,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * Each GamePiece must have a unique String identifier
+   * Each GamePiece must have a unique String identifier. These are managed by VASSAL internally and should never
+   * be changed by custom code.
    * @param id sets unique ID for this piece
    * @see GameState#getNewPieceId
    */
