@@ -122,7 +122,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -152,7 +151,7 @@ import org.w3c.dom.Element;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link BasicModule} extends {@link GameModule}, but
+ * For legacy reasons, {@link VASSAL.launch.BasicModule} extends {@link GameModule}, but
  * everything of note has been moved inside of GameModule.
  *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
@@ -304,7 +303,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * Constructor for a GameModule.
    * @param archive The .vmod (or .tmp) archive to associate
    */
-  protected GameModule(DataArchive archive) {
+  public GameModule(DataArchive archive) {
     this.archive = archive;
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -992,12 +991,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  /**
-   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JComponent getControlPanel() {
-    ProblemDialog.showDeprecated("2020-08-06");
     return controlPanel;
   }
 

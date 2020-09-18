@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.4.1 Released[/b][/size]
+[size=200][b]VASSAL 3.4.2 Released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.2.
 
 [size=150][b]IMPORTANT[/b][/size]
 
@@ -12,11 +12,25 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.22macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-other.zip]Other[/url]
+
+[size=150][b]Changes since 3.4.1[/b][/size]
+
+Bug fixes
+
+* 13425: Legacy property match expressions no longer evaluated == or != correctly
+* 13416: Chatter fails to update
+* 13409: Two units in same hex do not stack when hex overlaps two boards
+* 13405: Piece window appears beside main map and chat pane instead of just the chat pane
+* 13398: Fix piece drag so that pieces can be moved a few pixels
+* 13381: Prevent BeanShell from interpreting 1D, 1F, 1L as numbers
+* 13365: Chatter component does not filter out Alt+Key commands
+* 13300: Remove "Preference" option for HTML for Chatter
+* 13279: Pivot was auto-reporting moves when auto-reporting is turned off
 
 [size=150][b]Changes since 3.4.0[/b][/size]
 

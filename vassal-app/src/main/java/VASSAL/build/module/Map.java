@@ -174,7 +174,6 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -208,13 +207,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected ArrayList<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
-
-  /**
-   * @deprecated type will change to {@link SplitPane}
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
   protected ComponentSplitter.SplitPane mainWindowDock;
-
   protected BoardPicker picker;
   protected JToolBar toolBar = new JToolBar();
   protected Zoomer zoom;
@@ -752,7 +745,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
-      mainWindowDock = g.getPlayerWindow().splitControlPanel(layeredPane, SplitPane.HIDE_BOTTOM, true);
+
+      mainWindowDock = ComponentSplitter.split(
+        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
+        layeredPane,
+        ComponentSplitter.SplitPane.HIDE_BOTTOM,
+        true
+      );
       mainWindowDock.setResizeWeight(0.0);
 
       g.addKeyStrokeSource(
@@ -993,6 +992,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     snap.translate(-r.x, -r.y);
     snap = b.snapTo(snap);
     snap.translate(r.x, r.y);
+
+    //CC bugfix13409
+    // If we snapped to a point outside the board b, call sanpTo again with the board we landed into
+    final Board bSnappedTo = findBoard(snap);
+    if (bSnappedTo != null && !b.equals(bSnappedTo)) {
+      final Rectangle rSnappedTo = bSnappedTo.bounds();
+      snap.translate(-rSnappedTo.x, -rSnappedTo.y);
+      snap = bSnappedTo.snapTo(snap);
+      snap.translate(rSnappedTo.x, rSnappedTo.y);
+    }
     // RFE 882378
     // If we have snapped to a point 1 pixel off the edge of the map, move
     // back

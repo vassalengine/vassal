@@ -29,25 +29,28 @@ import org.w3c.dom.Element;
  */
 public interface Buildable {
   /**
-   * Build the object
+   * Build the object from the XML representation of the Buildable
    * @param e the XML element containing the object data
    */
   public void build(Element e);
 
   /**
    * Adds this component to its parent. In order to make Buildable objects extensible, the child
-   * is reponsible for adding itself to the parent. That way, Buildable subcomponents can be defined
+   * is responsible for adding itself to the parent. That way, Buildable subcomponents can be defined
    * in an extension package without needing to modify the containing class.
+   * @param parent parent Buildable to add this component to as a subcomponent.
    */
   public void addTo(Buildable parent);
 
   /**
    * Adds a child component.  Both this method and {@link #addTo} are
    * invoked when adding a child to a parent
+   * @param child Child to attach to this buildable as a subcomponent
    */
   public void add(Buildable child);
 
   /**
+   * @param doc XML file
    * @return an XML element from which this component can be built
    */
   public Element getBuildElement(Document doc);

@@ -17,14 +17,14 @@
  */
 package VASSAL.build.module.metadata;
 
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.swing.JOptionPane;
-
+import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -35,6 +35,19 @@ import org.xml.sax.SAXException;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.io.FileArchive;
+
+import javax.swing.JDialog;
+import java.awt.Frame;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
+
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
@@ -58,19 +71,69 @@ public class SaveMetaData extends AbstractMetaData {
   public SaveMetaData() {
     super();
 
-    String comments = "";
     if ((Boolean)GameModule.getGameModule().getPrefs().getValue(PROMPT_LOG_COMMENT)) {
-      comments = (String) JOptionPane.showInputDialog(
-        GameModule.getGameModule().getPlayerWindow(),
-        Resources.getString("BasicLogger.enter_comments"),
-        Resources.getString("BasicLogger.log_file_comments"),
-        JOptionPane.PLAIN_MESSAGE,
-        null,
-        null,
-        ""
-      );
+      final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, GameModule.getGameModule().getPlayerWindow()), true);
+      d.setTitle(Resources.getString("BasicLogger.log_file_comments"));
 
-      setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+      JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");
+
+      final JLabel commentLabel = new JLabel(Resources.getString("BasicLogger.log_file_comments"));
+      final JTextField commentField = new JTextField("", 32);
+      commentLabel.setLabelFor(commentField);
+
+      final JCheckBox stopBox = new JCheckBox(Resources.getString("Don't Ask Again"), false);
+
+      final JButton okay = new JButton(Resources.getString("Okay"));
+      okay.addActionListener(e -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        String comments = commentField.getText();
+        setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+        d.dispose();
+      });
+
+      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+      cancel.addActionListener(e1 -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        d.dispose();
+      });
+
+      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+
+      // top row
+      d.add (desc, "align left, wrap"); //$NON-NLS-1$//
+
+      // comment row
+      d.add(commentLabel, "align right, gapx rel"); //$NON-NLS-1$//
+      d.add(commentField, "pushx, growx, wrap"); //$NON-NLS-1$//
+
+      // options row
+      d.add(stopBox, "align center, gapx unrel, span"); //$NON-NLS-1$//
+
+      // buttons row
+      d.add(okay, "tag ok, split"); //$NON-NLS-1$//
+      d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+
+      d.getRootPane().setDefaultButton(okay); // Enter key activates search
+
+      // Esc Key cancels
+      KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+      int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
+      d.getRootPane().registerKeyboardAction(ee -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        d.dispose();
+      }, k, w);
+
+      commentField.requestFocus(); // Start w/ focus in search string field
+
+      d.pack();
+      d.setLocationRelativeTo(d.getParent());
+      d.setVisible(true);
     }
   }
 

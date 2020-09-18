@@ -26,9 +26,9 @@ package VASSAL.counters;
 public interface StateMergeable {
   /**
    * Compute the difference between <code>newState</code> and <code>oldState</code>
-   * and appy that difference to the current state
-   * @param newState
-   * @param oldState
+   * and apply that difference to the current state
+   * @param newState new serialized game state string
+   * @param oldState old serialized game state string
    */
   void mergeState(String newState, String oldState);
 }

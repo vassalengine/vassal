@@ -28,6 +28,10 @@ Get the [current release](https://github.com/vassalengine/vassal/releases/latest
 
 Please report bugs in the [Technical Support & Bugs](http://www.vassalengine.org/forum/viewforum.php?f=3) section of our forum.
 
+#### Developer's guide
+
+Read the [Developer's guide](developers-guide/developers-guide.adoc)
+
 ## License
 
 This project is licensed under the terms of the [LGPLv2 license](LICENSE).

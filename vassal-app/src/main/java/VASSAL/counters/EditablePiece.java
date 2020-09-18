@@ -20,22 +20,28 @@ package VASSAL.counters;
 import VASSAL.build.module.documentation.HelpFile;
 
 /**
- * If a GamePiece implements the EditablePiece interface, then
- * it can be manipulated from the Configuration Tree via the PieceDefiner
- * dialog.
+ * If class implementing GamePiece also implements the EditablePiece interface, then
+ * it can be manipulated from the Editor's Configuration Tree via the {@link PieceDefiner} dialog.
  *
- * All Decorator classes with a no-arg constructor will appear in the
- * Available Traits list even if they don't implement EditablePiece */
+ * All {@link Decorator} (Trait) classes with a no-arg constructor will appear in the
+ * Available Traits list even if they don't implement EditablePiece. */
 public interface EditablePiece extends GamePiece {
 
   /** A plain-English description of this type of piece */
   public String getDescription();
 
-  /** Set the type information for this piece.  See {@link Decorator#myGetType} */
+  /** Sets the information for this piece.  See {@link Decorator#myGetType}
+   *  @param type a serialized configuration string to
+   *              set the "type information" of this piece, which is
+   *              information that doesn't change during the course of
+   *              a single game (e.g. Image Files, Context Menu strings,
+   *              etc). Typically ready to be processed e.g. by
+   *              SequenceEncoder.decode() */
   public void mySetType(String type);
 
-  /** Get the configurer for this trait */
+  /** @return the configurer for this trait - the dialog which allows the editing the piece's type information */
   public PieceEditor getEditor();
 
+  /** @return the help file for this trait  */
   public HelpFile getHelpFile();
 }
