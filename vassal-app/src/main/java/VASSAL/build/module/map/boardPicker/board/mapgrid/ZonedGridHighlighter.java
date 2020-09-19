@@ -114,4 +114,12 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return new Class<?>[] {ZoneHighlight.class};
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(currentColorName);
+  }
 }
