@@ -175,7 +175,7 @@ public class ModuleManagerWindow extends JFrame {
   private static final ModuleManagerWindow instance = new ModuleManagerWindow();
 
   public ModuleManagerWindow() {
-    setTitle("VASSAL");
+    setTitle("VASSAL " + Info.getVersion());
     setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
     ApplicationIcons.setFor(this);
