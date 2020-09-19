@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -61,7 +63,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected static DefaultListModel<GamePiece> availableModel;
   protected DefaultListModel<GamePiece> inUseModel;
-  protected ListCellRenderer r;
+  protected ListCellRenderer<? super GamePiece> r;
   protected PieceSlot slot;
   private GamePiece piece;
   protected static TraitClipboard clipBoard;
@@ -85,7 +87,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   public PieceDefiner(String id, GpIdSupport s) {
     this();
     pieceId = id;
-    pieceIdLabel.setText("Id: " + id);
+    pieceIdLabel.setText(Resources.getString("Editor.id") + ": " + id);
     gpidSupport = s;
   }
 
@@ -179,8 +181,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   @Override
-  @Deprecated
+  @Deprecated(since = "20200912", forRemoval = true)
   public void setBaseWindow(HelpWindow w) {
+    ProblemDialog.showDeprecated("20200912");
   }
 
   private void refresh() {
@@ -233,7 +236,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveDownButton = new JButton();
     copyButton = new JButton();
     pasteButton = new JButton();
-//        setLayout(new BoxLayout(this, 0));
 
     availablePanel.setLayout(new BoxLayout(availablePanel, BoxLayout.Y_AXIS));
 
@@ -249,19 +251,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
 
     availableScroll.setViewportView(availableList);
-    availableScroll.setBorder(new TitledBorder("Available Traits"));
+    availableScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
 
     availablePanel.add(availableScroll);
 
 
-    helpButton.setText("Help");
+    helpButton.setText(Resources.getString("General.help"));
     helpButton.addActionListener(evt -> showHelpForPiece()
     );
     availablePanel.add(helpButton);
 
-    importButton.setText("Import");
+    importButton.setText(Resources.getString("General.import"));
     importButton.addActionListener(evt -> {
-      String className = JOptionPane.showInputDialog(PieceDefiner.this, "Enter fully-qualified name of Java class to import");
+      String className = JOptionPane.showInputDialog(PieceDefiner.this, Resources.getString("Editor.PieceDefiner.enter_class"));
       importPiece(className);
     });
 
@@ -271,7 +273,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     addRemovePanel.setLayout(new BoxLayout(addRemovePanel, BoxLayout.Y_AXIS));
 
-    addButton.setText("Add ->");
+    addButton.setText(Resources.getString("General.add") + " ->");
     addButton.addActionListener(evt -> {
       Object selected = availableList.getSelectedValue();
       if (selected instanceof Decorator) {
@@ -310,7 +312,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(addButton);
 
-    removeButton.setText("<- Remove");
+    removeButton.setText("<- " + Resources.getString("General.remove"));
     removeButton.addActionListener(evt -> {
       int index = inUseList.getSelectedIndex();
       if (index >= 0) {
@@ -365,12 +367,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     inUseScroll.setViewportView(inUseList);
 
-    inUseScroll.setBorder(new TitledBorder("Current Traits"));
+    inUseScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
 
     inUsePanel.add(inUseScroll);
 
 
-    propsButton.setText("Properties");
+    propsButton.setText(Resources.getString("Editor.properties"));
     propsButton.addActionListener(evt -> {
       int index = inUseList.getSelectedIndex();
       if (index >= 0) {
@@ -385,7 +387,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     moveUpDownPanel.setLayout(new BoxLayout(moveUpDownPanel, BoxLayout.Y_AXIS));
 
-    moveUpButton.setText("Move Up");
+    moveUpButton.setText(Resources.getString("Editor.PieceDefiner.move_up"));
     moveUpButton.addActionListener(evt -> {
       int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -396,7 +398,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveUpDownPanel.add(moveUpButton);
 
 
-    moveDownButton.setText("Move Down");
+    moveDownButton.setText(Resources.getString("Editor.PieceDefiner.move_down"));
     moveDownButton.addActionListener(evt -> {
       int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
@@ -406,7 +408,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     );
     moveUpDownPanel.add(moveDownButton);
 
-    copyButton.setText("Copy");
+    copyButton.setText(Resources.getString("Editor.copy"));
     copyButton.addActionListener(evt -> {
       pasteButton.setEnabled(true);
       int index = inUseList.getSelectedIndex();
@@ -414,7 +416,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(copyButton);
 
-    pasteButton.setText("Paste");
+    pasteButton.setText(Resources.getString("Editor.paste"));
     pasteButton.setEnabled(clipBoard != null);
     pasteButton.addActionListener(evt -> {
       if (clipBoard != null) {
@@ -495,7 +497,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       availableModel.addElement((GamePiece) o);
     }
     else {
-      ErrorDialog.show("Error.not_a_gamepiece", className);
+      ErrorDialog.show("Error.not_a_gamepiece", className); // NON-NLS Error Dialog Key
     }
   }
 
@@ -554,36 +556,36 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     PieceEditor ed;
 
     private Ed(Frame owner, final EditablePiece p) {
-      super(owner, p.getDescription() + " properties", true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
       initialize(p);
     }
 
     private Ed(Dialog owner, final EditablePiece p) {
-      super(owner, p.getDescription() + " properties", true);
+      super(owner, Resources.getString("Editor.PieceDefiner.properties", p.getDescription()), true);
       initialize(p);
     }
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", ""));
-      add(ed.getControls(), "spanx 3,grow,push,wrap");
+      setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", "")); //NON-NLS
+      add(ed.getControls(), "spanx 3,grow,push,wrap"); //NON-NLS
 
-      JButton b = new JButton("Ok");
+      JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      add(b, "tag ok");
+      add(b, "tag ok"); //NON-NLS
 
-      b = new JButton("Cancel");
+      b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
         ed = null;
         dispose();
       });
-      add(b, "tag cancel");
+      add(b, "tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
-        b = new JButton("Help");
+        b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        add(b, "tag help");
+        add(b, "tag help"); //NON-NLS
       }
 
       pack();

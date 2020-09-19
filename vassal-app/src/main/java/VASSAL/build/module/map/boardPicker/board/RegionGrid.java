@@ -867,7 +867,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     protected static final String ADD_REGION = Resources.getString("Editor.IrregularGrid.add_region"); //$NON-NLS-1$
     protected static final String DELETE_REGION = Resources.getString("Editor.IrregularGrid.delete_region"); //$NON-NLS-1$
-    protected static final String PROPERTIES = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
+    protected static final String PROPERTIES = Resources.getString("Editor.properties"); //$NON-NLS-1$
 
     protected void doPopupMenu(MouseEvent e) {
       myPopup = new JPopupMenu();

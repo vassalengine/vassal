@@ -137,7 +137,7 @@ public abstract class EditorWindow extends JFrame {
     editMenu.addSeparator();
     editMenu.add(mm.addKey("Editor.search"));
     editMenu.addSeparator();
-    editMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
+    editMenu.add(mm.addKey("Editor.properties"));
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
 
     // tools menu
@@ -178,7 +178,7 @@ public abstract class EditorWindow extends JFrame {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
-      helpMenu.add(mm.addKey("Editor.ModuleEditor.prop_er_ties"));
+      helpMenu.add(mm.addKey("Editor.properties"));
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
       mb.add(helpMenu);
@@ -314,7 +314,7 @@ public abstract class EditorWindow extends JFrame {
       //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$      
       //toolBar.add(helpAction);
       
-      mm.addAction("Editor.ModuleEditor.prop_er_ties", new ShowHelpAction("Editor.ModuleEditor.prop_er_ties", url, null));
+      mm.addAction("Editor.properties", new ShowHelpAction("Editor.properties", url, null));
     } 
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
