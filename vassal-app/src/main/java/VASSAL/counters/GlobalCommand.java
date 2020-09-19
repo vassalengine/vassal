@@ -178,11 +178,15 @@ public class GlobalCommand {
 
     private void apply(GamePiece p) {
       if (filter == null || filter.accept(p)) {
+        p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
         tracker.addPiece(p);
         p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         command.append(p.keyEvent(stroke));
         tracker.addPiece(p);
         selectedCount++;
+      }
+      else {
+        p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY
       }
     }
 
