@@ -21,7 +21,9 @@ package VASSAL.build.module.turn;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -254,13 +256,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     StringEnumConfigurer config = new StringEnumConfigurer("", " " + getConfigureName() + ":  ", list); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.setValue(list[current]);
     config.addPropertyChangeListener(e -> {
-      String option = ((StringEnumConfigurer) e.getSource()).getValueString();
-      for (int i = 0; i < list.length; i++) {
-        if (option.equals(list[i])) {
-          current = i;
-          myValue.setPropertyValue(getValueString());
+        String option = ((StringEnumConfigurer) e.getSource()).getValueString();
+        for (int i = 0; i < list.length; i++) {
+          if (option.equals(list[i])) {
+            current = i;
+            myValue.setPropertyValue(getValueString());
+          }
         }
-      }
     });
 
     return config.getControls();
@@ -396,12 +398,12 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         StringEnumConfigurer firstItem = new StringEnumConfigurer("", prompt + " :  ", list); //$NON-NLS-1$ //$NON-NLS-2$
         firstItem.setValue(list[first]);
         firstItem.addPropertyChangeListener(e -> {
-          String option = ((StringEnumConfigurer) e.getSource()).getValueString();
-          for (int i = 0; i < list.length; i++) {
-            if (list[i].equals(option)) {
-              first = i;
+            String option = ((StringEnumConfigurer) e.getSource()).getValueString();
+            for (int i = 0; i < list.length; i++) {
+              if (list[i].equals(option)) {
+                first = i;
+              }
             }
-          }
         });
         add(firstItem.getControls());
       }
@@ -447,4 +449,5 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     myI18nData.setAttributeTranslatable(LIST, true);
     return myI18nData;
   }
+
 }

@@ -33,6 +33,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1176,5 +1177,35 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected Command myUndoCommand() {
       return new SetTurn(oldState, turn);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(turnFormat.getFormat(), reportFormat.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(BUTTON_TOOLTIP), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOT_KEY)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(NEXT_HOT_KEY)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(PREV_HOT_KEY))
+      );
   }
 }

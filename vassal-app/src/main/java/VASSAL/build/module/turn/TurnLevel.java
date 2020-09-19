@@ -37,6 +37,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
@@ -389,5 +390,23 @@ public abstract class TurnLevel extends TurnComponent {
       l.add(propertyName);
     }
     return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(turnFormat.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(propertyName);
   }
 }

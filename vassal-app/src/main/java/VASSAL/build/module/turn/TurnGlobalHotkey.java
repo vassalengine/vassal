@@ -17,6 +17,9 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 
+import java.util.Collections;
+import java.util.List;
+
 public class TurnGlobalHotkey extends AbstractConfigurable {
 
   public static final String NAME = "name"; //$NON-NLS-1$
@@ -131,5 +134,42 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
         GameModule.getGameModule().sendAndLog(c);
       }
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(match.getExpression());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(format.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }
