@@ -7,6 +7,7 @@ import javax.swing.JToolBar;
  * @author rkinney
  *
  */
+@FunctionalInterface
 public interface ToolBarComponent {
   JToolBar getToolBar();
 }

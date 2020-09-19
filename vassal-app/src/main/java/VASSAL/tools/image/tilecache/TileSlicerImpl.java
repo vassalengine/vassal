@@ -115,6 +115,7 @@ public class TileSlicerImpl implements TileSlicer {
     }
   }
 
+  @FunctionalInterface
   protected interface TaskMaker {
     TileTask make(BufferedImage src, File f,
                          int tx, int ty, int tw, int th, int dw, int dh);

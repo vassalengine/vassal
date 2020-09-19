@@ -621,6 +621,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   /** Call-back interface for when a player changes sides during a game */
+  @FunctionalInterface
   public interface SideChangeListener {
     void sideChanged(String oldSide, String newSide);
   }

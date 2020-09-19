@@ -22,6 +22,7 @@ import VASSAL.command.Command;
 /**
  * Date: Mar 11, 2003
  */
+@FunctionalInterface
 public interface WelcomeMessageServer {
   public Command getWelcomeMessage();
 }

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+@FunctionalInterface
 public interface CounterNames {
   public String nameOf(String s);
 }
