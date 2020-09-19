@@ -987,11 +987,14 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param s message to display in Chat Log
    */
   public void warn(String s) {
+    String s2 = s;
+    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+           .replaceAll(">", "&gt;"); //$NON-NLS
     if (chat == null) {
-      deferredChat.add(s);
+      deferredChat.add(s2);
     }
     else {
-      chat.show(" - " + s); //$NON-NLS-1$
+      chat.show(" - " + s2); //$NON-NLS-1$
     }
   }
   

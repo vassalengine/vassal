@@ -258,7 +258,9 @@ public class PieceMover extends AbstractBuildable
         final DragBuffer dbuf = DragBuffer.getBuffer();
         dbuf.clear();
         for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
-          dbuf.add(it.nextPiece());
+          final GamePiece p = it.nextPiece();
+          p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW)); // Bug 13433 restore correct OBSCURED_BY
+          dbuf.add(p);
         }
         return null;
       }

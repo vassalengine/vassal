@@ -908,11 +908,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
          * This statement is the culprit. As far as I can tell, it is not needed as Deck.pieceRemoved()
          * sets OBSCURED_BY if drawing a facedown card from a face down Deck which is the only case
          * where this would be needed.
-         * This will need thorough testing in Deck heavy modules.
+         * Bug 13433
+         * HOWEVER, the nextPiece() iterator is used to select cards to test against property match expressions
+         * which historically assume that this has already been done. To maintain legacy support, we need to record
+         * the original OBSCURED_BY, change it, then the consumers of nextPiece() must change it back.
+         * Note use of scratch-pad props map in BasicPiece, no need to use persistent properties.
          */
-        // if (faceDown) {
-        //  p.setProperty(Properties.OBSCURED_BY, NO_USER);
-        //}
+        p.setProperty(Properties.OBSCURED_BY_PRE_DRAW, p.getProperty(Properties.OBSCURED_BY));
+        if (faceDown) {
+          p.setProperty(Properties.OBSCURED_BY, NO_USER);
+        }
         return p;
       }
     };
