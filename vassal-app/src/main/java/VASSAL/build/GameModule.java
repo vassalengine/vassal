@@ -566,11 +566,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Save the messages for later if the Chatter has not been initialised yet
    */
   public void warn(String s) {
+    String s2 = s;
+    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+           .replaceAll(">", "&gt;"); //$NON-NLS
     if (chat == null) {
-      deferredChat.add(s);
+      deferredChat.add(s2);
     }
     else {
-      chat.show(" - " + s); //$NON-NLS-1$
+      chat.show(" - " + s2); //$NON-NLS-1$
     }
   }
   
