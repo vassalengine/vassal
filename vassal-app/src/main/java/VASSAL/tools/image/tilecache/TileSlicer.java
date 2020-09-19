@@ -30,6 +30,7 @@ import VASSAL.tools.lang.Callback;
  * @since 3.2.0
  * @author Joel Uckelman
  */
+@FunctionalInterface
 public interface TileSlicer {
   /**
    * Slices an image into tiles.

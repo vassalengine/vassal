@@ -25,7 +25,7 @@ Right-click on the _[Deck]_ entry and select _Add Deck Global Key Command_.
 *Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever the Deck Global Key Command is activated.
 
  + a|
-image:images/DeckGlobalKeyCommand.png
+image:images/DeckGlobalKeyCommand.png[]
 
 Sends _Ctrl+M_ to the first card in the deck that _isn't_ Blockade.
 

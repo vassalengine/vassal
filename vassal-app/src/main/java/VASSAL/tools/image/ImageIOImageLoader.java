@@ -380,6 +380,7 @@ public class ImageIOImageLoader implements ImageLoader {
     return img;
   }
 
+  @FunctionalInterface
   protected interface Wrapper<T> {
     T run(String name, InputStream in) throws IOException;
   }

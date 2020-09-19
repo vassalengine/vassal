@@ -82,6 +82,7 @@ public class SynchAction extends AbstractAction {
     if (isEnabled()) {
       final long now = System.currentTimeMillis();
       if (! targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         GameModule.getGameModule().getGameState().setup(false);
         client.sendTo(p, new SynchCommand(client.getUserInfo(), client));
         lastSync = now;

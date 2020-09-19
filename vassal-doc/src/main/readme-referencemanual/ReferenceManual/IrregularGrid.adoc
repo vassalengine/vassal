@@ -23,8 +23,8 @@ If it is useful for most pieces to snap to legal locations, but for certain type
 *Define Regions:*  Click this button to bring up a window for defining the Regions.
 Right click anywhere on the board to add a new Region, or right click on an existing Region's name to change its name or remove it.
 
-|image:images/IrregularGrid.png
+|image:images/IrregularGrid.png[]
 
-image:images/DefineRegions.png
+image:images/DefineRegions.png[]
 |===
 

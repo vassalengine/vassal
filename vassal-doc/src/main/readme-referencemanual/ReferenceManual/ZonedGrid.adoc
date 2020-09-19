@@ -43,10 +43,10 @@ Otherwise one of the normal types of grid should be added to the Zone, by right-
 
 *Use Highlighting:* If selected, you must also specify the name of a <<Properties.adoc#top,Property>> . The value of the property will determine which <<#ZoneHighlighter,Zone Highlighter>> is used to draw the zone.
 
-|image:images/Zone.png  +
+|image:images/Zone.png[]  +
 
 
-image:images/ZoneGrid.png
+image:images/ZoneGrid.png[]
 |===
 
 [#ZoneHighlighter]
@@ -68,7 +68,7 @@ Select _Zone Border_ to overlay only the border of the Zone.
 
 *Opacity:*  Select the transparency of the overlaid color or image.
 
-|image:images/ZoneHighlighter.png  +
+|image:images/ZoneHighlighter.png[]  +
   +
 |===
 

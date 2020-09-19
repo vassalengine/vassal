@@ -39,7 +39,7 @@ If a piece has traits _Move Fixed Distance_ 60 upwards followed by _Can Rotate_ 
 The amount of additional movement depends on its supply, which is tracked by a <<Layer.adoc#top,Layer>> trait.
 The Move Fixed Distance trait is given an additional offset of one hex times the value of the supply level.
 
-|image:images/Translate.png +
+|image:images/Translate.png[] +
 |===
 
 *SEE ALSO:*  <<Rotate.adoc#top,Can Rotate>>, <<Pivot.adoc#top,Can Pivot>>

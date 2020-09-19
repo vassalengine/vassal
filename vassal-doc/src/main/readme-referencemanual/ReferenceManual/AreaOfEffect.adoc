@@ -33,15 +33,15 @@ Otherwise, it will be a circle with the given radius in pixels.
 *Toggle Visible Key Command:* If not always visible, the <<NamedKeyCommand.adoc#top,Key Command>> to show/hide the highlighted area.
 Can be a keystroke or a <<NamedKeyCommand.adoc#top,Named Key Command>>.
 
-image:images/AreaOfEffectSample1.png +
+image:images/AreaOfEffectSample1.png[] +
 _Area of Effect applied to a Flat Top cloud counter.
 (Gray, 20%, 2)_
 
 |
-image:images/AreaOfEffect.png +
+image:images/AreaOfEffect.png[] +
 _Area of Effect property window._
 
-image:images/AreaOfEffectSample2.png +
+image:images/AreaOfEffectSample2.png[] +
 _Area of Effect applied to a VASL FFE counter.
 (Purple, 40%, 1)_
 

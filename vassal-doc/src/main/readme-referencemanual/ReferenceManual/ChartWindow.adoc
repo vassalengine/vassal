@@ -18,7 +18,7 @@ To add a Chart Window to your module, find the main _[Module]_ entry at the very
 Right-click it and select _Add Chart Window Menu_.
 After adding initial settings for your Chart Window, you will find a _[Chart Window Menu]_ component at the very bottom of your module's list of components in the Editor window.
 You can then right-click the _[Chart Window Menu]_ component to _Add_ any of the types of Sub-Component listed below, thus building out your Chart Window with as many charts as you need.
-|image:images/ChartWindowConfig.png |image:images/ChartWindow.png +
+|image:images/ChartWindowConfig.png[] |image:images/ChartWindow.png[] +
 |===
 
 '''''
@@ -33,7 +33,7 @@ You can then right-click the _[Chart Window Menu]_ component to _Add_ any of the
 |===
 |Each chart is a GIF/JPEG/PNG image that you must create beforehand with an external program.
 You specify the image file and the name of the chart.
-|image:images/Chart.png +
+|image:images/Chart.png[] +
 |===
 
 [#HtmlChart]
@@ -46,7 +46,7 @@ Avoid using the <head> tag, for instance.
 HTML Charts can contain hyperlinks to one another, but not to external resources.
 You can reference any image that exists in the module file.
 For example, if inf.png is an image used in one of the Game Piece definitions, you can reference it using <img src="inf.png">. Note that because images stick around in a module file even after the components using them have been deleted, you can add images as a regular Chart, delete the Chart, and still use its image in an HtmlChart.
-|image:images/HtmlChart.png +
+|image:images/HtmlChart.png[] +
 |===
 
 ==== Tabbed Pane
@@ -54,7 +54,7 @@ For example, if inf.png is an image used in one of the Game Piece definitions, y
 A panel with tabs, each of which corresponds to a Chart, Panel, or other Tab panel subcomponent.
 The label of the tab will be the name of the subcomponent.
 
-image:images/TabbedPane.png
+image:images/TabbedPane.png[]
 
 ==== Panel
 
@@ -63,9 +63,9 @@ image:images/TabbedPane.png
 |A panel that can contain Charts, Tab panels, or other panels.
 The "Fixed cell size" box allows you to specify a fixed number of columns that the panel will have.
 Otherwise, the subcomponents will appear in a single row, or a single column if the "Vertical layout box is checked.
-|image:images/PanelWidget.png
+|image:images/PanelWidget.png[]
 
-image:images/PanelWidget2.png
+image:images/PanelWidget2.png[]
 |===
 
 [#Map]
@@ -75,5 +75,5 @@ image:images/PanelWidget2.png
 |===
 |A fully functioning <<Map.adoc#top,Map Window>> can be embedded within a Chart.
 You can put different maps under different tabs within the same chart window, and place and move counters onto the charts for bookkeeping purposes.
-|image:images/ChartMap.png
+|image:images/ChartMap.png[]
 |===

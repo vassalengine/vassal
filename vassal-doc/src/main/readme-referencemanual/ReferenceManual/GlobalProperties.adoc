@@ -22,7 +22,7 @@ Right-click on the _[Global Properties]_ component and select _Add Global Proper
 Your new Global Property will be added to the bottom of the list.
 You can follow a similar procedure to add a Global Property to one of your maps or zones -- simply find the appropriate _[Map]_ or _[Zone]_ component and add to that.
 
-|image:images/GlobalProperties.png
+|image:images/GlobalProperties.png[]
 |===
 
 [cols=",",]
@@ -40,7 +40,7 @@ You can follow a similar procedure to add a Global Property to one of your maps 
 *Maximum Value:*  Numeric values will be restricted to no more than this number.
 
 *Wrap Around:*  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum.
-|image:images/GlobalProperty.png +
+|image:images/GlobalProperty.png[] +
 |===
 
 '''''
@@ -69,7 +69,7 @@ Right click on the _[Global Property]_ component and select _Add Change-Property
 *Type:*  Defines how the property value should change:  _Set value directly_ sets the property to a fixed value, after substituting values of <<Properties.adoc#top,Properties>>.  _Increment numeric value_ adds a fixed value to the property, after substituting values of Properties.
 _Prompt user_ pops up a dialog for the user to type in a new value.
 _Prompt user to select from list_ pops up a dialog with a drop-down menu for the user to select from.
-|image:images/ChangePropertyButton.png
+|image:images/ChangePropertyButton.png[]
 |===
 
 [#Definition]

@@ -49,7 +49,7 @@ This trait can be used to replace him with a counter for a new more junior Gener
 *SEE ALSO:*  <<Marker.adoc#top,Place Marker>> trait, <<SendToLocation.adoc#top,Send to Location>> trait.
 
 |
-image:images/Replace.png
+image:images/Replace.png[]
 
-image:images/Replace2.png
+image:images/Replace2.png[]
 |===

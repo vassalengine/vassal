@@ -46,7 +46,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
 import VASSAL.i18n.Resources;
@@ -258,8 +257,35 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         }
       } 
       else if (s.startsWith("-")) {
-        style = "sys";
-        html_allowed = true;
+        if (s.startsWith("- |") || s.startsWith("-|")) {
+          style = "msg";
+          s = s.replaceFirst("\\|", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- !") || s.startsWith("-!")) {
+          style = "msg2";
+          s = s.replaceFirst("!", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ?") || s.startsWith("-?")) {
+          style = "msg3";
+          s = s.replaceFirst("\\?", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ~") || s.startsWith("-~")) {
+          style = "msg4";
+          s = s.replaceFirst("~", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- `") || s.startsWith("-`")) {
+          style = "msg5";
+          s = s.replaceFirst("`", "");
+          html_allowed = true;
+        }
+        else {
+          style = "sys";
+          html_allowed = true;
+        }
       } 
       else {
         style = getChatStyle(s);
@@ -325,6 +351,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
     }
+
+    conversationPane.repaint();
 
     consoleHook(s, style, html_allowed);
   }
@@ -546,12 +574,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
     
-    // Put up the HTML Enable/Disable checkbox if we're supposed to have it.
-    if (GlobalOptions.PROMPT.equals(GlobalOptions.getInstance().chatterHTMLSetting())) {
-      BooleanConfigurer config2 = new BooleanConfigurer(GlobalOptions.CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-      globalPrefs.addOption(Resources.getString("Chatter.chat_window"), config2);        
-    }
-
     makeStyleSheet(myFont);
   }
 
@@ -596,17 +618,21 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     Chatter chatter = GameModule.getGameModule().getChatter();
     chatter.send(msg);
   }
-  
+
 
   /**
    * Classes other than the Chatter itself may forward KeyEvents to the Chatter by
    * using this method
    */
   public void keyCommand(KeyStroke e) {
+
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
-        && !Character.isISOControl(e.getKeyChar())) {
+      && !Character.isISOControl(e.getKeyChar())) {
+      if (!((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) == 0))  {
+        return;  // This catches occasional Alt+Key events that should not be forwarded to Chatter
+      }
       input.setText(input.getText() + e.getKeyChar());
-    } 
+    }
     else if (e.isOnKeyRelease()) {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ENTER:

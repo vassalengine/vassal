@@ -386,6 +386,7 @@ public class WizardSupport {
         @Override
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().getGameState().setup(false);
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
           settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
           final WizardPanelProvider panels = createPlayOfflinePanels();
           if (panels == null) {
@@ -787,6 +788,7 @@ public class WizardSupport {
 
     @Override
     public boolean cancel(Map settings) {
+      GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
       return true;
     }

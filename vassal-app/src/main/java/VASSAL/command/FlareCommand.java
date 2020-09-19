@@ -21,32 +21,53 @@ import java.awt.Point;
 
 import VASSAL.build.module.map.Flare;
 
+/**
+ * A {@link Command} for sending {@link Flare} actions to other clients
+ */
 public class FlareCommand extends Command {
   private final Flare flare;
   private final Point clickPoint;
-    
+
+  /**
+   * @param flare Flare object to define our new action from
+   */
   public FlareCommand(final Flare flare) {
     clickPoint = new Point(flare.getClickPoint());
     this.flare = flare;
   }
 
+  /**
+   * Executes the command (starts a Flare at the specified location)
+   */
   protected void executeCommand() {
     flare.setClickPoint(clickPoint);
     flare.startAnimation(false);
   }
 
+  /**
+   * @return null - no undo needed for Flare commands
+   */
   protected Command myUndoCommand() {
     return null;
   }
-    
+
+  /**
+   * @return 0
+   */
   public int getValue() {
     return 0;
   }
-    
+
+  /**
+   * @return specified flare location on map
+   */
   public Point getClickPoint() {
     return clickPoint;
   }
 
+  /**
+   * @return unique ID of the Flare object that this flare command is intended to activate
+   */
   public String getId() {
     return flare.getId();
   }

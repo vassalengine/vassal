@@ -73,6 +73,7 @@ import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -122,7 +123,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -152,7 +152,7 @@ import org.w3c.dom.Element;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link BasicModule} extends {@link GameModule}, but
+ * For legacy reasons, {@link VASSAL.launch.BasicModule} extends {@link GameModule}, but
  * everything of note has been moved inside of GameModule.
  *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
@@ -174,6 +174,37 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static final String BUILDFILE_OLD = "buildFile";
 
   private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+
+  // Last type of game save/load for our current game
+  //public static final String SAVED_GAME = "saved";
+  //public static final String LOADED_GAME = "loaded";
+  //public static final String REPLAYED_GAME = "replayed";
+  //public static final String REPLAYING_GAME = "replaying";
+  //public static final String LOGGING_GAME = "logging";
+  //public static final String LOGGED_GAME = "logged";
+  //public static final String NEW_GAME = "new";
+
+  // Last type of game save/load for our current game
+  public enum GameFileMode {
+    SAVED_GAME("saved"),
+    LOADED_GAME("loaded"),
+    REPLAYED_GAME("replayed"),
+    REPLAYING_GAME("replaying"),
+    LOGGING_GAME("logging"),
+    LOGGED_GAME("logged"),
+    NEW_GAME("new");
+
+    private final String prettyName;
+
+    GameFileMode(String prettyName) {
+      this.prettyName = prettyName;
+    }
+
+    @Override
+    public String toString() {
+      return prettyName;
+    }
+  }
 
   private static GameModule theModule;
 
@@ -225,6 +256,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   protected boolean loggingPaused = false;
   protected final Object loggingLock = new Object();
   protected Command pausedCommands;
+
+  protected String gameFile     = "";
+  protected GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   /*
    * Store the currently building GpId source. Only meaningful while
@@ -304,7 +338,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * Constructor for a GameModule.
    * @param archive The .vmod (or .tmp) archive to associate
    */
-  protected GameModule(DataArchive archive) {
+  public GameModule(DataArchive archive) {
     this.archive = archive;
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -992,12 +1026,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  /**
-   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JComponent getControlPanel() {
-    ProblemDialog.showDeprecated("2020-08-06");
     return controlPanel;
   }
 
@@ -1157,19 +1186,89 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   }
 
   /**
-   * Append the string to the title of the controls window and all Map windows
-   * @param s If null, set the title to the default.
+   * Returns an appropriate Title Bar string for a window, based on the module name,
+   * the last read/written game file, and the manner of interaction with it.
+   * @return appropriate title bar string for a window.
+   * @param key Localization key to be used to generate string
+   * @param name Name of the object whose title bar is to be generated
    */
-  public void appendToTitle(String s) {
-    if (s == null) {
-      frame.setTitle(Resources.getString("GameModule.frame_title", getLocalizedGameName()));  //$NON-NLS-1$
+  public String getWindowTitleString (String key, String name) {
+    if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
+      return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
     else {
-      frame.setTitle(frame.getTitle() + s);
+      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile); //NON-NLS-1$
     }
+  }
+
+  /**
+   * Returns an appropriate Title Bar string for the main module window, based on the module name,
+   * the last read/written game file, and the manner of interaction with it.
+   * @return appropriate title bar string for main module window.
+   */
+  public String getTitleString() {
+    return getWindowTitleString("GameModule.frame", getLocalizedGameName()); //NON-NLS-1$
+  }
+
+  /**
+   * Updates the title bar of the main module window, and all map windows
+   */
+  public void updateTitleBar () {
+    frame.setTitle(getTitleString());  //$NON-NLS-1$
+
     for (Map m : getComponentsOf(Map.class)) {
-      m.appendToTitle(s);
+      m.updateTitleBar();
     }
+  }
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
+  public void appendToTitle(String s) {
+    // replaced by updateTitleBar()
+  }
+  
+
+  /**
+   * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
+   * the type of action taken with that file.
+   * @param gameFile Most recent VSAV/VLOG if any
+   * @param mode mode of access
+   */
+  public void setGameFile (String gameFile, GameFileMode mode) {
+    this.gameFile = gameFile;
+    setGameFileMode(mode);
+    updateTitleBar();
+  }
+
+  /**
+   * @return Most recent .VSAV/.VLOG that we've read or written.
+   */
+  public String getGameFile () {
+    return gameFile;
+  }
+
+  /**
+   * Sets the type of interaction we most recently had with saving/loading/replaying/logging, for managing title bars
+   * of windows.
+   * @param mode mode of access
+   */
+  public void setGameFileMode (GameFileMode mode) {
+    if (mode == null) {
+      throw new NullPointerException();
+    }
+    gameFileMode = mode;
+    updateTitleBar();
+  }
+
+  /**
+   * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
+   * title bars of windows.
+   */
+  public GameFileMode getGameFileMode () {
+    return gameFileMode;
   }
 
   /**

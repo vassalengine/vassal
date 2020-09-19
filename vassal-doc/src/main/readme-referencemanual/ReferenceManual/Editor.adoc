@@ -56,6 +56,6 @@ Adds a sub-component to this component
 
 See the <<GameModule.adoc#top,Module>> page for a list of Components that can be added to modules.
 
-|image:images/configuration_window.png +
+|image:images/configuration_window.png[]+
 |===
 

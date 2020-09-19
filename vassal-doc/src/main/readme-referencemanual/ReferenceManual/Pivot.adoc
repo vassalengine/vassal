@@ -24,5 +24,5 @@ _Example:_ For a piece of size 40x40, a pivot point of 20,-20 will rotate the pi
 *Pivot through fixed angle:*  If selected, then invoking the command will pivot the piece through the angle specified in the _Angle_ field, in degrees clockwise.
 If left unselected, then invoking the command will allow the player to pivot the piece interactively to any angle by dragging the mouse.
 
-| image:images/Pivot.png
+| image:images/Pivot.png[]
 |===

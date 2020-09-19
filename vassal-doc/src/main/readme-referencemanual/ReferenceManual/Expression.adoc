@@ -7,9 +7,9 @@
 
 === Expressions
 
-image:images/Expression.png
+image:images/Expression.png[]
 
-Any field within the Vassal Editor that is followed by a Calculator icon image:images/calculator.pngallows the entry of an Expression.
+Any field within the Vassal Editor that is followed by a Calculator icon image:images/calculator.png[] allows the entry of an Expression.
 Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>> that are re-evaluated whenever their value is required.
 There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces \{}, and <<#simple,Simple Expressions>> which are not.
 
@@ -190,10 +190,10 @@ If you are learning VASSAL for the first time, it is recommended that you mostly
 
 [cols=",,",]
 |===
-|A Simple Integer Expression: |image:images/SimpleExpression1.png |A whole number.
+|A Simple Integer Expression: |image:images/SimpleExpression1.png[] |A whole number.
 In general, Vassal does not support decimal numbers, except when stored and used as Strings.
-|A basic Simple String Expression: |image:images/SimpleExpression2.png |A String in a Simple Expression is defined without quotation marks.
-|A more complex example: |image:images/SimpleExpression3.png |The string $Nation$ will be replaced by the value of the Nation property.
+|A basic Simple String Expression: |image:images/SimpleExpression2.png[] |A String in a Simple Expression is defined without quotation marks.
+|A more complex example: |image:images/SimpleExpression3.png[] |The string $Nation$ will be replaced by the value of the Nation property.
 You can use multiple $...$ strings in an expression ($Nation$-$Division$), but can NOT nest them ($Nation$Count$$).
 |===
 

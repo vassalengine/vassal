@@ -29,6 +29,7 @@ import VASSAL.tools.lang.Reference;
  * @since 3.2.0
  * @author Joel Uckelman
  */
+@FunctionalInterface
 public interface ImageTypeConverter {
   /**
    * Converts an image to the given type.

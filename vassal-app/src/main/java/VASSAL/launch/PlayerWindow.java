@@ -42,7 +42,6 @@ import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
-import VASSAL.tools.swing.SplitPane;
 
 public class PlayerWindow extends JFrame {
 
@@ -58,7 +57,6 @@ public class PlayerWindow extends JFrame {
 
   protected final JToolBar toolBar = new JToolBar();
   protected final JPanel controlPanel = new JPanel();
-  private Chatter chatter;
 
   public PlayerWindow() {
     setTitle("VASSAL");
@@ -186,14 +184,12 @@ public class PlayerWindow extends JFrame {
    *
    * @param newComponent the hideable component
    * @param hideablePosition the position of the hideable component, one of
-   * {@link SplitPane#HIDE_TOP}, {@link SplitPane#HIDE_RIGHT},
-   * {@link SplitPane#HIDE_BOTTOM}, {@link SplitPane#HIDE_LEFT}
+   * {@link ComponentSplitter.SplitPane#HIDE_TOP}, {@link ComponentSplitter.SplitPane#HIDE_RIGHT},
+   * {@link ComponentSplitter.SplitPane#HIDE_BOTTOM}, {@link ComponentSplitter.SplitPane#HIDE_LEFT}
    * @param resize If true, the containing window will expand or shrink to an appropriate size when
    *     the hideable component is shown or hidden
-   * @return the {@link SplitPane} containing the two components
+   * @return the {@link ComponentSplitter.SplitPane} containing the two components
    *
-   * @deprecated marked as deprecated to see if modules depend on this, if no modules use this
-   *   make this return {@link VASSAL.tools.swing.SplitPane}
    */
   @Deprecated
   public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
@@ -208,7 +204,8 @@ public class PlayerWindow extends JFrame {
       }
     }
 
-    final VASSAL.tools.swing.SplitPane split = new VASSAL.tools.swing.SplitPane(newComponent, controlPanel, hideablePosition, resize);
+    final ComponentSplitter.SplitPane
+      split = new ComponentSplitter.SplitPane(newComponent, controlPanel, hideablePosition, resize);
     if (index >= 0) {
       parent.add(split, index);
     }
@@ -216,7 +213,6 @@ public class PlayerWindow extends JFrame {
   }
 
   public void addChatter(Chatter chatter) {
-    this.chatter = chatter;
     controlPanel.add(chatter, BorderLayout.CENTER);
   }
 

@@ -31,7 +31,7 @@ It is recommended that for new modules you set this option to _Always_, as the o
 
 *Icons and hotkeys:*You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
 
-|image:images/GlobalOptions.png +
+|image:images/GlobalOptions.png[]+
 |===
 
 '''''
@@ -78,6 +78,5 @@ A floating-point value.
 
 A true/false value.
 
-|image:images/GlobalOptionsComponent.png
-|===
+|image:images/GlobalOptionsComponent.png[]|===
 
