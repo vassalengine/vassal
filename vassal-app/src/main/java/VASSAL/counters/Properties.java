@@ -45,7 +45,13 @@ public interface Properties {
    * @see VASSAL.build.GameModule#getUserId
    */
   String OBSCURED_BY = Obscurable.ID;
-  
+
+  /**
+   * In order to maintain Legacy support after the fix of bug 12951, we need to save the Obscured state prior to cards
+   * being drawn, let it be changed in the draw process, then restore it afterwards. Don't ask.
+   */
+  String OBSCURED_BY_PRE_DRAW = "ObscuredPreDraw";
+
   /**
    * If non-null, then return an instance of {@link EventFilter}. The piece will not respond to band-select events if the
    * filter rejects them
