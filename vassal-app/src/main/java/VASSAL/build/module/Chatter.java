@@ -367,7 +367,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
-    style.addRule(s + 
+    style.addRule(s +
                   " {color:" + 
                   String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + 
                   "; font-family:" + 
@@ -377,6 +377,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                   "; " + 
                   ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +
                   "}");
+
+    style.addRule(s + "color {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + "; }");
   }
 
   /**
