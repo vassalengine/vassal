@@ -134,8 +134,12 @@ public class ModuleManager {
     // (2) No port collisions, because we don't use a predetermined port.
     //
 
-    final File keyfile = new File(Info.getConfDir(), "key");
-    final File lockfile = new File(Info.getConfDir(), "lock");
+    // Different versions of VASSAL can all co-exist, each with own Module Manager
+    String ver = Info.getReportableVersion();
+    ver = ver.replaceAll(".", "_");
+
+    final File keyfile = new File(Info.getConfDir(), "key" + ver);
+    final File lockfile = new File(Info.getConfDir(), "lock" + ver);
 
     int port = 0;
     long key = 0;
