@@ -75,7 +75,10 @@ public abstract class EditorWindow extends JFrame {
   protected final HelpWindow helpWindow = new HelpWindow(Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
       null);
 
-  protected ConfigureTree tree;
+  protected ConfigureTree tree;        // The Configure Tree we are editing
+
+  protected String moduleName = "";    // Current module file if any
+  protected String extensionName = ""; // Current extension file if any
 
   public abstract String getEditorType();
 
@@ -84,7 +87,7 @@ public abstract class EditorWindow extends JFrame {
   protected final JScrollPane scrollPane;
 
   protected EditorWindow() {
-    setTitle("VASSAL " + getEditorType() + " Editor");
+    updateWindowTitle();
     setLayout(new BorderLayout());
 
     ApplicationIcons.setFor(this);
@@ -331,6 +334,52 @@ public abstract class EditorWindow extends JFrame {
     add(scrollPane, BorderLayout.CENTER);
     pack();
   }
+
+
+  /**
+   * @param name Filename to check
+   * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
+   */
+  boolean isTempFile(String name) {
+    if ((name == null) || name.isEmpty()) {
+      return true;
+    }
+
+    if ("tmp".equals(name.substring(0, 3)) && name.contains(".zip")) {
+      return true;
+    }
+
+    return false;
+  }
+
+
+  void setModuleName (String name) {
+    if (isTempFile(name)) {
+      moduleName = Resources.getString("Resources.ModuleEditor.creating_new_module");
+    }
+    else {
+      moduleName = name;
+    }
+    updateWindowTitle();
+  }
+
+  void setExtensionName (String name) {
+    if (isTempFile(name)) {
+      extensionName = Resources.getString("Resources.ExtensionEditor.creating_new_extension");
+    }
+    else {
+      extensionName = name;
+    }
+
+    extensionName = name;
+    updateWindowTitle();
+  }
+
+
+  void updateWindowTitle () {
+
+  }
+
 
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
     for (ChildProxy<?> c : mb.getChildren()) {

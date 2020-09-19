@@ -197,7 +197,7 @@ import VASSAL.tools.swing.SwingUtils;
  * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+  UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -728,8 +728,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
-          mouseListenerStack.isEmpty() &&
-          SwingUtils.isDragTrigger(dge)) {
+        mouseListenerStack.isEmpty() &&
+        SwingUtils.isDragTrigger(dge)) {
         dragGestureListener.dragGestureRecognized(dge);
       }
     };
@@ -1913,10 +1913,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
         if ((sx == -1 && vrect.x == 0) ||
-            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
 
         if ((sy == -1 && vrect.y == 0) ||
-            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
 
         // Stop if the scroll vector is zero
         if (sx == 0 && sy == 0) scroller.stop();
@@ -2553,7 +2553,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+            .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2577,30 +2577,43 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return null;
   }
 
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
   public void appendToTitle(String s) {
-    if (mainWindowDock == null) {
-      Component c = theMap.getTopLevelAncestor();
-      if (s == null) {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(getDefaultWindowTitle());
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(getDefaultWindowTitle());
-        }
-      }
-      else {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(((JFrame) c).getTitle() + s);
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(((JDialog) c).getTitle() + s);
-        }
-      }
+    // replaced by updateTitleBar()
+  }
+
+
+  /**
+   * Updates the title bar of the current window
+   */
+  public void updateTitleBar() {
+    if (mainWindowDock != null) {
+      return;
+    }
+    Component c = theMap.getTopLevelAncestor();
+    if (c instanceof JFrame) {
+      ((JFrame) c).setTitle(getDefaultWindowTitle());
+    }
+    if (c instanceof JDialog) {
+      ((JDialog) c).setTitle(getDefaultWindowTitle());
     }
   }
 
+  /**
+   * @return The correct current default window title
+   */
   protected String getDefaultWindowTitle() {
-    return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    if (getLocalizedMapName().length() > 0) {
+      return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName()); //$NON-NLS-1$
+    }
+    else {
+      return GameModule.getGameModule().getWindowTitleString("Map.window", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    }
   }
 
   /**
@@ -2694,7 +2707,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // If no piece at destination and this is a stacking piece, create
       // a new Stack containing the piece
       if (!(p instanceof Stack) &&
-          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+        !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
         final Stack parent = getStackMetrics().createStack(p);
         if (parent != null) {
           c = c.append(placeAt(parent, pt));
@@ -3402,7 +3415,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+        && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
         return map.getStackMetrics().merge(s, p);
       }
       else {
@@ -3418,8 +3431,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-          && map.getPieceCollection().canMerge(piece, p)) {
+        && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
+        && map.getPieceCollection().canMerge(piece, p)) {
         return map.getStackMetrics().merge(piece, p);
       }
       else {

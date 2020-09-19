@@ -160,6 +160,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
         setup(true);
       }
@@ -174,6 +175,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
       }
     };
@@ -275,6 +277,7 @@ public class GameState implements CommandEncoder {
    * <em>NOTE: This method is not for use in custom code.</em>
    */
   public void setup(boolean gameStarting, boolean gameUpdating) {
+    GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     this.gameUpdating = gameUpdating;
     setup(gameStarting);
   }
@@ -334,7 +337,6 @@ public class GameState implements CommandEncoder {
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      g.appendToTitle(null);
     }
 
     gameStarted &= this.gameStarting;
@@ -459,6 +461,7 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
+        g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
         loadGameInBackground(f);
       }
 
@@ -513,8 +516,6 @@ public class GameState implements CommandEncoder {
 
   /** Saves the game to an existing file, or prompts for a new one. */
   public void saveGame() {
-    //final GameModule g = GameModule.getGameModule();
-
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
         return;
@@ -522,13 +523,10 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
+        GameModule.getGameModule().setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
     else {
@@ -552,13 +550,10 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
+        g.setGameFile(saveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
   }
@@ -630,8 +625,8 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
-    GameModule.getGameModule().warn(
-        Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
+    GameModule g = GameModule.getGameModule();
+    g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
       @Override
@@ -643,13 +638,10 @@ public class GameState implements CommandEncoder {
     if (c != null) {
       c.execute();
     }
-
-    String msg;  
+    g.setGameFile(f.getName(), ((BasicLogger)g.getLogger()).isReplaying() ? GameModule.GameFileMode.REPLAYING_GAME : GameModule.GameFileMode.LOADED_GAME);
+    String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
     if (loadComments != null && loadComments.length() > 0) {
-      msg = "!" + Resources.getString("GameState.loaded", f.getName()) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
-    }
-    else {
-      msg = Resources.getString("GameState.loaded", f.getName()); //$NON-NLS-1$
+      msg = "!" + msg + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
   }
@@ -828,9 +820,11 @@ public class GameState implements CommandEncoder {
               else {
                 msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
               }
+              GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
+              GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
             }
           }
           catch (InterruptedException e) {

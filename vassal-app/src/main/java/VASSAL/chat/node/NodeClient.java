@@ -424,6 +424,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       if (r instanceof NodeRoom) {
         final NodeRoom room = (NodeRoom) r;
         if (newRoom.equals(defaultRoomName)) {
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
           GameModule.getGameModule().getGameState().setup(false);
         }
         else if (!room.isOwner(me)) {
