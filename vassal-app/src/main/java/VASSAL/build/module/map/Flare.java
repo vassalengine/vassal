@@ -27,16 +27,20 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import org.jdesktop.animation.timing.Animator;
@@ -674,5 +678,14 @@ public class Flare extends AbstractConfigurable
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FlareFormattedStringConfigurer(key, name, new String[0]);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
   }
 }
