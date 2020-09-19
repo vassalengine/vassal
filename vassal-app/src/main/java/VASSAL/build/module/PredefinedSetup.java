@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,9 +33,11 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -281,5 +285,14 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       "name='" + name + '\'' + //NON-NLS
       ", menu='" + isMenu + '\'' + //NON-NLS
       '}';
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(name);
   }
 }

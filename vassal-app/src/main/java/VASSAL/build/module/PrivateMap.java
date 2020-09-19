@@ -379,4 +379,15 @@ public class PrivateMap extends Map {
       listenersActive = true;
     }
   }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    List<String> l = ArrayList<>();
+    l.addAll(owners);
+  }
 }

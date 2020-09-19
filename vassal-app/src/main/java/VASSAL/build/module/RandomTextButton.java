@@ -254,4 +254,15 @@ public class RandomTextButton extends DiceButton {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.html", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    List<String> l = ArrayList<>();
+    l.addAll(m_faces);
+    return l;
+  }
 }

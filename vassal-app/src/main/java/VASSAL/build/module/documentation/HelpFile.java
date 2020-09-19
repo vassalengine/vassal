@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -289,6 +290,15 @@ public class HelpFile extends AbstractConfigurable {
       ErrorDialog.bug(ex);
       return null;
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(title, contents);
   }
 }
 

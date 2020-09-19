@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -674,5 +675,33 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     public int getIconHeight() {
       return height;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(windowTitleResultFormat, chatResultFormat);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

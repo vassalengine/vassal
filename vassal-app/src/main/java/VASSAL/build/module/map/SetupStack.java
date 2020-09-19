@@ -93,6 +93,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Properties;
@@ -101,6 +102,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.menu.MenuManager;
@@ -1209,5 +1211,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       }
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(getAttributeValueString(OWNING_BOARD));
   }
 }
