@@ -485,10 +485,10 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   /**
-   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
    */
   @Override
-  public List<String> getPropertyList() {
-    return Collections.emptyList();
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 }

@@ -3543,29 +3543,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
-   */
-  @Override
-  public List<String> getExpressionList() {
-    return Collections.emptyList();
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
    * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
    */
   @Override
   public List<String> getFormattedStringList() {
     return List.of(moveWithinFormat, moveToFormat, createFormat, changeFormat);
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Property Names referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getPropertyList() {
-    return Collections.emptyList();
   }
 
   /**

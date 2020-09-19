@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPopupMenu;
@@ -125,40 +126,40 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return (DrawPile) idMgr.findInstance(id);
   }
 
-  public static final String WIDTH = "width"; //NON-NLS
-  public static final String HEIGHT = "height"; //NON-NLS
-  public static final String ALLOW_MULTIPLE = "allowMultiple"; //NON-NLS
-  public static final String ALLOW_SELECT = "allowSelect"; //NON-NLS
-  public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty"; //NON-NLS
-  public static final String SELECT_SORT_PROPERTY = "selectSortProperty"; //NON-NLS
-  public static final String FACE_DOWN = "faceDown"; //NON-NLS
-  public static final String DRAW_FACE_UP = "drawFaceUp"; //NON-NLS
-  public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat"; //NON-NLS
-  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey"; //NON-NLS
-  public static final String SHUFFLE = "shuffle"; //NON-NLS
-  public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat"; //NON-NLS
-  public static final String SHUFFLE_HOTKEY = "shuffleHotkey"; //NON-NLS
-  public static final String SHUFFLE_COMMAND = "shuffleCommand"; //NON-NLS
-  public static final String REVERSIBLE = "reversible"; //NON-NLS
-  public static final String REVERSE_REPORT_FORMAT = "reverseFormat"; //NON-NLS
-  public static final String REVERSE_HOTKEY = "reverseHotkey"; //NON-NLS
-  public static final String REVERSE_COMMAND = "reverseCommand"; //NON-NLS
-  public static final String DRAW = "draw"; //NON-NLS
-  public static final String COLOR = "color"; //NON-NLS
-  public static final String MAXSTACK = "maxStack"; //NON-NLS
-  public static final String EXPRESSIONCOUNTING = "expressionCounting"; //NON-NLS
-  public static final String COUNTEXPRESSIONS = "countExpressions"; //NON-NLS
-  public static final String RESHUFFLABLE = "reshufflable"; //NON-NLS
-  public static final String RESHUFFLE_COMMAND = "reshuffleCommand"; //NON-NLS
-  public static final String RESHUFFLE_TARGET = "reshuffleTarget"; //NON-NLS
-  public static final String RESHUFFLE_MESSAGE = "reshuffleMessage"; //NON-NLS
-  public static final String RESHUFFLE_HOTKEY = "reshuffleHotkey"; //NON-NLS
-  public static final String REPORT_FORMAT = "reportFormat"; //NON-NLS
-  public static final String CAN_SAVE = "canSave"; //NON-NLS
-  public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty"; //NON-NLS
-  public static final String EMPTY_HOTKEY = "emptyHotkey"; //NON-NLS
-  public static final String RESTRICT_OPTION = "restrictOption"; //NON-NLS
-  public static final String RESTRICT_EXPRESSION = "restrictExpression"; //NON-NLS
+  public static final String WIDTH = "width";
+  public static final String HEIGHT = "height";
+  public static final String ALLOW_MULTIPLE = "allowMultiple";
+  public static final String ALLOW_SELECT = "allowSelect";
+  public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty";
+  public static final String SELECT_SORT_PROPERTY = "selectSortProperty";
+  public static final String FACE_DOWN = "faceDown";
+  public static final String DRAW_FACE_UP = "drawFaceUp";
+  public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat";
+  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey";
+  public static final String SHUFFLE = "shuffle";                       // "Re-shuffle deck" - see below //NON-NLS
+  public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat";
+  public static final String SHUFFLE_HOTKEY = "shuffleHotkey";
+  public static final String SHUFFLE_COMMAND = "shuffleCommand";
+  public static final String REVERSIBLE = "reversible";
+  public static final String REVERSE_REPORT_FORMAT = "reverseFormat";
+  public static final String REVERSE_HOTKEY = "reverseHotkey";
+  public static final String REVERSE_COMMAND = "reverseCommand";
+  public static final String DRAW = "draw";
+  public static final String COLOR = "color";
+  public static final String MAXSTACK = "maxStack";
+  public static final String EXPRESSIONCOUNTING = "expressionCounting";
+  public static final String COUNTEXPRESSIONS = "countExpressions";
+  public static final String RESHUFFLABLE = "reshufflable";             // "Send to another deck" -- see above //NON-NLS
+  public static final String RESHUFFLE_COMMAND = "reshuffleCommand";
+  public static final String RESHUFFLE_TARGET = "reshuffleTarget";
+  public static final String RESHUFFLE_MESSAGE = "reshuffleMessage";
+  public static final String RESHUFFLE_HOTKEY = "reshuffleHotkey";
+  public static final String REPORT_FORMAT = "reportFormat";
+  public static final String CAN_SAVE = "canSave";
+  public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty";
+  public static final String EMPTY_HOTKEY = "emptyHotkey";
+  public static final String RESTRICT_OPTION = "restrictOption";
+  public static final String RESTRICT_EXPRESSION = "restrictExpression";
 
   public static final String ALWAYS = "Always"; //NON-NLS
   public static final String NEVER = "Never"; //NON-NLS
@@ -170,7 +171,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static class Prompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{ALWAYS, NEVER, USE_MENU};
+      return new String[]{ ALWAYS, NEVER, USE_MENU };
     }
 
     @Override
@@ -257,7 +258,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       FACE_DOWN,
       DRAW_FACE_UP,
       FACE_DOWN_REPORT_FORMAT,
-      SHUFFLE,
+      SHUFFLE,                        // These commands match "Reshuffle" in the visible menus
       SHUFFLE_COMMAND,
       SHUFFLE_REPORT_FORMAT,
       SHUFFLE_HOTKEY,
@@ -269,7 +270,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       COLOR,
       HOTKEY_ON_EMPTY,
       EMPTY_HOTKEY,
-      RESHUFFLABLE,
+      RESHUFFLABLE,                  // These commands match "Send to another deck" in the visible menus
       RESHUFFLE_COMMAND,
       RESHUFFLE_MESSAGE,
       RESHUFFLE_HOTKEY,
@@ -299,7 +300,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
         Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
@@ -311,7 +312,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$        // Internally these match "RESHUFFLE"
         Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
@@ -341,7 +342,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       Prompt.class, // FACE_DOWN
       Boolean.class, // DRAW_FACE_UP
       FormattedStringConfig.class, // FACE_DOWN_REPORT_FORMAT
-      Prompt.class, // SHUFFLE
+      Prompt.class, // SHUFFLE                                    // These map to "re-shuffle"
       String.class, // SHUFFLE_COMMAND
       FormattedStringConfig.class, // SHUFFLE_REPORT_FORMAT
       NamedKeyStroke.class, // SHUFFLE_HOTKEY
@@ -354,7 +355,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       Boolean.class, // HOTKEY_ON_EMPTY
       NamedKeyStroke.class, // EMPTY_HOTKEY
       Boolean.class, // RESHUFFLABLE
-      String.class, // RESHUFFLE_COMMAND
+      String.class, // RESHUFFLE_COMMAND                  // These map to "send to an other deck"
       FormattedStringConfig.class, // RESHUFFLE_MESSAGE
       NamedKeyStroke.class, // RESHUFFLE_HOTKEY
       AssignedDeckPrompt.class, // RESHUFFLE_TARGET
@@ -380,6 +381,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new GamePieceFormattedStringConfigurer(key, name);
     }
+  }
+
+  public boolean isReshufflable () {
+    return "true".equals(getAttributeValueString(RESHUFFLABLE));
   }
 
   @Override
@@ -825,5 +830,73 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       l.add(getConfigureName() + "_" + (new Deck.CountExpression(ce)).getName());
     }
     return l;
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = super.getExpressionList();
+    if (myDeck.isRestrictOption()) {
+      l.add(myDeck.getRestrictExpression().getExpression());
+    }
+    if (myDeck.doesExpressionCounting()) {
+      l.addAll(Arrays.asList(myDeck.getCountExpressions()));
+    }
+    l.add(myDeck.getSelectDisplayProperty());
+    l.add(myDeck.getSelectSortProperty());
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(myDeck.getFaceDownMsgFormat(), myDeck.getReshuffleMsgFormat(), myDeck.getReverseMsgFormat(), myDeck.getShuffleMsgFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(myDeck.getSelectDisplayProperty(), myDeck.getSelectSortProperty());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    if (USE_MENU.equals(myDeck.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+      l.add(myDeck.getShuffleCommand());
+    }
+
+    if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+      l.add(myDeck.getReshuffleCommand());
+    }
+
+    if (myDeck.isReversible()) {
+      l.add(myDeck.getReverseCommand());
+    }
+
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(myDeck.getNamedEmptyKey(), myDeck.getReshuffleKey(), myDeck.getReverseKey(), myDeck.getShuffleKey());
   }
 }
