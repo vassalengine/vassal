@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import javax.swing.AbstractAction;
@@ -575,5 +576,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     protected Command myUndoCommand() {
       return null;
     }
+  }
+
+  /**
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of( version, description );
   }
 }

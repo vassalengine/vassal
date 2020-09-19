@@ -21,6 +21,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Point;
@@ -63,7 +64,7 @@ import VASSAL.tools.SequenceEncoder;
  * BasicPiece.
  */
 public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
-  PropertyExporter {
+  PropertyExporter, SearchTarget {
 
   protected GamePiece piece;
   private Decorator dec;
@@ -547,36 +548,46 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   
   
   /**
+   * {@link SearchTarget}
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
+  @Override
   public List<String> getExpressionList() {
     return Collections.emptyList();
   }
 
   /**
+   * {@link SearchTarget}
    * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
    */
+  @Override
   public List<String> getFormattedStringList() {
     return Collections.emptyList();
   }
 
   /**
-   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   * {@link SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Decorator, if any (for search)
    */
+  @Override
   public List<String> getMenuTextList() {
     return Collections.emptyList();
   }
 
   /**
+   * {@link SearchTarget}
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
+  @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Collections.emptyList();
   }
 
   /**
+   * {@link SearchTarget}
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
+  @Override
   public List<String> getPropertyList() {
     return Collections.emptyList();
   }

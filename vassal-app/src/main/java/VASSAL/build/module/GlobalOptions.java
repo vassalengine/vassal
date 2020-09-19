@@ -576,4 +576,13 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     return l;
   }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(playerIdFormat.getFormat());
+  }
 }
