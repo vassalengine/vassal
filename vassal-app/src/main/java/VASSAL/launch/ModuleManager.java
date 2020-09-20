@@ -136,7 +136,7 @@ public class ModuleManager {
 
     // Different versions of VASSAL can all co-exist, each with own Module Manager
     String ver = Info.getReportableVersion();
-    ver = ver.replaceAll(".", "_");
+    ver = ver.replaceAll("\\.", "_");
 
     final File keyfile = new File(Info.getConfDir(), "key" + ver);
     final File lockfile = new File(Info.getConfDir(), "lock" + ver);
@@ -258,7 +258,7 @@ public class ModuleManager {
     this.lock = lock;
 
     // truncate the errorLog
-    final File errorLog = new File(Info.getHomeDir(), "errorLog");
+    final File errorLog = new File(Info.getHomeDir(), Info.getErrorLogName());
     new FileOutputStream(errorLog).close();
 
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?

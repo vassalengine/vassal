@@ -25,7 +25,7 @@ public class BugUtils {
     pb.setParameter("email", email);
     pb.setParameter("summary", getSummary(t));
     pb.setParameter("description", getDescription(description, errorLog));
-    pb.setParameter("log", "errorLog", errorLog);
+    pb.setParameter("log", Info.getErrorLogName(), errorLog);
 
     try (InputStream in = pb.post(url)) {
       final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
@@ -84,7 +84,7 @@ public class BugUtils {
 // FIXME: move this somewhere else?
   public static String getErrorLog() {
     String log = null;
-    final File f = new File(Info.getConfDir(), "errorLog");
+    final File f = new File(Info.getConfDir(), Info.getErrorLogName());
     try (FileReader r = new FileReader(f, Charset.defaultCharset())) {
       log = IOUtils.toString(r);
     }

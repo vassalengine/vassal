@@ -309,7 +309,7 @@ public class BugDialog extends JDialog {
 
   private Component buildConnectionFailedPanel() {
     final String errorLogPath =
-      new File(Info.getConfDir(), "errorLog").getAbsolutePath();
+      new File(Info.getConfDir(), Info.getErrorLogName()).getAbsolutePath();
 
     final FlowLabel label = new FlowLabel(Resources.getString(
       "BugDialog.connection_failed_instructions", errorLogPath));

@@ -143,6 +143,16 @@ public final class Info {
     return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
   }
 
+
+  /**
+   * @return a version-specific name for the errorlog
+   */
+  public static String getErrorLogName() {
+    final String v = "errorLog" + getReportableVersion().replaceAll("\\.", "_");
+    return v;
+  }
+
+
   private static final int instanceID;
 
   /**
