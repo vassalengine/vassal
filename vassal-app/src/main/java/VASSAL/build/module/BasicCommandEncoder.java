@@ -121,6 +121,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    *
    * See: <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>, <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
    */
+  @FunctionalInterface
   public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
@@ -129,6 +130,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * Factory interface for BasicPieces.
    * See: <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
    */
+  @FunctionalInterface
   public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }

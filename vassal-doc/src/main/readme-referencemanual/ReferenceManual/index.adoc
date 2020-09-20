@@ -1,4 +1,4 @@
-image:images/Vassal.png
+image:images/Vassal.png[]
 
 [#toc]
 == Table of Contents

@@ -1,15 +1,25 @@
 == Overview
 
-VASSAL is a free, open-source engine for playing board games by computer. VASSAL supports many types of games, including war games, hobby games, card games, miniatures games, and even board- based role-playing games. You can play opponents live on the VASSAL Server or a peer -to-peer connection, play by email, play by forum, or play offline in hot seat or solitaire modes. There are several hundred VASSAL game modules available for free, and more are being created all the time.
+VASSAL is a free, open-source engine for playing board games by computer.
+VASSAL supports many types of games, including war games, hobby games, card games, miniatures games, and even board- based role-playing games.
+You can play opponents live on the VASSAL Server or a peer -to-peer connection, play by email, play by forum, or play offline in hot seat or solitaire modes.
+There are several hundred VASSAL game modules available for free, and more are being created all the time.
 
-VASSAL is supported on Windows, Mac OS X, Linux, and other platforms. Thanks to VASSAL'S Java architecture, players on different platforms can play each other without regard to operating system.
+VASSAL is supported on Windows, Mac OS X, Linux, and other platforms.
+Thanks to VASSAL'S Java architecture, players on different platforms can play each other without regard to operating system.
 
-VASSAL was originally created in 1999 by Rodney Kinney. The name _VASSAL_ comes from its original incarnation as a tool to play online games of the classic _Advanced Squad Leader,_ and was originally called _Virtual Advanced Squad Leader_, or _VASL_. VASSAL now extends play to a much wider range of games.
+VASSAL was originally created in 1999 by Rodney Kinney.
+The name _VASSAL_ comes from its original incarnation as a tool to play online games of the classic _Advanced Squad Leader,_ and was originally called _Virtual Advanced Squad Leader_, or _VASL_.
+VASSAL now extends play to a much wider range of games.
 
-This _VASSAL_ _3.1 Designerʼs Guide_ explains how to create game modules and extensions using the Module Editor. It is strongly recommended that you be familiar with the contents of the _VASSAL_
+This _VASSAL Designerʼs Guide_ explains how to create game modules and extensions using the Module Editor.
+It is strongly recommended that you be familiar with the contents of the _VASSAL_
 
-_Userʼs Guide_ before attempting to create new modules. This guide covers version 3.1.x of the VASSAL Engine.
+_Userʼs Guide_ before attempting to create new modules.
+This guide covers version {project-version} of the VASSAL Engine.
 
-Because of VASSALʼs easy to use interface, programming skills are not at all necessary for creating fully functional VASSAL modules. In general, VASSAL modules are not “coded” or “programmed”, but _designed_. However, programming skills will definitely be helpful if you plan to create custom functionality or features that the standard VASSAL toolbox cannot handle.
+Because of VASSALʼs easy to use interface, programming skills are not at all necessary for creating fully functional VASSAL modules.
+In general, VASSAL modules are not “coded” or “programmed”, but _designed_.
+However, programming skills will definitely be helpful if you plan to create custom functionality or features that the standard VASSAL toolbox cannot handle.
 
 For information on installing VASSAL and using it to play games, consult the _VASSAL_ _Userʼs Guide_.

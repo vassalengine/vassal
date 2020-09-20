@@ -22,6 +22,7 @@ import javax.swing.JTree;
 
 import VASSAL.chat.SimplePlayer;
 
+@FunctionalInterface
 public interface PlayerActionFactory {
   Action getAction(SimplePlayer p, JTree tree);
 }

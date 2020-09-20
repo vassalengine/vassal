@@ -74,19 +74,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     menu = new MenuProxy();
 
-    showFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu && useFile;
-      }
-    };
+    showFile = () -> !isMenu && useFile;
 
-    showUseFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu;
-      }
-    };
+    showUseFile = () -> !isMenu;
   }
 
   @Override
@@ -179,17 +169,18 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public void launch() {
+    GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
-        GameModule.getGameModule()
-                  .getGameState()
-                  .loadGameInBackground(fileName, getSavedGameContents());
+        g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
+        g.setGameFile(fileName, GameModule.GameFileMode.LOADED_GAME);
       }
       catch (IOException e) {
         ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"), fileName, e)); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     else {
+      g.setGameFile(fileName, GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
       GameModule.getGameModule().getGameState().setup(true);
     }

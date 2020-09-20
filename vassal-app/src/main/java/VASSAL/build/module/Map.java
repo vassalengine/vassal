@@ -197,7 +197,7 @@ import VASSAL.tools.swing.SwingUtils;
  * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+  UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -247,6 +247,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
+
+  private IntConfigurer preferredScrollConfig;
 
   public Map() {
     getView();
@@ -728,8 +730,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
-          mouseListenerStack.isEmpty() &&
-          SwingUtils.isDragTrigger(dge)) {
+        mouseListenerStack.isEmpty() &&
+        SwingUtils.isDragTrigger(dge)) {
         dragGestureListener.dragGestureRecognized(dge);
       }
     };
@@ -784,6 +786,27 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         PREFERRED_EDGE_SCROLL_DELAY
       )
     );
+
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+
+    // Create the Configurer for the Pref
+    preferredScrollConfig = new IntConfigurer(
+      PREFERRED_SCROLL_ZONE,
+      Resources.getString("Map.scroll_zone_preference"), //$NON-NLS-1$
+      SCROLL_ZONE
+    );
+
+    // Register the Pref, which copies any existing pref value into the configurer
+    g.getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+      preferredScrollConfig
+    );
+
+    // Read the current value of the pref
+    SCROLL_ZONE = preferredScrollConfig.getIntValue(60);
+
+    // Listen for any changes to the pref
+    preferredScrollConfig.addPropertyChangeListener(evt -> SCROLL_ZONE = preferredScrollConfig.getIntValue(60));
 
     g.getPrefs().addOption(
       Resources.getString("Prefs.compatibility_tab"), //$NON-NLS-1$
@@ -1831,7 +1854,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
   /** The width of the hot zone for triggering autoscrolling. */
-  public static final int SCROLL_ZONE = 30;
+  public static int SCROLL_ZONE = 60;
+  public static final String PREFERRED_SCROLL_ZONE = "PreferredScrollZone"; //$NON-NLS-1$
 
   /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
   protected int sx;
@@ -1913,10 +1937,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
         if ((sx == -1 && vrect.x == 0) ||
-            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
 
         if ((sy == -1 && vrect.y == 0) ||
-            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
 
         // Stop if the scroll vector is zero
         if (sx == 0 && sy == 0) scroller.stop();
@@ -2553,7 +2577,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+            .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2577,30 +2601,43 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return null;
   }
 
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
   public void appendToTitle(String s) {
-    if (mainWindowDock == null) {
-      Component c = theMap.getTopLevelAncestor();
-      if (s == null) {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(getDefaultWindowTitle());
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(getDefaultWindowTitle());
-        }
-      }
-      else {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(((JFrame) c).getTitle() + s);
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(((JDialog) c).getTitle() + s);
-        }
-      }
+    // replaced by updateTitleBar()
+  }
+
+
+  /**
+   * Updates the title bar of the current window
+   */
+  public void updateTitleBar() {
+    if (mainWindowDock != null) {
+      return;
+    }
+    Component c = theMap.getTopLevelAncestor();
+    if (c instanceof JFrame) {
+      ((JFrame) c).setTitle(getDefaultWindowTitle());
+    }
+    if (c instanceof JDialog) {
+      ((JDialog) c).setTitle(getDefaultWindowTitle());
     }
   }
 
+  /**
+   * @return The correct current default window title
+   */
   protected String getDefaultWindowTitle() {
-    return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    if (getLocalizedMapName().length() > 0) {
+      return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName()); //$NON-NLS-1$
+    }
+    else {
+      return GameModule.getGameModule().getWindowTitleString("Map.window", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    }
   }
 
   /**
@@ -2641,7 +2678,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Place a piece at the destination point. If necessary, remove the piece from its parent Stack or Map
    * @param piece GamePiece to place
-   * @Point pt location to place the piece
+   * @param pt location to place the piece
    *
    * @return a {@link Command} that reproduces this action
    */
@@ -2694,7 +2731,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // If no piece at destination and this is a stacking piece, create
       // a new Stack containing the piece
       if (!(p instanceof Stack) &&
-          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+        !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
         final Stack parent = getStackMetrics().createStack(p);
         if (parent != null) {
           c = c.append(placeAt(parent, pt));
@@ -2795,7 +2832,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      boolean bTriggerRecenter = false;
+      boolean bTriggerRecenter;
       final Point p = mapToComponent(r.getLocation());
       final Rectangle rCurrent = theMap.getVisibleRect();
       Rectangle rNorecenter = new Rectangle(0, 0);
@@ -2812,8 +2849,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // if r is within a band of  n%width/height of border, trigger recenter
       rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);
       rNorecenter.height = (int) round(rCurrent.height * noRecenterPct);
-      rNorecenter.x = rCurrent.x + (int) round(rCurrent.width - rNorecenter.width) / 2;
-      rNorecenter.y = rCurrent.y + (int) round(rCurrent.height - rNorecenter.height) / 2;
+      rNorecenter.x = rCurrent.x + round(rCurrent.width - rNorecenter.width) / 2;
+      rNorecenter.y = rCurrent.y + round(rCurrent.height - rNorecenter.height) / 2;
 
       bTriggerRecenter = p.x < rNorecenter.x || p.x > (rNorecenter.x + rNorecenter.width) ||
         p.y < rNorecenter.y || p.y > (rNorecenter.y + rNorecenter.height);
@@ -2998,7 +3035,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MESSAGE = "message"; //$NON-NLS-1$
 
   /**
-   * Autoconfigurer for map's icon used on its launchbutton
+   * Autoconfigurer for map's icon used on its launch button
    */
   public static class IconConfig implements ConfigurerFactory {
     @Override
@@ -3366,9 +3403,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     /**
      * Constructor for a Merger. This is passed the map, location, and piece we are going to be merging into something.
-     * @param map
-     * @param pt
-     * @param p
+     * @param map map
+     * @param pt point
+     * @param p piece
      */
     public Merger(Map map, Point pt, GamePiece p) {
       this.map = map;
@@ -3402,7 +3439,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+        && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
         return map.getStackMetrics().merge(s, p);
       }
       else {
@@ -3411,15 +3448,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
 
     /**
-     * @returns a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
+     * @return a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
      * stack are met. Returns null if the necessary conditions aren't met.
      * @param piece piece to consider forming a new stack with.
      */
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-          && map.getPieceCollection().canMerge(piece, p)) {
+        && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
+        && map.getPieceCollection().canMerge(piece, p)) {
         return map.getStackMetrics().merge(piece, p);
       }
       else {

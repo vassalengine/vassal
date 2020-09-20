@@ -17,6 +17,6 @@ Sub-menus may contain other sub-menus to any nesting level.
 
 _EXAMPLE:_  If a game piece has three separate layer traits with corresponding activate commands _Entrench_, _Fortify_, and _Blockade_, then those menu items can be gathered under a single sub-menu named _Defense_ by creating a Sub-Menu trait with menu name "Defense" and sub-commands "Entrench", "Fortify" and "Blockade".
 
-image:images/SubMenu.png
+image:images/SubMenu.png[]
 
 *SEE ALSO:*  <<MenuSeparator.adoc#top,Menu Separator>>

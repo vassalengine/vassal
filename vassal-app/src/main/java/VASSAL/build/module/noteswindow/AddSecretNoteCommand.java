@@ -46,6 +46,7 @@ public class AddSecretNoteCommand extends Command {
     return null;
   }
 
+  @FunctionalInterface
   public interface Interface {
     void addSecretNote(SecretNote note);
   }

@@ -41,9 +41,9 @@ Two pixels wide, colour automatically determined from background color.#
 
 *Reduce Images to 256 Colors:* This option results in smaller module files and will not degrade image quality unless the counters use high-resolution photographic images
 
-|image:images/imagelayout.png
+|image:images/imagelayout.png[]
 
-image:images/GamePieceImageDefinitionsWhere.png
+image:images/GamePieceImageDefinitionsWhere.png[]
 |===
 
 ==== Visualizer
@@ -52,7 +52,7 @@ image:images/GamePieceImageDefinitionsWhere.png
 |===
 |The next section contains a visualizer, showing you in actual size how your finished image will look.
 No colors or text have been defined yet, so sample text values and images placeholders are displayed.
-|image:images/imagelayoutvisualizer.png
+|image:images/imagelayoutvisualizer.png[]
 |===
 
 ==== Item List
@@ -63,7 +63,7 @@ No colors or text have been defined yet, so sample text values and images placeh
 Layout items are drawn onto the image in the order specified.
 Click on an item in the panel to display and edit its attributes in the lower display panel.
 a|
-==== image:images/imagelayoutitems.png
+==== image:images/imagelayoutitems.png[]
 
 |===
 
@@ -84,7 +84,7 @@ draw earlier, and thus "towards the back").#
 * [.li]#Down - Move the selected item down the list (i.e.
 draw later and thus "towards the front").#
 
-|image:images/imagelayoutbuttons.png
+|image:images/imagelayoutbuttons.png[]
 |===
 
 ==== Symbol Item
@@ -139,7 +139,7 @@ right here) or in the individual Game Piece Images to be created from this layou
 
 [.li]##
 
-|image:images/imagelayouttext1.png +
+|image:images/imagelayouttext1.png[] +
 |===
 
 ==== Text Box Items
@@ -166,7 +166,7 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 
 [.li]##
 
-|image:images/imagelayouttextbox.png +
+|image:images/imagelayouttextbox.png[] +
 |===
 
 ==== Image Item
@@ -186,8 +186,7 @@ Use the File Open Dialog box to locate a copy of the image you wish to use on yo
 When you save the module, VASSAL will attempt to copy this image into the _images_ folder within the module zip file.
 You can also manually copy images into your images folder.
 
-|image:images/imageitem.png
-|===
+|image:images/imageitem.png[]|===
 
 ==== Shape Item
 
@@ -209,7 +208,7 @@ Items *MUST* be uniquely named within an Image Layout.
 
 *Bevel:*  For Rounded Rectangle shapes, larger bevel values mean rounder corners.
 
-|image:images/ShapeItem.png +
+|image:images/ShapeItem.png[]+
 |===
 
 '''''

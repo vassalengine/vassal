@@ -164,7 +164,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     pasteCmd = Resources.getString("Editor.paste"); //$NON-NLS-1$
     copyCmd = Resources.getString("Editor.copy"); //$NON-NLS-1$
     cutCmd = Resources.getString("Editor.cut"); //$NON-NLS-1$
-    propertiesCmd = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
+    propertiesCmd = Resources.getString("Editor.properties"); //$NON-NLS-1$
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
     int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
@@ -1079,7 +1079,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     mm.addAction("Editor.paste", pasteAction);
     mm.addAction("Editor.move", moveAction);
     mm.addAction("Editor.search", searchAction);
-    mm.addAction("Editor.ModuleEditor.properties", propertiesAction);
+    mm.addAction("Editor.properties", propertiesAction);
     mm.addAction("Editor.ModuleEditor.translate", translateAction);
 
     updateEditMenu();

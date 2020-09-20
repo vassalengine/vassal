@@ -50,6 +50,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -127,7 +128,7 @@ public class GameState implements CommandEncoder {
         loadGame();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
@@ -139,7 +140,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
@@ -151,7 +152,7 @@ public class GameState implements CommandEncoder {
         saveGameAs();
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     saveGameAs.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game_as.shortcut").charAt(0));
 
@@ -160,11 +161,12 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
         setup(true);
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
@@ -174,10 +176,11 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
       }
     };
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
@@ -275,6 +278,7 @@ public class GameState implements CommandEncoder {
    * <em>NOTE: This method is not for use in custom code.</em>
    */
   public void setup(boolean gameStarting, boolean gameUpdating) {
+    GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
     this.gameUpdating = gameUpdating;
     setup(gameStarting);
   }
@@ -341,7 +345,6 @@ public class GameState implements CommandEncoder {
     else {
       loadGame.putValue(Action.NAME,
         Resources.getString("GameState.load_game"));
-      g.appendToTitle(null);
     }
 
     cachedSaveCommand = gameStarting ? getRestoreCommand() : null;
@@ -371,7 +374,7 @@ public class GameState implements CommandEncoder {
   }
 
   private void adjustSplitter() {
-    // If there is a docked map, set the splitter to a reasaonable location
+    // If there is a docked map, set the splitter to a reasonable location
     final GameModule g = GameModule.getGameModule();
     for (VASSAL.build.module.Map m : g.getComponentsOf(VASSAL.build.module.Map.class)) {
       if (m.shouldDockIntoMainWindow()) {
@@ -469,6 +472,7 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
+        g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
         loadGameInBackground(f);
       }
 
@@ -523,8 +527,6 @@ public class GameState implements CommandEncoder {
 
   /** Saves the game to an existing file, or prompts for a new one. */
   public void saveGame() {
-    //final GameModule g = GameModule.getGameModule();
-
     if (lastSaveFile != null) {
       if (!checkForOldSaveFile(lastSaveFile)) {
         return;
@@ -532,13 +534,10 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
+        GameModule.getGameModule().setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
     else {
@@ -562,13 +561,10 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
+        g.setGameFile(saveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
-/*
-        Logger.log(err);
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
-*/
       }
     }
   }
@@ -640,8 +636,8 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
-    GameModule.getGameModule().warn(
-        Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
+    GameModule g = GameModule.getGameModule();
+    g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
       @Override
@@ -653,9 +649,10 @@ public class GameState implements CommandEncoder {
     if (c != null) {
       c.execute();
     }
+    g.setGameFile(f.getName(), ((BasicLogger)g.getLogger()).isReplaying() ? GameModule.GameFileMode.REPLAYING_GAME : GameModule.GameFileMode.LOADED_GAME);
     String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
     if (loadComments != null && loadComments.length() > 0) {
-      msg += ": " + loadComments;
+      msg = "!" + msg + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
   }
@@ -761,9 +758,13 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
+    
+    SaveMetaData metaData;
+    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
     // FIXME: It is extremely inefficient to produce the save string. It would
     // be faster to write directly to the output stream instead.
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write    
+    
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
@@ -771,13 +772,22 @@ public class GameState implements CommandEncoder {
            final OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
-      (new SaveMetaData()).save(archive);
+
+      metaData.save(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
-    GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
+    String msg;
+    String saveComments = metaData.getLocalizedDescription();
+    if (!StringUtils.isEmpty(saveComments)) {
+      msg = "!" + Resources.getString("GameState.game_saved") + ": <b>" + saveComments + "</b>"; //$NON-NLS-1$
+    }
+    else {
+      msg = Resources.getString("GameState.game_saved"); //$NON-NLS-1$
+    }
+    GameModule.getGameModule().warn(msg);
   }
 
   public void loadGameInBackground(final File f) {
@@ -815,13 +825,17 @@ public class GameState implements CommandEncoder {
             loadCommand = get();
 
             if (loadCommand != null) {
-              msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
               if (loadComments != null && loadComments.length() > 0) {
-                msg += ": " + loadComments;
+                msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
               }
+              else {
+                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
+              }
+              GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
+              GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
             }
           }
           catch (InterruptedException e) {
@@ -913,7 +927,7 @@ public class GameState implements CommandEncoder {
    * Read a saved game and translate it into a Command.  Executing the
    * command will load the saved game.
    *
-   * @param saveFile Sqve file name
+   * @param saveFile Save file name
    * @return Command
    * @throws IOException I/O Exception
    */

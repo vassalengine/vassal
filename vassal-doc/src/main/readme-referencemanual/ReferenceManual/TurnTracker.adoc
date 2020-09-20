@@ -17,8 +17,7 @@ You can right-click on the _[Turn Counter]_ component entry to add sub-component
 
 [cols=",",]
 |===
-|image:images/TurnTrackerTurnWindow.png |image:images/TurnTrackerExample.png
-|===
+|image:images/TurnTrackerTurnWindow.png[]|image:images/TurnTrackerExample.png[]|===
 
 The Turn Counter is defined as a series of nested levels, each represented by a sub-component of the Turn Counter.
 "Advancing the turn" moves the _deepest_ level forward.
@@ -63,8 +62,7 @@ _Example:_ If the Turn Counter contains a Month level that contains a Day level,
 
 *Turn Label Display Length:*  Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.
 
-image:images/TurnTracker.png
-
+image:images/TurnTracker.png[]
 '''''
 
 === Sub-Components
@@ -98,8 +96,7 @@ The Global Property will be updated whenever this level's value changes.
 the item at which the parent level will be advanced.
 _Example:_   If a List represents sides in a game, but the order in which sides move is not always fixed.
 
-|image:images/TurnTrackerList.png
-|===
+|image:images/TurnTrackerList.png[]|===
 
 [#Counter]
 ==== Counter
@@ -123,8 +120,7 @@ The Global Property will be updated whenever this level's value changes.
 *Loop:*  If selected, the level will return to its starting value after reaching the maximum value.
 
 *Maximum value:*  The maximum value, after which the level will loop.
-|image:images/TurnTrackerCounter.png
-|===
+|image:images/TurnTrackerCounter.png[]|===
 
 [#Hotkey]
 ==== Global Hotkey
@@ -144,5 +140,4 @@ The module will respond exactly as if one of the players had pressed this key or
 If the expression is true after any level of the Turn Counter advances, the hotkey will fire.
 
 *Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that will be echoed to the chat log when the hotkey fires.
-|image:images/TurnTrackerGlobalHotkey.png
-|===
+|image:images/TurnTrackerGlobalHotkey.png[]|===

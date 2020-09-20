@@ -7,7 +7,7 @@
 
 === Property Match Expressions
 
-image:images/PropertyMatchExpression.png
+image:images/PropertyMatchExpression.png[]
 
 A Property Match Expression is a special type of <<Expression.adoc#top,Expression>> that is used to select a set of counters to be operated on (<<Map.adoc#GlobalKeyCommand,Module>>, <<Map.adoc#GlobalKeyCommand,Map>>, <<DeckGlobalKeyCommand.adoc#top,Deck>> or <<GlobalKeyCommand.adoc#top,Counter>> Global Key Commands) or to test if some condition is true before taking action (<<TriggerAction.adoc#top,Trigger Action>>, <<RestrictCommands.adoc#top,Restrict Commands>>).
 
@@ -80,7 +80,7 @@ a|
 
 [#old]
 *Old-style Property Match Expressions*
-image:images/PropertyMatchExpression2.png +
+image:images/PropertyMatchExpression2.png[] +
 Old-style Property Match Expressions are not surrounded by the curly braces and have a much-restricted syntax compared to their BeanShell equivalent.
 *They are supported to maintain compatibility with older VASSAL modules -- designers of new modules should prefer the more powerful BeanShell expressions.*#
 

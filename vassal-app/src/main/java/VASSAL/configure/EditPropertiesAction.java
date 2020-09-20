@@ -43,7 +43,7 @@ public class EditPropertiesAction extends AbstractAction {
   protected ConfigureTree tree;
 
   public EditPropertiesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner) {
-    super(Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
+    super(Resources.getString("Editor.properties")); //$NON-NLS-1$
     this.helpWindow = helpWindow;
     this.target = target;
     this.dialogOwner = dialogOwner;

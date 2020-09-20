@@ -29,7 +29,7 @@ First, add the Java .class file to the module file using a Zip utility (remember
 the class should go in a subdirectory within the Zip that is named for its package). Then hit the "Import" button and enter the fully-qualified name of the class (if the package name is "PathsOfGlory" and the class name is "CustomPieceMover" then enter "PathsOfGlory.CustomPieceMover"). The Trait corresponding to your class will appear in the list of available Traits and you may add it normally.
 See the Coding Tutorial for more details.
 
-image:images/GamePiece.png
+image:images/GamePiece.png[]
 
 '''''
 
@@ -53,7 +53,7 @@ If more than one of these exceptions exists in a single piece, then the first to
 The chart at right illustrates the draw order for a sample set of piece traits.
 The two exception traits are drawn first (in bottom up order), followed by everything else (in top down order). Changing the order of the traits in this piece would change the order in which they were drawn.
 For example if the _Text Label_ trait were moved up to the position directly underneath the Basic Piece, then it would be drawn right after the Basic Piece.
-|image:images/GamePieceDrawOrder.png +
+|image:images/GamePieceDrawOrder.png[] +
 |===
 
 ==== Traits That Control Other Traits
@@ -72,7 +72,7 @@ If you _don't_ want your Text Labels to rotate, then they must be _below_ the _C
 But if there's some particular graphic Layer or Text Label that you want to be drawn even when the card is flipped over, then you'd put those traits _below_ the _Mask_ trait.
 
 *Example 3:* _Restrict Commands_ traits should almost always go at the very bottom of the list of traits, so that they will be able to hide/disable the traits that they specify.
-|image:images/GamePieceTraitOrder.png +
+|image:images/GamePieceTraitOrder.png[] +
 |===
 
 [#TraitOrderKeyCommands]
@@ -91,7 +91,7 @@ The order Traits _within_ the piece are visited is as follows:
 This happens starting at the bottom of the list and proceeding up toward the <<BasicPiece.adoc#top,Basic Piece>> trait.
 . Then, once every trait that isn't a Trigger Action or Report Action trait has been visited, we then visit those traits, this time starting at the _top_ of the list just beneath the Basic Piece trait and proceeding towards the bottom.
 
-|image:images/GamePieceOrder.png +
+|image:images/GamePieceOrder.png[] +
 |===
 
 === Advanced Trait Ordering
@@ -231,14 +231,14 @@ Layer traits.
 The Basic Piece exposes a list of <<Properties.adoc#top,Properties>> concerning name, location, and other common piece details.
 See the full <<BasicPiece.adoc#top,Basic Piece>> article for details.
 
-|image:images/BasicPiece.png
+|image:images/BasicPiece.png[]
 |===
 
 [#Delete]
 ==== Delete
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Delete.png a|
+|image:images/Delete.png[] a|
 
 The ability to be deleted by players during a game.
 When this trait's Key Command or menu item is activated, the piece is deleted from the game.
@@ -268,7 +268,7 @@ If left blank, no context menu item will appear, but the piece can still be clon
 
 *Keyboard Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will cause the piece to be duplicated.
 
-|image:images/Clone.png
+|image:images/Clone.png[]
 |===
 
 ==== <<Layer.adoc#top,Layer>>
@@ -280,7 +280,7 @@ A piece can contain as many Layers as you wish.
 
 [cols=",",]
 |===
-|image:images/Layer.png | +
+|image:images/Layer.png[] | +
 |===
 
 [width="100%",cols="50%,50%",]
@@ -293,12 +293,12 @@ This allows you to define a set of Traits for a whole class of Pieces all in one
 
 See <<UsePrototype.adoc#top,Prototype (Trait)>> and <<Prototypes.adoc#top,Prototype (Definition)>> for further details.
 
-|image:images/UsePrototype.png
+|image:images/UsePrototype.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Label.png a|
+|image:images/Label.png[] a|
 ==== <<Label.adoc#top,Text Label>>
 
 A text message drawn somewhere on or near the piece.
@@ -317,12 +317,12 @@ Allows the piece to automatically report messages, state changes, and other game
 
 <<ReportChanges.adoc#top,See full article for details.>>
 
-|image:images/ReportChanges.png
+|image:images/ReportChanges.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/TriggerAction.png a|
+|image:images/TriggerAction.png[] a|
 ==== <<TriggerAction.adoc#top,Trigger Action>>
 
 Allows pieces to trigger Key Commands and Named Key Commands.
@@ -342,12 +342,12 @@ Allows pieces to activate a function from the Toolbar, via the Hotkey associated
 
 <<GlobalHotkey.adoc#top,See full article for details.>>
 
-|image:images/GlobalHotkey.png
+|image:images/GlobalHotkey.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/ActionButton.png a|
+|image:images/ActionButton.png[] a|
 ==== <<ActionButton.adoc#top,Action Button +
 >>
 
@@ -366,12 +366,12 @@ Gives a piece, or parts of it, the ability to rotate through a specified number 
 
 <<Rotate.adoc#top,See full article for details.>>
 
-|image:images/Rotate.png
+|image:images/Rotate.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Pivot.png a|
+|image:images/Pivot.png[] a|
 ==== <<Pivot.adoc#top,Can Pivot>>
 
 Gives a piece, or parts of it, the ability to pivot, i.e.
@@ -393,12 +393,12 @@ The player sides who are allowed to hide the piece can be specified.
 
 <<Hideable.adoc#top,See full article for details.>>
 
-|image:images/Hideable.png
+|image:images/Hideable.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Mask.png a|
+|image:images/Mask.png[] a|
 ==== <<Mask.adoc#top,Mask>>
 
 Allows a piece to be flipped to a generic "reverse side" so that only limited information is shown to opponents and other non-owning players.
@@ -419,12 +419,12 @@ Adds a command that moves a piece directly to another location.
 
 <<SendToLocation.adoc#top,See full article for details.>>
 
-|image:images/SendToLocation.png
+|image:images/SendToLocation.png[]
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/CounterGlobalKeyCommand.png a|
+|image:images/CounterGlobalKeyCommand.png[] a|
 ==== <<GlobalKeyCommand.adoc#top,Global Key Command>>
 
 Adds an action that applies a Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
@@ -444,12 +444,11 @@ Adds a command to move a piece a fixed distance in a direction.
 
 <<Translate.adoc#top,See full article for details.>>
 
-|image:images/Translate.png
-|===
+|image:images/Translate.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/ReturnToDeck.png a|
+|image:images/ReturnToDeck.png[]a|
 ==== <<ReturnToDeck.adoc#top,Return to Deck>>
 
 Adds a command to send a piece to a <<Deck.adoc#top,Deck>>.
@@ -470,12 +469,11 @@ Prevents the piece from combining with other pieces to form a stack, and can als
 
 <<NonStacking.adoc#top,See full article for details.>>
 
-|image:images/NonStacking.png
-|===
+|image:images/NonStacking.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/PropertySheet.png a|
+|image:images/PropertySheet.png[]a|
 ==== <<PropertySheet.adoc#top,Property Sheet>>
 
 Provides a popup window from which players may set and view auxiliary information about a piece.
@@ -483,8 +481,7 @@ Includes sophisticated controls for specifying single- and multi-line text notes
 
 <<PropertySheet.adoc#top,See full article for details.>>
 
-image:images/property_sheet_map.png
-
+image:images/property_sheet_map.png[]
 |===
 
 [width="100%",cols="50%,50%",]
@@ -497,12 +494,11 @@ Unlike a Property Sheet, it contains only plain-text fields, but can contain arb
 
 <<Spreadsheet.adoc#top,See full article for details.>>
 
-|image:images/Spreadsheet.png
-|===
+|image:images/Spreadsheet.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Marker.png a|
+|image:images/Marker.png[]a|
 ==== <<Marker.adoc#top,Place Marker>>
 
 Adds a command to place another piece (of any type) at the same location as this piece.
@@ -527,12 +523,11 @@ Such a situation can be worked around by using a Trigger Action trait to first s
 
 <<Replace.adoc#top,See full article for details.>>
 
-|image:images/Replace.png
-|===
+|image:images/Replace.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/NonRectangular.png a|
+|image:images/NonRectangular.png[]a|
 ==== <<NonRectangular.adoc#top,Non-Rectangular>>
 
 Allows pieces with unconventional shapes to use their actual image boundaries for selection and dragging.
@@ -552,12 +547,11 @@ Adds a command that plays a specified sound when invoked.
 
 <<PlaySound.adoc#top,See full article for details.>>
 
-|image:images/PlaySound.png
-|===
+|image:images/PlaySound.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/MarkMoved.png a|
+|image:images/MarkMoved.png[]a|
 ==== <<MarkMoved.adoc#top,Mark When Moved>>
 
 Allows the piece to be automatically marked with a visible image when moved in a Map Window.
@@ -576,12 +570,11 @@ Pieces with this trait will leave behind a graphical trail showing the positions
 
 <<MovementTrail.adoc#top,See full article for details.>>
 
-|image:images/MovementTrail.png
-|===
+|image:images/MovementTrail.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/AreaOfEffect.png a|
+|image:images/AreaOfEffect.png[]a|
 ==== <<AreaOfEffect.adoc#top,Area Of Effect>>
 
 The Area of Effect trait allows you to graphically highlight an area surrounding a gamepiece.
@@ -601,12 +594,11 @@ Creates a sub-menu in the right-click context menu and groups some of the piece'
 
 <<SubMenu.adoc#top,See full article for details.>>
 
-|image:images/SubMenu.png
-|===
+|image:images/SubMenu.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/MenuSeparator.png a|
+|image:images/MenuSeparator.png[]a|
 ==== <<MenuSeparator.adoc#top,Menu Separator>>
 
 Creates a menu separator (horizontal bar) in the piece's right-click context menu.
@@ -624,12 +616,11 @@ Hides or removes key/menu commands from the piece when certain conditions apply.
 
 <<RestrictCommands.adoc#top,See full article for details.>>
 
-|image:images/RestrictCommands.png
-|===
+|image:images/RestrictCommands.png[]|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/RestrictedAccess.png a|
+|image:images/RestrictedAccess.png[]a|
 ==== <<RestrictedAccess.adoc#top,Restricted Access>>
 
 Limits control of a Piece by opponents and other non-owning players.
@@ -649,8 +640,7 @@ Analogous to creating a "constant" in programming.
 
 <<PropertyMarker.adoc#top,See full article for details.>>
 
-|image:images/PropertyMarker.png
-|===
+|image:images/PropertyMarker.png[]|===
 
 ==== <<DynamicProperty.adoc#top,Dynamic Property>>
 
@@ -659,16 +649,14 @@ Allows any number of commands to change and manipulate the value to be defined.
 
 <<DynamicProperty.adoc#top,See full article for details.>>
 
-image:images/DynamicProperty.png
-
+image:images/DynamicProperty.png[]
 ==== <<CalculatedProperty.adoc#top,Calculated Property>>
 
 Adds a named property to the piece, whose value is automatically calculated according to a specified formula.
 
 <<CalculatedProperty.adoc#top,See full article for details.>>
 
-image:images/CalculatedProperty.png
-
+image:images/CalculatedProperty.png[]
 ==== <<SetGlobalProperty.adoc#top,Set Global Property>>
 
 Defines commands to change the value of a <<GlobalProperties.adoc#top,Global Property>>.

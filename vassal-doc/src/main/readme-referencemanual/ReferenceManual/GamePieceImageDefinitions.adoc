@@ -27,8 +27,8 @@ In each <<GamePieceImage.adoc#top,Game Piece Image>>'s properties, specify the a
 
 . *Use image in game pieces:*  Now you can use this image in any trait of any Game Piece (or Prototype) that you add anywhere in the game, whether to the <<PieceWindow.adoc#top,Game Piece Palette>> or an <<SetupStack.adoc#top,At-Start Stack>>. It will be listed in the dropdown menu for images, anywhere an image can be selected.
 
-|image:images/GamePieceImageDefinitions.png +
-image:images/GamePieceImageDefinitionsWhere.png
+|image:images/GamePieceImageDefinitions.png[] +
+image:images/GamePieceImageDefinitionsWhere.png[]
 |===
 
 '''''
@@ -51,7 +51,7 @@ The fourteen standard built in colors are: Clear, White, Black, Light Gray, Dark
 
 *Color:*  Standard Color picker to select the color to be associated with the name.
 
-|image:images/NamedColor.png +
+|image:images/NamedColor.png[] +
 |===
 
 [#FontStyles]
@@ -78,7 +78,7 @@ To ensure maximum compatibility and portability, it is recommended that you use 
 
 *Sample:*  Displays a sample of your selected font style.
 
-|image:images/FontStyle.png +
+|image:images/FontStyle.png[] +
 |===
 
 ==== <<GamePieceLayouts.adoc#top,Game Piece Layouts>>

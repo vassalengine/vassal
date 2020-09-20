@@ -892,6 +892,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Pieces that contribute to shading must implement this interface
    */
+  @FunctionalInterface
   public interface ShadedPiece {
     /**
      * Returns the Area to add to (or subtract from) the area drawn by the MapShader's.

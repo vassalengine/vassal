@@ -96,7 +96,8 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
- * This is a MouseListener that moves pieces onto a Map window
+ * This is a MouseListener that moves pieces onto or within a Map window. Handles dragging and dropping of
+ * both individual pieces, stacks, and groups of pieces/stacks. It is a subcomponent of Map.
  */
 public class PieceMover extends AbstractBuildable
                         implements MouseListener,
@@ -108,7 +109,7 @@ public class PieceMover extends AbstractBuildable
 
   public static final String HOTKEY = "hotkey";
 
-  protected Map map;
+  protected Map map;                           // Map we're the PieceMover for.
   protected Point dragBegin;
   protected GamePiece dragging;
   protected LaunchButton markUnmovedButton;
@@ -117,17 +118,15 @@ public class PieceMover extends AbstractBuildable
   public static final String ICON_NAME = "icon"; //$NON-NLS-1$
   protected String iconName;
 
-  // Selects drag target from mouse click on the Map
-  protected PieceFinder dragTargetSelector;
-
-  // Selects piece to merge with at the drop destination
-  protected PieceFinder dropTargetSelector;
-
-  // Processes drag target  after having been selected
-  protected PieceVisitorDispatcher selectionProcessor;
-
+  protected PieceFinder dragTargetSelector; // Selects drag target from mouse click on the Map
+  protected PieceFinder dropTargetSelector; // Selects piece to merge with at the drop destination
+  protected PieceVisitorDispatcher selectionProcessor; // Processes drag target after having been selected
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
+  /**
+   * Adds this component to its parent map. Add ourselves as a mouse listener, drag gesture listener, etc.
+   * @param b Map to add to
+   */
   @Override
   public void addTo(Buildable b) {
     dragTargetSelector = createDragTargetSelector();
@@ -157,6 +156,11 @@ public class PieceMover extends AbstractBuildable
    */
   protected PieceFinder createDropTargetSelector() {
     return new PieceFinder.Movable() {
+      /**
+       * When a deck exists on the map, and we need to find out if our piece was dragged to the deck
+       * @param d Potential target {@link Deck}
+       * @return true if our target location is inside the footprint of the Deck.
+       */
       @Override
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
@@ -169,6 +173,13 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
+      /**
+       * When an unstacked piece exists on the map, we see if this is a piece we could
+       * form a stack with -- if it is at our precise location (or the location we would
+       * be getting snapped to).
+       * @param piece Potential target piece on the map.
+       * @return The piece to stack with, if we should, otherwise null.
+       */
       @Override
       public Object visitDefault(GamePiece piece) {
         GamePiece selected = null;
@@ -185,6 +196,7 @@ public class PieceMover extends AbstractBuildable
           }
         }
 
+        // We don't drag a piece "to itself".
         if (selected != null &&
             DragBuffer.getBuffer().contains(selected) &&
             selected.getParent() != null &&
@@ -194,6 +206,12 @@ public class PieceMover extends AbstractBuildable
         return selected;
       }
 
+      /**
+       * When a stack already exists on the map, we see if this our piece could be added
+       * to it.
+       * @param s Stack to check if we're appropriately configured to merge with
+       * @return The piece to stack with, if we should, otherwise null.
+       */
       @Override
       public Object visitStack(Stack s) {
         GamePiece selected = null;
@@ -230,16 +248,28 @@ public class PieceMover extends AbstractBuildable
    */
   protected PieceVisitorDispatcher createSelectionProcessor() {
     return new DeckVisitorDispatcher(new DeckVisitor() {
+      /**
+       * We've picked a Deck - Clear the drag buffer and add Deck's top piece to the drag buffer.
+       * @param d Deck we clicked on
+       * @return null
+       */
       @Override
       public Object visitDeck(Deck d) {
         final DragBuffer dbuf = DragBuffer.getBuffer();
         dbuf.clear();
         for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
-          dbuf.add(it.nextPiece());
+          final GamePiece p = it.nextPiece();
+          p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW)); // Bug 13433 restore correct OBSCURED_BY
+          dbuf.add(p);
         }
         return null;
       }
 
+      /**
+       * We've picked a Stack. Clear the drag buffer and add the stack's pieces to it.
+       * @param s Stack we clicked on
+       * @return null
+       */
       @Override
       public Object visitStack(Stack s) {
         final DragBuffer dbuf = DragBuffer.getBuffer();
@@ -274,6 +304,11 @@ public class PieceMover extends AbstractBuildable
         return null;
       }
 
+      /**
+       * We've clicked a regular (non-stacked) piece. Clear drag buffer and the piece.
+       * @param selected piece clicked on
+       * @return null
+       */
       @Override
       public Object visitDefault(GamePiece selected) {
         final DragBuffer dbuf = DragBuffer.getBuffer();
@@ -320,6 +355,10 @@ public class PieceMover extends AbstractBuildable
     };
   }
 
+  /**
+   * Detects when a game is starting, for purposes of managing the mark-unmoved button.
+   * @param gameStarting if true, a game is starting.  If false, then a game is ending
+   */
   @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
@@ -327,16 +366,27 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
+  /**
+   * PieceMover has nothing to save/restore in a save file.
+   * @return null
+   */
   @Override
   public Command getRestoreCommand() {
     return null;
   }
 
+  /**
+   * @param name Name of icon file
+   * @return Image for button icon
+   */
   private Image loadIcon(String name) {
     if (name == null || name.length() == 0) return null;
     return Op.load(name).getImage();
   }
 
+  /**
+   * PieceMover manages the "Mark All Pieces Unmoved" button for the map.
+   */
   protected void initButton() {
     final String value = getMarkOption();
     if (GlobalOptions.PROMPT.equals(value)) {
@@ -388,6 +438,9 @@ public class PieceMover extends AbstractBuildable
     }
   }
 
+  /**
+   * @return Our setting w/ regard to marking pieces moved.
+   */
   private String getMarkOption() {
     String value = map.getAttributeValueString(Map.MARK_MOVED);
     if (value == null) {
@@ -1364,7 +1417,7 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * Implements a psudo-cursor that follows the mouse cursor when user
+   * Implements a pseudo-cursor that follows the mouse cursor when user
    * drags gamepieces. Supports map zoom by resizing cursor when it enters
    * a drop target of type Map.View.
    *

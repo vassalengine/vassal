@@ -11,7 +11,7 @@ The _Chat Log_ appears at the top of the main Module window.
 It serves both to allow players to "chat" with each other by typing text into the blank at the bottom, but can also serve as a useful _log_ of events that occur during the game, such as piece moves and dice rolls.
 A good chat log records the details of the game's history for the players, and becomes a resource for them to answer questions like "which unit took that hit last turn", or "how did the victory points marker get to 9?"
 
-VASSAL's chat log offers many opportunities for you to create a useful log stream for your players, including *bold*, _italics_, *colored text*, and even  image:images/ChatLogDice.png dice images inserted directly into the chat log.
+VASSAL's chat log offers many opportunities for you to create a useful log stream for your players, including *bold*, _italics_, *colored text*, and even  image:images/ChatLogDice.png[] dice images inserted directly into the chat log.
 A well-designed chat log can make "important events" stand out from routine events -- notice in the example at right how changes in Victory Points are being announced in *Bold Bright Text* while game events are shown in _Italicized green text with *1* or *2* highlights._ This makes them stand out from the standard black text of more routine events.
 This article will help you design your own chat log reporting so that you can get the most out of this feature.
 
@@ -43,8 +43,7 @@ _EXAMPLE:_ If a <<ReportChanges.adoc#top,Report Action>> trait's message said _H
 |"`" |back apostrophe |defaults to purple text
 |===
 
-image:images/ChatLog.png
-
+image:images/ChatLog.png[]
 Chat Log with HTML Enabled
 
 ==== HTML in Chat Log
@@ -54,6 +53,9 @@ Find the _Enable HTML support in Chat Log_ option (see illustration at right) an
 Any message with a "Quick Colors" first character, including "|" will also parse HTML regardless of the Global Options setting.
 
 With HTML support enabled, you can include many types of HTML tags in your <<ReportChanges.adoc#top,Report Action>> traits and other <<MessageFormat.adoc#top,Message Formats>>. This opens up even more possibilities than the Quick Colors shortcuts and allows you to create an unlimited number of new styles.
+
+*IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a user name, etc, will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise you may
+experience odd behaviors such as chat log messages failing to appear (or seeming to be delayed until the next chat message is printed).
 
 |===
 |*Tags* |*Results*

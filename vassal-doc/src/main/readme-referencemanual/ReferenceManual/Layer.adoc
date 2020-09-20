@@ -16,8 +16,8 @@ The Layer is drawn on top the traits that appear before it in the piece's list o
 [width="100%",cols="50%,50%",]
 |===
 
-|image:images/Layer.png
-|image:images/Layer2.png
+|image:images/Layer.png[]
+|image:images/Layer2.png[]
 
 |===
 

@@ -21,7 +21,7 @@ To give a piece more complex behaviors, you can add more Traits to it in the <<G
 For example you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
 
  + a|
-image:images/BasicPiece.png
+image:images/BasicPiece.png[]
 
 The image is optional, but you should always give each Basic Piece a name.
 

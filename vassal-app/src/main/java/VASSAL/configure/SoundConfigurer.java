@@ -155,6 +155,7 @@ public class SoundConfigurer extends Configurer {
     }
   }
 
+  @FunctionalInterface
   protected interface AudioClipFactory {
     public AudioClip getAudioClip(URL url) throws IOException;
   }

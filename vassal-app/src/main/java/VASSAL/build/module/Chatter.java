@@ -257,8 +257,35 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         }
       } 
       else if (s.startsWith("-")) {
-        style = "sys";
-        html_allowed = true;
+        if (s.startsWith("- |") || s.startsWith("-|")) {
+          style = "msg";
+          s = s.replaceFirst("\\|", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- !") || s.startsWith("-!")) {
+          style = "msg2";
+          s = s.replaceFirst("!", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ?") || s.startsWith("-?")) {
+          style = "msg3";
+          s = s.replaceFirst("\\?", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- ~") || s.startsWith("-~")) {
+          style = "msg4";
+          s = s.replaceFirst("~", "");
+          html_allowed = true;
+        }
+        else if (s.startsWith("- `") || s.startsWith("-`")) {
+          style = "msg5";
+          s = s.replaceFirst("`", "");
+          html_allowed = true;
+        }
+        else {
+          style = "sys";
+          html_allowed = true;
+        }
       } 
       else {
         style = getChatStyle(s);
@@ -340,7 +367,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
-    style.addRule(s + 
+    style.addRule(s +
                   " {color:" + 
                   String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + 
                   "; font-family:" + 
@@ -350,6 +377,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                   "; " + 
                   ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +
                   "}");
+
+    style.addRule(s + "color {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + "; }");
   }
 
   /**

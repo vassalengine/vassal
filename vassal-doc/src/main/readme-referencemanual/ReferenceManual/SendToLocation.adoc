@@ -89,16 +89,16 @@ A game may require that damaged units are returned to a Damaged pool for repairs
 Different boxes in the pool represent the amount of time before the unit is fully repaired.
 A game piece may be given a _Send to Location_ trait with menu text "Send to Damaged Pool" and key command Ctrl+P, with the target position corresponding to the first box of the pool, with an additional offset, determined by the level of a <<Layer.adoc#top,Layer>> representing the damage, to place it in the appropriate box in the pool.
 
-image:images/SendToLocation.png
+image:images/SendToLocation.png[]
 
-image:images/SendToLocationL.png
+image:images/SendToLocationL.png[]
 
-image:images/SendToLocationZ.png
+image:images/SendToLocationZ.png[]
 
-image:images/SendToLocationR.png
+image:images/SendToLocationR.png[]
 
-image:images/SendToLocationA.png
+image:images/SendToLocationA.png[]
 
-image:images/SendToLocationG.png
+image:images/SendToLocationG.png[]
 
-image:images/SendToLocationAdv.png
+image:images/SendToLocationAdv.png[]

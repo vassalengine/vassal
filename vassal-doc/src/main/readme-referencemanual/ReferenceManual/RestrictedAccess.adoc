@@ -26,4 +26,4 @@ If you are creating a <<GameModule.adoc#PredefinedSetup,Pre-defined Setup>>, alw
 
 Pieces in a Game Piece Palette can be manipulated by anybody so long as no game is in progress.
 
-image:images/RestrictedAccess.png
+image:images/RestrictedAccess.png[]

@@ -25,6 +25,7 @@ package VASSAL.tools.concurrent.listener;
  * @since 3.2.0
  * @see EventListenerSupport
  */
+@FunctionalInterface
 public interface EventListener<T> {
   /**
    * Receive notification of an event.

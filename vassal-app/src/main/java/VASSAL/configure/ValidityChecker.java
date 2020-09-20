@@ -23,6 +23,7 @@ import VASSAL.build.Buildable;
 /**
  * Performs validation checks on {@link VASSAL.build.Buildable} objects
  */
+@FunctionalInterface
 public interface ValidityChecker {
   void validate(Buildable target, ValidationReport report);
 }

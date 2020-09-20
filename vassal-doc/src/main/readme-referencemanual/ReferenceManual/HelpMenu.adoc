@@ -34,11 +34,11 @@ Be sure that your HTML content makes use of relative URLs.
 
 __Note:  __You can launch an external URL in the user's browser by specifying the URL as the Starting Page and leaving the Contents set to null.
 
-image:images/HtmlHelpFile.png
+image:images/HtmlHelpFile.png[]
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/HelpFilePDF.png
+|image:images/HelpFilePDF.png[]
 
 a|
 [#PDF]
@@ -69,12 +69,12 @@ Selecting the menu displays a new window with the contents of a plain text file.
 
 *Text File*:  A file containing the contents of the window to be displayed.
 
-|image:images/HelpFile.png +
+|image:images/HelpFile.png[] +
 |===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/AboutScreen.png
+|image:images/AboutScreen.png[]
 a|
 [#AboutScreen]
 ==== About Screen
@@ -107,5 +107,5 @@ Answering "yes" will load the tutorial logfile.
 
 *Welcome message:*  The message that displays in the chat log when the tutorial is loaded.
 
-|image:images/Tutorial.png
+|image:images/Tutorial.png[]
 |===
