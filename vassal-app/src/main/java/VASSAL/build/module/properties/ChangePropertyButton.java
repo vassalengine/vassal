@@ -18,6 +18,9 @@
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Icon;
 
