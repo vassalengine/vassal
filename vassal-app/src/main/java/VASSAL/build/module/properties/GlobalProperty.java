@@ -52,8 +52,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public static final String WRAP = "wrap"; //NON-NLS
   protected static final String COMMAND_PREFIX = "GlobalProperty\t"; //NON-NLS
   protected TemporaryToolBar tempToolbar = new TemporaryToolBar();
-  protected String description;
-  protected String initialValue;
+  protected String description = "";
+  protected String initialValue = "";
   protected boolean numeric;
   protected String minValue;
   protected String maxValue;
@@ -422,7 +422,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(getAttributeValueString(NAME));
+    return List.of(property.getName());
   }
 
   /**

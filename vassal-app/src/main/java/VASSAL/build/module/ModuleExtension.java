@@ -577,12 +577,4 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       return null;
     }
   }
-
-  /**
-   * @return a list of the Configurable's string/expression fields if any (for search)
-   */
-  @Override
-  public List<String> getExpressionList() {
-    return List.of( version, description );
-  }
 }

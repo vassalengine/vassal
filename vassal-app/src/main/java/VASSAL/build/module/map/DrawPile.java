@@ -23,6 +23,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPopupMenu;
@@ -839,15 +840,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = super.getExpressionList();
-    if (myDeck.isRestrictOption()) {
-      l.add(myDeck.getRestrictExpression().getExpression());
+    List<String> l = new ArrayList<>();
+    l.addAll(super.getExpressionList());
+    if (dummy != null) {
+      if (dummy.isRestrictOption()) {
+        l.add(dummy.getRestrictExpression().getExpression());
+      }
+      if (dummy.doesExpressionCounting()) {
+        l.addAll(Arrays.asList(dummy.getCountExpressions()));
+      }
+      l.add(dummy.getSelectDisplayProperty());
+      l.add(dummy.getSelectSortProperty());
     }
-    if (myDeck.doesExpressionCounting()) {
-      l.addAll(Arrays.asList(myDeck.getCountExpressions()));
-    }
-    l.add(myDeck.getSelectDisplayProperty());
-    l.add(myDeck.getSelectSortProperty());
     return l;
   }
 
@@ -857,7 +861,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(myDeck.getFaceDownMsgFormat(), myDeck.getReshuffleMsgFormat(), myDeck.getReverseMsgFormat(), myDeck.getShuffleMsgFormat());
+    if (dummy != null) {
+      return List.of(dummy.getFaceDownMsgFormat(), dummy.getReshuffleMsgFormat(), dummy.getReverseMsgFormat(), dummy.getShuffleMsgFormat());
+    }
+    else {
+      return Collections.emptyList();
+    }
   }
 
   /**
@@ -866,7 +875,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(myDeck.getSelectDisplayProperty(), myDeck.getSelectSortProperty());
+    if (dummy != null) {
+      return List.of(dummy.getSelectDisplayProperty(),
+                     dummy.getSelectSortProperty());
+    }
+    return Collections.emptyList();
   }
 
   /**
@@ -876,16 +889,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<String> getMenuTextList() {
     List<String> l = new ArrayList<>();
-    if (USE_MENU.equals(myDeck.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
-      l.add(myDeck.getShuffleCommand());
-    }
+    if (dummy != null) {
+      if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
+        l.add(dummy.getShuffleCommand());
+      }
 
-    if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
-      l.add(myDeck.getReshuffleCommand());
-    }
+      if (isReshufflable()) {                          // ... whereas this one matches to "send to deck".
+        l.add(dummy.getReshuffleCommand());
+      }
 
-    if (myDeck.isReversible()) {
-      l.add(myDeck.getReverseCommand());
+      if (dummy.isReversible()) {
+        l.add(dummy.getReverseCommand());
+      }
     }
 
     return l;
@@ -897,6 +912,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(myDeck.getNamedEmptyKey(), myDeck.getReshuffleKey(), myDeck.getReverseKey(), myDeck.getShuffleKey());
+    if (dummy != null) {
+      return Arrays.asList(dummy.getNamedEmptyKey(), dummy.getReshuffleKey(), dummy.getReverseKey(), dummy.getShuffleKey());
+    }
+    else {
+      return Collections.emptyList();
+    }
   }
 }

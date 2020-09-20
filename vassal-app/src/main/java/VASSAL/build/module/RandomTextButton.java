@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,44 +52,41 @@ public class RandomTextButton extends DiceButton {
 
   public RandomTextButton() {
     super();
-    ActionListener ranAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (promptAlways) {
-          promptAlways = false; // Show the usu
-          // Remove label, hotkey, and prompt controls
-          AutoConfigurer ac = (AutoConfigurer) getConfigurer();
-          ConfigurerWindow w = new ConfigurerWindow(ac, true);
-          ac.getConfigurer(NAME).getControls().setVisible(false);
-          ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
-          ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
-          ac.getConfigurer(ICON).getControls().setVisible(false);
-          ac.getConfigurer(HOTKEY).getControls().setVisible(false);
-          ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
-          ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(false);
-          ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(false);
-          ac.getConfigurer(FACES).getControls().setVisible(false);
-          ac.getConfigurer(NUMERIC).getControls().setVisible(false);
-          w.pack();
-          w.setVisible(true);
-          ac.getConfigurer(NAME).getControls().setVisible(true);
-          ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
-          ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
-          ac.getConfigurer(ICON).getControls().setVisible(true);
-          ac.getConfigurer(HOTKEY).getControls().setVisible(true);
-          ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
-          ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(true);
-          ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
-          ac.getConfigurer(FACES).getControls().setVisible(true);
-          ac.getConfigurer(NUMERIC).getControls().setVisible(true);
-          if (! w.isCancelled()) {
-            DR();
-          }
-          promptAlways = true;
-        }
-        else {
+    ActionListener ranAction = e -> {
+      if (promptAlways) {
+        promptAlways = false; // Show the usu
+        // Remove label, hotkey, and prompt controls
+        AutoConfigurer ac = (AutoConfigurer) getConfigurer();
+        ConfigurerWindow w = new ConfigurerWindow(ac, true);
+        ac.getConfigurer(NAME).getControls().setVisible(false);
+        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
+        ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
+        ac.getConfigurer(ICON).getControls().setVisible(false);
+        ac.getConfigurer(HOTKEY).getControls().setVisible(false);
+        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
+        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(false);
+        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(false);
+        ac.getConfigurer(FACES).getControls().setVisible(false);
+        ac.getConfigurer(NUMERIC).getControls().setVisible(false);
+        w.pack();
+        w.setVisible(true);
+        ac.getConfigurer(NAME).getControls().setVisible(true);
+        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
+        ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
+        ac.getConfigurer(ICON).getControls().setVisible(true);
+        ac.getConfigurer(HOTKEY).getControls().setVisible(true);
+        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
+        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(true);
+        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
+        ac.getConfigurer(FACES).getControls().setVisible(true);
+        ac.getConfigurer(NUMERIC).getControls().setVisible(true);
+        if (! w.isCancelled()) {
           DR();
         }
+        promptAlways = true;
+      }
+      else {
+        DR();
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
@@ -164,12 +160,7 @@ public class RandomTextButton extends DiceButton {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (List.of(REPORT_TOTAL, PLUS, ADD_TO_TOTAL).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return isNumeric;
-        }
-      };
+      return () -> isNumeric;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -261,8 +252,6 @@ public class RandomTextButton extends DiceButton {
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = ArrayList<>();
-    l.addAll(m_faces);
-    return l;
+    return new ArrayList<>(Arrays.asList(m_faces));
   }
 }

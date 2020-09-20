@@ -21,8 +21,6 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
@@ -110,12 +108,12 @@ public class DoActionButton extends AbstractConfigurable
 
   public DoActionButton() {
     ActionListener rollAction = e -> {
-      try {
-        doActions();
-      }
-      catch (RecursionLimitException ex) {
-        RecursionLimiter.infiniteLoop(ex);
-      }
+        try {
+          doActions();
+        }
+        catch (RecursionLimitException ex) {
+          RecursionLimiter.infiniteLoop(ex);
+        }
     };
 
     final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
@@ -737,6 +735,7 @@ public class DoActionButton extends AbstractConfigurable
       else if (LoopControl.LOOP_COUNTED.equals(loopType)) {
         l.add(loopCount.getFormat());
       }
+    }
     return l;
   }
 
@@ -769,8 +768,7 @@ public class DoActionButton extends AbstractConfigurable
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> keys = new ArrayList<>();
-    keys.addAll(hotkeys);
+    List<NamedKeyStroke> keys = new ArrayList<>(hotkeys);
     keys.add(preLoopKey);
     keys.add(postLoopKey);
     keys.add(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));

@@ -180,6 +180,6 @@ public class SpecialDie extends AbstractConfigurable {
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(format);
+    return List.of(format.getFormat());
   }
 }

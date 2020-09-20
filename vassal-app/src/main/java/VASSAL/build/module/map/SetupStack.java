@@ -58,6 +58,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1219,6 +1220,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(getAttributeValueString(OWNING_BOARD));
+    if (owningBoardName != null) {
+      return List.of(owningBoardName);
+    }
+    else {
+      return Collections.emptyList();
+    }
   }
 }

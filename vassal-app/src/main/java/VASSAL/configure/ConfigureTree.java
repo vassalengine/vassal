@@ -18,6 +18,7 @@
 package VASSAL.configure;
 
 import VASSAL.build.module.KeyNamer;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
@@ -1406,10 +1407,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
     public void setFrom(final SearchParameters searchParameters) {
-      searchString = searchParameters.getSearchString();
-      matchCase = searchParameters.isMatchCase();
-      matchNames = searchParameters.isMatchNames();
-      matchTypes = searchParameters.isMatchTypes();
+      searchString     = searchParameters.getSearchString();
+      matchCase        = searchParameters.isMatchCase();
+      matchNames       = searchParameters.isMatchNames();
+      matchTypes       = searchParameters.isMatchTypes();
       matchTraits      = searchParameters.isMatchTraits();
       matchExpressions = searchParameters.isMatchExpressions();
       matchProperties  = searchParameters.isMatchProperties();
@@ -1421,10 +1422,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     
     public void writePrefs() {
       if (prefs != null) {
-        prefs.setValue(SEARCH_STRING, searchString);
-        prefs.setValue(MATCH_CASE, matchCase);
+        prefs.setValue(SEARCH_STRING,     searchString);
+        prefs.setValue(MATCH_CASE,        matchCase);
         prefs.setValue(MATCH_NAMES,       matchNames);
-        prefs.setValue(MATCH_TYPES, matchTypes);
+        prefs.setValue(MATCH_TYPES,       matchTypes);
         prefs.setValue(MATCH_TRAITS,      matchTraits);
         prefs.setValue(MATCH_EXPRESSIONS, matchExpressions);
         prefs.setValue(MATCH_PROPERTIES,  matchProperties);
@@ -1494,109 +1495,109 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
         configureTree.setSearchDialog(d);
 
-      d.setTitle(configureTree.getSearchCmd());
+        d.setTitle(configureTree.getSearchCmd());
 
-      final JLabel searchLabel = new JLabel("String to find: ");
+        final JLabel searchLabel = new JLabel("String to find: ");
         search = new JTextField(searchParameters.getSearchString(), 32);
         configureTree.setSearchField(search);
-      search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
-      searchLabel.setLabelFor(search);
+        search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
+        searchLabel.setLabelFor(search);
 
-      final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
-      final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
-      final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
+        final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
+        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
+        final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
 
-      final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
-      final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
-      final JCheckBox properties = new JCheckBox(Resources.getString("Editor.search_properties"), searchParameters.isMatchProperties());
+        final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
+        final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
+        final JCheckBox properties = new JCheckBox(Resources.getString("Editor.search_properties"), searchParameters.isMatchProperties());
 
-      final JCheckBox keys = new JCheckBox(Resources.getString("Editor.search_keys"), searchParameters.isMatchKeys());
-      final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
-      final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
+        final JCheckBox keys = new JCheckBox(Resources.getString("Editor.search_keys"), searchParameters.isMatchKeys());
+        final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
+        final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
 
-      final JButton find = new JButton(Resources.getString("Editor.search_next"));
-      find.addActionListener(e12 -> {
-        final SearchParameters parametersSetInDialog =
-          new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+        final JButton find = new JButton(Resources.getString("Editor.search_next"));
+        find.addActionListener(e12 -> {
+          final SearchParameters parametersSetInDialog =
+            new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
-        boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
+          boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
-        if (anyChanges) {
-          searchParameters.setFrom(parametersSetInDialog);
-        }
-
-        // If literally no search parameters are selectable, turn at least one on (and print warning)
-        if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
-          searchParameters.setMatchNames(true);
-          names.setSelected(true);
-            ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
-        }
-
-        if (!searchParameters.getSearchString().isEmpty()) {
           if (anyChanges) {
-            // Unless we're just continuing to the next match in an existing search, compute & display hit count
-            int matches = getNumMatches(searchParameters.getSearchString());
+            searchParameters.setFrom(parametersSetInDialog);
+          }
+
+          // If literally no search parameters are selectable, turn at least one on (and print warning)
+          if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && !searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()) {
+            searchParameters.setMatchNames(true);
+            names.setSelected(true);
+            ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
+          }
+
+          if (!searchParameters.getSearchString().isEmpty()) {
+            if (anyChanges) {
+              // Unless we're just continuing to the next match in an existing search, compute & display hit count
+              int matches = getNumMatches(searchParameters.getSearchString());
               chat(matches + " " + Resources.getString("Editor.search_count") + searchParameters.getSearchString());
-          }
+            }
 
-          // Find first match
-          DefaultMutableTreeNode node = findNode(searchParameters.getSearchString());
+            // Find first match
+            DefaultMutableTreeNode node = findNode(searchParameters.getSearchString());
 
-          // Assuming *something* matched, scroll to it and show any "trait hits"
-          if (node != null) {
-            TreePath path = new TreePath(node.getPath());
-            configureTree.setSelectionPath(path);
-            configureTree.scrollPathToVisible(path);
-            showTraitHitList(node, searchParameters.getSearchString());
-          }
-          else {
+            // Assuming *something* matched, scroll to it and show any "trait hits"
+            if (node != null) {
+              TreePath path = new TreePath(node.getPath());
+              configureTree.setSelectionPath(path);
+              configureTree.scrollPathToVisible(path);
+              showHitList(node, searchParameters.getSearchString());
+            }
+            else {
               chat(Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
+            }
           }
-        }
-      });
+        });
 
-      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+        final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
-      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+        d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
 
-      // top row
-      d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
-      d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
+        // top row
+        d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
+        d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
 
-      // options row
-      d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
-      d.add(names, "gapx unrel"); //$NON-NLS-1$//
-      d.add(types, "wrap"); //$NON-NLS-1$//
+        // options row
+        d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
+        d.add(names, "gapx unrel"); //$NON-NLS-1$//
+        d.add(types, "wrap"); //$NON-NLS-1$//
 
-      // Options 2
-      d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
-      d.add(expressions, "gapx unrel"); //$NON-NLS-1$//
-      d.add(properties, "wrap"); //$NON-NLS-1$//
+        // Options 2
+        d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
+        d.add(expressions, "gapx unrel"); //$NON-NLS-1$//
+        d.add(properties, "wrap"); //$NON-NLS-1$//
 
-      // Options 3
-      d.add(keys, "align center, gapx unrel, span"); //$NON-NLS-1$//
-      d.add(menus, "gapx unrel"); //$NON-NLS-1$//
-      d.add(messages, "wrap"); //$NON-NLS-1$//
+        // Options 3
+        d.add(keys, "align center, gapx unrel, span"); //$NON-NLS-1$//
+        d.add(menus, "gapx unrel"); //$NON-NLS-1$//
+        d.add(messages, "wrap"); //$NON-NLS-1$//
 
-      // buttons row
-      d.add(find, "tag ok, split"); //$NON-NLS-1$//
-      d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+        // buttons row
+        d.add(find, "tag ok, split"); //$NON-NLS-1$//
+        d.add(cancel, "tag cancel"); //$NON-NLS-1$//
 
-      d.getRootPane().setDefaultButton(find); // Enter key activates search
+        d.getRootPane().setDefaultButton(find); // Enter key activates search
 
-      // Esc Key cancels
-      KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        // Esc Key cancels
+        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
       }
 
       search.requestFocus(); // Start w/ focus in search string field
 
       if (!d.isVisible()) {
-      d.pack();
-      d.setLocationRelativeTo(d.getParent());
-      d.setVisible(true);
-    }
+        d.pack();
+        d.setLocationRelativeTo(d.getParent());
+        d.setVisible(true);
+      }
     }
 
     /**
@@ -1651,6 +1652,74 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return (int) searchNodes.stream().filter(node -> checkNode(node, searchString)).count();
     }
 
+
+    /**
+     * @param st - Search target (usually Decorator or AbstractConfigurable)
+     * @param searchString - our search string
+     * @return true if the node matches our searchString based on search configuration ("match" checkboxes)
+     */
+    private boolean checkSearchTarget(SearchTarget st, String searchString) {
+      if (searchParameters.isMatchExpressions()) {
+        List<String> exps = st.getExpressionList();
+        if (exps != null) {
+          for (String s : exps) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      if (searchParameters.isMatchProperties()) {
+        List<String> props = st.getPropertyList();
+        if (props != null) {
+          for (String s : props) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      if (searchParameters.isMatchKeys()) {
+        List<NamedKeyStroke> keys = st.getNamedKeyStrokeList();
+        if (keys != null) {
+          for (NamedKeyStroke k : keys) {
+            if (k != null) {
+              String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
+              if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+
+      if (searchParameters.isMatchMenus()) {
+        List<String> menus = st.getMenuTextList();
+        if (menus != null) {
+          for (String s : menus) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      if (searchParameters.isMatchMessages()) {
+        List<String> msgs = st.getFormattedStringList();
+        if (msgs != null) {
+          for (String s : msgs) {
+            if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    }
+
     /**
      * @param node - any node of our module tree
      * @param searchString - our search string
@@ -1673,8 +1742,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
      
-      // From here down we are only searching inside piece & prototype definitions
+      // From here down we are only searching inside of SearchTarget objects (Piece/Prototypes, or searchable AbstractConfigurables)
       GamePiece p;
+      SearchTarget st;
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
@@ -1684,8 +1754,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         p = ((PrototypeDefinition)c).getPiece();
         protoskip = true;
       } 
+      else if (c instanceof SearchTarget) {
+        return checkSearchTarget((SearchTarget) c, searchString);
+      }
       else {
-        return false; // If no piece to look at, we're done
+        return false;
       }
       
       p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.
@@ -1700,64 +1773,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
 
-          if (p instanceof Decorator) {
-            Decorator d = (Decorator) p;
-            if (searchParameters.isMatchExpressions()) {
-              List<String> exps = d.getExpressionList();
-              if (exps != null) {
-                for (String s : exps) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    return true;
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchProperties()) {
-              List<String> props = d.getPropertyList();
-              if (props != null) {
-                for (String s : props) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    return true;
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchKeys()) {
-              List<NamedKeyStroke> keys = d.getNamedKeyStrokeList();
-              if (keys != null) {
-                for (NamedKeyStroke k : keys) {
-                  if (k != null) {
-                    String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
-                    if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchMenus()) {
-              List<String> menus = d.getMenuTextList();
-              if (menus != null) {
-                for (String s : menus) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    return true;
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchMessages()) {
-              List<String> msgs = d.getFormattedStringList();
-              if (msgs != null) {
-                for (String s : msgs) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    return true;
-                  }
-                }
-              }
+          if (p instanceof SearchTarget) {
+            if (checkSearchTarget((SearchTarget)p, searchString)) {
+              return true;
             }
           }
         }
@@ -1770,10 +1788,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
     /**
-     * Tracks how we are progressing through searching a piece and its traits, and whether we need to display headers
+     * Tracks how we are progressing through searching a target GamePiece or Configurable and its traits/attributes, and whether we need to display headers
      */
-    class TraitProgress {
-      public boolean pieceShown = false;
+    class TargetProgress {
+      public boolean targetShown = false;
       public boolean traitShown = false;
 
       /**
@@ -1788,23 +1806,103 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
        * @param matchString our match string
        */
       void checkShowPiece (String matchString) {
-        if (!pieceShown) {
-          pieceShown = true;
+        if (!targetShown) {
+          targetShown = true;
           chat(matchString);
         }
       }
 
       /**
-       * Checks and displays the piece header & trait headers, if needed
+       * Checks and displays the piece header & trait/component headers, if needed
        * @param matchString our match string
        * @param desc trait description
        */
-      void checkShowTrait (String matchString, String desc) {
+      void checkShowTrait (String matchString, String idString, String desc) {
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          chat("&nbsp;&nbsp;{Trait} " + ((desc != null) ? desc : ""));
+          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? desc : ""));
         }
+      }
+    }
+
+
+    private void showConfigurableHitList(DefaultMutableTreeNode node, String searchString) {
+      final Configurable c = (Configurable) node.getUserObject();
+      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+        " [" + getConfigureName(c.getClass()) + "]";
+
+      TargetProgress progress = new TargetProgress();
+      String matchString = "<b><u>Matches for " + name + ": </u></b>";
+
+      if (!(c instanceof SearchTarget)) {
+        return;
+      }
+
+      SearchTarget st = (SearchTarget) c;
+      String desc = getConfigureName(c.getClass());
+
+            if (searchParameters.isMatchExpressions()) {
+        List<String> exps = st.getExpressionList();
+              if (exps != null) {
+                for (String s : exps) {
+                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              progress.checkShowTrait(matchString, desc, "");
+              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Expression} " + s);
+                  }
+                }
+              }
+            }
+
+            if (searchParameters.isMatchProperties()) {
+        List<String> props = st.getPropertyList();
+              if (props != null) {
+                for (String s : props) {
+                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              progress.checkShowTrait(matchString, desc, "");
+              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Property} " + s);
+                  }
+                }
+              }
+            }
+
+            if (searchParameters.isMatchKeys()) {
+        List<NamedKeyStroke> keys = st.getNamedKeyStrokeList();
+              if (keys != null) {
+                for (NamedKeyStroke k : keys) {
+                  if (k != null) {
+                    String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
+                    if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+                progress.checkShowTrait(matchString, desc, "");
+                chat("&nbsp;&nbsp;&nbsp;&nbsp;{KeyCommand} " + s);
+                    }
+                  }
+                }
+              }
+            }
+
+            if (searchParameters.isMatchMenus()) {
+        List<String> menus = st.getMenuTextList();
+              if (menus != null) {
+                for (String s : menus) {
+                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              progress.checkShowTrait(matchString, desc, "");
+              chat("&nbsp;&nbsp;&nbsp;&nbsp;{UI Text} " + s);
+                  }
+                }
+              }
+            }
+
+            if (searchParameters.isMatchMessages()) {
+        List<String> msgs = st.getFormattedStringList();
+              if (msgs != null) {
+                for (String s : msgs) {
+                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+              progress.checkShowTrait(matchString, desc, "");
+              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Message/Field} " + s);
+      }
+        }
+      }
       }
     }
 
@@ -1815,13 +1913,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @param node - any node of our module tree
      * @param searchString - our search string
      */
-    private void showTraitHitList(DefaultMutableTreeNode node, String searchString) {
+    private void showHitList(DefaultMutableTreeNode node, String searchString) {
       final Configurable c = (Configurable) node.getUserObject();
-      TraitProgress progress = new TraitProgress();
-      
-      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
-          " [" + getConfigureName(c.getClass()) + "]";
-      
+
       GamePiece p;
       boolean protoskip;
       if (c instanceof GamePiece) {
@@ -1833,9 +1927,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         protoskip = true; // This is a prototype definition, so we will ignore the BasicPiece entry
       } 
       else {
-        return; // If no piece to look at, we're done
+        showConfigurableHitList(node, searchString); // If no GamePiece, try regular Configurable search.
+        return;
       }
 
+      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+        " [" + getConfigureName(c.getClass()) + "]";
+
+      TargetProgress progress = new TargetProgress();
       String matchString = "<b><u>Matches for " + name + ": </u></b>";
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
@@ -1850,7 +1949,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, searchString)) {
-              progress.checkShowTrait(matchString, desc);
+              progress.checkShowTrait(matchString, "Trait", desc);
             }
           }
 
@@ -1859,7 +1958,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (exps != null) {
               for (String s : exps) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, desc);
+                  progress.checkShowTrait(matchString, "Trait", desc);
                   chat("&nbsp;&nbsp;&nbsp;&nbsp;{Expression} " + s);
                 }
               }
@@ -1871,7 +1970,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (props != null) {
               for (String s : props) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, desc);
+                  progress.checkShowTrait(matchString, "Trait", desc);
                   chat("&nbsp;&nbsp;&nbsp;&nbsp;{Property} " + s);
                 }
               }
@@ -1885,8 +1984,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 if (k != null) {
                   String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
                   if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    progress.checkShowTrait(matchString, desc);
-                    chat("&nbsp;&nbsp;&nbsp;&nbsp;{NamedKeyStroke} " + s);
+                    progress.checkShowTrait(matchString, "Trait", desc);
+                    chat("&nbsp;&nbsp;&nbsp;&nbsp;{KeyCommand} " + s);
                   }
                 }
               }
@@ -1898,8 +1997,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (menus != null) {
               for (String s : menus) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Menu Text} " + s);
+                  progress.checkShowTrait(matchString, "Trait", desc);
+                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{UI Text} " + s);
                 }
               }
             }
@@ -1910,8 +2009,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (msgs != null) {
               for (String s : msgs) {
                 if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Message String} " + s);
+                  progress.checkShowTrait(matchString, "Trait", desc);
+                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Message/Field} " + s);
                 }
               }
             }

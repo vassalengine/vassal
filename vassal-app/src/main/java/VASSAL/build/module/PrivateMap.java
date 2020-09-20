@@ -33,6 +33,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -387,7 +388,8 @@ public class PrivateMap extends Map {
    */
   @Override
   public List<String> getPropertyList() {
-    List<String> l = ArrayList<>();
-    l.addAll(owners);
+    List<String> l = new ArrayList<>();
+    l.addAll(Arrays.asList(owners));
+    return l;
   }
 }

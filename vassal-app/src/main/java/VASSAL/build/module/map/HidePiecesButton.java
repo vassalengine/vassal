@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -315,5 +316,33 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
   }
 }

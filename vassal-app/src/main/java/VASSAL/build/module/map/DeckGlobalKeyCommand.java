@@ -18,6 +18,7 @@
 package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.KeyStroke;
@@ -213,7 +214,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = super.getExpressionList();
+    List<String> l = new ArrayList<>(super.getExpressionList());
     l.add (propertiesFilter.getExpression());
     return l;
   }
@@ -224,7 +225,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = super.getFormattedStringList();
+    List<String> l = new ArrayList<>(super.getFormattedStringList());
     l.add(reportFormat.getFormat());
     return l;
   }
@@ -235,7 +236,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = super.getNamedKeyStrokeList();
+    List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
     l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
     return l;
   }

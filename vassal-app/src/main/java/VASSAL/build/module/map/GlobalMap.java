@@ -18,6 +18,7 @@
 package VASSAL.build.module.map;
 
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -34,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -76,7 +78,8 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class GlobalMap implements AutoConfigurable,
                                   GameComponent,
-                                  Drawable {
+                                  Drawable,
+                                  SearchTarget {
   private static final long serialVersionUID = 2L;
 
   protected Map map;
@@ -603,5 +606,32 @@ public class GlobalMap implements AutoConfigurable,
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
   }
 }

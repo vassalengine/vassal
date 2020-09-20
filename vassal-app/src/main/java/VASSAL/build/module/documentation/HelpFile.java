@@ -226,7 +226,7 @@ public class HelpFile extends AbstractConfigurable {
         fileType = ARCHIVE_ENTRY;
       }
       fileName = (String) val;
-      if ("Intro.txt".equals(key)) { //$NON-NLS-1$
+      if ("Intro.txt".equals(fileName)) { //$NON-NLS-1$
         fileType = RESOURCE;
       }
     }
@@ -298,7 +298,7 @@ public class HelpFile extends AbstractConfigurable {
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(title, contents);
+    return List.of(title);
   }
 }
 
