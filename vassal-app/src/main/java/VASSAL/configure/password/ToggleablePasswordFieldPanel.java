@@ -16,21 +16,20 @@
  */
 package VASSAL.configure.password;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.event.DocumentListener;
-import java.awt.Dimension;
 
 import net.miginfocom.swing.MigLayout;
 
-import VASSAL.i18n.Resources;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
 
 public class ToggleablePasswordFieldPanel {
-
-  private static final char ECHO_CHAR = '*';
-  private static final int FIELD_HEIGHT = 40;
+  private static final char ECHO_CHAR = '•';
 
   private final JPanel panel;
   private final JPasswordField passwordField;
@@ -48,14 +47,18 @@ public class ToggleablePasswordFieldPanel {
     passwordField.setText(initialPassword);
     passwordLabel.setLabelFor(passwordField);
 
-    panel.add(passwordField, "pushx, growx");
+    panel.add(passwordField, "pushx, growx, sizegroupy foo");
 
-    final JButton toggleButton = new JButton(Resources.getString("GlobalOptions.toggle_password_visibility")); //$NON-NLS-1$
+    final Icon eye = IconFactory.getIcon("eye", IconFamily.XSMALL);
+    final Icon noEye = IconFactory.getIcon("eye-slash", IconFamily.XSMALL);
+
+    final JButton toggleButton = new JButton(noEye); //$NON-NLS-1$
     toggleButton.addActionListener(e -> {
       passwordVisible = !passwordVisible;
-      passwordField.setEchoChar(passwordVisible ? ECHO_CHAR : (char) 0);
+      passwordField.setEchoChar(passwordVisible ? (char) 0 : ECHO_CHAR);
+      toggleButton.setIcon(passwordVisible ? eye : noEye);
     });
-    panel.add(toggleButton);
+    panel.add(toggleButton, "sizegroupy foo");
   }
 
   public JPanel getPanel() {
