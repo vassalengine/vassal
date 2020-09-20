@@ -62,7 +62,13 @@ public class Op {
   }
 
   public static ScaleOp scale(ImageOp sop, double scale) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle(), rsop.getScale() * scale
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);
     }
     else if (sop instanceof SourceOpTiledBitmapImpl) {
@@ -75,7 +81,13 @@ public class Op {
   }
 
   public static RotateOp rotate(ImageOp sop, double angle) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle() + angle, rsop.getScale()
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, 1.0);
     }
     else if (angle % 90.0 == 0.0) {
@@ -88,7 +100,13 @@ public class Op {
 
   public static RotateScaleOp rotateScale(ImageOp sop,
                                           double angle, double scale) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle() + angle, rsop.getScale() * scale
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, scale);
     }
     else {
