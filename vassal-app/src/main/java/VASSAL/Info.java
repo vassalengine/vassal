@@ -148,7 +148,7 @@ public final class Info {
    * @return a version-specific name for the errorlog
    */
   public static String getErrorLogName() {
-    final String v = "errorLog" + getReportableVersion().replaceAll("\\.", "_");
+    final String v = "errorLog_" + getReportableVersion().replaceAll("\\.", "_");
     return v;
   }
 
