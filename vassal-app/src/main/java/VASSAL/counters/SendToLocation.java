@@ -347,8 +347,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
           else {
             Rectangle r2 = r.getBoard().bounds();
-              dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
-            }
+            dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+          }
           break;
         }
       }
@@ -565,7 +565,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       JButton select = new JButton(Resources.getString("Editor.select"));
       select.addActionListener(e -> selectMap());
       mapControls.add(select);
-      JButton clear = new JButton(esources.getString("Editor.clear")));
+      JButton clear = new JButton(Resources.getString("Editor.clear"));
       clear.addActionListener(e -> clearMap());
       mapControls.add(clear);
       controls.add(mapControls);
