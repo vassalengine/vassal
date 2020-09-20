@@ -138,8 +138,8 @@ public class ModuleManager {
     String ver = Info.getReportableVersion();
     ver = ver.replaceAll("\\.", "_");
 
-    final File keyfile = new File(Info.getConfDir(), "key" + ver);
-    final File lockfile = new File(Info.getConfDir(), "lock" + ver);
+    final File keyfile = new File(Info.getConfDir(), "key_" + ver);
+    final File lockfile = new File(Info.getConfDir(), "lock_" + ver);
 
     int port = 0;
     long key = 0;
