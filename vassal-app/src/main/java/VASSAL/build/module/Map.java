@@ -2620,14 +2620,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     if (mainWindowDock != null) {
       return;
     }
-      Component c = theMap.getTopLevelAncestor();
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(getDefaultWindowTitle());
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(getDefaultWindowTitle());
-        }
-      }
+    Component c = theMap.getTopLevelAncestor();
+    if (c instanceof JFrame) {
+      ((JFrame) c).setTitle(getDefaultWindowTitle());
+    }
+    if (c instanceof JDialog) {
+      ((JDialog) c).setTitle(getDefaultWindowTitle());
+    }
+  }
 
   /**
    * @return The correct current default window title

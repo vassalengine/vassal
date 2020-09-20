@@ -37,7 +37,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;

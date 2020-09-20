@@ -27,7 +27,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.build.BadDataReport;
@@ -35,12 +34,10 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import org.jdesktop.animation.timing.Animator;
@@ -593,7 +590,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * @param gameStarting true if game is starting
+   * @param gameStarting true if starting a game, false if ending one
    */
   public void setup(final boolean gameStarting) {
   }

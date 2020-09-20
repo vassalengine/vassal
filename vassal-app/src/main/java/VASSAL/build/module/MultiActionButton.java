@@ -19,17 +19,12 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.JMenuItem;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
