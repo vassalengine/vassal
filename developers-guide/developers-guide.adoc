@@ -210,6 +210,23 @@ mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -
 mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
 ----
 
+==== Regular TODOs
+
+===== Check for new dependency versions
+
+[source]
+----
+mvn versions:display-dependency-updates
+----
+
+===== Check for maven plugin updates
+
+[source]
+----
+mvn versions:display-plugin-updates
+----
+
+
 ==== Configuration of dependent projects
 
 The project's public maven repository can be found at http://www.vassalengine.org/maven/
