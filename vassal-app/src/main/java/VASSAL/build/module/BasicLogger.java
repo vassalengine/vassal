@@ -72,8 +72,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String END = "end_log";  //$NON-NLS-1$
   public static final String LOG = "LOG\t";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG = "PromptNewLog";  //$NON-NLS-1$
-  public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart";  //$NON-NLS-1$
-  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";  //$NON-NLS-1$
+  public static final String PROMPT_NEW_LOG_START = "PromptNewLogAtStart"; //$NON-NLS-1$
+  public static final String PROMPT_NEW_LOG_END = "PromptNewLogAtEnd"; //$NON-NLS-1$
   public static final String PROMPT_LOG_COMMENT = "promptLogComment";  //$NON-NLS-1$
   protected static final String STEP_ICON = "/images/StepForward16.gif";  //$NON-NLS-1$
   protected static final String UNDO_ICON = "/images/Undo16.gif";  //$NON-NLS-1$
@@ -177,7 +177,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     });
     undoKeyConfig.fireUpdate();
 
-    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
+    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.TRUE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
 
     BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE);  //$NON-NLS-1$
