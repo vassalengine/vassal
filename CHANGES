@@ -29,6 +29,7 @@
   face down decks when tested using GKCs
 * 13427: Cannot add or edit items when editing an Extension on Linux or Macs
 * 13404: Use better color picker on Linux
+* 13342: Player creates saveGame twice in a row when starting a log file
 * 13307: Background transparency in Text Labels not working
 
 3.4.2 - 17 September 2020
