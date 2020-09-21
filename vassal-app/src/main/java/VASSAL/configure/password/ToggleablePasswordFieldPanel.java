@@ -25,6 +25,7 @@ import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 
@@ -52,7 +53,10 @@ public class ToggleablePasswordFieldPanel {
     final Icon eye = IconFactory.getIcon("eye", IconFamily.XSMALL);
     final Icon noEye = IconFactory.getIcon("eye-slash", IconFamily.XSMALL);
 
-    final JButton toggleButton = new JButton(noEye); //$NON-NLS-1$
+    final JButton toggleButton = new JButton(noEye);
+    toggleButton.setToolTipText(Resources.getString(
+      "GlobalOptions.toggle_password_visibility" //$NON-NLS-1$
+    ));
     toggleButton.addActionListener(e -> {
       passwordVisible = !passwordVisible;
       passwordField.setEchoChar(passwordVisible ? (char) 0 : ECHO_CHAR);
