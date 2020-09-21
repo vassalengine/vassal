@@ -73,7 +73,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String LOG = "LOG\t";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG = "PromptNewLog";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG_START = "PromptNewLogAtStart"; //$NON-NLS-1$
-  public static final String PROMPT_NEW_LOG_END = "PromptNewLogAtEnd"; //$NON-NLS-1$
+  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd"; //$NON-NLS-1$
   public static final String PROMPT_LOG_COMMENT = "promptLogComment";  //$NON-NLS-1$
   protected static final String STEP_ICON = "/images/StepForward16.gif";  //$NON-NLS-1$
   protected static final String UNDO_ICON = "/images/Undo16.gif";  //$NON-NLS-1$
