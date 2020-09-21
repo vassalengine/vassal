@@ -59,9 +59,10 @@ import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
-import VASSAL.configure.PasswordConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
@@ -166,13 +167,13 @@ public class BasicModule extends GameModule {
         idChangeSupport.firePropertyChange(evt);
       }
     });
-    StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    user.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        GameModule.setUserId((String) evt.getNewValue());
-      }
-    });
+
+    final Configurer user = new ToggleablePasswordConfigurer(
+      GameModule.SECRET_NAME,
+      Resources.getString("Prefs.password_label"), //$NON-NLS-1$
+      Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$
+    user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
+
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
