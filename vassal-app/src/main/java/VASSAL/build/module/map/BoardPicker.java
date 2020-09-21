@@ -399,15 +399,16 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (currentBoards == null) {
       return Collections.emptyList();
     }
-    else {
-      return Collections.unmodifiableCollection(currentBoards);
-    }
+    return Collections.unmodifiableCollection(currentBoards);
   }
 
   /**
    * @return a List of the names of all boards from which have been selected either by the user via the dialog or from reading a savefile
    */
   public List<String> getSelectedBoardNames() {
+    if (currentBoards == null) {
+      return Collections.emptyList();
+    }
     return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
   }
 
@@ -625,6 +626,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
           y = j;
           break;
         }
+        // TODO y>=0 is always true
         if (x >= 0 && y >= 0) {
           break;
         }
