@@ -150,6 +150,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JDialog searchDialog;
   protected JTextField searchField;
+  protected JCheckBox searchAdvanced;
 
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
@@ -157,7 +158,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected static final List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
-  /** Creates new ConfigureTree */
+  /**
+   * Creates new ConfigureTree
+   */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
     this(root, helpWindow, null);
   }
@@ -216,14 +219,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     searchParameters = new SearchParameters();
 
-    TreePath path = new TreePath(((DefaultMutableTreeNode)(getModel().getRoot())).getPath());
+    TreePath path = new TreePath(((DefaultMutableTreeNode) (getModel().getRoot())).getPath());
     setSelectionPath(path);
     scrollPathToVisible(path);
-    
+
     chatter = GameModule.getGameModule().getChatter();
   }
-  
-  
+
+
   protected static void chat(String text) {
     if (chatter != null) {
       chatter.show("- " + text);
@@ -245,6 +248,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected void setSearchField(JTextField searchField) {
     this.searchField = searchField;
+  }
+
+  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
+    this.searchAdvanced = searchAdvanced;
+  }
+
+  protected JCheckBox getSearchAdvanced() {
+    return searchAdvanced;
   }
 
 
@@ -1526,6 +1537,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         searchLabel.setLabelFor(search);
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
+        final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
+
         final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
         final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
 
@@ -1536,6 +1549,31 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JCheckBox keys = new JCheckBox(Resources.getString("Editor.search_keys"), searchParameters.isMatchKeys());
         final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
         final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
+
+        advanced.addChangeListener(l -> {
+          names.setVisible(advanced.isSelected());
+          types.setVisible(advanced.isSelected());
+          traits.setVisible(advanced.isSelected());
+          expressions.setVisible(advanced.isSelected());
+          properties.setVisible(advanced.isSelected());
+          keys.setVisible(advanced.isSelected());
+          menus.setVisible(advanced.isSelected());
+          messages.setVisible(advanced.isSelected());
+          configureTree.getSearchDialog().pack();
+        });
+
+        // There's probably some easy way to just "fire the change listener" in the lambda above instead of repeating
+        // this here. If you know how, feel free to put it in.
+        names.setVisible(advanced.isSelected());
+        types.setVisible(advanced.isSelected());
+        traits.setVisible(advanced.isSelected());
+        expressions.setVisible(advanced.isSelected());
+        properties.setVisible(advanced.isSelected());
+        keys.setVisible(advanced.isSelected());
+        menus.setVisible(advanced.isSelected());
+        messages.setVisible(advanced.isSelected());
+
+        configureTree.setSearchAdvanced(advanced);
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
@@ -1549,7 +1587,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           // If literally no search parameters are selectable, turn at least one on (and print warning)
-          if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && (!searchParameters.isMatchAdvanced() || (!searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages()))) {
+          if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && searchParameters.isMatchAdvanced() && (!searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages())) {
             searchParameters.setMatchNames(true);
             names.setSelected(true);
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
@@ -1570,7 +1608,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               TreePath path = new TreePath(node.getPath());
               configureTree.setSelectionPath(path);
               configureTree.scrollPathToVisible(path);
-              showHitList(node, searchParameters.getSearchString());
+              if (searchParameters.isMatchAdvanced()) {
+                showHitList(node, searchParameters.getSearchString());
+              }
             }
             else {
               chat(Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
@@ -1589,15 +1629,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // options row
         d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(names, "gapx unrel"); //$NON-NLS-1$//
+        d.add(advanced, "wrap");
+
+        // Advanced 1
+        d.add(names, "align center, gapx unrel, span"); //$NON-NLS-1$//
         d.add(types, "wrap"); //$NON-NLS-1$//
 
-        // Options 2
+        // Advanced 2
         d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
         d.add(expressions, "gapx unrel"); //$NON-NLS-1$//
         d.add(properties, "wrap"); //$NON-NLS-1$//
 
-        // Options 3
+        // Advanced 3
         d.add(keys, "align center, gapx unrel, span"); //$NON-NLS-1$//
         d.add(menus, "gapx unrel"); //$NON-NLS-1$//
         d.add(messages, "wrap"); //$NON-NLS-1$//
@@ -1750,23 +1793,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private boolean checkNode(DefaultMutableTreeNode node, String searchString) {
       final Configurable c = (Configurable) node.getUserObject();
 
-      if (searchParameters.isMatchNames()) {
+      if (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced()) {
         String objectName = c.getConfigureName();
         if (objectName != null && checkString(objectName, searchString)) {
           return true;
         }
       }
 
-      if (searchParameters.isMatchTypes()) {
+      if (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced()) {
         String className = getConfigureName(c.getClass());
         if ((className != null) && checkString(className, searchString)) {
           return true;
         }
       }
+
+      if (!searchParameters.isMatchAdvanced()) {
+        return false;
+      }
      
       // From here down we are only searching inside of SearchTarget objects (Piece/Prototypes, or searchable AbstractConfigurables)
       GamePiece p;
-      SearchTarget st;
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
