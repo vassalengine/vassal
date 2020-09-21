@@ -266,3 +266,19 @@ include::{rootdir}Makefile[lines=258]
 * [ ] do that
 * [ ] ???
 * [ ] profit
+
+== Running Vassal
+
+=== Player
+
+Main class: `VASSAL.launch.Player` +
+VM arguments: `--standalone /path/to/module/VassalModule.vmod`
+
+=== Editor
+
+Main class: `VASSAL.launch.Editor` +
+VM arguments: `--standalone --edit /path/to/module/VassalModule.vmod`
+
+=== Additional parameters
+
+* To simulate a HiDPI monitor: `-Dsun.java2d.uiScale=2`
