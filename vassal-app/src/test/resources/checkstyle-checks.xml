@@ -266,7 +266,7 @@
              value="Interface type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="NoFinalizer">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
         </module>
         <module name="GenericWhitespace">
             <property name="severity" value="error"/>
@@ -313,14 +313,14 @@
         </module>
         -->
         <module name="NoWhitespaceBefore">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="tokens"
              value="COMMA, SEMI, POST_INC, POST_DEC, DOT,
                     LABELED_STAT, METHOD_REF"/>
             <property name="allowLineBreaks" value="true"/>
         </module>
         <module name="ParenPad">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
             <property name="tokens"
              value="ANNOTATION, ANNOTATION_FIELD_DEF, CTOR_CALL, CTOR_DEF, DOT, ENUM_CONSTANT_DEF,
                     EXPR, LITERAL_CATCH, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_NEW,
@@ -347,7 +347,7 @@
         <module name="NonEmptyAtclauseDescription"/>
         -->
         <module name="InvalidJavadocPosition">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
         </module>
         <!--
         <module name="JavadocTagContinuationIndentation"/>
