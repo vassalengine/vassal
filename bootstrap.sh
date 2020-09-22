@@ -6,7 +6,7 @@
 DMGDIR=dist/dmg
 L4JDIR=dist/launch4j
 
-JDKVER=14
+JDKVER=15
 JDKDIR=dist/jdks
 
 #
