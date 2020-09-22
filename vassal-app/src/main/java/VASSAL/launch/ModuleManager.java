@@ -257,7 +257,7 @@ public class ModuleManager {
     this.lock = lock;
 
     // truncate the errorLog
-    final File errorLog = new File(Info.getHomeDir(), Info.getErrorLogName());
+    final File errorLog = Info.getErrorLogPath();
     new FileOutputStream(errorLog).close();
 
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?

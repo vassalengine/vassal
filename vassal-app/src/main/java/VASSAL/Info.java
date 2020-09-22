@@ -145,12 +145,12 @@ public final class Info {
 
 
   /**
-   * @return a version-specific name for the errorlog
+   * @return a version-specific errorLog path
    */
-  public static String getErrorLogName() {
-    final String v = "errorLog-" + getReportableVersion();
-    return v;
+  public static File getErrorLogPath() {
+    return new File (getHomeDir(), "errorLog-" + getReportableVersion());
   }
+
 
 
   private static final int instanceID;

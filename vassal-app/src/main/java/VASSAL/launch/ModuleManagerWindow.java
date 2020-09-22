@@ -1935,7 +1935,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public void actionPerformed(ActionEvent e) {
 // FIXME: don't create a new one each time!
-      final File logfile = new File(Info.getHomeDir(), Info.getErrorLogName());
+      final File logfile = Info.getErrorLogPath();
       final LogPane lp = new LogPane(logfile);
 
 // FIXME: this should have its own key. Probably keys should be renamed
