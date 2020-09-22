@@ -125,7 +125,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   };
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck");
 
   @Override
   public void addTo(Buildable parent) {

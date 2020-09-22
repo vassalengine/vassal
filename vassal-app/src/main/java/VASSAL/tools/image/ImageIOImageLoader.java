@@ -421,7 +421,7 @@ public class ImageIOImageLoader implements ImageLoader {
   }
 
   /** A functor for reading images. */
-  protected static Wrapper<BufferedImage> readImage = new Wrapper<>() {
+  protected static final Wrapper<BufferedImage> readImage = new Wrapper<>() {
     /**
      * Loads an image.
      *
@@ -442,7 +442,7 @@ public class ImageIOImageLoader implements ImageLoader {
   };
 
   /** A functor for reading image dimensions. */
-  protected static Wrapper<Dimension> readSize = new Wrapper<>() {
+  protected static final Wrapper<Dimension> readSize = new Wrapper<>() {
     /**
      * Gets the size of an image.
      *

@@ -45,7 +45,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
 
   protected ColoredBorder highlighter;
   protected GamePiece lastMoved;
-  protected static java.util.Map<Map, HighlightLastMoved> instances = new HashMap<>();
+  protected static final java.util.Map<Map, HighlightLastMoved> instances = new HashMap<>();
 
   protected boolean enabled;
   protected boolean currentlyEnabled;

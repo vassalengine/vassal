@@ -38,9 +38,9 @@ import VASSAL.counters.SpecifiedSideAccess;
 import VASSAL.tools.SequenceEncoder;
 
 public class PieceAccessConfigurer extends Configurer {
-  protected static String PLAYER = "player:";
-  protected static String SIDE = "side:";
-  protected static String SIDES = "sides:";
+  protected static final String PLAYER = "player:";
+  protected static final String SIDE = "side:";
+  protected static final String SIDES = "sides:";
   protected JPanel controls;
   protected String[] prompts = new String[] {"Any player", "Any side", "Any of the specified sides"};
   protected JComboBox<String> selectType;

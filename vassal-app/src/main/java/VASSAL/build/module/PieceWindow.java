@@ -69,7 +69,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String HIDDEN = "hidden"; //$NON-NLS-1$
   public static final String SCALE = "scale"; //$NON-NLS-1$
-  protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
   protected JComponent root;
   protected ComponentSplitter.SplitPane mainWindowDock;
   protected String tooltip = ""; //$NON-NLS-1$

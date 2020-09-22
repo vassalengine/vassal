@@ -63,7 +63,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected ColorSwatch borderColor = ColorSwatch.getBlack();
   protected String id;
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
   protected Image visImage = null;
 

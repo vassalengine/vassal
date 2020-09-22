@@ -108,7 +108,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String ROUND_UP = "Up";
   public static final String ROUND_DOWN = "Down";
   public static final String ROUND_OFF = "Nearest whole number";
-  public static Font RANGE_FONT = new Font("Dialog", 0, 11);
+  public static final Font RANGE_FONT = new Font("Dialog", Font.PLAIN, 11);
   public static final String DEFAULT_ICON = "/images/thread.gif";
 
   public static final String FROM_LOCATION = "FromLocation";
@@ -122,7 +122,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String CTRL_CLICK = "Ctrl-Click & Drag";
   public static final String WHEN_PERSISTENT = "When Persisting";
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("LOS_Thread");
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("LOS_Thread");
 
   protected boolean retainAfterRelease = false;
   protected long lastRelease = 0;
