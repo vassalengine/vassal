@@ -532,7 +532,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       final ArrayList<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
-        l.add(new KeyCommand(Resources.getString("Editor.Clone.clone") , KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
+        l.add(new KeyCommand(Resources.getString("Editor.Clone.clone"), KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
       }
       if (deleteKey > 0) {
         l.add(new KeyCommand(Resources.getString("Editor.Delete.delete"), KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK), target));
