@@ -35,7 +35,7 @@ import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.GamePieceFormattedStringConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
@@ -45,7 +45,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.FormattedString;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -70,10 +70,10 @@ public class CounterGlobalKeyCommand extends Decorator
   private KeyCommand myCommand;
   protected String description;
   protected GlobalCommand.GlobalCommandTarget targetType = GlobalCommand.GlobalCommandTarget.GAME;
-  protected FormattedString targetMap = new FormattedString("");
-  protected FormattedString targetBoard = new FormattedString("");
-  protected FormattedString targetZone = new FormattedString("");
-  protected FormattedString targetRegion = new FormattedString("");
+  protected Expression targetMap;
+  protected Expression targetBoard;
+  protected Expression targetZone;
+  protected Expression targetRegion;
   protected int targetX = 0;
   protected int targetY = 0;
 
@@ -112,10 +112,10 @@ public class CounterGlobalKeyCommand extends Decorator
         break;
       }
     }
-    targetMap.setFormat(st.nextToken(""));    //NON-NLS
-    targetBoard.setFormat(st.nextToken(""));  //NON-NLS
-    targetZone.setFormat(st.nextToken(""));   //NON-NLS
-    targetRegion.setFormat(st.nextToken("")); //NON-NLS
+    targetMap = Expression.createExpression(st.nextToken(""));    //NON-NLS
+    targetBoard = Expression.createExpression(st.nextToken(""));  //NON-NLS
+    targetZone = Expression.createExpression(st.nextToken(""));   //NON-NLS
+    targetRegion = Expression.createExpression(st.nextToken("")); //NON-NLS
     targetX = st.nextInt(0);
     targetY = st.nextInt(0);
 
@@ -137,10 +137,10 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(description)
       .append(globalCommand.getSelectFromDeck())
       .append(targetType.toString())
-      .append(targetMap.getFormat())
-      .append(targetBoard.getFormat())
-      .append(targetZone.getFormat())
-      .append(targetRegion.getFormat())
+      .append(targetMap.getExpression())
+      .append(targetBoard.getExpression())
+      .append(targetZone.getExpression())
+      .append(targetRegion.getExpression())
       .append(targetX)
       .append(targetY);
 
@@ -274,20 +274,20 @@ public class CounterGlobalKeyCommand extends Decorator
     globalCommand.setTargetType(targetType);
 
     if (targetType != GlobalCommand.GlobalCommandTarget.GAME) {
-      globalCommand.setTargetMap(targetMap.getText(this));
+      globalCommand.setTargetMap(targetMap.tryEvaluate(Decorator.getOutermost(this)));
     }
 
     switch (targetType) {
     case ZONE:
-      globalCommand.setTargetZone(targetZone.getText(this));
+      globalCommand.setTargetZone(targetZone.tryEvaluate(Decorator.getOutermost(this)));
       break;
 
     case REGION:
-      globalCommand.setTargetRegion(targetRegion.getText(this));
+      globalCommand.setTargetRegion(targetRegion.tryEvaluate(Decorator.getOutermost(this)));
       break;
 
     case XY:
-      globalCommand.setTargetBoard(targetBoard.getText(this));
+      globalCommand.setTargetBoard(targetBoard.tryEvaluate(Decorator.getOutermost(this)));
       globalCommand.setTargetX(targetX);
       globalCommand.setTargetY(targetY);
       break;
@@ -363,10 +363,10 @@ public class CounterGlobalKeyCommand extends Decorator
     protected TraitConfigPanel traitPanel;
 
     protected TranslatingStringEnumConfigurer targetConfig;
-    protected GamePieceFormattedStringConfigurer targetMapConfig;
-    protected GamePieceFormattedStringConfigurer targetBoardConfig;
-    protected GamePieceFormattedStringConfigurer targetZoneConfig;
-    protected GamePieceFormattedStringConfigurer targetRegionConfig;
+    protected FormattedExpressionConfigurer targetMapConfig;
+    protected FormattedExpressionConfigurer targetBoardConfig;
+    protected FormattedExpressionConfigurer targetZoneConfig;
+    protected FormattedExpressionConfigurer targetRegionConfig;
     protected IntConfigurer targetXConfig;
     protected IntConfigurer targetYConfig;
 
@@ -407,20 +407,20 @@ public class CounterGlobalKeyCommand extends Decorator
       targetConfig.addPropertyChangeListener(e -> updateVisibility());
       controls.add(targetConfig.getControls());
 
-      targetMapConfig = new GamePieceFormattedStringConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"));
-      targetMapConfig.setValue(p.targetMap.getFormat());
+      targetMapConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"), p.targetMap.getExpression());
+      ///targetMapConfig.setValue(p.targetMap.getExpression());
       controls.add(targetMapConfig.getControls());
 
-      targetBoardConfig = new GamePieceFormattedStringConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"));
-      targetBoardConfig.setValue(p.targetBoard.getFormat());
+      targetBoardConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"), p.targetBoard.getExpression());
+      //targetBoardConfig.setValue(p.targetBoard.getExpression());
       controls.add(targetBoardConfig.getControls());
 
-      targetZoneConfig = new GamePieceFormattedStringConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"));
-      targetZoneConfig.setValue(p.targetZone.getFormat());
+      targetZoneConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"), p.targetZone.getExpression());
+      //targetZoneConfig.setValue(p.targetZone.getExpression());
       controls.add(targetZoneConfig.getControls());
 
-      targetRegionConfig = new GamePieceFormattedStringConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"));
-      targetRegionConfig.setValue(p.targetRegion.getFormat());
+      targetRegionConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"), p.targetRegion.getExpression());
+      //targetRegionConfig.setValue(p.targetRegion.getExpression());
       controls.add(targetRegionConfig.getControls());
 
       targetXConfig = new IntConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"), p.targetX);
