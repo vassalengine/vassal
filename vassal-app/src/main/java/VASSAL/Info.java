@@ -143,6 +143,16 @@ public final class Info {
     return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
   }
 
+
+  /**
+   * @return a version-specific errorLog path
+   */
+  public static File getErrorLogPath() {
+    return new File (getHomeDir(), "errorLog-" + getReportableVersion());
+  }
+
+
+
   private static final int instanceID;
 
   /**
