@@ -1,18 +1,21 @@
 <configuration>
   <contextName>${VASSAL.id:-0}</contextName>
 
+  <property resource="git.properties" />
+  <property name="LOG_FILE" value="errorLog-${git.version}" />
+
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <if condition='property("os.name").toLowerCase().startsWith("windows")'>
       <then>
-        <file>${APPDATA}/VASSAL/errorLog</file>
+        <file>${APPDATA}/VASSAL/${LOG_FILE}</file>
       </then>
       <else>
         <if condition='property("os.name").toLowerCase().startsWith("mac")'>
           <then>
-            <file>${user.home}/Library/Application Support/VASSAL/errorLog</file>
+            <file>${user.home}/Library/Application Support/VASSAL/${LOG_FILE}</file>
           </then>
           <else>
-            <file>${user.home}/.VASSAL/errorLog</file>
+            <file>${user.home}/.VASSAL/${LOG_FILE}</file>
           </else>
         </if>
       </else>
