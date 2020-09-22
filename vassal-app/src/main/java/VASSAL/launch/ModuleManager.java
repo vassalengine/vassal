@@ -134,8 +134,11 @@ public class ModuleManager {
     // (2) No port collisions, because we don't use a predetermined port.
     //
 
-    final File keyfile = new File(Info.getConfDir(), "key");
-    final File lockfile = new File(Info.getConfDir(), "lock");
+    // Different versions of VASSAL can all co-exist, each with own Module Manager
+    String ver = Info.getReportableVersion();
+
+    final File keyfile = new File(Info.getConfDir(), "key-" + ver);
+    final File lockfile = new File(Info.getConfDir(), "lock-" + ver);
 
     int port = 0;
     long key = 0;
@@ -254,7 +257,7 @@ public class ModuleManager {
     this.lock = lock;
 
     // truncate the errorLog
-    final File errorLog = new File(Info.getHomeDir(), "errorLog");
+    final File errorLog = Info.getErrorLogPath();
     new FileOutputStream(errorLog).close();
 
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?

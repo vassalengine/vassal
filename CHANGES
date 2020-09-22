@@ -27,6 +27,7 @@
 * 13441: Multiple scaling or rotation of SVG images failed to compound
 * 13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board
     of an At-Start Stack
+* 13436: Allow Module Managers from different versions to run simultaneously
 * 13435: "Bad Module Data" messages with less-than symbols misinterpreted as
     HTML when HTML turned on in module
 * 13434: Clarify deprecation messages
