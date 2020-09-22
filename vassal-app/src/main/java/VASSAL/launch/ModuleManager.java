@@ -136,10 +136,9 @@ public class ModuleManager {
 
     // Different versions of VASSAL can all co-exist, each with own Module Manager
     String ver = Info.getReportableVersion();
-    ver = ver.replaceAll("\\.", "_");
 
-    final File keyfile = new File(Info.getConfDir(), "key_" + ver);
-    final File lockfile = new File(Info.getConfDir(), "lock_" + ver);
+    final File keyfile = new File(Info.getConfDir(), "key-" + ver);
+    final File lockfile = new File(Info.getConfDir(), "lock-" + ver);
 
     int port = 0;
     long key = 0;
