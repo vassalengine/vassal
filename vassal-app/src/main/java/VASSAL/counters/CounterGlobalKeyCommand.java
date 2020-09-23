@@ -74,8 +74,11 @@ public class CounterGlobalKeyCommand extends Decorator
   protected Expression targetBoard;
   protected Expression targetZone;
   protected Expression targetRegion;
+  protected Expression targetProperty;
+  protected Expression targetValue;
   protected int targetX = 0;
   protected int targetY = 0;
+  protected boolean targetExactMatch;
 
 
   public CounterGlobalKeyCommand() {
@@ -118,6 +121,9 @@ public class CounterGlobalKeyCommand extends Decorator
     targetRegion = Expression.createExpression(st.nextToken("")); //NON-NLS
     targetX = st.nextInt(0);
     targetY = st.nextInt(0);
+    targetExactMatch = st.nextBoolean(false);
+    targetProperty = Expression.createExpression(st.nextToken(""));
+    targetValue = Expression.createExpression(st.nextToken(""));
 
     command = null;
   }
@@ -142,7 +148,10 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(targetZone.getExpression())
       .append(targetRegion.getExpression())
       .append(targetX)
-      .append(targetY);
+      .append(targetY)
+      .append(targetExactMatch)
+      .append(targetProperty.getExpression())
+      .append(targetValue.getExpression());
 
     return ID + se.getValue();
   }
@@ -271,6 +280,12 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
+    globalCommand.setTargetExactMatch(targetExactMatch);
+    if (targetExactMatch) {
+      globalCommand.setTargetProperty(globalCommand.targetProperty);
+      globalCommand.setTargetValue(globalCommand.targetValue);
+    }
+
     globalCommand.setTargetType(targetType);
 
     if (targetType != GlobalCommand.GlobalCommandTarget.GAME) {
@@ -369,6 +384,9 @@ public class CounterGlobalKeyCommand extends Decorator
     protected FormattedExpressionConfigurer targetRegionConfig;
     protected IntConfigurer targetXConfig;
     protected IntConfigurer targetYConfig;
+    protected BooleanConfigurer targetExactMatchConfig;
+    protected FormattedExpressionConfigurer targetPropertyConfig;
+    protected FormattedExpressionConfigurer targetValueConfig;
 
     public Ed(CounterGlobalKeyCommand p) {
 
@@ -408,19 +426,15 @@ public class CounterGlobalKeyCommand extends Decorator
       controls.add(targetConfig.getControls());
 
       targetMapConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"), p.targetMap.getExpression());
-      ///targetMapConfig.setValue(p.targetMap.getExpression());
       controls.add(targetMapConfig.getControls());
 
       targetBoardConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"), p.targetBoard.getExpression());
-      //targetBoardConfig.setValue(p.targetBoard.getExpression());
       controls.add(targetBoardConfig.getControls());
 
       targetZoneConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"), p.targetZone.getExpression());
-      //targetZoneConfig.setValue(p.targetZone.getExpression());
       controls.add(targetZoneConfig.getControls());
 
       targetRegionConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"), p.targetRegion.getExpression());
-      //targetRegionConfig.setValue(p.targetRegion.getExpression());
       controls.add(targetRegionConfig.getControls());
 
       targetXConfig = new IntConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"), p.targetX);
@@ -428,7 +442,16 @@ public class CounterGlobalKeyCommand extends Decorator
       targetYConfig = new IntConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"), p.targetY);
       controls.add(targetYConfig.getControls());
 
-      propertyMatch = new PropertyExpressionConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
+      targetExactMatchConfig = new BooleanConfigurer( null, Resources.getString("Editor.GlobalKeyCommand.exact_match"), p.targetExactMatch);
+      targetExactMatchConfig.addPropertyChangeListener(e -> updateVisibility());
+      controls.add(targetExactMatchConfig.getControls());
+
+      targetPropertyConfig = new FormattedExpressionConfigurer (null, Resources.getString("Editor.GlobalKeyCommand.exact_property"), p.targetProperty.getExpression());
+      controls.add(targetPropertyConfig.getControls());
+      targetValueConfig    = new FormattedExpressionConfigurer (null, Resources.getString("Editor.GlobalKeyCommand.exact_value"), p.targetValue.getExpression());
+      controls.add(targetValueConfig.getControls());
+
+      propertyMatch = new PropertyExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.matching_properties"), p.propertiesFilter);
       controls.add(propertyMatch.getControls());
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
@@ -466,6 +489,9 @@ public class CounterGlobalKeyCommand extends Decorator
       targetXConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.toString().equals(value));
       targetYConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.toString().equals(value));
 
+      targetPropertyConfig.getControls().setVisible(targetExactMatchConfig.getValueBoolean());
+      targetValueConfig.getControls().setVisible(targetExactMatchConfig.getValueBoolean());
+
       Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
@@ -497,7 +523,11 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(targetZoneConfig.getValueString())
         .append(targetRegionConfig.getValueString())
         .append(targetXConfig.getValueString())
-        .append(targetYConfig.getValueString());
+        .append(targetYConfig.getValueString())
+        .append(targetExactMatchConfig.getValueString())
+        .append(targetPropertyConfig.getValueString())
+        .append(targetValueConfig.getValueString());
+
       return ID + se.getValue();
     }
 
