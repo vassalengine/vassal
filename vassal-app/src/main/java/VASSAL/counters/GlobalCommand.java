@@ -62,30 +62,19 @@ public class GlobalCommand {
    * Levels of pre-filtering of piece location for Global Key Commands.
    */
   public enum GlobalCommandTarget {
-    GAME("game"),        //NON-NLS
-    MAP("map"),          //NON-NLS
-    ZONE("zone"),        //NON-NLS
-    REGION("region"),    //NON-NLS
-    XY("xy");            //NON-NLS
-
-    private final String name;
-
-    GlobalCommandTarget(String name) {
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      return name;
-    }
+    GAME,
+    MAP,
+    ZONE,
+    REGION,
+    XY;
 
     public String toTranslatedString() {
-      return "Editor.GlobalKeyCommand.target_" + name;  //NON-NLS
+      return "Editor.GlobalKeyCommand.target_" + name().toLowerCase();  //NON-NLS
     }
 
     public static String[] getKeys() {
       return Arrays.stream(values())
-        .map(Enum::toString)
+        .map(GlobalCommandTarget::name)
         .toArray(String[]::new);
     }
 
@@ -99,11 +88,11 @@ public class GlobalCommand {
 
   public static class GlobalCommandTargetConfigurer extends TranslatableStringEnum {
     @Override
-
     public String[] getValidValues(AutoConfigurable target) {
       return GlobalCommandTarget.getKeys();
     }
 
+    @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       return GlobalCommandTarget.geti18nKeys();
     }
@@ -474,6 +463,19 @@ public class GlobalCommand {
     }
     if ((targetType == GlobalCommandTarget.XY) && (!targetBoard.equals(other.targetBoard) || ((targetX != other.targetX) || (targetY != other.targetY)))) {
       return false;
+    }
+
+    if (targetExactMatch != other.targetExactMatch) {
+      return false;
+    }
+
+    if (targetExactMatch) {
+      if (!targetProperty.equals(other.targetProperty)) {
+        return false;
+      }
+      if (!targetValue.equals(other.targetValue)) {
+        return false;
+      }
     }
 
     return true;
