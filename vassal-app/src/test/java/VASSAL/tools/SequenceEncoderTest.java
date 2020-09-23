@@ -172,7 +172,7 @@ public class SequenceEncoderTest {
     assertEquals(VALUE, new PropertyExpression(sd.nextToken()));
   }
 
-  //BR//@Test(expected=NoSuchElementException.class)
+  @Test(expected=NoSuchElementException.class)
   public void testEncodeDecodeMulti() {
 
     final boolean booleanIn = true;
@@ -216,7 +216,7 @@ public class SequenceEncoderTest {
     assertEquals(propertyExpressionIn, new PropertyExpression(sd.nextToken()));
 
     // Should be nothing left - should throw a NoSuchElementException
-    sd.nextToken(); //BR// ... but not any more (2569 improvement)
+    sd.nextToken();
   }
 
   @Test

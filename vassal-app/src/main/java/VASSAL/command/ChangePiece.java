@@ -25,6 +25,8 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.StateMergeable;
 import VASSAL.tools.ProblemDialog;
 
+import java.util.NoSuchElementException;
+
 /**
  * This Command changes the state of a {@link GamePiece}.  Its undo
  * Command is another ChangePiece with the new and old states
@@ -67,7 +69,12 @@ public class ChangePiece extends Command {
       bounds.addPiece(target);
       if (oldState != null) {
         if (target instanceof StateMergeable) {
-          ((StateMergeable) target).mergeState(newState, oldState);
+          try {
+            ((StateMergeable) target).mergeState(newState, oldState);
+          }
+          catch (NoSuchElementException e) {
+            ProblemDialog.showOutdatedModule("Piece: " + target.getName());
+          }
         }
         else {
           target.setState(newState);
