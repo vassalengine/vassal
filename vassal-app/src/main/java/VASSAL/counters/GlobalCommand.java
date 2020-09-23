@@ -50,6 +50,9 @@ public class GlobalCommand {
   protected String targetZone = "";
   protected String targetRegion = "";
   protected String targetGrid = "";
+  protected boolean targetExactMatch = false;
+  protected String targetProperty = "";
+  protected String targetValue = "";
   protected int targetX = 0;
   protected int targetY = 0;
 
@@ -189,6 +192,31 @@ public class GlobalCommand {
     return targetRegion;
   }
 
+  public void setTargetProperty (String targetProperty) {
+    this.targetProperty = targetProperty;
+  }
+
+  public String getTargetProperty () {
+    return targetProperty;
+  }
+
+  public void setTargetValue (String targetValue) {
+    this.targetValue = targetValue;
+  }
+
+  public String getTargetValue () {
+    return targetValue;
+  }
+
+  public boolean isTargetExactMatch() {
+    return targetExactMatch;
+  }
+
+  public void setTargetExactMatch (Boolean targetExactMatch) {
+    this.targetExactMatch = targetExactMatch;
+  }
+
+
 
   public Command apply(Map m, PieceFilter filter) {
     return apply(new Map[]{m}, filter);
@@ -225,8 +253,14 @@ public class GlobalCommand {
         GamePiece[] p = map.getPieces();
         for (GamePiece gamePiece : p) {
 
+          if (targetExactMatch && !targetProperty.isEmpty()) {
+            String value = (String) gamePiece.getProperty(targetProperty);
+            if (!value.equals(targetValue)) {
+              continue;
+            }
+          }
 
-          // These basic filters are hopefully(?) faster than equivalent filters in the Beanshell expression
+          // These basic location filters are hopefully(?) faster than equivalent filters in the Beanshell expression
           // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
           if ((targetType == GlobalCommandTarget.ZONE) || (targetType == GlobalCommandTarget.REGION)) {
             GamePiece pp;
