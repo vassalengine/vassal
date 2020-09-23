@@ -282,8 +282,8 @@ public class CounterGlobalKeyCommand extends Decorator
 
     globalCommand.setTargetExactMatch(targetExactMatch);
     if (targetExactMatch) {
-      globalCommand.setTargetProperty(globalCommand.targetProperty);
-      globalCommand.setTargetValue(globalCommand.targetValue);
+      globalCommand.setTargetProperty(targetProperty.tryEvaluate(Decorator.getOutermost(this)));
+      globalCommand.setTargetValue(targetValue.tryEvaluate(Decorator.getOutermost(this)));
     }
 
     globalCommand.setTargetType(targetType);

@@ -19,12 +19,14 @@ package VASSAL.counters;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -91,6 +93,19 @@ public class GlobalCommand {
       return Arrays.stream(values())
         .map(GlobalCommandTarget::toTranslatedString)
         .toArray(String[]::new);
+    }
+  }
+
+
+  public static class GlobalCommandTargetConfigurer extends TranslatableStringEnum {
+    @Override
+
+    public String[] getValidValues(AutoConfigurable target) {
+      return GlobalCommandTarget.getKeys();
+    }
+
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return GlobalCommandTarget.geti18nKeys();
     }
   }
 
