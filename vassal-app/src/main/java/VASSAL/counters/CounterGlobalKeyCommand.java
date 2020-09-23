@@ -442,7 +442,7 @@ public class CounterGlobalKeyCommand extends Decorator
       targetYConfig = new IntConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"), p.targetY);
       controls.add(targetYConfig.getControls());
 
-      targetExactMatchConfig = new BooleanConfigurer( null, Resources.getString("Editor.GlobalKeyCommand.exact_match"), p.targetExactMatch);
+      targetExactMatchConfig = new BooleanConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.exact_match"), p.targetExactMatch);
       targetExactMatchConfig.addPropertyChangeListener(e -> updateVisibility());
       controls.add(targetExactMatchConfig.getControls());
 
