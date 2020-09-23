@@ -1,5 +1,6 @@
 3.4.3 - ???
 
+* 13452: Bundle Java 15 with Windows and Mac packages
 * 13442: Add button for toggling password visibility
 * 13441: Multiple scaling or rotation of SVG images failed to compound
 * 13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board
@@ -10,6 +11,7 @@
 * 13434: Clarify deprecation messages
 * 13433: OBSCURED_BY_OTHERS property now returns null instead of a value in
     face down decks when tested using GKCs
+* 13430: Pieces move too fast while "Repositioning stack" in HDPI monitors
 * 13427: Cannot add or edit items when editing an Extension on Linux or Macs
 * 13404: Use better color picker on Linux
 * 13342: Player creates saveGame twice in a row when starting a log file
