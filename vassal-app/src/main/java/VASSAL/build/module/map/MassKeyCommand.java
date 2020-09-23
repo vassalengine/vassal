@@ -122,15 +122,15 @@ public class MassKeyCommand extends AbstractConfigurable
   public static final String TARGET_VALUE       = "targetValue";
 
   protected GlobalCommand.GlobalCommandTarget targetType = GlobalCommand.GlobalCommandTarget.GAME;
-  protected Expression targetMap;
-  protected Expression targetBoard;
-  protected Expression targetZone;
-  protected Expression targetRegion;
+  protected Expression targetMap = Expression.createExpression("");
+  protected Expression targetBoard = Expression.createExpression("");
+  protected Expression targetZone = Expression.createExpression("");
+  protected Expression targetRegion = Expression.createExpression("");
   protected int targetX = 0;
   protected int targetY = 0;
-  protected boolean targetExactMatch;
-  protected Expression targetProperty;
-  protected Expression targetValue;
+  protected boolean targetExactMatch = false;
+  protected Expression targetProperty = Expression.createExpression("");
+  protected Expression targetValue = Expression.createExpression("");
 
   public MassKeyCommand() {
     ActionListener al = e -> apply();
@@ -541,7 +541,7 @@ public class MassKeyCommand extends AbstractConfigurable
       return String.valueOf(singleMap);
     }
     else if (TARGET_TYPE.equals(key)) {
-      return String.valueOf(targetType);
+      return targetType.name();
     }
     else if (TARGET_MAP.equals(key)) {
       return targetMap.getExpression();
