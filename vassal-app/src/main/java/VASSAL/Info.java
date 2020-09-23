@@ -104,7 +104,7 @@ public final class Info {
    * A valid version format is "w.x.y[-z]", where 'w','x', and 'y' are
    * integers and z is a string. In the version number, w.x are the major/minor release number,
    * y is the bug-fix release number, and the 'z' identifies an intermediate build
-   * e.g. 3.3.3-allpha1 or 3.3.3-SNAPSHOT
+   * e.g. 3.3.3-alpha1 or 3.3.3-SNAPSHOT
    *
    * @return the full version of the VASSAL engine.
    */
@@ -133,7 +133,7 @@ public final class Info {
   }
 
   /**
-   * Bugzilla (and other potential external reporting tools) require onlt the primary numeric portion of
+   * Bugzilla (and other potential external reporting tools) require only the primary numeric portion of
    * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3
    *
    * @return The reportable version number
@@ -148,7 +148,7 @@ public final class Info {
    * @return a version-specific errorLog path
    */
   public static File getErrorLogPath() {
-    return new File (getHomeDir(), "errorLog-" + getReportableVersion());
+    return new File (getHomeDir(), "errorLog-" + getVersion());
   }
 
 
@@ -214,7 +214,7 @@ public final class Info {
    *
    * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
-   * the parseable parts of the two <code>String</code>s.
+   * the parsable parts of the two <code>String</code>s.
    *
    * @deprecated use {@link VersionUtils#compareVersions(String, String)}
    */
