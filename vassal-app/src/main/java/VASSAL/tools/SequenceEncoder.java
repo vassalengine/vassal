@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.event.InputEvent;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import javax.swing.KeyStroke;
 
@@ -235,13 +236,7 @@ public class SequenceEncoder {
     }
 
     public String nextToken() {
-      if (!hasMoreTokens()) {
-        //BR// This tends to happen when a player loads some save/log file written by the wrong version of a module.
-        //BR// Rather than have a trickle of ABR reports about it, print a more helpful error message.
-        ProblemDialog.showOutdatedModule ("");
-        //throw new NoSuchElementException();
-        return "";
-      }
+      if (!hasMoreTokens()) throw new NoSuchElementException();
 
       if (start == stop) {
         // token for "null" is the empty string
