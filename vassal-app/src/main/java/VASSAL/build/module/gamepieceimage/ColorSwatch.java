@@ -16,9 +16,6 @@
  * at http://www.opensource.org.
  */
 
-/**
- * Class tht implements a named Color Swatch
- */
 
 package VASSAL.build.module.gamepieceimage;
 
@@ -28,8 +25,12 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
+/**
+ * Class that implements a named Color Swatch
+ */
 public class ColorSwatch extends AbstractConfigurable
                          implements Comparable<ColorSwatch> {
 
@@ -71,8 +72,8 @@ public class ColorSwatch extends AbstractConfigurable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Color Name:  ",
-      "Color:  "
+      Resources.getString("Editor.ColorSwatch.color_name"),
+      Resources.getString("Editor.color_label")
     };
   }
 
@@ -134,7 +135,7 @@ public class ColorSwatch extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return "Named Color";
+    return Resources.getString("Editor.ColorSwatch.component_type");
   }
 
   @Override

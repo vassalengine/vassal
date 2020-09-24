@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -124,7 +125,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Font Styles";
+    return Resources.getString("Editor.FontManager.component_type");
   }
 
   @Override

@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -469,22 +468,19 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       idDisplay.setEditable(false);
       idBox.add(idDisplay);
       JButton change = new JButton(Resources.getString("Editor.ExtensionEditor.change_button"));
-      change.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = (String)JOptionPane.showInputDialog(
-              GameModule.getGameModule().getPlayerWindow(),
-              Resources.getString("Editor.ExtensionEditor.change_warning"),
-              "",
-              JOptionPane.WARNING_MESSAGE,
-              null,
-              null,
-              getExtensionId());
-          if (s != null && ! s.equals(getExtensionId())) {
-            extensionId = s;
-            updateGpIds();
-            idDisplay.setText(getExtensionId());
-          }
+      change.addActionListener(e -> {
+        String s = (String)JOptionPane.showInputDialog(
+            GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString("Editor.ExtensionEditor.change_warning"),
+            "",
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            null,
+            getExtensionId());
+        if (s != null && ! s.equals(getExtensionId())) {
+          extensionId = s;
+          updateGpIds();
+          idDisplay.setText(getExtensionId());
         }
       });
       idBox.add(change);
@@ -495,23 +491,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton(Resources.getString("Editor.ExtensionEditor.save_button"));
-      ok.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setAttribute(VERSION, config.getValue());
-          setAttribute(DESCRIPTION, dconfig.getValue());
-          setAttribute(UNIVERSAL, uconfig.getValue());
-          d.dispose();
-        }
+      ok.addActionListener(e -> {
+        setAttribute(VERSION, config.getValue());
+        setAttribute(DESCRIPTION, dconfig.getValue());
+        setAttribute(UNIVERSAL, uconfig.getValue());
+        d.dispose();
       });
       b.add(ok);
       JButton cancel = new JButton(Resources.getString("Editor.ExtensionEditor.cancel_button"));
-      cancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          d.dispose();
-        }
-      });
+      cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
       d.pack();

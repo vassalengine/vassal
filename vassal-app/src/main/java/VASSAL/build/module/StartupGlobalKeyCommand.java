@@ -24,6 +24,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   }
 
   public static String getConfigureTypeName() {
-    return "Startup Global Key Command";
+    return Resources.getString("Editor.StartupGlobalKeyCommand.component_type");
   }
 
   @Override

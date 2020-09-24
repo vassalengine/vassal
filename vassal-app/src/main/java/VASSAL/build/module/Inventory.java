@@ -22,15 +22,12 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -61,8 +58,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -198,12 +193,7 @@ public class Inventory extends AbstractConfigurable
   protected JDialog frame;
 
   public Inventory() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    };
+    ActionListener al = e -> launch();
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     setAttribute(NAME, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
     setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
@@ -246,14 +236,11 @@ public class Inventory extends AbstractConfigurable
     tree.setCellRenderer(initTreeCellRenderer());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     // If wanted center on a selected counter
-    tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(TreeSelectionEvent e) {
-        if (centerOnPiece) {
-          GamePiece piece = getSelectedCounter();
-          if (piece != null && piece.getMap() != null)
-            piece.getMap().centerAt(piece.getPosition());
-        }
+    tree.addTreeSelectionListener(e -> {
+      if (centerOnPiece) {
+        GamePiece piece = getSelectedCounter();
+        if (piece != null && piece.getMap() != null)
+          piece.getMap().centerAt(piece.getPosition());
       }
     });
     tree.addMouseListener(new MouseAdapter() {
@@ -276,17 +263,10 @@ public class Inventory extends AbstractConfigurable
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
                 JPopupMenu menu = MenuDisplayer.createPopup(piece);
-                menu.addPropertyChangeListener("visible", new PropertyChangeListener() { //$NON-NLS-1$
-                  @Override
-                  public void propertyChange(PropertyChangeEvent evt) {
-                    if (Boolean.FALSE.equals(evt.getNewValue())) {
-                      SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                          refresh();
-                        }
-                      });
-                    }
+                //$NON-NLS-1$
+                menu.addPropertyChangeListener("visible", evt -> {
+                  if (Boolean.FALSE.equals(evt.getNewValue())) {
+                    SwingUtilities.invokeLater(() -> refresh());
                   }
                 });
                 menu.show(tree, e.getX(), e.getY());
@@ -363,28 +343,13 @@ public class Inventory extends AbstractConfigurable
     Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
     JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
-    writeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        inventoryToText();
-      }
-    });
+    writeButton.addActionListener(e -> inventoryToText());
     buttonBox.add(writeButton);
     JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
-    refreshButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        refresh();
-      }
-    });
+    refreshButton.addActionListener(e -> refresh());
     buttonBox.add(refreshButton);
     JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
-    closeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        frame.setVisible(false);
-      }
-    });
+    closeButton.addActionListener(e -> frame.setVisible(false));
     buttonBox.add(closeButton);
     return buttonBox;
   }
@@ -401,7 +366,7 @@ public class Inventory extends AbstractConfigurable
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-    final StringBuilder output = new StringBuilder(""); //$NON-NLS-1$
+    final StringBuilder output = new StringBuilder(); //$NON-NLS-1$
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) return;
 
@@ -471,7 +436,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     final ArrayList<String> path = new ArrayList<>();
-    for (String value : groupBy) path.add(value);
+    Collections.addAll(path, groupBy);
     results = new CounterInventory(
       new Counter(this.getConfigureName()), path, sortPieces);
 
@@ -506,7 +471,7 @@ public class Inventory extends AbstractConfigurable
 
   protected int getTotalValue(GamePiece p) {
     String s = (String) p.getProperty(nonLeafFormat);
-    int count = 1;
+    int count;
     try {
       count = Integer.parseInt(s);
     }
@@ -718,22 +683,12 @@ public class Inventory extends AbstractConfigurable
     }
   }
 
-  private VisibilityCondition piecesVisible = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !foldersOnly;
-    }
-  };
+  private VisibilityCondition piecesVisible = () -> !foldersOnly;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (PIECE_ZOOM.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return drawPieces && !foldersOnly;
-        }
-      };
+      return () -> drawPieces && !foldersOnly;
     }
     else if (List.of(LEAF_FORMAT, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES).contains(name)) {
       return piecesVisible;
@@ -744,7 +699,7 @@ public class Inventory extends AbstractConfigurable
   }
 
   /**
-   * @param o
+   * @param o object
    */
   protected boolean getBooleanValue(Object o) {
     if (o instanceof String) {
@@ -959,7 +914,7 @@ public class Inventory extends AbstractConfigurable
 
     protected Command getCommand(CounterNode node, KeyStroke stroke) {
       GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
-      Command comm = null;
+      Command comm;
       if (p != null) {
         // Save state first
         p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());

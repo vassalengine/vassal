@@ -30,6 +30,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 
 public class FontStyle extends AbstractConfigurable {
 
@@ -61,8 +62,8 @@ public class FontStyle extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Style Name:  ",
-      "Font Style:  "
+      Resources.getString("Editor.FontStyle.style_name"),
+      Resources.getString("Editor.FontStyle.font_style")
     };
   }
 
@@ -128,7 +129,7 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Font Style";
+    return Resources.getString("Editor.FontStyle.component_type");
   }
 
   @Override
