@@ -28,7 +28,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import VASSAL.build.AbstractConfigurable;
@@ -159,22 +158,24 @@ public class ChessClockControl extends AbstractConfigurable
   @Override
   public void build(Element e) {
     super.build(e);
-    if (e == null) {
-      // When creating a brand new Chess Clock Control, start with one chess clock for each "non solo" side in the roster.
-      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-      int added = 0;
-      if (r != null) {
-        for (String s : r.sides) {
-          if (!r.isSoloSide(s)) {
-            addChild(new ChessClock(s));
-            added++;
-          }
+    if (e != null) {
+      return;
+    }
+
+    // When creating a brand new Chess Clock Control, start with one chess clock for each "non solo" side in the roster.
+    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    int added = 0;
+    if (r != null) {
+      for (String s : r.sides) {
+        if (!r.isSoloSide(s)) {
+          addChild(new ChessClock(s));
+          added++;
         }
       }
+    }
 
-      if (added == 0) {
-        addChild(new ChessClock());
-      }
+    if (added == 0) {
+      addChild(new ChessClock());
     }
   }
 
@@ -288,7 +289,7 @@ public class ChessClockControl extends AbstractConfigurable
       Resources.getString("Editor.ChessClock.show_seconds"),
       Resources.getString("Editor.ChessClock.show_hours"),
       Resources.getString("Editor.ChessClock.show_minutes")
-    } ;
+    };
   }
 
   /**
@@ -404,13 +405,7 @@ public class ChessClockControl extends AbstractConfigurable
    * @return First ChessClockControl in our module
    */
   public static ChessClockControl getInstance() {
-    GameModule gm = GameModule.getGameModule();
-    if (gm.getAllDescendantComponentsOf(ChessClockControl.class).size() > 0) {
-      return gm.getAllDescendantComponentsOf(ChessClockControl.class).get(0);
-    }
-    else {
-      return null;
-    }
+    return GameModule.getGameModule().getAllDescendantComponentsOf(ChessClockControl.class).stream().findFirst().orElse(null);
   }
 
   /**
@@ -482,11 +477,9 @@ public class ChessClockControl extends AbstractConfigurable
       return command;
     }
 
-    Iterator<ChessClock> it = chessclocks.iterator();
     ChessClock first = null;
     boolean found = false;
-    while (it.hasNext()) {
-      ChessClock clock = it.next();
+    for (ChessClock clock : chessclocks) {
       if (first == null) {
         first = clock; // Mark first clock, in case we run off the end and that's the one we need
         // to start.
@@ -648,16 +641,15 @@ public class ChessClockControl extends AbstractConfigurable
    * @return An {@link UpdateClockControlCommand}
    */
   public Command decode(final String command) {
-    if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
-      decoder.nextToken();
-      final boolean showing = decoder.nextBoolean(false);
-      final boolean online  = decoder.nextBoolean(false);
-      return new UpdateClockControlCommand(showing, online);
-    }
-    else {
+    if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+
+    final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
+    decoder.nextToken();
+    final boolean showing = decoder.nextBoolean(false);
+    final boolean online  = decoder.nextBoolean(false);
+    return new UpdateClockControlCommand(showing, online);
   }
 
   /**
@@ -666,16 +658,14 @@ public class ChessClockControl extends AbstractConfigurable
    * @return Serialized command, or null if command passed wasn't an UpdateClockControlCommand.
    */
   public String encode(final Command c) {
-    if (c instanceof UpdateClockControlCommand) {
-      final UpdateClockControlCommand comm = (UpdateClockControlCommand) c;
-      final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
-      encoder.append(comm.showing);
-      encoder.append(comm.online);
-      return COMMAND_PREFIX + encoder.getValue();
-    }
-    else {
+    if (!(c instanceof UpdateClockControlCommand)) {
       return null;
     }
+    final UpdateClockControlCommand comm = (UpdateClockControlCommand) c;
+    final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
+    encoder.append(comm.showing);
+    encoder.append(comm.online);
+    return COMMAND_PREFIX + encoder.getValue();
   }
 
   /**

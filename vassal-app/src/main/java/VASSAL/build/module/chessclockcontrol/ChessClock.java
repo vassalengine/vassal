@@ -152,7 +152,6 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     // Timer is static so it gets created exactly once ever
     if (timer == null) {
       timer = new Timer(100, this);
-      timer.stop();
     }
 
     // But every ChessClock instance needs its own action listener
@@ -231,7 +230,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   /**
    *  Defines the Command by which information about this clock is communicated between machines (and to/from save and log files)
    */
-  public class UpdateTimerCommand extends Command {
+  private class UpdateTimerCommand extends Command {
     private final String who; // who = player who is doing the reporting
     private final String name; // name = whose timer is being reported
     private final long elapsed; // Elapsed time from our point of view
@@ -669,22 +668,20 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @return An {@link UpdateTimerCommand}
    */
   public Command decode(final String command) {
-    if (command.startsWith(COMMAND_PREFIX)) {
-      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
-      decoder.nextToken();
-      final String who = decoder.nextToken();
-      final String name = decoder.nextToken();
-      if (!getName().equals(name))
-        return null;
-      final long elapsed = decoder.nextLong(0L);
-      final long verified = decoder.nextLong(0L);
-      final boolean ticking = decoder.nextBoolean(false);
-      final boolean restore = decoder.nextBoolean(false);
-      return new UpdateTimerCommand(who, name, elapsed, verified, ticking, restore);
-    }
-    else {
+    if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+    final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(command, DELIMITER);
+    decoder.nextToken();
+    final String who = decoder.nextToken();
+    final String name = decoder.nextToken();
+    if (!getName().equals(name))
+      return null;
+    final long elapsed = decoder.nextLong(0L);
+    final long verified = decoder.nextLong(0L);
+    final boolean ticking = decoder.nextBoolean(false);
+    final boolean restore = decoder.nextBoolean(false);
+    return new UpdateTimerCommand(who, name, elapsed, verified, ticking, restore);
   }
 
   /**
@@ -693,20 +690,18 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @return Serialized command, or null if command passed wasn't an UpdateTimerCommand.
    */
   public String encode(final Command c) {
-    if (c instanceof UpdateTimerCommand) {
-      final UpdateTimerCommand comm = (UpdateTimerCommand) c;
-      final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
-      encoder.append(comm.who);
-      encoder.append(comm.name);
-      encoder.append(comm.elapsed);
-      encoder.append(comm.verified);
-      encoder.append(comm.ticking);
-      encoder.append(comm.restore);
-      return COMMAND_PREFIX + encoder.getValue();
-    }
-    else {
+    if (!(c instanceof UpdateTimerCommand)) {
       return null;
     }
+    final UpdateTimerCommand comm = (UpdateTimerCommand) c;
+    final SequenceEncoder encoder = new SequenceEncoder(DELIMITER);
+    encoder.append(comm.who);
+    encoder.append(comm.name);
+    encoder.append(comm.elapsed);
+    encoder.append(comm.verified);
+    encoder.append(comm.ticking);
+    encoder.append(comm.restore);
+    return COMMAND_PREFIX + encoder.getValue();
   }
 
   /**
