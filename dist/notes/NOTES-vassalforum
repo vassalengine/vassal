@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.4.2 Released[/b][/size]
+[size=200][b]VASSAL 3.4.3 Released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.4.2.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.3.
 
 [size=150][b]IMPORTANT[/b][/size]
 
@@ -12,11 +12,30 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.2.
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.22macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.32macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-other.zip]Other[/url]
+
+[size=150][b]Changes since 3.4.2[/b][/size]
+
+Bug fixes
+
+* 13452: Bundle Java 15 with Windows and Mac packages
+* 13442: Add button for toggling password visibility
+* 13441: Multiple scaling or rotation of SVG images failed to compound
+* 13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board of an At-Start Stack
+* 13436: Allow Module Managers from different versions to run simultaneously
+* 13435: "Bad Module Data" messages with less-than symbols misinterpreted as HTML when HTML turned on in module
+* 13434: Clarify deprecation messages
+* 13433: OBSCURED_BY_OTHERS property now returns null instead of a value in face down decks when tested using GKCs
+* 13430: Pieces move too fast while "Repositioning stack" in HDPI monitors
+* 13427: Cannot add or edit items when editing an Extension on Linux or Macs
+* 13404: Use better color picker on Linux
+* 13342: Player creates saveGame twice in a row when starting a log file
+* 13307: Background transparency in Text Labels not working
+*  2569: Improved error message for NoSuchElementException in Decorator.mergeState()
 
 [size=150][b]Changes since 3.4.1[/b][/size]
 
