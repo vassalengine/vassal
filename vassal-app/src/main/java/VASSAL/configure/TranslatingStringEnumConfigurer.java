@@ -18,10 +18,11 @@ import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
-import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer that allows a user to select from an underlying list
@@ -34,7 +35,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   private final String[] validValues;
   private final String[] i18nKeys;
   private JComboBox<String> box;
-  private Box panel;
+  private JPanel panel;
 
   /**
    * Create a drop-list of localised display values that allows you to select a value from an
@@ -46,9 +47,13 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    * @param i18nKeys Array of Translation Keys used to describe the list of values
    */
   public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys) {
-    super(key, name, validValues);
+    super(key, name, (validValues != null && validValues.length > 0) ? validValues[0] : "");
     this.validValues = validValues;
     this.i18nKeys = i18nKeys;
+  }
+
+  public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys) {
+    this(null, null, validValues, i18nKeys);
   }
 
   /**
@@ -62,6 +67,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys) {
     this (key, name, validValues.toArray(new String[0]), i18nKeys.toArray(new String[0]));
+  }
+
+  public TranslatingStringEnumConfigurer(List<String> validValues, List<String> i18nKeys) {
+    this (null, null, validValues.toArray(new String[0]), i18nKeys.toArray(new String[0]));
   }
 
   /**
@@ -79,6 +88,16 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     setValue(initialValue);
   }
 
+  public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, char initialValue) {
+    this(key, name, validValues, i18nKeys, String.valueOf(initialValue));
+  }
+  public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys, String initialValue) {
+    this (null, null, validValues, i18nKeys, initialValue);
+  }
+
+  public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys, char initialValue) {
+    this (null, null, validValues, i18nKeys, String.valueOf(initialValue));
+  }
   /**
    * Create a drop-list of localised display values that allows you to select a value from an
    * underlying list of 'internal' untranslated values.
@@ -94,6 +113,9 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     setValue(initialValue);
   }
 
+  public TranslatingStringEnumConfigurer(List<String> validValues, List<String> i18nKeys, String initialValue) {
+    this (null, null, validValues, i18nKeys, initialValue);
+  }
   /**
    * Get the Controls that make up this Configurer
    * @return A swing Component that holds all of the Configurer controls
@@ -108,8 +130,13 @@ public class TranslatingStringEnumConfigurer extends Configurer {
         displayValues[i] = Resources.getString(i18nKeys[i]);
       }
 
-      panel = Box.createHorizontalBox();
-      panel.add(new JLabel(name));
+      if (getName() == null || getName().isEmpty()) {
+        panel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
+      }
+      else {
+        panel = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
+        panel.add(new JLabel(name));
+      }
       box = new JComboBox<>(displayValues);
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
       if (isValidValue(getValue())) {
@@ -214,7 +241,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   @Override
   public String getValueString() {
-    return getValue().toString();
+    return getValue() == null ? "" : getValue().toString();
   }
 
   /**

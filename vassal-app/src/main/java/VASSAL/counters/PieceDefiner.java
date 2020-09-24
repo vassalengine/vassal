@@ -570,23 +570,27 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", "")); //NON-NLS
       add(ed.getControls(), "spanx 3,grow,push,wrap"); //NON-NLS
 
+      JPanel buttonBox = new JPanel(new MigLayout());
+
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      add(b, "tag ok"); //NON-NLS
+      buttonBox.add(b, "tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
         ed = null;
         dispose();
       });
-      add(b, "tag cancel"); //NON-NLS
+      buttonBox.add(b, "tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        add(b, "tag help"); //NON-NLS
+        buttonBox.add(b, "tag help"); //NON-NLS
       }
+
+      add(buttonBox, "spanx 3,center");
 
       pack();
       setLocationRelativeTo(getOwner());

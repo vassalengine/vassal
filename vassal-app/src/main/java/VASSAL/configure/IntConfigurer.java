@@ -32,6 +32,10 @@ public class IntConfigurer extends StringConfigurer {
     }
   }
 
+  public IntConfigurer(Integer val) {
+    this (null, "", val);
+  }
+
   @Override
   public void setValue(String s) {
     Integer i = null;

@@ -22,7 +22,6 @@ import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -31,15 +30,16 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for {@link NamedKeyStroke} values
  */
 public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
-  private JTextField tf = new JTextField(16);
+  private final JTextField tf = new ConfigurerTextField(16);
   private JPanel p;
   private boolean named;
-  private JTextField keyName = new JTextField(16);
+  private final JTextField keyName = new ConfigurerTextField(16);
   private char lastChar;
 
   public NamedHotKeyConfigurer(String key, String name) {
@@ -49,6 +49,10 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
     super(key, name, val);
     named = val != null && val.isNamed();
+  }
+
+  public NamedHotKeyConfigurer(NamedKeyStroke val) {
+    this(null, null, val);
   }
 
   @Override
@@ -91,12 +95,16 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+      if (getName() == null || getName().isEmpty()) {
+        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[fill,grow]")); // NON-NLS
+      }
+      else {
+        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[][fill,grow]")); // NON-NLS
+        p.add(new JLabel(getName()));
+      }
       tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
       tf.setText(keyToString());
       tf.addKeyListener(this);
-      p.add(new JLabel(getName()));
       p.add(tf);
 
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
@@ -153,7 +161,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     lastChar = 0;
     Window w = SwingUtilities.getWindowAncestor(p);
     if (w != null) {
-      w.pack();
+      w.invalidate();
     }
   }
 

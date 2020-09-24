@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -61,6 +59,7 @@ import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
@@ -1011,31 +1010,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
      */
     private void initComponents(BasicPiece p) {
       panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+      panel.setLayout(new MigLayout("gapy 1,ins 0", "[fill,grow]unrel[]")); //NON-NLS
       picker = new ImagePicker();
       picker.setImageName(p.imageName);
       panel.add(picker);
       cloneKeyInput = new KeySpecifier(p.cloneKey);
       deleteKeyInput = new KeySpecifier(p.deleteKey);
-      pieceName = new JTextField(12);
+      pieceName = new JTextField(20);
       pieceName.setText(p.commonName);
       pieceName.setMaximumSize(pieceName.getPreferredSize());
-      Box col = Box.createVerticalBox();
-      Box row = Box.createHorizontalBox();
-      row.add(new JLabel(Resources.getString("Editor.name_label")));
-      row.add(pieceName);
-      col.add(row);
+      JPanel col = new JPanel(new MigLayout("gapy 1,ins 0,wrap 2", "[]rel[fill,grow]")); // NON-NLS
+      col.add(new JLabel(Resources.getString("Editor.name_label")));
+      col.add(pieceName);
       if (p.cloneKey != 0) {
-        row = Box.createHorizontalBox();
-        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
-        row.add(cloneKeyInput);
-        col.add(row);
+        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
+        col.add(cloneKeyInput);
       }
       if (p.deleteKey != 0) {
-        row = Box.createHorizontalBox();
-        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
-        row.add(deleteKeyInput);
-        col.add(row);
+        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
+        col.add(deleteKeyInput);
       }
       panel.add(col);
     }

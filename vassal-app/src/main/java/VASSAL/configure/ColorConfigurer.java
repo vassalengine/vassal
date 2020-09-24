@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import VASSAL.build.BadDataReport;
 import VASSAL.tools.ColorButton;
 import VASSAL.tools.ErrorDialog;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Configurer for {@link Color} values.
@@ -45,6 +46,10 @@ public class ColorConfigurer extends Configurer {
 
   public ColorConfigurer(String key, String name, Color val) {
     super(key, name, val);
+  }
+
+  public ColorConfigurer(Color val) {
+    super(null, null, val);
   }
 
   @Override
@@ -68,9 +73,13 @@ public class ColorConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      if (getName() == null || getName().isEmpty()) {
+        p = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
+      }
+      else {
+        p = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
+        p.add(new JLabel(getName()));
+      }
 
       cb = new ColorButton(colorValue());
       cb.addActionListener(new ActionListener() {

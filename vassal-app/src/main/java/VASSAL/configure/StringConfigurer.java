@@ -19,12 +19,12 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for String values
@@ -42,6 +42,10 @@ public class StringConfigurer extends Configurer {
   public StringConfigurer(String key, String name, String val) {
     super(key, name, val);
     length = DEFAULT_LENGHTH;
+  }
+
+  public StringConfigurer(String val) {
+    this (null, "", val);
   }
 
   public StringConfigurer(String key, String name, int length) {
@@ -65,16 +69,21 @@ public class StringConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      if (getName() == null || getName().isEmpty()) {
+        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[fill,grow]0[0]")); // NON-NLS
+      }
+      else {
+        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[][fill,grow][]")); // NON-NLS
+        p.add(new JLabel(getName()));
+      }
+
       nameField = buildTextField();
       nameField.setMaximumSize(new Dimension(
         nameField.getMaximumSize().width,
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-      p.add(nameField);
+      p.add(nameField, "growx"); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -100,7 +109,6 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-
-    return new JTextField(length);
+    return new ConfigurerTextField(length);
   }
 }

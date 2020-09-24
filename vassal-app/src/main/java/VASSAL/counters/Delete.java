@@ -24,7 +24,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
-import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -39,6 +39,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece
@@ -173,12 +174,14 @@ public class Delete extends Decorator implements TranslatablePiece {
 
     public Ed(Delete p) {
       controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls.setLayout(new MigLayout("gapy 1,ins 0, wrap 2", "[]rel[fill,grow]")); //NON-NLS
 
-      nameInput = new StringConfigurer(null, Resources.getString("Editor.command_name"), p.commandName);
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add(new JLabel(Resources.getString("Editor.command_name")));
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
+      keyInput = new NamedHotKeyConfigurer(null, null, p.key);
+      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
       controls.add(keyInput.getControls());
 
     }

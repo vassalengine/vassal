@@ -22,6 +22,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -52,7 +53,7 @@ public class FormattedStringConfigurer
 
   public void setOptions(String[] options) {
     optionsModel.removeAllElements();
-    optionsModel.addElement("Insert");
+    optionsModel.addElement(Resources.getString("Editor.insert"));
     for (String option : options) {
       optionsModel.addElement(option);
     }
@@ -79,7 +80,11 @@ public class FormattedStringConfigurer
       dropList.addActionListener(this);
 
       setListVisibility();
-      p.add(dropList);
+      //final JPanel dp = new JPanel(new MigLayout());
+      //dp.add(dropList);
+      // p.add(dp);
+      p.add(dropList, "grow 0,right"); // NON-NLS
+
     }
     return p;
   }
@@ -95,7 +100,7 @@ public class FormattedStringConfigurer
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    String item = "";
+    String item;
 
     int selectedIndex = dropList.getSelectedIndex();
 

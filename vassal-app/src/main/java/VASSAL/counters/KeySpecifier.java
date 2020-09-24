@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.ConfigurerTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -30,7 +31,7 @@ import javax.swing.JTextField;
 public class KeySpecifier extends JPanel implements KeyListener {
   private static final long serialVersionUID = 1L;
 
-  private JTextField tf = new JTextField(3);
+  private JTextField tf = new ConfigurerTextField(3);
   private String key = " ";
 
   public KeySpecifier(char c) {
