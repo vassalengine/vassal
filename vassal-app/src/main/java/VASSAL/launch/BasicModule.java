@@ -299,7 +299,7 @@ public class BasicModule extends GameModule {
     final String mess = Resources.getString(
       "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
     warn(mess);
-    log.warn(mess);
+    log.info(mess);
     initFrameTitle();
   }
 

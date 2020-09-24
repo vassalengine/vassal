@@ -43,7 +43,7 @@ public class BundleHelper {
       return bundle.getString(id);
     }
     catch (ClassCastException | MissingResourceException e) {
-      logger.error("No Translation: " + id);
+      logger.warn("No Translation: " + id);
     }
 
     // fallback: return the key
