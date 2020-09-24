@@ -91,12 +91,12 @@ public class AboutScreen extends AbstractConfigurable {
         g.getLocalizedGameName(), g.getGameVersion()));
 
     for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
-      sb.append("<br/>").append( //NON-NLS
+      sb.append("<br/>").append(//NON-NLS
         Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
           ext.getName(), ext.getVersion()));
     }
 
-    sb.append("<br/>").append( //NON-NLS
+    sb.append("<br/>").append(//NON-NLS
       Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
         Info.getVersion()));
 
