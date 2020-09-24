@@ -21,7 +21,7 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
-3.4.3 - ???
+3.4.3 - 24 September 2020
 
 * 13452: Bundle Java 15 with Windows and Mac packages
 * 13442: Add button for toggling password visibility
@@ -39,6 +39,8 @@
 * 13404: Use better color picker on Linux
 * 13342: Player creates saveGame twice in a row when starting a log file
 * 13307: Background transparency in Text Labels not working
+*  2569: Improved error message for NoSuchElementException in
+    Decorator.mergeState()
 
 3.4.2 - 17 September 2020
 

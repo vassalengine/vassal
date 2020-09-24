@@ -549,7 +549,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     final String mess = Resources.getString(
       "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
     warn(mess);
-    log.warn(mess);
+    log.info(mess);
     initFrameTitle();
   }
 

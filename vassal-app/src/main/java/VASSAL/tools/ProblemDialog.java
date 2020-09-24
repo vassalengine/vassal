@@ -433,4 +433,18 @@ public class ProblemDialog {
   }
 
 
+  /**
+   * Used when SequenceEncoder#next_token runs out of data when it was expecting more.
+   * @param usage - information about what was being sequenced
+   * @return Future<?> - Call the get() method of the return value to wait for dialog to close.
+   */
+  public static Future<?> showOutdatedModule(String usage) {
+    return showDisableable(JOptionPane.WARNING_MESSAGE,
+      null, null, usage,
+      Resources.getString("Dialogs.module_version_incompatible"),
+      Resources.getString("Dialogs.module_version_incompatible"),
+      Resources.getString("Dialogs.module_version_incompatible_sequence", usage) + "\n\n"
+        + Resources.getString("Dialogs.check_for_updated_vmod")
+    );
+  }
 }
