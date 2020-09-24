@@ -140,7 +140,7 @@ public class SpecialDie extends AbstractConfigurable {
     if  (face < 0 || face >= faceCount)  {
       format.setProperty(RESULT, "undefined"); //$NON-NLS-1$
       format.setProperty(NUMERICAL_VALUE, "0"); //$NON-NLS-1$
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
     }
     else {
       final SpecialDieFace aFace = dieFaceList.get(face);
@@ -154,7 +154,7 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
       return 0;
     }
     else {
@@ -166,7 +166,7 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
       return ""; //$NON-NLS-1$
     }
     else {

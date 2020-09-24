@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -81,7 +82,7 @@ public class InstanceConfigurer extends Configurer {
   @SuppressWarnings("unchecked")
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public ArrayList<ItemInstance> getValueArrayList() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return (ArrayList<ItemInstance>) getValue();
   }
 
@@ -116,7 +117,6 @@ public class InstanceConfigurer extends Configurer {
 
       symbolPanel = new SymbolPanel();
       panel.add(symbolPanel);
-
     }
 
     return panel;
@@ -187,7 +187,7 @@ public class InstanceConfigurer extends Configurer {
       mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
       Box box = Box.createHorizontalBox();
-      box.add(new JLabel("Items"));
+      box.add(new JLabel(Resources.getString("Editor.InstanceConfigurer.items")));
       mainPanel.add(box);
 
       model = new SymbolTableModel();
@@ -250,10 +250,8 @@ public class InstanceConfigurer extends Configurer {
     }
 
     public void reshow() {
-
       repack();
       detailPanel.repaint();
-
     }
 
     public void refresh() {
@@ -272,7 +270,9 @@ public class InstanceConfigurer extends Configurer {
     class SymbolTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = new String[] { Resources.getString("Editor.InstanceConfigurer.name"),
+                                                          Resources.getString("Editor.InstanceConfigurer.type"),
+                                                          Resources.getString("Editor.InstanceConfigurer.position") };
 
       @Override
       public int getColumnCount() {
@@ -316,15 +316,10 @@ public class InstanceConfigurer extends Configurer {
 
       @Override
       public void setValueAt(Object value, int row, int col) {
-        // TODO delete commented code or reactivate
-//        fireTableCellUpdated(row, col);
-//        visualizer.rebuild();
-      }
 
+      }
     }
   }
-
-
 
   public void rebuildViz() {
     if (visualizer != null) {
@@ -341,5 +336,4 @@ public class InstanceConfigurer extends Configurer {
     }
     rebuildViz();
   }
-
 }

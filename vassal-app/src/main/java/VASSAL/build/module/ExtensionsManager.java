@@ -76,7 +76,7 @@ public class ExtensionsManager {
       if (index > 0) {
         dirName = dirName.substring(0, index);
       }
-      dir = new File(dirName + "_ext");
+      dir = new File(dirName + "_ext"); //NON-NLS
       if (mustExist) {
         dir = ensureExists(dir);
       }
@@ -103,11 +103,11 @@ public class ExtensionsManager {
    */
   protected File ensureExists(File dir) {
     if (dir.exists() && !dir.isDirectory()) {
-      WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir);
+      WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir); //NON-NLS
       return null;
     }
     else if (!dir.exists() && !dir.mkdirs()) {
-      WriteErrorDialog.error(new IOException("Could not create " + dir), dir);
+      WriteErrorDialog.error(new IOException("Could not create " + dir), dir); //NON-NLS
       return null;
     }
     return dir;
@@ -119,7 +119,7 @@ public class ExtensionsManager {
       if (extDir == null) {
         return null;
       }
-      inactiveDir = new File(extDir, "inactive");
+      inactiveDir = new File(extDir, "inactive"); //NON-NLS
       if (mustExist) {
         inactiveDir = ensureExists(inactiveDir);
         if (inactiveDir == null) {

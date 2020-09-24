@@ -30,10 +30,10 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- *
  * The base portion of a Counter Layout component.  Contains the draw() method, but may override specific values from an associated (via the name attribute) {@link ItemInstance}
  */
 public abstract class Item extends AbstractConfigurable {
@@ -74,13 +74,13 @@ public abstract class Item extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Location:  ",
-      "Advanced Options",
-      "X Offset:  ",
-      "Y Offset:  ",
-      "Rotation (Degrees):  ",
-      "Anti-alias?"
+      Resources.getString("Editor.Item.name"),
+      Resources.getString("Editor.Item.location"),
+      Resources.getString("Editor.Item.advanced_options"),
+      Resources.getString("Editor.Item.x_offset"),
+      Resources.getString("Editor.Item.y_offset"),
+      Resources.getString("Editor.Item.rotation_degrees"),
+      Resources.getString("Editor.Item.anti_alias")
     };
   }
 
@@ -214,12 +214,7 @@ public abstract class Item extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  private VisibilityCondition advancedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return advanced;
-    }
-  };
+  private VisibilityCondition advancedCond = () -> advanced;
 
 
   /**
@@ -303,5 +298,4 @@ public abstract class Item extends AbstractConfigurable {
     se.append(antialias);
     return se.getValue();
   }
-
 }

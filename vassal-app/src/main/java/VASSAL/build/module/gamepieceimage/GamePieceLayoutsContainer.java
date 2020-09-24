@@ -29,6 +29,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 
 /**
  * Container for definitions of Generic Counter Definitions.
@@ -83,7 +84,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layouts";
+    return Resources.getString("Editor.GamePieceLayoutsContainer.component_type");
   }
 
   @Override

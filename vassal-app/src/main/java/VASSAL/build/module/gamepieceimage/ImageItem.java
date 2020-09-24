@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
@@ -75,8 +76,8 @@ public class ImageItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Image:  ",
-      "Image is:  "
+      Resources.getString("Editor.ImageItem.image"),
+      Resources.getString("Editor.ImageItem.image_is")
     );
   }
 
@@ -213,22 +214,11 @@ public class ImageItem extends Item {
       iName = Ii.getImageName();
     }
 
-//    image = null;
-
     if (iName != null) {
       if (iName.trim().length() == 0) {
         srcOp = BaseOp.op;
       }
       else {
-/*
-      try {
-        image = GameModule.getGameModule().getDataArchive().getCachedImage(iName);
-//        imageBounds = DataArchive.getImageBounds(image);
-        imageBounds = ImageUtils.getBounds((BufferedImage) image);
-      }
-      catch (IOException e) {
-      }
-*/
         srcOp = Op.load(iName);
       }
       imageBounds = ImageUtils.getBounds(srcOp.getSize());

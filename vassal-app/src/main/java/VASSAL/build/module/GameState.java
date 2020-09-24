@@ -226,7 +226,7 @@ public class GameState implements CommandEncoder {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GameComponent> getGameComponentsEnum() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return Collections.enumeration(gameComponents);
   }
 
@@ -405,12 +405,12 @@ public class GameState implements CommandEncoder {
     final File f = fc.getSelectedFile();
     try {
       if (!f.exists()) throw new FileNotFoundException(
-        "Unable to locate " + f.getPath());
+        "Unable to locate " + f.getPath()); //NON-NLS
 
       // Check the Save game for validity
       final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
       if (!(metaData instanceof SaveMetaData)) {
-        WarningDialog.show("GameState.invalid_save_file", f.getPath());
+        WarningDialog.show("GameState.invalid_save_file", f.getPath()); //NON-NLS
         return;
       }
 
@@ -453,8 +453,8 @@ public class GameState implements CommandEncoder {
       }
 
       log.info(
-        "Loading save game " + f.getPath() +
-        ", created with module version " + saveModuleVersion
+        "Loading save game " + f.getPath() + //NON-NLS
+        ", created with module version " + saveModuleVersion //NON-NLS
       );
 
       if (gameStarted) {
@@ -470,20 +470,6 @@ public class GameState implements CommandEncoder {
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
     }
-/*
-        String msg = Resources.getString("GameState.unable_to_load", f.getName());  //$NON-NLS-1$
-        if (e.getMessage() != null) {
-          msg += "\n" + e.getMessage();  //$NON-NLS-1$
-        }
-        JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(),
-                               msg, Resources.getString("GameState.load_error"), JOptionPane.ERROR_MESSAGE);  //$NON-NLS-1$
-    }
-    else {
-// FIXME: give more specific error message
-// FIXME: maybe deprecate warn()?
-      GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_find", f.getPath()));  //$NON-NLS-1$
-    }
-*/
   }
 
   protected String saveString() {
@@ -576,7 +562,7 @@ public class GameState implements CommandEncoder {
 
     File file = fc.getSelectedFile();
     if (file.getName().indexOf('.') == -1)
-      file = new File(file.getParent(), file.getName() + ".vsav");
+      file = new File(file.getParent(), file.getName() + ".vsav"); //NON-NLS
 
     return file;
   }
@@ -652,7 +638,7 @@ public class GameState implements CommandEncoder {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return Collections.enumeration(pieces.values());
   }
 
@@ -941,12 +927,12 @@ public class GameState implements CommandEncoder {
     }
 
 // FIXME: give more specific error message
-    throw new IOException("Invalid saveFile format");
+    throw new IOException("Invalid saveFile format"); //NON-NLS
   }
 
   public DirectoryConfigurer getSavedGameDirectoryPreference() {
     if (savedGameDirectoryPreference == null) {
-      savedGameDirectoryPreference = new DirectoryConfigurer("savedGameDir", null);
+      savedGameDirectoryPreference = new DirectoryConfigurer("savedGameDir", null); //NON-NLS
       GameModule.getGameModule().getPrefs().addOption(null, savedGameDirectoryPreference);
     }
     return savedGameDirectoryPreference;

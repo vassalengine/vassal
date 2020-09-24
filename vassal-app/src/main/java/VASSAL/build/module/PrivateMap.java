@@ -89,9 +89,9 @@ public class PrivateMap extends Map {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       new String[]{
-        "Belongs to side",                //$NON-NLS-1$
-        "Visible to all players?",        //$NON-NLS-1$
-        "Use same boards as this map:  "  //$NON-NLS-1$
+        Resources.getString("Editor.PrivateMap.belongs_to_one_side"),
+        Resources.getString("Editor.PrivateMap.visible_to_all_player"),
+        Resources.getString("Editor.PrivateMap.use_same_boards_as_this_map")
       },
       super.getAttributeDescriptions()
     );
@@ -262,7 +262,7 @@ public class PrivateMap extends Map {
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (surrogate != null) {
       boardList = surrogate.getAllBoards();
       edgeBuffer = surrogate.getEdgeBuffer();

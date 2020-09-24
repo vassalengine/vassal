@@ -76,7 +76,7 @@ public class DiceButton extends AbstractConfigurable {
   public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
-  public static final String SORT_DICE_RESULTS = "sortDice";
+  public static final String SORT_DICE_RESULTS = "sortDice"; //NON-NLS
 
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
@@ -127,9 +127,9 @@ public class DiceButton extends AbstractConfigurable {
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, "2d6");
-    setAttribute(BUTTON_TEXT, "2d6");
-    launch.setAttribute(TOOLTIP, "2d6");
+    setAttribute(NAME, "2d6"); //NON-NLS
+    setAttribute(BUTTON_TEXT, "2d6"); //NON-NLS
+    launch.setAttribute(TOOLTIP, "2d6"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
@@ -142,7 +142,7 @@ public class DiceButton extends AbstractConfigurable {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportPrefix() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -152,7 +152,7 @@ public class DiceButton extends AbstractConfigurable {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return " ***  <" //$NON-NLS-1$
         + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
   }
@@ -470,7 +470,7 @@ public class DiceButton extends AbstractConfigurable {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName() + "_result");
+    l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
   }
 }

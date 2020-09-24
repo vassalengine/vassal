@@ -258,7 +258,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   protected final Object loggingLock = new Object();
   protected Command pausedCommands;
 
-  protected String gameFile     = "";
+  protected String gameFile     = ""; //NON-NLS
   protected GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   /*
@@ -279,7 +279,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public JFrame getFrame() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return frame;
   }
 
@@ -288,9 +288,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String toString() {
-    return "BasicModule{" +
-      "name='" + name + '\'' +
-      ", moduleVersion='" + moduleVersion + '\'' +
+    return "BasicModule{" +                                       //NON-NLS
+      "name='" + name + '\'' +                                    //NON-NLS
+      ", moduleVersion='" + moduleVersion + '\'' +                //NON-NLS
       '}';
   }
 
@@ -332,7 +332,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String getI18nPrefix() {
-    return "";
+    return ""; //NON-NLS
   }
 
   /**
@@ -403,12 +403,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       }
     }
 
-    MenuManager.getInstance().addAction("Prefs.edit_preferences",
+    MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
       getPrefs().getEditor().getEditAction());
 
     gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
-    MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
+    MenuManager.getInstance().addAction("GameRefresher.refresh_counters", //NON-NLS
       gameRefresher.getRefreshAction());
   }
 
@@ -484,7 +484,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -612,7 +612,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        WarningDialog.show("GameModule.version_warning",
+        WarningDialog.show("GameModule.version_warning", //NON-NLS
                            vassalVersionCreated, runningVersion);
       }
     }
@@ -668,7 +668,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static int compareVersions(String v1, String v2) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return VersionUtils.compareVersions(v1, v2);
   }
 
@@ -734,7 +734,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.GameModule.description")
+      Resources.getString("Editor.GameModule.description")    //NON-NLS
     };
   }
 
@@ -834,7 +834,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void fireKeyStroke(KeyStroke stroke) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
         l.keyPressed(stroke);
@@ -1053,7 +1053,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setGlobalPrefs(@SuppressWarnings("unused") Prefs p) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   /**
@@ -1329,7 +1329,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
             p.close();
           }
           catch (IOException e) {
-            log.error("Error while closing module preferences", e);
+            log.error("Error while closing module preferences", e); //NON-NLS
           }
         }
       }
@@ -1357,7 +1357,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
         ReadErrorDialog.error(e, archive.getName());
       }
 
-      log.info("Exiting");
+      log.info("Exiting"); //NON-NLS
     }
 
     return !cancelled;
@@ -1492,8 +1492,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
 
     //Save our old drag threshold
-    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
-    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
+    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold"); //NON-NLS
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold())); //NON-NLS
 
     /*
      * Tell any Plugin components that the build is complete so that they
@@ -1510,10 +1510,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static void unload() {
     // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
     if (oldDragThreshold != null) {
-      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);
+      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold); //NON-NLS
     }
     else {
-      System.clearProperty("awt.dnd.drag.threshold");
+      System.clearProperty("awt.dnd.drag.threshold"); //NON-NLS
     }
 
     if (theModule != null) {
@@ -1622,9 +1622,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       // are properly set at this point.
 
       final String hstr =
-        DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion());
+        DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion()); //NON-NLS
 
-      final File tc = new File(Info.getConfDir(), "tiles/" + hstr);
+      final File tc = new File(Info.getConfDir(), "tiles/" + hstr); //NON-NLS
       tcache = new ImageTileDiskCache(tc.getAbsolutePath());
     }
 
@@ -1822,7 +1822,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       return CRCUtils.getCRC(files);
     }
     catch (IOException e) {
-      log.error("Error generating CRC", e);
+      log.error("Error generating CRC", e); //NON-NLS
       return 0L;
     }
   }

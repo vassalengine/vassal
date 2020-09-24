@@ -160,7 +160,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         }
       }
       catch (RuntimeException e) {
-        ErrorDialog.dataWarning(new BadDataReport("Couldn't build piece", def, e));
+        ErrorDialog.dataWarning(new BadDataReport("Couldn't build piece", def, e)); //NON-NLS
       }
     }
     return piece;

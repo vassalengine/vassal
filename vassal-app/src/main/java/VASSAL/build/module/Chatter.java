@@ -80,7 +80,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
 
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected static final String GAME_MSG_COLOR = "gameMessageColor";
+  protected static final String GAME_MSG_COLOR = "gameMessageColor"; //NON-NLS
 
   protected Font myFont;
 
@@ -101,16 +101,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
     conversationPane = new JTextPane();
-    conversationPane.setContentType("text/html");
+    conversationPane.setContentType("text/html"); //NON-NLS
     doc = (HTMLDocument) conversationPane.getDocument();
     kit = (HTMLEditorKit) conversationPane.getEditorKit();
 
     style = kit.getStyleSheet();
-    myFont = new Font("SansSerif", Font.PLAIN, 12); // Will be overridden by the font from Chat preferences
+    myFont = new Font("SansSerif", Font.PLAIN, 12); //NON-NLS // Will be overridden by the font from Chat preferences
 
     try {
       for (int i = 0; i < 15; ++i) {
-        kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null);
+        kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null); //NON-NLS
       }
     } 
     catch (BadLocationException | IOException ble) {
@@ -178,7 +178,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @return - an entry in our CSS style sheet to use for this chat message
    */
   protected String getChatStyle(String s) {   
-    return s.startsWith(formatChat("").trim()) ? "mychat" : "other";
+    return s.startsWith(formatChat("").trim()) ? "mychat" : "other"; //NON-NLS
   }
     
   /**
@@ -226,64 +226,64 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         // ` = msg5
         // These characters can be pre-pended to Report messages to produce the color changes. The characters themselves are removed before display.
         // Reports can also include <b></b> tags for bold and <i></i> for italic.
-        if (s.startsWith("* |") || s.startsWith("*|")) {
-          style = "msg";
-          s = s.replaceFirst("\\|", "");
+        if (s.startsWith("* |") || s.startsWith("*|")) {   //NON-NLS
+          style = "msg";                                   //NON-NLS
+          s = s.replaceFirst("\\|", "");  //NON-NLS
           html_allowed = true;
         } 
-        else if (s.startsWith("* !") || s.startsWith("*!")) {
-          style = "msg2";
-          s = s.replaceFirst("!", "");
+        else if (s.startsWith("* !") || s.startsWith("*!")) { //NON-NLS
+          style = "msg2";                                     //NON-NLS
+          s = s.replaceFirst("!", "");       //NON-NLS
           html_allowed = true;
         } 
-        else if (s.startsWith("* ?") || s.startsWith("*?")) {
-          style = "msg3";
-          s = s.replaceFirst("\\?", "");
+        else if (s.startsWith("* ?") || s.startsWith("*?")) { //NON-NLS
+          style = "msg3";                                     //NON-NLS
+          s = s.replaceFirst("\\?", "");     //NON-NLS
           html_allowed = true;
         } 
-        else if (s.startsWith("* ~") || s.startsWith("*~")) {
-          style = "msg4";
-          s = s.replaceFirst("~", "");
+        else if (s.startsWith("* ~") || s.startsWith("*~")) { //NON-NLS
+          style = "msg4";                                     //NON-NLS
+          s = s.replaceFirst("~", "");       //NON-NLS
           html_allowed = true;
         } 
-        else if (s.startsWith("* `") || s.startsWith("*`")) {
-          style = "msg5";
-          s = s.replaceFirst("`", "");
+        else if (s.startsWith("* `") || s.startsWith("*`")) {  //NON-NLS
+          style = "msg5";                                      //NON-NLS
+          s = s.replaceFirst("`", "");       //NON-NLS
           html_allowed = true;
         } 
         else {
-          style = "msg";
+          style = "msg";                                        //NON-NLS
           html_allowed = GlobalOptions.getInstance().chatterHTMLSupport(); // Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
         }
       } 
-      else if (s.startsWith("-")) {
-        if (s.startsWith("- |") || s.startsWith("-|")) {
-          style = "msg";
-          s = s.replaceFirst("\\|", "");
+      else if (s.startsWith("-")) {                            //NON-NLS
+        if (s.startsWith("- |") || s.startsWith("-|")) {       //NON-NLS
+          style = "msg";                                       //NON-NLS
+          s = s.replaceFirst("\\|", "");      //NON-NLS
           html_allowed = true;
         }
-        else if (s.startsWith("- !") || s.startsWith("-!")) {
-          style = "msg2";
-          s = s.replaceFirst("!", "");
+        else if (s.startsWith("- !") || s.startsWith("-!")) {  //NON-NLS
+          style = "msg2";                                      //NON-NLS
+          s = s.replaceFirst("!", "");        //NON-NLS
           html_allowed = true;
         }
-        else if (s.startsWith("- ?") || s.startsWith("-?")) {
-          style = "msg3";
-          s = s.replaceFirst("\\?", "");
+        else if (s.startsWith("- ?") || s.startsWith("-?")) {  //NON-NLS
+          style = "msg3";                                      //NON-NLS
+          s = s.replaceFirst("\\?", "");      //NON-NLS
           html_allowed = true;
         }
-        else if (s.startsWith("- ~") || s.startsWith("-~")) {
-          style = "msg4";
-          s = s.replaceFirst("~", "");
+        else if (s.startsWith("- ~") || s.startsWith("-~")) {  //NON-NLS
+          style = "msg4";                                      //NON-NLS
+          s = s.replaceFirst("~", "");        //NON-NLS
           html_allowed = true;
         }
-        else if (s.startsWith("- `") || s.startsWith("-`")) {
-          style = "msg5";
-          s = s.replaceFirst("`", "");
+        else if (s.startsWith("- `") || s.startsWith("-`")) {   //NON-NLS
+          style = "msg5";                                       //NON-NLS
+          s = s.replaceFirst("`", "");         //NON-NLS
           html_allowed = true;
         }
         else {
-          style = "sys";
+          style = "sys";                                       //NON-NLS
           html_allowed = true;
         }
       } 
@@ -293,7 +293,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     } 
     else {
-      style = "msg";
+      style = "msg";  //NON-NLS
       html_allowed = false;
     }
 
@@ -301,30 +301,30 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // (1) Anything received from chat channel, for security reasons
     // (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting 
     if (!html_allowed) {
-      s = s.replaceAll("<", "&lt;")  // This prevents any unwanted tag from functioning
-           .replaceAll(">", "&gt;"); // This makes sure > doesn't break any of our legit <div> tags
+      s = s.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
+           .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
     }
 
     // Systematically search through for html image tags. When we find one, try
     // to match it with an image from our DataArchive, and substitute the correct
     // fully qualified URL into the tag.
     URL url;
-    String keystring = "<img src=\"";
+    String keystring = "<img src=\""; //NON-NLS
     String file, tag, replace;
     int base;
     while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
       base = s.toLowerCase().indexOf(keystring);
-      file = s.substring(base + keystring.length()).split("\"")[0]; // Pull the filename out from between the quotes
-      tag  = s.substring(base, base + keystring.length()) + file + "\""; // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
+      file = s.substring(base + keystring.length()).split("\"")[0]; //NON-NLS // Pull the filename out from between the quotes
+      tag  = s.substring(base, base + keystring.length()) + file + "\""; //NON-NLS // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
 
       try {
-        url = GameModule.getGameModule().getDataArchive().getURL("images/" + file);
-        replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra
+        url = GameModule.getGameModule().getDataArchive().getURL("images/" + file); //NON-NLS
+        replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra  //NON-NLS
                                                           // space between IMG and SRC in the processed
                                                           // version ensures we don't re-find THIS tag as we iterate
       } 
       catch (IOException ex) {
-        replace = "<img  src=\"" + file + "\""; // Or just leave in except alter just enough that we won't find this tag again
+        replace = "<img  src=\"" + file + "\""; //NON-NLS // Or just leave in except alter just enough that we won't find this tag again
       }
 
       if (s.contains(tag)) {
@@ -337,7 +337,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // Now we have to fix up any legacy angle brackets around the word <observer>
     keystring = Resources.getString("PlayerRoster.observer");
-    replace = keystring.replace("<", "&lt;").replace(">", "&gt;");
+    replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
     if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
@@ -346,7 +346,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // still free to insert <span> tags and <img> tags and the like in Report
     // messages.
     try {
-      kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null);
+      kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null); //NON-NLS
     } 
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
@@ -368,17 +368,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected void addStyle(String s, Font f, Color c, String font_weight, int size) {
     if ((style == null) || (c == null)) return;
     style.addRule(s +
-                  " {color:" + 
-                  String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + 
-                  "; font-family:" + 
+                  " {color:" +                                                               //NON-NLS
+                  String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) +    //NON-NLS
+                  "; font-family:" +                                                         //NON-NLS
                   f.getFamily() + 
-                  "; font-size:" + 
+                  "; font-size:" +                                                           //NON-NLS
                   (size > 0 ? size : f.getSize()) + 
-                  "; " + 
-                  ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +
-                  "}");
+                  "; " +                                                                     //NON-NLS
+                  ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +    //NON-NLS
+                  "}");                                                                      //NON-NLS
 
-    style.addRule(s + "color {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + "; }");
+    style.addRule(s + "color {color:" + String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) + "; }"); //NON-NLS
   }
 
   /**
@@ -392,21 +392,21 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     if (f == null) {
       if (myFont == null) {
-        f = new Font("SansSerif", Font.PLAIN, 12);
+        f = new Font("SansSerif", Font.PLAIN, 12); //NON-NLS
         myFont = f;
       } 
       else {
         f = myFont;
       }
     }
-    addStyle(".msg",    f, gameMsg,   "",     0);
-    addStyle(".msg2",   f, gameMsg2,  "",     0);
-    addStyle(".msg3",   f, gameMsg3,  "",     0);
-    addStyle(".msg4",   f, gameMsg4,  "",     0);
-    addStyle(".msg5",   f, gameMsg5,  "",     0);
-    addStyle(".mychat", f, myChat,    "bold", 0);
-    addStyle(".other ", f, otherChat, "bold", 0);
-    addStyle(".sys",    f, systemMsg, "",     0);
+    addStyle(".msg",    f, gameMsg,   "",     0); //NON-NLS
+    addStyle(".msg2",   f, gameMsg2,  "",     0); //NON-NLS
+    addStyle(".msg3",   f, gameMsg3,  "",     0); //NON-NLS
+    addStyle(".msg4",   f, gameMsg4,  "",     0); //NON-NLS
+    addStyle(".msg5",   f, gameMsg5,  "",     0); //NON-NLS
+    addStyle(".mychat", f, myChat,    "bold", 0); //NON-NLS
+    addStyle(".other ", f, otherChat, "bold", 0); //NON-NLS
+    addStyle(".sys",    f, systemMsg, "",     0); //NON-NLS
 
     // A fun extension would be letting the module designer provide extra class styles. 
   }
@@ -453,7 +453,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
-    final FontConfigurer chatFont = new FontConfigurer("ChatFont",
+    final FontConfigurer chatFont = new FontConfigurer("ChatFont", //NON-NLS
                                                        Resources.getString("Chatter.chat_font_preference"));
 
     chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
@@ -666,8 +666,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     public DisplayText(Chatter c, String s) {
       this.c = c;
       msg = s;
-      if (msg.startsWith("<>")) {
-        msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly
+      if (msg.startsWith("<>")) { //NON-NLS
+        msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly //NON-NLS
         // angle brackets
       } 
       else {
@@ -706,13 +706,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   /** @deprecated No Replacement */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setHandle(@SuppressWarnings("unused") String s) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   /** @deprecated use {@link GlobalOptions#getPlayerId()} */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getHandle() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return GlobalOptions.getInstance().getPlayerId();
   }
 }

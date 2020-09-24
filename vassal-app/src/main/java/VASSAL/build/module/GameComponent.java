@@ -30,7 +30,6 @@ public interface GameComponent {
    */
   public void setup(boolean gameStarting);
 
-
   /**
    * When saving a game, each GameComponent should return a {@link
    * Command} that, when executed, restores the GameComponent to its

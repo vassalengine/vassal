@@ -46,10 +46,10 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     /* These four fields pertaining to the physical representation of the
      * GKC on the toolbar are not applicable in this implementation.
      */
-    launch.setAttribute(BUTTON_TEXT, "");
-    launch.setAttribute(TOOLTIP, "");
-    launch.setAttribute(ICON, "");
-    launch.setAttribute(HOTKEY, "");
+    launch.setAttribute(BUTTON_TEXT, "");  //NON-NLS
+    launch.setAttribute(TOOLTIP, "");  //NON-NLS
+    launch.setAttribute(ICON, "");  //NON-NLS
+    launch.setAttribute(HOTKEY, "");  //NON-NLS
   }
 
   //---------------------- GlobalKeyCommand extension ---------------------
@@ -65,7 +65,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand");
+    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand"); //NON-NLS
   }
 
   @Override

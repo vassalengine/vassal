@@ -718,6 +718,4 @@ public class DoActionButton extends AbstractConfigurable
       return super.getPropertyNames();
     }
   }
-
-
 }

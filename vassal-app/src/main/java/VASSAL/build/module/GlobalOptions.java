@@ -93,7 +93,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
 
-  private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
+  private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
@@ -245,7 +245,7 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @deprecated No replacement */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isAveragedScaling() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
   
@@ -576,5 +576,4 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     return l;
   }
-
 }

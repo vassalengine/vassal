@@ -74,7 +74,7 @@ public class AboutScreen extends AbstractConfigurable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public AboutScreen(Image i) {
     this();
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     this.op = Op.load(ImageUtils.toBufferedImage(i));
   }
 
@@ -84,23 +84,23 @@ public class AboutScreen extends AbstractConfigurable {
     final GameModule g = GameModule.getGameModule();
     if (g == null) return;
 
-    final StringBuilder sb = new StringBuilder("<html><center>");
+    final StringBuilder sb = new StringBuilder("<html><center>"); //NON-NLS
 
     sb.append(
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         g.getLocalizedGameName(), g.getGameVersion()));
 
     for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
-      sb.append("<br/>").append(
+      sb.append("<br/>").append( //NON-NLS
         Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
           ext.getName(), ext.getVersion()));
     }
 
-    sb.append("<br/>").append(
+    sb.append("<br/>").append( //NON-NLS
       Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
         Info.getVersion()));
 
-    sb.append("</center></html>");
+    sb.append("</center></html>"); //NON-NLS
 
     final AboutWindow w =
       new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
