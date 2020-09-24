@@ -857,10 +857,7 @@ public class ServerAddressBook {
     }
   }
 
-  /**
-   * Address Book entry for the VASSAL Jabber server
-   *
-   */
+  // Address Book entry for the VASSAL Jabber server
 /*
   private class VassalJabberEntry extends AddressBookEntry {
     protected JTextField jabberUser = new JTextField();

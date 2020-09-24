@@ -28,7 +28,6 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.DummyMessageServer;
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

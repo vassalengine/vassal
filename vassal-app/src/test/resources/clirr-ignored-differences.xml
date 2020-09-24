@@ -206,6 +206,12 @@
         <field>tags</field>
         <justification>should have been final in the first place</justification>
     </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>DYNAMIC_TYPE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->
