@@ -363,7 +363,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setBoards(Enumeration<Board> bdEnum) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     setBoards(Collections.list(bdEnum));
   }
 
@@ -419,7 +419,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<Board> getCurrentBoards() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return Collections.enumeration(getSelectedBoards());
   }
 
@@ -568,7 +568,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Vector<Board> pickBoards() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return new Vector<>(getBoardsFromControls());
   }
 
@@ -772,7 +772,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     /** @deprecated Use {@link #SetBoards(BoardPicker,List)}. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
     public SetBoards(BoardPicker target, Vector<Board> boards) {
-      ProblemDialog.showDeprecated("2020-08-06");
+      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.target = target;
       this.boards = boards;
     }
@@ -900,7 +900,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void pack() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   @Override  // PG-2011-09-24
