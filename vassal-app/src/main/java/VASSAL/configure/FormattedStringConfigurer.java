@@ -80,9 +80,6 @@ public class FormattedStringConfigurer
       dropList.addActionListener(this);
 
       setListVisibility();
-      //final JPanel dp = new JPanel(new MigLayout());
-      //dp.add(dropList);
-      // p.add(dp);
       p.add(dropList, "grow 0,right"); // NON-NLS
 
     }

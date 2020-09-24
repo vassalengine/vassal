@@ -18,12 +18,9 @@
 package VASSAL.configure;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import javax.swing.BoxLayout;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -82,12 +79,7 @@ public class ColorConfigurer extends Configurer {
       }
 
       cb = new ColorButton(colorValue());
-      cb.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue(JColorChooser.showDialog(null, getName(), colorValue()));
-        }
-      });
+      cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));
 
       p.add(cb);
     }
@@ -116,12 +108,12 @@ public class ColorConfigurer extends Configurer {
   }
 
   public static Color stringToColor(String s) {
-    if (s == null || s.length() == 0 || "null".equals(s)) {
+    if (s == null || s.length() == 0 || "null".equals(s)) { // NON-NLS
       return null;
     }
 
     try {
-      if (s.startsWith("0X") || s.startsWith("0x")) {
+      if (s.startsWith("0X") || s.startsWith("0x")) { // NON-NLS
         return Color.decode(s);
       }
       else {
@@ -140,10 +132,10 @@ public class ColorConfigurer extends Configurer {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport("not an integer", s, e));
+      ErrorDialog.dataWarning(new BadDataReport("not an integer", s, e)); // NON-NLS
     }
     catch (IllegalArgumentException | NoSuchElementException e) {
-      ErrorDialog.dataWarning(new BadDataReport("bad color", s, e));
+      ErrorDialog.dataWarning(new BadDataReport("bad color", s, e)); // NON-NLS
     }
 
     // default to black in case of bad data
