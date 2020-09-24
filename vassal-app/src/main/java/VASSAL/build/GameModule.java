@@ -1269,8 +1269,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   @Deprecated(since = "2020-09-16", forRemoval = true)
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
-    }
-  
+  }
 
   /**
    * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
@@ -1302,7 +1301,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
     gameFileMode = mode;
     updateTitleBar();
-    }
+  }
 
   /**
    * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
