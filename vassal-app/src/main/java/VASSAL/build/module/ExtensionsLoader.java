@@ -17,8 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,12 +62,9 @@ public class ExtensionsLoader implements CommandEncoder {
       if (config.getFileValue() == null) {
         config.setValue(extMgr.getExtensionsDirectory(false).getAbsoluteFile());
       }
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          extMgr.setExtensionsDirectory((File) evt.getNewValue());
-          addExtensions();
-        }
+      config.addPropertyChangeListener(evt -> {
+        extMgr.setExtensionsDirectory((File) evt.getNewValue());
+        addExtensions();
       });
     }
     addExtensions();

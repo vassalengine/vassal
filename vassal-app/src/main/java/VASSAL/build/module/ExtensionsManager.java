@@ -48,12 +48,9 @@ public class ExtensionsManager {
    * file. Currently we disallow any files that are hidden or "files" that
    * are directories.
    */
-  private final FilenameFilter filter = new FilenameFilter() {
-    @Override
-    public boolean accept(File dir, String name) {
-      final File fileCandidate = new File(dir, name);
-      return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
-    }
+  private final FilenameFilter filter = (dir, name) -> {
+    final File fileCandidate = new File(dir, name);
+    return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
   };
 
   public ExtensionsManager(File moduleFile) {

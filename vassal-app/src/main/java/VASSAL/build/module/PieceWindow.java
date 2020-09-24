@@ -19,7 +19,6 @@ package VASSAL.build.module;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComponent;
@@ -77,12 +76,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launchButtonPressed();
-      }
-    };
+    ActionListener al = e -> launchButtonPressed();
     launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
     scale = 1.0;
@@ -104,12 +98,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.add(root);
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
-      addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-        @Override
-        public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
-            d.setTitle((String) e.getNewValue());
-          }
+      addPropertyChangeListener(e -> {
+        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+          d.setTitle((String) e.getNewValue());
         }
       });
       return d;
@@ -121,12 +112,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setTitle(getConfigureName());
       d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
 
-      addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-        @Override
-        public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
-            d.setTitle((String) e.getNewValue());
-          }
+      addPropertyChangeListener(e -> {
+        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+          d.setTitle((String) e.getNewValue());
         }
       });
 

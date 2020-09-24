@@ -36,6 +36,7 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import VASSAL.i18n.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -257,7 +258,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public static String getConfigureTypeName() {
-    return "HTML Help File"; //$NON-NLS-1$
+    return Resources.getString("Editor.BrowserHelpFile.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -272,9 +273,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     @Override
     public String[] getAttributeDescriptions() {
       return new String[]{
-        "Menu Entry:  ",
-        "Contents:  ",
-        "Starting Page:  "
+        Resources.getString("Editor.menu_command"),
+        Resources.getString("Editor.BrowserHelpFile.contents"),
+        Resources.getString("Editor.BrowserHelpFile.starting_page")
       };
     }
 
