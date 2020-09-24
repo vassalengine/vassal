@@ -130,7 +130,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(DISTDIR)/macosx/VASSAL.sh $@/Contents/MacOS
-	$(JLINK) --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	$(JLINK) --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macosx/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
@@ -209,7 +209,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	$(JLINK) --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --strip-debug --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	$(JLINK) --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 	for i in `find $@ -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
