@@ -39,7 +39,6 @@ import VASSAL.tools.ThrowableUtils;
 public class DynamicClient extends HybridClient {
   @Deprecated(since = "2020-08-17", forRemoval = true)
   public static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
-  @Deprecated(since = "2020-08-17", forRemoval = true)
 
   private static final Logger log = LoggerFactory.getLogger(DynamicClient.class);
 
