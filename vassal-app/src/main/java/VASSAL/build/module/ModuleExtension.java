@@ -451,11 +451,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public Action getEditAction(final JDialog d) {
     if (editAction == null) {
       d.setName(getName());
-      final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
+      final StringConfigurer config = new StringConfigurer(VERSION, Resources.getString("Editor.ExtensionEditor.version"), version);
       d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.add(config.getControls());
 
-      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, "Description:  ", description);
+      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, Resources.getString("Editor.description_label"), description);
       d.add(dconfig.getControls());
 
       /*
@@ -463,18 +463,18 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
        * have been created. Display a dialog with warnings.
        */
       Box idBox = Box.createHorizontalBox();
-      idBox.add(new JLabel("Extension Id: "));
+      idBox.add(new JLabel(Resources.getString("Editor.ExtensionEditor.extension_id")));
       idDisplay = new JTextField(12);
       idDisplay.setText(extensionId);
       idDisplay.setEditable(false);
       idBox.add(idDisplay);
-      JButton change = new JButton("Change");
+      JButton change = new JButton(Resources.getString("Editor.ExtensionEditor.change_button"));
       change.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           String s = (String)JOptionPane.showInputDialog(
               GameModule.getGameModule().getPlayerWindow(),
-              "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
+              Resources.getString("Editor.ExtensionEditor.change_warning"),
               "",
               JOptionPane.WARNING_MESSAGE,
               null,
@@ -490,11 +490,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       idBox.add(change);
       d.add(idBox);
 
-      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "Allow loading with any module?", universal);
+      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, Resources.getString("Editor.ExtensionEditor.universal_checkbox"), universal);
       d.add(uconfig.getControls());
 
       Box b = Box.createHorizontalBox();
-      JButton ok = new JButton("Save");
+      JButton ok = new JButton(Resources.getString("Editor.ExtensionEditor.save_button"));
       ok.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -505,7 +505,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         }
       });
       b.add(ok);
-      JButton cancel = new JButton("Cancel");
+      JButton cancel = new JButton(Resources.getString("Editor.ExtensionEditor.cancel_button"));
       cancel.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -531,7 +531,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       else {
         editAction.putValue(Action.NAME, "Edit");
       }
-      editAction.putValue(Action.SHORT_DESCRIPTION, "Extension Properties");
+      editAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ExtensionEditor.extension_properties"));
     }
     return editAction;
   }
