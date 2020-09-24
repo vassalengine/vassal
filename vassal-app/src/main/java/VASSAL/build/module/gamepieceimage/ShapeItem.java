@@ -26,10 +26,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
@@ -42,15 +43,14 @@ public class ShapeItem extends Item {
   protected static final String SHAPE = "shape"; //$NON-NLS-1$
   protected static final String BEVEL = "bevel"; //$NON-NLS-1$
 
-  protected static final String RECT = "Rectangle";
-  protected static final String RRECT = "Rounded Rectangle";
-  protected static final String OVAL = "Oval";
+  protected static final String RECT = "Rectangle"; //NON-NLS
+  protected static final String RRECT = "Rounded Rectangle"; //NON-NLS
+  protected static final String OVAL = "Oval"; //NON-NLS
 
   protected int height = 30;
   protected int width = 40;
   protected int bevel = 5;
   protected String shape = RECT;
-
 
   public ShapeItem() {
     super();
@@ -100,12 +100,19 @@ public class ShapeItem extends Item {
     );
   }
 
-  public static class ShapeConfig extends StringEnum {
+  public static class ShapeConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { RECT, RRECT, OVAL };
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] { Resources.getString("Editor.ShapeItem.rectangle"),
+                            Resources.getString("Editor.ShapeItem.rounded_rectangle"),
+                            Resources.getString("Editor.ShapeItem.oval") }; }
   }
+
   @Override
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
@@ -175,19 +182,9 @@ public class ShapeItem extends Item {
     }
   }
 
-  private VisibilityCondition falseCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return false;
-    }
-  };
+  private VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition bevelCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return shape.equals(RRECT);
-    }
-  };
+  private VisibilityCondition bevelCond = () -> shape.equals(RRECT);
 
   public int getWidth() {
     return width;
@@ -255,7 +252,7 @@ public class ShapeItem extends Item {
 
   @Override
   public String getDisplayName() {
-    return "Shape";
+    return Resources.getString("Editor.ShapeItem.component_type");
   }
 
   @Override
@@ -294,6 +291,4 @@ public class ShapeItem extends Item {
 
     return se2.getValue();
   }
-
-
 }

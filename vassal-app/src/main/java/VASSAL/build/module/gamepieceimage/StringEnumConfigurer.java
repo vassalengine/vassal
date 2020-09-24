@@ -27,10 +27,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -65,13 +61,10 @@ public class StringEnumConfigurer extends Configurer {
       else if (validValues.length > 0) {
         box.setSelectedIndex(0);
       }
-      box.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          noUpdate = true;
-          setValue(box.getSelectedItem());
-          noUpdate = false;
-        }
+      box.addActionListener(e -> {
+        noUpdate = true;
+        setValue(box.getSelectedItem());
+        noUpdate = false;
       });
       panel.add(box);
     }
@@ -128,11 +121,8 @@ public class StringEnumConfigurer extends Configurer {
   public static void main(String[] args) {
     JFrame f = new JFrame();
     StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()); //$NON-NLS-1$
-      }
+    c.addPropertyChangeListener(evt -> {
+      System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()); //$NON-NLS-1$
     });
     f.add(c.getControls());
     f.pack();

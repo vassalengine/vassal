@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItemInstance extends ItemInstance {
@@ -38,7 +39,6 @@ public class ShapeItemInstance extends ItemInstance {
     super(defn);
     decode(code);
   }
-
 
   public ShapeItemInstance(String name, String type, String location) {
     super(name, type, location);
@@ -76,8 +76,8 @@ public class ShapeItemInstance extends ItemInstance {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Foreground Color:  ",
-      "Border Color:  "
+      Resources.getString("Resources.ShapeItemInstance.foreground_color"),
+      Resources.getString("Resources.ShapeItemInstance.border_color")
     };
   }
 
@@ -143,5 +143,4 @@ public class ShapeItemInstance extends ItemInstance {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());
     }
   }
-
 }

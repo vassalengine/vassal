@@ -26,10 +26,11 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItem extends Item {
@@ -65,10 +66,10 @@ public class SymbolItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Symbol Set:  ",
-      "Width:  ",
-      "Height:  ",
-      "Line Width:  "
+      Resources.getString("Editor.SymbolItem.symbol_set"),
+      Resources.getString("Editor.SymbolItem.width"),
+      Resources.getString("Editor.SymbolItem.height"),
+      Resources.getString("Editor.SymbolItem.line_width")
     );
   }
 
@@ -96,12 +97,19 @@ public class SymbolItem extends Item {
     );
   }
 
-  public static class SetConfig extends StringEnum {
+  public static class SetConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return Symbol.SYMBOL_SETS;
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return Symbol.SYMBOL_SETS_DESC;
+    }
   }
+
+
   @Override
   public void setAttribute(String key, Object o) {
     switch (key) {
@@ -151,15 +159,10 @@ public class SymbolItem extends Item {
     else if (LINE_WIDTH.equals(key)) {
       return String.valueOf(lineWidth);
     }
-    else
+    else {
       return super.getAttributeValueString(key);
-
+    }
   }
-
-//  public void addTo(Buildable parent) {
-//    super.addTo(parent);
-//
-//  }
 
   public int getWidth() {
     return width;
@@ -171,7 +174,6 @@ public class SymbolItem extends Item {
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
-
     SymbolItemInstance si = null;
     if (defn != null) {
       si = defn.getSymbolInstance(getConfigureName());
@@ -244,5 +246,4 @@ public class SymbolItem extends Item {
 
     return se2.getValue();
   }
-
 }

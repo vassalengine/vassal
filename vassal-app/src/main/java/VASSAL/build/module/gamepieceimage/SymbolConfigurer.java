@@ -32,6 +32,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.tools.image.ImageUtils;
 
 public class SymbolConfigurer extends StringEnumConfigurer {
