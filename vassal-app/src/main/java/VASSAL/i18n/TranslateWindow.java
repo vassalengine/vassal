@@ -78,9 +78,9 @@ import VASSAL.tools.WriteErrorDialog;
 public class TranslateWindow extends JDialog implements ListSelectionListener,
     TreeSelectionListener {
   private static final long serialVersionUID = 1L;
-  protected static Color TRANSLATION_NEEDED_COLOR = Color.red;
-  protected static Color TRANSLATION_DONE_COLOR = Color.blue;
-  protected static Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
+  protected static final Color TRANSLATION_NEEDED_COLOR = Color.red;
+  protected static final Color TRANSLATION_DONE_COLOR = Color.blue;
+  protected static final Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
 
   protected Translatable target;
 

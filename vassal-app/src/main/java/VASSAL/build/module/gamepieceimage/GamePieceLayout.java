@@ -72,7 +72,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
   public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
   public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
-  protected static Map<String, String> compass = new HashMap<>();
+  protected static final Map<String, String> compass = new HashMap<>();
   static {
     compass.put(N, "N");
     compass.put(S, "S");

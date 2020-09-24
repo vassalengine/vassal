@@ -140,8 +140,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
 
-  public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
-  protected static List<AdditionalComponent> additionalComponents = new ArrayList<>();
+  public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
+  protected static final List<AdditionalComponent> additionalComponents = new ArrayList<>();
 
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {

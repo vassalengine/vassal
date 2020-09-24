@@ -57,7 +57,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
   protected String description = "";
-  protected static ButtonPusher globalPusher = new ButtonPusher();
+  protected static final ButtonPusher globalPusher = new ButtonPusher();
 
   public ActionButton() {
     this(ID, null);
