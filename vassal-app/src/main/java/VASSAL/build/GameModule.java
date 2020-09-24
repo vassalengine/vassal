@@ -99,7 +99,6 @@ import VASSAL.chat.AddressBookServerConfigurer;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.DynamicClient;
 import VASSAL.chat.HybridClient;
-import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.node.OfficialNodeClientFactory;
 import VASSAL.chat.node.PrivateNodeClientFactory;
@@ -482,7 +481,6 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
     ChatServerFactory.register(PrivateNodeClientFactory.PRIVATE_TYPE, new PrivateNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
-    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
 
     // legacy server used to be stored as node type
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new OfficialNodeClientFactory());

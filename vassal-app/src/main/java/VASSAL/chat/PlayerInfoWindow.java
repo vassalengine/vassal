@@ -27,7 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import VASSAL.chat.jabber.JabberPlayer;
 import VASSAL.i18n.Resources;
 
 /**
@@ -49,19 +48,6 @@ public class PlayerInfoWindow extends JDialog {
     name_l.setLabelFor(name_f);
     add(name_l);
     add(name_f, "pushx, wrap"); //$NON-NLS-1$
-
-    // Server login
-    if (p instanceof JabberPlayer) {
-      final String login = ((JabberPlayer) p).getRawJid();
-      final JTextField login_f = new JTextField(login.length());
-      login_f.setText(login);
-      login_f.setEditable(false);
-
-      final JLabel login_l = new JLabel(Resources.getString("Chat.server_login")); //$NON-NLS-1$
-      login_l.setLabelFor(login_f);
-      add(login_l);
-      add(login_f, "pushx, wrap"); //$NON-NLS-1$
-    }
 
     // IP address
     final String ip = ((SimpleStatus)p.getStatus()).getIp();
