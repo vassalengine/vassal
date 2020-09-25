@@ -21,7 +21,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 
@@ -50,12 +49,9 @@ public class ShowProfileAction extends AbstractAction {
   }
 
   public static PlayerActionFactory factory() {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        return new ShowProfileAction(p,
-          (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));
-      }
-    };
+    return (SimplePlayer p, JTree tree) -> new ShowProfileAction(
+      p,
+      (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree)
+    );
   }
 }

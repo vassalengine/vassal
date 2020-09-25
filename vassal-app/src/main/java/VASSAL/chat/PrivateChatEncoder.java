@@ -26,9 +26,9 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class PrivateChatEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "PRIV_CHAT"; //$NON-NLS-1$
-  private PlayerEncoder playerEncoder;
 
-  private PrivateChatManager pChatMgr;
+  private final PlayerEncoder playerEncoder;
+  private final PrivateChatManager pChatMgr;
 
   public PrivateChatEncoder(PlayerEncoder playerEncoder, PrivateChatManager pChatMgr) {
     this.playerEncoder = playerEncoder;
@@ -40,8 +40,8 @@ public class PrivateChatEncoder implements CommandEncoder {
     if (!(c instanceof PrivMsgCommand)) {
       return null;
     }
-    PrivMsgCommand cmd = (PrivMsgCommand) c;
-    SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, '/');
+    final PrivMsgCommand cmd = (PrivMsgCommand) c;
+    final SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, '/');
     se
       .append(playerEncoder.playerToString(cmd.getSender()))
       .append(cmd.getMessage());
@@ -53,10 +53,9 @@ public class PrivateChatEncoder implements CommandEncoder {
     if (!s.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '/');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '/');
     st.nextToken();
-    Player sender = playerEncoder.stringToPlayer(st.nextToken());
+    final Player sender = playerEncoder.stringToPlayer(st.nextToken());
     return new PrivMsgCommand(pChatMgr, sender, st.nextToken());
   }
-
 }

@@ -20,7 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
@@ -91,17 +90,13 @@ public class SynchAction extends AbstractAction {
     }
   }
 
-
   public static PlayerActionFactory factory(final ChatServerConnection client) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null;
-        }
-        return new SynchAction(p, client);
+    return (SimplePlayer p, JTree tree) -> {
+      final Room r = client.getRoom();
+      if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
+        return null;
       }
+      return new SynchAction(p, client);
     };
   }
 }

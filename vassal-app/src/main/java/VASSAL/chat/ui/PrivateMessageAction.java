@@ -17,11 +17,10 @@
  */
 package VASSAL.chat.ui;
 
-
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.chat.ChatServerConnection;
@@ -37,8 +36,8 @@ import VASSAL.i18n.Resources;
 public class PrivateMessageAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Player p;
-  private PrivateChatManager mgr;
+  private final Player p;
+  private final PrivateChatManager mgr;
 
   public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
     super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
@@ -55,18 +54,13 @@ public class PrivateMessageAction extends AbstractAction {
     PrivateChatter chat = mgr.getChatterFor(p);
     // Chat is null of other player is ignoring us.
     if (chat != null) {
-      java.awt.Window f = (java.awt.Window)chat.getTopLevelAncestor();
+      Window f = (Window)chat.getTopLevelAncestor();
       f.setVisible(true);
       f.toFront();
     }
   }
 
   public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        return new PrivateMessageAction(p, client, chatMgr);
-      }
-    };
+    return (SimplePlayer p, JTree tree) -> new PrivateMessageAction(p, client, chatMgr);
   }
 }
