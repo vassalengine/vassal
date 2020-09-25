@@ -171,8 +171,8 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
-      Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.x_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.y_offset"), //$NON-NLS-1$
       Resources.getString("Editor.RectangleGrid.width"), //$NON-NLS-1$
       Resources.getString("Editor.RectangleGrid.height"), //$NON-NLS-1$
       Resources.getString("Editor.RectangleGrid.range_method"), //$NON-NLS-1$

@@ -135,7 +135,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.GamePieceLayout.name"),
+      Resources.getString("Editor.name_label"),
       Resources.getString("Editor.GamePieceLayout.counter_width"),
       Resources.getString("Editor.GamePieceLayout.counter_height"),
       Resources.getString("Editor.GamePieceLayout.counter_style"),

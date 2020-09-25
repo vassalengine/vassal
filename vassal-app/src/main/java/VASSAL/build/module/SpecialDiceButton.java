@@ -268,9 +268,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.width"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.height"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.background") //$NON-NLS-1$
+      Resources.getString("Editor.width"), //$NON-NLS-1$
+      Resources.getString("Editor.height"), //$NON-NLS-1$
+      Resources.getString("Editor.background_color") //$NON-NLS-1$
     };
   }
 

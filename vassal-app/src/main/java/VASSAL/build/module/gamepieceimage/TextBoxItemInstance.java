@@ -87,7 +87,7 @@ public class TextBoxItemInstance extends ItemInstance {
     return new String[] {
       Resources.getString("Editor.TextBoxItemInstance.value"),
       Resources.getString("Editor.TextBoxItemInstance.text_color"),
-      Resources.getString("Editor.TextBoxItemInstance.background_color")
+      Resources.getString("Editor.background_color")
     };
   }
 

@@ -260,8 +260,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       Resources.getString("Editor.StartStack.board"), //$NON-NLS-1$
       Resources.getString("Editor.StartStack.grid"), //$NON-NLS-1$
       Resources.getString("Editor.StartStack.location"), //$NON-NLS-1$
-      Resources.getString("Editor.StartStack.position_x"), //$NON-NLS-1$
-      Resources.getString("Editor.StartStack.position_y"), //$NON-NLS-1$
+      Resources.getString("Editor.x_position"), //$NON-NLS-1$
+      Resources.getString("Editor.y_position"), //$NON-NLS-1$
     };
   }
 

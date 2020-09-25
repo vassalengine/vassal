@@ -67,8 +67,8 @@ public class SymbolItem extends Item {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
       Resources.getString("Editor.SymbolItem.symbol_set"),
-      Resources.getString("Editor.SymbolItem.width"),
-      Resources.getString("Editor.SymbolItem.height"),
+      Resources.getString("Editor.width"),
+      Resources.getString("Editor.height"),
       Resources.getString("Editor.SymbolItem.line_width")
     );
   }
@@ -77,13 +77,10 @@ public class SymbolItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[]{
-        SetConfig.class,
-        Integer.class,
-        Integer.class,
-        Double.class
-      }
-    );
+      SetConfig.class,
+      Integer.class,
+      Integer.class,
+      Double.class);
   }
 
   @Override

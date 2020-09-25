@@ -76,8 +76,8 @@ public class ShapeItemInstance extends ItemInstance {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Resources.ShapeItemInstance.foreground_color"),
-      Resources.getString("Resources.ShapeItemInstance.border_color")
+      Resources.getString("Editor.foreground_color"),
+      Resources.getString("Editor.border_color")
     };
   }
 

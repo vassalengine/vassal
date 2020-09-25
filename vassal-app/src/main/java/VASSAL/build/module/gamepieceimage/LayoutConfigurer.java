@@ -51,8 +51,8 @@ public class LayoutConfigurer extends Configurer {
   protected static final String ADD_TEXTBOX = Resources.getString("Editor.LayoutConfigurer.text_box");
   protected static final String ADD_SHAPE = Resources.getString("Editor.LayoutConfigurer.shape");
   protected static final String REMOVE = Resources.getString("Editor.LayoutConfigurer.remove");
-  protected static final String UP = Resources.getString("Editor.LayoutConfigurer.up");
-  protected static final String DOWN = Resources.getString("Editor.LayoutConfigurer.down");
+  protected static final String UP = Resources.getString("Editor.up");
+  protected static final String DOWN = Resources.getString("Editor.down");
   protected static final int NO_CURRENT_ITEM = -1;
 
   protected JPanel panel;

@@ -119,7 +119,7 @@ public class SymbolItemInstance extends ItemInstance {
       Resources.getString("Editor.SymbolItemInstance.first_symbol"),
       Resources.getString("Editor.SymbolItemInstance.second_symbol"),
       Resources.getString("Editor.SymbolItemInstance.symbol_color"),
-      Resources.getString("Editor.SymbolItemInstance.background_color"),
+      Resources.getString("Editor.background_color"),
       Resources.getString("Editor.SymbolItemInstance.size_color")
     };
   }

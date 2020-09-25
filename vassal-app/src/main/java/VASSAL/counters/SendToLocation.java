@@ -314,8 +314,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
           break;
         case 'L':
-          final int xValue = x.getTextAsInt(outer, Resources.getString("Editor.SendToLocation.x_position"), this);
-          final int yValue = y.getTextAsInt(outer, Resources.getString("Editor.SendToLocation.y_position"), this);
+          final int xValue = x.getTextAsInt(outer, Resources.getString("Editor.x_position"), this);
+          final int yValue = y.getTextAsInt(outer, Resources.getString("Editor.y_position"), this);
 
           dest = new Point(xValue, yValue);
 
@@ -581,10 +581,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(boardControls);
 
 
-      xInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.x_position"), p.x.getFormat(), p);
+      xInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.x_position"), p.x.getFormat(), p);
       controls.add(xInput.getControls());
 
-      yInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.y_position"), p.y.getFormat(), p);
+      yInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.y_position"), p.y.getFormat(), p);
       controls.add(yInput.getControls());
 
       zoneInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.zone_name"), p.zone.getFormat(), p);

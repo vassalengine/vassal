@@ -93,7 +93,7 @@ public class NewColorConfigurer extends Configurer {
       cp.setMinimumSize(new java.awt.Dimension(40, 40));
       cp.setSize(new java.awt.Dimension(40, 40));
       colorBox.add(cp);
-      JButton b = new JButton(Resources.getString("Editor.NewColorConfigurer.select"));
+      JButton b = new JButton(Resources.getString("Editor.select"));
       colorBox.add(b);
       p.add(colorBox);
 

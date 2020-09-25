@@ -76,7 +76,7 @@ public class ImageItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      Resources.getString("Editor.ImageItem.image"),
+      Resources.getString("Editor.image_label"),
       Resources.getString("Editor.ImageItem.image_is")
     );
   }

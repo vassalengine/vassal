@@ -109,9 +109,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.GamePieceImage.name"),
-      Resources.getString("Editor.GamePieceImage.background_color"),
-      Resources.getString("Editor.GamePieceImage.border_color"),
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.background_color"),
+      Resources.getString("Editor.border_color"),
       "" //$NON-NLS-1$
     };
   }

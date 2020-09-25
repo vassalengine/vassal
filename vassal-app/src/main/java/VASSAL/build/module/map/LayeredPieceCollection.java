@@ -38,9 +38,9 @@ import VASSAL.tools.TemporaryToolBar;
  * according to a property setting
  */
 public class LayeredPieceCollection extends AbstractConfigurable {
-  public static final String PROPERTY_NAME = "property";
-  public static final String LAYER_ORDER = "layerOrder";
-  protected Collection collection = new Collection("Layer", new String[0]);
+  public static final String PROPERTY_NAME = "property"; //NON-NLS
+  public static final String LAYER_ORDER = "layerOrder"; //NON-NLS
+  protected Collection collection = new Collection(Resources.getString("Editor.LayeredPieceCollection.layer"), new String[0]); //NON-NLS
   protected Map map;
   protected TemporaryToolBar tempToolBar;
 
@@ -126,7 +126,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayers.html");
+    return HelpFile.getReferenceManualPage("GamePieceLayers.html"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {

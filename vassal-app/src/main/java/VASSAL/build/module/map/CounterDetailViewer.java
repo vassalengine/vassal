@@ -980,7 +980,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
-      Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
+      Resources.getString("Editor.font_size"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
       Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
