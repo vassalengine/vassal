@@ -737,4 +737,21 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   protected boolean isSelected() {
     return selected;
   }
+
+  /**
+   * Test if this Decorator's Class, Type and State are equal to another trait.
+   *
+   * Implementations of this method should compare the individual values of the fields that
+   * make up the Decorators Type and State. Implementations should NOT compare the values
+   * returned by myGetType() or myGetState().
+   *
+   * This method is intended to be used by Unit Tests to verify that a trait
+   * is unchanged after going through a process such as serialization/deserialization.
+   *
+   * @param o Object to compare this Decorator to
+   * @return true if the Class, type and state all match
+   */
+  public boolean testEquals(Object o) {
+    return this.equals(o);
+  }
 }

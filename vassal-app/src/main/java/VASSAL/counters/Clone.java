@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
+import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -160,6 +161,14 @@ public class Clone extends Decorator implements TranslatablePiece {
   @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, Resources.getString("Editor.Clone.clone_command_description"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Clone)) return false;
+    Clone c = (Clone) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    return Objects.equals(key, c.key);
   }
 
   public static class Ed implements PieceEditor {

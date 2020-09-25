@@ -745,6 +745,33 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return new Ed(this);
   }
 
+  @Override
+  public boolean testEquals (Object o) {
+
+    // Check Class
+    if (! (o instanceof Labeler)) return false;
+    final Labeler l = (Labeler) o;
+
+    // Check Type
+    if (! Objects.equals(labelKey, l.labelKey)) return false;
+    if (! Objects.equals(menuCommand, l.menuCommand)) return false;
+    if (! Objects.equals(font, l.font)) return false;
+    if (! Objects.equals(textBg, l.textBg)) return false;
+    if (! Objects.equals(textFg, l.textFg)) return false;
+    if (! Objects.equals(verticalPos, l.verticalPos)) return false;
+    if (! Objects.equals(verticalOffset, l.verticalOffset)) return false;
+    if (! Objects.equals(horizontalPos, l.horizontalPos)) return false;
+    if (! Objects.equals(horizontalOffset, l.horizontalOffset)) return false;
+    if (! Objects.equals(verticalJust, l.verticalJust)) return false;
+    if (! Objects.equals(horizontalJust, l.horizontalJust)) return false;
+    if (! Objects.equals(nameFormat, l.nameFormat)) return false;
+    if (! Objects.equals(rotateDegrees, l.rotateDegrees)) return false;
+    if (! Objects.equals(propertyName, l.propertyName)) return false;
+    if (! Objects.equals(description, l.description)) return false;
+
+    // Check State
+    return Objects.equals(label, l.label);
+  }
   /**
    * Return Property names exposed by this trait
    */

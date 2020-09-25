@@ -986,6 +986,48 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   /**
+   * Test if this BasicPiece's Type and State are equal to another
+   * This method is intended to be used by Unit Tests to verify that a trait
+   * is unchanged after going through a process such as serialization/deserialization.
+   *
+   * @param o Object to compare this Decorator to
+   * @return true if the Class, type and state all match
+   */
+  public boolean testEquals (Object o) {
+
+    // Check Class type
+    if (! (o instanceof BasicPiece)) return false;
+    final BasicPiece bp = (BasicPiece) o;
+
+    // Check Type
+    if (! Objects.equals(cloneKey, bp.cloneKey)) return false;
+    if (! Objects.equals(deleteKey, bp.deleteKey)) return false;
+    if (! Objects.equals(imageName, bp.imageName)) return false;
+    if (! Objects.equals(commonName, bp.commonName)) return false;
+
+    // Check State
+    final String mapName1 = this.map == null ? "null" : this.map.getIdentifier(); // NON-NLS
+    final String mapName2 = bp.map == null ? "null" : bp.map.getIdentifier(); // NON-NLS
+    if (! Objects.equals(mapName1, mapName2)) return false;
+
+    if (! Objects.equals(getPosition(), bp.getPosition())) return false;
+    if (! Objects.equals(getGpId(), bp.getGpId())) return false;
+
+    final int pp1 = persistentProps == null ? 0 : persistentProps.size();
+    final int pp2 = bp.persistentProps == null ? 0 : bp.persistentProps.size();
+    if (! Objects.equals(pp1, pp2)) return false;
+
+    if (persistentProps != null && bp.persistentProps != null) {
+      for (Object key : persistentProps.keySet()) {
+        if (!Objects.equals(persistentProps.get(key), bp.persistentProps.get(key)))
+          return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * The configurer ({@link PieceEditor} for the BasicPiece, which generates the dialog for editing the
    * BasicPiece's type information in the Editor window.
    */
